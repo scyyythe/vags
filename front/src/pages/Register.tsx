@@ -50,6 +50,8 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
     }
   };
 
+  const [showFingerprintText, setShowFingerprintText] = useState(false);
+
   const handleForgotPasswordClick = () => {
     closeRegisterModal();
     setShowForgotPasswordModal(true);
@@ -57,7 +59,30 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
   return (
     <div className="w-full flex flex-col justify-center md:p-6 lg:py-5 lg:px-16 bg-white rounded-3xl">
-      <div className="flex justify-end">
+      <div className="flex justify-between">
+      {/* Fingerprint Icon and Sliding Text Container */}
+      <div className="relative flex items-center gap-2">
+          <div
+            className="border border-gray-300 px-2 rounded-full hover:border-red-800 transition-colors cursor-pointer"
+            onMouseEnter={() => setShowFingerprintText(true)}
+            onMouseLeave={() => setShowFingerprintText(false)}
+            // onClick={handleFingerprintClick}
+          >
+            <i className="bx bx-fingerprint text-sm hover:text-red-800 cursor-pointer"></i>
+          </div>
+
+          {/* Sliding Text */}
+          <div
+            className={`overflow-hidden transition-all duration-300 ease-out ${
+              showFingerprintText ? "max-w-[200px] opacity-100" : "max-w-0 opacity-0"
+            }`}
+          >
+            <span className="whitespace-nowrap text-[10px]">
+              Sign in with fingerprint
+            </span>
+          </div>
+        </div>
+
         <p className="relative top-5 text-xs text-gray-600 mb-10">
           Already a member?{" "}
           <button

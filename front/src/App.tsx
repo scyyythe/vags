@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, createContext } from "react";
 
 import Index from "./pages/Index";
+import FingerprintAuth from "./pages/FingerprintAuth";
 import NotFound from "./NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -52,6 +53,7 @@ const App = () => {
             <BrowserRouter>
               <Routes>
                 <Route path="/index" element={<Index />} />
+                <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
                 <Route path="/hero" element={<Hero />} />
                 <Route path="/explore" element={<Explore />} />
                 <Route path="/bidding" element={<Bidding />} />

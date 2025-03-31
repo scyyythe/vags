@@ -4,6 +4,7 @@ import InputField from "../components/page/InputField";
 import SocialButton from "../components/page/SocialButton";
 import { useModal } from "./ModalContext";
 import apiClient from "../utils/apiClient";
+
 const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [formData, setFormData] = useState({
     email: "",
@@ -13,6 +14,8 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { setShowRegisterModal, setShowForgotPasswordModal } = useModal();
+
+  const [showFingerprintText, setShowFingerprintText] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -41,9 +44,37 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     }
   };
 
+  const handleFingerprintClick = () => {
+    navigate("/fingerprint-auth");
+  };
+
   return (
     <div className="w-full flex flex-col justify-center p-8 md:p-10 lg:p-16 bg-white rounded-3xl">
-      <div className="flex justify-end">
+      <div className="flex justify-between">
+        {/* Fingerprint Icon and Sliding Text Container */}
+        <div className="relative bottom-2 flex items-center gap-2">
+          <div
+            className="border border-gray-300 px-2 rounded-full mb-1 hover:border-red-800 transition-colors cursor-pointer"
+            onMouseEnter={() => setShowFingerprintText(true)}
+            onMouseLeave={() => setShowFingerprintText(false)}
+            onClick={handleFingerprintClick}
+          >
+            <i className="bx bx-fingerprint text-sm hover:text-red-800 cursor-pointer"></i>
+          </div>
+
+          {/* Sliding Text */}
+          <div
+            className={`overflow-hidden transition-all duration-300 ease-out ${
+              showFingerprintText ? "max-w-[200px] opacity-100" : "max-w-0 opacity-0"
+            }`}
+          >
+            <span className="whitespace-nowrap text-[10px] relative bottom-1">
+              Sign in with fingerprint
+            </span>
+          </div>
+        </div>
+
+        {/* Not a Member Text */}
         <p className="text-xs text-gray-600 mb-6">
           Not a member?{" "}
           <button
@@ -58,25 +89,30 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         </p>
       </div>
 
+      {/* Welcome Text */}
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold mb-2">Hi, Welcome Back!</h1>
         <p className="text-gray-600 text-xs">Start your day with us.</p>
       </div>
 
+      {/* Error Message */}
       {error && <p className="text-red-600 text-xs text-center mb-4">{error}</p>}
 
+      {/* Social Buttons and Form */}
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row gap-4 text-[11px]">
           <SocialButton provider="google" text="Sign In with Google" icon="bx bxl-google" />
           <SocialButton provider="facebook" text="Sign In with Facebook" icon="bx bxl-facebook" />
         </div>
 
+        {/* Divider */}
         <div className="relative flex items-center justify-center">
           <div className="flex-grow border-t border-gray-500"></div>
           <span className="flex-shrink mx-4 text-gray-500 text-xs">Or Sign in with Email</span>
           <div className="flex-grow border-t border-gray-500"></div>
         </div>
 
+        {/* Login Form */}
         <form className="space-y-5 text-xs" onSubmit={handleSubmit}>
           <InputField
             type="email"
@@ -98,6 +134,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
             onChange={handleChange}
           />
 
+          {/* Forgot Password Link */}
           <div className="relative flex justify-between text-[11px] -top-3">
             <span></span>
             <button
@@ -112,6 +149,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
             </button>
           </div>
 
+          {/* Login Button */}
           <button
             type="submit"
             className="relative w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
