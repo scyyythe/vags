@@ -35,10 +35,10 @@ class CustomTokenObtainPairView(APIView):
     """Handles JWT authentication for MongoEngine users"""
     permission_classes = [AllowAny] 
     def post(self, request):
-        username, password = request.data.get("username"), request.data.get("password").encode("utf-8")
+        email, password = request.data.get("email"), request.data.get("password").encode("utf-8")
 
        
-        user = User.objects(username=username).first()
+        user = User.objects(email=email).first()
         if not user or not bcrypt.checkpw(password, user.password.encode("utf-8")):
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -50,7 +50,7 @@ class CustomTokenObtainPairView(APIView):
        
         access_token = generate_token({
             "user_id": str(user.id), 
-            "username": user.username, 
+            "email": user.email, 
             "jti": f"{user.id}_access",
             "token_type": "access"
         }, datetime.timedelta(hours=1))
@@ -67,7 +67,7 @@ class CustomTokenObtainPairView(APIView):
             "access_token": access_token,
             "refresh_token": refresh_token,
             "user_id": str(user.id),
-            "username": user.username
+            "email": user.email
         }, status=status.HTTP_200_OK)
 
 
@@ -95,7 +95,7 @@ class CustomTokenRefreshView(APIView):
 
             access_token = generate_token({
             "user_id": str(user.id), 
-            "username": user.username, 
+            "email": user.email, 
             "jti": f"{user.id}_access",
             "token_type": "access"
             }, datetime.timedelta(hours=1))
@@ -112,7 +112,7 @@ class CustomTokenRefreshView(APIView):
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "user_id": str(user.id),
-                "username": user.username
+                "email": user.email
             }, status=status.HTTP_200_OK)
 
         except jwt.ExpiredSignatureError:
