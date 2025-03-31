@@ -116,23 +116,25 @@ const Explore = () => {
         />
         
         {/* Browse Type and Search Container */}
-        <div className="bg-white shadow-sm rounded-full flex items-center p-2 my-6">
+        <div className="relative flex justify-center items-center -top-16">
+        <div className="bg-white shadow-lg w-full md:w-3/4 lg:w-[90%] rounded-lg flex items-center p-4">
           <div className="flex items-center px-4 border-r">
-            <span className="text-sm font-medium mr-2">Browse Type</span>
+            <span className="text-xs font-semibold mr-5">Browse Type</span>
             <Select defaultValue="Digital Art">
-              <SelectTrigger className="border-0 bg-transparent h-8 w-32 px-1 focus:ring-0 focus:ring-offset-0">
+              <SelectTrigger className="border-0 bg-transparent h-8 w-32 px-3 text-xs focus:ring-0 focus:ring-offset-0 rounded-sm border border-gray-300">
                 <SelectValue placeholder="Digital Art" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Digital Art">Digital Art</SelectItem>
-                <SelectItem value="Physical Art">Physical Art</SelectItem>
-                <SelectItem value="Photography">Photography</SelectItem>
+                <SelectItem value="Digital Art" className="text-xs">Digital Art</SelectItem>
+                <SelectItem value="Physical Art" className="text-xs">Physical Art</SelectItem>
+                <SelectItem value="Photography" className="text-xs">Photography</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <div className="flex-1 pl-2">
+          <div className="flex-1 pl-2 rounded-sm ml-3 border border-gray-300">
             <SearchBar />
           </div>
+        </div>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
