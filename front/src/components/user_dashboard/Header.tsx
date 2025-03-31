@@ -62,26 +62,26 @@ const Header = () => {
               onClick={() => setIsSearchVisible(!isSearchVisible)}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <Search className="h-5 w-5 text-gray-600" />
+              <Search className="h-4 w-4 text-black" />
             </button>
 
             {/* Sliding Search Bar */}
             <div
               className={`absolute right-0 top-1/2 -translate-y-1/2
                 flex items-center bg-white shadow-lg rounded-full overflow-hidden
-                transition-all duration-300 ease-in-out
-                ${isSearchVisible ? "w-64 opacity-100" : "w-0 opacity-0"}`}
+                transition-all duration-300 ease-in-out border border-gray-200
+                ${isSearchVisible ? "w-52 opacity-100" : "w-0 opacity-0"}`}
             >
               <input
                 type="text"
                 placeholder="Search..."
-                className="flex-1 px-4 py-2 border-0 outline-none text-sm bg-transparent"
+                className="flex-1 px-4 border-0 outline-none text-[11px] bg-transparent"
               />
               <button
                 onClick={() => setIsSearchVisible(false)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2"
               >
-                <X className="h-5 w-5 text-gray-600 mr-2" />
+                <X className="h-4 w-4 text-gray-600 -ml-2" />
               </button>
             </div>
           </div>
