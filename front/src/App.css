@@ -1,0 +1,101 @@
+
+#root {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+/* Carousel animations */
+.carousel-slide-enter {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.carousel-slide-enter-active {
+  transform: translateX(0);
+  opacity: 1;
+  transition: all 500ms ease-in-out;
+}
+
+.carousel-slide-exit {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.carousel-slide-exit-active {
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: all 500ms ease-in-out;
+}
+
+/* Card hover effect */
+.card-hover {
+  transition: transform 0.3s ease-in-out;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+}
+
+/* Add lazy loading blur effect */
+.image-lazy-load {
+  filter: blur(10px);
+  transition: filter 0.3s ease-out;
+}
+
+.image-lazy-load.loaded {
+  filter: blur(0);
+}
+
+/* Add perspective for 3D carousel effect */
+.perspective-1000 {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* Carousel wheel animation */
+@keyframes rotate-wheel {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+.carousel-wheel {
+  transform-style: preserve-3d;
+}
+
+.card {
+  padding: 2em;
+}
