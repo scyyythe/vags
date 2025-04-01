@@ -1,8 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
 from api.views.user_views import CreateUserView, CustomTokenObtainPairView, CustomTokenRefreshView
-
-
 from django.http import JsonResponse
 
 def home(request):
@@ -16,4 +14,5 @@ urlpatterns = [
     path("api/token/refresh/", CustomTokenRefreshView.as_view(), name="refresh_token"), 
     path("api-auth/", include("rest_framework.urls")),
     path('api/', include('api.urls')),
+    
 ]
