@@ -1,6 +1,6 @@
 import { Link, useLocation, NavLink } from "react-router-dom";
 import Logo from "./Logo";
-import { Bell, MessageCircle, Search, X } from "lucide-react";
+import { Bell, MessageCircle, Search, X, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
@@ -9,6 +9,7 @@ const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border/50">
@@ -18,45 +19,57 @@ const Header = () => {
           <Logo />
         </div>
 
-        {/* Centered Navigation Links */}
-        <nav className="absolute left-1/2 transform -translate-x-1/2 hidden text-xs md:flex space-x-20">
-          <NavLink
-            to="/explore"
-            className={({ isActive }) =>
-              `nav-link ${isActive ? "font-bold" : ""}`
-            }
-          >
-            Explore
-          </NavLink>
-          <NavLink
-            to="/exhibits"
-            className={({ isActive }) =>
-              `nav-link ${isActive ? "font-bold" : ""}`
-            }
-          >
-            Exhibits
-          </NavLink>
-          <NavLink
-            to="/bidding"
-            className={({ isActive }) =>
-              `nav-link ${isActive ? "font-bold" : ""}`
-            }
-          >
-            Bidding
-          </NavLink>
-          <NavLink
-            to="/marketplace"
-            className={({ isActive }) =>
-              `nav-link ${isActive ? "font-bold" : ""}`
-            }
-          >
-            Marketplace
-          </NavLink>
+        {/* Centered Navigation Links (Responsive) */}
+        <nav
+          className={`absolute left-0 top-16 bg-white w-full py-4 shadow-md
+            ${isMenuOpen ? "block" : "hidden"} md:static md:block md:w-auto md:py-0 md:shadow-none`}
+        >
+          <div className="text-xs flex flex-col items-center md:flex-row md:space-x-16">
+            <NavLink
+              to="/explore"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "font-bold" : ""} block py-2 px-4 md:inline-block`
+              }
+            >
+              Explore
+            </NavLink>
+            <NavLink
+              to="/exhibits"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "font-bold" : ""} block py-2 px-4 md:inline-block`
+              }
+            >
+              Exhibits
+            </NavLink>
+            <NavLink
+              to="/bidding"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "font-bold" : ""} block py-2 px-4 md:inline-block`
+              }
+            >
+              Bidding
+            </NavLink>
+            <NavLink
+              to="/marketplace"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "font-bold" : ""} block py-2 px-4 md:inline-block`
+              }
+            >
+              Marketplace
+            </NavLink>
+          </div>
         </nav>
 
         {/* Right Side Icons and Avatar */}
         <div className="flex items-center space-x-4">
-          {/* Search Icon and Sliding Search Bar */}
+          {/* Menu Icon (Mobile) */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <Menu className="h-5 w-5 text-black" />
+          </button>
+          {/* Search Icon and Sliding Search Bar (Responsive) */}
           <div className="relative flex items-center">
             <button
               onClick={() => setIsSearchVisible(!isSearchVisible)}
@@ -70,7 +83,8 @@ const Header = () => {
               className={`absolute right-0 top-1/2 -translate-y-1/2
                 flex items-center bg-white shadow-lg rounded-full overflow-hidden
                 transition-all duration-300 ease-in-out border border-gray-200
-                ${isSearchVisible ? "w-52 opacity-100" : "w-0 opacity-0"}`}
+                ${isSearchVisible ? "w-32 md:w-52 opacity-100" : "w-0 opacity-0"}
+                `}
             >
               <input
                 type="text"
@@ -97,14 +111,16 @@ const Header = () => {
           </button>
 
           {/* Upgrade Button */}
-          <Button size="sm" className="bg-red hover:bg-red/90 rounded-full px-4 text-xs text-red-600 border border-red-600">
+          <Button
+            size="sm"
+            className="bg-red hover:bg-red/90 rounded-full px-4 text-xs text-red-600 border border-red-600"
+          >
             Upgrade
           </Button>
 
           {/* User Avatar */}
           <Avatar className="h-8 w-8 border">
-            <AvatarImage src="https://i.pravatar.cc/300" alt="@user" />
-            <AvatarFallback>JD</AvatarFallback>
+            <AvatarFallback>JA</AvatarFallback>
           </Avatar>
         </div>
       </div>

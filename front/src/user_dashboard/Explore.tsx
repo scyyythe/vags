@@ -178,7 +178,7 @@ const Explore = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex-1 pl-2 rounded-sm ml-3 border border-gray-300">
+          <div className="flex-1 pl-2 bg-blue-100 bg-opacity-50 rounded-sm ml-3">
             <SearchBar />
           </div>
         </div>
@@ -189,13 +189,13 @@ const Explore = () => {
             <div className="flex items-center justify-between mb-6 lg:w-[133%]">
               <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
               <div className="flex space-x-2 text-xs">
-                <Button variant="outline" size="sm" className="text-xs rounded-full flex items-center gap-1" onClick={handleSortClick}>
-                  <SortAsc size={13} />
-                  Sort
-                </Button>
                 <Button size="sm" className="text-xs bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1" onClick={handleCreateClick}>
-                  <Plus size={13} />
+                  <Plus size={8} />
                   Create
+                </Button>
+                <Button variant="outline" size="sm" className="text-xs rounded-full flex items-center gap-1" onClick={handleSortClick}>
+                  <SortAsc size={8} />
+                  Sort
                 </Button>
               </div>
             </div>
