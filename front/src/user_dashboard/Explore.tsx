@@ -15,10 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useDonation } from "../context/DonationContext";
 
 const Explore = () => {
   const categories = ["All", "Trending", "Collections"];
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const { openPopup } = useDonation();
   
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
