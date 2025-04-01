@@ -8,6 +8,7 @@ import { useModal } from '../pages/ModalContext';
 
 const FingerprintAuth = () => {
   const navigate = useNavigate();
+  const { setShowLoginModal } = useModal();
   const [validationState, setValidationState] = useState<"idle" | "validating" | "valid" | "invalid">("idle");
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
 
@@ -52,6 +53,8 @@ const FingerprintAuth = () => {
   };
 
   const backToLogin = () => {
+    setShowLoginModal(true); // Show the login modal
+    navigate("/"); // Navigate back to the main page if needed
   };
 
   const getIconColor = () => {

@@ -7,7 +7,7 @@ import { useState, createContext } from "react";
 
 import Index from "./pages/Index";
 import FingerprintAuth from "./pages/FingerprintAuth";
-import NotFound from "./NotFound";
+import NotFound from "./components/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Hero from "./pages/Hero";
@@ -52,7 +52,7 @@ const App = () => {
           <ModalProvider>
             <BrowserRouter>
               <Routes>
-                <Route path="/index" element={<Index />} />
+                <Route path="/" element={<Index />} />
                 <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
                 <Route path="/hero" element={<Hero />} />
                 <Route path="/explore" element={<Explore />} />
