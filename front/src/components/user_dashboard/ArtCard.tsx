@@ -67,7 +67,7 @@ const ArtCard = ({
 
   if (isExplore) {
     return (
-      <div className="art-card text-xs group animate-fadeIn rounded-3xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-all duration-300 border 1px border-gray-200">
+      <div className="art-card text-xs group animate-fadeIn rounded-3xl overflow-hidden bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4 cursor-pointer">
         <div className="p-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Avatar className="h-8 w-8 border">
@@ -90,7 +90,7 @@ const ArtCard = ({
           />
         </div>
         <div className="p-4">
-          <div className="flex items-center justify-between">
+          <div className="relative flex items-center justify-between -top-1">
             <p className="text-base text-xs font-medium">{title || "Untitled Artwork"}</p>
             <div className="flex items-center space-x-3">
               <button 
