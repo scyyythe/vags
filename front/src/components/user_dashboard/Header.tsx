@@ -21,7 +21,7 @@ const Header = () => {
 
         {/* Centered Navigation Links (Responsive) */}
         <nav
-          className={`absolute left-0 top-16 bg-white w-full py-4 shadow-md
+          className={`absolute left-0 top-16 w-full py-4 shadow-md
             ${isMenuOpen ? "block" : "hidden"} md:static md:block md:w-auto md:py-0 md:shadow-none`}
         >
           <div className="text-xs flex flex-col items-center md:flex-row md:space-x-16">
