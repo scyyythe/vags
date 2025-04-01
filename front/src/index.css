@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import 'boxicons/css/boxicons.min.css';
 
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -68,51 +67,46 @@
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground;
     font-family: 'Poppins', sans-serif;
+  }
 
-     /* Hide scrollbar for Chrome, Safari and Opera */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-
-      /* Hide scrollbar for IE, Edge and Firefox */
-    .no-scrollbar {
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
-     }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
   
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
+
 @layer components {
-  .artwork-card, .artwork-card1{
+  .artwork-card,
+  .artwork-card1 {
     @apply rounded-2xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg;
   }
-  
-  .artwork-card img, .artwork-card1 img {
+
+  .artwork-card img,
+  .artwork-card1 img {
     @apply object-cover w-full h-48 transition-transform duration-300;
   }
-  
+
   .artist-card {
     @apply flex items-center space-x-2 bg-gray-100 rounded-full px-4 py-2 transition-all duration-300 hover:bg-gray-200;
   }
-  
+
   .btn-primary {
     @apply bg-artRed text-white px-5 py-3 rounded-lg font-medium transition-all duration-300 hover:bg-opacity-90;
   }
-  
+
   .btn-secondary {
     @apply bg-transparent border border-white text-white px-5 py-3 rounded-lg font-medium transition-all duration-300 hover:bg-white hover:bg-opacity-10;
   }
@@ -120,13 +114,12 @@
   .gradient-hero {
     background: linear-gradient(180deg, rgba(217, 217, 217, 0) 0%, rgba(0, 0, 0, 0.6) 100%);
   }
-  
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 5px;
+  height: 3px;
 }
 
 ::-webkit-scrollbar-track {
@@ -134,7 +127,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c0c0c0;
+  background: #dddddd;
   border-radius: 4px;
 }
 
@@ -146,6 +139,8 @@
 html {
   scroll-behavior: smooth;
 }
+
+
 
 /* Image aspect ratio preservation */
 img {

@@ -1,7 +1,6 @@
 import { useState, useContext } from "react";
 import { Heart, MoreHorizontal, ShoppingBag } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import ArtCardMenu from "./ArtCardMenu";
 import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -68,7 +67,7 @@ const ArtCard = ({
 
   if (isExplore) {
     return (
-      <div className="art-card group animate-fadeIn rounded-3xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-all duration-300 border 1px border-gray-200">
+      <div className="art-card text-xs group animate-fadeIn rounded-3xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-all duration-300 border 1px border-gray-200">
         <div className="p-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Avatar className="h-8 w-8 border">
@@ -81,14 +80,6 @@ const ArtCard = ({
             <button onClick={handleMenuClick} className="p-1 rounded-full hover:bg-secondary">
               <MoreHorizontal size={16} />
             </button>
-            <ArtCardMenu
-              isOpen={menuOpen}
-              onClose={() => setMenuOpen(false)}
-              onSave={handleSave}
-              onHide={handleHide}
-              onReport={handleReport}
-              position="bottom"
-            />
           </div>
         </div>
         <div className="aspect-square overflow-hidden p-4">
@@ -100,7 +91,7 @@ const ArtCard = ({
         </div>
         <div className="p-4">
           <div className="flex items-center justify-between">
-            <p className="text-base font-medium">{title || "Untitled Artwork"}</p>
+            <p className="text-base text-xs font-medium">{title || "Untitled Artwork"}</p>
             <div className="flex items-center space-x-3">
               <button 
                 onClick={handleLike}
@@ -111,7 +102,7 @@ const ArtCard = ({
               >
                 <Heart size={18} fill={likedArtworks[id] ? "#ff2a36" : "none"} />
               </button>
-              <span className="text-sm text-gray-500">
+              <span className="text-xs text-gray-500">
                 {Math.floor(Math.random() * 500)}
               </span>
               <button 
@@ -149,13 +140,13 @@ const ArtCard = ({
             <button onClick={handleMenuClick} className="p-1 rounded-full hover:bg-secondary">
               <MoreHorizontal size={16} />
             </button>
-            <ArtCardMenu
+            {/* <ArtCardMenu
               isOpen={menuOpen}
               onClose={() => setMenuOpen(false)}
               onSave={handleSave}
               onHide={handleHide}
               onReport={handleReport}
-            />
+            /> */}
           </div>
         </div>
         <div className="flex items-center justify-between">
