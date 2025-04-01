@@ -14,6 +14,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { setShowRegisterModal, setShowForgotPasswordModal } = useModal();
+  const [showPassword, setShowPassword] = useState(false);
 
   const [showFingerprintText, setShowFingerprintText] = useState(false);
 
@@ -124,18 +125,28 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
             onChange={handleChange}
           />
 
-          <InputField
-            type="password"
-            label="Password"
-            placeholder="Password"
-            icon="bx bx-lock-alt"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
+          <div className="relative">
+            <InputField
+              type={showPassword ? "text" : "password"}
+              label="Password"
+              placeholder="Password"
+              icon="bx bx-lock-alt"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <button 
+              type="button"
+              className="absolute right-3 top-3/4 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              <i className={showPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "18px" }}></i>
+            </button>
+          </div>
+
 
           {/* Forgot Password Link */}
-          <div className="relative flex justify-between text-[11px] -top-3">
+          <div className="relative flex justify-between text-[11px] -top-[77px]">
             <span></span>
             <button
               type="button"
