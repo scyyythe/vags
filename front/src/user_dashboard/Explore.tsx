@@ -4,8 +4,6 @@ import Hero from "@/components/user_dashboard/Hero";
 import SearchBar from "@/components/user_dashboard/SearchBar";
 import CategoryFilter from "@/components/user_dashboard/CategoryFilter";
 import ArtCard from "@/components/user_dashboard/ArtCard";
-import PopularArtworks from "@/components/user_dashboard/PopularArtworks";
-import TopArtists from "@/components/user_dashboard/TopArtists";
 import { Plus, SortAsc } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -19,7 +17,7 @@ import {
 } from "@/components/ui/select";
 
 const Explore = () => {
-  const categories = ["All", "Trending", "Collections", "Lorem"];
+  const categories = ["All", "Trending", "Collections"];
   const [selectedCategory, setSelectedCategory] = useState("All");
   
   const handleCategorySelect = (category: string) => {
@@ -91,6 +89,55 @@ const Explore = () => {
       artworkImage: "https://images.unsplash.com/photo-1603177608775-53cb4728e83c?q=80&w=1470&auto=format&fit=crop",
       title: "Slopes",
     },
+    {
+      id: "10",
+      artistName: "Angel Canete",
+      artistImage: "https://i.pravatar.cc/150?img=1",
+      artworkImage: "https://images.unsplash.com/photo-1610483778913-6e83d8b75bb3?q=80&w=1470&auto=format&fit=crop",
+      title: "Slopes",
+    },
+    {
+      id: "11",
+      artistName: "Angel Canete",
+      artistImage: "https://i.pravatar.cc/150?img=2",
+      artworkImage: "https://images.unsplash.com/photo-1515405295579-ba7b45403062?q=80&w=1480&auto=format&fit=crop",
+      title: "Slopes",
+    },
+    {
+      id: "12",
+      artistName: "Angel Canete",
+      artistImage: "https://i.pravatar.cc/150?img=3",
+      artworkImage: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1490&auto=format&fit=crop",
+      title: "Slopes",
+    },
+    {
+      id: "13",
+      artistName: "Angel Canete",
+      artistImage: "https://i.pravatar.cc/150?img=4",
+      artworkImage: "https://images.unsplash.com/photo-1562619425-c307888f7010?q=80&w=1480&auto=format&fit=crop",
+      title: "Slopes",
+    },
+    {
+      id: "14",
+      artistName: "Angel Canete",
+      artistImage: "https://i.pravatar.cc/150?img=5",
+      artworkImage: "https://images.unsplash.com/photo-1579783901586-d88db74b4fe4?q=80&w=1490&auto=format&fit=crop",
+      title: "Slopes",
+    },
+    {
+      id: "15",
+      artistName: "Angel Canete",
+      artistImage: "https://i.pravatar.cc/150?img=6",
+      artworkImage: "https://images.unsplash.com/photo-1501472312651-726afe119ff1?q=80&w=1374&auto=format&fit=crop",
+      title: "Slopes",
+    },
+    {
+      id: "16",
+      artistName: "Angel Canete",
+      artistImage: "https://i.pravatar.cc/150?img=6",
+      artworkImage: "https://images.unsplash.com/photo-1501472312651-726afe119ff1?q=80&w=1374&auto=format&fit=crop",
+      title: "Slopes",
+    },
   ];
 
   const handleTipJar = () => {
@@ -137,24 +184,24 @@ const Explore = () => {
         </div>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 -mt-8">
           <div className="lg:col-span-3">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 lg:w-[133%]">
               <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
-              <div className="flex space-x-2">
-                <Button variant="outline" size="sm" className="rounded-full flex items-center gap-1" onClick={handleSortClick}>
-                  <SortAsc size={16} />
+              <div className="flex space-x-2 text-xs">
+                <Button variant="outline" size="sm" className="text-xs rounded-full flex items-center gap-1" onClick={handleSortClick}>
+                  <SortAsc size={13} />
                   Sort
                 </Button>
-                <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center gap-1" onClick={handleCreateClick}>
-                  <Plus size={16} />
+                <Button size="sm" className="text-xs bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1" onClick={handleCreateClick}>
+                  <Plus size={13} />
                   Create
                 </Button>
               </div>
             </div>
             
-            <ScrollArea className="h-[800px] pr-4 no-scrollbar">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <ScrollArea className="h-[800px] lg:w-[133%] pr-4 no-scrollbar">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
                 {artCards.map((card) => (
                   <ArtCard
                     key={card.id}
@@ -163,7 +210,6 @@ const Explore = () => {
                     artistImage={card.artistImage}
                     artworkImage={card.artworkImage}
                     title={card.title}
-                    showPrice={false}
                     onButtonClick={handleTipJar}
                     isExplore={true}
                   />
@@ -172,12 +218,6 @@ const Explore = () => {
             </ScrollArea>
           </div>
           
-          <div className="lg:col-span-1">
-            <div className="space-y-6">
-              <PopularArtworks />
-              <TopArtists />
-            </div>
-          </div>
         </div>
       </div>
     </div>

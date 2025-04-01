@@ -20,9 +20,9 @@ const CategoryFilter = ({ categories, onSelectCategory }: CategoryFilterProps) =
       {categories.map((category) => (
         <button
           key={category}
-          className={`py-1.5 px-4 rounded-full text-sm font-medium transition-colors ${
+          className={`py-1.5 px-4 rounded-full text-xs font-small transition-colors ${
             selectedCategory === category 
-              ? "bg-red-600 text-white" 
+              ? "border border-gray-300 font-semibold shadow-lg" 
               : "bg-white border border-gray-200 hover:bg-gray-100"
           }`}
           onClick={() => handleCategoryClick(category)}
