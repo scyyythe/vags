@@ -4,6 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import TipJarIcon from "./TipJarIcon";
+import { useDonation } from "../../context/DonationContext";
 
 interface ArtCardProps {
   id: string;
@@ -36,6 +38,7 @@ const ArtCard = ({
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { likedArtworks, toggleLike } = useContext(LikedArtworksContext);
+  const { openPopup } = useDonation();
   
   const handleLike = () => {
     toggleLike(id);
@@ -63,6 +66,17 @@ const ArtCard = ({
   const handleReport = () => {
     toast("Artwork reported");
     setMenuOpen(false);
+  };
+
+  const handleTipJar = () => {
+    // Make sure we're calling openPopup with the right parameters
+    console.log("Tip jar clicked for artwork:", id);
+    openPopup({
+      id,
+      title: title || "Untitled Artwork",
+      artistName,
+      artworkImage,
+    });
   };
 
   if (isExplore) {
@@ -105,6 +119,7 @@ const ArtCard = ({
               <span className="text-xs text-gray-500">
                 {Math.floor(Math.random() * 500)}
               </span>
+              <TipJarIcon onClick={handleTipJar} />
               <button 
                 className="p-1 rounded-full"
                 aria-label="Save artwork"
@@ -162,6 +177,7 @@ const ArtCard = ({
             >
               <Heart size={16} fill={likedArtworks[id] ? "#ff2a36" : "none"} />
             </button>
+            <TipJarIcon onClick={handleTipJar} />
             {showButton && (
               <button 
                 onClick={onButtonClick} 
