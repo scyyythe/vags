@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Mail, KeyRound, Check } from "lucide-react";
+import { KeyRound } from "lucide-react";
 import { useModal } from '../../pages/ModalContext';
 
 // Custom OTP input field component
