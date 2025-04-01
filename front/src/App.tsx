@@ -16,6 +16,9 @@ import Bidding from "./user_dashboard/Bidding";
 import Marketplace from "./user_dashboard/Marketplace";
 import Exhibits from "./user_dashboard/Exhibits";
 import { ModalProvider } from './pages/ModalContext';
+import { DonationProvider } from "./context/DonationContext";
+import TipJarPopup from "./components/user_dashboard/TipJarPopup";
+import { useDonation } from "./context/DonationContext";
 
 // Active heart state
 export type LikedArtwork = {
@@ -30,6 +33,26 @@ export const LikedArtworksContext = createContext<{
   likedArtworks: {},
   toggleLike: () => {},
 });
+
+const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
+  const { isPopupOpen, closePopup, currentArtwork } = useDonation();
+  
+  console.log("DonationWrapper - isPopupOpen:", isPopupOpen);
+  console.log("DonationWrapper - currentArtwork:", currentArtwork);
+
+return (
+  <>
+    {children}
+    <TipJarPopup 
+      isOpen={isPopupOpen} 
+      onClose={closePopup} 
+      artworkTitle={currentArtwork?.title}
+      artworkImage={currentArtwork?.artworkImage}
+      artistName={currentArtwork?.artistName}
+    />
+  </>
+);
+};
 
 const queryClient = new QueryClient();
 
@@ -47,22 +70,26 @@ const App = () => {
     <LikedArtworksContext.Provider value={{ likedArtworks, toggleLike }}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <ModalProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
-                <Route path="/hero" element={<Hero />} />
-                <Route path="/explore" element={<Explore />} />
-                <Route path="/bidding" element={<Bidding />} />
-                <Route path="/marketplace" element={<Marketplace />} />
-                <Route path="/exhibits" element={<Exhibits />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </ModalProvider>
+          <DonationProvider>
+            <DonationWrapper>
+              <Toaster />
+              <Sonner />
+              <ModalProvider>
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
+                    <Route path="/hero" element={<Hero />} />
+                    <Route path="/explore" element={<Explore />} />
+                    <Route path="/bidding" element={<Bidding />} />
+                    <Route path="/marketplace" element={<Marketplace />} />
+                    <Route path="/exhibits" element={<Exhibits />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </BrowserRouter>
+              </ModalProvider>
+            </DonationWrapper>
+          </DonationProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </LikedArtworksContext.Provider>
