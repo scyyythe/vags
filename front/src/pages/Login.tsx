@@ -163,7 +163,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
           {/* Login Button */}
           <button
             type="submit"
-            className="relative w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800 -top-5"
+            className="relative -top-5 w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
           >
             Login
           </button>
