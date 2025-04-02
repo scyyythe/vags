@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Fingerprint } from "lucide-react";
 import { toast } from "sonner";
 import SystemMessage from "../components/page/SystemMessage";
-import { useModal } from '../pages/ModalContext';
+import { useModal } from '../context/ModalContext';
 
 
 const FingerprintAuth = () => {

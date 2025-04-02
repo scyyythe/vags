@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import InputField from "../components/page/InputField";
 import SocialButton from "../components/page/SocialButton";
-import { useModal } from "./ModalContext";
+import { useModal } from "../context/ModalContext";
 import apiClient from "../utils/apiClient";
 
 const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
@@ -109,7 +109,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         {/* Divider */}
         <div className="relative flex items-center justify-center">
           <div className="flex-grow border-t border-gray-500"></div>
-          <span className="flex-shrink mx-4 text-gray-500 text-xs">Or Sign in with Email</span>
+          <span className="flex-shrink mx-4 text-gray-500 text-xs">Or</span>
           <div className="flex-grow border-t border-gray-500"></div>
         </div>
 
@@ -163,7 +163,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
           {/* Login Button */}
           <button
             type="submit"
-            className="relative w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
+            className="relative w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800 -top-5"
           >
             Login
           </button>

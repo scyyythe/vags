@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { Heart, MoreHorizontal, ShoppingBag } from "lucide-react";
+import { Heart, MoreHorizontal} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
@@ -124,7 +124,6 @@ const ArtCard = ({
                 className="p-1 rounded-full"
                 aria-label="Save artwork"
               >
-                <ShoppingBag size={18} />
               </button>
             </div>
           </div>
