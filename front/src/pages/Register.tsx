@@ -54,7 +54,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   const [showFingerprintText, setShowFingerprintText] = useState(false);
 
   return (
-    <div className="w-full flex flex-col justify-center md:p-6 lg:py-5 lg:px-16 bg-white rounded-3xl">
+    <div className="w-full flex flex-col justify-center md:p-6 lg:py-6 lg:px-16 bg-white rounded-3xl">
       <div className="flex justify-between">
       {/* Fingerprint Icon and Sliding Text Container */}
       <div className="relative flex items-center gap-2">

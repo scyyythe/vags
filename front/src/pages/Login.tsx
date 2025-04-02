@@ -50,7 +50,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center p-8 md:p-10 lg:p-16 bg-white rounded-3xl">
+    <div className="w-full flex flex-col justify-center p-8 md:p-10 lg:py-12 lg:px-16 bg-white rounded-3xl">
       <div className="flex justify-between">
         {/* Fingerprint Icon and Sliding Text Container */}
         <div className="relative bottom-2 flex items-center gap-2">
@@ -163,7 +163,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
           {/* Login Button */}
           <button
             type="submit"
-            className="relative w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800 -top-5"
+            className="relative -top-5 w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
           >
             Login
           </button>
