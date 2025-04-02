@@ -50,7 +50,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center p-8 md:p-10 lg:p-16 bg-white rounded-3xl">
+    <div className="w-full flex flex-col justify-center md:p-6 lg:py-12 lg:px-16 bg-white rounded-3xl">
       <div className="flex justify-between">
         {/* Fingerprint Icon and Sliding Text Container */}
         <div className="relative bottom-2 flex items-center gap-2">
