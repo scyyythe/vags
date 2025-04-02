@@ -176,3 +176,10 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",  # React frontend
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'caneteangel187@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = 'your_app_password'  # The app password if 2FA is enabled, or the regular password otherwise
