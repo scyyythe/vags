@@ -38,7 +38,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       localStorage.setItem("email", email);
 
       console.log("Login successful:", response.data);
-      navigate("/explore");
+      navigate("/explore"); 
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
       alert("Login failed. Please check your details and try again.");
