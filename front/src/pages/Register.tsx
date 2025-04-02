@@ -43,7 +43,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
       console.log("Registration successful:", response.data);
       alert("Registration successful!");
 
-      closeRegisterModal();
+      closeRegisterModal(); 
       setShowLoginModal(true);
     } catch (error) {
       console.error("Registration failed:", error.response?.data || error.message);
