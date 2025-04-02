@@ -70,7 +70,7 @@ const Header = () => {
             <Menu className="h-5 w-5 text-black" />
           </button>
           {/* Search Icon and Sliding Search Bar (Responsive) */}
-          <div className="relative flex items-center">
+          <div className="relative flex items-center"> 
             <button
               onClick={() => setIsSearchVisible(!isSearchVisible)}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"

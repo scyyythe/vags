@@ -9,7 +9,7 @@ interface TipJarIconProps {
 const TipJarIcon = ({ onClick, className }: TipJarIconProps) => {
   return (
     <button 
-      onClick={(e) => {
+      onClick={(e) => { 
         e.stopPropagation();
         onClick();
       }}
