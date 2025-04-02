@@ -121,7 +121,7 @@ const ArtCard = ({
               </span>
               <TipJarIcon onClick={handleTipJar} />
               <button 
-                className="p-1 rounded-full"
+                className="p-1 rounded-full" 
                 aria-label="Save artwork"
               >
               </button>

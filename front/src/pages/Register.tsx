@@ -156,7 +156,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
               onClick={() => setShowPassword(!showPassword)}
             >
               <i className={showPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "18px" }}></i>
-            </button>
+            </button> 
           </div>
 
           <button

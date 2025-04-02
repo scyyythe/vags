@@ -13,7 +13,7 @@ const ModalContext = createContext<ModalContextProps | undefined>(undefined);
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false); 
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
   return (

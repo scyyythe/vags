@@ -120,7 +120,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
             label="Email Address"
             placeholder="Email Address"
             icon="bx bx-at"
-            name="email"
+            name="email" 
             value={formData.email}
             onChange={handleChange}
           />

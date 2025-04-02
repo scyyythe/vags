@@ -12,7 +12,7 @@ interface TipJarPopupProps {
   artistName?: string;
 }
 
-type PaymentMethod = "PayPal" | "GCash" | "Stripe";
+type PaymentMethod = "PayPal" | "GCash" | "Stripe"; 
 
 const TipJarPopup = ({ 
   isOpen, 
