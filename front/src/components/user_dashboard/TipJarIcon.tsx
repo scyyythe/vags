@@ -14,12 +14,12 @@ const TipJarIcon = ({ onClick, className }: TipJarIconProps) => {
         onClick();
       }}
       className={cn(
-        "p-1 rounded-full transition-colors text-gray-400 hover:text-purple-500", 
+        "p-1 rounded-full transition-colors text-gray-500 hover:text-black", 
         className
       )}
       aria-label="Tip jar"
     >
-      <DollarSign size={18} />
+      <i className='bx bx-box' style={{ fontSize: '18px' }}></i>
     </button>
   );
 };
