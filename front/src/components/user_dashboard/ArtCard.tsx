@@ -3,7 +3,6 @@ import { Heart, MoreHorizontal} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import TipJarIcon from "./TipJarIcon";
 import { useDonation } from "../../context/DonationContext";
 
