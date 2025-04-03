@@ -3,8 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Fingerprint } from "lucide-react";
 import { toast } from "sonner";
 import SystemMessage from "../components/page/SystemMessage";
-import { useModal } from "../pages/ModalContext";
+<<<<<<< backend
 import apiClient from "../utils/apiClient"; // Your axios setup
+=======
+import { useModal } from '../context/ModalContext';
+
+>>>>>>> master
 
 const FingerprintAuth = () => {
   const navigate = useNavigate();

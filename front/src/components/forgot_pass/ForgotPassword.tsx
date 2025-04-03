@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { KeyRound } from "lucide-react";
-import { useModal } from "../../pages/ModalContext";
+import { useModal } from '../../context/ModalContext';
 
 // Custom OTP input field component
 const OtpInput = ({ value, onChange }: { value: string[]; onChange: (otp: string[]) => void }) => {

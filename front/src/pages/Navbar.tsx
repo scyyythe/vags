@@ -4,7 +4,7 @@ import { Search, ChevronDown, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Register from './Register';
 import Login from './Login';
-import { useModal } from './ModalContext'; 
+import { useModal } from '../context/ModalContext'; 
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);

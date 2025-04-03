@@ -15,7 +15,7 @@ import Explore from "./user_dashboard/Explore";
 import Bidding from "./user_dashboard/Bidding";
 import Marketplace from "./user_dashboard/Marketplace";
 import Exhibits from "./user_dashboard/Exhibits";
-import { ModalProvider } from './pages/ModalContext';
+import { ModalProvider } from './context/ModalContext';
 import { DonationProvider } from "./context/DonationContext";
 import TipJarPopup from "./components/user_dashboard/TipJarPopup";
 import { useDonation } from "./context/DonationContext";

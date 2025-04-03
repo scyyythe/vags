@@ -6,7 +6,7 @@ import ExploreArtworks from '@/pages/ExploreArtworks';
 import AuctionFeature from '@/pages/AuctionFeature';
 import HotBidsCarousel from '@/pages/HotBidsCarousel';
 import Footer from '@/pages/Footer';
-import { useModal } from './ModalContext';
+import { useModal } from '../context/ModalContext';
 import Register from './Register';
 import Login from './Login';
 import ForgotPassword from '../components/forgot_pass/ForgotPassword'; 
