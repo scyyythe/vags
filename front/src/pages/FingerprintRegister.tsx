@@ -170,7 +170,7 @@ const FingerprintRegister = () => {
             <Fingerprint size={64} className={`${getIconColor()} transition-colors duration-300`} />
           </div>
 
-          <span className="text-center text-xs">Register with your fingerprint</span>
+          <span className="text-center text-xs">Click to scan fingerprint</span>
 
           {message && <SystemMessage type={message.type} message={message.text} />}
         </div>
