@@ -3,12 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Fingerprint } from "lucide-react";
 import { toast } from "sonner";
 import SystemMessage from "../components/page/SystemMessage";
-<<<<<<< backend
-import apiClient from "../utils/apiClient"; // Your axios setup
-=======
-import { useModal } from '../context/ModalContext';
-
->>>>>>> master
+import apiClient from "../utils/apiClient";
+import { useModal } from "../context/ModalContext";
 
 const FingerprintAuth = () => {
   const navigate = useNavigate();
@@ -24,8 +20,8 @@ const FingerprintAuth = () => {
       try {
         const response = await apiClient.post("/trigger-fingerprint-scan/");
 
-        console.log("API Response:", response); // Debugging log
-        console.log("API Data:", response.data); // Log the actual data
+        console.log("API Response:", response);
+        console.log("API Data:", response.data);
 
         if (response.status === 200 && response.data.status === "success") {
           handleFingerprintScanResult(response.data.result);
