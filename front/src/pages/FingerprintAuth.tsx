@@ -40,13 +40,18 @@ const FingerprintAuth = () => {
     if (status === "matched") {
       setValidationState("valid");
       setMessage({ type: "success", text: "Fingerprint validated successfully" });
+
       toast.success("Authentication successful", {
-        description: "You will be redirected to your account",
+        description: "Redirecting to your account...",
       });
-      navigate("/explore"); // Redirect to explore page
+
+      setTimeout(() => {
+        navigate("/explore");
+      }, 1000);
     } else {
       setValidationState("invalid");
       setMessage({ type: "error", text: "Fingerprint validation failed" });
+
       toast.error("Authentication failed", {
         description: "Please try again or use another login method",
       });
