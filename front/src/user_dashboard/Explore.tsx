@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/Header";
 import Hero from "@/components/user_dashboard/Hero";
 import SearchBar from "@/components/user_dashboard/SearchBar";
@@ -18,6 +19,7 @@ import {
 import { useDonation } from "../context/DonationContext";
 
 const Explore = () => {
+  const navigate = useNavigate();
   const categories = ["All", "Trending", "Collections"];
   const [selectedCategory, setSelectedCategory] = useState("All");
   const { openPopup } = useDonation();
@@ -31,115 +33,11 @@ const Explore = () => {
     {
       id: "1",
       artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=1",
-      artworkImage: "https://images.unsplash.com/photo-1610483778913-6e83d8b75bb3?q=80&w=1470&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "2",
-      artistName: "Angel Canete",
       artistImage: "https://i.pravatar.cc/150?img=2",
       artworkImage: "https://images.unsplash.com/photo-1515405295579-ba7b45403062?q=80&w=1480&auto=format&fit=crop",
       title: "Slopes",
     },
-    {
-      id: "3",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=3",
-      artworkImage: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1490&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "4",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=4",
-      artworkImage: "https://images.unsplash.com/photo-1562619425-c307888f7010?q=80&w=1480&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "5",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=5",
-      artworkImage: "https://images.unsplash.com/photo-1579783901586-d88db74b4fe4?q=80&w=1490&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "6",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=6",
-      artworkImage: "https://images.unsplash.com/photo-1501472312651-726afe119ff1?q=80&w=1374&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "7",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=7",
-      artworkImage: "https://images.unsplash.com/photo-1518334584553-228357071204?q=80&w=1450&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "8",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=8",
-      artworkImage: "https://images.unsplash.com/photo-1598300188259-626728028a90?q=80&w=1480&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "9",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=9",
-      artworkImage: "https://images.unsplash.com/photo-1603177608775-53cb4728e83c?q=80&w=1470&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "10",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=1",
-      artworkImage: "https://images.unsplash.com/photo-1610483778913-6e83d8b75bb3?q=80&w=1470&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "11",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "https://images.unsplash.com/photo-1515405295579-ba7b45403062?q=80&w=1480&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "12",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=3",
-      artworkImage: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1490&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "13",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=4",
-      artworkImage: "https://images.unsplash.com/photo-1562619425-c307888f7010?q=80&w=1480&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "14",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=5",
-      artworkImage: "https://images.unsplash.com/photo-1579783901586-d88db74b4fe4?q=80&w=1490&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "15",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=6",
-      artworkImage: "https://images.unsplash.com/photo-1501472312651-726afe119ff1?q=80&w=1374&auto=format&fit=crop",
-      title: "Slopes",
-    },
-    {
-      id: "16",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=6",
-      artworkImage: "https://images.unsplash.com/photo-1501472312651-726afe119ff1?q=80&w=1374&auto=format&fit=crop",
-      title: "Slopes",
-    },
+    
   ];
 
   const handleTipJar = () => {
@@ -147,7 +45,7 @@ const Explore = () => {
   };
 
   const handleCreateClick = () => {
-    toast("Create new artwork");
+    navigate("/create");
   };
 
   const handleSortClick = () => {
@@ -164,7 +62,7 @@ const Explore = () => {
           imageUrl="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?q=80&w=1374&auto=format&fit=crop" 
         />
         
-        {/* Browse Type and Search Container */}
+        {/* Browse Type and Search Container */} 
         <div className="relative flex justify-center items-center -top-16">
         <div className="bg-white shadow-lg w-full md:w-3/4 lg:w-[90%] rounded-lg flex items-center p-4">
           <div className="flex items-center px-4 border-r">

@@ -3,7 +3,6 @@ import { Heart, MoreHorizontal} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import TipJarIcon from "./TipJarIcon";
 import { useDonation } from "../../context/DonationContext";
 
@@ -183,7 +182,7 @@ const ArtCard = ({
                 className="button-outline text-xs py-1 px-3"
               >
                 {buttonText}
-              </button>
+              </button> 
             )}
           </div>
         </div>
