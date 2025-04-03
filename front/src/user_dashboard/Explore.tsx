@@ -62,7 +62,7 @@ const Explore = () => {
           imageUrl="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?q=80&w=1374&auto=format&fit=crop" 
         />
         
-        {/* Browse Type and Search Container */}
+        {/* Browse Type and Search Container */} 
         <div className="relative flex justify-center items-center -top-16">
         <div className="bg-white shadow-lg w-full md:w-3/4 lg:w-[90%] rounded-lg flex items-center p-4">
           <div className="flex items-center px-4 border-r">

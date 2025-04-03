@@ -133,7 +133,7 @@ const CreatePost = () => {
                 </p>
               </div>
             )}
-          </div>
+          </div> 
           
           <div>
             <form onSubmit={handleSubmit}>

@@ -72,7 +72,7 @@ const App = () => {
         <TooltipProvider>
           <DonationProvider>
             <DonationWrapper>
-              <Toaster />
+              <Toaster /> 
               <Sonner />
               <ModalProvider>
                 <BrowserRouter>
