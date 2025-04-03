@@ -1,28 +1,27 @@
-import serial
-import time
-from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import AllowAny
 
-SERIAL_PORT = "COM3"  # Update with the correct port
-BAUD_RATE = 9600
+class FingerprintStatusView(APIView):
+    permission_classes = [AllowAny]
 
-def fingerprint_login(request):
-    try:
-        # Open serial port
-        ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=5)
-        time.sleep(2)  # Wait for Arduino to initialize
+    def post(self, request):
+        status_value = request.data.get('status')  # The status from the fingerprint sensor
 
-        ser.write(b"scan\n")  # Send command to Arduino to start the scan
-        response = ser.readline().decode("utf-8").strip()  # Read Arduino's response
+        # Check if the status is valid
+        if status_value not in ['matched', 'not matched']:
+            return Response({'error': 'Invalid status'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Log the Arduino response
-        print(f"Arduino Response: {response}")
+        # Handle matched fingerprint status
+        if status_value == "matched":
+            return Response({
+                'status': 'success', 
+                'message': 'Fingerprint matched'
+            }, status=status.HTTP_200_OK)
 
-        # If Arduino returns '1', login is successful
-        if response == "1":
-            return JsonResponse({"success": True, "message": "Fingerprint scanned successfully. Logging you in."})
-        else:
-            return JsonResponse({"success": False, "message": "Fingerprint scan failed."})
-
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return JsonResponse({"success": False, "message": "Error connecting to fingerprint scanner."})
+        # Handle non-matched fingerprint status
+        return Response({
+            'status': 'failure', 
+            'message': 'Fingerprint did not match'
+        }, status=status.HTTP_200_OK)
