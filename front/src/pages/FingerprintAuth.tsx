@@ -59,8 +59,8 @@ const FingerprintAuth = () => {
   };
 
   const backToLogin = () => {
-    setShowLoginModal(true); // Show the login modal
-    navigate("/"); // Navigate back to the main page if needed
+    setShowLoginModal(true); 
+    navigate("/"); 
   };
 
   const getIconColor = () => {

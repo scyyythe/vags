@@ -7,6 +7,7 @@ import { useState, createContext } from "react";
 
 import Index from "./pages/Index";
 import FingerprintAuth from "./pages/FingerprintAuth";
+import FingerprintRegister from "./pages/FingerprintRegister";
 import NotFound from "./components/NotFound";
 import Create from "./components/user_dashboard/CreatePost";
 import Hero from "./pages/Hero";
@@ -78,6 +79,7 @@ const App = () => {
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
+                    <Route path="/fingerprint-register" element={<FingerprintRegister />} />
                     <Route path="/hero" element={<Hero />} />
                     <Route path="/explore" element={<Explore />} />
                     <Route path="/create" element={<Create />} />
