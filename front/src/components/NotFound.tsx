@@ -22,7 +22,7 @@ const NotFound = () => {
         <h1 className="text-3xl font-bold mb-4">404</h1>
         <p className="text-xs text-gray-400 mb-8">Not Found</p>
         <Link 
-          to="/index" 
+          to="/" 
           className="inline-flex items-center space-x-2 bg-white text-black text-xs px-6 py-3 rounded-lg font-medium transition-all hover:bg-gray-200"
         >
           <ArrowLeft className="w-4 h-4" />
