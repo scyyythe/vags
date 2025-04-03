@@ -1,11 +1,14 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Logo from "../components/page/Logo";
 import InputField from "../components/page/InputField";
 import SocialButton from "../components/page/SocialButton";
 import { useModal } from "../context/ModalContext";
 import axios from "../utils/apiClient";
 
+
 const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -53,8 +56,14 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
   const [showFingerprintText, setShowFingerprintText] = useState(false);
 
-  return (
+  const handleFingerprintClick = () => {
+    // Close the registration modal
+    closeRegisterModal();
+    // Navigate to the fingerprint registration page
+    navigate("/fingerprint-register");
+  };
 
+  return (
     <div className="w-full flex flex-col justify-center md:p-6 lg:py-6 lg:px-16 bg-white rounded-3xl">
       <div className="flex justify-between">
       {/* Fingerprint Icon and Sliding Text Container */}
@@ -63,7 +72,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
             className="border border-gray-300 px-2 rounded-full hover:border-red-800 transition-colors cursor-pointer"
             onMouseEnter={() => setShowFingerprintText(true)}
             onMouseLeave={() => setShowFingerprintText(false)}
-            // onClick={handleFingerprintClick}
+            onClick={handleFingerprintClick}
           >
             <i className="bx bx-fingerprint text-sm hover:text-red-800 cursor-pointer"></i>
           </div>
