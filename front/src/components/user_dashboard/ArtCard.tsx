@@ -182,7 +182,7 @@ const ArtCard = ({
                 className="button-outline text-xs py-1 px-3"
               >
                 {buttonText}
-              </button>
+              </button> 
             )}
           </div>
         </div>
