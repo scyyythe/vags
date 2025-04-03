@@ -13,4 +13,3 @@ while True:
             print(status)  # Output result to capture in Django
             break  # Stop once status is received
     time.sleep(1)  # Polling interval to check serial data
-
