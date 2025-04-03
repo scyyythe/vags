@@ -8,8 +8,7 @@ import { useState, createContext } from "react";
 import Index from "./pages/Index";
 import FingerprintAuth from "./pages/FingerprintAuth";
 import NotFound from "./components/NotFound";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Create from "./components/user_dashboard/CreatePost";
 import Hero from "./pages/Hero";
 import Explore from "./user_dashboard/Explore";
 import Bidding from "./user_dashboard/Bidding";
@@ -72,7 +71,7 @@ const App = () => {
         <TooltipProvider>
           <DonationProvider>
             <DonationWrapper>
-              <Toaster />
+              <Toaster /> 
               <Sonner />
               <ModalProvider>
                 <BrowserRouter>
@@ -81,6 +80,7 @@ const App = () => {
                     <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
                     <Route path="/hero" element={<Hero />} />
                     <Route path="/explore" element={<Explore />} />
+                    <Route path="/create" element={<Create />} />
                     <Route path="/bidding" element={<Bidding />} />
                     <Route path="/marketplace" element={<Marketplace />} />
                     <Route path="/exhibits" element={<Exhibits />} />
