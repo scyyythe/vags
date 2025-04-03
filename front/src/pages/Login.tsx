@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import InputField from "../components/page/InputField";
 import SocialButton from "../components/page/SocialButton";
-import { useModal } from "./ModalContext";
+import { useModal } from "../context/ModalContext";
 import apiClient from "../utils/apiClient";
 
 const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
@@ -38,7 +38,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       localStorage.setItem("email", email);
 
       console.log("Login successful:", response.data);
-      navigate("/explore");
+      navigate("/explore"); 
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
       alert("Login failed. Please check your details and try again.");
@@ -50,7 +50,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center p-8 md:p-10 lg:p-16 bg-white rounded-3xl">
+    <div className="w-full flex flex-col justify-center p-8 md:p-10 lg:py-12 lg:px-16 bg-white rounded-3xl">
       <div className="flex justify-between">
         {/* Fingerprint Icon and Sliding Text Container */}
         <div className="relative bottom-2 flex items-center gap-2">
@@ -109,7 +109,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         {/* Divider */}
         <div className="relative flex items-center justify-center">
           <div className="flex-grow border-t border-gray-500"></div>
-          <span className="flex-shrink mx-4 text-gray-500 text-xs">Or Sign in with Email</span>
+          <span className="flex-shrink mx-4 text-gray-500 text-xs">Or</span>
           <div className="flex-grow border-t border-gray-500"></div>
         </div>
 
@@ -120,7 +120,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
             label="Email Address"
             placeholder="Email Address"
             icon="bx bx-at"
-            name="email"
+            name="email" 
             value={formData.email}
             onChange={handleChange}
           />
@@ -163,7 +163,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
           {/* Login Button */}
           <button
             type="submit"
-            className="relative w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
+            className="relative -top-5 w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
           >
             Login
           </button>

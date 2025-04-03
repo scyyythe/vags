@@ -21,7 +21,7 @@ const Header = () => {
 
         {/* Centered Navigation Links (Responsive) */}
         <nav
-          className={`absolute left-0 top-16 w-full py-4 shadow-md
+          className={`absolute left-0 top-16 w-full py-4 shadow-md 
             ${isMenuOpen ? "block" : "hidden"} md:static md:block md:w-auto md:py-0 md:shadow-none`}
         >
           <div className="text-xs flex flex-col items-center md:flex-row md:space-x-16">
@@ -70,7 +70,7 @@ const Header = () => {
             <Menu className="h-5 w-5 text-black" />
           </button>
           {/* Search Icon and Sliding Search Bar (Responsive) */}
-          <div className="relative flex items-center">
+          <div className="relative flex items-center"> 
             <button
               onClick={() => setIsSearchVisible(!isSearchVisible)}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"

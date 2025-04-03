@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Logo from "../components/page/Logo";
 import InputField from "../components/page/InputField";
 import SocialButton from "../components/page/SocialButton";
-import { useModal } from "./ModalContext";
+import { useModal } from "../context/ModalContext";
 import axios from "../utils/apiClient";
 
 const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) => {
@@ -13,7 +13,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
     password: "",
   });
 
-  const {setShowLoginModal, setShowForgotPasswordModal } = useModal();
+  const {setShowLoginModal} = useModal();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +43,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
       console.log("Registration successful:", response.data);
       alert("Registration successful!");
 
-      closeRegisterModal();
+      closeRegisterModal(); 
       setShowLoginModal(true);
     } catch (error) {
       console.error("Registration failed:", error.response?.data || error.message);
@@ -53,13 +53,8 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
   const [showFingerprintText, setShowFingerprintText] = useState(false);
 
-  const handleForgotPasswordClick = () => {
-    closeRegisterModal();
-    setShowForgotPasswordModal(true);
-  };
-
   return (
-    <div className="w-full flex flex-col justify-center md:p-6 lg:py-5 lg:px-16 bg-white rounded-3xl">
+    <div className="w-full flex flex-col justify-center md:p-6 lg:py-6 lg:px-16 bg-white rounded-3xl">
       <div className="flex justify-between">
       {/* Fingerprint Icon and Sliding Text Container */}
       <div className="relative flex items-center gap-2">
@@ -79,7 +74,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
             }`}
           >
             <span className="whitespace-nowrap text-[10px]">
-              Sign in with fingerprint
+              Sign up with fingerprint
             </span>
           </div>
         </div>
@@ -99,7 +94,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
       </div>
 
       <div className="mb-8">
-        <h1 className="text-2xl text-center font-bold mb-2">Create new account.</h1>
+        <h1 className="text-2xl text-center font-bold">Create new account.</h1>
       </div>
 
       <div className="space-y-6">
@@ -110,7 +105,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
         <div className="relative flex items-center justify-center">
           <div className="flex-grow border-t border-gray-500"></div>
-          <span className="flex-shrink mx-4 text-gray-500 text-xs">Or Sign in Email</span>
+          <span className="flex-shrink mx-4 text-gray-500 text-xs">Or</span>
           <div className="flex-grow border-t border-gray-500"></div>
         </div>
 
@@ -161,24 +156,17 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
               onClick={() => setShowPassword(!showPassword)}
             >
               <i className={showPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "18px" }}></i>
-            </button>
-          </div>
-
-          <div className="relative flex justify-between text-[11px] -top-20">
-            <span></span>
-            <button type="button" onClick={handleForgotPasswordClick} className="text-black hover:text-red-700">
-              Forgot Password?
-            </button>
+            </button> 
           </div>
 
           <button
             type="submit"
-            className="relative w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 -top-[27px] transition-all hover:bg-red-800"
+            className="relative w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
           >
             Create account
           </button>
 
-          <p className="relative text-[10px] text-left text-gray-500 -top-8">
+          <p className="relative text-[10px] text-left text-gray-500 -top-4">
             By signing up, I agree to the{" "}
             <a href="#" className="underline">
               Terms of Service
