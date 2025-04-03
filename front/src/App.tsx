@@ -9,7 +9,6 @@ import Index from "./pages/Index";
 import FingerprintAuth from "./pages/FingerprintAuth";
 import NotFound from "./components/NotFound";
 import Create from "./components/user_dashboard/CreatePost";
-import Register from "./pages/Register";
 import Hero from "./pages/Hero";
 import Explore from "./user_dashboard/Explore";
 import Bidding from "./user_dashboard/Bidding";
