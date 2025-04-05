@@ -92,8 +92,8 @@ const ArtCard = ({
 
   if (isExplore) {
     return (
-      <div className="art-card text-xs group animate-fadeIn rounded-3xl overflow-hidden bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4 cursor-pointer">
-        <div className="p-4 flex justify-between items-center">
+      <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-3xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4 cursor-pointer">
+        <div className="py-1 px-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Avatar className="h-8 w-8 border">
               <AvatarImage src={artistImage} alt={artistName} />
@@ -128,10 +128,10 @@ const ArtCard = ({
             className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
           />
         </div>
-        <div className="p-4">
-          <div className="relative flex items-center justify-between -top-1">
-            <p className="text-base text-xs font-medium">{title || "Untitled Artwork"}</p>
-            <div className="flex items-center space-x-3">
+        <div className="px-4 py-1">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium">{title || "Untitled Artwork"}</p>
+            <div className="flex items-center space-x-2">
               <button 
                 onClick={handleLike}
                 className={`p-1 rounded-full transition-colors ${
@@ -145,11 +145,6 @@ const ArtCard = ({
                 {/* {Math.floor(Math.random() * 500)} */}
               </span>
               <TipJarIcon onClick={handleTipJar} />
-              <button 
-                className="p-1 rounded-full" 
-                aria-label="Save artwork"
-              >
-              </button>
             </div>
           </div>
         </div>
