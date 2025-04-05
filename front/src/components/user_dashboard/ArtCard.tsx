@@ -1,10 +1,11 @@
 import { useState, useContext } from "react";
-import { Heart, MoreHorizontal} from "lucide-react";
+import { Heart, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
 import TipJarIcon from "./TipJarIcon";
 import { useDonation } from "../../context/DonationContext";
+import ArtCardMenu from "./ArtCardMenu";
 
 interface ArtCardProps {
   id: string;
@@ -36,15 +37,15 @@ const ArtCard = ({
   isExplore = false,
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [isReported, setIsReported] = useState(false);
   const { likedArtworks, toggleLike } = useContext(LikedArtworksContext);
   const { openPopup } = useDonation();
   
   const handleLike = () => {
     toggleLike(id);
-    
-    if (!likedArtworks[id]) {
-      toast("Artwork added to favorites");
-    }
   };
 
   const handleMenuClick = (e: React.MouseEvent) => {
@@ -53,22 +54,29 @@ const ArtCard = ({
   };
 
   const handleSave = () => {
-    toast("Artwork saved");
+    setIsSaved(!isSaved);
+    toast(isSaved ? "Artwork unsaved" : "Artwork saved");
     setMenuOpen(false);
   };
 
   const handleHide = () => {
+    setIsHidden(true);
     toast("Artwork hidden");
     setMenuOpen(false);
   };
 
   const handleReport = () => {
-    toast("Artwork reported");
+    setIsReported(!isReported);
+    toast(isReported ? "Artwork report removed" : "Artwork reported");
+    setMenuOpen(false);
+  };
+
+  const handleFavorite = () => {
+    toast("Artwork added in favorites.");
     setMenuOpen(false);
   };
 
   const handleTipJar = () => {
-    // Make sure we're calling openPopup with the right parameters
     console.log("Tip jar clicked for artwork:", id);
     openPopup({
       id,
@@ -77,6 +85,10 @@ const ArtCard = ({
       artworkImage,
     });
   };
+
+  if (isHidden) {
+    return null;
+  }
 
   if (isExplore) {
     return (
@@ -90,9 +102,23 @@ const ArtCard = ({
             <span className="text-xs font-medium">{artistName}</span>
           </div>
           <div className="relative">
-            <button onClick={handleMenuClick} className="p-1 rounded-full hover:bg-secondary">
+            <button 
+              onClick={handleMenuClick} 
+              className={`p-1 rounded-full ${menuOpen ? 'border border-gray-300' : ''}`}
+            >
               <MoreHorizontal size={16} />
             </button>
+            <ArtCardMenu
+              isOpen={menuOpen}
+              onClose={() => setMenuOpen(false)}
+              onFavorite={handleFavorite}
+              onHide={handleHide}
+              onReport={handleReport}
+              onSave={handleSave}
+              isSaved={isSaved}
+              isFavorited={isFavorited}
+              isReported={isReported}
+            />
           </div>
         </div>
         <div className="aspect-square overflow-hidden p-4">
@@ -116,7 +142,7 @@ const ArtCard = ({
                 <Heart size={18} fill={likedArtworks[id] ? "#ff2a36" : "none"} />
               </button>
               <span className="text-xs text-gray-500">
-                {Math.floor(Math.random() * 500)}
+                {/* {Math.floor(Math.random() * 500)} */}
               </span>
               <TipJarIcon onClick={handleTipJar} />
               <button 
@@ -131,64 +157,5 @@ const ArtCard = ({
     );
   }
 
-  return (
-    <div className="art-card group animate-fadeIn">
-      <div className="aspect-square overflow-hidden relative">
-        <img
-          src={artworkImage}
-          alt={`Artwork by ${artistName}`}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-      </div>
-      <div className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center space-x-2">
-            <Avatar className="h-6 w-6">
-              <AvatarImage src={artistImage} alt={artistName} />
-              <AvatarFallback>{artistName.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <span className="text-sm font-medium">{artistName}</span>
-          </div>
-          <div className="relative">
-            <button onClick={handleMenuClick} className="p-1 rounded-full hover:bg-secondary">
-              <MoreHorizontal size={16} />
-            </button>
-            {/* <ArtCardMenu
-              isOpen={menuOpen}
-              onClose={() => setMenuOpen(false)}
-              onSave={handleSave}
-              onHide={handleHide}
-              onReport={handleReport}
-            /> */}
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-medium">
-            {showPrice && price ? `${currency} ${price}` : title || "Untitled Artwork"}
-          </p>
-          <div className="flex items-center space-x-2">
-            <button 
-              onClick={handleLike}
-              className={`p-1 rounded-full transition-colors ${
-                likedArtworks[id] ? "text-red" : "text-gray-400 hover:text-red"
-              }`}
-            >
-              <Heart size={16} fill={likedArtworks[id] ? "#ff2a36" : "none"} />
-            </button>
-            <TipJarIcon onClick={handleTipJar} />
-            {showButton && (
-              <button 
-                onClick={onButtonClick} 
-                className="button-outline text-xs py-1 px-3"
-              >
-                {buttonText}
-              </button> 
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 };
-
 export default ArtCard;
