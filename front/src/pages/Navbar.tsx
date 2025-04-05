@@ -119,7 +119,7 @@ const Navbar = () => {
 
           <button
             onClick={() => setShowRegisterModal(true)}
-            className="bg-black text-white text-xs font-medium rounded-full px-5 py-2 transition-all hover:bg-gray-800"
+            className="animate-pulse bg-black text-white text-xs font-medium rounded-full px-5 py-2 transition-all hover:bg-gray-800"
           >
             Sign Up
           </button>
