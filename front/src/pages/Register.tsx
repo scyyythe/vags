@@ -84,7 +84,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
             }`}
           >
             <span className="whitespace-nowrap text-[10px]">
-              Sign up with fingerprint
+              Register with fingerprint
             </span>
           </div>
         </div>
