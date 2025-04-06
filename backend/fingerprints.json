@@ -1,0 +1,37 @@
+[
+    {
+        "fingerprint_id": 17,
+        "first_name": "Denise",
+        "last_name": "Kinney",
+        "email": "jahodiw@mailinator.com",
+        "status": "enrolled"
+    },
+    {
+        "fingerprint_id": 20,
+        "first_name": "Portia",
+        "last_name": "Simmons",
+        "email": "zykyt@mailinator.com",
+        "status": "enrolled"
+    },
+    {
+        "fingerprint_id": 21,
+        "first_name": "Mason",
+        "last_name": "Bradford",
+        "email": "wifoby@mailinator.com",
+        "status": "enrolled"
+    },
+    {
+        "fingerprint_id": 23,
+        "first_name": "Fiona",
+        "last_name": "Aguilar",
+        "email": "zolovoper@mailinator.com",
+        "status": "enrolled"
+    },
+    {
+        "fingerprint_id": 24,
+        "first_name": "Kirby",
+        "last_name": "Gilliam",
+        "email": "pifycymafu@mailinator.com",
+        "status": "enrolled"
+    }
+]

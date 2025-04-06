@@ -9,14 +9,13 @@ import SystemMessage from "../components/page/SystemMessage";
 const FingerprintRegister = () => {
   const navigate = useNavigate();
   const { setShowRegisterModal } = useModal();
-  
+  const { setShowLoginModal } = useModal();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
   });
-  
-  
+
   const [validationState, setValidationState] = useState<"idle" | "validating" | "valid" | "invalid">("idle");
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
 
@@ -26,10 +25,15 @@ const FingerprintRegister = () => {
   };
 
   const backToRegister = () => {
-    setShowRegisterModal(true); 
-    navigate("/"); 
+    setShowRegisterModal(true);
+    navigate("/");
   };
-
+  const backToLogin = () => {
+    setShowLoginModal(true);
+    navigate("/");
+    setValidationState("valid");
+    setMessage({ type: "success", text: "Registration successful!" });
+  };
   const handleFingerprintRegistration = async () => {
     // Form validation
     if (!formData.firstName || !formData.lastName || !formData.email) {
@@ -39,7 +43,7 @@ const FingerprintRegister = () => {
       setMessage({ type: "error", text: "Please fill in all required fields" });
       return;
     }
-    
+
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
@@ -49,41 +53,55 @@ const FingerprintRegister = () => {
       setMessage({ type: "error", text: "Please enter a valid email address" });
       return;
     }
-    
+
     setValidationState("validating");
     setMessage({ type: "info", text: "Scanning your fingerprint..." });
-    
-    // Simulate fingerprint registration process
+
     try {
-      // this would interface with actual biometric APIs
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Register user with auto-generated secure password
-      const securePassword = Math.random().toString(36).slice(-12);
-      
-      const response = await apiClient.post("user/register/", {
-        username: formData.email.split("@")[0],
-        email: formData.email,
+      // Make the API call to trigger the fingerprint enrollment
+      const response = await apiClient.post("/trigger-fingerprint-scan/", {
         first_name: formData.firstName,
         last_name: formData.lastName,
-        password: securePassword, 
+        email: formData.email,
       });
-      
-      console.log("Fingerprint registration successful:", response.data);
-      
-      setValidationState("valid");
-      setMessage({ type: "success", text: "Registration successful!" });
-      
-      toast.success("Registration successful!", {
-        description: "You can now log in with your fingerprint.",
-      });
-      
+
+      console.log("API Response:", response);
+      console.log("API Data:", response.data);
+
+      if (response.status === 200 && response.data.status === "success") {
+        // Fingerprint enrollment was successful, proceed to user registration
+        const securePassword = Math.random().toString(36).slice(-12);
+
+        const registerResponse = await apiClient.post("/user/register/", {
+          username: formData.email.split("@")[0],
+          email: formData.email,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          password: securePassword,
+        });
+
+        console.log("Fingerprint registration successful:", registerResponse.data);
+
+        setValidationState("valid");
+        setMessage({ type: "success", text: "Registration successful!" });
+
+        toast.success("Registration successful!", {
+          description: "You can now log in with your fingerprint.",
+        });
+      } else {
+        setValidationState("invalid");
+        setMessage({ type: "error", text: "Fingerprint registration failed." });
+
+        toast.error("Fingerprint registration failed", {
+          description: "Please check your fingerprint and try again.",
+        });
+      }
     } catch (error) {
       console.error("Registration failed:", error.response?.data || error.message);
-      
+
       setValidationState("invalid");
       setMessage({ type: "error", text: "Registration failed. Please try again." });
-      
+
       toast.error("Registration failed", {
         description: "Please check your details and try again.",
       });
@@ -114,7 +132,9 @@ const FingerprintRegister = () => {
         <div className="space-y-4 text-xs">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="firstName" className="block text-xs font-medium text-gray-700 mb-1">First name</label>
+              <label htmlFor="firstName" className="block text-xs font-medium text-gray-700 mb-1">
+                First name
+              </label>
               <input
                 type="text"
                 id="firstName"
@@ -127,7 +147,9 @@ const FingerprintRegister = () => {
               />
             </div>
             <div>
-              <label htmlFor="lastName" className="block text-xs font-medium text-gray-700 mb-1">Last name</label>
+              <label htmlFor="lastName" className="block text-xs font-medium text-gray-700 mb-1">
+                Last name
+              </label>
               <input
                 type="text"
                 id="lastName"
@@ -140,9 +162,11 @@ const FingerprintRegister = () => {
               />
             </div>
           </div>
-          
+
           <div>
-            <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-1">Email Address</label>
+            <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">@</span>
               <input
@@ -175,14 +199,15 @@ const FingerprintRegister = () => {
           {message && <SystemMessage type={message.type} message={message.text} />}
         </div>
 
-
         <button
-            type="submit"
-            className="relative w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
+          type="submit"
+          onClick={backToLogin}
+          className="relative w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
         >
-            Create account
+          Create account
         </button>
 
+<<<<<<< HEAD
         <p className="relative text-[10px] text-left text-gray-500 -top-6">
             By signing up, I agree to the{" "}
             <a href="#" className="underline">
@@ -192,6 +217,17 @@ const FingerprintRegister = () => {
             <a href="#" className="underline">
               Privacy Policy
             </a>
+=======
+        <p className="relative text-[10px] text-left text-gray-500 -top-4">
+          By signing up, I agree to the{" "}
+          <a href="#" className="underline">
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a href="#" className="underline">
+            Privacy Policy
+          </a>
+>>>>>>> backend
         </p>
 
         <button
