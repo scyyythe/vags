@@ -66,7 +66,6 @@
   transform: translateY(-5px);
 }
 
-/* Add lazy loading blur effect */
 .image-lazy-load {
   filter: blur(10px);
   transition: filter 0.3s ease-out;
@@ -76,7 +75,6 @@
   filter: blur(0);
 }
 
-/* Add perspective for 3D carousel effect */
 .perspective-1000 {
   perspective: 1000px;
   transform-style: preserve-3d;
