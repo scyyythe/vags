@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/Header";
-import Hero from "@/components/user_dashboard/Hero";
+import ArtGalleryContainer from "@/components/gallery/ArtGalleryContainer";
 import SearchBar from "@/components/user_dashboard/SearchBar";
 import CategoryFilter from "@/components/user_dashboard/CategoryFilter";
 import ArtCard from "@/components/user_dashboard/ArtCard";
@@ -40,6 +40,33 @@ const Explore = () => {
     
   ];
 
+  const artworks = [
+    {
+      id: "1",
+      title: "Ethereal Landscapes",
+      artist: "Maria Sanchez",
+      image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80&w=1470"
+    },
+    {
+      id: "2",
+      title: "Urban Perspectives",
+      artist: "John Rodriguez",
+      image: "https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&q=80&w=1374"
+    },
+    {
+      id: "3",
+      title: "Abstract Emotions",
+      artist: "Emily Chen",
+      image: "https://images.unsplash.com/photo-1579541591969-73f8839fa52c?auto=format&fit=crop&q=80&w=1470"
+    },
+    {
+      id: "4",
+      title: "Vivid Expressions",
+      artist: "David Kim",
+      image: "https://images.unsplash.com/photo-1583250087320-5e0d20208d1e?auto=format&fit=crop&q=80&w=1467"
+    }
+  ];
+
   const handleTipJar = () => {
     toast("Opening tip jar");
   };
@@ -55,21 +82,23 @@ const Explore = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="container mx-auto px-4 sm:px-6 pt-24 pb-12">
-        <Hero 
-          title="Showtime Collection." 
-          subtitle="Discover" 
-          imageUrl="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?q=80&w=1374&auto=format&fit=crop" 
-        />
-        
+      <div className="container mx-auto px-4 sm:px-6 pt-20 pb-12">
+        <main className="container">
+          <section className="mb-16">
+            <ArtGalleryContainer
+              artworks={artworks} 
+            />
+          </section>
+        </main>
         {/* Browse Type and Search Container */} 
         <div className="relative flex justify-center items-center -top-16">
-        <div className="bg-white shadow-lg w-full md:w-3/4 lg:w-[90%] rounded-lg flex items-center p-4">
+        <div className="browse-container bg-white shadow-lg w-full md:w-3/4 lg:w-[85%] rounded-lg flex items-center p-4">
           <div className="flex items-center px-4 border-r">
             <span className="text-xs font-semibold mr-5">Browse Type</span>
             <Select defaultValue="Digital Art">
-              <SelectTrigger className="border-0 bg-transparent h-8 w-32 px-3 text-xs focus:ring-0 focus:ring-offset-0 rounded-sm border border-gray-300">
-                <SelectValue placeholder="Digital Art" />
+              <SelectTrigger className="border-0 bg-transparent h-8 w-35 px-3 text-xs focus:ring-0 focus:ring-offset-0 rounded-sm border border-gray-300">
+                <img src="/pics/b_logo.png" className="w-3 h-3 mr-2" />
+                <SelectValue className="ml-8" placeholder="Digital Art" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Digital Art" className="text-xs">Digital Art</SelectItem>
@@ -84,7 +113,7 @@ const Explore = () => {
         </div>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 -mt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-3">
             <div className="flex items-center justify-between mb-6 lg:w-[133%]">
               <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
