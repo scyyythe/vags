@@ -57,13 +57,13 @@ const Explore = () => {
       id: "3",
       title: "Abstract Emotions",
       artist: "Emily Chen",
-      image: "https://c4.wallpaperflare.com/wallpaper/790/734/537/landscape-digital-art-coast-sky-wallpaper-preview.jpg"
+      image: "https://rosshillart.com/cdn/shop/articles/R._Delino_Landscape_art_-_Rosshillart.com_2200x.jpg?v=1703181542"
     },
     {
       id: "4",
       title: "Vivid Expressions",
       artist: "David Kim",
-      image: "https://rosshillart.com/cdn/shop/articles/R._Delino_Landscape_art_-_Rosshillart.com_2200x.jpg?v=1703181542"
+      image: "https://c4.wallpaperflare.com/wallpaper/790/734/537/landscape-digital-art-coast-sky-wallpaper-preview.jpg"
     }
   ];
 
