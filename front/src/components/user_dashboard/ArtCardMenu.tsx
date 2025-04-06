@@ -1,53 +1,28 @@
-import { useRef, useEffect } from "react";
-import { Save, EyeOff, Flag } from "lucide-react";
+import React, { useState } from 'react';
+import { Share, Bookmark, EyeOff, Flag } from 'lucide-react';
 
-interface ArtCardMenuProps {
-  isOpen: boolean;
-  onClose: () => void;
-  position?: "top" | "bottom";
-  onSave?: () => void;
-  onHide?: () => void;
-  onReport?: () => void;
-}
-
-const ArtCardMenu = ({ isOpen, onClose, position = "top", onSave, onHide, onReport }: ArtCardMenuProps) => {
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
+const ArtCardMenu: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div 
-      ref={menuRef} 
-      className={`card-menu ${position === "bottom" ? "bottom-full mb-1" : "top-full"}`}
-    >
-      <div className="card-menu-item" onClick={onSave}>
-        <Save size={16} />
-        <span>Save</span>
-      </div>
-      <div className="card-menu-item" onClick={onHide}>
-        <EyeOff size={16} />
-        <span>Hide</span>
-      </div>
-      <div className="card-menu-item" onClick={onReport}>
-        <Flag size={16} />
-        <span>Report</span>
-      </div>
+    <div className="relative flex flex-col items-center mt-10">
+      {/* Three Dots Button */}
+      <button onClick={() => setIsOpen(!isOpen)} className="space-x-1 space-y-1 mb-2">
+        <div className="w-2 h-2 bg-black rounded-full"></div>
+        <div className="w-2 h-2 bg-black rounded-full"></div>
+        <div className="w-2 h-2 bg-black rounded-full"></div>
+      </button>
+
+      {/* Vertical Menu */}
+      {isOpen && (
+        
+        <div className="flex flex-col items-center bg-gray-100 rounded-full py-4 px-3 space-y-6 shadow-md">
+          <Share className="w-6 h-6 text-black cursor-pointer hover:scale-110 transition" />
+          <Bookmark className="w-6 h-6 text-black cursor-pointer hover:scale-110 transition" />
+          <EyeOff className="w-6 h-6 text-black cursor-pointer hover:scale-110 transition" />
+          <Flag className="w-6 h-6 text-black cursor-pointer hover:scale-110 transition" />
+        </div>
+      )}
     </div>
   );
 };
