@@ -1,27 +1,27 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import AllowAny
+import subprocess
+import json
+from django.http import JsonResponse
+from .enroll import enroll_fingerprint
 
-class FingerprintStatusView(APIView):
-    permission_classes = [AllowAny]
+def trigger_fingerprint_scan(request):
+    """Handles the fingerprint scan request and triggers enrollment."""
+    if request.method == "POST":
+        try:
+            # Get the user info (firstName, lastName, email) from the request body
+            user_info = json.loads(request.body.decode('utf-8'))    
+            print("Received user info:", user_info)
 
-    def post(self, request):
-        status_value = request.data.get('status')  # The status from the fingerprint sensor
+            # Enroll the fingerprint and save to JSON
+            fingerprint_data = enroll_fingerprint(user_info)
 
-        # Check if the status is valid
-        if status_value not in ['matched', 'not matched']:
-            return Response({'error': 'Invalid status'}, status=status.HTTP_400_BAD_REQUEST)
+            if fingerprint_data:
+                return JsonResponse({'status': 'success', 'result': 'matched', 'data': fingerprint_data}, status=200)
+            else:
+                return JsonResponse({'status': 'error', 'result': 'Fingerprint enrollment failed'}, status=500)
 
-        # Handle matched fingerprint status
-        if status_value == "matched":
-            return Response({
-                'status': 'success', 
-                'message': 'Fingerprint matched'
-            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            # Catch any errors and log them
+            print(f"Error: {e}")
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
-        # Handle non-matched fingerprint status
-        return Response({
-            'status': 'failure', 
-            'message': 'Fingerprint did not match'
-        }, status=status.HTTP_200_OK)

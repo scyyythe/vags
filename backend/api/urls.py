@@ -7,8 +7,8 @@ from api.views.tip_views import TipCreateView, TipListView, TotalTipsView, TipRe
 from api.views.report_view import ReportCreateView, ReportStatusView, UserReportsView, ReportDeleteView,ReportUpdateView
 from api.views.admin_report import AdminUpdateReportStatusView, AdminReportsListView
 from api.views.bid_views import PlaceBidView, BidHistoryView, AuctionListView, CloseAuctionView, ActiveAuctionsView, HighestBidView,CreateAuctionView
-# from api.views.views import FingerprintStatusView
-from api.views.trigger import TriggerFingerprintScanView
+from api.views.views import trigger_fingerprint_scan
+from api.views.views_verify import TriggerFingerprintScanView
 urlpatterns = [
     # user urls
     path('user/<str:pk>/', RetrieveUserView.as_view(), name='retrieve_user'),
@@ -58,12 +58,12 @@ urlpatterns = [
     path('reports/<str:pk>/', ReportStatusView.as_view(), name='report_status'),
     path('reports/<str:pk>/delete/', ReportDeleteView.as_view(), name='report_delete'),
     path('reports/<str:pk>/update/', ReportUpdateView.as_view(), name='report_update'),
-  # admin report
-   path('admin/reports/', AdminReportsListView.as_view(), name='admin_reports_list'),
+    # admin report
+    path('admin/reports/', AdminReportsListView.as_view(), name='admin_reports_list'),
     path('admin/reports/<str:pk>/update/', AdminUpdateReportStatusView.as_view(), name='admin_update_report_status'),
     
-    # fingerprint
-    # path('fingerprint-status', FingerprintStatusView.as_view(), name='fingerprint_status')
-    
-    path('trigger-fingerprint-scan/', TriggerFingerprintScanView.as_view(), name='trigger_fingerprint_scan'),  # Adjust the URL as needed
+    # fingerprint 
+path('trigger-fingerprint-verification/', TriggerFingerprintScanView.as_view(), name='trigger-fingerprint-verification'),
+path('trigger-fingerprint-scan/', trigger_fingerprint_scan, name='trigger_fingerprint_scan'),
+
 ]

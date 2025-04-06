@@ -22,7 +22,7 @@ class CreateAuctionView(generics.CreateAPIView):
             artwork = Art.objects.get(id=artwork_id)
         except Art.DoesNotExist:
             return Response({"error": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
-
+                                                                
         if Auction.objects.filter(artwork=artwork, status=True).count() > 0:
             return Response({"error": "An active auction for this artwork already exists."}, status=status.HTTP_400_BAD_REQUEST)
 

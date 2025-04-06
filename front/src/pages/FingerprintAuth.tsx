@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Fingerprint } from "lucide-react";
 import { toast } from "sonner";
@@ -18,26 +18,35 @@ const FingerprintAuth = () => {
       setMessage({ type: "info", text: "Scanning your fingerprint..." });
 
       try {
-        const response = await apiClient.post("/trigger-fingerprint-scan/");
+        const response = await apiClient.post("/trigger-fingerprint-verification/");
 
-        console.log("API Response:", response);
-        console.log("API Data:", response.data);
+        console.log("Response:", response); // Log the response to verify the result
 
         if (response.status === 200 && response.data.status === "success") {
           handleFingerprintScanResult(response.data.result);
         } else {
           console.error("Fingerprint scan failed:", response.data);
-          throw new Error("Fingerprint scan failed");
+          setMessage({ type: "error", text: response.data.result || "Fingerprint scan failed" });
         }
       } catch (error) {
-        console.error("Error triggering fingerprint scan:", error.response?.data || error.message);
-        setMessage({ type: "error", text: "Error during fingerprint scan" });
+        if (error.response) {
+          console.error("Server error:", error.response.data);
+          setValidationState("invalid");
+          setMessage({ type: "error", text: "Fingerprint not found" });
+        } else if (error.request) {
+          console.error("No response from server:", error.request);
+          setMessage({ type: "error", text: "No response from server" });
+        } else {
+          console.error("Error setting up request:", error.message);
+          setMessage({ type: "error", text: "Error during fingerprint scan" });
+        }
       }
     }
   };
 
-  const handleFingerprintScanResult = (status) => {
-    if (status === "matched") {
+  const handleFingerprintScanResult = (result) => {
+    console.log("Fingerprint scan result:", result);
+    if (result === "matched") {
       setValidationState("valid");
       setMessage({ type: "success", text: "Fingerprint validated successfully" });
 
@@ -48,19 +57,30 @@ const FingerprintAuth = () => {
       setTimeout(() => {
         navigate("/explore");
       }, 1000);
-    } else {
+    } else if (result === "Fingerprint not found") {
       setValidationState("invalid");
-      setMessage({ type: "error", text: "Fingerprint validation failed" });
+      setMessage({ type: "error", text: result || "Fingerprint validation failed" });
 
       toast.error("Authentication failed", {
-        description: "Please try again or use another login method",
+        description: "Fingerprint not found. Please try again.",
+      });
+
+      setTimeout(() => {
+        handleFingerprintClick();
+      }, 2000);
+    } else {
+      setValidationState("invalid");
+      setMessage({ type: "error", text: result || "Fingerprint validation failed" });
+
+      toast.error("Authentication failed", {
+        description: result || "Please try again or use another login method",
       });
     }
   };
 
   const backToLogin = () => {
-    setShowLoginModal(true); 
-    navigate("/"); 
+    setShowLoginModal(true);
+    navigate("/");
   };
 
   const getIconColor = () => {
