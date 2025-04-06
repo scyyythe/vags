@@ -1,0 +1,37 @@
+[
+    {
+        "fingerprint_id": 11,
+        "first_name": "angel",
+        "last_name": "canete",
+        "email": "canetagnel@gmail.com",
+        "status": "enrolled"
+    },
+    {
+        "fingerprint_id": 12,
+        "first_name": "Angel ",
+        "last_name": "Canete",
+        "email": "caneteangel@gmail.com",
+        "status": "enrolled"
+    },
+    {
+        "fingerprint_id": 13,
+        "first_name": "glendon",
+        "last_name": "taraya",
+        "email": "caneteangel@gmail.com",
+        "status": "enrolled"
+    },
+    {
+        "fingerprint_id": 15,
+        "first_name": "jai",
+        "last_name": "anuba",
+        "email": "ajigmail@gmv.com",
+        "status": "enrolled"
+    },
+    {
+        "fingerprint_id": 16,
+        "first_name": "angel",
+        "last_name": "canete",
+        "email": "canetenagl123@gmail.com",
+        "status": "enrolled"
+    }
+]
