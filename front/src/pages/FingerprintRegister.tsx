@@ -123,7 +123,7 @@ const FingerprintRegister = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-    <div className="w-full max-w-md p-8 h-[600px] space-y-8 bg-white rounded-lg shadow-md">
+      <div className="w-full max-w-md p-8 h-[600px] space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
           <h1 className="text-3xl font-bold mb-2">Create Account</h1>
           <p className="text-xs text-gray-600">Register using your fingerprint</p>
@@ -207,18 +207,7 @@ const FingerprintRegister = () => {
           Create account
         </button>
 
-<<<<<<< HEAD
         <p className="relative text-[10px] text-left text-gray-500 -top-6">
-            By signing up, I agree to the{" "}
-            <a href="#" className="underline">
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a href="#" className="underline">
-              Privacy Policy
-            </a>
-=======
-        <p className="relative text-[10px] text-left text-gray-500 -top-4">
           By signing up, I agree to the{" "}
           <a href="#" className="underline">
             Terms of Service
@@ -227,7 +216,6 @@ const FingerprintRegister = () => {
           <a href="#" className="underline">
             Privacy Policy
           </a>
->>>>>>> backend
         </p>
 
         <button
