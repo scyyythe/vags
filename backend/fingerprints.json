@@ -33,5 +33,12 @@
         "last_name": "Gilliam",
         "email": "pifycymafu@mailinator.com",
         "status": "enrolled"
+    },
+    {
+        "fingerprint_id": 34,
+        "first_name": "Elizabeth",
+        "last_name": "Vinson",
+        "email": "beza@mailinator.com",
+        "status": "enrolled"
     }
 ]
