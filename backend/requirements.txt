@@ -12,3 +12,4 @@ mongoengine
 bcrypt
 serial
 requests
+django-allauth
