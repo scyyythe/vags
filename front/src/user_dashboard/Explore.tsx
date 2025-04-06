@@ -51,19 +51,19 @@ const Explore = () => {
       id: "2",
       title: "Urban Perspectives",
       artist: "John Rodriguez",
-      image: "https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&q=80&w=1374"
+      image: "https://www.schoolofpainting.co.uk/wp-content/uploads/Email-Headers-March-3.png"
     },
     {
       id: "3",
       title: "Abstract Emotions",
       artist: "Emily Chen",
-      image: "https://images.unsplash.com/photo-1579541591969-73f8839fa52c?auto=format&fit=crop&q=80&w=1470"
+      image: "https://c4.wallpaperflare.com/wallpaper/790/734/537/landscape-digital-art-coast-sky-wallpaper-preview.jpg"
     },
     {
       id: "4",
       title: "Vivid Expressions",
       artist: "David Kim",
-      image: "https://images.unsplash.com/photo-1583250087320-5e0d20208d1e?auto=format&fit=crop&q=80&w=1467"
+      image: "https://rosshillart.com/cdn/shop/articles/R._Delino_Landscape_art_-_Rosshillart.com_2200x.jpg?v=1703181542"
     }
   ];
 
@@ -96,14 +96,14 @@ const Explore = () => {
           <div className="flex items-center px-4 border-r">
             <span className="text-xs font-semibold mr-5">Browse Type</span>
             <Select defaultValue="Digital Art">
-              <SelectTrigger className="border-0 bg-transparent h-8 w-35 px-3 text-xs focus:ring-0 focus:ring-offset-0 rounded-sm border border-gray-300">
+              <SelectTrigger className="border-0 bg-transparent h-8 w-35 px-3 text-[11px] focus:ring-0 focus:ring-offset-0 rounded-sm border border-gray-300">
                 <img src="/pics/b_logo.png" className="w-3 h-3 mr-2" />
                 <SelectValue className="ml-8" placeholder="Digital Art" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Digital Art" className="text-xs">Digital Art</SelectItem>
-                <SelectItem value="Physical Art" className="text-xs">Physical Art</SelectItem>
-                <SelectItem value="Photography" className="text-xs">Photography</SelectItem>
+                <SelectItem value="Digital Art" className="text-[11px]">Digital Art</SelectItem>
+                <SelectItem value="Physical Art" className="text-[11px]">Physical Art</SelectItem>
+                <SelectItem value="Photography" className="text-[11px]">Photography</SelectItem>
               </SelectContent>
             </Select>
           </div>

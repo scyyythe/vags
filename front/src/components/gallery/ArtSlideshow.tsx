@@ -96,7 +96,7 @@ const ArtSlideshow = ({
       </div>
 
       {/* Dots indicator */}
-      {/* <div className="absolute bottom-10 right-6 flex space-x-1 z-20">
+      <div className="absolute bottom-10 right-6 flex space-x-1 z-20">
         {artworks.map((_, index) => (
           <button
             key={index}
@@ -110,7 +110,7 @@ const ArtSlideshow = ({
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
-      </div> */}
+      </div>
     </div>
   );
 };
