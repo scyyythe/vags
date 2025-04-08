@@ -6,7 +6,6 @@ import SocialButton from "../components/page/SocialButton";
 import { useModal } from "../context/ModalContext";
 import axios from "../utils/apiClient";
 
-
 const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -16,7 +15,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
     password: "",
   });
 
-  const {setShowLoginModal} = useModal();
+  const { setShowLoginModal } = useModal();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +45,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
       console.log("Registration successful:", response.data);
       alert("Registration successful!");
 
-      closeRegisterModal(); 
+      closeRegisterModal();
       setShowLoginModal(true);
     } catch (error) {
       console.error("Registration failed:", error.response?.data || error.message);
@@ -66,8 +65,8 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   return (
     <div className="w-full flex flex-col justify-center md:p-6 lg:py-6 lg:px-16 bg-white rounded-3xl">
       <div className="flex justify-between">
-      {/* Fingerprint Icon and Sliding Text Container */}
-      <div className="relative flex items-center gap-2">
+        {/* Fingerprint Icon and Sliding Text Container */}
+        <div className="relative flex items-center gap-2">
           <div
             className="border border-gray-300 px-2 rounded-full hover:border-red-800 transition-colors cursor-pointer"
             onMouseEnter={() => setShowFingerprintText(true)}
@@ -83,9 +82,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
               showFingerprintText ? "max-w-[200px] opacity-100" : "max-w-0 opacity-0"
             }`}
           >
-            <span className="whitespace-nowrap text-[10px]">
-              Register with fingerprint
-            </span>
+            <span className="whitespace-nowrap text-[10px]">Register with fingerprint</span>
           </div>
         </div>
 
@@ -160,13 +157,13 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
               value={formData.password}
               onChange={handleChange}
             />
-            <button 
+            <button
               type="button"
               className="absolute right-3 top-3/4 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
               onClick={() => setShowPassword(!showPassword)}
             >
               <i className={showPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "18px" }}></i>
-            </button> 
+            </button>
           </div>
 
           <button
