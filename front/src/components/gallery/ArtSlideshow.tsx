@@ -92,8 +92,8 @@ const ArtSlideshow = ({
               className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 text-white z-10"
               style={{ height: "auto" }}
             >
-              <h3 className="text-xl font-bold mb-1">{artwork.title}</h3>
-              <p className="text-sm opacity-90">by {artwork.artist}</p>
+              {/* <h3 className="text-xl font-bold mb-1">{artwork.title}</h3>
+              <p className="text-sm opacity-90">by {artwork.artist}</p> */}
             </div>
           </div>
         ))}
