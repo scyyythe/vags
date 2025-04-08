@@ -89,5 +89,19 @@
         "last_name": "Canete",
         "email": "caneteangel187@gmail.com",
         "status": "enrolled"
+    },
+    {
+        "fingerprint_id": 50,
+        "first_name": "Fatima",
+        "last_name": "Good",
+        "email": "mygodego@mailinator.com",
+        "status": "enrolled"
+    },
+    {
+        "fingerprint_id": 51,
+        "first_name": "Leila",
+        "last_name": "Higgins",
+        "email": "dijeqow@mailinator.com",
+        "status": "enrolled"
     }
 ]

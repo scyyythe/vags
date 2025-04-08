@@ -3,13 +3,31 @@ import Logo from "./Logo";
 import { Bell, MessageCircle, Search, X, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import ProfileDropdown from "./ProfileDropdown";
 
 const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const avatarRef = useRef<HTMLDivElement>(null);
+
+  const toggleProfileDropdown = () => {
+    setIsProfileDropdownOpen(!isProfileDropdownOpen);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    // We don't close when clicking outside since the user requested to only close when clicking the avatar again
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-border/50">
@@ -119,9 +137,21 @@ const Header = () => {
           </Button>
 
           {/* User Avatar */}
-          <Avatar className="h-8 w-8 border">
-            <AvatarFallback>JA</AvatarFallback>
-          </Avatar>
+          <div className="relative" ref={avatarRef}>
+            <Avatar 
+              className="h-8 w-8 border cursor-pointer" 
+              onClick={toggleProfileDropdown}
+            >
+              <AvatarImage src="/lovable-uploads/f7ccfc1f-b21e-453e-b659-2f50e1cf5b01.png" alt="User" />
+              <AvatarFallback>
+                <img src="/pics/1.jpg" alt="JAI" />
+              </AvatarFallback>
+            </Avatar>
+            <ProfileDropdown 
+              isOpen={isProfileDropdownOpen} 
+              onClose={() => setIsProfileDropdownOpen(false)} 
+            />
+          </div>
         </div>
       </div>
     </header>
