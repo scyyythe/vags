@@ -34,14 +34,14 @@ const Explore = () => {
       id: "1",
       artistName: "Angel Canete",
       artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "https://static.platform.michaels.com/2c-prd/80278152212496.JPG?fit=inside|1080:1080",
+      artworkImage: "https://i.pinimg.com/736x/97/5d/50/975d50c7c3c345cd072ddd34b180cf88.jpg",
       title: "Slopes",
     },
     {
       id: "2",
       artistName: "Angel Canete",
       artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "https://i0.wp.com/martinvorel.com/wp-content/uploads/2023/09/mongolia-photo-7024.jpg?fit=420%2C280&ssl=1",
+      artworkImage: "https://www.goneminimal.com/wp-content/uploads/2022/04/Minimal-abstract-flower-painting-Minimalist-Painting-Gone-Minimal-edited-scaled.jpg",
       title: "Slopes",
     },
     {
@@ -55,7 +55,7 @@ const Explore = () => {
       id: "4",
       artistName: "Angel Canete",
       artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "https://www.goneminimal.com/wp-content/uploads/2022/04/Minimal-abstract-flower-painting-Minimalist-Painting-Gone-Minimal-edited-scaled.jpg",
+      artworkImage: "https://i.pinimg.com/474x/dd/2a/03/dd2a03319703aab428a444f883a6f7ab.jpg",
       title: "Slopes",
     },
     {
@@ -90,7 +90,7 @@ const Explore = () => {
       id: "9",
       artistName: "Angel Canete",
       artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "https://www.saatchiart.com/saatchi-images/saatchi/311324/art/12550015/11612205-GLVEKAPO-6.jpg",
+      artworkImage: "https://i.pinimg.com/474x/f5/bd/ed/f5bdedecbc242032fcc7665483137449.jpg",
       title: "Slopes",
     },
     {
@@ -111,7 +111,7 @@ const Explore = () => {
       id: "12",
       artistName: "Angel Canete",
       artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "https://images.unsplash.com/photo-1515405295579-ba7b45403062?q=80&w=1480&auto=format&fit=crop",
+      artworkImage: "https://i.pinimg.com/474x/9c/a7/cf/9ca7cf4fd04434933e49d8236daa202a.jpg",
       title: "Slopes",
     },
     
@@ -128,7 +128,7 @@ const Explore = () => {
       id: "2",
       title: "Urban Perspectives",
       artist: "John Rodriguez",
-      image: "https://www.schoolofpainting.co.uk/wp-content/uploads/Email-Headers-March-3.png"
+      image: "https://www.andrewshoemaker.com/images/xl/chronicle-antelope-canyon-american-southwest-arizona.jpg"
     },
     {
       id: "3",
@@ -140,7 +140,7 @@ const Explore = () => {
       id: "4",
       title: "Vivid Expressions",
       artist: "David Kim",
-      image: "https://c4.wallpaperflare.com/wallpaper/790/734/537/landscape-digital-art-coast-sky-wallpaper-preview.jpg"
+      image: "https://m.media-amazon.com/images/I/A142xwh4GVL._AC_SL1500_.jpg"
     }
   ];
 
