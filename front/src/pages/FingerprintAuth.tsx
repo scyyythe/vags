@@ -35,9 +35,11 @@ const FingerprintAuth = () => {
           setMessage({ type: "error", text: "Fingerprint not found" });
         } else if (error.request) {
           console.error("No response from server:", error.request);
+          setValidationState("invalid");
           setMessage({ type: "error", text: "No response from server" });
         } else {
           console.error("Error setting up request:", error.message);
+          setValidationState("invalid");
           setMessage({ type: "error", text: "Error during fingerprint scan" });
         }
       }
