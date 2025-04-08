@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Settings, LogOut } from "lucide-react";
-import { useModal } from "@/context/ModalContext";
+import { useModal } from "../../context/ModalContext";
 
 interface ProfileDropdownProps {
   isOpen: boolean;
@@ -10,12 +10,16 @@ interface ProfileDropdownProps {
 
 const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
   const navigate = useNavigate();
-  const { setShowLoginModal } = useModal();
+  const { showLoginModal, setShowLoginModal } = useModal();
   
   const handleEditProfile = () => {
     navigate("/profile/edit");
     onClose();
   };
+
+  useEffect(() => {
+    console.log('showLoginModal updated:', showLoginModal);
+  }, [showLoginModal]);
 
   const handleSettings = () => {
     navigate("/settings");
@@ -23,13 +27,11 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
   };
 
   const handleLogout = () => {
-    // Clear user data from localStorage
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user_id");
     localStorage.removeItem("email");
-    
-    // Show login modal
+    navigate("/");
     setShowLoginModal(true);
     onClose();
   };
@@ -37,21 +39,21 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute right-4 mt-2 w-48 bg-black rounded-md shadow-lg overflow-hidden z-50">
-      <div className="py-2">
+    <div className="absolute right-4 mt-2 w-41 bg-black rounded-md shadow-lg overflow-hidden z-50 whitespace-nowrap">
+      <div className="py-2 px-7">
         <button 
           onClick={handleEditProfile}
-          className="flex items-center w-full px-4 py-2 text-sm text-white hover:bg-gray-800"
+          className="flex items-center w-full px-4 py-2 text-xs text-white hover:bg-gray-800 rounded-sm"
         >
-          <User size={16} className="mr-2" />
+          <User size={13} className="mr-2" />
           Edit Profile
         </button>
         
         <button 
           onClick={handleSettings}
-          className="flex items-center w-full px-4 py-2 text-sm text-white hover:bg-gray-800"
+          className="flex items-center w-full px-4 py-2 text-xs text-white hover:bg-gray-800 rounded-sm"
         >
-          <Settings size={16} className="mr-2" />
+          <Settings size={13} className="mr-2" />
           Settings
         </button>
         
@@ -59,9 +61,9 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
         
         <button 
           onClick={handleLogout}
-          className="flex items-center w-full px-4 py-2 text-sm text-white hover:bg-gray-800"
+          className="flex items-center w-full px-4 py-2 text-xs text-white hover:bg-gray-800 rounded-sm"
         >
-          <LogOut size={16} className="mr-2" />
+          <LogOut size={13} className="mr-2" />
           Sign Out
         </button>
       </div>
