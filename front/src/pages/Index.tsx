@@ -45,7 +45,7 @@ const Index = () => {
     <Register closeRegisterModal={() => setShowRegisterModal(false)} />
   ) : showLoginModal ? (
     <Login closeLoginModal={() => setShowLoginModal(false)} />
-  ) : showForgotPasswordModal ? ( 
+  ) : showForgotPasswordModal ? (
     <ForgotPassword closeForgotPasswordModal={() => setShowForgotPasswordModal(false)} />
   ) : null;
 

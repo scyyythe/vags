@@ -56,9 +56,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   const [showFingerprintText, setShowFingerprintText] = useState(false);
 
   const handleFingerprintClick = () => {
-    // Close the registration modal
     closeRegisterModal();
-    // Navigate to the fingerprint registration page
     navigate("/fingerprint-register");
   };
 
