@@ -28,12 +28,14 @@ const FingerprintRegister = () => {
     setShowRegisterModal(true);
     navigate("/");
   };
+  
   const backToLogin = () => {
     setShowLoginModal(true);
     navigate("/");
     setValidationState("valid");
     setMessage({ type: "success", text: "Registration successful!" });
   };
+  
   const handleFingerprintRegistration = async () => {
     // Form validation
     if (!formData.firstName || !formData.lastName || !formData.email) {
@@ -154,7 +156,6 @@ const FingerprintRegister = () => {
                 type="text"
                 id="lastName"
                 name="lastName"
-                // icon="bx bx-user"
                 value={formData.lastName}
                 onChange={handleChange}
                 placeholder="Last name"
@@ -187,11 +188,11 @@ const FingerprintRegister = () => {
           onClick={handleFingerprintRegistration}
         >
           <div
-            className={`p-8 rounded-full border-2 ${
+            className={`p-6 rounded-full border-2 ${
               validationState === "validating" ? "animate-pulse" : ""
             } transition-colors duration-300 mb-4`}
           >
-            <Fingerprint size={64} className={`${getIconColor()} transition-colors duration-300`} />
+            <Fingerprint size={50} className={`${getIconColor()} transition-colors duration-300`} />
           </div>
 
           <span className="text-center text-xs">Click to scan fingerprint</span>
@@ -202,7 +203,7 @@ const FingerprintRegister = () => {
         <button
           type="submit"
           onClick={backToLogin}
-          className="relative w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
+          className="w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
         >
           Create account
         </button>
@@ -221,7 +222,7 @@ const FingerprintRegister = () => {
         <button
           type="button"
           onClick={backToRegister}
-          className="w-full text-gray-600 text-xs py-2 hover:text-red-900 transition-colors relative -top-8"
+          className="w-full text-gray-600 text-xs py-2 hover:text-red-900 transition-colors relative -top-10"
         >
           <i className="bx bx-arrow-back mr-2"></i>
           Back to registration
