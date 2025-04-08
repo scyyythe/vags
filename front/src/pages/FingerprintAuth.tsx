@@ -20,7 +20,7 @@ const FingerprintAuth = () => {
       try {
         const response = await apiClient.post("/trigger-fingerprint-verification/");
 
-        console.log("Response:", response); // Log the response to verify the result
+        console.log("Response:", response);
 
         if (response.status === 200 && response.data.status === "success") {
           handleFingerprintScanResult(response.data.result);
