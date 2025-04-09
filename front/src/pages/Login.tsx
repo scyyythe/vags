@@ -4,6 +4,8 @@ import InputField from "../components/page/InputField";
 import SocialButton from "../components/page/SocialButton";
 import { useModal } from "../context/ModalContext";
 import apiClient from "../utils/apiClient";
+import SystemMessage from "../components/page/SystemMessage";
+import { toast } from "sonner";
 
 const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [formData, setFormData] = useState({
@@ -15,6 +17,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const navigate = useNavigate();
   const { setShowRegisterModal, setShowForgotPasswordModal } = useModal();
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
 
   const [showFingerprintText, setShowFingerprintText] = useState(false);
 
@@ -26,22 +29,25 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
+    setMessage(null);
+    
     try {
       const response = await apiClient.post("token/", formData);
-
       const { access_token, refresh_token, user_id, email } = response.data;
-
       localStorage.setItem("access_token", access_token);
       localStorage.setItem("refresh_token", refresh_token);
       localStorage.setItem("user_id", user_id);
       localStorage.setItem("email", email);
-
-      console.log("Login successful:", response.data);
-      navigate("/explore"); 
-    } catch (error) {
-      console.error("Login failed:", error.response?.data || error.message);
-      alert("Login failed. Please check your details and try again.");
+      // console.log("Login successful:", response.data);
+      toast.success("Login successful!", {
+        description: "You are now logged in.",
+      });
+      navigate("/explore");
+    } catch (error: any) {
+      // console.error("Login failed:", error.response?.data || error.message);
+      toast.error("Login failed", {
+        description: "Please check your details and try again.",
+      });
     }
   };
 
@@ -167,6 +173,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
           >
             Login
           </button>
+          {message && <SystemMessage type={message.type} message={message.text} />}
         </form>
       </div>
     </div>
