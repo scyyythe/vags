@@ -93,8 +93,7 @@ const ArtCard = ({
 
   if (isExplore) {
     return (
-      <Link to={`/artwork/${id}`} className="w-full">
-      <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4 cursor-pointer">
+      <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4">
         <div className="py-1 px-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Avatar className="h-8 w-8 border">
@@ -123,6 +122,7 @@ const ArtCard = ({
             />
           </div>
         </div>
+        <Link to={`/artwork/${id}`} className="w-full">
         <div className="aspect-square overflow-hidden p-4">
           <img
             src={artworkImage}
@@ -130,28 +130,39 @@ const ArtCard = ({
             className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
           />
         </div>
+        </Link>
         <div className="px-4 py-1">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium">{title || "Untitled Artwork"}</p>
             <div className="flex items-center space-x-2">
-              <button 
-                onClick={handleLike}
-                className={`p-1 rounded-full transition-colors ${
-                  likedArtworks[id] ? "text-red" : "text-gray-400 hover:text-red"
-                }`}
-                aria-label="Like artwork"
-              >
-                <Heart size={18} fill={likedArtworks[id] ? "#ff2a36" : "none"} />
-              </button>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLike();
+              }}
+              className={`p-1 rounded-full transition-colors ${
+                likedArtworks[id] ? "text-red" : "text-gray-400 hover:text-red"
+              }`}
+              aria-label="Like artwork"
+            >
+              <Heart size={18} fill={likedArtworks[id] ? "#ff2a36" : "none"} />
+            </button>
               <span className="text-xs text-gray-500">
                 {/* {Math.floor(Math.random() * 500)} */}
               </span>
-              <TipJarIcon onClick={handleTipJar} />
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTipJar();
+                }}
+              >
+                <TipJarIcon onClick={handleTipJar}/>
+              </div>
+
             </div>
           </div>
         </div>
       </div>
-      </Link>
     );
   }
 

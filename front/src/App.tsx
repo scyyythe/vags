@@ -19,6 +19,7 @@ import { ModalProvider } from './context/ModalContext';
 import { DonationProvider } from "./context/DonationContext";
 import TipJarPopup from "./components/user_dashboard/TipJarPopup";
 import { useDonation } from "./context/DonationContext";
+import { ArtworkProvider } from "./context/ArtworkContext";
 import ArtworkDetails from "./components/user_dashboard/ArtworkDetails";
 
 // Active heart state
@@ -76,6 +77,7 @@ const App = () => {
               <Toaster /> 
               <Sonner />
               <ModalProvider>
+              <ArtworkProvider>
                 <BrowserRouter>
                   <Routes>
                     <Route path="/" element={<Index />} />
@@ -91,6 +93,7 @@ const App = () => {
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </BrowserRouter>
+                </ArtworkProvider>
               </ModalProvider>
             </DonationWrapper>
           </DonationProvider>

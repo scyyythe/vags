@@ -1,17 +1,30 @@
 import { useState, useContext, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Heart, ChevronLeft, MoreHorizontal, MessageCircle, Share, MoreVertical } from "lucide-react";
+import {
+  Heart,
+  ChevronLeft,
+  MoreHorizontal,
+  Share,
+  MoreVertical,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
 import RelatedArtwork from "../user_dashboard/RelatedArtworks";
 import Header from "../../components/user_dashboard/Header";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { useArtworkContext } from "../../context/ArtworkContext";
 
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { likedArtworks, toggleLike } = useContext(LikedArtworksContext);
+  const { artworks } = useArtworkContext();
+
   const [comment, setComment] = useState("");
   const [artwork, setArtwork] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,143 +33,16 @@ const ArtworkDetails = () => {
   const [isDetailOpen, setIsDetailOpen] = useState(true);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
 
-  // Artwork data (mock data for now, would come from API in real app)
-  const artworksData = [
-    {
-      id: "1",
-      title: "The Distorted Face",
-      artist: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "/lovable-uploads/e8dc3c38-ae14-44fb-a292-ec37f4e6d7e8.png",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
-      style: "Painting",
-      medium: "Acrylic Paint",
-      datePosted: "March 23, 2023",
-      likes: 3500,
-      comments: [
-        { id: "c1", user: "Joe Amber", userImage: "https://i.pravatar.cc/150?img=3", text: "I love it!", likes: 90, timestamp: "3d ago" }
-      ]
-    },
-    {
-      id: "2",
-      title: "Liquid Dreams",
-      artist: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "https://www.goneminimal.com/wp-content/uploads/2022/04/Minimal-abstract-flower-painting-Minimalist-Painting-Gone-Minimal-edited-scaled.jpg",
-      description: "Exploring the fluidity of consciousness through abstract representation.",
-      style: "Painting",
-      medium: "Acrylic Paint",
-      datePosted: "January 15, 2023",
-      likes: 2800,
-      comments: []
-    },
-    {
-      id: "3",
-      title: "Ethereal Passage",
-      artist: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "https://images.squarespace-cdn.com/content/v1/58fd82dbbf629ab224f81b68/1599802230471-29DU3BQDBTQET95TAS58/image-asset.jpeg",
-      description: "A journey through the boundaries of perception and reality.",
-      style: "Painting",
-      medium: "Acrylic Paint",
-      datePosted: "February 10, 2023",
-      likes: 3200,
-      comments: []
-    },
-    {
-      id: "4",
-      title: "Abstract Emotions",
-      artist: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "https://i.pinimg.com/474x/dd/2a/03/dd2a03319703aab428a444f883a6f7ab.jpg",
-      description: "Expressing complex emotional states through color and form.",
-      style: "Painting",
-      medium: "Acrylic Paint",
-      datePosted: "April 5, 2023",
-      likes: 1900,
-      comments: []
-    },
-    {
-      id: "5",
-      title: "Geometric Harmony",
-      artist: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "https://cdn.pixabay.com/photo/2022/05/26/11/58/line-art-7222688_640.jpg",
-      description: "Finding balance and symmetry in geometric abstraction.",
-      style: "Painting",
-      medium: "Acrylic Paint",
-      datePosted: "May 18, 2023",
-      likes: 2100,
-      comments: []
-    }
-  ];
-
-  // Related artworks data
-  const relatedArtworksData = [
-    {
-      id: "6",
-      title: "Melting Boundaries",
-      artist: "Angel Canete",
-      image: "/lovable-uploads/e8dc3c38-ae14-44fb-a292-ec37f4e6d7e8.png"
-    },
-    {
-      id: "7",
-      title: "Fluid Forms",
-      artist: "Angel Canete",
-      image: "/lovable-uploads/e8dc3c38-ae14-44fb-a292-ec37f4e6d7e8.png"
-    },
-    {
-      id: "8",
-      title: "Abstract Realms",
-      artist: "Angel Canete",
-      image: "/lovable-uploads/e8dc3c38-ae14-44fb-a292-ec37f4e6d7e8.png"
-    },
-    {
-      id: "9",
-      title: "Golden Illusion",
-      artist: "Angel Canete",
-      image: "/lovable-uploads/e8dc3c38-ae14-44fb-a292-ec37f4e6d7e8.png"
-    },
-    {
-      id: "10",
-      title: "Melting Boundaries",
-      artist: "Angel Canete",
-      image: "/lovable-uploads/e8dc3c38-ae14-44fb-a292-ec37f4e6d7e8.png"
-    },
-    {
-      id: "11",
-      title: "Fluid Forms",
-      artist: "Angel Canete",
-      image: "/lovable-uploads/e8dc3c38-ae14-44fb-a292-ec37f4e6d7e8.png"
-    },
-    {
-      id: "12",
-      title: "Abstract Realms",
-      artist: "Angel Canete",
-      image: "/lovable-uploads/e8dc3c38-ae14-44fb-a292-ec37f4e6d7e8.png"
-    },
-    {
-      id: "13",
-      title: "Golden Illusion",
-      artist: "Angel Canete",
-      image: "/lovable-uploads/e8dc3c38-ae14-44fb-a292-ec37f4e6d7e8.png"
-    }
-  ];
-
   useEffect(() => {
-    // Simulate API call to fetch artwork details
     setIsLoading(true);
-    setTimeout(() => {
-      const foundArtwork = artworksData.find(artwork => artwork.id === id);
-      if (foundArtwork) {
-        setArtwork(foundArtwork);
-        setComments(foundArtwork.comments || []);
-        // Get other artworks by the same artist for the related section
-        setRelatedArtworks(relatedArtworksData);
-      }
-      setIsLoading(false);
-    }, 500);
-  }, [id]);
+    const foundArtwork = artworks.find((art) => art.id === id);
+    if (foundArtwork) {
+      setArtwork(foundArtwork);
+      setComments([]); // Future: Fetch comments from backend
+      setRelatedArtworks([]); // Future: Fetch related artworks from backend
+    }
+    setIsLoading(false);
+  }, [id, artworks]);
 
   const handleLike = () => {
     if (artwork) {
@@ -174,9 +60,9 @@ const ArtworkDetails = () => {
         userImage: "https://i.pravatar.cc/150?img=5",
         text: comment,
         likes: 0,
-        timestamp: "Just now"
+        timestamp: "Just now",
       };
-      
+
       setComments([...comments, newComment]);
       toast("Comment posted");
       setComment("");
@@ -235,8 +121,12 @@ const ArtworkDetails = () => {
         <Header />
         <div className="container mx-auto pt-24 px-4 text-center">
           <h2 className="text-2xl font-bold mb-4">Artwork Not Found</h2>
-          <p className="mb-8">The artwork you're looking for doesn't exist or has been removed.</p>
-          <Link to="/" className="text-red-600 hover:underline">Return to Home</Link>
+          <p className="mb-8">
+            The artwork you're looking for doesn't exist or has been removed.
+          </p>
+          <Link to="/" className="text-red-600 hover:underline">
+            Return to Home
+          </Link>
         </div>
       </div>
     );
@@ -253,7 +143,7 @@ const ArtworkDetails = () => {
             <span className="font-medium ml-2">Artwork Details</span>
           </Link>
         </div>
-        
+
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left sidebar - Artwork details with collapsible trigger */}
           <div className="w-full md:w-[200px] shrink-0">
@@ -268,23 +158,21 @@ const ArtworkDetails = () => {
                   <CollapsibleContent className="space-y-6">
                     <div>
                       <h3 className="text-sm font-medium mb-3">Artwork Style</h3>
-                      <p className="text-sm text-gray-700">{artwork?.style}</p>
+                      <p className="text-sm text-gray-700">{artwork?.style || "N/A"}</p>
                     </div>
-                    
                     <div>
                       <h3 className="text-sm font-medium mb-3">Medium</h3>
-                      <p className="text-sm text-gray-700">{artwork?.medium}</p>
+                      <p className="text-sm text-gray-700">{artwork?.medium || "N/A"}</p>
                     </div>
-                    
                     <div>
                       <h3 className="text-sm font-medium mb-3">Date Posted</h3>
-                      <p className="text-sm text-gray-700">{artwork?.datePosted}</p>
+                      <p className="text-sm text-gray-700">{artwork?.datePosted || "N/A"}</p>
                     </div>
                   </CollapsibleContent>
                 </div>
-                
+
                 <CollapsibleTrigger asChild>
-                  <button 
+                  <button
                     className="p-2 rounded-full hover:bg-gray-200 transition-colors"
                     aria-label="Toggle artwork details"
                   >
@@ -294,7 +182,7 @@ const ArtworkDetails = () => {
               </div>
             </Collapsible>
           </div>
-          
+
           {/* Center - Artwork Image */}
           <div className="flex-1 max-w-xl mx-auto">
             <div className="bg-white rounded-lg p-4 shadow-sm overflow-hidden">
@@ -304,47 +192,41 @@ const ArtworkDetails = () => {
                 className="w-full h-auto object-contain"
               />
             </div>
-            
+
             <div className="mt-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <button
-                  onClick={handleLike}
-                  className="flex items-center gap-2"
-                >
-                  <Heart 
-                    size={18} 
-                    className={likedArtworks[artwork?.id] ? "text-red-600" : "text-gray-500"} 
-                    fill={likedArtworks[artwork?.id] ? "#dc2626" : "none"} 
+                <button onClick={handleLike} className="flex items-center gap-2">
+                  <Heart
+                    size={18}
+                    className={likedArtworks[artwork?.id] ? "text-red-600" : "text-gray-500"}
+                    fill={likedArtworks[artwork?.id] ? "#dc2626" : "none"}
                   />
                   <span className="text-sm text-gray-700">Likes</span>
                 </button>
-                <span className="text-sm">{(3.5).toFixed(1)}k</span>
+                <span className="text-sm">3.5k</span>
               </div>
-              
-              <button
-                onClick={handleShare}
-                className="p-2 hover:bg-gray-100 rounded-full"
-              >
+
+              <button onClick={handleShare} className="p-2 hover:bg-gray-100 rounded-full">
                 <Share size={18} className="text-gray-500" />
               </button>
             </div>
           </div>
-          
+
           {/* Right side - Title, description, comments */}
           <div className="w-full md:w-[300px] shrink-0">
             <div className="relative">
               <h1 className="text-2xl font-bold mb-1">{artwork?.title}</h1>
-              <p className="text-sm text-gray-600 mb-1">by {artwork?.artist}</p>
-              
+              <p className="text-sm text-gray-600 mb-1">by {artwork?.artistName}</p>
+
               <div className="absolute top-0 right-0">
                 <div className="relative">
-                  <button 
+                  <button
                     className="p-2 rounded-full hover:bg-gray-100"
                     onClick={toggleMoreMenu}
                   >
                     <MoreHorizontal size={18} />
                   </button>
-                  
+
                   {showMoreMenu && (
                     <div className="absolute right-0 top-8 z-10 bg-white shadow-lg rounded-lg py-2 w-36">
                       <button
@@ -363,14 +245,14 @@ const ArtworkDetails = () => {
                   )}
                 </div>
               </div>
-              
+
               <p className="text-sm text-gray-800 mt-4 mb-2">
-                {artwork?.description}
+                {artwork?.description || "No description available."}
               </p>
               <button className="text-xs text-gray-500 hover:underline">Show more</button>
-              
+
               <Separator className="my-6" />
-              
+
               {/* Comments section */}
               <div className="mb-6">
                 {comments.length > 0 ? (
@@ -379,13 +261,11 @@ const ArtworkDetails = () => {
                       <span className="text-sm font-medium">{comments[0]?.user}</span>
                       <span className="text-xs text-gray-500">{comments[0]?.text}</span>
                     </div>
-                    
                     <div className="flex text-xs text-gray-500 gap-2 mb-4">
                       <span>{comments[0]?.likes} likes</span>
                       <span>•</span>
                       <span>{comments[0]?.timestamp}</span>
                     </div>
-                    
                     <div className="mb-4">
                       <Avatar className="h-6 w-6 inline-block mr-2">
                         <AvatarImage src={comments[0]?.userImage} />
@@ -397,10 +277,12 @@ const ArtworkDetails = () => {
                     </div>
                   </>
                 ) : (
-                  <p className="text-sm text-gray-500 mb-4">No comments yet. Be the first to comment!</p>
+                  <p className="text-sm text-gray-500 mb-4">
+                    No comments yet. Be the first to comment!
+                  </p>
                 )}
               </div>
-              
+
               {/* Add comment form */}
               <form onSubmit={handleCommentSubmit} className="relative">
                 <input
@@ -411,10 +293,7 @@ const ArtworkDetails = () => {
                   className="w-full border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-300 pr-20"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
-                  <button
-                    type="button"
-                    className="text-gray-400"
-                  >
+                  <button type="button" className="text-gray-400">
                     😊
                   </button>
                   <button
@@ -429,14 +308,14 @@ const ArtworkDetails = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Related Artworks Section */}
         <div className="mt-16">
           <h2 className="text-lg font-semibold mb-6">Related Artworks</h2>
-          
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {relatedArtworks.map((relatedArt) => (
-              <RelatedArtwork 
+              <RelatedArtwork
                 key={relatedArt.id}
                 id={relatedArt.id}
                 title={relatedArt.title}
