@@ -145,7 +145,7 @@ const ArtCard = ({
               }`}
               aria-label="Like artwork"
             >
-              <Heart size={18} fill={likedArtworks[id] ? "#ff2a36" : "none"} />
+              <Heart size={18} className={likedArtworks[id] ? "text-red-600 fill-red-600" : "text-gray-800"} fill={likedArtworks[id] ? "currentColor" : "none"} />
             </button>
               <span className="text-xs text-gray-500">
                 {/* {Math.floor(Math.random() * 500)} */}
