@@ -19,6 +19,7 @@ import { ModalProvider } from './context/ModalContext';
 import { DonationProvider } from "./context/DonationContext";
 import TipJarPopup from "./components/user_dashboard/TipJarPopup";
 import { useDonation } from "./context/DonationContext";
+import ArtworkDetails from "./components/user_dashboard/ArtworkDetails";
 
 // Active heart state
 export type LikedArtwork = {
@@ -83,6 +84,7 @@ const App = () => {
                     <Route path="/hero" element={<Hero />} />
                     <Route path="/explore" element={<Explore />} />
                     <Route path="/create" element={<Create />} />
+                    <Route path="/artwork/:id" element={<ArtworkDetails />} />
                     <Route path="/bidding" element={<Bidding />} />
                     <Route path="/marketplace" element={<Marketplace />} />
                     <Route path="/exhibits" element={<Exhibits />} />
