@@ -4,7 +4,9 @@ import Logo from "../components/page/Logo";
 import InputField from "../components/page/InputField";
 import SocialButton from "../components/page/SocialButton";
 import { useModal } from "../context/ModalContext";
-import axios from "../utils/apiClient";
+import apiClient from "../utils/apiClient";
+import SystemMessage from "../components/page/SystemMessage";
+import { toast } from "sonner";
 
 const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) => {
   const navigate = useNavigate();
@@ -14,9 +16,9 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
     email: "",
     password: "",
   });
-
   const { setShowLoginModal } = useModal();
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,36 +27,38 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log("Form Data:", formData); // Debugging step
+    setMessage(null);
 
     if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
-      alert("Please fill in all required fields.");
+      toast.error("Missing information", {
+        description: "Please fill in all required fields.",
+      });
       return;
     }
 
     try {
-      const response = await axios.post("user/register/", {
+      const response = await apiClient.post("user/register/", {
         username: formData.email.split("@")[0],
         email: formData.email,
         first_name: formData.firstName,
         last_name: formData.lastName,
         password: formData.password,
       });
-
       console.log("Registration successful:", response.data);
-      alert("Registration successful!");
-
+      toast.success("Registration successful!", {
+        description: "You can now log in.",
+      });
       closeRegisterModal();
       setShowLoginModal(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Registration failed:", error.response?.data || error.message);
-      alert("Registration failed. Please check your details and try again.");
+      toast.error("Registration failed", {
+        description: "Please check your details and try again.",
+      });
     }
   };
 
   const [showFingerprintText, setShowFingerprintText] = useState(false);
-
   const handleFingerprintClick = () => {
     closeRegisterModal();
     navigate("/fingerprint-register");
@@ -171,6 +175,8 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
             Create account
           </button>
 
+          {message && <SystemMessage type={message.type} message={message.text} />}
+          
           <p className="relative text-[10px] text-left text-gray-500 -top-4">
             By signing up, I agree to the{" "}
             <a href="#" className="underline">
