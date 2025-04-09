@@ -7,7 +7,6 @@ import CategoryFilter from "@/components/user_dashboard/CategoryFilter";
 import ArtCard from "@/components/user_dashboard/ArtCard";
 import { Plus, SortAsc } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { 
   Select,
@@ -23,6 +22,8 @@ const Explore = () => {
   const categories = ["All", "Trending", "Collections"];
   const [selectedCategory, setSelectedCategory] = useState("All");
   const { openPopup } = useDonation();
+  const [artwork, setArtworks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -206,8 +207,8 @@ const Explore = () => {
               </div>
             </div>
             
-            <ScrollArea className="h-[800px] lg:w-[133%] pr-4 no-scrollbar">
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="h-[800px] lg:w-[133%] custom-scrollbar">
+              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-6">
                 {artCards.map((card) => (
                   <ArtCard
                     key={card.id}
@@ -221,7 +222,8 @@ const Explore = () => {
                   />
                 ))}
               </div>
-            </ScrollArea>
+            </div>
+
           </div>
           
         </div>

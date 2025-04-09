@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import TipJarIcon from "./TipJarIcon";
 import { useDonation } from "../../context/DonationContext";
 import ArtCardMenu from "./ArtCardMenu";
+import { Link } from "react-router-dom";
 
 interface ArtCardProps {
   id: string;
@@ -92,7 +93,8 @@ const ArtCard = ({
 
   if (isExplore) {
     return (
-      <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-3xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4 cursor-pointer">
+      <Link to={`/artwork/${id}`} className="w-full">
+      <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4 cursor-pointer">
         <div className="py-1 px-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Avatar className="h-8 w-8 border">
@@ -149,6 +151,7 @@ const ArtCard = ({
           </div>
         </div>
       </div>
+      </Link>
     );
   }
 
