@@ -212,7 +212,7 @@ const Explore = () => {
             <div className="flex items-center px-4 border-r">
               <span className="text-xs font-semibold mr-5">Browse Type</span>
               <Select defaultValue="Digital Art">
-                <SelectTrigger className="border-0 bg-transparent h-8 w-35 px-3 text-[11px] focus:ring-0 focus:ring-offset-0 rounded-sm border border-gray-300">
+                <SelectTrigger className="bg-transparent h-8 w-35 px-3 text-[11px] focus:ring-0 focus:ring-offset-0 rounded-sm border border-gray-300">
                   <img src="/pics/b_logo.png" className="w-3 h-3 mr-2" />
                   <SelectValue className="ml-8" placeholder="Digital Art" />
                 </SelectTrigger>
@@ -264,7 +264,7 @@ const Explore = () => {
             </div>
 
             <div className="h-[800px] lg:w-[133%] custom-scrollbar">
-              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-6">
+              <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                 {artCards.map((card) => (
                   <ArtCard
                     key={card.id}
