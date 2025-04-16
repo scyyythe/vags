@@ -197,43 +197,44 @@ const ArtworkDetails = () => {
         <div className="mt-12 ml-12">
           <button 
             onClick={() => navigate(-1)} 
-            className="flex items-center text-md font-semibold"
+            className="flex items-center text-sm font-semibold"
           >
             <i className='bx bx-chevron-left text-lg mr-2'></i>
             Artwork Details
           </button>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-center gap-8">
+        <div className="flex flex-col md:flex-row gap-8 md:gap-4 overflow-hidden">
           {/* Artwork details with collapsible */}
-          <Collapsible 
-            open={isDetailOpen} 
-            onOpenChange={setIsDetailOpen}
-            className="flex items-start md:items-center gap-8"
+          <div className="relative flex items-center justify-start w-full md:w-auto">
+          {/* Collapsible Sidebar - Positioned Absolutely */}
+          <div
+            className={`absolute left-0 top-0 h-full transition-transform duration-500 ease-in-out z-10 ${
+              isDetailOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
+            }`}
           >
-            <CollapsibleContent className="shrink-0">
-              <div className="bg-gray-50 rounded-sm p-6 text-justify">
-                <div className="mb-8">
-                  <h3 className="text-[10px] font-medium mb-2">Artwork Style</h3>
-                  <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
-                </div>
-                
-                <div className="mb-8">
-                  <h3 className="text-[10px] font-medium mb-2">Medium</h3>
-                  <p className="text-[10px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
-                </div>
-                
-                <div className="mb-2">
-                  <h3 className="text-[10px] font-medium mb-2">Date Posted</h3>
-                  <p className="text-[10px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
-                </div>
+            <div className="bg-gray-50 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
+              <div className="mb-8">
+                <h3 className="text-[10px] font-medium mb-2">Artwork Style</h3>
+                <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
               </div>
-            </CollapsibleContent>
-          </Collapsible>
+              <div className="mb-8">
+                <h3 className="text-[10px] font-medium mb-2">Medium</h3>
+                <p className="text-[10px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
+              </div>
+              <div className="mb-2">
+                <h3 className="text-[10px] font-medium mb-2">Date Posted</h3>
+                <p className="text-[10px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
+              </div>
+            </div>
+          </div>
 
           {/* Center - Artwork Image */}
-          <div className="flex items-center relative">
-            {/* GripVertical Button */}
+          <div
+            className={`ml-0 transition-transform duration-500 ease-in-out ${
+              isDetailOpen ? "translate-x-[150px]" : "translate-x-0"
+            }`}
+          >
             <button
               onClick={toggleDetailsPanel}
               className="p-1 text-gray-500 hover:text-black absolute left-0 top-1/2 transform -translate-y-1/2"
@@ -241,7 +242,6 @@ const ArtworkDetails = () => {
               <GripVertical size={15} />
             </button>
 
-            {/* Artwork Image */}
             <div className="inline-block transform scale-[.85] -mb-10 relative">
               <div className="overflow-hidden rounded-xl shadow-[0_4px_14px_rgba(0,0,0,0.15)] mb-6 relative">
                 <img
@@ -249,13 +249,10 @@ const ArtworkDetails = () => {
                   alt={artwork?.title}
                   className="h-auto w-auto max-w-full max-h-[500px] object-contain"
                 />
-
                 {/* TipJar Floating Button */}
                 <div className="absolute bottom-3 right-3 group cursor-pointer">
-                <div className={`flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] group-hover:w-auto group-hover:pl-4 transition-all ease-in-out duration-700 animate-tipjar`}>
+                  <div className={`flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] group-hover:w-auto group-hover:pl-4 transition-all ease-in-out duration-700 animate-tipjar`}>
                     <TipJarIcon onClick={handleTipJar} />
-
-                    {/* Sliding Donate Text to the LEFT */}
                     <span className={`mr-1 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 animate-donate group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700`}>
                       Donate
                     </span>
@@ -263,18 +260,19 @@ const ArtworkDetails = () => {
                 </div>
               </div>
             </div>
-
-            </div>
+          </div>
+        </div>
 
 
           {/* Right side - Title, artist, description, comments */}
-          <div className="w-full md:w-[300px] shrink-0 pt-10 pr-10">
-            <div className="relative">
+          <div className={`flex-1 min-w-0 max-w-screen-xs transition-all duration-500 ease-in-out ${isDetailOpen ? "ml-[150px]" : "ml-0"}`}style={{ overflowWrap: 'break-word' }}>
+
+            <div className="relative top-10">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center space-x-4">
                   <button 
                     onClick={handleLike} 
-                    className="flex items-center space-x-1 text-gray-800 rounded-3xl py-3 px-4 border border-gray-200"
+                    className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
                   >
                     <Heart
                       size={14}
@@ -348,12 +346,12 @@ const ArtworkDetails = () => {
                         </button>
 
                          {/* Three dots button */}
-                        <div className="relative ml-2">
+                        <div className="relative ml-1">
                           <button
                             onClick={() => toggleCommentMenu('comment1')}
                             className="p-1 text-gray-500 hover:text-black"
                           >
-                            <MoreHorizontal size={14} />
+                            <MoreHorizontal size={12} />
                           </button>
 
                           {commentMenus['comment1'] && (
