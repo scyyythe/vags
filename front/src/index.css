@@ -179,3 +179,32 @@ img {
   background-color: #ffffff; 
 }
 
+@keyframes tipJarExpandContract {
+  5%, 100% {
+    width: 32px;
+  }
+  25%, 80% {
+    width: 90px; 
+  }
+}
+
+@keyframes donateSlide {
+  0%, 100% {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+  25%, 75% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-tipjar {
+  animation: tipJarExpandContract 4s ease-in-out 2;
+}
+
+.animate-donate {
+  animation: donateSlide 4s ease-in-out 2;
+}
+
+

@@ -34,7 +34,7 @@ const ArtworkDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [relatedArtworks, setRelatedArtworks] = useState<any[]>([]);
   const [comments, setComments] = useState<any[]>([]);
-  const [isDetailOpen, setIsDetailOpen] = useState(true);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -117,6 +117,37 @@ const ArtworkDetails = () => {
     });
   };  
 
+  const [commentLikes, setCommentLikes] = useState<{ [commentId: string]: number }>({
+    'comment1': 90,
+  });
+  
+  const [likedComments, setLikedComments] = useState<{ [commentId: string]: boolean }>({
+    'comment1': false,
+  });
+  
+  const [commentMenus, setCommentMenus] = useState<{ [commentId: string]: boolean }>({
+    'comment1': false,
+  });
+  
+  const handleCommentLike = (commentId: string) => {
+    setLikedComments(prev => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
+    setCommentLikes(prev => ({
+      ...prev,
+      [commentId]: prev[commentId] + (likedComments[commentId] ? -1 : 1),
+    }));
+  };
+  
+  const toggleCommentMenu = (commentId: string) => {
+    setCommentMenus(prev => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
+  };
+  
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white">
@@ -163,7 +194,7 @@ const ArtworkDetails = () => {
       
       <div className="container mx-auto px-6 py-8">
         {/* Back button */}
-        <div className="mt-12 mb-8 ml-12">
+        <div className="mt-12 ml-12">
           <button 
             onClick={() => navigate(-1)} 
             className="flex items-center text-md font-semibold"
@@ -173,15 +204,15 @@ const ArtworkDetails = () => {
           </button>
         </div>
 
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col md:flex-row justify-center gap-8">
           {/* Artwork details with collapsible */}
           <Collapsible 
             open={isDetailOpen} 
             onOpenChange={setIsDetailOpen}
             className="flex items-start md:items-center gap-8"
           >
-            <CollapsibleContent className=" shrink-0">
-              <div className="bg-gray-50 rounded-sm p-6 text-justify relative left-16">
+            <CollapsibleContent className="shrink-0">
+              <div className="bg-gray-50 rounded-sm p-6 text-justify">
                 <div className="mb-8">
                   <h3 className="text-[10px] font-medium mb-2">Artwork Style</h3>
                   <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
@@ -201,72 +232,81 @@ const ArtworkDetails = () => {
           </Collapsible>
 
           {/* Center - Artwork Image */}
-          <div className="flex items-center">
+          <div className="flex items-center relative">
             {/* GripVertical Button */}
             <button
               onClick={toggleDetailsPanel}
-              className="p-1 relative left-24 text-gray-500 hover:text-gray-700 mr-2"
+              className="p-1 text-gray-500 hover:text-black absolute left-0 top-1/2 transform -translate-y-1/2"
             >
               <GripVertical size={15} />
             </button>
 
             {/* Artwork Image */}
-            <div className="inline-block transform scale-75 -mb-10">
-              <div className="overflow-hidden rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.15)] mb-6">
+            <div className="inline-block transform scale-[.85] -mb-10 relative">
+              <div className="overflow-hidden rounded-xl shadow-[0_4px_14px_rgba(0,0,0,0.15)] mb-6 relative">
                 <img
                   src={artwork?.artworkImage}
                   alt={artwork?.title}
                   className="h-auto w-auto max-w-full max-h-[500px] object-contain"
                 />
-              </div>
 
-              <div className="flex items-center justify-between bg-white w-full">
-                {/* Left Section: Heart + Jar */}
-                <button 
-                  onClick={handleLike} 
-                  className="flex items-center mr-2 space-x-2 text-gray-800"
-                >
-                  <Heart
-                    size={16}
-                    className={likedArtworks[artwork?.id] ? "text-red-600 fill-red-600" : "text-gray-800"}
-                    fill={likedArtworks[artwork?.id] ? "currentColor" : "none"}
-                  />
-                  <span className="text-sm text-black">Likes</span>
-                  <div className="h-4 w-px bg-gray-400" />
-                  <span className="text-sm text-black">3.5k</span>
-                </button>
+                {/* TipJar Floating Button */}
+                <div className="absolute bottom-3 right-3 group cursor-pointer">
+                <div className={`flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] group-hover:w-auto group-hover:pl-4 transition-all ease-in-out duration-700 animate-tipjar`}>
+                    <TipJarIcon onClick={handleTipJar} />
 
-                {/* TipJar */}
-                <TipJarIcon onClick={handleTipJar} />
+                    {/* Sliding Donate Text to the LEFT */}
+                    <span className={`mr-1 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 animate-donate group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700`}>
+                      Donate
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+
+            </div>
 
 
           {/* Right side - Title, artist, description, comments */}
-          <div className="w-full md:w-[300px] shrink-0 pt-16 pr-10">
+          <div className="w-full md:w-[300px] shrink-0 pt-10 pr-10">
             <div className="relative">
-              <div className="flex justify-between items-start">
-                <h1 className="text-sm font-bold">{artwork?.title || "The Distorted Face"}</h1>
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center space-x-4">
+                  <button 
+                    onClick={handleLike} 
+                    className="flex items-center space-x-1 text-gray-800 rounded-3xl py-3 px-4 border border-gray-200"
+                  >
+                    <Heart
+                      size={14}
+                      className={likedArtworks[artwork?.id] ? "text-red-600 fill-red-600" : "text-gray-800"}
+                      fill={likedArtworks[artwork?.id] ? "currentColor" : "none"}
+                    />
+                    <span className="text-[10px] font-medium ml-2">{likedArtworks[artwork?.id] ? '3.5k' : '3.5k'}</span>
+                  </button>
+                </div>
+
                 <button 
-                  className="p-1 text-gray-500 relative"
+                  className="py-3 text-gray-500 relative"
                   onClick={() => setMenuOpen(!menuOpen)}
                 >
                   <MoreHorizontal size={14} />
                 </button>
-                  <ArtCardMenu
-                    isOpen={menuOpen}
-                    onFavorite={handleFavorite}
-                    onHide={handleHide}
-                    onReport={handleReport}
-                    onSave={handleSave}
-                    isSaved={isSaved}
-                    isFavorited={isFavorited}
-                    isReported={isReported}
-                  />
+
+                <ArtCardMenu
+                  isOpen={menuOpen}
+                  onFavorite={handleFavorite}
+                  onHide={handleHide}
+                  onReport={handleReport}
+                  onSave={handleSave}
+                  isSaved={isSaved}
+                  isFavorited={isFavorited}
+                  isReported={isReported}
+                />
               </div>
+
+              <h1 className="text-md font-bold mb-2">{artwork?.title || "The Distorted Face"}</h1>
               
-              <p className="text-xs text-gray-600 mb-4">by {artwork?.artistName || "Angel Ganev"}</p>
+              <p className="text-[10px] text-gray-600 mb-4">by {artwork?.artistName || "Angel Ganev"}</p>
               
               <p className="text-xs text-gray-800 mb-2">
                 {artwork?.description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."}
@@ -278,21 +318,71 @@ const ArtworkDetails = () => {
               <Separator className="my-6" />
               
               {/* User profile and comment section */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center">
-                    <Avatar className="h-6 w-6 mr-2">
-                      <AvatarImage src="https://i.pravatar.cc/150?img=12" />
-                      <AvatarFallback>JD</AvatarFallback>
+              <div className="mb-6 relative">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start">
+                    <Avatar className="h-3 w-3 mr-2">
+                      <AvatarFallback>JA</AvatarFallback>
                     </Avatar>
+
                     <div>
-                      <p className="text-xs font-medium">Joe Birdie</p>
+                      <p className="text-[9px] font-semibold">Jai Anoba</p>
+                      <p className="text-xs text-gray-700 mt-1">I love it!</p>
+
+                      <div className="flex items-center gap-2 text-[10px] text-gray-500 mt-1">
+                        <span>3d</span>
+                        <span>·</span>
+                        <button className="hover:underline text-gray-500">Reply</button>
+                        <span>·</span>
+
+                        <button
+                          onClick={() => handleCommentLike('comment1')}
+                          className="flex items-center gap-1"
+                        >
+                          <Heart
+                            size={12}
+                            className={likedComments['comment1'] ? 'text-red-500 fill-red-500' : 'text-gray-500'}
+                            fill={likedComments['comment1'] ? 'currentColor' : 'none'}
+                          />
+                          {commentLikes['comment1']}
+                        </button>
+
+                         {/* Three dots button */}
+                        <div className="relative ml-2">
+                          <button
+                            onClick={() => toggleCommentMenu('comment1')}
+                            className="p-1 text-gray-500 hover:text-black"
+                          >
+                            <MoreHorizontal size={14} />
+                          </button>
+
+                          {commentMenus['comment1'] && (
+                            <div className="absolute right-0 mt-1 w-36 bg-white border rounded-md shadow-lg z-10">
+                              <button
+                                className="w-full text-left px-3 py-2 text-[9px] hover:bg-gray-100"
+                                onClick={() => alert('Blocked user')}
+                              >
+                                Block User
+                              </button>
+                              <button
+                                className="w-full text-left px-3 py-2 text-[9px] hover:bg-gray-100"
+                                onClick={() => alert('Reported content')}
+                              >
+                                Report Content
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                        {/* <span>·</span> */}
+                        {/* <button className="hover:underline text-gray-500">View replies (2)</button> */}
+                      </div>
                     </div>
                   </div>
-                  <button className="text-xs font-medium text-blue-600">I love it</button>
+
+                  
                 </div>
-                
               </div>
+
               
               {/* Add comment form */}
               <form onSubmit={handleCommentSubmit} className="relative">
@@ -301,7 +391,7 @@ const ArtworkDetails = () => {
                   placeholder="Add a comment..."
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  className="w-full border border-gray-200 rounded-full px-4 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16"
+                  className="w-full border border-gray-200 rounded-full px-4 py-2 text-[10px] focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
                   <button type="button" className="text-gray-400">
@@ -319,7 +409,7 @@ const ArtworkDetails = () => {
         </div>
 
         {/* Related Artworks Section */}
-        <div className="mt-16">
+        <div className="mt-14">
           <h2 className="text-xs mb-6">Related Artworks</h2>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
