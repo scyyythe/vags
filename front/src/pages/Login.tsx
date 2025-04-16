@@ -30,7 +30,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     e.preventDefault();
     setError(null);
     setMessage(null);
-    
+
     try {
       const response = await apiClient.post("token/", formData);
       const { access_token, refresh_token, user_id, email } = response.data;
@@ -43,11 +43,18 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         description: "You are now logged in.",
       });
       navigate("/explore");
-    } catch (error: any) {
-      // console.error("Login failed:", error.response?.data || error.message);
-      toast.error("Login failed", {
-        description: "Please check your details and try again.",
-      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Login failed:", error.message);
+        toast.error("Login failed", {
+          description: "Please check your details and try again.",
+        });
+      } else {
+        console.error("Unknown error:", error);
+        toast.error("Login failed", {
+          description: "An unexpected error occurred. Please try again later.",
+        });
+      }
     }
   };
 
@@ -75,9 +82,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
               showFingerprintText ? "max-w-[200px] opacity-100" : "max-w-0 opacity-0"
             }`}
           >
-            <span className="whitespace-nowrap text-[10px] relative bottom-1">
-              Sign in with fingerprint
-            </span>
+            <span className="whitespace-nowrap text-[10px] relative bottom-1">Sign in with fingerprint</span>
           </div>
         </div>
 
@@ -126,7 +131,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
             label="Email Address"
             placeholder="Email Address"
             icon="bx bx-at"
-            name="email" 
+            name="email"
             value={formData.email}
             onChange={handleChange}
           />
@@ -141,7 +146,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
               value={formData.password}
               onChange={handleChange}
             />
-            <button 
+            <button
               type="button"
               className="absolute right-3 top-3/4 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
               onClick={() => setShowPassword(!showPassword)}
@@ -149,7 +154,6 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
               <i className={showPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "18px" }}></i>
             </button>
           </div>
-
 
           {/* Forgot Password Link */}
           <div className="relative flex justify-between text-[11px] -top-[77px]">

@@ -50,11 +50,18 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
       });
       closeRegisterModal();
       setShowLoginModal(true);
-    } catch (error: any) {
-      console.error("Registration failed:", error.response?.data || error.message);
-      toast.error("Registration failed", {
-        description: "Please check your details and try again.",
-      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Registration failed:", error.message);
+        toast.error("Registration failed", {
+          description: "Please check your details and try again.",
+        });
+      } else {
+        console.error("Unknown error:", error);
+        toast.error("Registration failed", {
+          description: "An unexpected error occurred. Please try again later.",
+        });
+      }
     }
   };
 
@@ -176,7 +183,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
           </button>
 
           {message && <SystemMessage type={message.type} message={message.text} />}
-          
+
           <p className="relative text-[10px] text-left text-gray-500 -top-4">
             By signing up, I agree to the{" "}
             <a href="#" className="underline">
