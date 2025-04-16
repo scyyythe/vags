@@ -3,7 +3,9 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-
+import gcashLogo from "../../../public/pics/gcash.png";
+import paypalLogo from "../../../public/pics/paypal.png";
+import stripeLogo from "../../../public/pics/stripe.png";
 interface TipJarPopupProps {
   isOpen: boolean;
   onClose: () => void;
@@ -234,7 +236,7 @@ const TipJarPopup = ({
                 <div className="flex flex-col gap-1">
                   <label className="flex items-center justify-between">
                     <div className="flex gap-4">
-                      <img src="./pics/paypal.png" className="w-6 h-6" />
+                      <img src={paypalLogo} className="w-6 h-6" />
                       <span className="text-[10px] mt-1">PayPal</span>
                     </div>
                     <input
@@ -246,7 +248,7 @@ const TipJarPopup = ({
                   </label>
                   <label className="flex items-center justify-between">
                     <div className="flex gap-4">
-                      <img src="./pics/gcash.png" className="w-6 h-6" />
+                      <img src={gcashLogo} className="w-6 h-6" />
                       <span className="text-[10px] mt-1">GCash</span>
                     </div>
                     <input
@@ -258,7 +260,7 @@ const TipJarPopup = ({
                   </label>
                   <label className="flex items-center justify-between">
                     <div className="flex gap-4">
-                      <img src="./pics/stripe.png" className="w-6 h-6" />
+                      <img src={stripeLogo} className="w-6 h-6" />
                       <span className="text-[10px] mt-1">Stripe</span>
                     </div>
                     <input

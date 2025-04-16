@@ -2,9 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Heart,
-  ChevronLeft,
   MoreHorizontal,
-  Share,
   EllipsisVertical,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,6 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
 import RelatedArtwork from "../user_dashboard/RelatedArtworks";
+import TipJarIcon from "./TipJarIcon";
+import { useDonation } from "../../context/DonationContext";
 import Header from "../../components/user_dashboard/Header";
 import {
   Collapsible,
@@ -19,12 +19,15 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useArtworkContext } from "../../context/ArtworkContext";
+import { useNavigate } from "react-router-dom";
 
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { likedArtworks, toggleLike } = useContext(LikedArtworksContext);
   const { artworks } = useArtworkContext();
+   const { openPopup } = useDonation();
 
+  const navigate = useNavigate();
   const [comment, setComment] = useState("");
   const [artwork, setArtwork] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -92,6 +95,16 @@ const ArtworkDetails = () => {
     setShowMoreMenu(false);
   };
 
+  const handleTipJar = () => {
+    if (!artwork) return;
+    openPopup({
+      id: artwork.id,
+      title: artwork?.title || "Untitled Artwork",
+      artistName: artwork?.artistName || "Unknown Artist",
+      artworkImage: artwork?.artworkImage || "",
+    });
+  };  
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white">
@@ -115,22 +128,22 @@ const ArtworkDetails = () => {
     );
   }
 
-  // if (!artwork) {
-  //   return (
-  //     <div className="min-h-screen bg-white">
-  //       <Header />
-  //       <div className="container mx-auto pt-24 px-4 text-center">
-  //         <h2 className="text-2xl font-bold mb-4">Artwork Not Found</h2>
-  //         <p className="mb-8">
-  //           The artwork you're looking for doesn't exist or has been removed.
-  //         </p>
-  //         <Link to="/explore" className="text-red-600 hover:underline">
-  //           Return to Home
-  //         </Link>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (!artwork) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="container mx-auto pt-24 px-4 text-center">
+          <h2 className="text-2xl font-bold mb-4">Artwork Not Found</h2>
+          <p className="mb-8">
+            The artwork you're looking for doesn't exist or has been removed.
+          </p>
+          <Link to="/explore" className="text-red-600 hover:underline">
+            Return to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -138,11 +151,14 @@ const ArtworkDetails = () => {
       
       <div className="container mx-auto px-6 py-8">
         {/* Back button */}
-        <div className="mb-20 border border-red-900">
-          <Link to="/explore" className="flex items-center text-gray-800 hover:text-gray-600">
-            <ChevronLeft size={20} />
-            <span className="ml-2 font-medium">Artwork Details</span>
-          </Link>
+        <div className="mt-20 mb-8">
+          <button 
+            onClick={() => navigate(-1)} 
+            className="flex items-center text-lg font-semibold"
+          >
+            <i className='bx bx-chevron-left text-2xl mr-2'></i>
+            Artwork Details
+          </button>
         </div>
 
         <div className="flex flex-col md:flex-row gap-8 border border-red-800">
@@ -150,7 +166,7 @@ const ArtworkDetails = () => {
           <Collapsible 
             open={isDetailOpen} 
             onOpenChange={setIsDetailOpen}
-            className="relative"
+            className="relative border border-yellow-400"
           >
             <CollapsibleContent className="w-full md:w-[220px] shrink-0">
               <div className="bg-gray-50 rounded-lg p-6">
@@ -181,33 +197,38 @@ const ArtworkDetails = () => {
 
           {/* Center - Artwork Image */}
           <div className={`flex-1 transition-all duration-300 ${isDetailOpen ? 'md:ml-0' : 'md:ml-[-30px]'}`}>
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <div className="p-4">
-                <img
-                  src={artwork?.artworkImage}
-                  alt={artwork?.title}
-                  className="w-full h-auto object-contain"
-                />
-              </div>
-              
-              <div className="flex items-center px-4 py-3 bg-white">
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-green-600">
+                <div className="">
+                    <img
+                      src={artwork?.artworkImage}
+                      alt={artwork?.title}
+                      className="w-full h-auto object-contain"
+                    />
+                </div>
+            </div>
+
+
+            <div className="flex items-center justify-between py-3 bg-white w-full">
+              {/* Left Section: Heart + Likes */}
                 <button 
                   onClick={handleLike} 
-                  className="flex items-center mr-2 text-gray-800"
+                  className="flex items-center mr-2 space-x-2 text-gray-800"
                 >
                   <Heart
                     size={18}
                     className={likedArtworks[artwork?.id] ? "text-red-600 fill-red-600" : "text-gray-800"}
                     fill={likedArtworks[artwork?.id] ? "currentColor" : "none"}
                   />
+                  <span className="text-sm text-black">Likes</span>
+                  <div className="h-4 w-px bg-gray-400" />
+                  <span className="text-sm text-black">3.5k</span>
                 </button>
-                <span className="text-sm mr-auto">3.5k</span>
-                
-                <button onClick={handleShare} className="p-1 text-gray-800">
-                  <Share size={18} />
-                </button>
-              </div>
+
+              {/* Right Section: Share */}
+              <TipJarIcon onClick={handleTipJar}/>
             </div>
+
+            
           </div>
 
           {/* Right side - Title, artist, description, comments */}
