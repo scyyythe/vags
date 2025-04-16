@@ -4,12 +4,13 @@ import {
   Heart,
   MoreHorizontal,
   EllipsisVertical,
+  GripVertical,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
-import RelatedArtwork from "../user_dashboard/RelatedArtworks";
+import ArtCardMenu from "./ArtCardMenu";
 import TipJarIcon from "./TipJarIcon";
 import { useDonation } from "../../context/DonationContext";
 import Header from "../../components/user_dashboard/Header";
@@ -25,7 +26,7 @@ const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { likedArtworks, toggleLike } = useContext(LikedArtworksContext);
   const { artworks } = useArtworkContext();
-   const { openPopup } = useDonation();
+  const { openPopup } = useDonation();
 
   const navigate = useNavigate();
   const [comment, setComment] = useState("");
@@ -35,6 +36,12 @@ const ArtworkDetails = () => {
   const [comments, setComments] = useState<any[]>([]);
   const [isDetailOpen, setIsDetailOpen] = useState(true);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [isReported, setIsReported] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -72,27 +79,32 @@ const ArtworkDetails = () => {
     }
   };
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast("Link copied to clipboard");
-  };
+  const handleSave = () => {
+      setIsSaved(!isSaved);
+      toast(isSaved ? "Artwork unsaved" : "Artwork saved");
+      setMenuOpen(false);
+    };
+  
+    const handleHide = () => {
+      setIsHidden(true);
+      toast("Artwork hidden");
+      setMenuOpen(false);
+    };
+  
+    const handleReport = () => {
+      setIsReported(!isReported);
+      toast(isReported ? "Artwork report removed" : "Artwork reported");
+      setMenuOpen(false);
+    };
+  
+    const handleFavorite = () => {
+      setIsFavorited(!isFavorited);
+      toast(isFavorited ? "Artwork favorite removed" : "Artwork added to favorites");
+      setMenuOpen(false);
+    };
 
   const toggleDetailsPanel = () => {
     setIsDetailOpen(!isDetailOpen);
-  };
-
-  const toggleMoreMenu = () => {
-    setShowMoreMenu(!showMoreMenu);
-  };
-
-  const handleReportArtwork = () => {
-    toast("Artwork reported");
-    setShowMoreMenu(false);
-  };
-
-  const handleSaveArtwork = () => {
-    toast("Artwork saved to collection");
-    setShowMoreMenu(false);
   };
 
   const handleTipJar = () => {
@@ -151,71 +163,71 @@ const ArtworkDetails = () => {
       
       <div className="container mx-auto px-6 py-8">
         {/* Back button */}
-        <div className="mt-20 mb-8">
+        <div className="mt-12 mb-8 ml-12">
           <button 
             onClick={() => navigate(-1)} 
-            className="flex items-center text-lg font-semibold"
+            className="flex items-center text-md font-semibold"
           >
-            <i className='bx bx-chevron-left text-2xl mr-2'></i>
+            <i className='bx bx-chevron-left text-lg mr-2'></i>
             Artwork Details
           </button>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-8 border border-red-800">
+        <div className="flex flex-col md:flex-row">
           {/* Artwork details with collapsible */}
           <Collapsible 
             open={isDetailOpen} 
             onOpenChange={setIsDetailOpen}
-            className="relative border border-yellow-400"
+            className="flex items-start md:items-center gap-8"
           >
-            <CollapsibleContent className="w-full md:w-[220px] shrink-0">
-              <div className="bg-gray-50 rounded-lg p-6">
-                <div className="mb-6">
-                  <h3 className="text-sm font-medium mb-2">Artwork Style</h3>
-                  <p className="text-sm text-gray-700">{artwork?.style || "Painting"}</p>
+            <CollapsibleContent className=" shrink-0">
+              <div className="bg-gray-50 rounded-sm p-6 text-justify relative left-16">
+                <div className="mb-8">
+                  <h3 className="text-[10px] font-medium mb-2">Artwork Style</h3>
+                  <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
                 </div>
                 
-                <div className="mb-6">
-                  <h3 className="text-sm font-medium mb-2">Medium</h3>
-                  <p className="text-sm text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
+                <div className="mb-8">
+                  <h3 className="text-[10px] font-medium mb-2">Medium</h3>
+                  <p className="text-[10px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
                 </div>
                 
-                <div className="mb-4">
-                  <h3 className="text-sm font-medium mb-2">Date Posted</h3>
-                  <p className="text-sm text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
+                <div className="mb-2">
+                  <h3 className="text-[10px] font-medium mb-2">Date Posted</h3>
+                  <p className="text-[10px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
                 </div>
               </div>
             </CollapsibleContent>
-            
-            {/* Ellipsis trigger positioned to be visible at all times */}
-            <CollapsibleTrigger className="absolute top-3 left-[-30px] z-10">
-              <button className="p-1 text-gray-500 hover:text-gray-700">
-                <EllipsisVertical size={20} />
-              </button>
-            </CollapsibleTrigger>
           </Collapsible>
 
           {/* Center - Artwork Image */}
-          <div className={`flex-1 transition-all duration-300 ${isDetailOpen ? 'md:ml-0' : 'md:ml-[-30px]'}`}>
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-green-600">
-                <div className="">
-                    <img
-                      src={artwork?.artworkImage}
-                      alt={artwork?.title}
-                      className="w-full h-auto object-contain"
-                    />
-                </div>
-            </div>
+          <div className="flex items-center">
+            {/* GripVertical Button */}
+            <button
+              onClick={toggleDetailsPanel}
+              className="p-1 relative left-24 text-gray-500 hover:text-gray-700 mr-2"
+            >
+              <GripVertical size={15} />
+            </button>
 
+            {/* Artwork Image */}
+            <div className="inline-block transform scale-75 -mb-10">
+              <div className="overflow-hidden rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.15)] mb-6">
+                <img
+                  src={artwork?.artworkImage}
+                  alt={artwork?.title}
+                  className="h-auto w-auto max-w-full max-h-[500px] object-contain"
+                />
+              </div>
 
-            <div className="flex items-center justify-between py-3 bg-white w-full">
-              {/* Left Section: Heart + Likes */}
+              <div className="flex items-center justify-between bg-white w-full">
+                {/* Left Section: Heart + Jar */}
                 <button 
                   onClick={handleLike} 
                   className="flex items-center mr-2 space-x-2 text-gray-800"
                 >
                   <Heart
-                    size={18}
+                    size={16}
                     className={likedArtworks[artwork?.id] ? "text-red-600 fill-red-600" : "text-gray-800"}
                     fill={likedArtworks[artwork?.id] ? "currentColor" : "none"}
                   />
@@ -224,43 +236,42 @@ const ArtworkDetails = () => {
                   <span className="text-sm text-black">3.5k</span>
                 </button>
 
-              {/* Right Section: Share */}
-              <TipJarIcon onClick={handleTipJar}/>
+                {/* TipJar */}
+                <TipJarIcon onClick={handleTipJar} />
+              </div>
             </div>
-
-            
           </div>
 
+
           {/* Right side - Title, artist, description, comments */}
-          <div className="w-full md:w-[300px] shrink-0">
+          <div className="w-full md:w-[300px] shrink-0 pt-16 pr-10">
             <div className="relative">
               <div className="flex justify-between items-start">
-                <h1 className="text-2xl font-bold">{artwork?.title || "The Distorted Face"}</h1>
+                <h1 className="text-sm font-bold">{artwork?.title || "The Distorted Face"}</h1>
                 <button 
                   className="p-1 text-gray-500 relative"
-                  onClick={() => setShowMoreMenu(!showMoreMenu)}
+                  onClick={() => setMenuOpen(!menuOpen)}
                 >
-                  <MoreHorizontal size={20} />
-                  
-                  {showMoreMenu && (
-                    <div className="absolute right-0 top-8 z-10 bg-white shadow-lg rounded-lg py-2 w-40">
-                      <button className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
-                        Save
-                      </button>
-                      <button className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
-                        Report
-                      </button>
-                    </div>
-                  )}
+                  <MoreHorizontal size={14} />
                 </button>
+                  <ArtCardMenu
+                    isOpen={menuOpen}
+                    onFavorite={handleFavorite}
+                    onHide={handleHide}
+                    onReport={handleReport}
+                    onSave={handleSave}
+                    isSaved={isSaved}
+                    isFavorited={isFavorited}
+                    isReported={isReported}
+                  />
               </div>
               
-              <p className="text-sm text-gray-600 mb-4">by {artwork?.artistName || "Angel Ganev"}</p>
+              <p className="text-xs text-gray-600 mb-4">by {artwork?.artistName || "Angel Ganev"}</p>
               
-              <p className="text-sm text-gray-800 mb-2">
+              <p className="text-xs text-gray-800 mb-2">
                 {artwork?.description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."}
               </p>
-              {/* <button className="text-xs text-gray-500 hover:underline mb-6">
+              {/* <button className="text-xs text-gray-500 hover:underline">
                 Show more
               </button> */}
               
@@ -270,24 +281,17 @@ const ArtworkDetails = () => {
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
-                    <Avatar className="h-8 w-8 mr-2">
+                    <Avatar className="h-6 w-6 mr-2">
                       <AvatarImage src="https://i.pravatar.cc/150?img=12" />
                       <AvatarFallback>JD</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-sm font-medium">Joe Birdie</p>
+                      <p className="text-xs font-medium">Joe Birdie</p>
                     </div>
                   </div>
                   <button className="text-xs font-medium text-blue-600">I love it</button>
                 </div>
                 
-                {/* <div className="mt-4 flex items-center mb-4">
-                  <Avatar className="h-5 w-5 mr-2">
-                    <AvatarImage src="https://i.pravatar.cc/150?img=3" />
-                    <AvatarFallback>U</AvatarFallback>
-                  </Avatar>
-                  <span className="text-xs text-gray-600">View all 3,560 comments</span>
-                </div> */}
               </div>
               
               {/* Add comment form */}
@@ -297,14 +301,14 @@ const ArtworkDetails = () => {
                   placeholder="Add a comment..."
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  className="w-full border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16"
+                  className="w-full border border-gray-200 rounded-full px-4 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
                   <button type="button" className="text-gray-400">
                     😊
                   </button>
-                  <button type="submit" className="text-sm text-gray-400" disabled={!comment.trim()}>
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <button type="submit" className="text-[10px] text-gray-400" disabled={!comment.trim()}>
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.8214 2.48697 15.5291 3.33782 17L2.5 21.5L7 20.6622C8.47087 21.513 10.1786 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </button>
@@ -316,7 +320,7 @@ const ArtworkDetails = () => {
 
         {/* Related Artworks Section */}
         <div className="mt-16">
-          <h2 className="text-lg font-semibold mb-6">Related Artworks</h2>
+          <h2 className="text-xs mb-6">Related Artworks</h2>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {relatedArtworks.map((relatedArt) => (
