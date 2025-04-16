@@ -49,11 +49,6 @@ const ArtCard = ({
     toggleLike(id);
   };
 
-  const handleMenuClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setMenuOpen(!menuOpen);
-  };
-
   const handleSave = () => {
     setIsSaved(!isSaved);
     toast(isSaved ? "Artwork unsaved" : "Artwork saved");
@@ -73,7 +68,8 @@ const ArtCard = ({
   };
 
   const handleFavorite = () => {
-    toast("Artwork added in favorites.");
+    setIsFavorited(!isFavorited);
+    toast(isFavorited ? "Artwork favorite removed" : "Artwork added to favorites");
     setMenuOpen(false);
   };
 
@@ -104,14 +100,13 @@ const ArtCard = ({
           </div>
           <div className="relative">
             <button 
-              onClick={handleMenuClick} 
+              onClick={() => setMenuOpen((prev) => !prev)}
               className={`p-1 rounded-full ${menuOpen ? 'border border-gray-300' : ''}`}
             >
               <MoreHorizontal size={16} />
             </button>
             <ArtCardMenu
               isOpen={menuOpen}
-              onClose={() => setMenuOpen(false)}
               onFavorite={handleFavorite}
               onHide={handleHide}
               onReport={handleReport}
