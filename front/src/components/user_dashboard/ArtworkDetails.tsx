@@ -333,7 +333,7 @@ const ArtworkDetails = () => {
                           className="flex items-center gap-1"
                         >
                           <Heart
-                            size={12}
+                            size={10}
                             className={likedComments['comment1'] ? 'text-red-500 fill-red-500' : 'text-gray-500'}
                             fill={likedComments['comment1'] ? 'currentColor' : 'none'}
                           />
