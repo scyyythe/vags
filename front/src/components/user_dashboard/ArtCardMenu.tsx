@@ -41,7 +41,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         <div className="flex items-center relative">
           <button
             onClick={onFavorite}
-            className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+            className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
             aria-label="Favorite"
             onMouseEnter={() => setHoveredItem("favorite")}
             onMouseLeave={() => setHoveredItem(null)}
@@ -63,7 +63,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         <div className="flex items-center relative">
           <button
             onClick={onHide}
-            className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+            className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
             aria-label="Hide"
             onMouseEnter={() => setHoveredItem("hide")}
             onMouseLeave={() => setHoveredItem(null)}
@@ -85,7 +85,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         <div className="flex items-center relative">
           <button
             onClick={onReport}
-            className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+            className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
             aria-label="Report"
             onMouseEnter={() => setHoveredItem("report")}
             onMouseLeave={() => setHoveredItem(null)}
