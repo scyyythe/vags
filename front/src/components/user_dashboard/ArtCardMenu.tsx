@@ -1,19 +1,16 @@
 import React, { useRef, useState } from "react";
-import { Star, Bookmark, EyeOff, Flag } from "lucide-react";
+import { Bookmark, EyeOff, Flag } from "lucide-react";
 
 interface ArtCardMenuProps {
   isOpen: boolean;
   onFavorite: () => void;
   onHide: () => void;
   onReport: () => void;
-  onSave?: () => void;
-  isSaved: boolean;
-  isFavorited: boolean;
+  isFavorite: boolean;
   isReported: boolean;
   isHidden?: boolean; 
 }
 
-const DARK_RED = "#8B0000";
 const YELLOW = "#ffc107";
 const BLACK = "#000000";
 
@@ -22,9 +19,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   onFavorite,
   onHide,
   onReport,
-  onSave,
-  isSaved = false,
-  isFavorited = false,
+  isFavorite = false,
   isReported = false,
   isHidden = false,
 }) => {
@@ -40,27 +35,6 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex flex-col items-start">
-        {/* Save */}
-        <div className="flex items-center relative">
-          <button
-            onClick={onSave}
-            className="p-2 rounded-full hover:bg-gray-200 transition-colors text-xs"
-            aria-label="Save"
-            onMouseEnter={() => setHoveredItem("save")}
-            onMouseLeave={() => setHoveredItem(null)}
-          >
-            <Bookmark
-              size={13}
-              fill={isSaved ? DARK_RED : "none"}
-              stroke={isSaved ? DARK_RED : "currentColor"}
-            />
-          </button>
-          {hoveredItem === "save" && (
-            <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-              Save
-            </span>
-          )}
-        </div>
 
         {/* Favorite */}
         <div className="flex items-center relative">
@@ -71,10 +45,10 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             onMouseEnter={() => setHoveredItem("favorite")}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <Star
-              size={13}
-              fill={isFavorited ? YELLOW : "none"}
-              stroke={isFavorited ? YELLOW : "currentColor"}
+            <Bookmark
+              size={10}
+              fill={isFavorite ? YELLOW : "none"}
+              stroke={isFavorite ? YELLOW : "currentColor"}
             />
           </button>
           {hoveredItem === "favorite" && (
@@ -94,7 +68,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             onMouseLeave={() => setHoveredItem(null)}
           >
             <EyeOff
-              size={13}
+              size={10}
               fill={isHidden ? BLACK : "none"}
               stroke={isHidden ? BLACK : "currentColor"}
             />
@@ -116,7 +90,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             onMouseLeave={() => setHoveredItem(null)}
           >
             <Flag
-              size={13}
+              size={10}
               fill={isReported ? "#ea384c" : "none"}
               stroke={isReported ? "#ea384c"  : "currentColor"}
             />

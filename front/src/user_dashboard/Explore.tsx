@@ -198,7 +198,7 @@ const Explore = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="container mx-auto px-4 sm:px-6 pt-20 pb-12">
+      <div className="container mx-auto px-4 sm:px-6 pt-20">
         <main className="container">
           <section className="mb-16">
             <ArtGalleryContainer

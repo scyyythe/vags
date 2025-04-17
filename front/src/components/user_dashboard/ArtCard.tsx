@@ -39,20 +39,13 @@ const ArtCard = ({
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
   const [isReported, setIsReported] = useState(false);
   const { likedArtworks, toggleLike } = useContext(LikedArtworksContext);
   const { openPopup } = useDonation();
   
   const handleLike = () => {
     toggleLike(id);
-  };
-
-  const handleSave = () => {
-    setIsSaved(!isSaved);
-    toast(isSaved ? "Artwork unsaved" : "Artwork saved");
-    setMenuOpen(false);
   };
 
   const handleHide = () => {
@@ -68,8 +61,8 @@ const ArtCard = ({
   };
 
   const handleFavorite = () => {
-    setIsFavorited(!isFavorited);
-    toast(isFavorited ? "Artwork favorite removed" : "Artwork added to favorites");
+    setIsFavorite(!isFavorite);
+    toast(isFavorite ? "Artwork favorite removed" : "Artwork added to favorites");
     setMenuOpen(false);
   };
 
@@ -92,27 +85,25 @@ const ArtCard = ({
       <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4">
         <div className="py-1 px-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <Avatar className="h-8 w-8 border">
+            <Avatar className="h-5 w-5 border">
               <AvatarImage src={artistImage} alt={artistName} />
               <AvatarFallback>{artistName.charAt(0)}</AvatarFallback>
             </Avatar>
-            <span className="text-xs font-medium">{artistName}</span>
+            <span className="text-[9px] font-medium">{artistName}</span>
           </div>
-          <div className="relative">
+          <div className="relative text-gray-500" style={{ height: '24px' }}>
             <button 
               onClick={() => setMenuOpen((prev) => !prev)}
-              className={`p-1 rounded-full ${menuOpen ? 'border border-gray-300' : ''}`}
+              className={`p-1 rounded-full ${menuOpen ? 'border border-gray-300 text-black' : ''}`}
             >
-              <MoreHorizontal size={16} />
+              <MoreHorizontal size={14} />
             </button>
             <ArtCardMenu
               isOpen={menuOpen}
               onFavorite={handleFavorite}
               onHide={handleHide}
               onReport={handleReport}
-              onSave={handleSave}
-              isSaved={isSaved}
-              isFavorited={isFavorited}
+              isFavorite={isFavorite}
               isReported={isReported}
             />
           </div>
@@ -128,7 +119,7 @@ const ArtCard = ({
         </Link>
         <div className="px-4 py-1">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium">{title || "Untitled Artwork"}</p>
+            <p className="text-xs font-medium">{title || "Untitled Artwork"}</p>
             <div className="flex items-center space-x-2">
             <button 
               onClick={(e) => {
@@ -140,10 +131,9 @@ const ArtCard = ({
               }`}
               aria-label="Like artwork"
             >
-              <Heart size={18} className={likedArtworks[id] ? "text-red-600 fill-red-600" : "text-gray-800"} fill={likedArtworks[id] ? "currentColor" : "none"} />
+              <Heart size={15} className={likedArtworks[id] ? "text-red-600 fill-red-600" : "text-gray-800"} fill={likedArtworks[id] ? "currentColor" : "none"} />
             </button>
               <span className="text-xs text-gray-500">
-                {/* {Math.floor(Math.random() * 500)} */}
               </span>
               <div
                 onClick={(e) => {

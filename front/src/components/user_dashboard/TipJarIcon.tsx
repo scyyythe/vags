@@ -19,7 +19,7 @@ const TipJarIcon = ({ onClick, className }: TipJarIconProps) => {
       )}
       aria-label="Tip jar"
     >
-      <i className='bx bx-box mt-1' style={{ fontSize: '18px' }}></i>
+      <i className='bx bx-box mt-1' style={{ fontSize: '15px' }}></i>
     </button>
   );
 };
