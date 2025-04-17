@@ -241,4 +241,9 @@ img {
   animation: slideUp 0.3s ease-out forwards;
 }
 
+.mobile-menu-position {
+  top: 150px;      
+  left: 10px;  
+  z-index: 50;     
+}
 

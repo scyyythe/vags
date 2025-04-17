@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/collapsible";
 import { useArtworkContext } from "../../context/ArtworkContext";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +29,7 @@ const ArtworkDetails = () => {
   const isLiked = likedArtworks[id] || false;
   const { artworks } = useArtworkContext();
   const { openPopup } = useDonation();
+  const isMobile = useIsMobile();
 
   const navigate = useNavigate();
   const [comment, setComment] = useState("");
@@ -183,12 +185,12 @@ const ArtworkDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       <Header />
       
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
         {/* Back button */}
-        <div className="mt-12 ml-12">
+        <div className={`mt-8 md:mt-12 ${isMobile ? 'px-4 pt-8' : 'md:ml-12'}`}>
           <button 
             onClick={() => navigate(-1)} 
             className="flex items-center text-sm font-semibold"
@@ -198,224 +200,255 @@ const ArtworkDetails = () => {
           </button>
         </div>
 
-        <div className="flex justify-center items-start space-x-2"> 
+        <div className={` ${isMobile ? 'flex flex-col' : 'flex justify-center items-start space-x-2'}`}> 
           {/* Artwork, Right-side Sliding */}
           <div
-            className={`flex justify-center items-start transition-transform duration-500 ease-in-out`}
+            className={`${isMobile ? 'w-full' : 'flex justify-center items-start transition-transform duration-500 ease-in-out'}`}
             style={{
-              transform: isDetailOpen ? "translateX(70px)" : "translateX(0)",
+              transform: !isMobile && isDetailOpen ? "translateX(70px)" : "translateX(0)",
             }}
           >
-          <div className="relative w-[480px] min-w-[480px] max-w-[480px]">
-          {/* Collapsible Sidebar */}
-          <div
-            className={`absolute right-100 top-0 w-[27%] h-full z-20 transition-all duration-500 ease-in-out pointer-events-none ${
-              isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-10"
-            }`}
-            style={{ right: "calc(100% + 16px)" }}
-          >
-            <div className="bg-gray-50 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
-              <div className="mb-8">
-                <h3 className="text-[10px] font-medium mb-2">Artwork Style</h3>
-                <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
-              </div>
-              <div className="mb-8">
-                <h3 className="text-[10px] font-medium mb-2">Medium</h3>
-                <p className="text-[10px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
-              </div>
-              <div className="mb-2">
-                <h3 className="text-[10px] font-medium mb-2">Date Posted</h3>
-                <p className="text-[10px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Center - Artwork Image */}
-          <div className="relative z-0 mx-auto">
-            <button
-              onClick={toggleDetailsPanel}
-              className="p-1 text-gray-500 hover:text-black absolute left-0 top-1/2 transform -translate-y-1/2"
-            >
-              <GripVertical size={15} />
-            </button>
-
-            <div className="inline-block transform scale-[.85] -mb-10 relative">
-              <div className="aspect-square overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)]">
-                <img
-                  src={artwork?.artworkImage}
-                  alt={artwork?.title}
-                  className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
-                />
-                {/* TipJar Floating Button */}
-                <div className="absolute bottom-3 right-3 group cursor-pointer">
-                  <div className={`flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] group-hover:w-auto group-hover:pl-4 transition-all ease-in-out duration-700 animate-tipjar`}>
-                    <TipJarIcon onClick={handleTipJar} />
-                    <span className={`mr-1 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 animate-donate group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700`}>
-                      Donate
-                    </span>
+            {/* Artwork container */}
+            <div className={`relative ${isMobile ? 'w-full' : 'w-full max-w-[480px] min-w-[320px]'}`}>
+              {/* Collapsible Sidebar */}
+              {!isMobile && (
+                <div
+                  className={`absolute right-100 top-0 w-[27%] h-full z-20 transition-all duration-500 ease-in-out pointer-events-none ${
+                    isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-10"
+                  }`}
+                  style={{ right: "calc(100% + 16px)" }}
+                >
+                <div className="bg-gray-50 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
+                  <div className="mb-8">
+                    <h3 className="text-[10px] font-medium mb-2">Artwork Style</h3>
+                    <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
+                  </div>
+                  <div className="mb-8">
+                    <h3 className="text-[10px] font-medium mb-2">Medium</h3>
+                    <p className="text-[10px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
+                  </div>
+                  <div className="mb-2">
+                    <h3 className="text-[10px] font-medium mb-2">Date Posted</h3>
+                    <p className="text-[10px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-            
+              )}
 
-          {/* Right side - Title, artist, description, comments */}
-          <div className="w-[390px] min-w-[390px] max-w-[390px]">
-            <div className="relative top-10">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center space-x-4">
-                  <button 
-                    onClick={() => toggleLike(id)} 
-                    className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
-                  >
-                    <Heart
-                      size={14}
-                      className={likedArtworks[artwork?.id] ? "text-red-600 fill-red-600" : "text-gray-800"}
-                      fill={isLiked ? "currentColor" : "none"}
-                    />
-                    {(likeCounts[artwork?.id] ?? artwork?.likesCount ?? 0) > 0 && (
-                      <span className="text-[9px]">
-                        {likeCounts[artwork?.id] ?? artwork?.likesCount}
-                      </span>
-                    )}
-                  </button>
-                </div>
-
-                <button 
-                  className="py-3 text-gray-500 relative"
-                  onClick={() => setMenuOpen(!menuOpen)}
-                >
-                  <MoreHorizontal size={14} />
-                </button>
-
-                <ArtCardMenu
-                  isOpen={menuOpen}
-                  onFavorite={handleFavorite}
-                  onHide={handleHide}
-                  onReport={handleReport}
-                  isFavorite={isFavorite}
-                  isReported={isReported}
-                />
-              </div>
-
-              <h1 className="text-md font-bold mb-2">{artwork?.title || "The Distorted Face"}</h1>
-              
-              <p className="text-[10px] text-gray-600 mb-4">by {artwork?.artistName || "Angel Ganev"}</p>
-              
-              <p className="text-[10px] text-gray-800 mb-2">
-                {artwork?.description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."}
-              </p>
-              
-              <Separator className="my-6" />
-              
-              {/* User profile and comment section */}
-              <div className="mb-6 relative">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start">
-                    <Avatar className="h-3 w-3 mr-2">
-                      <AvatarFallback>JA</AvatarFallback>
-                    </Avatar>
-
-                    <div>
-                      <p className="text-[9px] font-semibold">Jai Anoba</p>
-                      <p className="text-[10px] text-gray-700 mt-1">I love it!</p>
-
-                      <div className="flex items-center gap-2 text-[9px] text-gray-500 mt-1">
-                        <span>3d</span>
-                        <span>·</span>
-                        <button className="hover:underline text-gray-500">Reply</button>
-                        <span>·</span>
-
-                        <button
-                          onClick={() => handleCommentLike('comment1')}
-                          className="flex items-center gap-1"
-                        >
-                          <Heart
-                            size={10}
-                            className={likedComments['comment1'] ? 'text-red-500 fill-red-500' : 'text-gray-500'}
-                            fill={likedComments['comment1'] ? 'currentColor' : 'none'}
-                          />
-                          {commentLikes['comment1']}
-                        </button>
-
-                         {/* Three dots button */}
-                        <div className="relative ml-1">
-                          <button
-                            onClick={() => toggleCommentMenu('comment1')}
-                            className="p-1 text-gray-500 hover:text-black"
-                          >
-                            <MoreHorizontal size={12} />
-                          </button>
-
-                          {commentMenus['comment1'] && (
-                            <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg z-10">
-                              <button
-                                className="w-full text-left px-3 py-2 text-[8px] hover:bg-gray-100"
-                                onClick={() => alert('Blocked user')}
-                              >
-                                Block User
-                              </button>
-                              <button
-                                className="w-full text-left px-3 py-2 text-[9px] hover:bg-gray-100"
-                                onClick={() => alert('Reported content')}
-                              >
-                                Report Content
-                              </button>
-                            </div>
-                          )}
+              {/* Mobile Information Panel (Collapsible) */}
+              {isMobile && (
+                  <Collapsible className="px-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <CollapsibleTrigger className="p-1 -mb-2 mt-2">
+                        <GripVertical size={16} />
+                      </CollapsibleTrigger>
+                    </div>
+                    <CollapsibleContent className="transition-all duration-500 ease-in-out">
+                      <div className="bg-gray-50 rounded-md p-4 text-xs">
+                        <div className="grid grid-cols-3 gap-8 px-8">
+                          <div>
+                            <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
+                            <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-[10px] font-medium mb-1">Medium</h4>
+                            <p className="text-[10px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
+                            <p className="text-[10px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
+                          </div>
                         </div>
-                        {/* <span>·</span> */}
-                        {/* <button className="hover:underline text-gray-500">View replies (2)</button> */}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                )}
+
+              {/* Center - Artwork Image */}
+              <div className={`relative z-0 ${isMobile ? 'px-4' : ''}`}>
+                {!isMobile && (
+                  <button
+                    onClick={toggleDetailsPanel}
+                    className="p-1 text-gray-500 hover:text-black absolute left-0 top-1/2 transform -translate-y-1/2"
+                  >
+                  <GripVertical size={15} />
+                </button>
+                )}
+
+                <div className="inline-block transform scale-[.85] -mb-10 relative">
+                  <div className="aspect-square overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
+                    <img
+                      src={artwork?.artworkImage}
+                      alt={artwork?.title}
+                      className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
+                    />
+                    {/* TipJar Floating Button */}
+                    <div
+                      className={`absolute bottom-3 right-3 ${isMobile ? '' : 'z-10'}`}
+                    >
+                      <div
+                        className={`group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-auto hover:pl-4 transition-all ease-in-out duration-700 animate-tipjar cursor-pointer`}
+                        onClick={handleTipJar}
+                      >
+                        <TipJarIcon onClick={handleTipJar} />
+                        <span
+                          className={`mr-1 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700 animate-donate`}
+                        >
+                          Donate
+                        </span>
                       </div>
                     </div>
                   </div>
-
-                  
                 </div>
               </div>
-
-              
-              {/* Add comment form */}
-              <form onSubmit={handleCommentSubmit} className="relative">
-                <input
-                  type="text"
-                  placeholder="Add a comment..."
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  className="w-full border border-gray-200 rounded-full px-4 py-2 text-[10px] focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16"
-                />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
-                  <button type="button" className="text-gray-400">
-                    😊
-                  </button>
-                  <button type="submit" className="text-[10px] text-gray-400" disabled={!comment.trim()}>
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.8214 2.48697 15.5291 3.33782 17L2.5 21.5L7 20.6622C8.47087 21.513 10.1786 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </button>
-                </div>
-              </form>
             </div>
-          </div>
-        </div>
-        </div>
+            
 
-        {/* Related Artworks Section */}
-        <div className="mt-14">
-          <h2 className="text-xs mb-6">Related Artworks</h2>
+            {/* Right side - Title, artist, description, comments */}
+            <div className={`${isMobile ? 'w-full mt-6 px-4' : 'w-full max-w-[390px] min-w-[280px]'}`}>
+              <div className={`${isMobile ? '' : 'relative top-10'}`}>
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center space-x-4">
+                    <button 
+                      onClick={() => toggleLike(id)} 
+                      className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
+                    >
+                      <Heart
+                        size={isMobile ? 16 : 14}
+                        className={likedArtworks[artwork?.id] ? "text-red-600 fill-red-600" : "text-gray-800"}
+                        fill={isLiked ? "currentColor" : "none"}
+                      />
+                      {(likeCounts[artwork?.id] ?? artwork?.likesCount ?? 0) > 0 && (
+                        <span className={`${isMobile ? 'text-xs' : 'text-[9px]'}`}>
+                          {likeCounts[artwork?.id] ?? artwork?.likesCount}
+                        </span>
+                      )}
+                    </button>
+                  </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {relatedArtworks.map((relatedArt) => (
-              <div key={relatedArt.id} className="cursor-pointer">
-                <img
-                  src={relatedArt.image}
-                  alt={relatedArt.title}
-                  className="w-full h-auto aspect-square object-cover rounded-lg shadow-sm"
-                />
+                  <div className="relative">
+                    <button 
+                      className="py-3 text-gray-500"
+                      onClick={() => setMenuOpen(!menuOpen)}
+                    >
+                      <MoreHorizontal size={isMobile ? 14 : 14} />
+                    </button>
+
+                    <ArtCardMenu
+                      isOpen={menuOpen}
+                      onFavorite={handleFavorite}
+                      onHide={handleHide}
+                      onReport={handleReport}
+                      isFavorite={isFavorite}
+                      isReported={isReported}
+                      className={isMobile ? "mobile-menu-position" : ""} 
+                    />
+                  </div>
+                </div>
+
+                <h1 className={`${isMobile ? 'text-lg' : 'text-md'} font-bold mb-2`}>{artwork?.title || "The Distorted Face"}</h1>
+                
+                <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-600 mb-4`}>by {artwork?.artistName || "Angel Ganev"}</p>
+                
+                <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-800 mb-2`}>
+                  {artwork?.description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."}
+                </p>
+                
+                <Separator className="my-6" />
+                
+                {/* User profile and comment section */}
+                <div className="mb-6 relative">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start">
+                    <Avatar className={`${isMobile ? 'h-6 w-6' : 'h-3 w-3'} mr-2`}>
+                        <AvatarImage src="https://i.pravatar.cc/150?img=3" alt="Jai Anoba" />
+                        <AvatarFallback>JA</AvatarFallback>
+                      </Avatar>
+
+                      <div>
+                        <p className={`${isMobile ? 'text-xs' : 'text-[9px]'} font-semibold`}>Jai Anoba</p>
+                        <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-700 mt-1`}>I love it!</p>
+
+                        <div className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-[9px]'} text-gray-500 mt-1`}>
+                          <span>3d</span>
+                          <span>·</span>
+                          <button className="hover:underline text-gray-500">Reply</button>
+                          <span>·</span>
+                          <button
+                            onClick={() => handleCommentLike('comment1')}
+                            className="flex items-center gap-1"
+                          >
+                            <Heart
+                              size={isMobile ? 12 : 10}
+                              className={likedComments['comment1'] ? 'text-red-500 fill-red-500' : 'text-gray-500'}
+                              fill={likedComments['comment1'] ? 'currentColor' : 'none'}
+                            />
+                            {commentLikes['comment1']}
+                          </button>
+
+                          {/* Three dots button */}
+                          <div className="relative ml-1">
+                            <button
+                              onClick={() => toggleCommentMenu('comment1')}
+                              className="p-1 text-gray-500 hover:text-black"
+                            >
+                               <MoreHorizontal size={isMobile ? 14 : 12} />
+                            </button>
+
+                            {commentMenus['comment1'] && (
+                              <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg z-10">
+                                <button
+                                  className={`w-full text-left px-3 py-2 ${isMobile ? 'text-xs' : 'text-[8px]'} hover:bg-gray-100`}
+                                  onClick={() => {
+                                    alert('Blocked user');
+                                    toggleCommentMenu('comment1');
+                                  }}
+                                >
+                                  Block User
+                                </button>
+                                <button
+                                  className={`w-full text-left px-3 py-2 ${isMobile ? 'text-xs' : 'text-[9px]'} hover:bg-gray-100`}
+                                  onClick={() => {
+                                    alert('Reported content');
+                                    toggleCommentMenu('comment1');
+                                  }}
+                                >
+                                  Report Content
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    
+                  </div>
+                </div>
+
+                
+                {/* Add comment form */}
+                <form onSubmit={handleCommentSubmit} className="relative">
+                  <input
+                    type="text"
+                    placeholder="Add a comment..."
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    className={`w-full border border-gray-200 rounded-full px-4 py-2 ${isMobile ? 'text-sm' : 'text-[10px]'} focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16`}
+                  />
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
+                    <button type="button" className="text-gray-400">
+                      😊
+                    </button>
+                    <button type="submit" className={`${isMobile ? 'text-sm' : 'text-[10px]'} text-gray-400`} disabled={!comment.trim()}>
+                      <svg className={`${isMobile ? 'w-5 h-5' : 'w-4 h-4'}`} viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14 1.788 0 5.297-4.76 5.297 4.76 1.788 0-7-14z" />
+                      </svg>
+                    </button>
+                  </div>
+                </form>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>

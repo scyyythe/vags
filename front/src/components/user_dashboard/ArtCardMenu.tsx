@@ -9,6 +9,7 @@ interface ArtCardMenuProps {
   isFavorite: boolean;
   isReported: boolean;
   isHidden?: boolean; 
+  className?: string;
 }
 
 const YELLOW = "#ffc107";
