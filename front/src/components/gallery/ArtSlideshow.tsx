@@ -59,9 +59,8 @@ const ArtSlideshow = ({
               alt={artwork.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute top-0 left-0 right-0 p-6 text-white z-20">
-              <h3 className="text-sm font-bold mb-1">{artwork.title}</h3>
-              <p className="text-xs opacity-90">by {artwork.artist}</p>
+            <div className="absolute top-0 left-6 p-8 text-white z-20">
+              <h3 className="text-xs font-bold mb-1">{artwork.title}</h3>
             </div>
           </div>
         ))}

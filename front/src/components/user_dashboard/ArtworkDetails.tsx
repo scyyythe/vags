@@ -172,11 +172,11 @@ const ArtworkDetails = () => {
       <div className="min-h-screen bg-white">
         <Header />
         <div className="container mx-auto pt-24 px-4 text-center">
-          <h2 className="text-2xl font-bold mb-4">Artwork Not Found</h2>
-          <p className="mb-8">
+          <h2 className="text-lg font-bold mb-4">Artwork Not Found</h2>
+          <p className="mb-8 text-xs">
             The artwork you're looking for doesn't exist or has been removed.
           </p>
-          <Link to="/explore" className="text-red-600 hover:underline">
+          <Link to="/explore" className="text-red-600 text-xs hover:underline">
             Return to Home
           </Link>
         </div>
@@ -420,9 +420,7 @@ const ArtworkDetails = () => {
                           </div>
                         </div>
                       </div>
-                    </div>
-
-                    
+                    </div> 
                   </div>
                 </div>
 
@@ -447,6 +445,7 @@ const ArtworkDetails = () => {
                     </button>
                   </div>
                 </form>
+
               </div>
             </div>
           </div>
