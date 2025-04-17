@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import { toast } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -30,11 +31,14 @@ export type LikedArtwork = {
 
 export const LikedArtworksContext = createContext<{
   likedArtworks: Record<string, boolean>;
+  likeCounts: Record<string, number>;
   toggleLike: (id: string) => void;
 }>({
   likedArtworks: {},
+  likeCounts: {},
   toggleLike: () => {},
 });
+
 
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
@@ -60,16 +64,28 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [likedArtworks, setLikedArtworks] = useState<Record<string, boolean>>({});
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
 
-  const toggleLike = (id: string) => {
-    setLikedArtworks((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+  const toggleLike = async (id: string) => {
+    try {
+      const liked = !likedArtworks[id];
+
+      // Simulate backend call
+      await fetch(`/api/artworks/${id}/like`, { method: 'POST' });
+
+      setLikedArtworks((prev) => ({ ...prev, [id]: liked }));
+      setLikeCounts((prev) => ({
+        ...prev,
+        [id]: (prev[id] || 0) + (liked ? 1 : -1),
+      }));
+    } catch (error) {
+      console.error('Like operation failed:', error);
+      toast('Failed to update like status');
+    }
+};
 
   return (
-    <LikedArtworksContext.Provider value={{ likedArtworks, toggleLike }}>
+    <LikedArtworksContext.Provider value={{ likedArtworks, likeCounts, toggleLike }}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <DonationProvider>

@@ -21,6 +21,7 @@ interface ArtCardProps {
   buttonText?: string;
   onButtonClick?: () => void;
   isExplore?: boolean;
+  likesCount: number;
 }
 
 const ArtCard = ({
@@ -36,12 +37,14 @@ const ArtCard = ({
   buttonText = "View Art",
   onButtonClick,
   isExplore = false,
+  likesCount = 0,
+  
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isReported, setIsReported] = useState(false);
-  const { likedArtworks, toggleLike } = useContext(LikedArtworksContext);
+  const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
   const { openPopup } = useDonation();
   
   const handleLike = () => {
@@ -122,10 +125,7 @@ const ArtCard = ({
             <p className="text-xs font-medium">{title || "Untitled Artwork"}</p>
             <div className="flex items-center space-x-2">
             <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                handleLike();
-              }}
+              onClick={handleLike}
               className={`p-1 rounded-full transition-colors ${
                 likedArtworks[id] ? "text-red" : "text-gray-400 hover:text-red"
               }`}
@@ -133,8 +133,12 @@ const ArtCard = ({
             >
               <Heart size={15} className={likedArtworks[id] ? "text-red-600 fill-red-600" : "text-gray-800"} fill={likedArtworks[id] ? "currentColor" : "none"} />
             </button>
-              <span className="text-xs text-gray-500">
+            {(likeCounts[id] ?? likesCount) > 0 && (
+              <span className="text-[9px] text-gray-500">
+                {likeCounts[id] ?? likesCount}
               </span>
+            )}
+
               <div
                 onClick={(e) => {
                   e.stopPropagation();
