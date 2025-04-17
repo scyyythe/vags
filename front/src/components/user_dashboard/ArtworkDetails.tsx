@@ -198,8 +198,14 @@ const ArtworkDetails = () => {
           </button>
         </div>
 
-        <div className="flex justify-center items-start space-x-2 border"> 
-          {/* Artwork details with collapsible */}
+        <div className="flex justify-center items-start space-x-2"> 
+          {/* Artwork, Right-side Sliding */}
+          <div
+            className={`flex justify-center items-start transition-transform duration-500 ease-in-out`}
+            style={{
+              transform: isDetailOpen ? "translateX(70px)" : "translateX(0)",
+            }}
+          >
           <div className="relative w-[480px] min-w-[480px] max-w-[480px]">
           {/* Collapsible Sidebar */}
           <div
@@ -298,12 +304,9 @@ const ArtworkDetails = () => {
               
               <p className="text-[10px] text-gray-600 mb-4">by {artwork?.artistName || "Angel Ganev"}</p>
               
-              <p className="text-xs text-gray-800 mb-2">
+              <p className="text-[10px] text-gray-800 mb-2">
                 {artwork?.description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."}
               </p>
-              {/* <button className="text-xs text-gray-500 hover:underline">
-                Show more
-              </button> */}
               
               <Separator className="my-6" />
               
@@ -317,9 +320,9 @@ const ArtworkDetails = () => {
 
                     <div>
                       <p className="text-[9px] font-semibold">Jai Anoba</p>
-                      <p className="text-xs text-gray-700 mt-1">I love it!</p>
+                      <p className="text-[10px] text-gray-700 mt-1">I love it!</p>
 
-                      <div className="flex items-center gap-2 text-[10px] text-gray-500 mt-1">
+                      <div className="flex items-center gap-2 text-[9px] text-gray-500 mt-1">
                         <span>3d</span>
                         <span>·</span>
                         <button className="hover:underline text-gray-500">Reply</button>
@@ -347,9 +350,9 @@ const ArtworkDetails = () => {
                           </button>
 
                           {commentMenus['comment1'] && (
-                            <div className="absolute right-0 mt-1 w-36 bg-white border rounded-md shadow-lg z-10">
+                            <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg z-10">
                               <button
-                                className="w-full text-left px-3 py-2 text-[9px] hover:bg-gray-100"
+                                className="w-full text-left px-3 py-2 text-[8px] hover:bg-gray-100"
                                 onClick={() => alert('Blocked user')}
                               >
                                 Block User
@@ -396,6 +399,7 @@ const ArtworkDetails = () => {
               </form>
             </div>
           </div>
+        </div>
         </div>
 
         {/* Related Artworks Section */}
