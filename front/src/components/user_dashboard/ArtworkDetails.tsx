@@ -39,8 +39,7 @@ const ArtworkDetails = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
   const [isReported, setIsReported] = useState(false);
 
   useEffect(() => {
@@ -78,30 +77,24 @@ const ArtworkDetails = () => {
       setComment("");
     }
   };
-
-  const handleSave = () => {
-      setIsSaved(!isSaved);
-      toast(isSaved ? "Artwork unsaved" : "Artwork saved");
-      setMenuOpen(false);
-    };
   
-    const handleHide = () => {
-      setIsHidden(true);
-      toast("Artwork hidden");
-      setMenuOpen(false);
-    };
+  const handleHide = () => {
+    setIsHidden(true);
+    toast("Artwork hidden");
+    setMenuOpen(false);
+  };
   
-    const handleReport = () => {
-      setIsReported(!isReported);
-      toast(isReported ? "Artwork report removed" : "Artwork reported");
-      setMenuOpen(false);
-    };
+  const handleReport = () => {
+    setIsReported(!isReported);
+    toast(isReported ? "Artwork report removed" : "Artwork reported");
+    setMenuOpen(false);
+  };
   
-    const handleFavorite = () => {
-      setIsFavorited(!isFavorited);
-      toast(isFavorited ? "Artwork favorite removed" : "Artwork added to favorites");
-      setMenuOpen(false);
-    };
+  const handleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    toast(isFavorite ? "Artwork favorite removed" : "Artwork added to favorites");
+    setMenuOpen(false);
+  };
 
   const toggleDetailsPanel = () => {
     setIsDetailOpen(!isDetailOpen);
@@ -295,9 +288,7 @@ const ArtworkDetails = () => {
                   onFavorite={handleFavorite}
                   onHide={handleHide}
                   onReport={handleReport}
-                  onSave={handleSave}
-                  isSaved={isSaved}
-                  isFavorited={isFavorited}
+                  isFavorite={isFavorite}
                   isReported={isReported}
                 />
               </div>
