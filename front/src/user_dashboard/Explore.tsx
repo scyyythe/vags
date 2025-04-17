@@ -38,6 +38,7 @@ const Explore = () => {
       artworkImage:
         "https://i.pinimg.com/736x/97/5d/50/975d50c7c3c345cd072ddd34b180cf88.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "2",
@@ -46,6 +47,7 @@ const Explore = () => {
       artworkImage:
         "https://www.goneminimal.com/wp-content/uploads/2022/04/Minimal-abstract-flower-painting-Minimalist-Painting-Gone-Minimal-edited-scaled.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "3",
@@ -54,6 +56,7 @@ const Explore = () => {
       artworkImage:
         "https://i.pinimg.com/474x/e7/9f/cb/e79fcb270b052643b832d5335d73859f.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "4",
@@ -62,6 +65,7 @@ const Explore = () => {
       artworkImage:
         "https://images.squarespace-cdn.com/content/v1/58fd82dbbf629ab224f81b68/1599802230471-29DU3BQDBTQET95TAS58/image-asset.jpeg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "5",
@@ -70,6 +74,7 @@ const Explore = () => {
       artworkImage:
         "https://i.pinimg.com/474x/8a/d6/3d/8ad63d66a3c26a236a8fa0c5c94259d9.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "6",
@@ -77,6 +82,7 @@ const Explore = () => {
       artistImage: "https://i.pravatar.cc/150?img=2",
       artworkImage: "https://cdn.artcld.com/img/t51cs49ogy6do75zh2e4.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "7",
@@ -85,6 +91,7 @@ const Explore = () => {
       artworkImage:
         "https://as2.ftcdn.net/v2/jpg/12/28/04/85/1000_F_1228048537_dZjULPg6tMaUQWEIIu7wdCrErfQD5ulI.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "8",
@@ -93,6 +100,7 @@ const Explore = () => {
       artworkImage:
         "https://i.pinimg.com/474x/dc/23/08/dc23089d3a43819691c9b447e496f961.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "9",
@@ -101,6 +109,7 @@ const Explore = () => {
       artworkImage:
         "https://i.pinimg.com/474x/f5/bd/ed/f5bdedecbc242032fcc7665483137449.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "10",
@@ -108,6 +117,7 @@ const Explore = () => {
       artistImage: "https://i.pravatar.cc/150?img=2",
       artworkImage: "https://img.artpal.com/330392/133-23-11-9-6-50-5m.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "11",
@@ -116,6 +126,7 @@ const Explore = () => {
       artworkImage:
         "https://i.pinimg.com/474x/fc/d7/75/fcd7753479b158397f69c09a618eb05a.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "12",
@@ -124,6 +135,7 @@ const Explore = () => {
       artworkImage:
         "https://i.pinimg.com/474x/6d/bd/36/6dbd3628910db4a5f73a32a313f1d5e5.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "13",
@@ -132,6 +144,7 @@ const Explore = () => {
       artworkImage:
         "https://i.pinimg.com/474x/db/5b/a2/db5ba20387c6b3681588d79d0930e48a.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "14",
@@ -140,14 +153,16 @@ const Explore = () => {
       artworkImage:
         "https://i.pinimg.com/474x/ae/04/55/ae0455b5950a7acd62b894030ba97de0.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
     {
       id: "15",
       artistName: "Angel Canete",
       artistImage: "https://i.pravatar.cc/150?img=2",
       artworkImage:
-        "https://i.pinimg.com/474x/44/a3/9c/44a39cc56caf1de8988a06bbfbea42c8.jpg",
+        "https://i.pinimg.com/474x/cd/74/ad/cd74ad2c87fca279791a9629936f679b.jpg",
       title: "Slopes",
+      likesCount: 0, 
     },
   ];
 
@@ -275,6 +290,7 @@ const Explore = () => {
                     title={card.title}
                     onButtonClick={handleTipJar}
                     isExplore={true}
+                    likesCount={0} 
                   />
                 ))}
               </div>

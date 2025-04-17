@@ -81,9 +81,9 @@ const CreatePost = () => {
         <div className="mb-8">
           <button 
             onClick={() => navigate(-1)} 
-            className="flex items-center text-lg font-semibold"
+            className="flex items-center text-sm font-semibold"
           >
-            <i className='bx bx-chevron-left text-2xl mr-2'></i>
+            <i className='bx bx-chevron-left text-lg mr-2'></i>
             Create Post
           </button>
         </div>

@@ -198,14 +198,15 @@ const ArtworkDetails = () => {
           </button>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-8 md:gap-4 overflow-hidden">
+        <div className="flex justify-center items-start space-x-2 border"> 
           {/* Artwork details with collapsible */}
-          <div className="relative flex items-center justify-start w-full md:w-auto">
-          {/* Collapsible Sidebar - Positioned Absolutely */}
+          <div className="relative w-[480px] min-w-[480px] max-w-[480px]">
+          {/* Collapsible Sidebar */}
           <div
-            className={`absolute left-0 top-0 h-full transition-transform duration-500 ease-in-out z-10 ${
-              isDetailOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
+            className={`absolute right-100 top-0 w-[27%] h-full z-20 transition-all duration-500 ease-in-out pointer-events-none ${
+              isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-10"
             }`}
+            style={{ right: "calc(100% + 16px)" }}
           >
             <div className="bg-gray-50 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
               <div className="mb-8">
@@ -224,11 +225,7 @@ const ArtworkDetails = () => {
           </div>
 
           {/* Center - Artwork Image */}
-          <div
-            className={`ml-0 transition-transform duration-500 ease-in-out ${
-              isDetailOpen ? "translate-x-[150px]" : "translate-x-0"
-            }`}
-          >
+          <div className="relative z-0 mx-auto">
             <button
               onClick={toggleDetailsPanel}
               className="p-1 text-gray-500 hover:text-black absolute left-0 top-1/2 transform -translate-y-1/2"
@@ -237,11 +234,11 @@ const ArtworkDetails = () => {
             </button>
 
             <div className="inline-block transform scale-[.85] -mb-10 relative">
-              <div className="overflow-hidden rounded-xl shadow-[0_4px_14px_rgba(0,0,0,0.15)] mb-6 relative">
+              <div className="aspect-square overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)]">
                 <img
                   src={artwork?.artworkImage}
                   alt={artwork?.title}
-                  className="h-auto w-auto max-w-full max-h-[500px] object-contain"
+                  className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                 />
                 {/* TipJar Floating Button */}
                 <div className="absolute bottom-3 right-3 group cursor-pointer">
@@ -256,11 +253,10 @@ const ArtworkDetails = () => {
             </div>
           </div>
         </div>
-
+            
 
           {/* Right side - Title, artist, description, comments */}
-          <div className={`flex-1 min-w-0 max-w-screen-xs transition-all duration-500 ease-in-out ${isDetailOpen ? "ml-[150px]" : "ml-0"}`}style={{ overflowWrap: 'break-word' }}>
-
+          <div className="w-[390px] min-w-[390px] max-w-[390px]">
             <div className="relative top-10">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center space-x-4">
