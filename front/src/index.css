@@ -200,11 +200,11 @@ img {
 }
 
 .animate-tipjar {
-  animation: tipJarExpandContract 4s ease-in-out 2;
+  animation: tipJarExpandContract 4s ease-in-out;
 }
 
 .animate-donate {
-  animation: donateSlide 4s ease-in-out 2;
+  animation: donateSlide 4s ease-in-out;
 }
 
 @keyframes slideDown {
