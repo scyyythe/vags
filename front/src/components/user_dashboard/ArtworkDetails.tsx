@@ -24,7 +24,8 @@ import { useNavigate } from "react-router-dom";
 
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const { likedArtworks, toggleLike } = useContext(LikedArtworksContext);
+  const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
+  const isLiked = likedArtworks[id] || false;
   const { artworks } = useArtworkContext();
   const { openPopup } = useDonation();
 
@@ -264,15 +265,19 @@ const ArtworkDetails = () => {
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center space-x-4">
                   <button 
-                    onClick={handleLike} 
+                    onClick={() => toggleLike(id)} 
                     className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
                   >
                     <Heart
                       size={14}
                       className={likedArtworks[artwork?.id] ? "text-red-600 fill-red-600" : "text-gray-800"}
-                      fill={likedArtworks[artwork?.id] ? "currentColor" : "none"}
+                      fill={isLiked ? "currentColor" : "none"}
                     />
-                    <span className="text-[10px] font-medium ml-2">{likedArtworks[artwork?.id] ? '3.5k' : '3.5k'}</span>
+                    {(likeCounts[artwork?.id] ?? artwork?.likesCount ?? 0) > 0 && (
+                      <span className="text-[9px]">
+                        {likeCounts[artwork?.id] ?? artwork?.likesCount}
+                      </span>
+                    )}
                   </button>
                 </div>
 
