@@ -3,19 +3,23 @@ from api.models.artwork_model.artwork import Art
 from datetime import datetime
 from api.models.interaction_model.interaction import Comment, Like
 from api.models.interaction_model.notification import Notification
+from rest_framework import serializers
+from api.models.artwork_model.artwork import Art
+import cloudinary.uploader
 
 class ArtSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField(max_length=100)
     artist = serializers.CharField(read_only=True)  
     category = serializers.CharField(max_length=100)
-    medium=serializers.CharField(max_length=100)
+    medium = serializers.CharField(max_length=100)
     art_status = serializers.CharField(max_length=100)
     price = serializers.IntegerField()
     description = serializers.CharField(required=False)
     visibility = serializers.CharField(max_length=100, required=False, default="public")  
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
+    image = serializers.ImageField(required=False)  
 
     comments = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
@@ -40,6 +44,12 @@ class ArtSerializer(serializers.Serializer):
         return Like.objects.filter(art=obj).count()
 
     def create(self, validated_data):
+        image = validated_data.pop('image', None)  # Get image from validated data if provided
+        if image:
+            # Upload the image to Cloudinary
+            result = cloudinary.uploader.upload(image)
+            validated_data['image_url'] = result['secure_url']  # Store the image URL from Cloudinary
+        
         if "visibility" not in validated_data:
             validated_data["visibility"] = "public"  
         art = Art(**validated_data)
@@ -53,6 +63,11 @@ class ArtSerializer(serializers.Serializer):
         return art
     
     def update(self, instance, validated_data):
+        image = validated_data.pop('image', None)
+        if image:
+            result = cloudinary.uploader.upload(image)
+            validated_data['image_url'] = result['secure_url']  # Update the image URL if a new image is uploaded
+        
         instance.title = validated_data.get("title", instance.title)
         instance.category = validated_data.get("category", instance.category)
         instance.medium = validated_data.get("medium", instance.medium)
@@ -77,6 +92,7 @@ class ArtSerializer(serializers.Serializer):
             "visibility": instance.visibility, 
             "created_at": instance.created_at,
             "updated_at": instance.updated_at,
+            "image_url": instance.image_url,  # Include image_url in the representation
             "comments": self.get_comments(instance),
             "likes_count": self.get_likes_count(instance)
         }

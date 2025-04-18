@@ -64,16 +64,14 @@ const CreatePost = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // if (!selectedFile) {
-    //   toast.error("Please upload an artwork image");
-    //   return;
-    // }
-
     if (!artworkTitle) {
       toast.error("Please enter an artwork title");
       return;
     }
-
+    if (!selectedFile) {
+      toast.error("Please upload an artwork image");
+      return;
+    }
     const formData = new FormData();
     formData.append("title", artworkTitle);
     formData.append("category", artworkStyle);
@@ -82,7 +80,10 @@ const CreatePost = () => {
     formData.append("price", price.toString());
     formData.append("description", description || "");
     formData.append("visibility", visibility);
-    // formData.append("image", selectedFile);
+
+    if (selectedFile) {
+      formData.append("image", selectedFile);
+    }
 
     const token = localStorage.getItem("access_token");
     try {
