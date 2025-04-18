@@ -167,12 +167,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
     return () => clearInterval(interval);
   }, []);
 
-  
-  const visibleComments = showAllComments ? comments : comments.slice(0, 3);
-  const hiddenCommentsCount = comments.length - visibleComments.length;
+  const visibleComments = showAllComments ? comments : comments.slice(0, 1);
+  const hiddenCommentsCount = comments.length - 1;
+
+  const [expandedReplies, setExpandedReplies] = useState<{ [key: string]: boolean }>({});
 
   const renderComment = (comment: Comment, isReply = false) => (
-    <div key={comment.id} className={`mb-6 relative ${isReply ? 'ml-8 border-l-2 border-gray-100 pl-4' : ''}`}>
+    <div key={comment.id} className={`mb-2 relative ${isReply ? 'ml-8 border-l-2 border-gray-100 pl-4' : ''}`}>
       <div className="flex items-start justify-between">
         <div className="flex items-start">
           <Avatar className={`${isMobile ? 'h-6 w-6' : 'h-3 w-3'} mr-2`}>
@@ -182,7 +183,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   
           <div>
             <p className={`${isMobile ? 'text-xs' : 'text-[9px]'} font-semibold`}>{comment.user}</p>
-            <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-700 mt-1`}>{comment.text}</p>
+            <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-700 mt-1 break-words whitespace-pre-wrap`}>
+              {comment.text}
+            </p>
   
             <div className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-[9px]'} text-gray-500 mt-1`}>
               <span>{getTimeAgoText(comment.timestamp)}</span>
@@ -206,126 +209,175 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                 />
                 {commentLikes[comment.id] || 0}
               </button>
+              
+              <div className="relative ml-1">
+                <button
+                  onClick={() => toggleCommentMenu(comment.id)}
+                  className="p-1 text-gray-500 hover:text-black"
+                >
+                  <MoreHorizontal size={isMobile ? 14 : 12} />
+                </button>
+
+                {commentMenus[comment.id] && (
+                  <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg z-10 max-w-full overflow-hidden">
+                    <button
+                      className={`w-full text-left px-3 py-2 ${
+                        isMobile ? "text-xs" : "text-[8px]"
+                      } hover:bg-gray-100`}
+                      onClick={() => {
+                        toast.success(`Blocked user ${comment.user}`);
+                        toggleCommentMenu(comment.id);
+                      }}
+                    >
+                      Block User
+                    </button>
+                    <button
+                      className={`w-full text-left px-3 py-2 ${
+                        isMobile ? "text-xs" : "text-[9px]"
+                      } hover:bg-gray-100`}
+                      onClick={() => {
+                        toast.success("Content reported");
+                        toggleCommentMenu(comment.id);
+                      }}
+                    >
+                      Report Content
+                    </button>
+                  </div>
+                )}
+              </div>
+        
             </div>
           </div>
         </div>
       </div>
   
       {/* Replies */}
-      {comment.replies.map(reply => (
-      <div key={reply.id}>
-        {renderComment(reply, true)}
-        {reply.replies && reply.replies.length > 0 && expandedComments[reply.id] && (
-          <div className="mt-2">
+      {comment.replies && comment.replies.length > 0 && (
+        <div className="mt-2 ml-8">
+          {!expandedReplies[comment.id] ? (
             <button
-              onClick={() => toggleReplies(reply.id)}
-              className="text-gray-500 hover:text-gray-700 text-[10px] flex items-center gap-1 ml-8"
+              onClick={() =>
+                setExpandedReplies((prev) => ({ ...prev, [comment.id]: true }))
+              }
+              className="text-gray-500 hover:text-gray-700 text-[10px] flex items-center gap-1"
             >
-              {expandedComments[reply.id] ? 'Hide' : 'View'} replies ({reply.replies.length})
+              View all replies ({comment.replies.length})
             </button>
-            {expandedComments[reply.id] && (
-              <div className="mt-4">
-                {reply.replies.map(childReply => renderComment(childReply, true))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    ))}
+          ) : (
+            <>
+              {comment.replies.map((reply) => renderComment(reply, true))}
+              <button
+                onClick={() =>
+                  setExpandedReplies((prev) => ({ ...prev, [comment.id]: false }))
+                }
+                className="text-gray-500 hover:text-gray-700 text-[10px] mt-1 flex items-center gap-1"
+              >
+                Hide replies
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );  
   
-
   return (
-    <div className="w-full">
-      {comments.length === 0 ? (
-        <p className="text-[10px] text-gray-500 italic mb-4">
-          No comments yet.
-        </p>
-      ) : (
-        <>
-          {visibleComments.map(comment => renderComment(comment))}
-          {hiddenCommentsCount > 0 && (
-            <button
-              onClick={() => setShowAllComments(true)}
-              className="text-gray-500 hover:text-gray-700 text-[10px] mb-4"
-            >
-              View all {comments.length} comments
-            </button>
-          )}
-        </>
-      )}
-
-      
-      {hiddenCommentsCount > 0 && (
-        <button
-          onClick={() => setShowAllComments(true)}
-          className="text-gray-500 hover:text-gray-700 text-[10px] mb-4"
+    <div className="relative h-48 md:h-48 sm:h-48 p-1">
+      <p className="text-[10px] font-semibold mb-4">
+          Comments
+      </p>
+      {/* Scrollable comment container */}
+      <div
+        className={`overflow-y-auto h-[50%] pb-20 custom-scrollbar`}
+      >
+        <div
+          className={`transition-all duration-300 ${
+            showAllComments ? 'max-h-48' : ''
+          }`}
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
         >
-          View all {comments.length} comments
-        </button>
-      )}
+          <div className="hide-scrollbar overflow-y-auto p-1 max-h-full">
+          {comments.length === 0 ? (
+            <p className="text-[10px] text-gray-500 italic">
+              No comments yet. Be the first!
+            </p>
+          ) : (
+            <>
+              {visibleComments.map(comment => renderComment(comment))}
+            </>
+          )}
+          </div>
+        </div>
 
-      <form onSubmit={handleCommentSubmit} className="relative">
-        {replyingTo && (
-          <div className="mb-2">
-            <span className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-500`}>
-              Replying to comment - click to cancel
-              <button 
-                onClick={() => {
-                  setReplyingTo(null);
-                  setComment("");
-                }}
-                className="ml-2 text-blue-500 hover:underline"
-              >
-                ×
-              </button>
-            </span>
-          </div>
-        )}
-        <input
-          type="text"
-          placeholder="Add a comment..."
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          className={`w-full border border-gray-200 rounded-full px-4 py-2 ${isMobile ? 'text-sm' : 'text-[10px]'} focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16`}
-        />
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
-          <div className="relative">
-            <button 
-              type="button" 
-              className="text-gray-400"
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-            >
-              <i className='bx bx-smile'></i>
-            </button>
-            {showEmojiPicker && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.4, y: 10 }}
-                animate={{ opacity: 1, scale: 0.4, y: 0 }}
-                exit={{ opacity: 0, scale: 0.5, y: 10 }}
-                transition={{ duration: 0.2 }}
-                className="absolute bottom-10 right-0 z-50 origin-bottom-right rounded-md shadow-lg border border-gray-200 bg-white overflow-hidden"
-              >
-                <Picker
-                  data={data}
-                  onEmojiSelect={onEmojiClick}
-                  theme="light"
-                  maxFrequentRows={0}
-                  previewPosition="none"
-                  skinTonePosition="none"
-                  searchPosition="none"
-                />
-              </motion.div>
-            )}
-          </div>
-          <button 
-            type="submit" 
-            className={`${isMobile ? 'text-sm' : 'text-[10px]'} text-gray-400`} 
-            disabled={!comment.trim()}
+        {comments.length > 1 && (
+          <button
+            onClick={() => setShowAllComments(prev => !prev)}
+            className="text-gray-500 hover:text-gray-700 text-[10px] mb-4 px-4"
           >
-            <Send className={`${isMobile ? 'w-5 h-5' : 'w-4 h-4'}`} />
+            {showAllComments
+              ? "Hide comments"
+              : `View all ${comments.length - 1} comment${comments.length - 1 > 1 ? 's' : ''}`}
           </button>
+        )}
+      </div>
+
+      {/* Fixed input at bottom */}
+      <form
+        onSubmit={handleCommentSubmit}
+        className="absolute bottom-0 left-0 right-0 bg-white py-3"
+      >
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Add a comment..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className={`w-full border border-gray-200 rounded-full px-4 py-2 ${isMobile ? 'text-sm' : 'text-[10px]'} focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16`}
+          />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
+            <div className="relative">
+              <button 
+                type="button" 
+                className="text-gray-400"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              >
+                <i className='bx bx-smile'></i>
+              </button>
+              {showEmojiPicker && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.4, y: 10 }}
+                  animate={{ opacity: 1, scale: 0.4, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.5, y: 10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute bottom-10 right-0 z-50 origin-bottom-right rounded-md shadow-lg border border-gray-200 bg-white overflow-hidden"
+                >
+                  <Picker
+                    data={data}
+                    onEmojiSelect={onEmojiClick}
+                    theme="light"
+                    maxFrequentRows={0}
+                    previewPosition="none"
+                    skinTonePosition="none"
+                    searchPosition="none"
+                  />
+                </motion.div>
+              )}
+            </div>
+            <button 
+              type="submit" 
+              className={`
+                ${isMobile ? 'text-sm' : 'text-[10px]'} 
+                ${comment.trim() ? 'text-black' : 'text-gray-400'}
+              `}
+              disabled={!comment.trim()}
+            >
+              <Send className={`${isMobile ? 'w-5 h-5' : 'w-4 h-4'}`} />
+            </button>
+
+          </div>
         </div>
       </form>
     </div>

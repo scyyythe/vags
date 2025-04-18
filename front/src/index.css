@@ -179,6 +179,7 @@ img {
   background-color: #ffffff; 
 }
 
+/* TIP JAR ANIMATION ICON */
 @keyframes tipJarExpandContract {
   5%, 100% {
     width: 32px;
@@ -247,6 +248,8 @@ img {
   z-index: 50;     
 }
 
+/* EXPAND FOR ARTWORK */
+
 /* Circular Icon with Animation */
 .circle-icon {
   width: 45px;
@@ -299,7 +302,6 @@ img {
   border-radius: 8px;
 }
 
-/* Close Button */
 .close-button {
   position: absolute;
   top: -20px;
@@ -314,4 +316,17 @@ img {
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
+/* COMMENT SCROLL */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgb(234, 233, 233);
+  border-radius: 10px;
+}
 
