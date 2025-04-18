@@ -1,5 +1,6 @@
 import jwt
-from datetime import datetime, timedelta
+import datetime
+
 import bcrypt
 from django.conf import settings
 from rest_framework.views import APIView
@@ -20,7 +21,7 @@ class CreateUserView(generics.CreateAPIView):
         user = serializer.save()
         otp = generate_otp()
         user.otp = otp
-        user.otp_expires_at = datetime.utcnow() + timedelta(minutes=5)
+        user.otp_expires_at = datetime.utcnow() + datetime.timedelta(minutes=5)
         user.save()
         send_otp_email(user.email, otp)
 

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from api.views.user_views.user_views import CreateUserView, CustomTokenObtainPairView, CustomTokenRefreshView
-from api.utils.email_utils import VerifyOTPView
+from api.views.auth_views import VerifyOTPView
 from django.http import JsonResponse
 def home(request):
     return JsonResponse({"message": "API is working"}, safe=False)

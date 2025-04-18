@@ -9,7 +9,7 @@ from .routes.auction_routes import auction_urlpatterns
 from .routes.bid_routes import bid_urlpatterns
 from .routes.report_routes import report_urlpatterns
 from .routes.fingerprint_routes import fingerprint_urlpatterns
-
+from .routes.exhibit_routes import exhibit_urlpatterns
 urlpatterns = (
     user_urlpatterns +
     admin_urlpatterns +
@@ -20,5 +20,6 @@ urlpatterns = (
     auction_urlpatterns +
     bid_urlpatterns +
     report_urlpatterns +
+    exhibit_urlpatterns +
     fingerprint_urlpatterns
 )
