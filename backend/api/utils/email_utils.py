@@ -1,6 +1,6 @@
 from django.core.mail import send_mail
 import random
-from datetime import datetime, timedelta
+
 
 def generate_otp():
     return ''.join(random.choices('0123456789', k=6))
