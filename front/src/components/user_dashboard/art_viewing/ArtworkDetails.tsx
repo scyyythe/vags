@@ -1,28 +1,29 @@
-import { useState, useContext, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState, useEffect,  useContext, useRef } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   Heart,
   MoreHorizontal,
   Send,
   GripVertical,
+  Reply,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
-import ArtCardMenu from "../cards/ArtCardMenu";
-import TipJarIcon from "../tip_jar/TipJarIcon";
-import { useDonation } from "../../../context/DonationContext";
-import Comment from "../comment_section/Comment";
-import Header from "../Header";
+import { LikedArtworksContext } from "@/App";
+import ArtCardMenu from "@/components/user_dashboard/cards/ArtCardMenu";
+import TipJarIcon from "@/components/user_dashboard/tip_jar/TipJarIcon";
+import { useDonation } from "@/context/DonationContext";
+import Header from "@/components/user_dashboard/Header";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useArtworkContext } from "../../../context/ArtworkContext";
-import { useNavigate } from "react-router-dom";
+import { useArtworkContext } from "@/context/ArtworkContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { formatDistanceToNow } from 'date-fns';
+import CommentSection from "@/components/user_dashboard/comment_sec/Comment";
 
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -39,12 +40,22 @@ const ArtworkDetails = () => {
   const [relatedArtworks, setRelatedArtworks] = useState<any[]>([]);
   const [comments, setComments] = useState<any[]>([]);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [viewAll] = useState(false);
+
+  const [showFullDescription, setShowFullDescription] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const descriptionRef = useRef<HTMLDivElement | null>(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isReported, setIsReported] = useState(false);
+
+  const [commentLikes, setCommentLikes] = useState<{ [commentId: string]: number }>({});
+  const [likedComments, setLikedComments] = useState<{ [commentId: string]: boolean }>({});
+  const [commentMenus, setCommentMenus] = useState<{ [commentId: string]: boolean }>({});
+  const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     setIsLoading(true);
@@ -57,10 +68,17 @@ const ArtworkDetails = () => {
     setIsLoading(false);
   }, [id, artworks]);
 
+  useEffect(() => {
+    if (descriptionRef.current) {
+      const isOver = descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight;
+      setIsOverflowing(isOver);
+    }
+  }, [artwork?.description]);
+
   const handleLike = () => {
-    if (artwork) {
-      toggleLike(artwork.id);
-      toast(`${likedArtworks[artwork.id] ? "Unliked" : "Liked"} the artwork`);
+    if (artwork && id) {
+      toggleLike(id);
+      toast(`${likedArtworks[id] ? "Unliked" : "Liked"} the artwork`);
     }
   };
 
@@ -68,15 +86,20 @@ const ArtworkDetails = () => {
     e.preventDefault();
     if (comment.trim()) {
       const newComment = {
-        id: `c${comments.length + 1}`,
+        id: `c${Date.now()}`,
         user: "You",
         userImage: "https://i.pravatar.cc/150?img=5",
         text: comment,
         likes: 0,
-        timestamp: "Just now",
+        timestamp: new Date().toISOString(),
+        replies: []
       };
 
-      setComments([...comments, newComment]);
+      setComments(prev => [...prev, newComment]);
+      setCommentLikes(prev => ({
+        ...prev,
+        [newComment.id]: 0
+      }));
       toast("Comment posted");
       setComment("");
     }
@@ -114,18 +137,6 @@ const ArtworkDetails = () => {
     });
   };  
 
-  const [commentLikes, setCommentLikes] = useState<{ [commentId: string]: number }>({
-    'comment1': 90,
-  });
-  
-  const [likedComments, setLikedComments] = useState<{ [commentId: string]: boolean }>({
-    'comment1': false,
-  });
-  
-  const [commentMenus, setCommentMenus] = useState<{ [commentId: string]: boolean }>({
-    'comment1': false,
-  });
-  
   const handleCommentLike = (commentId: string) => {
     setLikedComments(prev => ({
       ...prev,
@@ -133,7 +144,7 @@ const ArtworkDetails = () => {
     }));
     setCommentLikes(prev => ({
       ...prev,
-      [commentId]: prev[commentId] + (likedComments[commentId] ? -1 : 1),
+      [commentId]: (prev[commentId] || 0) + (likedComments[commentId] ? -1 : 1),
     }));
   };
   
@@ -143,7 +154,28 @@ const ArtworkDetails = () => {
       [commentId]: !prev[commentId],
     }));
   };
-  
+
+  const handleReply = (commentId: string) => {
+    const parentComment = comments.find(c => c.id === commentId);
+    if (parentComment) {
+      setComment(`@${parentComment.user} `);
+    }
+  };
+
+  const toggleReplies = (commentId: string) => {
+    setExpandedComments(prev => ({
+      ...prev,
+      [commentId]: !prev[commentId]
+    }));
+  };
+
+  const onEmojiClick = (
+    event: React.MouseEvent<Element, MouseEvent>,
+    emojiObject: { emoji: string }
+  ) => {
+    setComment(prev => prev + emojiObject.emoji);
+    setShowEmojiPicker(false);
+  };
 
   if (isLoading) {
     return (
@@ -185,6 +217,100 @@ const ArtworkDetails = () => {
     );
   }
 
+  const renderComment = (commentItem: any, isReply = false) => (
+    <div
+      key={commentItem.id}
+      className={`mb-6 relative ${isReply ? 'ml-8 pl-4 border-l border-gray-200' : ''}`}
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex items-start">
+          <Avatar className={`${isMobile ? 'h-6 w-6' : 'h-3 w-3'} mr-2`}>
+            <AvatarImage src={commentItem.userImage} alt={commentItem.user} />
+            <AvatarFallback>{commentItem.user.substring(0, 2).toUpperCase()}</AvatarFallback>
+          </Avatar>
+  
+          <div>
+            <p className={`${isMobile ? 'text-xs' : 'text-[9px]'} font-semibold`}>{commentItem.user}</p>
+            <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-700 mt-1`}>{commentItem.text}</p>
+  
+            <div className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-[9px]'} text-gray-500 mt-1`}>
+              <span>{formatDistanceToNow(new Date(commentItem.timestamp), { addSuffix: true })}</span>
+              <span>·</span>
+              <button 
+                onClick={() => handleReply(commentItem.id)} 
+                className="hover:underline text-gray-500 flex items-center gap-1"
+              >
+                <Reply size={isMobile ? 12 : 10} />
+                Reply
+              </button>
+              <span>·</span>
+              <button
+                onClick={() => handleCommentLike(commentItem.id)}
+                className="flex items-center gap-1"
+              >
+                <Heart
+                  size={isMobile ? 12 : 10}
+                  className={likedComments[commentItem.id] ? 'text-red-500 fill-red-500' : 'text-gray-500'}
+                  fill={likedComments[commentItem.id] ? 'currentColor' : 'none'}
+                />
+                {commentLikes[commentItem.id] || commentItem.likes || 0}
+              </button>
+  
+              <div className="relative ml-1">
+                <button
+                  onClick={() => toggleCommentMenu(commentItem.id)}
+                  className="p-1 text-gray-500 hover:text-black"
+                >
+                  <MoreHorizontal size={isMobile ? 14 : 12} />
+                </button>
+  
+                {commentMenus[commentItem.id] && (
+                  <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg z-10">
+                    <button
+                      className={`w-full text-left px-3 py-2 ${isMobile ? 'text-xs' : 'text-[8px]'} hover:bg-gray-100`}
+                      onClick={() => {
+                        toast.success(`Blocked user ${commentItem.user}`);
+                        toggleCommentMenu(commentItem.id);
+                      }}
+                    >
+                      Block User
+                    </button>
+                    <button
+                      className={`w-full text-left px-3 py-2 ${isMobile ? 'text-xs' : 'text-[9px]'} hover:bg-gray-100`}
+                      onClick={() => {
+                        toast.success("Content reported");
+                        toggleCommentMenu(commentItem.id);
+                      }}
+                    >
+                      Report Content
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      {!isReply && commentItem.replies && commentItem.replies.length > 0 && (
+        <div className="mt-2 ml-8">
+          <button
+            onClick={() => toggleReplies(commentItem.id)}
+            className="text-blue-500 hover:text-blue-600 text-[10px] flex items-center gap-1"
+          >
+            {expandedComments[commentItem.id] ? 'Hide' : 'View'} {commentItem.replies.length} {commentItem.replies.length === 1 ? 'reply' : 'replies'}
+          </button>
+        </div>
+      )}
+  
+      {!isReply && commentItem.replies && expandedComments[commentItem.id] && (
+        <div className="mt-4">
+          {commentItem.replies.map((reply: any) => renderComment(reply, true))}
+        </div>
+      )}
+    </div>
+  );
+  
   return (
     <div className="min-h-screen">
       <Header />
@@ -210,27 +336,27 @@ const ArtworkDetails = () => {
             }}
           >
             {/* Artwork container */}
-            <div className={`relative ${isMobile ? 'w-full' : 'w-full max-w-[480px] min-w-[320px]'}`}>
+            <div className={`relative mr-6 ${isMobile ? 'w-full' : 'w-full max-w-[500px] min-w-[380px]'}`}>
               {/* Collapsible Sidebar */}
               {!isMobile && (
                 <div
-                  className={`absolute right-100 top-0 w-[27%] h-full z-20 transition-all duration-500 ease-in-out pointer-events-none ${
-                    isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-10"
+                  className={`absolute right-100 top-0 w-[32%] h-[110%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
+                    isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-1"
                   }`}
-                  style={{ right: "calc(100% + 16px)" }}
+                  style={{ right: "calc(100% + 16px)", marginRight: "24px"  }}
                 >
-                <div className="bg-gray-50 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
-                  <div className="mb-8">
-                    <h3 className="text-[10px] font-medium mb-2">Artwork Style</h3>
-                    <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
+                <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
+                  <div className="mb-6">
+                    <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
+                    <p className="text-[9px] text-gray-700">{artwork?.style || "Painting"}</p>
                   </div>
-                  <div className="mb-8">
-                    <h3 className="text-[10px] font-medium mb-2">Medium</h3>
-                    <p className="text-[10px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
+                  <div className="mb-6">
+                    <h3 className="text-[9px] font-medium mb-1">Medium</h3>
+                    <p className="text-[9px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
                   </div>
-                  <div className="mb-2">
-                    <h3 className="text-[10px] font-medium mb-2">Date Posted</h3>
-                    <p className="text-[10px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
+                  <div className="mb-1">
+                    <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
+                    <p className="text-[9px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
                   </div>
                 </div>
               </div>
@@ -266,17 +392,17 @@ const ArtworkDetails = () => {
                 )}
 
               {/* Center - Artwork Image */}
-              <div className={`relative z-0 ${isMobile ? 'px-4' : ''}`}>
+              <div className={`relative z-0 mt-8 mr-2 ${isMobile ? 'px-4' : ''}`}>
                 {!isMobile && (
                   <button
                     onClick={toggleDetailsPanel}
-                    className="p-1 text-gray-500 hover:text-black absolute left-0 top-1/2 transform -translate-y-1/2"
+                    className="p-1 text-gray-500 hover:text-black absolute -left-8 top-44 transform -translate-y-1/2S"
                   >
                   <GripVertical size={15} />
                 </button>
                 )}
 
-                <div className="inline-block transform scale-[.85] -mb-10 relative">
+                <div className="inline-block transform scale-[1] -mb-6 relative">
                   <div className="aspect-square overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                     <img
                       src={artwork?.artworkImage}
@@ -311,17 +437,17 @@ const ArtworkDetails = () => {
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center space-x-4">
                     <button 
-                      onClick={() => toggleLike(id)} 
+                      onClick={handleLike} 
                       className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
                     >
                       <Heart
                         size={isMobile ? 16 : 14}
-                        className={likedArtworks[artwork?.id] ? "text-red-600 fill-red-600" : "text-gray-800"}
+                        className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
                         fill={isLiked ? "currentColor" : "none"}
                       />
-                      {(likeCounts[artwork?.id] ?? artwork?.likesCount ?? 0) > 0 && (
+                      {(likeCounts[id || ""] ?? artwork?.likesCount ?? 0) > 0 && (
                         <span className={`${isMobile ? 'text-xs' : 'text-[9px]'}`}>
-                          {likeCounts[artwork?.id] ?? artwork?.likesCount}
+                          {likeCounts[id || ""] ?? artwork?.likesCount}
                         </span>
                       )}
                     </button>
@@ -351,105 +477,32 @@ const ArtworkDetails = () => {
                 
                 <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-600 mb-4`}>by {artwork?.artistName || "Angel Ganev"}</p>
                 
-                <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-800 mb-2`}>
-                  {artwork?.description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."}
-                </p>
-                
-                <Separator className="my-6" />
-                
-                {/* Comment Section */}
-                {/* User profile and comment section */}
-                {comments.map(commentItem => (
-                  <div key={commentItem.id} className="mb-6 relative">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start">
-                        <Avatar className={`${isMobile ? 'h-6 w-6' : 'h-3 w-3'} mr-2`}>
-                          <AvatarImage src={commentItem.userImage} alt={commentItem.user} />
-                          <AvatarFallback>{commentItem.user.substring(0, 2).toUpperCase()}</AvatarFallback>
-                        </Avatar>
-
-                        <div>
-                          <p className={`${isMobile ? 'text-xs' : 'text-[9px]'} font-semibold`}>{commentItem.user}</p>
-                          <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-700 mt-1`}>{commentItem.text}</p>
-
-                          <div className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-[9px]'} text-gray-500 mt-1`}>
-                            <span>{commentItem.timestamp}</span>
-                            <span>·</span>
-                            <button className="hover:underline text-gray-500">Reply</button>
-                            <span>·</span>
-                            <button
-                              onClick={() => handleCommentLike(commentItem.id)}
-                              className="flex items-center gap-1"
-                            >
-                              <Heart
-                                size={isMobile ? 12 : 10}
-                                className={likedComments[commentItem.id] ? 'text-red-500 fill-red-500' : 'text-gray-500'}
-                                fill={likedComments[commentItem.id] ? 'currentColor' : 'none'}
-                              />
-                              {commentLikes[commentItem.id] || commentItem.likes || 0}
-                            </button>
-
-                            {/* Three dots button */}
-                            <div className="relative ml-1">
-                              <button
-                                onClick={() => toggleCommentMenu(commentItem.id)}
-                                className="p-1 text-gray-500 hover:text-black"
-                              >
-                                <MoreHorizontal size={isMobile ? 14 : 12} />
-                              </button>
-
-                              {commentMenus[commentItem.id] && (
-                                <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg z-10">
-                                  <button
-                                    className={`w-full text-left px-3 py-2 ${isMobile ? 'text-xs' : 'text-[8px]'} hover:bg-gray-100`}
-                                    onClick={() => {
-                                      toast.success(`Blocked user ${commentItem.user}`);
-                                      toggleCommentMenu(commentItem.id);
-                                    }}
-                                  >
-                                    Block User
-                                  </button>
-                                  <button
-                                    className={`w-full text-left px-3 py-2 ${isMobile ? 'text-xs' : 'text-[9px]'} hover:bg-gray-100`}
-                                    onClick={() => {
-                                      toast.success("Content reported");
-                                      toggleCommentMenu(commentItem.id);
-                                    }}
-                                  >
-                                    Report Content
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div> 
-                    </div>
+                <div className="relative mt-4">
+                  <div
+                    ref={descriptionRef}
+                    className={`
+                      text-[10px] text-gray-700 transition-all duration-300 ease-in-out 
+                      ${showFullDescription ? "max-h-40 overflow-y-auto pr-1" : "max-h-14 overflow-hidden"}
+                    `}
+                    style={{ lineHeight: '1.25rem' }}
+                  >
+                    {artwork?.description || "No description available."}
                   </div>
-                ))}
-                
-                {/* Add comment form */}
-                <form onSubmit={handleCommentSubmit} className="relative">
-                  <input
-                    type="text"
-                    placeholder="Add a comment..."
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    className={`w-full border border-gray-200 rounded-full px-4 py-2 ${isMobile ? 'text-sm' : 'text-[10px]'} focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16`}
-                  />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
-                    <button type="button" className="text-gray-400">
-                      😊
-                    </button>
-                    <button 
-                      type="submit" 
-                      className={`${isMobile ? 'text-sm' : 'text-[10px]'} text-gray-400`} 
-                      disabled={!comment.trim()}
+
+                  {isOverflowing && (
+                    <button
+                      onClick={() => setShowFullDescription(prev => !prev)}
+                      className="text-[10px] text-blue-500 hover:underline mt-1 block"
                     >
-                      <Send className={`${isMobile ? 'w-5 h-5' : 'w-4 h-4'}`} />
+                      {showFullDescription ? "Show Less" : "Show More"}
                     </button>
-                  </div>
-                </form>
+                  )}
+                </div>
+
+                <Separator className="my-6" />
+
+                {/* Comment Section */}
+                <CommentSection artworkId={id} />
 
               </div>
             </div>
