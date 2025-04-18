@@ -6,6 +6,7 @@ class Art(Document):
     title = StringField(max_length=100)
     artist = ReferenceField(User) 
     category = StringField(max_length=100)
+    medium= StringField(max_length=100)
     art_status = StringField(max_length=100)
     price = IntField()
     description = StringField(required=False)
