@@ -6,6 +6,16 @@ import os
 import sys
 from mongoengine import connect
 from django.conf import settings
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+# Cloudinary configuration
+cloudinary.config(
+  cloud_name="du5bwye4h",
+  api_key="198339479569966",
+  api_secret="4_W00AnLs0GAA-nyv1E0Q8AcTts"
+)
 
 load_dotenv()
 
