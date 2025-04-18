@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import {
   Heart,
   MoreHorizontal,
-  EllipsisVertical,
+  Send,
   GripVertical,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import ArtCardMenu from "../cards/ArtCardMenu";
 import TipJarIcon from "../tip_jar/TipJarIcon";
 import { useDonation } from "../../../context/DonationContext";
+import Comment from "../comment_section/Comment";
 import Header from "../Header";
 import {
   Collapsible,
@@ -356,74 +357,76 @@ const ArtworkDetails = () => {
                 
                 <Separator className="my-6" />
                 
+                {/* Comment Section */}
                 {/* User profile and comment section */}
-                <div className="mb-6 relative">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start">
-                    <Avatar className={`${isMobile ? 'h-6 w-6' : 'h-3 w-3'} mr-2`}>
-                        <AvatarImage src="https://i.pravatar.cc/150?img=3" alt="Jai Anoba" />
-                        <AvatarFallback>JA</AvatarFallback>
-                      </Avatar>
+                {comments.map(commentItem => (
+                  <div key={commentItem.id} className="mb-6 relative">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start">
+                        <Avatar className={`${isMobile ? 'h-6 w-6' : 'h-3 w-3'} mr-2`}>
+                          <AvatarImage src={commentItem.userImage} alt={commentItem.user} />
+                          <AvatarFallback>{commentItem.user.substring(0, 2).toUpperCase()}</AvatarFallback>
+                        </Avatar>
 
-                      <div>
-                        <p className={`${isMobile ? 'text-xs' : 'text-[9px]'} font-semibold`}>Jai Anoba</p>
-                        <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-700 mt-1`}>I love it!</p>
+                        <div>
+                          <p className={`${isMobile ? 'text-xs' : 'text-[9px]'} font-semibold`}>{commentItem.user}</p>
+                          <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-700 mt-1`}>{commentItem.text}</p>
 
-                        <div className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-[9px]'} text-gray-500 mt-1`}>
-                          <span>3d</span>
-                          <span>·</span>
-                          <button className="hover:underline text-gray-500">Reply</button>
-                          <span>·</span>
-                          <button
-                            onClick={() => handleCommentLike('comment1')}
-                            className="flex items-center gap-1"
-                          >
-                            <Heart
-                              size={isMobile ? 12 : 10}
-                              className={likedComments['comment1'] ? 'text-red-500 fill-red-500' : 'text-gray-500'}
-                              fill={likedComments['comment1'] ? 'currentColor' : 'none'}
-                            />
-                            {commentLikes['comment1']}
-                          </button>
-
-                          {/* Three dots button */}
-                          <div className="relative ml-1">
+                          <div className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-[9px]'} text-gray-500 mt-1`}>
+                            <span>{commentItem.timestamp}</span>
+                            <span>·</span>
+                            <button className="hover:underline text-gray-500">Reply</button>
+                            <span>·</span>
                             <button
-                              onClick={() => toggleCommentMenu('comment1')}
-                              className="p-1 text-gray-500 hover:text-black"
+                              onClick={() => handleCommentLike(commentItem.id)}
+                              className="flex items-center gap-1"
                             >
-                               <MoreHorizontal size={isMobile ? 14 : 12} />
+                              <Heart
+                                size={isMobile ? 12 : 10}
+                                className={likedComments[commentItem.id] ? 'text-red-500 fill-red-500' : 'text-gray-500'}
+                                fill={likedComments[commentItem.id] ? 'currentColor' : 'none'}
+                              />
+                              {commentLikes[commentItem.id] || commentItem.likes || 0}
                             </button>
 
-                            {commentMenus['comment1'] && (
-                              <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg z-10">
-                                <button
-                                  className={`w-full text-left px-3 py-2 ${isMobile ? 'text-xs' : 'text-[8px]'} hover:bg-gray-100`}
-                                  onClick={() => {
-                                    alert('Blocked user');
-                                    toggleCommentMenu('comment1');
-                                  }}
-                                >
-                                  Block User
-                                </button>
-                                <button
-                                  className={`w-full text-left px-3 py-2 ${isMobile ? 'text-xs' : 'text-[9px]'} hover:bg-gray-100`}
-                                  onClick={() => {
-                                    alert('Reported content');
-                                    toggleCommentMenu('comment1');
-                                  }}
-                                >
-                                  Report Content
-                                </button>
-                              </div>
-                            )}
+                            {/* Three dots button */}
+                            <div className="relative ml-1">
+                              <button
+                                onClick={() => toggleCommentMenu(commentItem.id)}
+                                className="p-1 text-gray-500 hover:text-black"
+                              >
+                                <MoreHorizontal size={isMobile ? 14 : 12} />
+                              </button>
+
+                              {commentMenus[commentItem.id] && (
+                                <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg z-10">
+                                  <button
+                                    className={`w-full text-left px-3 py-2 ${isMobile ? 'text-xs' : 'text-[8px]'} hover:bg-gray-100`}
+                                    onClick={() => {
+                                      toast.success(`Blocked user ${commentItem.user}`);
+                                      toggleCommentMenu(commentItem.id);
+                                    }}
+                                  >
+                                    Block User
+                                  </button>
+                                  <button
+                                    className={`w-full text-left px-3 py-2 ${isMobile ? 'text-xs' : 'text-[9px]'} hover:bg-gray-100`}
+                                    onClick={() => {
+                                      toast.success("Content reported");
+                                      toggleCommentMenu(commentItem.id);
+                                    }}
+                                  >
+                                    Report Content
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div> 
+                      </div> 
+                    </div>
                   </div>
-                </div>
-
+                ))}
                 
                 {/* Add comment form */}
                 <form onSubmit={handleCommentSubmit} className="relative">
@@ -438,10 +441,12 @@ const ArtworkDetails = () => {
                     <button type="button" className="text-gray-400">
                       😊
                     </button>
-                    <button type="submit" className={`${isMobile ? 'text-sm' : 'text-[10px]'} text-gray-400`} disabled={!comment.trim()}>
-                      <svg className={`${isMobile ? 'w-5 h-5' : 'w-4 h-4'}`} viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14 1.788 0 5.297-4.76 5.297 4.76 1.788 0-7-14z" />
-                      </svg>
+                    <button 
+                      type="submit" 
+                      className={`${isMobile ? 'text-sm' : 'text-[10px]'} text-gray-400`} 
+                      disabled={!comment.trim()}
+                    >
+                      <Send className={`${isMobile ? 'w-5 h-5' : 'w-4 h-4'}`} />
                     </button>
                   </div>
                 </form>
