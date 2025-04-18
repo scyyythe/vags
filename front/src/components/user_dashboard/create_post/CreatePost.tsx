@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/Header";
 import apiClient from "@/utils/apiClient";
 import axios from "axios";
+
+
 const CreatePost = () => {
   const navigate = useNavigate();
   const [artworkTitle, setArtworkTitle] = useState("");
@@ -61,6 +63,7 @@ const CreatePost = () => {
       fileReader.readAsDataURL(file);
     }
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
