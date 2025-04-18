@@ -10,16 +10,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
-import ArtCardMenu from "./ArtCardMenu";
-import TipJarIcon from "./TipJarIcon";
-import { useDonation } from "../../context/DonationContext";
-import Header from "../../components/user_dashboard/Header";
+import ArtCardMenu from "../cards/ArtCardMenu";
+import TipJarIcon from "../tip_jar/TipJarIcon";
+import { useDonation } from "../../../context/DonationContext";
+import Header from "../Header";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useArtworkContext } from "../../context/ArtworkContext";
+import { useArtworkContext } from "../../../context/ArtworkContext";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 

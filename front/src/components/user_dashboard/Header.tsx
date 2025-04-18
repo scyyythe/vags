@@ -4,7 +4,7 @@ import { Bell, MessageCircle, Search, X, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useRef, useEffect } from "react";
-import ProfileDropdown from "./ProfileDropdown";
+import ProfileDropdown from "./local_components/ProfileDropdown";
 
 const Header = () => {
   const location = useLocation();

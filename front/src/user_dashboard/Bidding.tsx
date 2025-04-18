@@ -1,6 +1,6 @@
 import Header from "@/components/user_dashboard/Header";
 import BidCard from "@/components/user_dashboard/BidCard";
-import CategoryFilter from "@/components/user_dashboard/CategoryFilter";
+import CategoryFilter from "@/components/user_dashboard/local_components/CategoryFilter";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const Bidding = () => {

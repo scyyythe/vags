@@ -10,7 +10,7 @@ import Index from "./pages/Index";
 import FingerprintAuth from "./pages/FingerprintAuth";
 import FingerprintRegister from "./pages/FingerprintRegister";
 import NotFound from "./components/NotFound";
-import Create from "./components/user_dashboard/CreatePost";
+import Create from "./components/user_dashboard/create_post/CreatePost";
 import Hero from "./pages/Hero";
 import Explore from "./user_dashboard/Explore";
 import Bidding from "./user_dashboard/Bidding";
@@ -18,10 +18,10 @@ import Marketplace from "./user_dashboard/Marketplace";
 import Exhibits from "./user_dashboard/Exhibits";
 import { ModalProvider } from './context/ModalContext';
 import { DonationProvider } from "./context/DonationContext";
-import TipJarPopup from "./components/user_dashboard/TipJarPopup";
+import TipJarPopup from "./components/user_dashboard/tip_jar/TipJarPopup";
 import { useDonation } from "./context/DonationContext";
 import { ArtworkProvider } from "./context/ArtworkContext";
-import ArtworkDetails from "./components/user_dashboard/ArtworkDetails";
+import ArtworkDetails from "./components/user_dashboard/art_viewing/ArtworkDetails";
 
 // Active heart state
 export type LikedArtwork = {
