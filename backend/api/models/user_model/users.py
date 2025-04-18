@@ -14,9 +14,8 @@ class User(Document):
     user_status = StringField(max_length=100, default="Active")
     created_at = DateTimeField(default=datetime.utcnow)
     updated_at = DateTimeField(default=datetime.utcnow)
-    otp = StringField(max_length=6, required=False)  # Store OTP here
-    otp_expires_at = DateTimeField(required=False)  # Store OTP expiration time
-
+    otp = StringField(max_length=6, required=False) 
+    otp_expires_at = DateTimeField(required=False)  
     def set_password(self, password):
          self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
