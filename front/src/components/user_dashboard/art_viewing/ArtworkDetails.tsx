@@ -31,6 +31,7 @@ const ArtworkDetails = () => {
   const isLiked = likedArtworks[id] || false;
   const { artworks } = useArtworkContext();
   const { openPopup } = useDonation();
+  const [isExpanded, setIsExpanded] = useState(false);
   const isMobile = useIsMobile();
 
   const navigate = useNavigate();
@@ -310,6 +311,14 @@ const ArtworkDetails = () => {
       )}
     </div>
   );
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  const closeExpandedView = () => {
+    setIsExpanded(false);
+  };
   
   return (
     <div className="min-h-screen">
@@ -409,24 +418,40 @@ const ArtworkDetails = () => {
                       alt={artwork?.title}
                       className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                     />
-                    {/* TipJar Floating Button */}
-                    <div
-                      className={`absolute bottom-3 right-3 ${isMobile ? '' : 'z-10'}`}
-                    >
+
+                    {/* TipJar + Expand Button Container */}
+                    <div className={`absolute bottom-3 right-3 ${isMobile ? '' : 'z-10'} flex flex-col items-end gap-3`}>
+                      
+                      {/* Expand Icon */}
                       <div
-                        className={`group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-auto hover:pl-4 transition-all ease-in-out duration-700 animate-tipjar cursor-pointer`}
+                        className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
+                        onClick={() => setIsExpanded(true)}
+                      >
+                        <i className='bx bx-expand-alt text-[12px] mr-[6px]'></i>
+                        <span
+                          className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700"
+                        >
+                          Expand
+                        </span>
+                      </div>
+
+                      {/* TipJar Icon */}
+                      <div
+                        className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer animate-tipjar"
                         onClick={handleTipJar}
                       >
-                        <TipJarIcon onClick={handleTipJar} />
+                        <i className='bx bx-box text-[12px] mr-[6px]' ></i>
                         <span
-                          className={`mr-1 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700 animate-donate`}
+                          className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700 animate-donate"
                         >
                           Donate
                         </span>
                       </div>
+
                     </div>
                   </div>
                 </div>
+
               </div>
             </div>
             
@@ -509,6 +534,28 @@ const ArtworkDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Expanded artwork view */}
+      {isExpanded && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
+          
+          <button
+            onClick={closeExpandedView}
+            className="absolute top-[14px] right-[35px] text-white text-3xl font-bold z-[60]"
+          >
+            <i className='bx bx-x text-2xl'></i>
+          </button>
+
+          <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
+            <img
+              src={artwork?.artworkImage}
+              alt="Expanded artwork"
+              className="max-h-[80vh] max-w-[90vw] object-contain"
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
