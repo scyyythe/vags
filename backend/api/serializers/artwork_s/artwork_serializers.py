@@ -9,10 +9,11 @@ class ArtSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=100)
     artist = serializers.CharField(read_only=True)  
     category = serializers.CharField(max_length=100)
+    medium=serializers.CharField(max_length=100)
     art_status = serializers.CharField(max_length=100)
     price = serializers.IntegerField()
     description = serializers.CharField(required=False)
-    visibility = serializers.CharField(max_length=100, required=False, default="public")  # Fixed visibility
+    visibility = serializers.CharField(max_length=100, required=False, default="public")  
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
 
@@ -54,6 +55,7 @@ class ArtSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         instance.title = validated_data.get("title", instance.title)
         instance.category = validated_data.get("category", instance.category)
+        instance.medium = validated_data.get("medium", instance.medium)
         instance.art_status = validated_data.get("art_status", instance.art_status)
         instance.price = validated_data.get("price", instance.price)
         instance.description = validated_data.get("description", instance.description)
@@ -68,6 +70,7 @@ class ArtSerializer(serializers.Serializer):
             "title": instance.title,
             "artist": str(instance.artist.id) if instance.artist else None, 
             "category": instance.category,
+            "medium": instance.medium,
             "art_status": instance.art_status,
             "price": instance.price,
             "description": instance.description,
