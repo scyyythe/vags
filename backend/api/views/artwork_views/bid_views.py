@@ -1,9 +1,9 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
-from api.models.bid import Bid, Auction
-from api.models.artwork import Art
-from api.serializers.bid_serializers import BidSerializer, AuctionSerializer
+from api.models.artwork_model.bid import Bid, Auction
+from api.models.artwork_model.artwork import Art
+from api.serializers.artwork_s.bid_serializers import BidSerializer, AuctionSerializer
 from datetime import datetime
 
 class CreateAuctionView(generics.CreateAPIView):

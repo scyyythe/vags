@@ -1,14 +1,14 @@
 from django.urls import path
-from .views.artwork_views import ArtCreateView, ArtListView,ArtUpdateView, ArtDeleteView, ArtDetailView
-from .views.user_views import RetrieveUserView, UpdateUserView, DeleteUserView
-from .views.filter import ArtSearchAndFilterView
-from api.views.interaction import CommentCreateView, LikeCreateView, CartItemCreateView, CartItemDeleteView,CartRetrieveView
-from api.views.tip_views import TipCreateView, TipListView, TotalTipsView, TipReceivedListView
-from api.views.report_view import ReportCreateView, ReportStatusView, UserReportsView, ReportDeleteView,ReportUpdateView
-from api.views.admin_report import AdminUpdateReportStatusView, AdminReportsListView
-from api.views.bid_views import PlaceBidView, BidHistoryView, AuctionListView, CloseAuctionView, ActiveAuctionsView, HighestBidView,CreateAuctionView
-from api.views.views import trigger_fingerprint_scan
-from api.views.views_verify import TriggerFingerprintScanView
+from .views.artwork_views.artwork_views import ArtCreateView, ArtListView,ArtUpdateView, ArtDeleteView, ArtDetailView
+from .views.user_views.user_views import RetrieveUserView, UpdateUserView, DeleteUserView
+from .views.querries.filter import ArtSearchAndFilterView
+from api.views.interaction_views.interaction import CommentCreateView, LikeCreateView, CartItemCreateView, CartItemDeleteView,CartRetrieveView
+from api.views.artwork_views.tip_views import TipCreateView, TipListView, TotalTipsView, TipReceivedListView
+from api.views.admin.report_view import ReportCreateView, ReportStatusView, UserReportsView, ReportDeleteView,ReportUpdateView
+from api.views.admin.admin_report import AdminUpdateReportStatusView, AdminReportsListView
+from api.views.artwork_views.bid_views import PlaceBidView, BidHistoryView, AuctionListView, CloseAuctionView, ActiveAuctionsView, HighestBidView,CreateAuctionView
+from api.views.fingerprint.views import trigger_fingerprint_scan
+from api.views.fingerprint.views_verify import TriggerFingerprintScanView
 urlpatterns = [
     # user urls
     path('user/<str:pk>/', RetrieveUserView.as_view(), name='retrieve_user'),

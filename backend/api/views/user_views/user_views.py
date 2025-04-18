@@ -7,9 +7,9 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
-from api.models.users import User
-from api.serializers.users_serializers import UserSerializer 
-from api.permissions import IsAdminOrOwner 
+from api.models.user_model.users import User
+from api.serializers.user_s.users_serializers import UserSerializer 
+from api.auth.permissions import IsAdminOrOwner 
 
 class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer

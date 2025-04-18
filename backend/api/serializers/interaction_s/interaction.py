@@ -1,10 +1,10 @@
 
 from rest_framework import serializers
-from api.models.artwork import Art
-from api.models.users import User 
-from api.models.interaction import Comment,Like,CartItem 
-from api.serializers.artwork_serializers import ArtSerializer
-from api.serializers.users_serializers import UserSerializer
+from api.models.artwork_model.artwork import Art
+from api.models.user_model.users import User 
+from api.models.interaction_model.interaction import Comment,Like,CartItem 
+from api.serializers.artwork_s.artwork_serializers import ArtSerializer
+from api.serializers.user_s.users_serializers import UserSerializer
 
 class CommentSerializer(serializers.Serializer):
     id = serializers.CharField()

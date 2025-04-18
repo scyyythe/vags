@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models.report import Report
+from api.models.admin.report import Report
 
 class ReportSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)

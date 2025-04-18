@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from api.models.artwork import Art
-from api.serializers.artwork_serializers import ArtSerializer
-from api.models.users import User
+from api.models.artwork_model.artwork import Art
+from api.serializers.artwork_s.artwork_serializers import ArtSerializer
+from api.models.user_model.users import User
 from bson import ObjectId
 from mongoengine.queryset.visitor import Q  
 

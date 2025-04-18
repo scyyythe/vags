@@ -1,7 +1,7 @@
 from mongoengine import Document, StringField, ReferenceField, IntField, DateTimeField
 from datetime import datetime
-from .users import User
-from .artwork import Art
+from ..user_model.users import User
+from ..artwork_model.artwork import Art
 
 
 class Comment(Document):

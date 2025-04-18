@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models.report import Report
+from api.models.admin.report import Report
 
 class AdminReportUpdateSerializer(serializers.Serializer):
     status = serializers.ChoiceField(choices=["Pending", "In Progress", "Resolved"])

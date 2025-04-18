@@ -1,7 +1,7 @@
 from mongoengine import Document, ReferenceField, FloatField, DateTimeField, BooleanField, ListField
 from datetime import datetime
-from api.models.users import User
-from api.models.artwork import Art
+from api.models.user_model.users import User
+from api.models.artwork_model.artwork import Art
 
 class Bid(Document):
     bidder = ReferenceField(User, required=True, reverse_delete_rule=2)
