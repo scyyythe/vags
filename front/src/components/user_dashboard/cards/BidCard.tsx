@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
-import ArtCardMenu from "./cards/ArtCardMenu";
+import ArtCardMenu from "../cards/ArtCardMenu";
 import { toast } from "sonner";
 
 interface BidCardProps {
@@ -12,6 +12,9 @@ interface BidCardProps {
 
 const BidCard = ({ id, artworkImage, title, currentBid }: BidCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isReported, setIsReported] = useState(false);
 
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -22,18 +25,21 @@ const BidCard = ({ id, artworkImage, title, currentBid }: BidCardProps) => {
     toast("Bid placed successfully");
   };
 
-  const handleSave = () => {
-    toast("Artwork saved");
-    setMenuOpen(false);
-  };
-
   const handleHide = () => {
+    setIsHidden(true);
     toast("Artwork hidden");
     setMenuOpen(false);
   };
 
   const handleReport = () => {
-    toast("Artwork reported");
+    setIsReported(!isReported);
+    toast(isReported ? "Artwork report removed" : "Artwork reported");
+    setMenuOpen(false);
+  };
+
+  const handleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    toast(isFavorite ? "Artwork favorite removed" : "Artwork added to favorites");
     setMenuOpen(false);
   };
 
@@ -58,10 +64,11 @@ const BidCard = ({ id, artworkImage, title, currentBid }: BidCardProps) => {
             </button>
             <ArtCardMenu
               isOpen={menuOpen}
-              onClose={() => setMenuOpen(false)}
-              onSave={handleSave}
+              onFavorite={handleFavorite}
               onHide={handleHide}
               onReport={handleReport}
+              isFavorite={isFavorite}
+              isReported={isReported}
             />
           </div>
         </div>

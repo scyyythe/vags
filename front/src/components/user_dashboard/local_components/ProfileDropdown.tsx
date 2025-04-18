@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Settings, LogOut } from "lucide-react";
-import { useModal } from "../../context/ModalContext";
+import { useModal } from "../../../context/ModalContext";
 
 interface ProfileDropdownProps {
   isOpen: boolean;

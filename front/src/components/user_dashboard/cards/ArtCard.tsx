@@ -3,9 +3,9 @@ import { Heart, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
-import TipJarIcon from "./tip_jar/TipJarIcon";
-import { useDonation } from "../../context/DonationContext";
-import ArtCardMenu from "./ArtCardMenu";
+import TipJarIcon from "../tip_jar/TipJarIcon";
+import { useDonation } from "../../../context/DonationContext";
+import ArtCardMenu from "../cards/ArtCardMenu";
 import { Link } from "react-router-dom";
 
 interface ArtCardProps {
