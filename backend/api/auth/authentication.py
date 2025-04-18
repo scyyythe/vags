@@ -1,5 +1,5 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from api.models.users import User
+from api.models.user_model.users import User
 from bson import ObjectId
 
 class MongoJWTAuthentication(JWTAuthentication):

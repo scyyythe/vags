@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models.bid import Bid, Auction
+from api.models.artwork_model.bid import Bid, Auction
 from datetime import datetime
 
 class BidSerializer(serializers.Serializer):

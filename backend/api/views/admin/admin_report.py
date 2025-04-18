@@ -1,10 +1,10 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from api.models.report import Report
-from api.models.notification import Notification
-from api.serializers.report_serializers import ReportSerializer
-from api.serializers.admin_report_update_serializer import AdminReportUpdateSerializer
-from api.permissions import IsAdminOrOwner
+from api.models.admin.report import Report
+from api.models.interaction_model.notification import Notification
+from api.serializers.admin.report_serializers import ReportSerializer
+from api.serializers.admin.admin_report_update_serializer import AdminReportUpdateSerializer
+from api.auth.permissions import IsAdminOrOwner
 
 
 class AdminReportsListView(generics.ListAPIView):

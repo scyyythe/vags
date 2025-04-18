@@ -1,10 +1,10 @@
 from bson import ObjectId
 from rest_framework import generics, permissions
 from rest_framework.response import Response
-from api.models.report import Report
-from api.models.users import User
-from api.models.notification import Notification
-from api.serializers.report_serializers import ReportSerializer
+from api.models.admin.report import Report
+from api.models.user_model.users import User
+from api.models.interaction_model.notification import Notification
+from api.serializers.admin.report_serializers import ReportSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 

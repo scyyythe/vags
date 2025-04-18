@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from api.models.tip import Tip
-from api.models.users import User
+from api.models.artwork_model.tip import Tip
+from api.models.user_model.users import User
 
 class TipSerializer(serializers.Serializer):
     sender_username = serializers.CharField(source='sender.username', read_only=True)

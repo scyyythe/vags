@@ -1,6 +1,6 @@
 from mongoengine import Document, StringField, ReferenceField, DateTimeField
 from datetime import datetime
-from api.models.users import User
+from api.models.user_model.users import User
 
 class Report(Document):
     user = ReferenceField(User, required=True)  

@@ -1,6 +1,6 @@
 from mongoengine import Document, StringField, IntField, DateTimeField, ReferenceField
 from datetime import datetime
-from .users import User  
+from ..user_model.users import User  
 
 class Art(Document):
     title = StringField(max_length=100)

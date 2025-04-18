@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from api.models.artwork import Art
+from api.models.artwork_model.artwork import Art
 from datetime import datetime
-from api.models.interaction import Comment, Like
-from api.models.notification import Notification
+from api.models.interaction_model.interaction import Comment, Like
+from api.models.interaction_model.notification import Notification
 
 class ArtSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)

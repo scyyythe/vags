@@ -2,9 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from api.models.artwork import Art
-from api.models.interaction import Comment, Like, CartItem
-from api.serializers.interaction import CommentSerializer, LikeSerializer, CartItemSerializer
+from api.models.artwork_model.artwork import Art
+from api.models.interaction_model.interaction import Comment, Like, CartItem
+from api.serializers.interaction_s.interaction import CommentSerializer, LikeSerializer, CartItemSerializer
 
 class CommentCreateView(APIView):
     permission_classes = [IsAuthenticated]  

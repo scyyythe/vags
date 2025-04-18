@@ -1,7 +1,7 @@
 from mongoengine import Document, StringField, ReferenceField, DateTimeField, BooleanField
 from datetime import datetime
-from api.models.users import User
-from api.models.artwork import Art
+from api.models.user_model.users import User
+from api.models.artwork_model.artwork import Art
 
 class Notification(Document):
     user = ReferenceField(User, required=True) 

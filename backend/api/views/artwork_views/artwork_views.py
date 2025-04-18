@@ -1,9 +1,9 @@
 from bson import ObjectId
 from rest_framework import generics, permissions
-from api.models.artwork import Art
-from api.models.users import User
-from api.models.notification import Notification
-from api.serializers.artwork_serializers import ArtSerializer
+from api.models.artwork_model.artwork import Art
+from api.models.user_model.users import User
+from api.models.interaction_model.notification import Notification
+from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from datetime import datetime
 

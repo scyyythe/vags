@@ -2,9 +2,9 @@ from bson import ObjectId
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
-from api.models.tip import Tip
-from api.models.users import User
-from api.serializers.tip_serializers import TipSerializer
+from api.models.artwork_model.tip import Tip
+from api.models.user_model.users import User
+from api.serializers.artwork_s.tip_serializers import TipSerializer
 from datetime import datetime
 
 # give a tip
