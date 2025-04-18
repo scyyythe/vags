@@ -13,3 +13,5 @@ bcrypt
 serial
 requests
 django-allauth
+cloudinary
+Pillow>=10.0.0

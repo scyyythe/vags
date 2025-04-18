@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, IntField, DateTimeField, ReferenceField
+from mongoengine import Document, StringField, IntField, DateTimeField, ReferenceField, URLField
 from datetime import datetime
 from ..user_model.users import User  
 
@@ -6,13 +6,14 @@ class Art(Document):
     title = StringField(max_length=100)
     artist = ReferenceField(User) 
     category = StringField(max_length=100)
-    medium= StringField(max_length=100)
+    medium = StringField(max_length=100)
     art_status = StringField(max_length=100)
     price = IntField()
     description = StringField(required=False)
     visibility = StringField(choices=['public', 'private'], default='public') 
     created_at = DateTimeField(default=datetime.utcnow)
     updated_at = DateTimeField(default=datetime.utcnow)
+    image_url = URLField(required=False)  
 
     meta = {'collection': 'art'}
 
