@@ -282,13 +282,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   );  
   
   return (
-    <div className="relative h-48 md:h-48 sm:h-48 p-1">
+    <div className="relative h-56 md:h-56 sm:h-44 p-1">
       <p className="text-[10px] font-semibold mb-4">
           Comments
       </p>
       {/* Scrollable comment container */}
       <div
-        className={`overflow-y-auto h-[50%] pb-20 custom-scrollbar`}
+        className={`overflow-y-auto h-[60%] pb-20 custom-scrollbar`}
       >
         <div
           className={`transition-all duration-300 ${

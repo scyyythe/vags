@@ -349,10 +349,10 @@ const ArtworkDetails = () => {
               {/* Collapsible Sidebar */}
               {!isMobile && (
                 <div
-                  className={`absolute right-100 top-0 w-[32%] h-[110%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
+                  className={`absolute right-100 top-0 w-[32%] h-[140%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
                     isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-1"
                   }`}
-                  style={{ right: "calc(100% + 16px)", marginRight: "24px"  }}
+                  style={{ right: "calc(100% + 16px)", marginRight: "40px"  }}
                 >
                 <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
                   <div className="mb-6">
@@ -401,17 +401,17 @@ const ArtworkDetails = () => {
                 )}
 
               {/* Center - Artwork Image */}
-              <div className={`relative z-0 mt-8 mr-2 ${isMobile ? 'px-4' : ''}`}>
+              <div className={`relative z-0 mt-12 ${isMobile ? 'px-4' : ''}`}>
                 {!isMobile && (
                   <button
                     onClick={toggleDetailsPanel}
-                    className="p-1 text-gray-500 hover:text-black absolute -left-8 top-44 transform -translate-y-1/2S"
+                    className="p-1 text-gray-500 hover:text-black absolute -left-12 top-1/2 transform -translate-y-1/2S"
                   >
                   <GripVertical size={15} />
                 </button>
                 )}
 
-                <div className="inline-block transform scale-[1] -mb-6 relative">
+                <div className="inline-block transform scale-[1.10] -mb-6 relative">
                   <div className="aspect-square overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                     <img
                       src={artwork?.artworkImage}
@@ -457,8 +457,8 @@ const ArtworkDetails = () => {
             
 
             {/* Right side - Title, artist, description, comments */}
-            <div className={`${isMobile ? 'w-full mt-6 px-4' : 'w-full max-w-[390px] min-w-[280px]'}`}>
-              <div className={`${isMobile ? '' : 'relative top-10'}`}>
+            <div className={`${isMobile ? 'w-full mt-6 px-4s' : 'w-full max-w-[390px] min-w-[280px]'}`}>
+              <div className={`${isMobile ? '' : 'relative top-10 left-10'}`}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center space-x-4">
                     <button 
