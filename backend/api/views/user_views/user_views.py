@@ -1,5 +1,5 @@
 import jwt
-import datetime
+from datetime import datetime, timedelta
 import bcrypt
 from django.conf import settings
 from rest_framework.views import APIView
@@ -10,11 +10,20 @@ from rest_framework.permissions import IsAuthenticated
 from api.models.user_model.users import User
 from api.serializers.user_s.users_serializers import UserSerializer 
 from api.auth.permissions import IsAdminOrOwner 
+from api.utils.email_utils import generate_otp, send_otp_email
 
 class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
- 
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        otp = generate_otp()
+        user.otp = otp
+        user.otp_expires_at = datetime.utcnow() + timedelta(minutes=5)
+        user.save()
+        send_otp_email(user.email, otp)
+
 class RetrieveUserView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
