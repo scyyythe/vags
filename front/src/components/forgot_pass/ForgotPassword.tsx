@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { KeyRound } from "lucide-react";
-import { useModal } from '../../context/ModalContext';
-
+import { useModal } from "../../context/ModalContext";
+import apiClient from "@/utils/apiClient";
+import axios from "axios";
+import { toast } from "sonner";
 // Custom OTP input field component
 const OtpInput = ({ value, onChange }: { value: string[]; onChange: (otp: string[]) => void }) => {
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
@@ -68,51 +70,138 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
   const [error, setError] = useState("");
 
   const { setShowLoginModal } = useModal();
-
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
       setError("Please enter your email address");
+      toast.error("Email is required", { description: "Please enter your email address to proceed." });
       return;
     }
-    setError("");
-    console.log(`Password reset requested for email: ${email}`);
-    // In a real app, send request to the backend
-    setCurrentStep("verification");
+
+    try {
+      await apiClient.post("request-reset-email/", { email });
+      setError("");
+      toast.success("Email sent successfully!", {
+        description: "Please check your inbox for the OTP.",
+      });
+      setCurrentStep("verification");
+    } catch (err: unknown) {
+      console.error("Request Reset Email Error:", err);
+      if (axios.isAxiosError(err)) {
+        toast.error(err.response?.data?.error || "Failed to send reset email", {
+          description: "There was an issue sending the reset email. Please try again.",
+        });
+        setError(err.response?.data?.error || "Failed to send reset email");
+      } else {
+        toast.error("An unexpected error occurred", {
+          description: "Something went wrong. Please try again later.",
+        });
+        setError("An unexpected error occurred");
+      }
+    }
   };
 
-  const handleVerifyOtp = (e: React.FormEvent) => {
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     const otpValue = otp.join("");
     if (otpValue.length !== 4) {
       setError("Please enter the complete verification code");
+      toast.error("Incomplete OTP", {
+        description: "The OTP must be 4 digits. Please enter the full code.",
+      });
       return;
     }
-    setError("");
-    console.log(`Verification code submitted: ${otpValue}`);
-    // In a real app, verify OTP with the backend
-    setCurrentStep("newPassword");
+
+    try {
+      await apiClient.post("/verify-otp/", {
+        email,
+        otp: otpValue,
+      });
+      setError("");
+      toast.success("OTP verified successfully!", {
+        description: "You can now proceed to reset your password.",
+      });
+      setCurrentStep("newPassword");
+    } catch (err: unknown) {
+      console.error("Verify OTP Error:", err);
+      if (axios.isAxiosError(err)) {
+        toast.error(err.response?.data?.detail || "OTP verification failed", {
+          description: "The OTP you entered is incorrect or expired. Please try again.",
+        });
+        setError(err.response?.data?.detail || "OTP verification failed");
+      } else {
+        toast.error("An unexpected error occurred", {
+          description: "There was an issue verifying the OTP. Please try again later.",
+        });
+        setError("An unexpected error occurred");
+      }
+    }
   };
 
-  const handleResendCode = () => {
-    console.log(`Resending verification code to: ${email}`);
-    // In a real app, call API to resend code
+  const handleResendCode = async () => {
+    try {
+      await apiClient.post("/resend-otp/", { email });
+      setError("");
+      toast.success("OTP resent successfully!", {
+        description: "A new OTP has been sent to your email.",
+      });
+    } catch (err: unknown) {
+      console.error("Resend Code Error:", err);
+      if (axios.isAxiosError(err)) {
+        toast.error(err.response?.data?.detail || "Failed to resend code", {
+          description: "There was an issue resending the OTP. Please try again.",
+        });
+        setError(err.response?.data?.detail || "Failed to resend code");
+      } else {
+        toast.error("An unexpected error occurred", {
+          description: "Something went wrong while resending the code. Please try again.",
+        });
+        setError("An unexpected error occurred");
+      }
+    }
   };
 
-  const handlePasswordSubmit = (e: React.FormEvent) => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password.length < 8) {
       setError("Password must be at least 8 characters");
+      toast.error("Password too short", {
+        description: "Your password must be at least 8 characters long.",
+      });
       return;
     }
     if (password !== confirmPassword) {
       setError("Passwords do not match");
+      toast.error("Passwords mismatch", {
+        description: "The passwords you entered do not match. Please try again.",
+      });
       return;
     }
-    setError("");
-    console.log("Password reset successfully");
-    // In a real app, send new password to the backend
-    setCurrentStep("success");
+
+    try {
+      await apiClient.post("/reset-password/", {
+        email,
+        new_password: password,
+      });
+      setError("");
+      toast.success("Password reset successfully!", {
+        description: "You can now log in with your new password.",
+      });
+      setCurrentStep("success");
+    } catch (err: unknown) {
+      console.error("Reset Password Error:", err);
+      if (axios.isAxiosError(err)) {
+        toast.error(err.response?.data?.detail || "Failed to reset password", {
+          description: "There was an issue resetting your password. Please try again.",
+        });
+        setError(err.response?.data?.detail || "Failed to reset password");
+      } else {
+        toast.error("An unexpected error occurred", {
+          description: "Something went wrong while resetting your password. Please try again later.",
+        });
+        setError("An unexpected error occurred");
+      }
+    }
   };
 
   const backToLogin = () => {

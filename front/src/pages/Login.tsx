@@ -38,7 +38,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       localStorage.setItem("refresh_token", refresh_token);
       localStorage.setItem("user_id", user_id);
       localStorage.setItem("email", email);
-      // console.log("Login successful:", response.data);
+
       toast.success("Login successful!", {
         description: "You are now logged in.",
       });

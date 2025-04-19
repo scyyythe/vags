@@ -15,3 +15,5 @@ requests
 django-allauth
 cloudinary
 Pillow>=10.0.0
+django-environ
+django-anymail
