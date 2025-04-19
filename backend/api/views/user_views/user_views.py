@@ -109,14 +109,14 @@ class CustomTokenRefreshView(APIView):
                 "email": user.email,
                 "jti": f"{user.id}_access",
                 "token_type": "access"
-            }, datetime.timedelta(hours=1))  # 1 hour expiration for access token
+            }, datetime.timedelta(hours=8)) 
 
             # Optionally rotate the refresh token
             refresh_token = generate_token({
                 "user_id": str(user.id),
                 "jti": f"{user.id}_refresh",
                 "token_type": "refresh"
-            }, datetime.timedelta(days=7))  # 7 days expiration for refresh token
+            }, datetime.timedelta(days=7)) 
 
             return Response({
                 "access_token": access_token,
