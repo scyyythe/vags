@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
-import ArtCardMenu from "../cards/ArtCardMenu";
+import ArtCardMenu from "./Explore/cards/ArtCardMenu";
 import { toast } from "sonner";
 
 interface BidCardProps {

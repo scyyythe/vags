@@ -3,9 +3,9 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import gcashLogo from "../../../../public/pics/gcash.png";
-import paypalLogo from "../../../../public/pics/paypal.png";
-import stripeLogo from "../../../../public/pics/stripe.png";
+import gcashLogo from "../../../../../public/pics/gcash.png";
+import paypalLogo from "../../../../../public/pics/paypal.png";
+import stripeLogo from "../../../../../public/pics/stripe.png";
 interface TipJarPopupProps {
   isOpen: boolean;
   onClose: () => void;

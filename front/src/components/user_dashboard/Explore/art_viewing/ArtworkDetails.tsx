@@ -11,10 +11,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { LikedArtworksContext } from "@/App";
-import ArtCardMenu from "@/components/user_dashboard/cards/ArtCardMenu";
-import TipJarIcon from "@/components/user_dashboard/tip_jar/TipJarIcon";
+import ArtCardMenu from "@/components/user_dashboard/Explore/cards/ArtCardMenu";
 import { useDonation } from "@/context/DonationContext";
-import Header from "@/components/user_dashboard/Header";
+import Header from "@/components/user_dashboard/navbar/Header";
 import {
   Collapsible,
   CollapsibleContent,
@@ -23,7 +22,7 @@ import {
 import { useArtworkContext } from "@/context/ArtworkContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDistanceToNow } from 'date-fns';
-import CommentSection from "@/components/user_dashboard/comment_sec/Comment";
+import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
 
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
