@@ -84,40 +84,40 @@ class CustomTokenObtainPairView(APIView):
 
 class CustomTokenRefreshView(APIView):
     """Handles JWT token refresh"""
-
+    permission_classes = [AllowAny] 
     def post(self, request):
         refresh_token = request.data.get("refresh_token")
         if not refresh_token:
             return Response({"error": "refresh_token is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-           
-            decoded_refresh_token = jwt.decode(refresh_token, settings.SECRET_KEY, algorithms=["HS256"])
+            # Decode the refresh token
+            decoded_refresh_token = jwt.decode(refresh_token, settings.SECRET_KEY, algorithms=["HS256"], options={"verify_exp": True})
+
+            # Retrieve user from database
             user = User.objects(id=decoded_refresh_token["user_id"]).first()
-            
             if not user:
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-            
+
             def generate_token(payload, exp_delta):
                 payload.update({"exp": datetime.datetime.utcnow() + exp_delta, "iat": datetime.datetime.utcnow()})
                 return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
 
-
+            # Generate new access token
             access_token = generate_token({
-            "user_id": str(user.id), 
-            "email": user.email, 
-            "jti": f"{user.id}_access",
-            "token_type": "access"
-            }, datetime.timedelta(hours=1))
+                "user_id": str(user.id),
+                "email": user.email,
+                "jti": f"{user.id}_access",
+                "token_type": "access"
+            }, datetime.timedelta(hours=8)) 
 
-
+            # Optionally rotate the refresh token
             refresh_token = generate_token({
-            "user_id": str(user.id), 
-            "jti": f"{user.id}_refresh",
-            "token_type": "refresh"
-             }, datetime.timedelta(days=7))
+                "user_id": str(user.id),
+                "jti": f"{user.id}_refresh",
+                "token_type": "refresh"
+            }, datetime.timedelta(days=7)) 
 
-    
             return Response({
                 "access_token": access_token,
                 "refresh_token": refresh_token,
@@ -129,4 +129,3 @@ class CustomTokenRefreshView(APIView):
             return Response({"error": "Refresh token has expired"}, status=status.HTTP_401_UNAUTHORIZED)
         except jwt.InvalidTokenError:
             return Response({"error": "Invalid refresh token"}, status=status.HTTP_400_BAD_REQUEST)
-

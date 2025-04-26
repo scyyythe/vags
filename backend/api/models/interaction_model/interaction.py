@@ -21,7 +21,20 @@ class Like(Document):
 
     meta = {'collection': 'likes'}
 
+class Saved(Document):
+    user = ReferenceField(User, required=True) 
+    art = ReferenceField(Art, required=True)  
+    created_at = DateTimeField(default=datetime.utcnow)
+    updated_at = DateTimeField(default=datetime.utcnow)
 
+    meta = {
+        'collection': 'saved_artworks',
+        'indexes': [
+            {'fields': ('user', 'art'), 'unique': True},  # Prevent duplicate saves
+        ]
+    }
+    
+    
 class CartItem(Document):
     user = ReferenceField(User, required=True)  
     art = ReferenceField(Art, required=True) 

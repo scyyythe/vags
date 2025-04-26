@@ -67,14 +67,15 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+     "ACCESS_TOKEN_LIFETIME": timedelta(hours=8),
+     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
  }
 
 # Application definition
 
 INSTALLED_APPS = [ 
     'corsheaders',
+    'anymail',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -84,7 +85,7 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'rest_framework_simplejwt',
-    
+       
 ]
 
 MIDDLEWARE = [
@@ -175,9 +176,12 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",  # React frontend
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com' 
+# settings.py
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.mailtrap.io"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'caneteangel187@gmail.com'
-EMAIL_HOST_PASSWORD = 'your-email-password-or-app-password'
+EMAIL_HOST_USER = "52cba4e6377381"  
+EMAIL_HOST_PASSWORD = "4ffe0c89c35ce9" 
+DEFAULT_FROM_EMAIL = "worxist_gallery@example.com"  
