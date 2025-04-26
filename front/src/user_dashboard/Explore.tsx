@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "@/components/user_dashboard/Header";
-import ArtGalleryContainer from "@/components/user_dashboard/gallery/ArtGalleryContainer";
+import Header from "@/components/user_dashboard/navbar/Header";
+import ArtGalleryContainer from "@/components/user_dashboard/Explore/gallery/ArtGalleryContainer";
 import SearchBar from "@/components/user_dashboard/local_components/SearchBar";
 import CategoryFilter from "@/components/user_dashboard/local_components/CategoryFilter";
-import ArtCard from "@/components/user_dashboard/cards/ArtCard";
+import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import { Plus, SortAsc } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -226,6 +226,7 @@ const Explore = () => {
           <div className="browse-container bg-white shadow-lg w-full md:w-3/4 lg:w-[85%] rounded-lg flex items-center p-4">
             <div className="flex items-center px-4 border-r">
               <span className="text-xs font-semibold mr-5">Browse Type</span>
+              <div className="relative">
               <Select defaultValue="Digital Art">
                 <SelectTrigger className="bg-transparent h-8 w-35 px-3 text-[11px] focus:ring-0 focus:ring-offset-0 rounded-sm border border-gray-300">
                   <img src="/pics/b_logo.png" className="w-3 h-3 mr-2" />
@@ -243,6 +244,7 @@ const Explore = () => {
                   </SelectItem>
                 </SelectContent>
               </Select>
+              </div>
             </div>
             <div className="flex-1 pl-2 bg-blue-100 bg-opacity-50 rounded-sm ml-3">
               <SearchBar />
@@ -278,7 +280,7 @@ const Explore = () => {
               </div>
             </div>
 
-            <div className="h-[800px] lg:w-[133%] custom-scrollbar">
+            <div className="h-[800px] lg:w-[133%] custom-scrollbars">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                 {artCards.map((card) => (
                   <ArtCard

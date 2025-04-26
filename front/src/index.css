@@ -158,24 +158,24 @@ img {
 }
 
 /* Explore artwork scrollbar */
-.custom-scrollbar {
+.custom-scrollbars {
   overflow-y: scroll;
 }
 
-.custom-scrollbar::-webkit-scrollbar {
+.custom-scrollbars::-webkit-scrollbar {
   width: 1px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
+.custom-scrollbars::-webkit-scrollbar-track {
   background-color: #ffffff; 
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
+.custom-scrollbars::-webkit-scrollbar-thumb {
   background-color: #ffffff;
   border-radius: 10px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+.custom-scrollbars::-webkit-scrollbar-thumb:hover {
   background-color: #ffffff; 
 }
 

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import Header from "@/components/user_dashboard/Header";
+import Header from "@/components/user_dashboard/navbar/Header";
 import apiClient from "@/utils/apiClient";
 import axios from "axios";
 

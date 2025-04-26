@@ -4,8 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LikedArtworksContext } from "@/App";
 import { toast } from "sonner";
 import TipJarIcon from "../tip_jar/TipJarIcon";
-import { useDonation } from "../../../context/DonationContext";
-import ArtCardMenu from "../cards/ArtCardMenu";
+import { useDonation } from "../../../../context/DonationContext";
+import ArtCardMenu from "./ArtCardMenu";
 import { Link } from "react-router-dom";
 
 interface ArtCardProps {
@@ -123,7 +123,7 @@ const ArtCard = ({
         <div className="px-4 py-1">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium">{title || "Untitled Artwork"}</p>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1">
             <button 
               onClick={handleLike}
               className={`p-1 rounded-full transition-colors ${
