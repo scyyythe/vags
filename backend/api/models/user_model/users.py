@@ -12,9 +12,9 @@ class User(Document):
     last_name = StringField(max_length=100, required=False)
     role = StringField(max_length=100, default="User")
     user_status = StringField(max_length=100, default="Active")
-    created_at = DateTimeField(default=datetime.utcnow)
-    updated_at = DateTimeField(default=datetime.utcnow)
-    otp = IntField(required=False)
+    created_at = DateTimeField(default=datetime.utcnow) 
+    updated_at = DateTimeField(default=datetime.utcnow)  
+  
     
     def set_password(self, password):
          self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
