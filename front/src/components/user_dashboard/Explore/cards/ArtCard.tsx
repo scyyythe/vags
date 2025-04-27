@@ -30,12 +30,6 @@ const ArtCard = ({
   artistImage,
   artworkImage,
   title,
-  price,
-  currency = "php",
-  showPrice = true,
-  showButton = true,
-  buttonText = "View Art",
-  onButtonClick,
   isExplore = false,
   likesCount = 0,
   

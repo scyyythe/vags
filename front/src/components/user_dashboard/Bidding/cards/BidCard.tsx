@@ -1,5 +1,8 @@
-// BidCard.tsx
 import React from 'react';
+import { useState } from "react";
+import { MoreHorizontal } from "lucide-react";
+import { toast } from "sonner";
+import BidMenu from "./BidMenu";
 
 export interface BidCardData {
   id: string;
@@ -16,10 +19,14 @@ interface BidCardProps {
 }
 
 const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+  const [isReported, setIsReported] = useState(false);
+
   if (isLoading) {
     return (
-      <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white animate-pulse p-4">
-        <div className="w-full h-48 bg-gray-300 rounded-xl mb-4"></div>
+      <div className="w-full rounded-2xl overflow-hidden shadow-lg bg-white animate-pulse p-4">
+        <div className="w-full h-36 bg-gray-300 rounded-xl mb-4"></div> 
         <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
         <div className="flex items-center justify-between mt-4">
           <div className="h-4 bg-gray-300 rounded w-1/3"></div>
@@ -29,23 +36,55 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }
     );
   }
 
+  const handleHide = () => {
+    setIsHidden(true);
+    toast("Artwork hidden");
+    setMenuOpen(false);
+  };
+
+  const handleReport = () => {
+    setIsReported(!isReported);
+    toast(isReported ? "Artwork report removed" : "Artwork reported");
+    setMenuOpen(false);
+  };
+
   return (
-    <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white">
+    <div className="w-full rounded-2xl border bg-white hover:shadow-lg transition-all duration-300">
       <div className="relative">
-        <img src={data.imageUrl} alt={data.title} className="w-full h-48 object-cover" />
-        <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-3 py-1 rounded-full">
-          {data.timeRemaining}
+        <img 
+          src={data.imageUrl} 
+          alt={data.title} 
+          className="w-full h-36 object-cover rounded-2xl" 
+        /> {/* smaller image height */}
+        <div className="absolute top-4 left-0 right-0 px-4 flex justify-between items-center">
+          <div className="font-semibold bg-white bg-opacity-60 text-black text-[9px] px-3 py-1 rounded-[3px]">
+            {data.timeRemaining}
+          </div>
+          <div className="relative text-gray-500" style={{ height: '24px' }}>
+            <button 
+              onClick={() => setMenuOpen((prev) => !prev)}
+              className={`p-1 rounded-full text-black bg-white bg-opacity-60 ${menuOpen ? '' : ''}`}
+            >
+              <MoreHorizontal size={14} />
+            </button>
+              <BidMenu
+                isOpen={menuOpen}
+                onHide={handleHide}
+                onReport={handleReport}
+                isReported={isReported}
+              />
+          </div>
         </div>
       </div>
-      <div className="p-4 flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">{data.title}</h2>
+      <div className="px-6 py-5 flex flex-col gap-2"> 
+            <h2 className="text-sm font-semibold">{data.title}</h2> 
         <div className="flex items-center justify-between">
-          <div className="text-gray-500">
-            Current Bid <span className="font-bold text-black">{data.currentBid} ETH</span>
+          <div className="text-gray-500 text-[10px]">
+            Current Bid <span className="text-sm font-bold text-black ml-2">{data.currentBid}k</span>
           </div>
           <button
             onClick={() => onPlaceBid?.(data.id)}
-            className="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-full"
+            className="bg-red-800 hover:bg-red-700 text-white text-[9px] px-6 py-2 rounded-full whitespace-nowrap"
           >
             Place A Bid
           </button>
