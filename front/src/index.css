@@ -330,3 +330,9 @@ img {
   border-radius: 10px;
 }
 
+/* BID POPUP NO SCROLL */
+body.no-scroll {
+  overflow: hidden !important;
+  height: 100vh !important;
+}
+

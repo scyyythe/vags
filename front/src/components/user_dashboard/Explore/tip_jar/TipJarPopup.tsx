@@ -103,7 +103,6 @@ const TipJarPopup = ({
       return;
     }
     
-    // Show confirmation
     setStep("confirm");
   };
   
