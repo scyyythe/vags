@@ -2,20 +2,20 @@
 from rest_framework import serializers
 from api.models.artwork_model.artwork import Art
 from api.models.user_model.users import User 
-from api.models.interaction_model.interaction import Comment,Like,CartItem 
+from api.models.interaction_model.interaction import Comment,Like,CartItem,Saved 
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from api.serializers.user_s.users_serializers import UserSerializer
 
 class CommentSerializer(serializers.Serializer):
     id = serializers.CharField()
     content = serializers.CharField()
-    user = UserSerializer(read_only=True)  # Display user details instead of just ID
+    user = UserSerializer(read_only=True)  
     art = serializers.CharField(write_only=True)  
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
 
     def create(self, validated_data):
-        user = self.context['request'].user  # Get the logged-in user
+        user = self.context['request'].user  
         art_id = validated_data.get('art')  
         
         try:
@@ -32,7 +32,7 @@ class CommentSerializer(serializers.Serializer):
     
 
 class LikeSerializer(serializers.Serializer):
-    user = serializers.CharField(read_only=True) 
+    user = UserSerializer(read_only=True)
     art = serializers.CharField(write_only=True) 
     created_at = serializers.DateTimeField(read_only=True)
 
@@ -45,7 +45,21 @@ class LikeSerializer(serializers.Serializer):
         like = Like(user=user, art=art)
         like.save()
         return like
+    
+class SavedSerializer(serializers.Serializer):
+    user = UserSerializer(read_only=True) 
+    art = serializers.CharField(write_only=True) 
+    created_at = serializers.DateTimeField(read_only=True)
 
+    def create(self, validated_data):
+      
+        user = validated_data.get('user')
+        art_id = validated_data.get('art')
+        art = Art.objects.get(id=art_id)  
+
+        saved = Saved(user=user, art=art)
+        saved.save()
+        return saved
 
 class CartItemSerializer(serializers.Serializer):
     user = serializers.CharField(read_only=True)  
