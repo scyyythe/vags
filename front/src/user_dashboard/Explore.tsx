@@ -259,7 +259,7 @@ const Explore = () => {
                   className="text-xs rounded-full flex items-center gap-1"
                   onClick={handleSortClick}
                 >
-                  <SortAsc size={8} />
+                  <i className='bx bx-sort-alt-2 text-sm'></i>
                   Sort
                 </Button>
               </div>
