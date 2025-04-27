@@ -34,7 +34,7 @@ class ArtSerializer(serializers.Serializer):
                     "id": str(comment.user.id),
                     "username": comment.user.username,
                     "email": comment.user.email
-                },
+                },  
                 "created_at": comment.created_at
             }
             for comment in comments
@@ -46,9 +46,11 @@ class ArtSerializer(serializers.Serializer):
     def create(self, validated_data):
         image = validated_data.pop('image', None)  # Get image from validated data if provided
         if image:
-            # Upload the image to Cloudinary
             result = cloudinary.uploader.upload(image)
-            validated_data['image_url'] = result['secure_url']  # Store the image URL from Cloudinary
+            validated_data['image_url'] = result.get('secure_url', '')  # Empty string if not available
+        else:
+            validated_data['image_url'] = ''  # Handle case where no image is provided
+
         
         if "visibility" not in validated_data:
             validated_data["visibility"] = "public"  
@@ -80,10 +82,13 @@ class ArtSerializer(serializers.Serializer):
         return instance
     
     def to_representation(self, instance):
+        artist_name = None
+        if instance.artist:
+            artist_name = f"{instance.artist.first_name} {instance.artist.last_name}"
         return {
             "id": str(instance.id),
             "title": instance.title,
-            "artist": str(instance.artist.id) if instance.artist else None, 
+           "artist": artist_name, 
             "category": instance.category,
             "medium": instance.medium,
             "art_status": instance.art_status,
@@ -92,7 +97,7 @@ class ArtSerializer(serializers.Serializer):
             "visibility": instance.visibility, 
             "created_at": instance.created_at,
             "updated_at": instance.updated_at,
-            "image_url": instance.image_url,  # Include image_url in the representation
+            "image_url": instance.image_url, 
             "comments": self.get_comments(instance),
             "likes_count": self.get_likes_count(instance)
         }
