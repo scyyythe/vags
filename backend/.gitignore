@@ -35,6 +35,10 @@ venv*/
 *.pot
 *.mo
 *.log
+**/*.pyc
+*.pyc
+__pycache__/
+
 
 # Django migrations (optional: keep only if you want to ignore them)
 **/migrations/*.py
