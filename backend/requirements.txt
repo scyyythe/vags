@@ -17,3 +17,5 @@ cloudinary
 Pillow>=10.0.0
 django-environ
 django-anymail
+channels 
+channels_redis
