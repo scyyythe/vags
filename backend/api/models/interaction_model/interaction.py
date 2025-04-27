@@ -28,9 +28,9 @@ class Saved(Document):
     updated_at = DateTimeField(default=datetime.utcnow)
 
     meta = {
-        'collection': 'saved_artworks',
+        'collection': 'saved',
         'indexes': [
-            {'fields': ('user', 'art'), 'unique': True},  # Prevent duplicate saves
+            {'fields': ('user', 'art'), 'unique': True},  
         ]
     }
     
