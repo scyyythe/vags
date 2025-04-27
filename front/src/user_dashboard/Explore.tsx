@@ -65,7 +65,7 @@ const Explore = () => {
           id: artwork.id,
           title: artwork.title,
           artistName: artwork.artist,
-          artistImage: "", // Add any logic to get artist image if available
+          artistImage: "", 
           artworkImage: artwork.image_url,
           likesCount: artwork.likes_count,
         }));
@@ -78,7 +78,6 @@ const Explore = () => {
     };
 
     fetchArtworks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshData]);
 
   const handleTipJar = () => {
