@@ -3,7 +3,6 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   Heart,
   MoreHorizontal,
-  Send,
   GripVertical,
   Reply,
 } from "lucide-react";
