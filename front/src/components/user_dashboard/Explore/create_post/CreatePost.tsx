@@ -9,7 +9,6 @@ import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/Artw
 import apiClient from "@/utils/apiClient";
 import axios from "axios";
 
-
 const CreatePost = () => {
   const navigate = useNavigate();
   const [artworkTitle, setArtworkTitle] = useState("");
@@ -18,6 +17,7 @@ const CreatePost = () => {
   const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [refreshData, setRefreshData] = useState(false);
 
   const [artStatus, setArtStatus] = useState("Active");
   const [price, setPrice] = useState(0);
@@ -76,6 +76,7 @@ const CreatePost = () => {
       toast.error("Please upload an artwork image");
       return;
     }
+
     const formData = new FormData();
     formData.append("title", artworkTitle);
     formData.append("category", artworkStyle);
@@ -84,7 +85,6 @@ const CreatePost = () => {
     formData.append("price", price.toString());
     formData.append("description", description || "");
     formData.append("visibility", visibility);
-
     if (selectedFile) {
       formData.append("image", selectedFile);
     }
@@ -99,7 +99,12 @@ const CreatePost = () => {
       });
       console.log("Response from backend:", response.data);
       toast.success("Artwork posted successfully!");
-      navigate("/explore");
+
+      setRefreshData((prev) => !prev);
+
+      setTimeout(() => {
+        navigate("/explore");
+      }, 1000);
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         console.error("Upload error:", error.response?.data);
