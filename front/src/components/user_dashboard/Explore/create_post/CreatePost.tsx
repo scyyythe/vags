@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
+import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/ArtworkStyles";
 import apiClient from "@/utils/apiClient";
 import axios from "axios";
 
@@ -201,10 +202,11 @@ const CreatePost = () => {
                         <option value="" disabled>
                           Select artwork style
                         </option>
-                        <option value="abstract">Abstract</option>
-                        <option value="realism">Realism</option>
-                        <option value="impressionism">Impressionism</option>
-                        <option value="surrealism">Surrealism</option>
+                        {ART_STYLES.map((style) => (
+                          <option key={style} value={style.toLowerCase()}>
+                            {style}
+                          </option>
+                        ))}
                       </select>
                       <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
