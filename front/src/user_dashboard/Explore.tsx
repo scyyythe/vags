@@ -178,6 +178,10 @@ const Explore = () => {
     },
   ];
 
+  useEffect(() => {
+    setArtworks(artCards);
+  }, [setArtworks]);
+
   const handleTipJar = () => {
     toast("Opening tip jar");
   };
