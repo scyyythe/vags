@@ -3,6 +3,7 @@ import { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import BidMenu from "./BidMenu";
+import BidPopup from "../place_bid/BidPopup";
 
 export interface BidCardData {
   id: string;
@@ -15,13 +16,14 @@ export interface BidCardData {
 interface BidCardProps {
   data: BidCardData;
   isLoading?: boolean;
-  onPlaceBid?: (id: string) => void;
+  onPlaceBid?: (id: string, amount: number) => void;
 }
 
 const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isReported, setIsReported] = useState(false);
+  const [showBidPopup, setShowBidPopup] = useState(false);
 
   if (isLoading) {
     return (
@@ -48,49 +50,63 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }
     setMenuOpen(false);
   };
 
+  const handleBidSubmit = (amount: number) => {
+    onPlaceBid?.(data.id, amount);
+    toast(`Bid of ${amount}K placed successfully!`);
+  };
+
   return (
-    <div className="w-full rounded-2xl border bg-white hover:shadow-lg transition-all duration-300">
-      <div className="relative">
-        <img 
-          src={data.imageUrl} 
-          alt={data.title} 
-          className="w-full h-36 object-cover rounded-2xl" 
-        /> {/* smaller image height */}
-        <div className="absolute top-4 left-0 right-0 px-4 flex justify-between items-center">
-          <div className="font-semibold bg-white bg-opacity-60 text-black text-[9px] px-3 py-1 rounded-[3px]">
-            {data.timeRemaining}
-          </div>
-          <div className="relative text-gray-500" style={{ height: '24px' }}>
-            <button 
-              onClick={() => setMenuOpen((prev) => !prev)}
-              className={`p-1 rounded-full text-black bg-white bg-opacity-60 ${menuOpen ? '' : ''}`}
-            >
-              <MoreHorizontal size={14} />
-            </button>
+    <>
+      <div className="w-full rounded-2xl border bg-white hover:shadow-lg transition-all duration-300">
+        <div className="relative">
+          <img 
+            src={data.imageUrl} 
+            alt={data.title} 
+            className="w-full h-36 object-cover rounded-2xl" 
+          />
+          <div className="absolute top-4 left-0 right-0 px-4 flex justify-between items-center">
+            <div className="font-semibold bg-white bg-opacity-60 text-black text-[9px] px-3 py-1 rounded-[3px]">
+              {data.timeRemaining}
+            </div>
+            <div className="relative text-gray-500" style={{ height: '24px' }}>
+              <button 
+                onClick={() => setMenuOpen((prev) => !prev)}
+                className={`p-1 rounded-full text-black bg-white bg-opacity-60 ${menuOpen ? '' : ''}`}
+              >
+                <MoreHorizontal size={14} />
+              </button>
               <BidMenu
                 isOpen={menuOpen}
                 onHide={handleHide}
                 onReport={handleReport}
                 isReported={isReported}
               />
+            </div>
+          </div>
+        </div>
+        <div className="px-6 py-5 flex flex-col gap-2"> 
+          <h2 className="text-sm font-semibold">{data.title}</h2> 
+          <div className="flex items-center justify-between">
+            <div className="text-gray-500 text-[10px]">
+              Current Bid <span className="text-sm font-bold text-black ml-2">{data.currentBid}k</span>
+            </div>
+            <button
+              onClick={() => setShowBidPopup(true)}
+              className="bg-red-800 hover:bg-red-700 text-white text-[9px] px-6 py-2 rounded-full whitespace-nowrap"
+            >
+              Place A Bid
+            </button>
           </div>
         </div>
       </div>
-      <div className="px-6 py-5 flex flex-col gap-2"> 
-            <h2 className="text-sm font-semibold">{data.title}</h2> 
-        <div className="flex items-center justify-between">
-          <div className="text-gray-500 text-[10px]">
-            Current Bid <span className="text-sm font-bold text-black ml-2">{data.currentBid}k</span>
-          </div>
-          <button
-            onClick={() => onPlaceBid?.(data.id)}
-            className="bg-red-800 hover:bg-red-700 text-white text-[9px] px-6 py-2 rounded-full whitespace-nowrap"
-          >
-            Place A Bid
-          </button>
-        </div>
-      </div>
-    </div>
+
+      <BidPopup
+        isOpen={showBidPopup}
+        onClose={() => setShowBidPopup(false)}
+        artworkTitle={data.title}
+        onSubmit={handleBidSubmit}
+      />
+    </>
   );
 };
 
