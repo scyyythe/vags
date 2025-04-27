@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const createAPIClient = (baseURL = "http://127.0.0.1:8000/api/") => {
+const createAPIClient = (
+  baseURL = window.location.hostname === "localhost" ? "http://127.0.0.1:8000/api/" : "http://192.168.100.11:8000/api/"
+) => {
   const apiClient = axios.create({
     baseURL,
     headers: { "Content-Type": "application/json" },
