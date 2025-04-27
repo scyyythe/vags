@@ -47,6 +47,7 @@ class CommentListView(APIView):
             "artwork": art.title,
             "comments": comment_serializer.data
         }, status=status.HTTP_200_OK)
+        
 class LikeCreateView(APIView):
     permission_classes = [IsAuthenticated]  
     
