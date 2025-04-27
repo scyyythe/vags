@@ -18,17 +18,6 @@ const Header = () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
-    // We don't close when clicking outside since the user requested to only close when clicking the avatar again
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-border/50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
