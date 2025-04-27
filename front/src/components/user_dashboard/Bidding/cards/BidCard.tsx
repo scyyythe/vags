@@ -1,83 +1,53 @@
-import { useState } from "react";
-import { MoreHorizontal } from "lucide-react";
-import ArtCardMenu from "../../Explore/cards/ArtCardMenu";
-import { toast } from "sonner";
+// BidCard.tsx
+import React from 'react';
 
-interface BidCardProps {
+export interface BidCardData {
   id: string;
-  artworkImage: string;
   title: string;
-  currentBid: string;
+  currentBid: number;
+  timeRemaining: string;
+  imageUrl: string;
 }
 
-const BidCard = ({ id, artworkImage, title, currentBid }: BidCardProps) => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [isReported, setIsReported] = useState(false);
+interface BidCardProps {
+  data: BidCardData;
+  isLoading?: boolean;
+  onPlaceBid?: (id: string) => void;
+}
 
-  const handleMenuClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setMenuOpen(!menuOpen);
-  };
-
-  const handlePlaceBid = () => {
-    toast("Bid placed successfully");
-  };
-
-  const handleHide = () => {
-    setIsHidden(true);
-    toast("Artwork hidden");
-    setMenuOpen(false);
-  };
-
-  const handleReport = () => {
-    setIsReported(!isReported);
-    toast(isReported ? "Artwork report removed" : "Artwork reported");
-    setMenuOpen(false);
-  };
-
-  const handleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    toast(isFavorite ? "Artwork favorite removed" : "Artwork added to favorites");
-    setMenuOpen(false);
-  };
-
-  return (
-    <div className="art-card">
-      <div className="relative aspect-square overflow-hidden">
-        <img
-          src={artworkImage}
-          alt={title}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute top-2 right-2 bg-black/70 text-white text-xs py-1 px-2 rounded-full">
-          10d 18h 45m
+const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }) => {
+  if (isLoading) {
+    return (
+      <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white animate-pulse p-4">
+        <div className="w-full h-48 bg-gray-300 rounded-xl mb-4"></div>
+        <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
+        <div className="flex items-center justify-between mt-4">
+          <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+          <div className="h-8 bg-gray-300 rounded-full w-24"></div>
         </div>
       </div>
-      <div className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="font-medium text-sm">{title}</h3>
-          <div className="relative">
-            <button onClick={handleMenuClick} className="p-1 rounded-full hover:bg-secondary">
-              <MoreHorizontal size={16} />
-            </button>
-            <ArtCardMenu
-              isOpen={menuOpen}
-              onFavorite={handleFavorite}
-              onHide={handleHide}
-              onReport={handleReport}
-              isFavorite={isFavorite}
-              isReported={isReported}
-            />
-          </div>
+    );
+  }
+
+  return (
+    <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white">
+      <div className="relative">
+        <img src={data.imageUrl} alt={data.title} className="w-full h-48 object-cover" />
+        <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-3 py-1 rounded-full">
+          {data.timeRemaining}
         </div>
+      </div>
+      <div className="p-4 flex flex-col gap-3">
+        <h2 className="text-lg font-semibold">{data.title}</h2>
         <div className="flex items-center justify-between">
-          <div className="text-xs text-muted-foreground">
-            Current Bid: <span className="font-medium text-foreground">{currentBid}</span>
+          <div className="text-gray-500">
+            Current Bid <span className="font-bold text-black">{data.currentBid} ETH</span>
           </div>
-          <button onClick={handlePlaceBid} className="button-primary text-xs py-1 px-3">
-            Place a Bid
+          <button
+            onClick={() => onPlaceBid?.(data.id)}
+            className="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-full"
+          >
+            Place A Bid
           </button>
         </div>
       </div>
