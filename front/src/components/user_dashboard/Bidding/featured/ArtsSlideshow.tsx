@@ -47,9 +47,9 @@ const ArtSlideshow = ({
   return (
     <div
       className={cn(
-        "relative w-full h-full overflow-hidden rounded-2xl bg-black",
-        "px-8 py-8 flex items-center gap-12",
-        isMobile && "px-2 py-2"
+        "relative w-full h-full overflow-hidden rounded-xl bg-black shadow-6xl",
+        "flex items-center",
+        isMobile ? "px-16 gap-1" : "px-8 py-8 gap-12"
       )}
     >
       {artworks.map((artwork, index) => (
@@ -67,7 +67,7 @@ const ArtSlideshow = ({
           <div
             className={cn(
               "aspect-square overflow-hidden",
-              isMobile ? "w-[30%] min-w-[80px]" : "w-[40%]"
+              isMobile ? "w-[45%] -mr-8" : "w-[40%]"
             )}
           >
             <img
@@ -84,15 +84,15 @@ const ArtSlideshow = ({
           {/* Right - Artwork Info */}
           <div
             className={cn(
-              "text-white flex flex-col justify-center gap-4",
-              isMobile ? "w-[60%] py-8" : "w-[50%]"
+              "text-white flex flex-col justify-center",
+              isMobile ? "w-[60%] py-8 gap-1" : "w-[50%] gap-4"
             )}
           >
             <h2
               className={cn(
-                "font-semibold mb-2",
+                "font-semibold",
                 "bg-gradient-to-r from-white via-pink-400 to-red-600 bg-clip-text text-transparent",
-                isMobile ? "text-lg" : "text-5xl"
+                isMobile ? "text-lg mb-1" : "text-5xl mb-2"
               )}
             >
               {artwork.title}
@@ -100,8 +100,8 @@ const ArtSlideshow = ({
 
             <p
               className={cn(
-                "text-gray-200 mb-4",
-                isMobile ? "text-xs" : "text-sm"
+                "text-gray-200",
+                isMobile ? "text-[9px]" : "text-sm mb-4"
               )}
             >
               {artwork.description}
@@ -111,7 +111,7 @@ const ArtSlideshow = ({
               <span
                 className={cn(
                   "text-gray-400",
-                  isMobile ? "text-[10px]" : "text-xs"
+                  isMobile ? "text-[9px]" : "text-xs"
                 )}
               >
                 Owned By
@@ -128,7 +128,7 @@ const ArtSlideshow = ({
                 <span
                   className={cn(
                     "font-medium",
-                    isMobile ? "text-[10px]" : "text-xs"
+                    isMobile ? "text-[9px]" : "text-xs"
                   )}
                 >
                   {artwork.artist}
@@ -136,12 +136,12 @@ const ArtSlideshow = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-16 mt-4">
+            <div className={cn("flex items-center mt-4", isMobile ? "gap-6" : "gap-16" )}>
               <button
                 className={cn(
                   "border border-white rounded-full font-semibold transition w-[50%]",
                   isMobile
-                    ? "px-3 py-1 text-xs hover:border-red-600 hover:text-red-600"
+                    ? "px-3 py-1 text-[10px] hover:border-red-600 hover:text-red-600"
                     : "px-8 py-3 hover:border-red-600 hover:text-red-600"
                 )}
               >
@@ -151,8 +151,7 @@ const ArtSlideshow = ({
               <div className="flex flex-col text-center">
                 <span
                   className={cn(
-                    "mb-2",
-                    isMobile ? "text-xxs" : "text-xs"
+                    isMobile ? "text-[10px]" : "text-xs mb-2"
                   )}
                 >
                   Ending In
@@ -174,8 +173,8 @@ const ArtSlideshow = ({
       {/* Dots indicator */}
       <div
         className={cn(
-          "absolute flex space-x-1 z-30",
-          isMobile ? "bottom-2 right-2" : "bottom-6 right-6"
+          "absolute flex z-30",
+          isMobile ? "bottom-4 right-4 space-x-[2px]" : "bottom-6 right-6 space-x-1"
         )}
       >
         {artworks.map((_, index) => (
@@ -184,7 +183,7 @@ const ArtSlideshow = ({
             onClick={() => setCurrentIndex(index)}
             className={cn(
               "rounded-full transition-all duration-300",
-              isMobile ? "w-2 h-2" : "w-1 h-1",
+              isMobile ? "w-1 h-1" : "w-1 h-1",
               index === currentIndex
                 ? "bg-gray-300 w-3"
                 : "bg-white/50 hover:bg-white/70"

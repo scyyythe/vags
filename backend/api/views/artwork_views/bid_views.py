@@ -5,6 +5,7 @@ from api.models.artwork_model.bid import Bid, Auction
 from api.models.artwork_model.artwork import Art
 from api.serializers.artwork_s.bid_serializers import BidSerializer, AuctionSerializer
 from datetime import datetime
+from api.models.interaction_model.notification import Notification
 
 class CreateAuctionView(generics.CreateAPIView):
     serializer_class = AuctionSerializer
@@ -22,17 +23,30 @@ class CreateAuctionView(generics.CreateAPIView):
             artwork = Art.objects.get(id=artwork_id)
         except Art.DoesNotExist:
             return Response({"error": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
-                                                                
+
         if Auction.objects.filter(artwork=artwork, status=True).count() > 0:
             return Response({"error": "An active auction for this artwork already exists."}, status=status.HTTP_400_BAD_REQUEST)
 
+      
+        try:
+            start_time = datetime.strptime(start_time.replace("Z", ""), "%Y-%m-%dT%H:%M:%S")
+            end_time = datetime.strptime(end_time.replace("Z", ""), "%Y-%m-%dT%H:%M:%S")
+        except ValueError:
+            return Response({"error": "Invalid date format. Use 'YYYY-MM-DDTHH:MM:SSZ'."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create the auction object
         auction = Auction.objects.create(
             artwork=artwork,
             start_time=start_time,
             end_time=end_time,
             status=True
         )
-
+        artist = artwork.artist  
+        Notification.objects.create(
+            user=artist,
+            message=f"Your artwork '{artwork.title}' is now up for auction!",
+            art=artwork
+        )
         return Response(AuctionSerializer(auction).data, status=status.HTTP_201_CREATED)
 
     

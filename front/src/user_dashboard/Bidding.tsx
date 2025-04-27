@@ -1,7 +1,6 @@
 import Header from "@/components/user_dashboard/navbar/Header";
 import ArtsContainer from "@/components/user_dashboard/Bidding/featured/ArtsContainer";
-import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
-import CategoryFilter from "@/components/user_dashboard/local_components/CategoryFilter";
+import Components from "@/components/user_dashboard/Bidding/navbar/Components";
 import { useState, useEffect } from "react";
 
 interface Artwork {
@@ -16,6 +15,8 @@ interface Artwork {
 
 const Bidding = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterCategory, setFilterCategory] = useState("abstract");
 
   useEffect(() => {
     // Simulated backend fetch
@@ -67,11 +68,13 @@ const Bidding = () => {
       <Header />
       <div className="container mx-auto px-4 sm:px-6 pt-20">
         <main className="container">
-          <section className="mb-16">
+          <section className="mb-10">
             <ArtsContainer
               artworks={artworks} 
             />
           </section>
+            <Components
+            />
         </main> 
       </div>
     </div>

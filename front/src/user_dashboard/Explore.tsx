@@ -8,16 +8,10 @@ import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import { Plus, SortAsc } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useDonation } from "../context/DonationContext";
 import { useArtworkContext } from "../context/ArtworkContext";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
+import apiClient from "@/utils/apiClient";
 
 const Explore = () => {
   const navigate = useNavigate();
@@ -25,179 +19,67 @@ const Explore = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const { openPopup } = useDonation();
   const { setArtworks } = useArtworkContext();
+  const [artworks, setArtworksState] = useState([]);
+  const [refreshData, setRefreshData] = useState(false);
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
     toast(`Selected category: ${category}`);
   };
 
-  const artCards = [
-    {
-      id: "1",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://i.pinimg.com/736x/97/5d/50/975d50c7c3c345cd072ddd34b180cf88.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "2",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://www.goneminimal.com/wp-content/uploads/2022/04/Minimal-abstract-flower-painting-Minimalist-Painting-Gone-Minimal-edited-scaled.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "3",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://i.pinimg.com/474x/e7/9f/cb/e79fcb270b052643b832d5335d73859f.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "4",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://images.squarespace-cdn.com/content/v1/58fd82dbbf629ab224f81b68/1599802230471-29DU3BQDBTQET95TAS58/image-asset.jpeg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "5",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://i.pinimg.com/474x/8a/d6/3d/8ad63d66a3c26a236a8fa0c5c94259d9.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "6",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "https://cdn.artcld.com/img/t51cs49ogy6do75zh2e4.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "7",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://as2.ftcdn.net/v2/jpg/12/28/04/85/1000_F_1228048537_dZjULPg6tMaUQWEIIu7wdCrErfQD5ulI.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "8",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://i.pinimg.com/474x/dc/23/08/dc23089d3a43819691c9b447e496f961.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "9",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://i.pinimg.com/474x/f5/bd/ed/f5bdedecbc242032fcc7665483137449.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "10",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage: "https://img.artpal.com/330392/133-23-11-9-6-50-5m.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "11",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://i.pinimg.com/474x/fc/d7/75/fcd7753479b158397f69c09a618eb05a.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "12",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://i.pinimg.com/474x/6d/bd/36/6dbd3628910db4a5f73a32a313f1d5e5.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "13",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://i.pinimg.com/474x/db/5b/a2/db5ba20387c6b3681588d79d0930e48a.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "14",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://i.pinimg.com/474x/ae/04/55/ae0455b5950a7acd62b894030ba97de0.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-    {
-      id: "15",
-      artistName: "Angel Canete",
-      artistImage: "https://i.pravatar.cc/150?img=2",
-      artworkImage:
-        "https://i.pinimg.com/474x/cd/74/ad/cd74ad2c87fca279791a9629936f679b.jpg",
-      title: "Slopes",
-      likesCount: 0, 
-    },
-  ];
-
-  const artworks = [
+  // Static artworks array (to keep existing code intact)
+  const staticArtworks = [
     {
       id: "1",
       title: "Ethereal Landscapes",
       artist: "Maria Sanchez",
-      image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80&w=1470"
+      image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80&w=1470",
     },
     {
       id: "2",
       title: "Urban Perspectives",
       artist: "John Rodriguez",
-      image: "https://www.andrewshoemaker.com/images/xl/chronicle-antelope-canyon-american-southwest-arizona.jpg"
+      image: "https://www.andrewshoemaker.com/images/xl/chronicle-antelope-canyon-american-southwest-arizona.jpg",
     },
     {
       id: "3",
       title: "Abstract Emotions",
       artist: "Emily Chen",
-      image: "https://rosshillart.com/cdn/shop/articles/R._Delino_Landscape_art_-_Rosshillart.com_2200x.jpg?v=1703181542"
+      image:
+        "https://rosshillart.com/cdn/shop/articles/R._Delino_Landscape_art_-_Rosshillart.com_2200x.jpg?v=1703181542",
     },
     {
       id: "4",
       title: "Vivid Expressions",
       artist: "David Kim",
-      image: "https://m.media-amazon.com/images/I/A142xwh4GVL._AC_SL1500_.jpg"
-    }
+      image: "https://m.media-amazon.com/images/I/A142xwh4GVL._AC_SL1500_.jpg",
+    },
   ];
 
-
   useEffect(() => {
-    setArtworks(artCards);
-  }, [setArtworks]);
+    // Fetch artworks from the backend using apiClient
+    const fetchArtworks = async () => {
+      try {
+        const response = await apiClient.get("art/list/");
+        const fetchedArtworks = response.data.map((artwork) => ({
+          id: artwork.id,
+          title: artwork.title,
+          artistName: artwork.artist,
+          artistImage: "", // Add any logic to get artist image if available
+          artworkImage: artwork.image_url,
+          likesCount: artwork.likes_count,
+        }));
+        setArtworksState(fetchedArtworks);
+        setArtworks(fetchedArtworks);
+      } catch (error) {
+        console.error("Error fetching artworks:", error);
+        toast.error("Failed to load artworks");
+      }
+    };
+
+    fetchArtworks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshData]);
 
   const handleTipJar = () => {
     toast("Opening tip jar");
@@ -217,18 +99,16 @@ const Explore = () => {
       <div className="container mx-auto px-4 sm:px-6 pt-20">
         <main className="container">
           <section className="mb-16">
-            <ArtGalleryContainer
-              artworks={artworks} 
-            />
+            <ArtGalleryContainer artworks={staticArtworks} />
           </section>
-        </main> 
+        </main>
 
         <div className="relative flex justify-center items-center -top-16">
           <div className="browse-container bg-white shadow-lg w-full md:w-3/4 lg:w-[85%] rounded-lg flex items-center p-4">
             <div className="flex items-center px-4 border-r">
               <span className="text-xs font-semibold mr-5">Browse Type</span>
               <div className="relative">
-              <ArtCategorySelect />
+                <ArtCategorySelect />
               </div>
             </div>
             <div className="flex-1 pl-2 bg-blue-100 bg-opacity-50 rounded-sm ml-3">
@@ -240,10 +120,7 @@ const Explore = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-3">
             <div className="flex items-center justify-between mb-6 lg:w-[133%]">
-              <CategoryFilter
-                categories={categories}
-                onSelectCategory={handleCategorySelect}
-              />
+              <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
               <div className="flex space-x-2 text-xs">
                 <Button
                   size="sm"
@@ -259,7 +136,7 @@ const Explore = () => {
                   className="text-xs rounded-full flex items-center gap-1"
                   onClick={handleSortClick}
                 >
-                  <SortAsc size={8} />
+                  <i className='bx bx-sort-alt-2 text-sm'></i>
                   Sort
                 </Button>
               </div>
@@ -267,7 +144,7 @@ const Explore = () => {
 
             <div className="h-[800px] lg:w-[133%] custom-scrollbars">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                {artCards.map((card) => (
+                {artworks.map((card) => (
                   <ArtCard
                     key={card.id}
                     id={card.id}
@@ -277,7 +154,7 @@ const Explore = () => {
                     title={card.title}
                     onButtonClick={handleTipJar}
                     isExplore={true}
-                    likesCount={0} 
+                    likesCount={card.likesCount}
                   />
                 ))}
               </div>
