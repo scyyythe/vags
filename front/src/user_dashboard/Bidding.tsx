@@ -1,5 +1,5 @@
 import Header from "@/components/user_dashboard/navbar/Header";
-import BidCard from "@/components/user_dashboard/BidCard";
+import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import CategoryFilter from "@/components/user_dashboard/local_components/CategoryFilter";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 

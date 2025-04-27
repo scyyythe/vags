@@ -220,7 +220,7 @@ const Explore = () => {
               artworks={artworks} 
             />
           </section>
-        </main>
+        </main> 
 
         <div className="relative flex justify-center items-center -top-16">
           <div className="browse-container bg-white shadow-lg w-full md:w-3/4 lg:w-[85%] rounded-lg flex items-center p-4">
