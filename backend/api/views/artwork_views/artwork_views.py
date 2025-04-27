@@ -21,7 +21,7 @@ class ArtCreateView(generics.ListCreateAPIView):
             raise e
 
         art = serializer.save(artist=mongo_user)
-
+        art = Art.objects.get(id=art.id)
 
         Notification(
             user=mongo_user,
@@ -32,9 +32,15 @@ class ArtCreateView(generics.ListCreateAPIView):
 
 
 class ArtListView(generics.ListAPIView):
-    queryset = Art.objects.all()
+    queryset = Art.objects.all().order_by('-created_at')
     serializer_class = ArtSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    def get(self, request, *args, **kwargs):
+        # This ensures the query retrieves the artworks in the order you want
+        response = super().get(request, *args, **kwargs)
+        response['Cache-Control'] = 'no-store'  # Prevent caching
+        return response
 
 
 
