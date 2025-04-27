@@ -1,6 +1,7 @@
 import Header from "@/components/user_dashboard/navbar/Header";
 import ArtsContainer from "@/components/user_dashboard/Bidding/featured/ArtsContainer";
 import Components from "@/components/user_dashboard/Bidding/navbar/Components";
+import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard"; 
 import { useState, useEffect } from "react";
 
 interface Artwork {
@@ -63,6 +64,11 @@ const Bidding = () => {
     setArtworks(fetchedArtworks);
   }, []);
 
+  const handlePlaceBid = (id: string) => {
+    console.log(`Placing bid for artwork ID: ${id}`);
+    // Connect this to backend API
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -76,9 +82,22 @@ const Bidding = () => {
             <Components
             />
         </main> 
-        <div className="h-[800px] lg:w-[100%] custom-scrollbars px-16 border">
+        <div className="h-[800px] lg:w-[100%] custom-scrollbars px-6 border">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                
+              {/* BidCards */}
+              {artworks.map((artwork) => (
+                <BidCard
+                  key={artwork.id}
+                  data={{
+                    id: artwork.id,
+                    title: artwork.title,
+                    currentBid: Math.floor(Math.random() * 5) + 1,
+                    timeRemaining: artwork.endTime,
+                    imageUrl: artwork.image,
+                  }}
+                  onPlaceBid={handlePlaceBid}
+                />
+              ))}
             </div>
           </div>
       </div>
