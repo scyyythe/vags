@@ -47,7 +47,7 @@ const ArtSlideshow = ({
   return (
     <div
       className={cn(
-        "relative w-full h-full overflow-hidden rounded-2xl bg-black",
+        "relative w-full h-full overflow-hidden rounded-2xl bg-black shadow-6xl",
         "px-8 py-8 flex items-center gap-12",
         isMobile && "px-2 py-2"
       )}

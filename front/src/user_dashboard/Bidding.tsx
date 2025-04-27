@@ -1,7 +1,5 @@
 import Header from "@/components/user_dashboard/navbar/Header";
 import ArtsContainer from "@/components/user_dashboard/Bidding/featured/ArtsContainer";
-import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
-import CategoryFilter from "@/components/user_dashboard/local_components/CategoryFilter";
 import { useState, useEffect } from "react";
 
 interface Artwork {
