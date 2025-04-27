@@ -3,8 +3,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from api.models.artwork_model.artwork import Art
-from api.models.interaction_model.interaction import Comment, Like, CartItem
-from api.serializers.interaction_s.interaction import CommentSerializer, LikeSerializer, CartItemSerializer
+from api.models.interaction_model.interaction import Comment, Like, CartItem, Saved
+from api.serializers.interaction_s.interaction import CommentSerializer, LikeSerializer, CartItemSerializer,SavedSerializer
+from api.models.interaction_model.notification import Notification
+from rest_framework import generics, permissions
 
 class CommentCreateView(APIView):
     permission_classes = [IsAuthenticated]  
@@ -24,10 +26,80 @@ class CommentCreateView(APIView):
 
        
         comment = Comment.objects.create(content=content, user=user, art=art)
+        
+        artist=art.artist
+        message=f"{user.first_name} commented on your artwork '{art.title}'"
+        Notification.objects.create(user=artist, message=message, art=art)
         return Response(CommentSerializer(comment).data, status=status.HTTP_201_CREATED)
 
+class CommentListView(APIView):
+    permission_classes = [IsAuthenticated] 
 
+    def get(self, request, art_id, *args, **kwargs):
+        try:
+            art = Art.objects.get(id=art_id)
+        except Art.DoesNotExist:
+            return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        comments = Comment.objects.filter(art=art).order_by('-created_at')
+        comment_serializer = CommentSerializer(comments, many=True)
+        return Response({
+            "artwork": art.title,
+            "comments": comment_serializer.data
+        }, status=status.HTTP_200_OK)
+        
 class LikeCreateView(APIView):
+    permission_classes = [IsAuthenticated]  
+    
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        art_id = request.data.get('art')  
+
+        if not art_id:
+            return Response({"detail": "Art ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            art = Art.objects.get(id=art_id)  
+        except Art.DoesNotExist:
+            return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        like = Like.objects.filter(user=user, art=art).first()
+
+        if like:
+            like.delete()
+            return Response({"detail": "You have unliked this artwork."}, status=status.HTTP_200_OK)
+        
+        else:
+            like = Like.objects.create(user=user, art=art)
+            
+            artist = art.artist  
+            message = f"{user.first_name} liked your artwork '{art.title}'"
+            Notification.objects.create(user=artist, message=message, art=art)
+            
+            return Response(LikeSerializer(like).data, status=status.HTTP_201_CREATED)
+
+        
+class LikeListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, art_id, *args, **kwargs):
+       
+        try:
+            art = Art.objects.get(id=art_id)
+        except Art.DoesNotExist:
+            return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        likes = Like.objects.filter(art=art).only('user', 'created_at').order_by('-created_at')
+        like_serializer = LikeSerializer(likes, many=True)
+        like_count = likes.count()
+        return Response({
+            "artwork": art.title,
+            "like_count": like_count,
+            "likes": like_serializer.data
+        }, status=status.HTTP_200_OK)
+    
+    
+class SavedCreateView(APIView):
     permission_classes = [IsAuthenticated]  
     
     def post(self, request, *args, **kwargs):
@@ -43,15 +115,38 @@ class LikeCreateView(APIView):
         except Art.DoesNotExist:
             return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        like = Like.objects.filter(user=user, art=art).first()
+        saved = Saved.objects.filter(user=user, art=art).first()
 
-        if like:
-            like.delete()
-            return Response({"detail": "You have unliked this artwork."}, status=status.HTTP_200_OK)
+        if saved:
+            saved.delete()
+            return Response({"detail": "You have unsavedd this artwork."}, status=status.HTTP_200_OK)
         
         else:
-            like = Like.objects.create(user=user, art=art)
-            return Response(LikeSerializer(like).data, status=status.HTTP_201_CREATED)
+            saved = Saved.objects.create(user=user, art=art)
+            
+            artist=art.artist
+            message=f"{user.first_name} saved your artwork '{art.title}'"
+            Notification.objects.create(user=artist, message=message, art=art)
+            return Response(SavedSerializer(saved).data, status=status.HTTP_201_CREATED)
+        
+class SavedListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, art_id, *args, **kwargs):
+       
+        try:
+            art = Art.objects.get(id=art_id)
+        except Art.DoesNotExist:
+            return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        saved = Like.objects.filter(art=art).only('user', 'created_at').order_by('-created_at')
+        saved_serializer = SavedSerializer(saved, many=True)
+        saved_count = saved.count()
+        return Response({
+            "artwork": art.title,
+            "saved_count": saved_count,
+            "saved": saved_serializer.data
+        }, status=status.HTTP_200_OK)
         
 class CartItemCreateView(APIView):
     permission_classes = [IsAuthenticated]
