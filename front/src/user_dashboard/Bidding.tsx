@@ -16,8 +16,6 @@ interface Artwork {
 
 const Bidding = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterCategory, setFilterCategory] = useState("abstract");
 
   useEffect(() => {
     // Simulated backend fetch
@@ -33,7 +31,7 @@ const Bidding = () => {
       },
       {
         id: "2",
-        title: "Dissolution of the Soul",
+        title: "Dissolution of Soul",
         artist: "Rick Splin",
         artistAvatar: "https://i.pinimg.com/474x/09/82/70/09827028e812b74970caa859cbf3dec5.jpg",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
@@ -58,7 +56,7 @@ const Bidding = () => {
         image: "https://i.pinimg.com/736x/d4/e9/fa/d4e9fa9888d3ee4edc6a06e0cb72d811.jpg",
         endTime: "2d : 15h : 20m",
       },
-
+      
     ];
 
     setArtworks(fetchedArtworks);
@@ -82,8 +80,8 @@ const Bidding = () => {
             <Components
             />
         </main> 
-        <div className="h-[800px] lg:w-[100%] custom-scrollbars px-6 border">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        <div className="h-[800px] lg:w-[100%] custom-scrollbars px-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {/* BidCards */}
               {artworks.map((artwork) => (
                 <BidCard
