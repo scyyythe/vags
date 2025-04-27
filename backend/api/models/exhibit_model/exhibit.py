@@ -18,7 +18,7 @@ class Exhibit(Document):
     owner = ReferenceField(User, required=True)
     collaborators = ListField(ReferenceField(User), default=[])
 
-    # Artworks contributed to this exhibit
+    
     artworks = ListField(ReferenceField(Art), required=False)
 
     visibility = StringField(choices=['public', 'private'], default='private')
@@ -40,7 +40,7 @@ class Exhibit(Document):
             if img.length > 25 * 1024 * 1024:
                 raise ValidationError("Image exceeds 25MB limit.")
 
-        # Ensure all artworks are owned by either the exhibit owner or collaborators
+       
         valid_contributors = {str(self.owner.id)} | {str(collab.id) for collab in self.collaborators}
         for art in self.artworks:
             if str(art.artist.id) not in valid_contributors:

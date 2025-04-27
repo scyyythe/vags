@@ -63,6 +63,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_PAGINATION_CLASS': None,
+    'PAGE_SIZE': 10
 }
 
 
@@ -85,6 +87,7 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'rest_framework_simplejwt',
+    'channels'
        
 ]
 
@@ -120,16 +123,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+ASGI_APPLICATION = 'backend.asgi.application'
 
 
-# AUTHENTICATION_BACKENDS = [
-#     'api.authentication.MongoEngineBackend',  # Custom MongoDB authentication
-# ]
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('localhost', 6379)],  # Connecting to Redis running on the local machine
+        },
+    },
+}
 
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -174,7 +180,9 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",  # React frontend
+     'http://192.168.100.11:8080',
 ]
+# python manage.py runserver 0.0.0.0:8000
 
 # settings.py
 
