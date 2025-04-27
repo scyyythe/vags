@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { useDonation } from "../context/DonationContext";
 import { useArtworkContext } from "../context/ArtworkContext";
+import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 
 const Explore = () => {
   const navigate = useNavigate();
@@ -227,23 +228,7 @@ const Explore = () => {
             <div className="flex items-center px-4 border-r">
               <span className="text-xs font-semibold mr-5">Browse Type</span>
               <div className="relative">
-              <Select defaultValue="Digital Art">
-                <SelectTrigger className="bg-transparent h-8 w-35 px-3 text-[11px] focus:ring-0 focus:ring-offset-0 rounded-sm border border-gray-300">
-                  <img src="/pics/b_logo.png" className="w-3 h-3 mr-2" />
-                  <SelectValue className="ml-8" placeholder="Digital Art" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Digital Art" className="text-[11px]">
-                    Digital Art
-                  </SelectItem>
-                  <SelectItem value="Physical Art" className="text-[11px]">
-                    Physical Art
-                  </SelectItem>
-                  <SelectItem value="Photography" className="text-[11px]">
-                    Photography
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <ArtCategorySelect />
               </div>
             </div>
             <div className="flex-1 pl-2 bg-blue-100 bg-opacity-50 rounded-sm ml-3">
