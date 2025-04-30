@@ -330,7 +330,7 @@ const ArtworkDetails = () => {
             className="flex items-center text-sm font-semibold"
           >
             <i className='bx bx-chevron-left text-lg mr-2'></i>
-            Artwork Details
+            Go back
           </button>
         </div>
 
