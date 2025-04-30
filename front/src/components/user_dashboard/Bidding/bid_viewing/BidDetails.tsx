@@ -125,25 +125,23 @@ const BidDetails = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      
-      <div className="container mx-auto px-4 md:px-6 py-4 md:py-8 flex">
-        {/* Back button */}
-        <div className={`mt-8 md:mt-12 ${isMobile ? 'px-4 pt-8' : 'md:ml-12'}`}>
-          <button 
-            onClick={() => navigate(-1)} 
-            className="flex items-center text-sm font-semibold"
-          >
-            <i className='bx bx-chevron-left text-lg mr-2'></i>
-            Go back
-          </button>
-        </div>
+      {/* Back button */}
+      <div className={` w-[200px] ${isMobile ? 'ml-3 mt-20 px-4 whitespace-nowrap' : 'md:ml-16 whitespace-nowrap mt-20'}`}>
+        <button 
+          onClick={() => navigate(-1)} 
+          className="flex items-center text-sm font-semibold"
+        >
+          <i className='bx bx-chevron-left text-lg mr-2'></i>
+          Go back
+        </button>
+      </div>
 
-          <div className={`flex flex-col lg:flex-row justify-center items-start gap-12 mt-12`}> 
+        <div className={`w-full ${isMobile ? 'flex flex-col px-4' : 'flex justify-center items-center py-6 border'} gap-6`}>
               {/* Center - Artwork Image */}
-              <div className={`relative z-0 mt-20 ${isMobile ? 'px-4' : ''}`}>
+              <div className={`relative z-0  ${isMobile ? 'mt-8 pl-9' : 'mt-4'}`}>
 
-                <div className="inline-block transform scale-[1.10] -mb-6 relative">
-                  <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
+                <div className="inline-block transform scale-[1.10]">
+                  <div className="w-[390px] h-[390px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                     <img
                       src={artwork?.artworkImage}
                       alt={artwork?.title}
@@ -175,8 +173,8 @@ const BidDetails = () => {
             
 
             {/* Right side - Title, artist, description*/}
-            <div className={`${isMobile ? 'w-full mt-6 px-4s' : 'w-full max-w-[390px] min-w-[280px] mt-6'}`}>
-              <div className={`${isMobile ? '' : 'relative top-10 left-10'}`}>
+            <div className={`${isMobile ? 'w-full mt-2 px-4' : 'w-full max-w-[390px] min-w-[280px]'}`}>
+              <div className={`${isMobile ? '' : 'relative left-10'}`}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center space-x-4">
                     <button 
@@ -205,7 +203,7 @@ const BidDetails = () => {
 
                   <div className="relative">
                     <button 
-                      className="py-3 text-gray-500"
+                      className="py-3 pr-[11px] text-gray-500"
                       onClick={() => setMenuOpen(!menuOpen)}
                     >
                       <MoreHorizontal size={isMobile ? 14 : 14} />
@@ -248,7 +246,7 @@ const BidDetails = () => {
                 </div>
 
 
-                <Separator className="my-6" />
+                <Separator className="my-10" />
 
                 <div className="bg-gray-100 px-6 py-4 rounded-xl flex justify-between items-center text-center mt-8 shadow-sm">
                   {/* Highest Bid */}
@@ -298,9 +296,8 @@ const BidDetails = () => {
             </div>
           </div>
            
-      </div>
           <div className="container mx-auto px-4 md:px-12 mt-2 mb-2">
-            <h2 className="text-md font-semibold mb-4">Related Artworks</h2>
+            <h2 className={`font-semibold ${isMobile ? 'text-sm mt-8 ml-4' : 'text-md mb-4'}`}>Related Artworks</h2>
             <RelatedBids currentCategory={bid.category} currentBidId={bid.id} />
           </div>   
 
