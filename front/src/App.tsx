@@ -22,6 +22,7 @@ import TipJarPopup from "./components/user_dashboard/Explore/tip_jar/TipJarPopup
 import { useDonation } from "./context/DonationContext";
 import { ArtworkProvider } from "./context/ArtworkContext";
 import ArtworkDetails from "./components/user_dashboard/Explore/art_viewing/ArtworkDetails";
+import BidDetails from "./components/user_dashboard/Bidding/bid_viewing/BidDeatils";
 
 // Active heart state
 export type LikedArtwork = {
@@ -97,6 +98,7 @@ const App = () => {
                 <BrowserRouter>
                   <Routes>
                     <Route path="/" element={<Index />} />
+                    <Route path="/bid/:id" element={<BidDetails />} />
                     <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
                     <Route path="/fingerprint-register" element={<FingerprintRegister />} />
                     <Route path="/hero" element={<Hero />} />

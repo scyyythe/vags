@@ -8,7 +8,6 @@ import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import { Plus, SortAsc } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useDonation } from "../context/DonationContext";
 import { useArtworkContext } from "../context/ArtworkContext";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
