@@ -3,6 +3,8 @@ import ArtsContainer from "@/components/user_dashboard/Bidding/featured/ArtsCont
 import Components from "@/components/user_dashboard/Bidding/navbar/Components";
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard"; 
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 
 interface Artwork {
   id: string;
@@ -12,7 +14,12 @@ interface Artwork {
   description: string;
   image: string;
   endTime: string;
+  likes: number;
+  views: number;
+  highestBid: number;
+  timeRemaining: { hrs: number; mins: number; secs: number };
 }
+
 
 const Bidding = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
@@ -28,6 +35,10 @@ const Bidding = () => {
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
         image: "https://i.pinimg.com/736x/ee/25/b5/ee25b5fcde96a813deed82b3469805e2.jpg",
         endTime: "2d : 15h : 20m",
+        likes: 12000,
+        views: 34000,
+        highestBid: 95000,
+        timeRemaining: { hrs: 2, mins: 15, secs: 20 },
       },
       {
         id: "2",
@@ -37,6 +48,10 @@ const Bidding = () => {
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
         image: "https://i.pinimg.com/474x/41/ff/68/41ff685dd8f538b1e1e5b4116991dbfc.jpg",
         endTime: "2d : 15h : 20m",
+        likes: 12000,
+        views: 34000,
+        highestBid: 95000,
+        timeRemaining: { hrs: 2, mins: 15, secs: 20 },
       },
       {
         id: "3",
@@ -46,6 +61,10 @@ const Bidding = () => {
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
         image: "https://i.pinimg.com/736x/47/8d/a5/478da58eee635ab3be6e65fba0595222.jpg",
         endTime: "2d : 15h : 20m",
+        likes: 12000,
+        views: 34000,
+        highestBid: 95000,
+        timeRemaining: { hrs: 2, mins: 15, secs: 20 },
       },
       {
         id: "4",
@@ -55,6 +74,10 @@ const Bidding = () => {
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
         image: "https://i.pinimg.com/736x/d4/e9/fa/d4e9fa9888d3ee4edc6a06e0cb72d811.jpg",
         endTime: "2d : 15h : 20m",
+        likes: 12000,
+        views: 34000,
+        highestBid: 95000,
+        timeRemaining: { hrs: 2, mins: 15, secs: 20 },
       },
       
     ];
@@ -66,6 +89,10 @@ const Bidding = () => {
     console.log(`Placing bid for artwork ID: ${id}`);
     // Connect this to backend API
   };
+
+  const handleBidClick = (artwork: Artwork) => {
+    localStorage.setItem("selectedBid", JSON.stringify(artwork));
+  };  
 
   return (
     <div className="min-h-screen bg-background">
@@ -84,17 +111,18 @@ const Bidding = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {/* BidCards */}
               {artworks.map((artwork) => (
-                <BidCard
-                  key={artwork.id}
-                  data={{
-                    id: artwork.id,
-                    title: artwork.title,
-                    currentBid: Math.floor(Math.random() * 5) + 1,
-                    timeRemaining: artwork.endTime,
-                    imageUrl: artwork.image,
-                  }}
-                  onPlaceBid={handlePlaceBid}
-                />
+                <Link to={`/bid/${artwork.id}`} key={artwork.id} onClick={() => handleBidClick(artwork)}>
+                  <BidCard
+                    data={{
+                      id: artwork.id,
+                      title: artwork.title,
+                      currentBid: Math.floor(Math.random() * 5) + 1,
+                      timeRemaining: artwork.endTime,
+                      imageUrl: artwork.image,
+                    }}
+                    onPlaceBid={handlePlaceBid}
+                  />
+                </Link>
               ))}
             </div>
           </div>
