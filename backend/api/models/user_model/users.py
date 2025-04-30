@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, DateTimeField, EmailField, IntField
+from mongoengine import Document, StringField, DateTimeField, EmailField, IntField, BooleanField
 from datetime import datetime, timedelta
 import bcrypt
 import random
@@ -6,7 +6,7 @@ import string
 
 class User(Document):
     username = StringField(max_length=150, unique=True, required=True)
-    password = StringField(required=True)
+    password = StringField(required=False, null=True)
     email = EmailField(unique=True, required=True)
     first_name = StringField(max_length=100, required=False)
     last_name = StringField(max_length=100, required=False)
@@ -15,6 +15,8 @@ class User(Document):
     created_at = DateTimeField(default=datetime.utcnow) 
     updated_at = DateTimeField(default=datetime.utcnow)  
     otp = IntField(required=False) 
+    is_oauth_user = BooleanField(default=False)
+    registered_via = StringField(choices=["google", "email", "other"], required=False)
     
     def set_password(self, password):
          self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
