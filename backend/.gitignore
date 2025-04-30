@@ -24,6 +24,10 @@ dist-ssr
 *.sln
 
 # Django
+__pycache__/
+*.pyc
+*.pyo
+
 *.pyc
 __pycache__/
 db.sqlite3

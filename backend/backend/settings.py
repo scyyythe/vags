@@ -179,9 +179,11 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",  # React frontend
-     'http://192.168.100.11:8080',
+    'http://192.168.100.31:8080',
+    'http://192.168.2.15:8080',
 ]
 # python manage.py runserver 0.0.0.0:8000
+# python manage.py runserver 0.0.0.0:8080
 
 # settings.py
 
