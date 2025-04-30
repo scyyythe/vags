@@ -64,28 +64,28 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }
             alt={data.title} 
             className="w-full h-36 object-cover rounded-2xl" 
           />
-          <div className="absolute top-4 left-0 right-0 px-4 flex justify-between items-center">
-            <div className="font-semibold bg-white bg-opacity-60 text-black text-[9px] px-3 py-1 rounded-[3px]">
+            <div className="absolute top-4 right-4 font-semibold bg-white bg-opacity-60 text-black text-[9px] px-3 py-1 rounded-[3px]">
               {data.timeRemaining}
             </div>
-            <div className="relative text-gray-500" style={{ height: '24px' }}>
-              <button 
-                onClick={() => setMenuOpen((prev) => !prev)}
-                className={`p-1 rounded-full text-black bg-white bg-opacity-60 ${menuOpen ? '' : ''}`}
-              >
-                <MoreHorizontal size={14} />
-              </button>
-              <BidMenu
-                isOpen={menuOpen}
-                onHide={handleHide}
-                onReport={handleReport}
-                isReported={isReported}
-              />
-            </div>
-          </div>
         </div>
         <div className="px-6 py-5 flex flex-col gap-2"> 
-          <h2 className="text-sm font-semibold">{data.title}</h2> 
+          <div className="flex justify-between">
+            <h2 className="text-sm font-semibold">{data.title}</h2> 
+            <div className="relative text-gray-500" style={{ height: '24px' }}>
+                <button 
+                  onClick={() => setMenuOpen((prev) => !prev)}
+                  className={`p-1 rounded-full text-black bg-white bg-opacity-60 ${menuOpen ? '' : ''}`}
+                >
+                  <MoreHorizontal size={14} />
+                </button>
+                <BidMenu
+                  isOpen={menuOpen}
+                  onHide={handleHide}
+                  onReport={handleReport}
+                  isReported={isReported}
+                />
+            </div>
+          </div>
           <div className="flex items-center justify-between">
             <div className="text-gray-500 text-[10px]">
               Current Bid <span className="text-sm font-bold text-black ml-2">{data.currentBid}k</span>

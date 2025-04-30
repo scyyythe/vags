@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import BidPopup from "../place_bid/BidPopup";
+
 
 interface Artwork {
   id: string;
@@ -25,6 +27,9 @@ const ArtSlideshow = ({
 }: ArtSlideshowProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const isMobile = useIsMobile();
+  const [showBidPopup, setShowBidPopup] = useState(false);
+  const [bidArtworkIndex, setBidArtworkIndex] = useState<number | null>(null);
+
 
   useEffect(() => {
     if (!autoPlay) return;
@@ -43,6 +48,13 @@ const ArtSlideshow = ({
       </div>
     );
   }
+
+  const handleBidSubmit = (amount: number) => {
+    // You can add your bid logic here (e.g., API call)
+    // Optionally show a toast or feedback
+    setShowBidPopup(false);
+  };
+  
 
   return (
     <div
@@ -138,6 +150,10 @@ const ArtSlideshow = ({
 
             <div className={cn("flex items-center mt-4", isMobile ? "gap-6" : "gap-16" )}>
               <button
+                onClick={() => {
+                  setBidArtworkIndex(index);
+                  setShowBidPopup(true);
+                }}
                 className={cn(
                   "border border-white rounded-full font-semibold transition w-[50%]",
                   isMobile
@@ -169,6 +185,15 @@ const ArtSlideshow = ({
           </div>
         </div>
       ))}
+
+      {showBidPopup && bidArtworkIndex !== null && (
+        <BidPopup
+          isOpen={showBidPopup}
+          onClose={() => setShowBidPopup(false)}
+          artworkTitle={artworks[bidArtworkIndex].title}
+          onSubmit={handleBidSubmit}
+        />
+      )}
 
       {/* Dots indicator */}
       <div
