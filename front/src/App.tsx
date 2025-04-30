@@ -22,7 +22,7 @@ import TipJarPopup from "./components/user_dashboard/Explore/tip_jar/TipJarPopup
 import { useDonation } from "./context/DonationContext";
 import { ArtworkProvider } from "./context/ArtworkContext";
 import ArtworkDetails from "./components/user_dashboard/Explore/art_viewing/ArtworkDetails";
-import BidDetails from "./components/user_dashboard/Bidding/bid_viewing/BidDeatils";
+import BidDetails from "./components/user_dashboard/Bidding/bid_viewing/BidDetails";
 
 // Active heart state
 export type LikedArtwork = {
