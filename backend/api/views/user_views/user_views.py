@@ -1,6 +1,5 @@
 import jwt
-import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta  # Correct import, using both datetime and timedelta
 import bcrypt
 from django.conf import settings
 from rest_framework.views import APIView
@@ -21,7 +20,7 @@ class CreateUserView(generics.CreateAPIView):
         user = serializer.save()
         otp = generate_otp()
         user.otp = otp
-        user.otp_expires_at = datetime.utcnow() + timedelta(minutes=5) 
+        user.otp_expires_at = datetime.utcnow() + timedelta(minutes=5)  # Correct usage
         user.save()
         send_otp_email(user.email, otp)
 
@@ -48,40 +47,35 @@ class CustomTokenObtainPairView(APIView):
     def post(self, request):
         email, password = request.data.get("email"), request.data.get("password").encode("utf-8")
 
-       
         user = User.objects(email=email).first()
         if not user or not bcrypt.checkpw(password, user.password.encode("utf-8")):
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-     
+        # Generate token helper function
         def generate_token(payload, exp_delta):
-            payload.update({"exp": datetime.datetime.utcnow() + exp_delta, "iat": datetime.datetime.utcnow()})
+            payload.update({"exp": datetime.utcnow() + exp_delta, "iat": datetime.utcnow()})
             return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
 
-       
+        # Create Access and Refresh Tokens
         access_token = generate_token({
             "user_id": str(user.id), 
             "email": user.email, 
             "jti": f"{user.id}_access",
             "token_type": "access"
-        }, datetime.timedelta(hours=1))
+        }, timedelta(hours=1))  # Correct usage of timedelta
 
-        
         refresh_token = generate_token({
             "user_id": str(user.id), 
             "jti": f"{user.id}_refresh",
             "token_type": "refresh"
-        }, datetime.timedelta(days=7))
+        }, timedelta(days=7))  # Correct usage of timedelta
 
-      
         return Response({
             "access_token": access_token,
             "refresh_token": refresh_token,
             "user_id": str(user.id),
             "email": user.email
         }, status=status.HTTP_200_OK)
-
-
 
 class CustomTokenRefreshView(APIView):
     """Handles JWT token refresh"""
@@ -100,8 +94,9 @@ class CustomTokenRefreshView(APIView):
             if not user:
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
+            # Generate token helper function
             def generate_token(payload, exp_delta):
-                payload.update({"exp": datetime.datetime.utcnow() + exp_delta, "iat": datetime.datetime.utcnow()})
+                payload.update({"exp": datetime.utcnow() + exp_delta, "iat": datetime.utcnow()})
                 return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
 
             # Generate new access token
@@ -110,14 +105,14 @@ class CustomTokenRefreshView(APIView):
                 "email": user.email,
                 "jti": f"{user.id}_access",
                 "token_type": "access"
-            }, datetime.timedelta(hours=8)) 
+            }, timedelta(hours=8))  # Correct usage of timedelta
 
             # Optionally rotate the refresh token
             refresh_token = generate_token({
                 "user_id": str(user.id),
                 "jti": f"{user.id}_refresh",
                 "token_type": "refresh"
-            }, datetime.timedelta(days=7)) 
+            }, timedelta(days=7))  # Correct usage of timedelta
 
             return Response({
                 "access_token": access_token,

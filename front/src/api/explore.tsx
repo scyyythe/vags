@@ -57,7 +57,6 @@ const Explore = () => {
   ];
 
   useEffect(() => {
-    // Fetch artworks from the backend using apiClient
     const fetchArtworks = async () => {
       try {
         const response = await apiClient.get("art/list/");
@@ -65,7 +64,7 @@ const Explore = () => {
           id: artwork.id,
           title: artwork.title,
           artistName: artwork.artist,
-          artistImage: "", // Add any logic to get artist image if available
+          artistImage: "",
           artworkImage: artwork.image_url,
           likesCount: artwork.likes_count,
         }));
