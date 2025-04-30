@@ -348,8 +348,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
               </button>
               {showEmojiPicker && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.4, y: 10 }}
-                  animate={{ opacity: 1, scale: 0.4, y: 0 }}
+                  initial={{ opacity: 0, scale: 0.6, y: 10 }}
+                  animate={{ opacity: 1, scale: 0.6, y: 0 }}
                   exit={{ opacity: 0, scale: 0.5, y: 10 }}
                   transition={{ duration: 0.2 }}
                   className="absolute bottom-10 right-0 z-50 origin-bottom-right rounded-md shadow-lg border border-gray-200 bg-white overflow-hidden"
