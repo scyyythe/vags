@@ -53,30 +53,32 @@ class LikeCreateView(APIView):
     
     def post(self, request, *args, **kwargs):
         user = request.user
-        art_id = request.data.get('art')  
-
+        art_id = kwargs.get('art_id')  # Get the art_id from the URL path
+        
         if not art_id:
             return Response({"detail": "Art ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            art = Art.objects.get(id=art_id)  
+            art = Art.objects.get(id=art_id)  # Retrieve the artwork using the art_id
         except Art.DoesNotExist:
             return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
 
+        # Check if the user has already liked the artwork
         like = Like.objects.filter(user=user, art=art).first()
 
         if like:
-            like.delete()
+            like.delete()  # Unliking the artwork
             return Response({"detail": "You have unliked this artwork."}, status=status.HTTP_200_OK)
         
         else:
-            like = Like.objects.create(user=user, art=art)
+            like = Like.objects.create(user=user, art=art)  # Liking the artwork
             
-            artist = art.artist  
+            artist = art.artist
             message = f"{user.first_name} liked your artwork '{art.title}'"
             Notification.objects.create(user=artist, message=message, art=art)
             
             return Response(LikeSerializer(like).data, status=status.HTTP_201_CREATED)
+
 
         
 class LikeListView(generics.ListAPIView):
@@ -98,7 +100,23 @@ class LikeListView(generics.ListAPIView):
             "likes": like_serializer.data
         }, status=status.HTTP_200_OK)
     
-    
+class LikeStatusView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, art_id, *args, **kwargs):
+        try:
+            art = Art.objects.get(id=art_id)
+        except Art.DoesNotExist:
+            return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        is_liked = Like.objects.filter(art=art, user=request.user).first() is not None
+
+        return Response({
+            "isLiked": is_liked,
+        }, status=status.HTTP_200_OK)
+
+
+
 class SavedCreateView(APIView):
     permission_classes = [IsAuthenticated]  
     

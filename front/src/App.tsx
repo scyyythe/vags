@@ -16,14 +16,14 @@ import Explore from "./user_dashboard/Explore";
 import Bidding from "./user_dashboard/Bidding";
 import Marketplace from "./user_dashboard/Marketplace";
 import Exhibits from "./user_dashboard/Exhibits";
-import { ModalProvider } from './context/ModalContext';
+import { ModalProvider } from "./context/ModalContext";
 import { DonationProvider } from "./context/DonationContext";
 import TipJarPopup from "./components/user_dashboard/Explore/tip_jar/TipJarPopup";
 import { useDonation } from "./context/DonationContext";
 import { ArtworkProvider } from "./context/ArtworkContext";
 import ArtworkDetails from "./components/user_dashboard/Explore/art_viewing/ArtworkDetails";
 import BidDetails from "./components/user_dashboard/Bidding/bid_viewing/BidDetails";
-
+import apiClient from "@/utils/apiClient";
 // Active heart state
 export type LikedArtwork = {
   id: string;
@@ -40,25 +40,24 @@ export const LikedArtworksContext = createContext<{
   toggleLike: () => {},
 });
 
-
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
-  
+
   console.log("DonationWrapper - isPopupOpen:", isPopupOpen);
   console.log("DonationWrapper - currentArtwork:", currentArtwork);
 
-return (
-  <>
-    {children}
-    <TipJarPopup 
-      isOpen={isPopupOpen} 
-      onClose={closePopup} 
-      artworkTitle={currentArtwork?.title}
-      artworkImage={currentArtwork?.artworkImage}
-      artistName={currentArtwork?.artistName}
-    />
-  </>
-);
+  return (
+    <>
+      {children}
+      <TipJarPopup
+        isOpen={isPopupOpen}
+        onClose={closePopup}
+        artworkTitle={currentArtwork?.title}
+        artworkImage={currentArtwork?.artworkImage}
+        artistName={currentArtwork?.artistName}
+      />
+    </>
+  );
 };
 
 const queryClient = new QueryClient();
@@ -69,21 +68,24 @@ const App = () => {
 
   const toggleLike = async (id: string) => {
     try {
-      const liked = !likedArtworks[id];
+      const response = await apiClient.post(`likes/${id}/`);
+      const message = response.data.detail || "You liked this artwork.";
 
-      // Simulate backend call
-      await fetch(`/api/artworks/${id}/like`, { method: 'POST' });
+      const isNowLiked = message !== "You have unliked this artwork.";
 
-      setLikedArtworks((prev) => ({ ...prev, [id]: liked }));
-      setLikeCounts((prev) => ({
-        ...prev,
-        [id]: (prev[id] || 0) + (liked ? 1 : -1),
-      }));
+      setLikedArtworks((prev) => ({ ...prev, [id]: isNowLiked }));
+      setLikeCounts((prev) => {
+        const prevCount = prev[id] || 0;
+        const newCount = isNowLiked ? prevCount + 1 : Math.max(prevCount - 1, 0);
+        return { ...prev, [id]: newCount };
+      });
+
+      toast(message);
     } catch (error) {
-      console.error('Like operation failed:', error);
-      toast('Failed to update like status');
+      console.error("Like operation failed:", error);
+      toast("Failed to update like status");
     }
-};
+  };
 
   return (
     <LikedArtworksContext.Provider value={{ likedArtworks, likeCounts, toggleLike }}>
@@ -91,26 +93,26 @@ const App = () => {
         <TooltipProvider>
           <DonationProvider>
             <DonationWrapper>
-              <Toaster /> 
+              <Toaster />
               <Sonner />
               <ModalProvider>
-              <ArtworkProvider>
-                <BrowserRouter>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/bid/:id" element={<BidDetails />} />
-                    <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
-                    <Route path="/fingerprint-register" element={<FingerprintRegister />} />
-                    <Route path="/hero" element={<Hero />} />
-                    <Route path="/explore" element={<Explore />} />
-                    <Route path="/create" element={<Create />} />
-                    <Route path="/artwork/:id" element={<ArtworkDetails />} />
-                    <Route path="/bidding" element={<Bidding />} />
-                    <Route path="/marketplace" element={<Marketplace />} />
-                    <Route path="/exhibits" element={<Exhibits />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </BrowserRouter>
+                <ArtworkProvider>
+                  <BrowserRouter>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/bid/:id" element={<BidDetails />} />
+                      <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
+                      <Route path="/fingerprint-register" element={<FingerprintRegister />} />
+                      <Route path="/hero" element={<Hero />} />
+                      <Route path="/explore" element={<Explore />} />
+                      <Route path="/create" element={<Create />} />
+                      <Route path="/artwork/:id" element={<ArtworkDetails />} />
+                      <Route path="/bidding" element={<Bidding />} />
+                      <Route path="/marketplace" element={<Marketplace />} />
+                      <Route path="/exhibits" element={<Exhibits />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </BrowserRouter>
                 </ArtworkProvider>
               </ModalProvider>
             </DonationWrapper>
