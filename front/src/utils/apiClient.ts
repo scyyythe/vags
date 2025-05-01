@@ -2,9 +2,11 @@ import axios from "axios";
 
 const createAPIClient = (
   baseURL = window.location.hostname === "localhost"
-    ? "http://127.0.0.1:8000/api/"
-    : `http://${window.location.hostname}:8000/api/`
-) =>  {
+    ? "http://127.0.0.1:8000/api/" // For local development
+    : window.location.hostname.includes("ngrok")
+    ? `https://${window.location.hostname}/api/` // Correct: no :8000 for ngrok
+    : `http://${window.location.hostname}:8000/api/` // Default for other cases
+) => {
   const apiClient = axios.create({
     baseURL,
     headers: { "Content-Type": "application/json" },

@@ -184,11 +184,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080", 
-    'http://192.168.100.31:8080',
-    'http://192.168.2.15:8080',
+    "http://192.168.100.31:8080",
+    "https://d3aa-61-245-19-236.ngrok-free.app",
 ]
+
+
 # python manage.py runserver 0.0.0.0:8000
 # python manage.py runserver 0.0.0.0:8080
 
