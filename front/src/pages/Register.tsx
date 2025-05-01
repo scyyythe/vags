@@ -7,6 +7,7 @@ import { useModal } from "../context/ModalContext";
 import apiClient from "../utils/apiClient";
 import SystemMessage from "../components/page/SystemMessage";
 import { toast } from "sonner";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) => {
   const navigate = useNavigate();
@@ -19,6 +20,41 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   const { setShowLoginModal } = useModal();
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
+
+  interface GoogleSignUpResponse {
+    access_token: string;
+    refresh_token: string;
+  }
+
+  const handleGoogleSignUp = useGoogleLogin({
+    onSuccess: async (response) => {
+      try {
+        const googleToken = response.access_token;
+
+        const { data }: { data: GoogleSignUpResponse } = await apiClient.post("user/google-register/", {
+          google_token: googleToken,
+        });
+
+        if (data.access_token) {
+          localStorage.setItem("access_token", data.access_token);
+          localStorage.setItem("refresh_token", data.refresh_token);
+          toast.success("Registration successful!");
+
+          closeRegisterModal();
+          setShowLoginModal(true);
+        } else {
+          toast.error("Google sign-up failed");
+        }
+      } catch (error) {
+        console.error("Google sign-up error", error);
+        toast.error("Google sign-up failed");
+      }
+    },
+    onError: (error) => {
+      console.error("Google login error", error);
+      toast.error("Google login failed");
+    },
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -115,8 +151,18 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row gap-4 text-[11px]">
-          <SocialButton provider="google" text="Sign Up with Google" icon="bx bxl-google" />
-          <SocialButton provider="facebook" text="Sign Up with Facebook" icon="bx bxl-facebook" />
+          <SocialButton
+            provider="google"
+            text="Sign Up with Google"
+            icon="bx bxl-google"
+            onClick={handleGoogleSignUp}
+          />
+          <SocialButton
+            onClick={() => toast("Facebook login not implemented")}
+            provider="facebook"
+            text="Sign Up with Facebook"
+            icon="bx bxl-facebook"
+          />
         </div>
 
         <div className="relative flex items-center justify-center">
