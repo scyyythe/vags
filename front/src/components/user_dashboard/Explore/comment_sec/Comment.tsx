@@ -176,18 +176,18 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
     <div key={comment.id} className={`mb-2 relative ${isReply ? 'ml-8 border-l-2 border-gray-100 pl-4' : ''}`}>
       <div className="flex items-start justify-between">
         <div className="flex items-start">
-          <Avatar className={`${isMobile ? 'h-6 w-6' : 'h-3 w-3'} mr-2`}>
+          <Avatar className={`${isMobile ? 'h-4 w-4 ' : 'h-3 w-3'} mr-2`}>
             <AvatarImage src={comment.userImage} alt={comment.user} />
             <AvatarFallback>{comment.user.substring(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
   
           <div>
-            <p className={`${isMobile ? 'text-xs' : 'text-[9px]'} font-semibold`}>{comment.user}</p>
-            <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-700 mt-1 break-words whitespace-pre-wrap`}>
+            <p className={`${isMobile ? 'text-[9px]' : 'text-[9px]'} font-semibold`}>{comment.user}</p>
+            <p className={`${isMobile ? 'text-[10px]' : 'text-[10px]'} text-gray-700 mt-1 break-words whitespace-pre-wrap`}>
               {comment.text}
             </p>
   
-            <div className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-[9px]'} text-gray-500 mt-1`}>
+            <div className={`flex items-center gap-2 ${isMobile ? 'text-[9px]' : 'text-[9px]'} text-gray-500 mt-1`}>
               <span>{getTimeAgoText(comment.timestamp)}</span>
               <span>·</span>
               <button 
@@ -215,15 +215,15 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                   onClick={() => toggleCommentMenu(comment.id)}
                   className="p-1 text-gray-500 hover:text-black"
                 >
-                  <MoreHorizontal size={isMobile ? 14 : 12} />
+                  <MoreHorizontal size={isMobile ? 12 : 12} />
                 </button>
 
                 {commentMenus[comment.id] && (
-                  <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg z-10 max-w-full overflow-hidden">
+                  <div className="absolute left-6 -top-3 w-[70px] bg-white rounded-sm shadow-md z-10 overflow-hidden">
                     <button
-                      className={`w-full text-left px-3 py-2 ${
-                        isMobile ? "text-xs" : "text-[8px]"
-                      } hover:bg-gray-100`}
+                      className={`w-full text-left px-3 py-1 whitespace-nowrap ${
+                        isMobile ? "text-[8px]" : "text-[8px]"
+                      } hover:bg-gray-100 hover:text-black`}
                       onClick={() => {
                         toast.success(`Blocked user ${comment.user}`);
                         toggleCommentMenu(comment.id);
@@ -232,15 +232,15 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                       Block User
                     </button>
                     <button
-                      className={`w-full text-left px-3 py-2 ${
-                        isMobile ? "text-xs" : "text-[9px]"
-                      } hover:bg-gray-100`}
+                      className={`w-full text-left px-3 py-1 whitespace-nowrap ${
+                        isMobile ? "text-[8px]" : "text-[8px] "
+                      } hover:bg-gray-100 hover:text-black`}
                       onClick={() => {
                         toast.success("Content reported");
                         toggleCommentMenu(comment.id);
                       }}
                     >
-                      Report Content
+                      Report
                     </button>
                   </div>
                 )}
@@ -335,7 +335,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
             placeholder="Add a comment..."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className={`w-full border border-gray-200 rounded-full px-4 py-2 ${isMobile ? 'text-sm' : 'text-[10px]'} focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16`}
+            className={`w-full border border-gray-200 rounded-full px-4 py-2 ${isMobile ? 'text-[10px]' : 'text-[10px]'} focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16`}
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
             <div className="relative">
@@ -374,7 +374,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
               `}
               disabled={!comment.trim()}
             >
-              <Send className={`${isMobile ? 'w-5 h-5' : 'w-4 h-4'}`} />
+              <Send className={`${isMobile ? 'w-4 h-4' : 'w-4 h-4'}`} />
             </button>
 
           </div>
