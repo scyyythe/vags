@@ -6,6 +6,7 @@ import { useModal } from "../context/ModalContext";
 import apiClient from "../utils/apiClient";
 import SystemMessage from "../components/page/SystemMessage";
 import { toast } from "sonner";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,17 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
 
   const [showFingerprintText, setShowFingerprintText] = useState(false);
+  interface GoogleLoginResponse {
+    access_token: string;
+    refresh_token: string;
+    user: {
+      id: string;
+      email: string;
+      first_name: string;
+      last_name: string;
+      username: string;
+    };
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -57,6 +69,47 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       }
     }
   };
+  // Google Login Success Handler
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (response) => {
+      try {
+        const googleToken = response.access_token;
+
+        const { data }: { data: GoogleLoginResponse } = await apiClient.post("user/google-login/", {
+          google_token: googleToken,
+        });
+
+        if (data.access_token) {
+          localStorage.setItem("access_token", data.access_token);
+          localStorage.setItem("refresh_token", data.refresh_token);
+          localStorage.setItem("email", data.user.email);
+          localStorage.setItem("user_id", data.user.id);
+
+          toast.success("Login successful!", {
+            description: "Welcome back!",
+          });
+
+          closeLoginModal();
+          navigate("/explore");
+        } else {
+          toast.error("Google login failed", {
+            description: "Missing tokens in response.",
+          });
+        }
+      } catch (error) {
+        console.error("Google login error:", error);
+        toast.error("Google login failed", {
+          description: "Please try again later.",
+        });
+      }
+    },
+    onError: (error) => {
+      console.error("Google login error", error);
+      toast.error("Google login failed", {
+        description: "Google authentication was unsuccessful.",
+      });
+    },
+  });
 
   const handleFingerprintClick = () => {
     navigate("/fingerprint-auth");
@@ -113,8 +166,19 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       {/* Social Buttons and Form */}
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row gap-4 text-[11px]">
-          <SocialButton provider="google" text="Sign In with Google" icon="bx bxl-google" />
-          <SocialButton provider="facebook" text="Sign In with Facebook" icon="bx bxl-facebook" />
+          <SocialButton
+            provider="google"
+            text="Sign In with Google"
+            icon="bx bxl-google"
+            onClick={() => handleGoogleLogin()}
+          />
+
+          <SocialButton
+            provider="facebook"
+            text="Sign Up with Facebook"
+            icon="bx bxl-facebook"
+            onClick={() => toast("Facebook login not implemented")}
+          />
         </div>
 
         {/* Divider */}

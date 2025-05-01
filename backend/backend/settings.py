@@ -9,7 +9,7 @@ from django.conf import settings
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-
+from django.http import JsonResponse
 # Cloudinary configuration
 cloudinary.config(
   cloud_name="du5bwye4h",
@@ -54,6 +54,7 @@ ALLOWED_HOSTS = ["*"]
 
 AUTHENTICATION_BACKENDS = (
     'mongoengine.django.auth.MongoEngineBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 REST_FRAMEWORK = {
@@ -75,7 +76,7 @@ SIMPLE_JWT = {
 # Application definition
 
 INSTALLED_APPS = [ 
-    'corsheaders',
+    'corsheaders', 
     'anymail',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -86,20 +87,26 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'rest_framework_simplejwt',
-    'channels'
+    'channels',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',  
        
 ]
-
+SITE_ID = 1
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
+   
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -129,7 +136,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('localhost', 6379)],  # Connecting to Redis running on the local machine
+            "hosts": [('localhost', 6379)],  
         },
     },
 }
@@ -177,15 +184,41 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",  # React frontend
-    'http://192.168.100.31:8080',
-    'http://192.168.2.15:8080',
+    "http://localhost:8080", 
+    "http://192.168.100.31:8080",
+    "https://0794-61-245-19-236.ngrok-free.app",
+    "https://vags.vercel.app",
 ]
+
+
 # python manage.py runserver 0.0.0.0:8000
 # python manage.py runserver 0.0.0.0:8080
 
 # settings.py
+
+# Redirects
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'APP': {
+            'client_id': os.getenv('GOOGLE_OAUTH_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_OAUTH_CLIENT_SECRET'),
+            'key': ''
+        }
+    }
+}
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.mailtrap.io"

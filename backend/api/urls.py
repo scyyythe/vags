@@ -11,6 +11,7 @@ from .routes.report_routes import report_urlpatterns
 from .routes.fingerprint_routes import fingerprint_urlpatterns
 from .routes.exhibit_routes import exhibit_urlpatterns
 from .routes.reset_routes import reset_urlpatterns
+from .routes.auth_routes import auth_urlpatterns
 urlpatterns = (
     user_urlpatterns +
     admin_urlpatterns +
