@@ -189,6 +189,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080", 
     "http://192.168.100.31:8080",
     "https://d3aa-61-245-19-236.ngrok-free.app",
+    "https://vags.vercel.app",
 ]
 
 
