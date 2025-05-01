@@ -73,7 +73,10 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }
             <h2 className="text-sm font-semibold">{data.title}</h2> 
             <div className="relative text-gray-500" style={{ height: '24px' }}>
                 <button 
-                  onClick={() => setMenuOpen((prev) => !prev)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setMenuOpen((prev) => !prev);
+                  }}
                   className={`p-1 rounded-full text-black bg-white bg-opacity-60 ${menuOpen ? '' : ''}`}
                 >
                   <MoreHorizontal size={14} />
@@ -91,7 +94,10 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }
               Current Bid <span className="text-sm font-bold text-black ml-2">{data.currentBid}k</span>
             </div>
             <button
-              onClick={() => setShowBidPopup(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowBidPopup(true);
+              }}
               className="bg-red-800 hover:bg-red-700 text-white text-[9px] px-6 py-2 rounded-full whitespace-nowrap"
             >
               Place A Bid

@@ -3,7 +3,7 @@ import ArtsContainer from "@/components/user_dashboard/Bidding/featured/ArtsCont
 import Components from "@/components/user_dashboard/Bidding/navbar/Components";
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard"; 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 interface Artwork {
@@ -23,6 +23,7 @@ interface Artwork {
 
 const Bidding = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Simulated backend fetch
@@ -92,7 +93,8 @@ const Bidding = () => {
 
   const handleBidClick = (artwork: Artwork) => {
     localStorage.setItem("selectedBid", JSON.stringify(artwork));
-  };  
+    navigate(`/bid/${artwork.id}`);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -111,18 +113,22 @@ const Bidding = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {/* BidCards */}
               {artworks.map((artwork) => (
-                <Link to={`/bid/${artwork.id}`} key={artwork.id} onClick={() => handleBidClick(artwork)}>
-                  <BidCard
-                    data={{
-                      id: artwork.id,
-                      title: artwork.title,
-                      currentBid: Math.floor(Math.random() * 5) + 1,
-                      timeRemaining: artwork.endTime,
-                      imageUrl: artwork.image,
-                    }}
-                    onPlaceBid={handlePlaceBid}
-                  />
-                </Link>
+                <div
+                key={artwork.id}
+                onClick={() => handleBidClick(artwork)}
+                style={{ cursor: "pointer" }}
+              >
+                <BidCard
+                  data={{
+                    id: artwork.id,
+                    title: artwork.title,
+                    currentBid: Math.floor(Math.random() * 5) + 1,
+                    timeRemaining: artwork.endTime,
+                    imageUrl: artwork.image,
+                  }}
+                  onPlaceBid={handlePlaceBid}
+                />
+              </div>
               ))}
             </div>
           </div>

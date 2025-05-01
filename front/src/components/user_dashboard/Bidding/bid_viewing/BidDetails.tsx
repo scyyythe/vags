@@ -136,7 +136,7 @@ const BidDetails = () => {
         </button>
       </div>
 
-        <div className={`w-full ${isMobile ? 'flex flex-col px-4' : 'flex justify-center items-center py-6 border'} gap-6`}>
+        <div className={`w-full ${isMobile ? 'flex flex-col px-4' : 'flex justify-center items-center py-6'} gap-6`}>
               {/* Center - Artwork Image */}
               <div className={`relative z-0  ${isMobile ? 'mt-8 pl-9' : 'mt-4'}`}>
 
