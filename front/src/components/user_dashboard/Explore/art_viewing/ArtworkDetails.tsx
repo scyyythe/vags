@@ -478,7 +478,7 @@ const ArtworkDetails = () => {
 
                   <div className="relative">
                     <button 
-                      className="py-3 text-gray-500"
+                      className="py-3 pr-3 text-gray-500"
                       onClick={() => setMenuOpen(!menuOpen)}
                     >
                       <MoreHorizontal size={isMobile ? 14 : 14} />

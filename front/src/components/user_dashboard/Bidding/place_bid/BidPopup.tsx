@@ -46,12 +46,15 @@ const BidPopup: React.FC<BidPopupProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl w-full max-w-xs mx-4 relative">
+      <div className="bg-white rounded-2xl w-full max-w-xs mx-4 relative"  onClick={e => e.stopPropagation()}>
         <div className="py-6 px-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="relative text-lg font-bold top-5">Place your bid</h2>
             <button 
-              onClick={onClose}
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
               className="text-gray-600 hover:text-black"
             >
               <X size={17} />
