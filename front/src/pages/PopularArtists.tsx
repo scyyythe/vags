@@ -26,7 +26,7 @@ const PopularArtists = () => {
   };
 
   return (
-    <section className="py-20 px-6 md:px-12">
+    <section className="py-20 px-6 md:px-12" id="artists">
       <div className="max-w-screen-xl mx-auto">
         <motion.h2 
           className="text-3xl md:text-4xl font-bold text-center mb-16"

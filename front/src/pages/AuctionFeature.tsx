@@ -39,7 +39,7 @@ const AuctionFeature = () => {
   }, []);
 
   return (
-    <section className="py-20 px-6 md:px-12 bg-black text-white">
+    <section className="py-20 px-6 md:px-12 bg-black text-white" id="auctions">
       <div className="max-w-screen-xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         <motion.div 
