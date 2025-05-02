@@ -19,6 +19,8 @@ const Explore = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const { openPopup } = useDonation();
   const { setArtworks } = useArtworkContext();
+  const [artworks, setArtworksState] = useState([]);
+  const [refreshData, setRefreshData] = useState(false);
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
