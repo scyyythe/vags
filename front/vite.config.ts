@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    allowedHosts: ["0794-61-245-19-236.ngrok-free.app"],
+    allowedHosts: ["2888-61-245-19-236.ngrok-free.app"],
     proxy: {
       "/api": "http://127.0.0.1:8000",
     },

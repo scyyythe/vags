@@ -32,15 +32,11 @@ class ArtCreateView(generics.ListCreateAPIView):
 
 
 class ArtListView(generics.ListAPIView):
-    queryset = Art.objects.all().order_by('-created_at')
     serializer_class = ArtSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    
-    def get(self, request, *args, **kwargs):
-        # This ensures the query retrieves the artworks in the order you want
-        response = super().get(request, *args, **kwargs)
-        response['Cache-Control'] = 'no-store'  # Prevent caching
-        return response
+
+    def get_queryset(self):
+        return Art.objects.order_by('-created_at')
 
 
 
