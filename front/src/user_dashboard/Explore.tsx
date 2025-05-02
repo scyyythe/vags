@@ -155,9 +155,7 @@ const Explore = () => {
             <div className="h-[800px] lg:w-[133%] custom-scrollbars">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                 {artworks.length === 0 ? (
-                  <div className="col-span-full text-center text-sm text-gray-500 italic">
-                    No artworks found. Try uploading or adjusting your filters.
-                  </div>
+                  <div className="col-span-full text-center text-sm text-gray-500 italic">Loading artworks...</div>
                 ) : (
                   artworks.map((card) => (
                     <ArtCard

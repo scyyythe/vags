@@ -1,13 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import { Heart, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LikedArtworksContext } from "@/App";
+import { LikedArtworksContext } from "@/context/LikedArtworksProvider";
 import { toast } from "sonner";
 import TipJarIcon from "../tip_jar/TipJarIcon";
 import { useDonation } from "../../../../context/DonationContext";
 import ArtCardMenu from "./ArtCardMenu";
 import { Link } from "react-router-dom";
 import apiClient from "@/utils/apiClient";
+
 interface ArtCardProps {
   id: string;
   artistName: string;
@@ -35,7 +36,7 @@ const ArtCard = ({
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
+  const { likedArtworks, likeCounts, setLikedArtworks, setLikeCounts, toggleLike } = useContext(LikedArtworksContext);
   const { openPopup } = useDonation();
 
   const handleLike = () => {
@@ -46,16 +47,22 @@ const ArtCard = ({
     const fetchLikeStatus = async () => {
       try {
         const response = await apiClient.get(`/likes/${id}/status/`);
-        // Set the initial liked state and like count from the API
-        likedArtworks[id] = response.data.isLiked;
-        likeCounts[id] = response.data.likeCount;
+        // Update context with the fetched liked status and like count
+        setLikedArtworks((prev) => ({
+          ...prev,
+          [id]: response.data.isLiked,
+        }));
+        setLikeCounts((prev) => ({
+          ...prev,
+          [id]: response.data.likeCount,
+        }));
       } catch (error) {
         console.error("Failed to fetch like status:", error);
       }
     };
 
     fetchLikeStatus();
-  }, [id, likedArtworks, likeCounts]);
+  }, [id, setLikedArtworks, setLikeCounts]); // Add context setters to the dependency array
 
   const handleHide = () => {
     setIsHidden(true);
