@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Link as ScrollLink } from 'react-scroll';
 import { Search, ChevronDown, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Register from './Register';
@@ -56,19 +57,62 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-20">
-          <Link to="/discover" className="text-sm font-medium hover:text-artRed transition-colors">
+        <nav className="hidden md:flex items-center text-xs space-x-20">
+          <ScrollLink
+            to="discover"
+            spy={true}
+            smooth={true}
+            offset={-70}
+            duration={100}
+            className="cursor-pointer hover:text-primary transition-colors"
+            onClick={() => setShowMenu(false)}
+          >
             Discover
-          </Link>
-          <Link to="/marketplace" className="text-sm font-medium hover:text-artRed transition-colors">
-            Marketplace
-          </Link>
-          <Link to="/how-it-works" className="text-sm font-medium hover:text-artRed transition-colors">
-            How It Works
-          </Link>
-          <Link to="/collection" className="text-sm font-medium hover:text-artRed transition-colors">
-            Collection
-          </Link>
+          </ScrollLink>
+          <ScrollLink
+            to="artists"
+            spy={true}
+            smooth={true}
+            offset={-70}
+            duration={100}
+            className="cursor-pointer hover:text-primary transition-colors"
+            onClick={() => setShowMenu(false)}
+          >
+            Artists
+          </ScrollLink>
+          <ScrollLink
+            to="artworks"
+            spy={true}
+            smooth={true}
+            offset={-70}
+            duration={100}
+            className="cursor-pointer hover:text-primary transition-colors"
+            onClick={() => setShowMenu(false)}
+          >
+            Artworks
+          </ScrollLink>
+          <ScrollLink
+            to="auctions"
+            spy={true}
+            smooth={true}
+            offset={-70}
+            duration={100}
+            className="cursor-pointer hover:text-primary transition-colors"
+            onClick={() => setShowMenu(false)}
+          >
+            Auctions
+          </ScrollLink>
+          <ScrollLink
+            to="bids"
+            spy={true}
+            smooth={true}
+            offset={-70}
+            duration={100}
+            className="cursor-pointer hover:text-primary transition-colors"
+            onClick={() => setShowMenu(false)}
+          >
+            Hot Bids
+          </ScrollLink>
         </nav>
 
         <div className="flex items-center space-x-8">
@@ -127,21 +171,62 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {showMenu && (
-          <div className="mobile-menu text-xs absolute bg-white shadow-md rounded-md py-4 w-48 top-full right-0 z-10">
-            <ul>
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                <Link to="/discover">Discover</Link>
-              </li>
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                <Link to="/marketplace">Marketplace</Link>
-              </li>
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                <Link to="/how-it-works">How It Works</Link>
-              </li>
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                <Link to="/collection">Collection</Link>
-              </li>
-            </ul>
+          <div className="mobile-menu flex flex-col text-xs text-center gap-2 absolute bg-white shadow-md rounded-md p-4 w-48 top-full right-6 z-10">
+            <ScrollLink
+              to="discover"
+              spy={true}
+              smooth={true}
+              offset={-70}
+              duration={100}
+              className="cursor-pointer hover:text-primary transition-colors"
+              onClick={() => setShowMenu(false)}
+            >
+              Discover
+            </ScrollLink>
+            <ScrollLink
+              to="artists"
+              spy={true}
+              smooth={true}
+              offset={-70}
+              duration={100}
+              className="cursor-pointer hover:text-primary transition-colors"
+              onClick={() => setShowMenu(false)}
+            >
+              Artists
+            </ScrollLink>
+            <ScrollLink
+              to="artworks"
+              spy={true}
+              smooth={true}
+              offset={-70}
+              duration={100}
+              className="cursor-pointer hover:text-primary transition-colors"
+              onClick={() => setShowMenu(false)}
+            >
+              Artworks
+            </ScrollLink>
+            <ScrollLink
+              to="auctions"
+              spy={true}
+              smooth={true}
+              offset={-70}
+              duration={100}
+              className="cursor-pointer hover:text-primary transition-colors"
+              onClick={() => setShowMenu(false)}
+            >
+              Auctions
+            </ScrollLink>
+            <ScrollLink
+              to="bids"
+              spy={true}
+              smooth={true}
+              offset={-70}
+              duration={100}
+              className="cursor-pointer hover:text-primary transition-colors"
+              onClick={() => setShowMenu(false)}
+            >
+              Hot Bids
+            </ScrollLink>
           </div>
         )}
       </div>

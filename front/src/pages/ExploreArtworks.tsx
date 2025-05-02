@@ -104,7 +104,7 @@ const ExploreArtworks = () => {
   };
 
   return (
-    <section className="py-20 px-6 md:px-12 bg-gray-50">
+    <section className="py-20 px-6 md:px-12 bg-gray-50" id="artworks">
       <div className="max-w-screen-xl mx-auto">
         <div className="flex justify-between items-center mb-12">
           <motion.h2 

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const Hero = () => {
   return (
-    <section className="relative pt-24 pb-16 px-6 md:px-12">
+    <section className="relative pt-24 pb-16 px-6 md:px-12" id="discover">
       <div className="w-full max-w-[100%] md:max-w-[100%] lg:max-w-[100%] mx-auto pt-16">
         
         {/* Hero Title */}

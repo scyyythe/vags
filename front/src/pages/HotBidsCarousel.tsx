@@ -45,7 +45,7 @@ const HotBidsCarousel = () => {
   }, [currentIndex]);
 
   return (
-    <section className="py-20 px-6 md:px-12">
+    <section className="py-20 px-6 md:px-12" id="bids">
       <div className="max-w-screen-xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
           Explore Hot Bids
