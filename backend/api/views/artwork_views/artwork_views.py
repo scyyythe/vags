@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from datetime import datetime
 from django.core.cache import cache
 from api.utils.cache_utils import get_cached_data, set_cache_data, delete_cache_data
+
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
     serializer_class = ArtSerializer
