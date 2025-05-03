@@ -21,7 +21,7 @@ const Explore = () => {
   const { setArtworks } = useArtworkContext();
   const [artworks, setArtworksState] = useState([]);
   const [refreshData, setRefreshData] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
     toast(`Selected category: ${category}`);
@@ -55,7 +55,6 @@ const Explore = () => {
       image: "https://m.media-amazon.com/images/I/A142xwh4GVL._AC_SL1500_.jpg",
     },
   ];
-
   useEffect(() => {
     const fetchArtworks = async () => {
       try {
@@ -81,15 +80,18 @@ const Explore = () => {
         }));
         setArtworksState(fetchedArtworks);
         setArtworks(fetchedArtworks);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching artworks:", error);
         toast.error("Failed to load artworks");
+        setLoading(false);
       }
     };
-
+  
     fetchArtworks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshData]);
+  
 
   const handleTipJar = () => {
     toast("Opening tip jar");
@@ -154,10 +156,8 @@ const Explore = () => {
 
             <div className="h-[800px] lg:w-[133%] custom-scrollbars">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                {artworks.length === 0 ? (
-                  <div className="col-span-full text-center text-sm text-gray-500 italic">
-                    No artworks found. Try uploading or adjusting your filters.
-                  </div>
+                {loading ? (
+                  <div className="col-span-full text-center text-sm text-gray-500 ">Loading artworks...</div>
                 ) : (
                   artworks.map((card) => (
                     <ArtCard
@@ -166,7 +166,7 @@ const Explore = () => {
                       artistName={card.artistName}
                       artistImage={card.artistImage}
                       artworkImage={card.artworkImage}
-                      title={card.title.length > 10 ? card.title.slice(0, 10) + "..." : card.title}
+                      title={card.title}
                       onButtonClick={handleTipJar}
                       isExplore={true}
                       likesCount={card.likesCount}

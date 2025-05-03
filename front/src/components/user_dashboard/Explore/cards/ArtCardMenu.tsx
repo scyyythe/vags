@@ -8,7 +8,7 @@ interface ArtCardMenuProps {
   onReport: () => void;
   isFavorite: boolean;
   isReported: boolean;
-  isHidden?: boolean; 
+  isHidden?: boolean;
   className?: string;
 }
 
@@ -36,7 +36,6 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex flex-col items-start">
-
         {/* Favorite */}
         <div className="flex items-center relative">
           <button
@@ -46,11 +45,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             onMouseEnter={() => setHoveredItem("favorite")}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <Bookmark
-              size={10}
-              fill={isFavorite ? YELLOW : "none"}
-              stroke={isFavorite ? YELLOW : "currentColor"}
-            />
+            <Bookmark size={10} fill={isFavorite ? YELLOW : "none"} stroke={isFavorite ? YELLOW : "currentColor"} />
           </button>
           {hoveredItem === "favorite" && (
             <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
@@ -68,11 +63,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             onMouseEnter={() => setHoveredItem("hide")}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <EyeOff
-              size={10}
-              fill={isHidden ? BLACK : "none"}
-              stroke={isHidden ? BLACK : "currentColor"}
-            />
+            <EyeOff size={10} fill={isHidden ? BLACK : "none"} stroke={isHidden ? BLACK : "currentColor"} />
           </button>
           {hoveredItem === "hide" && (
             <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
@@ -90,11 +81,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             onMouseEnter={() => setHoveredItem("report")}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <Flag
-              size={10}
-              fill={isReported ? "#ea384c" : "none"}
-              stroke={isReported ? "#ea384c"  : "currentColor"}
-            />
+            <Flag size={10} fill={isReported ? "#ea384c" : "none"} stroke={isReported ? "#ea384c" : "currentColor"} />
           </button>
           {hoveredItem === "report" && (
             <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
