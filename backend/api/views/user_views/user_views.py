@@ -48,8 +48,9 @@ class CustomTokenObtainPairView(APIView):
         email, password = request.data.get("email"), request.data.get("password").encode("utf-8")
 
         user = User.objects(email=email).first()
-        if not user or not bcrypt.checkpw(password, user.password.encode("utf-8")):
+        if not user or not user.password or not bcrypt.checkpw(password, user.password.encode("utf-8")):
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
 
         # Generate token helper function
         def generate_token(payload, exp_delta):

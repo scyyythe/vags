@@ -24,21 +24,7 @@ import { ArtworkProvider } from "./context/ArtworkContext";
 import ArtworkDetails from "./components/user_dashboard/Explore/art_viewing/ArtworkDetails";
 import BidDetails from "./components/user_dashboard/Bidding/bid_viewing/BidDetails";
 import apiClient from "@/utils/apiClient";
-// Active heart state
-export type LikedArtwork = {
-  id: string;
-  isLiked: boolean;
-};
-
-export const LikedArtworksContext = createContext<{
-  likedArtworks: Record<string, boolean>;
-  likeCounts: Record<string, number>;
-  toggleLike: (id: string) => void;
-}>({
-  likedArtworks: {},
-  likeCounts: {},
-  toggleLike: () => {},
-});
+import { LikedArtworksProvider } from "@/context/LikedArtworksProvider";
 
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
@@ -63,32 +49,8 @@ const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [likedArtworks, setLikedArtworks] = useState<Record<string, boolean>>({});
-  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
-
-  const toggleLike = async (id: string) => {
-    try {
-      const response = await apiClient.post(`likes/${id}/`);
-      const message = response.data.detail || "You liked this artwork.";
-
-      const isNowLiked = message !== "You have unliked this artwork.";
-
-      setLikedArtworks((prev) => ({ ...prev, [id]: isNowLiked }));
-      setLikeCounts((prev) => {
-        const prevCount = prev[id] || 0;
-        const newCount = isNowLiked ? prevCount + 1 : Math.max(prevCount - 1, 0);
-        return { ...prev, [id]: newCount };
-      });
-
-      toast(message);
-    } catch (error) {
-      console.error("Like operation failed:", error);
-      toast("Failed to update like status");
-    }
-  };
-
   return (
-    <LikedArtworksContext.Provider value={{ likedArtworks, likeCounts, toggleLike }}>
+    <LikedArtworksProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <DonationProvider>
@@ -119,7 +81,7 @@ const App = () => {
           </DonationProvider>
         </TooltipProvider>
       </QueryClientProvider>
-    </LikedArtworksContext.Provider>
+    </LikedArtworksProvider>
   );
 };
 

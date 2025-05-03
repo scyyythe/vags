@@ -20,3 +20,4 @@ django-anymail
 channels 
 channels_redis
 cryptography
+django-redis

@@ -1,13 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import { Heart, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LikedArtworksContext } from "@/App";
+import { LikedArtworksContext } from "@/context/LikedArtworksProvider";
 import { toast } from "sonner";
 import TipJarIcon from "../tip_jar/TipJarIcon";
 import { useDonation } from "../../../../context/DonationContext";
 import ArtCardMenu from "./ArtCardMenu";
 import { Link } from "react-router-dom";
 import apiClient from "@/utils/apiClient";
+import useFavorite from "@/hooks/useFavorite";
 interface ArtCardProps {
   id: string;
   artistName: string;
@@ -35,27 +36,28 @@ const ArtCard = ({
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
+  const { isFavorite, handleFavorite } = useFavorite(id);
+
+  const { likedArtworks, likeCounts, setLikedArtworks, setLikeCounts, toggleLike } = useContext(LikedArtworksContext);
   const { openPopup } = useDonation();
 
   const handleLike = () => {
-    toggleLike(id); // This will update the likedArtworks and likeCounts in the context
+    toggleLike(id);
   };
 
   useEffect(() => {
     const fetchLikeStatus = async () => {
       try {
         const response = await apiClient.get(`/likes/${id}/status/`);
-        // Set the initial liked state and like count from the API
-        likedArtworks[id] = response.data.isLiked;
-        likeCounts[id] = response.data.likeCount;
+        setLikedArtworks((prev) => ({ ...prev, [id]: response.data.isLiked }));
+        setLikeCounts((prev) => ({ ...prev, [id]: response.data.likeCount }));
       } catch (error) {
         console.error("Failed to fetch like status:", error);
       }
     };
 
     fetchLikeStatus();
-  }, [id, likedArtworks, likeCounts]);
+  }, [id, setLikedArtworks, setLikeCounts]);
 
   const handleHide = () => {
     setIsHidden(true);
@@ -65,6 +67,10 @@ const ArtCard = ({
 
   const handleReport = () => {
     toast("Artwork reported");
+    setMenuOpen(false);
+  };
+  const handleSaved = () => {
+    handleFavorite();
     setMenuOpen(false);
   };
 
@@ -100,10 +106,10 @@ const ArtCard = ({
           </button>
           <ArtCardMenu
             isOpen={menuOpen}
-            onFavorite={handleReport}
+            onFavorite={handleSaved}
             onHide={handleHide}
             onReport={handleReport}
-            isFavorite={false}
+            isFavorite={isFavorite}
             isReported={false}
           />
         </div>
@@ -119,7 +125,10 @@ const ArtCard = ({
       </Link>
       <div className="px-4 py-1">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-medium">{title || "Untitled Artwork"}</p>
+          <p className="text-xs font-medium">
+            {title ? title.slice(0, 10) + (title.length > 10 ? "..." : "") : "Untitled Artwork"}
+          </p>
+
           <div className="flex items-center space-x-1">
             <button
               onClick={handleLike}

@@ -6,8 +6,8 @@ from api.models.interaction_model.notification import Notification
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from datetime import datetime
-
-
+from django.core.cache import cache
+from api.utils.cache_utils import get_cached_data, set_cache_data, delete_cache_data
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
     serializer_class = ArtSerializer
@@ -37,7 +37,6 @@ class ArtListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Art.objects.order_by('-created_at')
-
 
 
 class ArtDetailView(generics.RetrieveAPIView):

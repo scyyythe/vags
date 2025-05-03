@@ -22,17 +22,21 @@ class Like(Document):
     meta = {'collection': 'likes'}
 
 class Saved(Document):
-    user = ReferenceField(User, required=True) 
-    art = ReferenceField(Art, required=True)  
-    created_at = DateTimeField(default=datetime.utcnow)
-    updated_at = DateTimeField(default=datetime.utcnow)
+    user = ReferenceField(User, required=True)
+    art = ReferenceField(Art, required=True)
+    created_at = DateTimeField(default=lambda: datetime.utcnow())
+    updated_at = DateTimeField(default=lambda: datetime.utcnow())
 
     meta = {
         'collection': 'saved',
         'indexes': [
-            {'fields': ('user', 'art'), 'unique': True},  
+            {'fields': ('user', 'art'), 'unique': True},
         ]
     }
+
+    def save(self, *args, **kwargs):
+        self.updated_at = datetime.utcnow()  
+        return super().save(*args, **kwargs)
     
     
 class CartItem(Document):
