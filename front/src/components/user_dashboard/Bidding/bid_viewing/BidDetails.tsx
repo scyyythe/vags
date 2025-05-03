@@ -221,7 +221,13 @@ const BidDetails = () => {
 
                 <h1 className={`${isMobile ? 'text-sm' : 'text-xl'} font-bold mb-2`}>{artwork?.title || "The Distorted Face"}</h1>
                 
-                <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-600 mb-4`}>by {artwork?.artistName || "Angel Ganev"}</p>
+                <p className={`${isMobile ? 'text-xs' : 'text-[10px]'} text-gray-600 mb-4`}><span
+                    style={{ cursor: "pointer", color: "blue" }}
+                    onClick={() => navigate(`/userprofile/${artwork?.artistName}`)}
+                  >
+                    by {artwork?.artistName || "Angel Ganev"}
+                  </span>
+                </p>
                 
                 <div className="relative mt-6">
                   <div
