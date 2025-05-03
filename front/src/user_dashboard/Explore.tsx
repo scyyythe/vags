@@ -55,58 +55,43 @@ const Explore = () => {
       image: "https://m.media-amazon.com/images/I/A142xwh4GVL._AC_SL1500_.jpg",
     },
   ];
-
   useEffect(() => {
     const fetchArtworks = async () => {
-      // Check if cached data exists
-      const cachedArtworks = localStorage.getItem("artworks_list");
-
-      if (cachedArtworks) {
-        // If cached data exists, use it
-        const parsedArtworks = JSON.parse(cachedArtworks);
-        setArtworks(parsedArtworks);
+      try {
+        const response = await apiClient.get("art/list/");
+        const fetchedArtworks = response.data.map((artwork) => ({
+          id: artwork.id,
+          title: artwork.title,
+          artistName: artwork.artist,
+          artistImage: "",
+          description: artwork.description,
+          style: artwork.category,
+          medium: artwork.medium,
+          status: artwork.status,
+          price: artwork.price,
+          visibility: artwork.visibility,
+          datePosted: new Date(artwork.created_at).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }),
+          artworkImage: artwork.image_url,
+          likesCount: artwork.likes_count,
+        }));
+        setArtworksState(fetchedArtworks);
+        setArtworks(fetchedArtworks);
         setLoading(false);
-      } else {
-        // If no cached data, fetch from API
-        try {
-          const response = await apiClient.get("art/list/");
-          const fetchedArtworks = response.data.map((artwork) => ({
-            id: artwork.id,
-            title: artwork.title,
-            artistName: artwork.artist,
-            artistImage: "",
-            description: artwork.description,
-            style: artwork.category,
-            medium: artwork.medium,
-            status: artwork.status,
-            price: artwork.price,
-            visibility: artwork.visibility,
-            datePosted: new Date(artwork.created_at).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }),
-            artworkImage: artwork.image_url,
-            likesCount: artwork.likes_count,
-          }));
-          setArtworksState(fetchedArtworks);
-          setArtworks(fetchedArtworks);
-          setLoading(false);
-
-          // Cache the response in localStorage
-          localStorage.setItem("artworks_list", JSON.stringify(fetchedArtworks));
-        } catch (error) {
-          console.error("Error fetching artworks:", error);
-          toast.error("Failed to load artworks");
-          setLoading(false);
-        }
+      } catch (error) {
+        console.error("Error fetching artworks:", error);
+        toast.error("Failed to load artworks");
+        setLoading(false);
       }
     };
-
+  
     fetchArtworks();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refreshData]); // Only re-fetch when refreshData changes
+  }, [refreshData]);
+  
 
   const handleTipJar = () => {
     toast("Opening tip jar");
