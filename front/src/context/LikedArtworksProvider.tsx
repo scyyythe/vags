@@ -39,7 +39,6 @@ export const LikedArtworksProvider = ({ children }: { children: ReactNode }) => 
       if (like_count !== undefined) {
         setLikeCounts((prev) => ({ ...prev, [id]: like_count }));
       } else {
-        // fallback logic in case like_count is not returned
         setLikeCounts((prev) => {
           const prevCount = prev[id] || 0;
           const newCount = is_liked ? prevCount + 1 : Math.max(prevCount - 1, 0);

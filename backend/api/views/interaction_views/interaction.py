@@ -127,34 +127,34 @@ class LikeStatusView(generics.GenericAPIView):
 
 
 class SavedCreateView(APIView):
-    permission_classes = [IsAuthenticated]  
-    
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
         user = request.user
-        art_id = request.data.get('art')  
+        art_id = kwargs.get('art_id') 
 
         if not art_id:
             return Response({"detail": "Art ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             art = Art.objects.get(id=art_id)  
-            
         except Art.DoesNotExist:
             return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
 
         saved = Saved.objects.filter(user=user, art=art).first()
 
         if saved:
-            saved.delete()
-            return Response({"detail": "You have unsavedd this artwork."}, status=status.HTTP_200_OK)
+            saved.delete()  
+            return Response({"detail": "You have unsaved this artwork."}, status=status.HTTP_200_OK)
         
         else:
-            saved = Saved.objects.create(user=user, art=art)
-            
-            artist=art.artist
-            message=f"{user.first_name} saved your artwork '{art.title}'"
-            Notification.objects.create(user=artist, message=message, art=art)
+            saved = Saved.objects.create(user=user, art=art) 
+            artist = art.artist
+            message = f"{user.first_name} saved your artwork '{art.title}'"
+            Notification.objects.create(user=artist, message=message, art=art) 
             return Response(SavedSerializer(saved).data, status=status.HTTP_201_CREATED)
+
+
         
 class SavedListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -166,7 +166,7 @@ class SavedListView(generics.ListAPIView):
         except Art.DoesNotExist:
             return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        saved = Like.objects.filter(art=art).only('user', 'created_at').order_by('-created_at')
+        saved = Saved.objects.filter(art=art).only('user', 'created_at').order_by('-created_at')
         saved_serializer = SavedSerializer(saved, many=True)
         saved_count = saved.count()
         return Response({
@@ -174,7 +174,26 @@ class SavedListView(generics.ListAPIView):
             "saved_count": saved_count,
             "saved": saved_serializer.data
         }, status=status.HTTP_200_OK)
+
+class SavedStatusView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, art_id, *args, **kwargs):
+        try:
+            art = Art.objects.get(id=art_id)
+        except Art.DoesNotExist:
+            return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        is_saved = Saved.objects.filter(art=art, user=request.user).count() > 0
+
+        return Response({
+            "isSaved": is_saved,
+        }, status=status.HTTP_200_OK)
+
+
+
         
+                        
 class CartItemCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
