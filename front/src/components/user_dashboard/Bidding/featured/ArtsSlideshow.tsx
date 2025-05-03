@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import BidPopup from "../place_bid/BidPopup";
-
+import { Link } from "react-router-dom";
 
 interface Artwork {
   id: string;
@@ -128,23 +128,26 @@ const ArtSlideshow = ({
               >
                 Owned By
               </span>
-              <div className="flex items-center gap-2">
-                <img
-                  src={artwork.artistAvatar}
-                  alt={artwork.artist}
-                  className={cn(
-                    "rounded-full",
-                    isMobile ? "w-3 h-3" : "w-5 h-5"
-                  )}
-                />
-                <span
-                  className={cn(
-                    "font-medium",
-                    isMobile ? "text-[9px]" : "text-xs"
-                  )}
-                >
-                  {artwork.artist}
-                </span>
+              <div className="flex items-center gap-2 whitespace-nowrap">
+                <Link to={`/userprofile/${artwork.artist}`} className="flex items-center gap-2">
+                  <img
+                    src={artwork.artistAvatar}
+                    alt={artwork.artist}
+                    className={cn(
+                      "rounded-full",
+                      isMobile ? "w-3 h-3" : "w-5 h-5"
+                    )}
+                  />
+                  
+                  <span
+                    className={cn(
+                      "font-medium",
+                      isMobile ? "text-[9px]" : "text-xs"
+                    )}
+                  >
+                    {artwork.artist}
+                  </span>
+                </Link>
               </div>
             </div>
 
