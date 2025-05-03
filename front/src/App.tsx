@@ -23,7 +23,7 @@ import { useDonation } from "./context/DonationContext";
 import { ArtworkProvider } from "./context/ArtworkContext";
 import ArtworkDetails from "./components/user_dashboard/Explore/art_viewing/ArtworkDetails";
 import BidDetails from "./components/user_dashboard/Bidding/bid_viewing/BidDetails";
-import apiClient from "@/utils/apiClient";
+import UserProfile from "./components/user_dashboard/user_profile/UserProfile";
 import { LikedArtworksProvider } from "@/context/LikedArtworksProvider";
 
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -68,6 +68,7 @@ const App = () => {
                       <Route path="/hero" element={<Hero />} />
                       <Route path="/explore" element={<Explore />} />
                       <Route path="/create" element={<Create />} />
+                      <Route path="/userprofile/:artistName" element={<UserProfile />} />
                       <Route path="/artwork/:id" element={<ArtworkDetails />} />
                       <Route path="/bidding" element={<Bidding />} />
                       <Route path="/marketplace" element={<Marketplace />} />

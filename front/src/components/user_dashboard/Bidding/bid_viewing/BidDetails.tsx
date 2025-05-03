@@ -201,7 +201,12 @@ const BidDetails = () => {
             </h1>
 
             <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}>
-              by {artwork?.artistName || "Angel Ganev"}
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate(`/userprofile/${artwork?.artistName}`)}
+              >
+                by {artwork?.artistName || "Angel Ganev"}
+              </span>
             </p>
 
             <div className="relative mt-6">
