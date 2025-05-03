@@ -13,6 +13,7 @@ import { useArtworkContext } from "@/context/ArtworkContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
+import useFavorite from "@/hooks/useFavorite";
 
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -39,7 +40,7 @@ const ArtworkDetails = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
   const [isReported, setIsReported] = useState(false);
 
   const [commentLikes, setCommentLikes] = useState<{ [commentId: string]: number }>({});
@@ -68,7 +69,6 @@ const ArtworkDetails = () => {
   const handleLike = () => {
     if (artwork && id) {
       toggleLike(id);
-      toast(`${likedArtworks[id] ? "Unliked" : "Liked"} the artwork`);
     }
   };
 
@@ -108,8 +108,7 @@ const ArtworkDetails = () => {
   };
 
   const handleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    toast(isFavorite ? "Artwork favorite removed" : "Artwork added to favorites");
+    toggleFavorite();
     setMenuOpen(false);
   };
 

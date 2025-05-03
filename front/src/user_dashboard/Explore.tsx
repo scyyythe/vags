@@ -21,7 +21,7 @@ const Explore = () => {
   const { setArtworks } = useArtworkContext();
   const [artworks, setArtworksState] = useState([]);
   const [refreshData, setRefreshData] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
     toast(`Selected category: ${category}`);
@@ -58,38 +58,55 @@ const Explore = () => {
 
   useEffect(() => {
     const fetchArtworks = async () => {
-      try {
-        const response = await apiClient.get("art/list/");
-        const fetchedArtworks = response.data.map((artwork) => ({
-          id: artwork.id,
-          title: artwork.title,
-          artistName: artwork.artist,
-          artistImage: "",
-          description: artwork.description,
-          style: artwork.category,
-          medium: artwork.medium,
-          status: artwork.status,
-          price: artwork.price,
-          visibility: artwork.visibility,
-          datePosted: new Date(artwork.created_at).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }),
-          artworkImage: artwork.image_url,
-          likesCount: artwork.likes_count,
-        }));
-        setArtworksState(fetchedArtworks);
-        setArtworks(fetchedArtworks);
-      } catch (error) {
-        console.error("Error fetching artworks:", error);
-        toast.error("Failed to load artworks");
+      // Check if cached data exists
+      const cachedArtworks = localStorage.getItem("artworks_list");
+
+      if (cachedArtworks) {
+        // If cached data exists, use it
+        const parsedArtworks = JSON.parse(cachedArtworks);
+        setArtworks(parsedArtworks);
+        setLoading(false);
+      } else {
+        // If no cached data, fetch from API
+        try {
+          const response = await apiClient.get("art/list/");
+          const fetchedArtworks = response.data.map((artwork) => ({
+            id: artwork.id,
+            title: artwork.title,
+            artistName: artwork.artist,
+            artistImage: "",
+            description: artwork.description,
+            style: artwork.category,
+            medium: artwork.medium,
+            status: artwork.status,
+            price: artwork.price,
+            visibility: artwork.visibility,
+            datePosted: new Date(artwork.created_at).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }),
+            artworkImage: artwork.image_url,
+            likesCount: artwork.likes_count,
+          }));
+          setArtworksState(fetchedArtworks);
+          setArtworks(fetchedArtworks);
+          setLoading(false);
+
+          // Cache the response in localStorage
+          localStorage.setItem("artworks_list", JSON.stringify(fetchedArtworks));
+        } catch (error) {
+          console.error("Error fetching artworks:", error);
+          toast.error("Failed to load artworks");
+          setLoading(false);
+        }
       }
     };
 
     fetchArtworks();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refreshData]);
+  }, [refreshData]); // Only re-fetch when refreshData changes
 
   const handleTipJar = () => {
     toast("Opening tip jar");
@@ -154,8 +171,8 @@ const Explore = () => {
 
             <div className="h-[800px] lg:w-[133%] custom-scrollbars">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                {artworks.length === 0 ? (
-                  <div className="col-span-full text-center text-sm text-gray-500 italic">Loading artworks...</div>
+                {loading ? (
+                  <div className="col-span-full text-center text-sm text-gray-500 ">Loading artworks...</div>
                 ) : (
                   artworks.map((card) => (
                     <ArtCard
@@ -164,7 +181,7 @@ const Explore = () => {
                       artistName={card.artistName}
                       artistImage={card.artistImage}
                       artworkImage={card.artworkImage}
-                      title={card.title.length > 10 ? card.title.slice(0, 10) + "..." : card.title}
+                      title={card.title}
                       onButtonClick={handleTipJar}
                       isExplore={true}
                       likesCount={card.likesCount}
