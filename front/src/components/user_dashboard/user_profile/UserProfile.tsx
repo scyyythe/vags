@@ -10,7 +10,7 @@ const Index = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             <Header />
-        <div className="container mx-auto mt-20 px-4 pt-4 pb-12">
+        <div className="container mx-auto px-4 pt-20 pb-12">
             <ProfileHeader 
             bannerImage="/lovable-uploads/91de0ca2-cd8a-42fb-8dbe-bad642960399.png"
             profileImage="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
