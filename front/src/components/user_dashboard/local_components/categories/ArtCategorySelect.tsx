@@ -18,7 +18,10 @@ import {
           <img src="/pics/b_logo.png" className="w-3 h-3 mr-2" />
           <SelectValue placeholder="Digital Art" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent 
+        className="z-50 bg-white shadow-lg rounded-md"
+        sideOffset={8}
+        side="bottom">
           {ART_CATEGORIES.map((category) => (
             <SelectItem key={category} value={category} className={cn(isMobile ? "text-[10px]" : "text-[10px]")}>
               {category}
