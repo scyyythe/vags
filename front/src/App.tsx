@@ -11,6 +11,7 @@ import FingerprintAuth from "./pages/FingerprintAuth";
 import FingerprintRegister from "./pages/FingerprintRegister";
 import NotFound from "./components/NotFound";
 import Create from "./components/user_dashboard/Explore/create_post/CreatePost";
+import UpdatePost from "./components/user_dashboard/own_profile/UpdatePost";
 import Hero from "./pages/Hero";
 import Explore from "./user_dashboard/Explore";
 import Bidding from "./user_dashboard/Bidding";
@@ -68,6 +69,7 @@ const App = () => {
                       <Route path="/hero" element={<Hero />} />
                       <Route path="/explore" element={<Explore />} />
                       <Route path="/create" element={<Create />} />
+                      <Route path="/update" element={<UpdatePost />} />
                       <Route path="/userprofile/:artistName" element={<UserProfile />} />
                       <Route path="/artwork/:id" element={<ArtworkDetails />} />
                       <Route path="/bidding" element={<Bidding />} />
