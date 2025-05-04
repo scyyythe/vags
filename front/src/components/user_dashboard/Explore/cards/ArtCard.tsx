@@ -102,27 +102,27 @@ const ArtCard = ({
           >
             <MoreHorizontal size={14} />
           </button>
-            {/* CONDITIONAL MENU */}
-            {isExplore ? (
-              <ArtCardMenu
-                isOpen={menuOpen}
-                onFavorite={handleSaved}
-                onHide={handleHide}
-                onReport={handleReport}
-                isFavorite={isFavorite}
-                isReported={false}
-              />
-            ) : (
-              <OwnerMenu
-                isOpen={menuOpen}
-                onRequestBid={() => console.log("Request to bid")}
-                onSell={() => console.log("Sell artwork")}
-                onEdit={() => console.log("Edit artwork")}
-                onToggleVisibility={() => console.log("Toggle visibility")}
-                onArchive={() => console.log("Archive")}
-                isPublic={true}
-              />
-            )}
+          {/* CONDITIONAL MENU */}
+          {isExplore ? (
+            <ArtCardMenu
+              isOpen={menuOpen}
+              onFavorite={handleSaved}
+              onHide={handleHide}
+              onReport={handleReport}
+              isFavorite={isFavorite}
+              isReported={false}
+            />
+          ) : (
+            <OwnerMenu
+              isOpen={menuOpen}
+              onRequestBid={() => console.log("Request to bid")}
+              onSell={() => console.log("Sell artwork")}
+              onEdit={() => console.log("Edit artwork")}
+              onToggleVisibility={() => console.log("Toggle visibility")}
+              onArchive={() => console.log("Archive")}
+              isPublic={true}
+            />
+          )}
         </div>
       </div>
       <Link to={`/artwork/${id}`} className="w-full">
