@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, createContext } from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Index from "./pages/Index";
 import FingerprintAuth from "./pages/FingerprintAuth";
@@ -46,13 +46,11 @@ const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
     </>
   );
 };
-
 const queryClient = new QueryClient();
-
 const App = () => {
   return (
-    <LikedArtworksProvider>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <LikedArtworksProvider>
         <TooltipProvider>
           <DonationProvider>
             <DonationWrapper>
@@ -83,8 +81,8 @@ const App = () => {
             </DonationWrapper>
           </DonationProvider>
         </TooltipProvider>
-      </QueryClientProvider>
-    </LikedArtworksProvider>
+      </LikedArtworksProvider>
+    </QueryClientProvider>
   );
 };
 
