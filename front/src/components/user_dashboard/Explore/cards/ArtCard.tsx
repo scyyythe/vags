@@ -8,8 +8,8 @@ import { useDonation } from "../../../../context/DonationContext";
 import ArtCardMenu from "./ArtCardMenu";
 import OwnerMenu from "@/components/user_dashboard/own_profile/Menu";
 import { Link } from "react-router-dom";
-import useFavorite from "@/hooks/useFavorite";
-import useLikeStatus from "@/hooks/useLikeStatus";
+import useFavorite from "@/hooks/interactions/useFavorite";
+import useLikeStatus from "@/hooks/interactions/useLikeStatus";
 interface ArtCardProps {
   id: string;
   artistName: string;
@@ -49,7 +49,7 @@ const ArtCard = ({
       setLikeCounts((prev) => ({ ...prev, [id]: data.likeCount }));
     }
   }, [data, id, setLikedArtworks, setLikeCounts]);
-  
+
   const handleLike = useCallback(() => {
     toggleLike(id);
   }, [id, toggleLike]);
@@ -69,7 +69,7 @@ const ArtCard = ({
     handleFavorite();
     setMenuOpen(false);
   }, [handleFavorite]);
-  
+
   const handleTipJar = () => {
     openPopup({
       id,
