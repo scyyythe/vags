@@ -14,20 +14,14 @@ interface ArtSlideshowProps {
   interval?: number;
 }
 
-const ArtSlideshow = ({
-  artworks,
-  autoPlay = true,
-  interval = 3000,
-}: ArtSlideshowProps) => {
+const ArtSlideshow = ({ artworks, autoPlay = true, interval = 3000 }: ArtSlideshowProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     if (!autoPlay) return;
 
     const timer = setInterval(() => {
-      setCurrentIndex((prevIndex) =>
-        prevIndex === artworks.length - 1 ? 0 : prevIndex + 1
-      );
+      setCurrentIndex((prevIndex) => (prevIndex === artworks.length - 1 ? 0 : prevIndex + 1));
     }, interval);
 
     return () => clearInterval(timer);
@@ -54,11 +48,7 @@ const ArtSlideshow = ({
             )}
             style={{ pointerEvents: index === currentIndex ? "auto" : "none" }}
           >
-            <img
-              src={artwork.image}
-              alt={artwork.title}
-              className="w-full h-full object-cover"
-            />
+            <img src={artwork.image} alt={artwork.title} className="w-full h-full object-cover" />
             <div className="absolute top-0 left-6 p-8 text-white z-20">
               <h3 className="text-xs font-bold mb-1">{artwork.title}</h3>
             </div>
@@ -74,9 +64,7 @@ const ArtSlideshow = ({
             onClick={() => setCurrentIndex(index)}
             className={cn(
               "w-1 h-1 rounded-full transition-all duration-300",
-              index === currentIndex
-                ? "bg-gray-300 w-4"
-                : "bg-white/50 hover:bg-white/70"
+              index === currentIndex ? "bg-gray-300 w-4" : "bg-white/50 hover:bg-white/70"
             )}
             aria-label={`Go to slide ${index + 1}`}
           />
