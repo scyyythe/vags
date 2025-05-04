@@ -311,7 +311,7 @@ const ArtworkDetails = () => {
             }}
           >
             {/* Artwork container */}
-            <div className={`relative mr-6 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
+            <div className={`relative mr-10 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
               {/* Collapsible Sidebar */}
               {!isMobile && (
                 <div
@@ -468,9 +468,9 @@ const ArtworkDetails = () => {
                     ref={descriptionRef}
                     className={`
                       text-[10px] text-gray-700 transition-all duration-300 ease-in-out 
-                      ${showFullDescription ? "max-h-[65px] overflow-y-auto pr-1" : "max-h-12 overflow-hidden"}
+                      ${showFullDescription ? "max-h-16 overflow-y-auto pr-1" : "max-h-14 overflow-hidden"}
                     `}
-                    style={{ lineHeight: "1.25rem" }}
+                    style={{ lineHeight: "1.1rem" }}
                   >
                     {artwork?.description || "No description available."}
                   </div>
