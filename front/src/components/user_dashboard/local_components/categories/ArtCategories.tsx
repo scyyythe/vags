@@ -8,7 +8,6 @@ export const ART_CATEGORIES = [
   "Digital Art",
   "Mixed Media",
   "Illustration",
-
   // Media Arts
   "3D Modeling and Animation",
   "Videography",
