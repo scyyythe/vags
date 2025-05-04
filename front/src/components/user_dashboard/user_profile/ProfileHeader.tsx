@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { MoreHorizontal, Share2, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger 
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 
 interface ProfileHeaderProps {
@@ -26,14 +25,15 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   items
 }) => {
   const [isFollowing, setIsFollowing] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
+  // Add controlled open state for the dropdown
+  const [optionsOpen, setOptionsOpen] = useState(false);
 
   const toggleFollow = () => {
     setIsFollowing(!isFollowing);
   };
 
   return (
-    <div className="w-full px-8">
+    <div className="w-full px-4">
       {/* Banner */}
       <div className="w-full h-52 md:h-72 rounded-lg overflow-hidden bg-blue-100">
         <img 
@@ -60,15 +60,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         {/* Stats */}
         <div className="flex items-center space-x-4 mt-2 text-xs md:text-xs">
           <span><strong>{followers}</strong> followers</span>
+          <span>•</span>
           <span><strong>{following}</strong> following</span>
+          <span>•</span>
           <span><strong>{items}</strong> items</span>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center space-x-2 mt-4">
+        <div className="flex items-center space-x-2 mt-4 relative">
           <button 
             onClick={toggleFollow} 
-            className={`px-8 py-[6px] rounded-full text-[11px] ${
+            className={`px-8 py-[6px] rounded-full text-[10px] ${
               isFollowing 
                 ? 'bg-white text-black border border-gray-300 hover:bg-gray-100' 
                 : 'bg-red-800 text-white hover:bg-red-700'
@@ -81,17 +83,23 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             <i className='bx bx-envelope text-xs'></i>
           </Button>
           
-          <DropdownMenu>
+          <DropdownMenu open={optionsOpen} onOpenChange={setOptionsOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="rounded-full border border-gray-300 p-2 w-8 h-8">
                 <i className='bx bx-dots-horizontal-rounded text-sm' ></i>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white p-2 shadow-lg rounded-md min-w-[120px] animate-fade-in">
-              <DropdownMenuItem className="cursor-pointer text-xs hover:bg-gray-100 rounded px-2 py-1">
+            <DropdownMenuContent
+              side="right"
+              align="start"
+              sideOffset={4}
+              className="z-50 bg-white p-2 shadow-lg rounded-md min-w-[120px] animate-fade-in"
+              forceMount
+            >
+              <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
                 Report
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer text-xs hover:bg-gray-100 rounded px-2 py-1">
+              <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
                 Block
               </DropdownMenuItem>
             </DropdownMenuContent>

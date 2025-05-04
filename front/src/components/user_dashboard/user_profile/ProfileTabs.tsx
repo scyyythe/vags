@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
+import ArtGrid from './ArtGrid'; 
 import { ChevronDown } from 'lucide-react';
+import CreatedTab from "@/components/user_dashboard/user_profile/tabs/CreatedTab";
+import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 
 const tabs = [
   { id: 'created', label: 'Created' },
@@ -15,8 +11,7 @@ const tabs = [
   { id: 'collections', label: 'Collections' }
 ];
 
-const ProfileTabs = () => {
-  const [activeTab, setActiveTab] = useState('created');
+const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (tab: string) => void }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterCategory, setFilterCategory] = useState('Digital Art');
   
@@ -57,10 +52,10 @@ const ProfileTabs = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 whitespace-nowrap text-sm ${
+              className={`whitespace-nowrap py-1.5 px-4 rounded-full text-[10px] font-small ${
                 activeTab === tab.id
-                  ? 'border-b-2 border-black font-medium'
-                  : 'text-gray-500 hover:text-gray-800'
+                  ? 'border border-gray-300 font-medium shadow-md'
+                  : 'bg-white border border-gray-200 hover:bg-gray-100'
               }`}
             >
               {tab.label}
@@ -69,51 +64,24 @@ const ProfileTabs = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex items-center mt-4 sm:mt-0 space-x-2 relative">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex items-center space-x-2 text-sm font-normal">
-                <span>{filterCategory}</span>
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white p-1 shadow-lg rounded-md min-w-[140px] animate-fade-in">
-              <DropdownMenuItem 
-                className="cursor-pointer hover:bg-gray-100 rounded"
-                onClick={() => setFilterCategory('Digital Art')}
-              >
-                Digital Art
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer hover:bg-gray-100 rounded"
-                onClick={() => setFilterCategory('Physical Art')}
-              >
-                Physical Art
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer hover:bg-gray-100 rounded"
-                onClick={() => setFilterCategory('Photography')}
-              >
-                Photography
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex items-center mt-4 sm:mt-0 space-x-4 relative">
+          <ArtCategorySelect 
+            selectedCategory={filterCategory}
+            onChange={setFilterCategory}
+          />
 
           {/* Apply Filter Button */}
           <div className="relative">
-            <Button 
+            <button 
               onClick={() => setShowFilters(!showFilters)} 
-              variant="outline" 
-              className="flex items-center space-x-2 px-3 py-2"
+              className="flex items-center space-x-1 px-3 py-2 rounded-full border broder-gray-400"
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14.5 2H1.5L6.5 8.4V13L9.5 14V8.4L14.5 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              <span className="text-sm">Apply Filter</span>
-            </Button>
-            
+              <i className='bx bx-filter'></i>
+              <span className="text-[10px]">Apply Filter</span>
+            </button>
+
             {showFilters && (
-              <div className="absolute right-0 top-full mt-2 bg-white shadow-lg rounded-md p-2 z-10 w-48 animate-fade-in">
+              <div className="absolute right-0 top-full mt-2 text-[10px] bg-white shadow-lg whitespace-nowrap rounded-md p-2 z-10 w-30 animate-fade-in">
                 {/* Medium Filter */}
                 <div className="mb-2">
                   <div 
@@ -125,10 +93,13 @@ const ProfileTabs = () => {
                   </div>
                   
                   {showMediumOptions && (
-                    <div className="bg-white shadow-md rounded-md mt-1 animate-fade-in">
+                    <div
+                      className="bg-white shadow-md rounded-md mt-1 animate-fade-in overflow-y-auto"
+                      style={{ maxHeight: '110px' }} // or any height you prefer
+                    >
                       {mediumOptions.map((option, idx) => (
-                        <div 
-                          key={idx} 
+                        <div
+                          key={idx}
                           className="px-3 py-2 cursor-pointer hover:bg-gray-100"
                           onClick={() => handleMediumSelect(option)}
                         >
@@ -192,6 +163,12 @@ const ProfileTabs = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Tab Content Rendering */}
+      <div className="mt-4">
+        {activeTab === 'created' && <CreatedTab />}
+        {/* Add similar rendering for other tabs like 'onBid', 'onSale', etc. */}
       </div>
     </div>
   );
