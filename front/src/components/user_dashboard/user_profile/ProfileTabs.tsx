@@ -65,7 +65,9 @@ const ProfileTabs = () => {
 
         {/* Filters */}
         <div className="flex items-center mt-4 sm:mt-0 space-x-4 relative">
-          <ArtCategorySelect />
+          <ArtCategorySelect 
+          selectedCategory={filterCategory}
+          onChange={setFilterCategory}/>
 
           {/* Apply Filter Button */}
           <div className="relative">
