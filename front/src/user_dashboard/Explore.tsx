@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import ArtGalleryContainer from "@/components/user_dashboard/Explore/gallery/ArtGalleryContainer";
@@ -98,16 +98,16 @@ const Explore = () => {
     };
 
     fetchArtworks();
-  }, [currentPage, refreshData]);
+  }, [currentPage, refreshData, setArtworks]);
 
-  // Memoized filtered artworks based on search query and selected category
   const filteredArtworksMemo = useMemo(() => {
     return artworks.filter((artwork) => {
       const searchMatches =
         artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         artwork.artistName.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const categoryMatches = selectedCategory === "All" || artwork.style === selectedCategory;
+      const categoryMatches =
+        selectedCategory.toLowerCase() === "all" || artwork.style.toLowerCase() === selectedCategory.toLowerCase();
 
       return searchMatches && categoryMatches;
     });
@@ -140,7 +140,10 @@ const Explore = () => {
             <div className="flex items-center px-4 border-r">
               <span className="text-xs font-semibold mr-5">Browse Type</span>
               <div className="relative">
-                <ArtCategorySelect />
+                <ArtCategorySelect
+                  selectedCategory={selectedCategory}
+                  onChange={(value) => setSelectedCategory(value)}
+                />
               </div>
             </div>
             <div className="flex-1 pl-4 bg-blue-100 bg-opacity-50 rounded-full ml-3">
