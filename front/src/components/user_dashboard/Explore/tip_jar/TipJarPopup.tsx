@@ -275,7 +275,7 @@ const TipJarPopup = ({
               
               <Button
                 onClick={handleProceedToDonate}
-                className="w-full bg-[#B5191D] hover:bg-[#9b1518] text-white text-xs font-medium py-3 rounded-sm"
+                className="w-full bg-red-800 hover:bg-red-700 text-white text-xs font-medium py-3 rounded-full"
               >
                 Donate Now
               </Button>
