@@ -8,7 +8,7 @@ import Header from "@/components/user_dashboard/navbar/Header";
 import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/ArtworkStyles";
 import apiClient from "@/utils/apiClient";
 import axios from "axios";
-
+import { useQueryClient } from "@tanstack/react-query";
 const CreatePost = () => {
   const navigate = useNavigate();
   const [artworkTitle, setArtworkTitle] = useState("");
@@ -66,6 +66,7 @@ const CreatePost = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Form validation
     if (!artworkTitle) {
       toast.error("Please enter an artwork title");
       return;
@@ -89,12 +90,43 @@ const CreatePost = () => {
 
     const token = localStorage.getItem("access_token");
     setIsUploading(true);
+
+    // Get queryClient from React Query
+    const queryClient = useQueryClient();
+
     try {
+      // Posting the artwork
       const response = await apiClient.post("art/create/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: token ? `Bearer ${token}` : "",
         },
+      });
+
+      // New artwork object from the response
+      const newArtwork = {
+        id: response.data.id,
+        title: artworkTitle,
+        artistName: response.data.artist,
+        artistImage: "",
+        description: response.data.description,
+        style: artworkStyle,
+        medium: medium,
+        status: artStatus,
+        price: price,
+        visibility: visibility,
+        datePosted: new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        artworkImage: response.data.image_url,
+        likesCount: 0, // Initial like count, adjust as needed
+      };
+
+      // Update query cache for artworks
+      queryClient.setQueryData(["artworks", currentPage], (oldData: Artwork[] | undefined) => {
+        return oldData ? [newArtwork, ...oldData] : [newArtwork];
       });
 
       toast.success("Artwork posted successfully!");
