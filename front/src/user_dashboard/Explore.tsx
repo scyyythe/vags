@@ -5,7 +5,6 @@ import ArtGalleryContainer from "@/components/user_dashboard/Explore/gallery/Art
 import SearchBar from "@/components/user_dashboard/local_components/SearchBar";
 import CategoryFilter from "@/components/user_dashboard/local_components/CategoryFilter";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
-import { Plus, SortAsc } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useDonation } from "../context/DonationContext";
@@ -123,7 +122,7 @@ const Explore = () => {
                 <ArtCategorySelect />
               </div>
             </div>
-            <div className="flex-1 pl-2 bg-blue-100 bg-opacity-50 rounded-sm ml-3">
+            <div className="flex-1 pl-4 bg-blue-100 bg-opacity-50 rounded-full ml-3">
               <SearchBar />
             </div>
           </div>
@@ -136,16 +135,16 @@ const Explore = () => {
               <div className="flex space-x-2 text-xs">
                 <Button
                   size="sm"
-                  className="text-xs bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
+                  className="text-[11px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
                   onClick={handleCreateClick}
                 >
-                  <Plus size={8} />
+                  <i className='bx bx-plus text-sm'></i>
                   Create
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-xs rounded-full flex items-center gap-1"
+                  className="text-[11px] rounded-full flex items-center gap-1"
                   onClick={handleSortClick}
                 >
                   <i className="bx bx-sort-alt-2 text-sm"></i>

@@ -20,7 +20,7 @@ const CategoryFilter = ({ categories, onSelectCategory }: CategoryFilterProps) =
       {categories.map((category) => (
         <button
           key={category}
-          className={`py-1.5 px-4 rounded-full text-xs font-small transition-colors ${
+          className={`py-1.5 px-4 rounded-full text-[11px] font-small transition-colors ${
             selectedCategory === category 
               ? "border border-gray-300 font-semibold shadow-lg" 
               : "bg-white border border-gray-200 hover:bg-gray-100"
