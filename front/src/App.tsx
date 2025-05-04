@@ -19,6 +19,7 @@ import Marketplace from "./user_dashboard/Marketplace";
 import Exhibits from "./user_dashboard/Exhibits";
 import { ModalProvider } from "./context/ModalContext";
 import { DonationProvider } from "./context/DonationContext";
+import { AuctionProvider } from "./context/AuctionContext";
 import TipJarPopup from "./components/user_dashboard/Explore/tip_jar/TipJarPopup";
 import { useDonation } from "./context/DonationContext";
 import { ArtworkProvider } from "./context/ArtworkContext";
@@ -55,32 +56,34 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <DonationProvider>
-            <DonationWrapper>
-              <Toaster />
-              <Sonner />
-              <ModalProvider>
-                <ArtworkProvider>
-                  <BrowserRouter>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/bid/:id" element={<BidDetails />} />
-                      <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
-                      <Route path="/fingerprint-register" element={<FingerprintRegister />} />
-                      <Route path="/hero" element={<Hero />} />
-                      <Route path="/explore" element={<Explore />} />
-                      <Route path="/create" element={<Create />} />
-                      <Route path="/update" element={<UpdatePost />} />
-                      <Route path="/userprofile/:artistName" element={<UserProfile />} />
-                      <Route path="/artwork/:id" element={<ArtworkDetails />} />
-                      <Route path="/bidding" element={<Bidding />} />
-                      <Route path="/marketplace" element={<Marketplace />} />
-                      <Route path="/exhibits" element={<Exhibits />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </BrowserRouter>
-                </ArtworkProvider>
-              </ModalProvider>
-            </DonationWrapper>
+            <AuctionProvider>
+              <DonationWrapper>
+                <Toaster />
+                <Sonner />
+                <ModalProvider>
+                  <ArtworkProvider>
+                    <BrowserRouter>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/bid/:id" element={<BidDetails />} />
+                        <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
+                        <Route path="/fingerprint-register" element={<FingerprintRegister />} />
+                        <Route path="/hero" element={<Hero />} />
+                        <Route path="/explore" element={<Explore />} />
+                        <Route path="/create" element={<Create />} />
+                        <Route path="/update" element={<UpdatePost />} />
+                        <Route path="/userprofile/:artistName" element={<UserProfile />} />
+                        <Route path="/artwork/:id" element={<ArtworkDetails />} />
+                        <Route path="/bidding" element={<Bidding />} />
+                        <Route path="/marketplace" element={<Marketplace />} />
+                        <Route path="/exhibits" element={<Exhibits />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </BrowserRouter>
+                  </ArtworkProvider>
+                </ModalProvider>
+              </DonationWrapper>
+            </AuctionProvider>
           </DonationProvider>
         </TooltipProvider>
       </QueryClientProvider>
