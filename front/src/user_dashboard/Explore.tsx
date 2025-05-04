@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import ArtGalleryContainer from "@/components/user_dashboard/Explore/gallery/ArtGalleryContainer";
@@ -21,6 +21,9 @@ const Explore = () => {
   const [artworks, setArtworksState] = useState([]);
   const [refreshData, setRefreshData] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
     toast(`Selected category: ${category}`);
@@ -54,10 +57,16 @@ const Explore = () => {
       image: "https://m.media-amazon.com/images/I/A142xwh4GVL._AC_SL1500_.jpg",
     },
   ];
+
   useEffect(() => {
     const fetchArtworks = async () => {
+      setLoading(true);
+
       try {
-        const response = await apiClient.get("art/list/");
+        const response = await apiClient.get("art/list/", {
+          params: { page: currentPage, limit: 20 },
+        });
+
         const fetchedArtworks = response.data.map((artwork) => ({
           id: artwork.id,
           title: artwork.title,
@@ -77,20 +86,32 @@ const Explore = () => {
           artworkImage: artwork.image_url,
           likesCount: artwork.likes_count,
         }));
+
         setArtworksState(fetchedArtworks);
         setArtworks(fetchedArtworks);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching artworks:", error);
         toast.error("Failed to load artworks");
+      } finally {
         setLoading(false);
       }
     };
-  
+
     fetchArtworks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refreshData]);
-  
+  }, [currentPage, refreshData]);
+
+  // Memoized filtered artworks based on search query and selected category
+  const filteredArtworksMemo = useMemo(() => {
+    return artworks.filter((artwork) => {
+      const searchMatches =
+        artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        artwork.artistName.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const categoryMatches = selectedCategory === "All" || artwork.style === selectedCategory;
+
+      return searchMatches && categoryMatches;
+    });
+  }, [artworks, searchQuery, selectedCategory]);
 
   const handleTipJar = () => {
     toast("Opening tip jar");
@@ -123,7 +144,7 @@ const Explore = () => {
               </div>
             </div>
             <div className="flex-1 pl-4 bg-blue-100 bg-opacity-50 rounded-full ml-3">
-              <SearchBar />
+              <SearchBar onSearchChange={setSearchQuery} />
             </div>
           </div>
         </div>
@@ -138,7 +159,7 @@ const Explore = () => {
                   className="text-[11px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
                   onClick={handleCreateClick}
                 >
-                  <i className='bx bx-plus text-sm'></i>
+                  <i className="bx bx-plus text-sm"></i>
                   Create
                 </Button>
                 <Button
@@ -158,7 +179,7 @@ const Explore = () => {
                 {loading ? (
                   <div className="col-span-full text-center text-sm text-gray-500 ">Loading artworks...</div>
                 ) : (
-                  artworks.map((card) => (
+                  filteredArtworksMemo.map((card) => (
                     <ArtCard
                       key={card.id}
                       id={card.id}
