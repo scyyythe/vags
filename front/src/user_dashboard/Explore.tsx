@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import ArtGalleryContainer from "@/components/user_dashboard/Explore/gallery/ArtGalleryContainer";
@@ -7,29 +7,22 @@ import CategoryFilter from "@/components/user_dashboard/Explore/navigation/Categ
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useDonation } from "../context/DonationContext";
-import { useArtworkContext } from "../context/ArtworkContext";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
-import apiClient from "@/utils/apiClient";
+import useArtworks from "@/hooks/artwork_hook/useArtworks";
 
 const Explore = () => {
   const navigate = useNavigate();
   const categories = ["All", "Trending", "Collections"];
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const { openPopup } = useDonation();
-  const { setArtworks } = useArtworkContext();
-  const [artworks, setArtworksState] = useState([]);
-  const [refreshData, setRefreshData] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const handleCategorySelect = (category: string) => {
+  const { data: artworks, isLoading, error } = useArtworks(currentPage);
+
+  const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     toast(`Selected category: ${category}`);
   };
-
-  // Static artworks array (to keep existing code intact)
   const staticArtworks = [
     {
       id: "1",
@@ -57,51 +50,8 @@ const Explore = () => {
       image: "https://m.media-amazon.com/images/I/A142xwh4GVL._AC_SL1500_.jpg",
     },
   ];
-
-  useEffect(() => {
-    const fetchArtworks = async () => {
-      setLoading(true);
-
-      try {
-        const response = await apiClient.get("art/list/", {
-          params: { page: currentPage, limit: 20 },
-        });
-
-        const fetchedArtworks = response.data.map((artwork) => ({
-          id: artwork.id,
-          title: artwork.title,
-          artistName: artwork.artist,
-          artistImage: "",
-          description: artwork.description,
-          style: artwork.category,
-          medium: artwork.medium,
-          status: artwork.status,
-          price: artwork.price,
-          visibility: artwork.visibility,
-          datePosted: new Date(artwork.created_at).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }),
-          artworkImage: artwork.image_url,
-          likesCount: artwork.likes_count,
-        }));
-
-        setArtworksState(fetchedArtworks);
-        setArtworks(fetchedArtworks);
-      } catch (error) {
-        console.error("Error fetching artworks:", error);
-        toast.error("Failed to load artworks");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchArtworks();
-  }, [currentPage, refreshData, setArtworks]);
-
   const filteredArtworksMemo = useMemo(() => {
-    return artworks.filter((artwork) => {
+    return artworks?.filter((artwork) => {
       const searchMatches =
         artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         artwork.artistName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -179,8 +129,10 @@ const Explore = () => {
 
             <div className="h-[800px] lg:w-[133%] custom-scrollbars">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                {loading ? (
+                {isLoading ? (
                   <div className="col-span-full text-center text-sm text-gray-500 ">Loading artworks...</div>
+                ) : error ? (
+                  <div className="col-span-full text-center text-sm text-gray-500 ">Error loading artworks</div>
                 ) : (
                   filteredArtworksMemo.map((card) => (
                     <ArtCard
