@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import ArtGrid from './ArtGrid'; 
 import { ChevronDown } from 'lucide-react';
+import CreatedTab from "@/components/user_dashboard/user_profile/tabs/CreatedTab";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 
 const tabs = [
@@ -10,8 +11,7 @@ const tabs = [
   { id: 'collections', label: 'Collections' }
 ];
 
-const ProfileTabs = () => {
-  const [activeTab, setActiveTab] = useState('created');
+const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (tab: string) => void }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterCategory, setFilterCategory] = useState('Digital Art');
   
@@ -66,8 +66,9 @@ const ProfileTabs = () => {
         {/* Filters */}
         <div className="flex items-center mt-4 sm:mt-0 space-x-4 relative">
           <ArtCategorySelect 
-          selectedCategory={filterCategory}
-          onChange={setFilterCategory}/>
+            selectedCategory={filterCategory}
+            onChange={setFilterCategory}
+          />
 
           {/* Apply Filter Button */}
           <div className="relative">
@@ -78,7 +79,7 @@ const ProfileTabs = () => {
               <i className='bx bx-filter'></i>
               <span className="text-[10px]">Apply Filter</span>
             </button>
-            
+
             {showFilters && (
               <div className="absolute right-0 top-full mt-2 text-[10px] bg-white shadow-lg whitespace-nowrap rounded-md p-2 z-10 w-30 animate-fade-in">
                 {/* Medium Filter */}
@@ -162,6 +163,12 @@ const ProfileTabs = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Tab Content Rendering */}
+      <div className="mt-4">
+        {activeTab === 'created' && <CreatedTab />}
+        {/* Add similar rendering for other tabs like 'onBid', 'onSale', etc. */}
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ export interface Artwork {
   title?: string;
   price?: string;
   currency?: string;
+  likesCount?: number; 
 }
 
 interface ArtworkContextType {
