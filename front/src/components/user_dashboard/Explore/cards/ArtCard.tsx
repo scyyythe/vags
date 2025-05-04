@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import TipJarIcon from "../tip_jar/TipJarIcon";
 import { useDonation } from "../../../../context/DonationContext";
 import ArtCardMenu from "./ArtCardMenu";
+import OwnerMenu from "@/components/user_dashboard/own_profile/Menu";
 import { Link } from "react-router-dom";
-import apiClient from "@/utils/apiClient";
 import useFavorite from "@/hooks/useFavorite";
 import useLikeStatus from "@/hooks/useLikeStatus";
 interface ArtCardProps {
@@ -100,14 +100,27 @@ const ArtCard = ({
           >
             <MoreHorizontal size={14} />
           </button>
-          <ArtCardMenu
-            isOpen={menuOpen}
-            onFavorite={handleSaved}
-            onHide={handleHide}
-            onReport={handleReport}
-            isFavorite={isFavorite}
-            isReported={false}
-          />
+            {/* CONDITIONAL MENU */}
+            {isExplore ? (
+              <ArtCardMenu
+                isOpen={menuOpen}
+                onFavorite={handleSaved}
+                onHide={handleHide}
+                onReport={handleReport}
+                isFavorite={isFavorite}
+                isReported={false}
+              />
+            ) : (
+              <OwnerMenu
+                isOpen={menuOpen}
+                onRequestBid={() => console.log("Request to bid")}
+                onSell={() => console.log("Sell artwork")}
+                onEdit={() => console.log("Edit artwork")}
+                onToggleVisibility={() => console.log("Toggle visibility")}
+                onArchive={() => console.log("Archive")}
+                isPublic={true}
+              />
+            )}
         </div>
       </div>
       <Link to={`/artwork/${id}`} className="w-full">
