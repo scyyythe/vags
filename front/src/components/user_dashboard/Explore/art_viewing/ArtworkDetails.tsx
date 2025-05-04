@@ -14,6 +14,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
 import useFavorite from "@/hooks/useFavorite";
+import useArtworkQuery from "@/hooks/artwork_hook/fetchArtworkDetails";
 
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,8 +27,6 @@ const ArtworkDetails = () => {
 
   const navigate = useNavigate();
   const [comment, setComment] = useState("");
-  const [artwork, setArtwork] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [relatedArtworks, setRelatedArtworks] = useState<any[]>([]);
   const [comments, setComments] = useState<any[]>([]);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -48,16 +47,8 @@ const ArtworkDetails = () => {
   const [commentMenus, setCommentMenus] = useState<{ [commentId: string]: boolean }>({});
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({});
 
-  useEffect(() => {
-    setIsLoading(true);
-    const foundArtwork = artworks.find((art) => art.id === id);
-    if (foundArtwork) {
-      setArtwork(foundArtwork);
-      setComments([]); // Future: Fetch comments from backend
-      setRelatedArtworks([]); // Future: Fetch related artworks from backend
-    }
-    setIsLoading(false);
-  }, [id, artworks]);
+  // Using the custom useArtworkQuery hook
+  const { data: artwork, isLoading, error } = useArtworkQuery(id);
 
   useEffect(() => {
     if (descriptionRef.current) {
@@ -389,7 +380,7 @@ const ArtworkDetails = () => {
                 <div className="inline-block transform scale-[1.10] -mb-6 relative">
                   <div className="w-[420px] h-[420px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                     <img
-                      src={artwork?.artworkImage}
+                      src={artwork?.image_url}
                       alt={artwork?.title}
                       className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                     />
@@ -439,9 +430,9 @@ const ArtworkDetails = () => {
                         className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
                         fill={isLiked ? "currentColor" : "none"}
                       />
-                      {(likeCounts[id || ""] ?? artwork?.likesCount ?? 0) > 0 && (
+                      {(likeCounts[id || ""] ?? artwork?.likes_count ?? 0) > 0 && (
                         <span className={`${isMobile ? "text-xs" : "text-[9px]"}`}>
-                          {likeCounts[id || ""] ?? artwork?.likesCount}
+                          {likeCounts[id || ""] ?? artwork?.likes_count}
                         </span>
                       )}
                     </button>
@@ -515,11 +506,7 @@ const ArtworkDetails = () => {
           </button>
 
           <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
-            <img
-              src={artwork?.artworkImage}
-              alt="Expanded artwork"
-              className="max-h-[80vh] max-w-[90vw] object-contain"
-            />
+            <img src={artwork?.image_url} alt="Expanded artwork" className="max-h-[80vh] max-w-[90vw] object-contain" />
           </div>
         </div>
       )}
