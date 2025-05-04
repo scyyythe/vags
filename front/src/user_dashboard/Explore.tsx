@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import ArtGalleryContainer from "@/components/user_dashboard/Explore/gallery/ArtGalleryContainer";
