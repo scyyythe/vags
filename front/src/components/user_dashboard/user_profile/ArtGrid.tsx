@@ -56,11 +56,17 @@ const artworks = [
       },
 ];
 
-const ArtGrid = () => {
+const ArtGrid = ({ activeTab }: { activeTab: string }) => {
+  const isWideGrid = activeTab === 'created' || activeTab === 'onSale';
+  const gridColsClass = isWideGrid 
+    ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5'
+    : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
-      {artworks.map(artwork => (
+    <div className={`grid ${gridColsClass} gap-6 mt-6`}>
+      {/* {artworks.map(artwork => (
         <ArtCard 
+            key={artwork.id}
             data={{
                 id: artwork.id,
                 title: artwork.title,
@@ -69,7 +75,7 @@ const ArtGrid = () => {
                 imageUrl: artwork.image,
             }}
         />
-      ))}
+      ))} */}
     </div>
   );
 };
