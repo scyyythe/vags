@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import ArtGalleryContainer from "@/components/user_dashboard/Explore/gallery/ArtGalleryContainer";
 import SearchBar from "@/components/user_dashboard/local_components/SearchBar";
-import CategoryFilter from "@/components/user_dashboard/local_components/CategoryFilter";
+import CategoryFilter from "@/components/user_dashboard/Explore/navigation/CategoryFilter";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";

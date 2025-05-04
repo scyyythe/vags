@@ -1,5 +1,5 @@
 import Header from "@/components/user_dashboard/navbar/Header";
-import CategoryFilter from "@/components/user_dashboard/local_components/CategoryFilter";
+import CategoryFilter from "@/components/user_dashboard/Explore/navigation/CategoryFilter";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import { toast } from "sonner";
 
