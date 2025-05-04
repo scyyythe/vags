@@ -311,7 +311,7 @@ const ArtworkDetails = () => {
             }}
           >
             {/* Artwork container */}
-            <div className={`relative mr-10 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
+            <div className={`relative mr-14 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
               {/* Collapsible Sidebar */}
               {!isMobile && (
                 <div
