@@ -112,7 +112,7 @@ const ArtworkDetails = () => {
     openPopup({
       id: artwork.id,
       title: artwork?.title || "Untitled Artwork",
-      artistName: artwork?.artistName || "Unknown Artist",
+      artistName: artwork?.artist || "Unknown Artist",
       artworkImage: artwork?.artworkImage || "",
     });
   };
@@ -460,7 +460,7 @@ const ArtworkDetails = () => {
                 </h1>
 
                 <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}>
-                  by {artwork?.artistName || "Angel Ganev"}
+                  by {artwork?.artist || "Angel Ganev"}
                 </p>
 
                 <div className="relative mt-4">
