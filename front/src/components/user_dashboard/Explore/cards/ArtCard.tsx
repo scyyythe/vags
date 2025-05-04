@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { Heart, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LikedArtworksContext } from "@/context/LikedArtworksProvider";
@@ -9,6 +9,7 @@ import ArtCardMenu from "./ArtCardMenu";
 import { Link } from "react-router-dom";
 import apiClient from "@/utils/apiClient";
 import useFavorite from "@/hooks/useFavorite";
+import useLikeStatus from "@/hooks/useLikeStatus";
 interface ArtCardProps {
   id: string;
   artistName: string;
@@ -38,42 +39,35 @@ const ArtCard = ({
   const [isHidden, setIsHidden] = useState(false);
   const { isFavorite, handleFavorite } = useFavorite(id);
 
+  const { data, error, isLoading } = useLikeStatus(id);
   const { likedArtworks, likeCounts, setLikedArtworks, setLikeCounts, toggleLike } = useContext(LikedArtworksContext);
   const { openPopup } = useDonation();
 
-  const handleLike = () => {
-    toggleLike(id);
-  };
-
   useEffect(() => {
-    const fetchLikeStatus = async () => {
-      try {
-        const response = await apiClient.get(`/likes/${id}/status/`);
-        setLikedArtworks((prev) => ({ ...prev, [id]: response.data.isLiked }));
-        setLikeCounts((prev) => ({ ...prev, [id]: response.data.likeCount }));
-      } catch (error) {
-        console.error("Failed to fetch like status:", error);
-      }
-    };
+    if (data) {
+      setLikedArtworks((prev) => ({ ...prev, [id]: data.isLiked }));
+      setLikeCounts((prev) => ({ ...prev, [id]: data.likeCount }));
+    }
+  }, [data, id, setLikedArtworks, setLikeCounts]);
+  const handleLike = useCallback(() => {
+    toggleLike(id);
+  }, [id, toggleLike]);
 
-    fetchLikeStatus();
-  }, [id, setLikedArtworks, setLikeCounts]);
-
-  const handleHide = () => {
+  const handleHide = useCallback(() => {
     setIsHidden(true);
     toast("Artwork hidden");
     setMenuOpen(false);
-  };
+  }, []);
 
-  const handleReport = () => {
+  const handleReport = useCallback(() => {
     toast("Artwork reported");
     setMenuOpen(false);
-  };
-  const handleSaved = () => {
+  }, []);
+
+  const handleSaved = useCallback(() => {
     handleFavorite();
     setMenuOpen(false);
-  };
-
+  }, [handleFavorite]);
   const handleTipJar = () => {
     openPopup({
       id,
@@ -86,6 +80,8 @@ const ArtCard = ({
   if (isHidden) {
     return null;
   }
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error fetching like status</div>;
 
   return (
     <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4">
