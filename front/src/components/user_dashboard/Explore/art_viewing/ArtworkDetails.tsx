@@ -311,7 +311,7 @@ const ArtworkDetails = () => {
             }}
           >
             {/* Artwork container */}
-            <div className={`relative mr-6 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
+            <div className={`relative mr-10 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
               {/* Collapsible Sidebar */}
               {!isMobile && (
                 <div
@@ -367,18 +367,18 @@ const ArtworkDetails = () => {
               )}
 
               {/* Center - Artwork Image */}
-              <div className={`relative z-0 mt-12 ${isMobile ? "px-4" : ""}`}>
+              <div className={`relative z-0 mt-10 ${isMobile ? "px-4" : ""}`}>
                 {!isMobile && (
                   <button
                     onClick={toggleDetailsPanel}
                     className="p-1 text-gray-500 hover:text-black absolute -left-12 top-1/2 transform -translate-y-1/2S"
                   >
                     <GripVertical size={15} />
-                  </button>
+                  </button> 
                 )}
 
                 <div className="inline-block transform scale-[1.10] -mb-6 relative">
-                  <div className="aspect-square overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
+                  <div className="w-[420px] h-[420px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                     <img
                       src={artwork?.image_url}
                       alt={artwork?.title}
@@ -418,7 +418,7 @@ const ArtworkDetails = () => {
 
             {/* Right side - Title, artist, description, comments */}
             <div className={`${isMobile ? "w-full mt-6 px-4s" : "w-full max-w-[390px] min-w-[280px]"}`}>
-              <div className={`${isMobile ? "" : "relative top-10 left-10"}`}>
+              <div className={`${isMobile ? "" : "relative top-5 left-10"}`}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center space-x-4">
                     <button
@@ -468,9 +468,9 @@ const ArtworkDetails = () => {
                     ref={descriptionRef}
                     className={`
                       text-[10px] text-gray-700 transition-all duration-300 ease-in-out 
-                      ${showFullDescription ? "max-h-40 overflow-y-auto pr-1" : "max-h-14 overflow-hidden"}
+                      ${showFullDescription ? "max-h-16 overflow-y-auto pr-1" : "max-h-14 overflow-hidden"}
                     `}
-                    style={{ lineHeight: "1.25rem" }}
+                    style={{ lineHeight: "1.1rem" }}
                   >
                     {artwork?.description || "No description available."}
                   </div>

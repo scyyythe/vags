@@ -32,7 +32,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   return (
     <div
       ref={menuRef}
-      className="absolute right-0 top-8 z-10 bg-gray-100 rounded-full py-1 px-1 shadow-md"
+      className="absolute -right-1 top-8 z-10 bg-gray-100 rounded-full py-1 px-1 shadow-md"
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex flex-col items-start">
