@@ -63,7 +63,7 @@ class CustomTokenObtainPairView(APIView):
             "email": user.email, 
             "jti": f"{user.id}_access",
             "token_type": "access"
-        }, timedelta(hours=1))  # Correct usage of timedelta
+        }, timedelta(hours=8))  # Correct usage of timedelta
 
         refresh_token = generate_token({
             "user_id": str(user.id), 
