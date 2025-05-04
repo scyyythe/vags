@@ -18,6 +18,7 @@ const CreatePost = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [refreshData, setRefreshData] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const [artStatus, setArtStatus] = useState("Active");
   const [price, setPrice] = useState(0);
@@ -32,11 +33,8 @@ const CreatePost = () => {
       }
 
       setSelectedFile(file);
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        setPreviewUrl(fileReader.result as string);
-      };
-      fileReader.readAsDataURL(file);
+      const preview = URL.createObjectURL(file);
+      setPreviewUrl(preview);
     }
   };
 
@@ -90,6 +88,7 @@ const CreatePost = () => {
     }
 
     const token = localStorage.getItem("access_token");
+    setIsUploading(true);
     try {
       const response = await apiClient.post("art/create/", formData, {
         headers: {
@@ -97,14 +96,9 @@ const CreatePost = () => {
           Authorization: token ? `Bearer ${token}` : "",
         },
       });
-      console.log("Response from backend:", response.data);
+
       toast.success("Artwork posted successfully!");
-
-      setRefreshData((prev) => !prev);
-
-      setTimeout(() => {
-        navigate("/explore");
-      }, 1000);
+      navigate("/explore");
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         console.error("Upload error:", error.response?.data);
@@ -113,6 +107,8 @@ const CreatePost = () => {
         console.error("Upload error:", error);
         toast.error("An unknown error occurred");
       }
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -258,9 +254,31 @@ const CreatePost = () => {
                 <div className="text-right">
                   <Button
                     type="submit"
-                    className="bg-red-800 hover:bg-red-700 text-white px-6 py-1 text-xs rounded-full"
+                    disabled={isUploading}
+                    className={`${
+                      isUploading ? "bg-red-800 cursor-not-allowed" : "bg-red-800 hover:bg-red-700"
+                    } text-white px-6 py-1 text-xs rounded-full transition duration-200`}
                   >
-                    Post Artwork
+                    {isUploading ? (
+                      <span className="flex items-center gap-2">
+                        <svg
+                          className="animate-spin h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                          />
+                        </svg>
+                        Uploading...
+                      </span>
+                    ) : (
+                      "Post Artwork"
+                    )}
                   </Button>
                 </div>
               </div>
