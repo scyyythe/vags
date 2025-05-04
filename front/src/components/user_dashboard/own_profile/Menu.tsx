@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react";
-import { DollarSign, ShoppingCart, Pencil, Eye, Trash } from "lucide-react";
+import { DollarSign, ShoppingCart, Pencil, Archive } from "lucide-react";
 
 interface ArtCardMenuProps {
   isOpen: boolean;
   onRequestBid: () => void;
   onSell: () => void;
   onEdit: () => void;
-  onToggleVisibility: () => void;
+  onToggleVisibility: (newVisibility: boolean) => void;
   onArchive: () => void;
   isPublic?: boolean;
 }
@@ -22,46 +22,53 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [publicStatus, setPublicStatus] = useState(isPublic);
 
   if (!isOpen) return null;
+
+  const handleToggleVisibility = () => {
+    const newStatus = !publicStatus;
+    setPublicStatus(newStatus);
+    onToggleVisibility(newStatus);
+  };
 
   return (
     <div
       ref={menuRef}
-      className="absolute right-0 top-8 z-10 bg-gray-100 rounded-full py-2 px-2 shadow-md"
+      className="absolute -left-2 top-8 z-10 bg-gray-100 rounded-full py-2 px-2 shadow-md"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex flex-col items-start gap-2">
+      <div className="flex flex-col items-start gap-[2px]">
         {/* Request to Bid */}
         <div className="flex items-center relative">
           <button
             onClick={onRequestBid}
-            className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+            className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
             onMouseEnter={() => setHoveredItem("bid")}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <DollarSign size={16} />
+            <DollarSign size={10} />
           </button>
           {hoveredItem === "bid" && (
-            <span className="absolute left-10 text-xs bg-black text-white px-2 py-1 rounded">
+            <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
               Request to Bid
             </span>
           )}
         </div>
 
-        {/* Sell Artwork */}
+        {/* Sell */}
         <div className="flex items-center relative">
           <button
             onClick={onSell}
-            className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+            className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
             onMouseEnter={() => setHoveredItem("sell")}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <ShoppingCart size={16} />
+            <ShoppingCart size={10} />
           </button>
           {hoveredItem === "sell" && (
-            <span className="absolute left-10 text-xs bg-black text-white px-2 py-1 rounded">
-              Sell artwork
+            <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+              Sell Artwork
             </span>
           )}
         </div>
@@ -70,14 +77,14 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         <div className="flex items-center relative">
           <button
             onClick={onEdit}
-            className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+            className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
             onMouseEnter={() => setHoveredItem("edit")}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <Pencil size={16} />
+            <Pencil size={10} />
           </button>
           {hoveredItem === "edit" && (
-            <span className="absolute left-10 text-xs bg-black text-white px-2 py-1 rounded">
+            <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">
               Edit
             </span>
           )}
@@ -86,32 +93,36 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         {/* Toggle Visibility */}
         <div className="flex items-center relative">
           <button
-            onClick={onToggleVisibility}
-            className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+            onClick={handleToggleVisibility}
+            className="p-[3px] rounded-full text-black hover:bg-gray-200 transition-colors"
             onMouseEnter={() => setHoveredItem("visibility")}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <Eye size={16} fill={isPublic ? "#000" : "none"} />
+            {publicStatus ? (
+              <i className="bx bx-show-alt text-[11px]"></i>
+            ) : (
+              <i className='bx bxs-hide text-[11px]' ></i>
+            )}
           </button>
           {hoveredItem === "visibility" && (
-            <span className="absolute left-10 text-xs bg-black text-white px-2 py-1 rounded">
-              {isPublic ? "Public" : "Private"}
+            <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">
+              {publicStatus ? "Public" : "Private"}
             </span>
           )}
         </div>
 
         {/* Archive */}
-        <div className="flex items-center relative">
+        <div className="flex items-center -mt-[3px]">
           <button
             onClick={onArchive}
-            className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+            className="p-[3px] rounded-full text-black hover:bg-gray-200 transition-colors"
             onMouseEnter={() => setHoveredItem("archive")}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <Trash size={16} />
+            <i className='bx bx-archive text-[11px]'></i>
           </button>
           {hoveredItem === "archive" && (
-            <span className="absolute left-10 text-xs bg-black text-white px-2 py-1 rounded">
+            <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">
               Archive
             </span>
           )}
