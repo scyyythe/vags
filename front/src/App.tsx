@@ -19,7 +19,6 @@ import Marketplace from "./user_dashboard/Marketplace";
 import Exhibits from "./user_dashboard/Exhibits";
 import { ModalProvider } from "./context/ModalContext";
 import { DonationProvider } from "./context/DonationContext";
-import { AuctionProvider } from "./context/AuctionContext";
 import TipJarPopup from "./components/user_dashboard/Explore/tip_jar/TipJarPopup";
 import { useDonation } from "./context/DonationContext";
 import { ArtworkProvider } from "./context/ArtworkContext";
@@ -56,7 +55,6 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <DonationProvider>
-            <AuctionProvider>
               <DonationWrapper>
                 <Toaster />
                 <Sonner />
@@ -83,7 +81,6 @@ const App = () => {
                   </ArtworkProvider>
                 </ModalProvider>
               </DonationWrapper>
-            </AuctionProvider>
           </DonationProvider>
         </TooltipProvider>
       </QueryClientProvider>

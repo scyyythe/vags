@@ -107,26 +107,25 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
   const maxEndDate = startDate ? addDays(startDate, 3) : addDays(today, 3);
 
   return (
-    <>
+    <div>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader className="text-center">
             <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
               <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
             </DialogClose>
-            <DialogTitle className="text-xl font-bold">The Distorted Face</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-center">The Distorted Face</DialogTitle>
           </DialogHeader>
           
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-4">
             <img 
-              src="/lovable-uploads/8a5957d6-d437-4054-96ba-c4a453671e1b.png" 
+              src="https://ph.pinterest.com/pin/152981718587678591/" 
               alt="Auction item" 
-              className="w-28 h-28 object-contain"
+              className="w-28 h-28 object-contain rounded-md shadow-md"
             />
           </div>
           
-          <p className="text-center text-sm text-gray-500 mb-6">
+          <p className="text-center text-[10px] mb-6">
             "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
             laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto
             beatae vitae dicta sunt explicabo."
@@ -134,14 +133,14 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
           
           <div className="space-y-6">
             <div>
-              <h3 className="font-medium mb-2">Fill In Details</h3>
+              <h3 className="font-medium mb-2 text-xs">Fill in Details</h3>
               <div className="space-y-2">
                 <div>
-                  <label htmlFor="starting-bid" className="text-sm font-medium">Set a starting bid</label>
+                  <label htmlFor="starting-bid" className="text-[10px]">Set a starting bid</label>
                   <Input 
                     id="starting-bid" 
                     placeholder="Enter amount" 
-                    className="w-full"
+                    style={{ fontSize: '10px', marginTop: '6px' }}
                     value={startingBid}
                     onChange={(e) => setStartingBid(e.target.value)}
                   />
@@ -150,9 +149,10 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
             </div>
             
             <div>
-              <h3 className="font-medium mb-2">Set Auction Schedule</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <DateTimePicker 
+              <h3 className="font-medium mb-2 text-xs">Set Auction Schedule</h3>
+              <div className="mb-2">
+                <p className="text-[10px] mb-1">Auction starts on</p>
+                <DateTimePicker
                   date={startDate}
                   hours={startHours}
                   minutes={startMinutes}
@@ -160,10 +160,12 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
                   onHoursChange={setStartHours}
                   onMinutesChange={setStartMinutes}
                   minDate={today}
-                  label="Auction starts on"
                 />
-                
-                <DateTimePicker 
+              </div>
+
+              <div className="mb-1">
+                <p className="text-[10px] mb-1">Auction ends after</p>
+                <DateTimePicker
                   date={endDate}
                   hours={endHours}
                   minutes={endMinutes}
@@ -172,28 +174,20 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
                   onMinutesChange={setEndMinutes}
                   minDate={startDate || today}
                   maxDate={maxEndDate}
-                  label="Auction ends on"
                 />
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-[10px] text-muted-foreground mt-4">
                 Note: Auction duration cannot exceed 3 days
               </p>
             </div>
             
             <div className="flex space-x-2">
-              <Button 
-                className="flex-1 bg-red-700 hover:bg-red-800 text-white"
+              <button 
+                className="flex-1 p-2 bg-red-800 hover:bg-red-700 text-white text-xs w-full rounded-full"
                 onClick={handlePublish}
               >
                 Publish
-              </Button>
-              <Button 
-                className="flex-1" 
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
-                Discard All
-              </Button>
+              </button>
             </div>
           </div>
         </DialogContent>
@@ -204,7 +198,7 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
         onOpenChange={setIsConfirmationOpen} 
         onConfirm={handleConfirm}
       />
-    </>
+    </div>
   );
 };
 
