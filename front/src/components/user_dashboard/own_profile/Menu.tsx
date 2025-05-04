@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
-import { DollarSign, ShoppingCart, Pencil, Archive } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { DollarSign, ShoppingCart, Pencil } from "lucide-react";
 
 interface ArtCardMenuProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [publicStatus, setPublicStatus] = useState(isPublic);
+  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
@@ -32,13 +34,17 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     onToggleVisibility(newStatus);
   };
 
+  const handleCreateClick = () => {
+    navigate("/update");
+  };
+
   return (
     <div
       ref={menuRef}
       className="absolute -left-2 top-8 z-10 bg-gray-100 rounded-full py-2 px-2 shadow-md"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex flex-col items-start gap-[2px]">
+      <div className="flex flex-col items-start gap-[3px]">
         {/* Request to Bid */}
         <div className="flex items-center relative">
           <button
@@ -76,7 +82,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         {/* Edit */}
         <div className="flex items-center relative">
           <button
-            onClick={onEdit}
+            onClick={handleCreateClick}
             className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
             onMouseEnter={() => setHoveredItem("edit")}
             onMouseLeave={() => setHoveredItem(null)}
