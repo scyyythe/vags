@@ -109,34 +109,36 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
   return (
     <div>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[400px] px-10 py-6">
           <DialogHeader className="text-center">
-            <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+            <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
               <X className="h-4 w-4" />
             </DialogClose>
-            <DialogTitle className="text-lg font-bold text-center">The Distorted Face</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-left">“The Distorted Face”</DialogTitle>
           </DialogHeader>
           
-          <div className="flex justify-center mb-4">
+          {/* <div className="flex justify-center mb-4 text-xs">
             <img 
               src="https://ph.pinterest.com/pin/152981718587678591/" 
               alt="Auction item" 
-              className="w-28 h-28 object-contain rounded-md shadow-md"
+              className="w-20 h-20 object-contain rounded-sm shadow-md"
             />
-          </div>
+          </div> */}
           
-          <p className="text-center text-[10px] mb-6">
-            "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
-            laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto
-            beatae vitae dicta sunt explicabo."
+          <p className="text-left text-[10px] -mt-3">
+            Set your terms and schedule to start auctioning your artwork
           </p>
           
-          <div className="space-y-6">
+          {/* 
+          <p className="text-sm  font-bold text-red-900 text-center mt-1">
+            “The Distorted Face”
+          </p> */}
+          
+          <div className="space-y-6 mt-3">
             <div>
-              <h3 className="font-medium mb-2 text-xs">Fill in Details</h3>
+              <h3 className="font-medium mb-2 text-[11px]">Set a starting bid</h3>
               <div className="space-y-2">
                 <div>
-                  <label htmlFor="starting-bid" className="text-[10px]">Set a starting bid</label>
                   <Input 
                     id="starting-bid" 
                     placeholder="Enter amount" 
@@ -149,9 +151,9 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
             </div>
             
             <div>
-              <h3 className="font-medium mb-2 text-xs">Set Auction Schedule</h3>
+              <h3 className="font-medium mb-3 text-[11px]">Set Auction Schedule</h3>
               <div className="mb-2">
-                <p className="text-[10px] mb-1">Auction starts on</p>
+                <p className="text-[10px]">Auction starts on</p>
                 <DateTimePicker
                   date={startDate}
                   hours={startHours}
@@ -163,8 +165,8 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
                 />
               </div>
 
-              <div className="mb-1">
-                <p className="text-[10px] mb-1">Auction ends after</p>
+              <div className="mb-8">
+                <p className="text-[10px]">Auction ends after</p>
                 <DateTimePicker
                   date={endDate}
                   hours={endHours}
@@ -176,7 +178,7 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
                   maxDate={maxEndDate}
                 />
               </div>
-              <p className="text-[10px] text-muted-foreground mt-4">
+              <p className="text-[10px] text-muted-foreground -mb-3">
                 Note: Auction duration cannot exceed 3 days
               </p>
             </div>
