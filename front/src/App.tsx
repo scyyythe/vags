@@ -53,32 +53,32 @@ const App = () => {
       <LikedArtworksProvider>
         <TooltipProvider>
           <DonationProvider>
-            <DonationWrapper>
-              <Toaster />
-              <Sonner />
-              <ModalProvider>
-                <ArtworkProvider>
-                  <BrowserRouter>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/bid/:id" element={<BidDetails />} />
-                      <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
-                      <Route path="/fingerprint-register" element={<FingerprintRegister />} />
-                      <Route path="/hero" element={<Hero />} />
-                      <Route path="/explore" element={<Explore />} />
-                      <Route path="/create" element={<Create />} />
-                      <Route path="/update" element={<UpdatePost />} />
-                      <Route path="/userprofile/:artistName" element={<UserProfile />} />
-                      <Route path="/artwork/:id" element={<ArtworkDetails />} />
-                      <Route path="/bidding" element={<Bidding />} />
-                      <Route path="/marketplace" element={<Marketplace />} />
-                      <Route path="/exhibits" element={<Exhibits />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </BrowserRouter>
-                </ArtworkProvider>
-              </ModalProvider>
-            </DonationWrapper>
+              <DonationWrapper>
+                <Toaster />
+                <Sonner />
+                <ModalProvider>
+                  <ArtworkProvider>
+                    <BrowserRouter>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/bid/:id" element={<BidDetails />} />
+                        <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
+                        <Route path="/fingerprint-register" element={<FingerprintRegister />} />
+                        <Route path="/hero" element={<Hero />} />
+                        <Route path="/explore" element={<Explore />} />
+                        <Route path="/create" element={<Create />} />
+                        <Route path="/update" element={<UpdatePost />} />
+                        <Route path="/userprofile/:artistName" element={<UserProfile />} />
+                        <Route path="/artwork/:id" element={<ArtworkDetails />} />
+                        <Route path="/bidding" element={<Bidding />} />
+                        <Route path="/marketplace" element={<Marketplace />} />
+                        <Route path="/exhibits" element={<Exhibits />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </BrowserRouter>
+                  </ArtworkProvider>
+                </ModalProvider>
+              </DonationWrapper>
           </DonationProvider>
         </TooltipProvider>
       </LikedArtworksProvider>

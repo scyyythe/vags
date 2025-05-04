@@ -176,15 +176,15 @@ const UpdatePost = () => {
 
                 <div className="mb-6">
                     <label htmlFor="title" className="block mb-2 text-xs font-medium">
-                    Artwork Title
+                        Artwork Title
                     </label>
                     <Input
-                    id="title"
-                    placeholder="Enter artwork title"
-                    value={artworkTitle}
-                    onChange={(e) => setArtworkTitle(e.target.value)}
-                    className="w-full"
-                    style={{ fontSize: "12px", height: "35px" }}
+                        id="title"
+                        placeholder="Enter artwork title"
+                        value={artworkTitle}
+                        onChange={(e) => setArtworkTitle(e.target.value)}
+                        className="w-full"
+                        style={{ fontSize: "12px", height: "35px" }}
                     />
                 </div>
 
@@ -195,10 +195,10 @@ const UpdatePost = () => {
                     </label>
                     <div className="relative">
                         <select
-                        id="style"
-                        value={artworkStyle}
-                        onChange={(e) => setArtworkStyle(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs"
+                            id="style"
+                            value={artworkStyle}
+                            onChange={(e) => setArtworkStyle(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs"
                         >
                         <option value="" disabled>
                             Select artwork style
@@ -212,11 +212,11 @@ const UpdatePost = () => {
                         <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
-                            d="M4 6L8 10L12 6"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
+                                d="M4 6L8 10L12 6"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                             />
                         </svg>
                         </div>
@@ -256,24 +256,24 @@ const UpdatePost = () => {
 
                 <div className="mb-6">
                     <label htmlFor="description" className="block mb-2 text-xs font-medium">
-                    Description
+                        Description
                     </label>
                     <Textarea
-                    id="description"
-                    placeholder="Add a description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="w-full min-h-[120px] p-2 text-xs"
+                        id="description"
+                        placeholder="Add a description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="w-full min-h-[120px] p-2 text-xs"
                     />
                 </div>
 
                 <div className="text-right">
                     <Button
-                    type="submit"
-                    disabled={isUploading}
-                    className={`${
-                        isUploading ? "bg-red-800 cursor-not-allowed" : "bg-red-800 hover:bg-red-700"
-                    } text-white px-6 py-2 text-xs rounded-full transition duration-200`}
+                        type="submit"
+                        disabled={isUploading}
+                        className={`${
+                            isUploading ? "bg-red-800 cursor-not-allowed" : "bg-red-800 hover:bg-red-700"
+                        } text-white px-6 py-2 text-xs rounded-full transition duration-200`}
                     >
                     {isUploading ? (
                         <span className="flex items-center gap-2">
@@ -285,9 +285,9 @@ const UpdatePost = () => {
                         >
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                             <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                             />
                         </svg>
                         Uploading...

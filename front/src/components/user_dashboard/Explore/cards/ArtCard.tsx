@@ -49,6 +49,7 @@ const ArtCard = ({
       setLikeCounts((prev) => ({ ...prev, [id]: data.likeCount }));
     }
   }, [data, id, setLikedArtworks, setLikeCounts]);
+  
   const handleLike = useCallback(() => {
     toggleLike(id);
   }, [id, toggleLike]);
@@ -68,6 +69,7 @@ const ArtCard = ({
     handleFavorite();
     setMenuOpen(false);
   }, [handleFavorite]);
+  
   const handleTipJar = () => {
     openPopup({
       id,
