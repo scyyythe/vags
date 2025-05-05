@@ -32,7 +32,7 @@ const useArtworkDetails = () => {
 
   const image = state.artworkImage || artwork?.image || "";
   const title = state.title || artwork?.title || "Untitled Artwork";
-  const artist = state.artistName || artwork?.artist?.username || "Unknown Artist";
+  const artist = state.artistName || artwork?.artist || "Unknown Artist";
   const likes = state.likesCount ?? artwork?.likes_count ?? 0;
   const style = artwork?.style || "Painting";
   const description = state.description || artwork?.description || "No description available.";
