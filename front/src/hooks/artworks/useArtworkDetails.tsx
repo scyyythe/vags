@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import useArtworkQuery from "./fetchArtworkDetails";
+import useArtworkQuery from "./useCardArtwork";
 
 const useArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();

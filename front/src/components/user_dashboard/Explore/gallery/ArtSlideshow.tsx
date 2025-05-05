@@ -12,9 +12,10 @@ interface ArtSlideshowProps {
   artworks: Artwork[];
   autoPlay?: boolean;
   interval?: number;
+  onArtworkClick: (artworkId: string, artworkImage: string) => void;
 }
 
-const ArtSlideshow = ({ artworks, autoPlay = true, interval = 3000 }: ArtSlideshowProps) => {
+const ArtSlideshow = ({ artworks, autoPlay = true, interval = 3000, onArtworkClick }: ArtSlideshowProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -48,9 +49,17 @@ const ArtSlideshow = ({ artworks, autoPlay = true, interval = 3000 }: ArtSlidesh
             )}
             style={{ pointerEvents: index === currentIndex ? "auto" : "none" }}
           >
-            <img src={artwork.image} alt={artwork.title} className="w-full h-full object-cover" />
-            <div className="absolute top-0 left-6 p-8 text-white z-20">
-              <h3 className="text-xs font-bold mb-1">{artwork.title}</h3>
+            <div onClick={() => onArtworkClick(artwork.id, artwork.image)} className="cursor-pointer">
+              <img
+                src={artwork.image}
+                alt={artwork.title}
+                className="w-full h-full object-cover"
+                onError={() => console.error(`Failed to load image: ${artwork.image}`)}
+              />
+
+              <div className="absolute top-0 left-6 p-8 text-white z-20">
+                <h3 className="text-xs font-bold mb-1">{artwork.title}</h3>
+              </div>
             </div>
           </div>
         ))}
