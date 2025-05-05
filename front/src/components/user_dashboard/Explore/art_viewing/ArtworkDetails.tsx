@@ -13,8 +13,8 @@ import { useArtworkContext } from "@/context/ArtworkContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
-import useFavorite from "@/hooks/useFavorite";
-import useArtworkQuery from "@/hooks/artwork_hook/fetchArtworkDetails";
+import useFavorite from "@/hooks/interactions/useFavorite";
+import useArtworkQuery from "@/hooks/artworks/fetchArtworkDetails";
 
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -374,7 +374,7 @@ const ArtworkDetails = () => {
                     className="p-1 text-gray-500 hover:text-black absolute -left-12 top-1/2 transform -translate-y-1/2S"
                   >
                     <GripVertical size={15} />
-                  </button> 
+                  </button>
                 )}
 
                 <div className="inline-block transform scale-[1.10] -mb-6 relative">
