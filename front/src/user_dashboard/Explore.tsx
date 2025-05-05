@@ -8,7 +8,7 @@ import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
-import useArtworks from "@/hooks/artwork_hook/useArtworks";
+import useArtworks from "@/hooks/artworks/useArtworks";
 
 const Explore = () => {
   const navigate = useNavigate();

@@ -24,6 +24,8 @@ const CreatePost = () => {
   const [price, setPrice] = useState(0);
   const [visibility, setVisibility] = useState("public");
 
+  const queryClient = useQueryClient();
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -66,81 +68,60 @@ const CreatePost = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Form validation
-    if (!artworkTitle) {
+    // Early validations
+    if (!artworkTitle.trim()) {
       toast.error("Please enter an artwork title");
       return;
     }
+
     if (!selectedFile) {
       toast.error("Please upload an artwork image");
       return;
     }
 
     const formData = new FormData();
-    formData.append("title", artworkTitle);
+    formData.append("title", artworkTitle.trim());
     formData.append("category", artworkStyle);
-    formData.append("medium", medium);
+    formData.append("medium", medium.trim());
     formData.append("art_status", artStatus);
     formData.append("price", price.toString());
-    formData.append("description", description || "");
+    formData.append("description", description.trim());
     formData.append("visibility", visibility);
-    if (selectedFile) {
-      formData.append("image", selectedFile);
-    }
+    formData.append("image", selectedFile);
 
     const token = localStorage.getItem("access_token");
-    setIsUploading(true);
-
-    // Get queryClient from React Query
-    const queryClient = useQueryClient();
+    if (!token) {
+      toast.error("You must be logged in to post artwork.");
+      return;
+    }
+    toast.loading("Uploading artwork...", { id: "upload" });
 
     try {
-      // Posting the artwork
       const response = await apiClient.post("art/create/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: token ? `Bearer ${token}` : "",
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      // New artwork object from the response
-      const newArtwork = {
-        id: response.data.id,
-        title: artworkTitle,
-        artistName: response.data.artist,
-        artistImage: "",
-        description: response.data.description,
-        style: artworkStyle,
-        medium: medium,
-        status: artStatus,
-        price: price,
-        visibility: visibility,
-        datePosted: new Date().toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
-        artworkImage: response.data.image_url,
-        likesCount: 0, // Initial like count, adjust as needed
-      };
-
-      // Update query cache for artworks
-      queryClient.setQueryData(["artworks", currentPage], (oldData: Artwork[] | undefined) => {
-        return oldData ? [newArtwork, ...oldData] : [newArtwork];
-      });
-
-      toast.success("Artwork posted successfully!");
+      toast.success("Artwork posted successfully!", { id: "upload" });
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      queryClient.invalidateQueries({ queryKey: ["artworks"] });
       navigate("/explore");
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         console.error("Upload error:", error.response?.data);
-        toast.error(error.response?.data?.error || "Upload failed");
+        const errors = error.response?.data;
+        if (errors?.image?.[0]) {
+          toast.error(errors.image[0], { id: "upload" });
+        } else {
+          toast.error(errors?.error || "Upload failed", { id: "upload" });
+        }
       } else {
-        console.error("Upload error:", error);
-        toast.error("An unknown error occurred");
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred", { id: "upload" });
       }
-    } finally {
-      setIsUploading(false);
     }
   };
 
