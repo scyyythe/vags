@@ -27,6 +27,14 @@ import BidDetails from "./components/user_dashboard/Bidding/bid_viewing/BidDetai
 import UserProfile from "./components/user_dashboard/user_profile/UserProfile";
 import { LikedArtworksProvider } from "@/context/LikedArtworksProvider";
 
+import Settings from "./components/user_dashboard/Settings/pages/Settings";
+import EditProfile from "./components/user_dashboard/Settings/pages/EditProfile";
+import AccountDetails from "./components/user_dashboard/Settings/pages/AccountDetails";
+import SecuritySettings from "./components/user_dashboard/Settings/pages/Security";
+import NotificationsSettings from "./components/user_dashboard/Settings/pages/Notifications";
+import BillingSettings from "./components/user_dashboard/Settings/pages/BillingSettings";
+import HelpCenter from "./components/user_dashboard/Settings/pages/HelpCenter";
+
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
 
@@ -73,6 +81,16 @@ const App = () => {
                         <Route path="/bidding" element={<Bidding />} />
                         <Route path="/marketplace" element={<Marketplace />} />
                         <Route path="/exhibits" element={<Exhibits />} />
+
+                        <Route path="/settings" element={<Settings />}>
+                          <Route path="edit-profile" element={<EditProfile />} />
+                          <Route path="account-details" element={<AccountDetails />} />
+                          <Route path="security" element={<SecuritySettings />} />
+                          <Route path="notifications" element={<NotificationsSettings />} />
+                          <Route path="billing" element={<BillingSettings />} />
+                          <Route path="help-center" element={<HelpCenter />} />
+                        </Route>
+                        
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </BrowserRouter>
