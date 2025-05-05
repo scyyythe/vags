@@ -125,7 +125,7 @@ const ArtCard = ({
           )}
         </div>
       </div>
-      <Link to={`/artwork/${id}`} className="w-full">
+      <Link to={`/artwork/${id}`} state={{ artworkImage, artistName, title, likesCount }} className="w-full">
         <div className="aspect-square overflow-hidden p-4">
           <img
             src={artworkImage}
@@ -133,40 +133,41 @@ const ArtCard = ({
             className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
           />
         </div>
-      </Link>
-      <div className="px-4 py-1">
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-medium">
-            {title ? title.slice(0, 10) + (title.length > 10 ? "..." : "") : "Untitled Artwork"}
-          </p>
 
-          <div className="flex items-center space-x-1">
-            <button
-              onClick={handleLike}
-              className={`p-1 rounded-full transition-colors ${
-                likedArtworks[id] ? "text-red" : "text-gray-400 hover:text-red"
-              }`}
-              aria-label="Like artwork"
-            >
-              <Heart
-                size={15}
-                className={likedArtworks[id] ? "text-red-600 fill-red-600" : "text-gray-800"}
-                fill={likedArtworks[id] ? "currentColor" : "none"}
-              />
-            </button>
-            <span className="text-[9px] text-gray-500">{likeCounts[id] ?? likesCount}</span>
+        <div className="px-4 py-1">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-medium">
+              {title ? title.slice(0, 10) + (title.length > 10 ? "..." : "") : "Untitled Artwork"}
+            </p>
 
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                handleTipJar();
-              }}
-            >
-              <TipJarIcon onClick={handleTipJar} />
+            <div className="flex items-center space-x-1">
+              <button
+                onClick={handleLike}
+                className={`p-1 rounded-full transition-colors ${
+                  likedArtworks[id] ? "text-red" : "text-gray-400 hover:text-red"
+                }`}
+                aria-label="Like artwork"
+              >
+                <Heart
+                  size={15}
+                  className={likedArtworks[id] ? "text-red-600 fill-red-600" : "text-gray-800"}
+                  fill={likedArtworks[id] ? "currentColor" : "none"}
+                />
+              </button>
+              <span className="text-[9px] text-gray-500">{likeCounts[id] ?? likesCount}</span>
+
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTipJar();
+                }}
+              >
+                <TipJarIcon onClick={handleTipJar} />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import ArtSlideshow from "./ArtSlideshow";
 
 interface Artwork {
@@ -12,11 +13,16 @@ interface ArtGalleryContainerProps {
 }
 
 const ArtGalleryContainer = ({ artworks }: ArtGalleryContainerProps) => {
+  const navigate = useNavigate();
+
+  const handleArtworkClick = (artworkId: string, artworkImage: string) => {
+    navigate(`/artwork/${artworkId}`, { state: { artworkImage } });
+  };
+
   return (
     <div className="w-full max-w-[97%] mx-auto rounded-3xl overflow-hidden">
-      {/* Slideshow container with reduced height */}
       <div className="w-full aspect-[16/9] md:aspect-[15/6] rounded-xl overflow-hidden">
-        <ArtSlideshow artworks={artworks} />
+        <ArtSlideshow artworks={artworks} onArtworkClick={handleArtworkClick} />
       </div>
     </div>
   );
