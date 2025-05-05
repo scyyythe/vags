@@ -115,7 +115,7 @@ const UpdatePost = () => {
   return (
     <div className="min-h-screen bg-background">
         <Header />
-        <div className="container mx-auto px-4 pt-24 max-w-6xl">
+        <div className="container mx-auto px-4 pt-20 max-w-6xl">
             <div className="mb-8">
                 <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
                     <i className="bx bx-chevron-left text-lg mr-2"></i>
