@@ -14,13 +14,12 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
 import useFavorite from "@/hooks/interactions/useFavorite";
-import useArtworkQuery from "@/hooks/artworks/fetchArtworkDetails";
+import useArtworkDetails from "@/hooks/artworks/useArtworkDetails";
 
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
   const isLiked = likedArtworks[id] || false;
-  const { artworks } = useArtworkContext();
   const { openPopup } = useDonation();
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobile = useIsMobile();
@@ -46,19 +45,18 @@ const ArtworkDetails = () => {
   const [likedComments, setLikedComments] = useState<{ [commentId: string]: boolean }>({});
   const [commentMenus, setCommentMenus] = useState<{ [commentId: string]: boolean }>({});
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({});
-
-  // Using the custom useArtworkQuery hook
-  const { data: artwork, isLoading, error } = useArtworkQuery(id);
+  const { image, title, artist, likes, style, isLoading, description, medium, status, price, visibility, datePosted } =
+    useArtworkDetails();
 
   useEffect(() => {
     if (descriptionRef.current) {
       const isOver = descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight;
       setIsOverflowing(isOver);
     }
-  }, [artwork?.description]);
+  }, [description]);
 
   const handleLike = () => {
-    if (artwork && id) {
+    if (id) {
       toggleLike(id);
     }
   };
@@ -108,15 +106,15 @@ const ArtworkDetails = () => {
   };
 
   const handleTipJar = () => {
-    if (!artwork) return;
+    if (!id) return;
+
     openPopup({
-      id: artwork.id,
-      title: artwork?.title || "Untitled Artwork",
-      artistName: artwork?.artist || "Unknown Artist",
-      artworkImage: artwork?.artworkImage || "",
+      id,
+      title: title || "Untitled Artwork",
+      artistName: artist || "Unknown Artist",
+      artworkImage: image || "",
     });
   };
-
   const handleCommentLike = (commentId: string) => {
     setLikedComments((prev) => ({
       ...prev,
@@ -177,7 +175,7 @@ const ArtworkDetails = () => {
     );
   }
 
-  if (!artwork) {
+  if (!id) {
     return (
       <div className="min-h-screen bg-white">
         <Header />
@@ -323,15 +321,15 @@ const ArtworkDetails = () => {
                   <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
                     <div className="mb-6">
                       <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
-                      <p className="text-[9px] text-gray-700">{artwork?.style || "Painting"}</p>
+                      <p className="text-[9px] text-gray-700">{style || "Painting"}</p>
                     </div>
                     <div className="mb-6">
                       <h3 className="text-[9px] font-medium mb-1">Medium</h3>
-                      <p className="text-[9px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
+                      <p className="text-[9px] text-gray-700">{medium || "Acrylic Paint"}</p>
                     </div>
                     <div className="mb-1">
                       <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
-                      <p className="text-[9px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
+                      <p className="text-[9px] text-gray-700">{datePosted || "March 25, 2023"}</p>
                     </div>
                   </div>
                 </div>
@@ -350,15 +348,15 @@ const ArtworkDetails = () => {
                       <div className="grid grid-cols-3 gap-8 px-8">
                         <div>
                           <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
-                          <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
+                          <p className="text-[10px] text-gray-700">{style || "Painting"}</p>
                         </div>
                         <div>
                           <h4 className="text-[10px] font-medium mb-1">Medium</h4>
-                          <p className="text-[10px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
+                          <p className="text-[10px] text-gray-700">{medium || "Acrylic Paint"}</p>
                         </div>
                         <div>
                           <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
-                          <p className="text-[10px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
+                          <p className="text-[10px] text-gray-700">{datePosted || "March 25, 2023"}</p>
                         </div>
                       </div>
                     </div>
@@ -380,8 +378,8 @@ const ArtworkDetails = () => {
                 <div className="inline-block transform scale-[1.10] -mb-6 relative">
                   <div className="w-[420px] h-[420px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                     <img
-                      src={artwork?.image_url}
-                      alt={artwork?.title}
+                      src={image}
+                      alt={title}
                       className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                     />
 
@@ -430,9 +428,9 @@ const ArtworkDetails = () => {
                         className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
                         fill={isLiked ? "currentColor" : "none"}
                       />
-                      {(likeCounts[id || ""] ?? artwork?.likes_count ?? 0) > 0 && (
+                      {(likeCounts[id || ""] ?? likes ?? 0) > 0 && (
                         <span className={`${isMobile ? "text-xs" : "text-[9px]"}`}>
-                          {likeCounts[id || ""] ?? artwork?.likes_count}
+                          {likeCounts[id || ""] ?? likes}
                         </span>
                       )}
                     </button>
@@ -456,11 +454,11 @@ const ArtworkDetails = () => {
                 </div>
 
                 <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>
-                  {artwork?.title || "The Distorted Face"}
+                  {title || "The Distorted Face"}
                 </h1>
 
                 <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}>
-                  by {artwork?.artist || "Angel Ganev"}
+                  by {artist || "Angel Ganev"}
                 </p>
 
                 <div className="relative mt-4">
@@ -472,7 +470,7 @@ const ArtworkDetails = () => {
                     `}
                     style={{ lineHeight: "1.1rem" }}
                   >
-                    {artwork?.description || "No description available."}
+                    {description || "No description available."}
                   </div>
 
                   {isOverflowing && (
@@ -506,7 +504,7 @@ const ArtworkDetails = () => {
           </button>
 
           <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
-            <img src={artwork?.image_url} alt="Expanded artwork" className="max-h-[80vh] max-w-[90vw] object-contain" />
+            <img src={image} alt="Expanded artwork" className="max-h-[80vh] max-w-[90vw] object-contain" />
           </div>
         </div>
       )}

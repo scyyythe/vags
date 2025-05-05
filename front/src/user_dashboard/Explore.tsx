@@ -9,47 +9,32 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import useArtworks from "@/hooks/artworks/useArtworks";
+import useFetchPopularArtworks from "@/hooks/artworks/useFetchPopularArtworks";
 
 const Explore = () => {
   const navigate = useNavigate();
   const categories = ["All", "Trending", "Collections"];
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage] = useState(1);
 
   const { data: artworks, isLoading, error } = useArtworks(currentPage);
+  const { data: popularArtworks } = useFetchPopularArtworks(1);
+
+  const slideshowData = popularArtworks
+    ? popularArtworks.map((artwork) => ({
+        id: artwork.id,
+        title: artwork.title,
+        artist: artwork.artistName,
+        image: artwork.image_url || "",
+      }))
+    : [];
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     toast(`Selected category: ${category}`);
   };
-  const staticArtworks = [
-    {
-      id: "1",
-      title: "Ethereal Landscapes",
-      artist: "Maria Sanchez",
-      image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80&w=1470",
-    },
-    {
-      id: "2",
-      title: "Urban Perspectives",
-      artist: "John Rodriguez",
-      image: "https://www.andrewshoemaker.com/images/xl/chronicle-antelope-canyon-american-southwest-arizona.jpg",
-    },
-    {
-      id: "3",
-      title: "Abstract Emotions",
-      artist: "Emily Chen",
-      image:
-        "https://rosshillart.com/cdn/shop/articles/R._Delino_Landscape_art_-_Rosshillart.com_2200x.jpg?v=1703181542",
-    },
-    {
-      id: "4",
-      title: "Vivid Expressions",
-      artist: "David Kim",
-      image: "https://m.media-amazon.com/images/I/A142xwh4GVL._AC_SL1500_.jpg",
-    },
-  ];
+
   const filteredArtworksMemo = useMemo(() => {
     return artworks?.filter((artwork) => {
       const searchMatches =
@@ -81,7 +66,7 @@ const Explore = () => {
       <div className="container mx-auto px-4 sm:px-6 pt-20">
         <main className="container">
           <section className="mb-16">
-            <ArtGalleryContainer artworks={staticArtworks} />
+            <ArtGalleryContainer artworks={slideshowData} />
           </section>
         </main>
 
