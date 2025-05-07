@@ -15,8 +15,8 @@ interface ArtGalleryContainerProps {
 const ArtGalleryContainer = ({ artworks }: ArtGalleryContainerProps) => {
   const navigate = useNavigate();
 
-  const handleArtworkClick = (artworkId: string, artworkImage: string) => {
-    navigate(`/artwork/${artworkId}`, { state: { artworkImage } });
+  const handleArtworkClick = (artworkId: string, artworkImage: string, artistName: string) => {
+    navigate(`/artwork/${artworkId}`, { state: { artworkImage, artistName } });
   };
 
   return (
