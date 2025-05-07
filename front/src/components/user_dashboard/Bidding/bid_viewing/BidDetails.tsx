@@ -204,12 +204,12 @@ const BidDetails = () => {
         {isMobile && (
           <Collapsible className="px-4">
             <div className="flex justify-between items-center mb-2">
-              <CollapsibleTrigger className="p-1 -mb-2 mt-2">
+              <CollapsibleTrigger className="p-1 my-2">
                 <GripVertical size={16} />
               </CollapsibleTrigger>
             </div>
               <CollapsibleContent className="transition-all duration-500 ease-in-out">
-                <div className="bg-gray-50 rounded-md p-4 text-xs whitespace-nowrap">
+                <div className="bg-gray-50 rounded-md p-4 text-xs whitespace-nowrap mb-8">
                   <div className="grid grid-cols-4 gap-10 px-6">
                     <div>
                       <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
@@ -234,7 +234,7 @@ const BidDetails = () => {
         )}
 
         {/* Center - Artwork Image */}
-        <div className={`relative z-0  ${isMobile ? "mt-8 pl-9" : "mt-4"}`}>
+        <div className={`relative z-0  ${isMobile ? "my-6 pl-9" : "mt-3"}`}>
             {!isMobile && (
                 <button
                   onClick={toggleDetailsPanel}
@@ -393,12 +393,7 @@ const BidDetails = () => {
               Place A Bid
             </button>
           </div>
-          <BidPopup
-            isOpen={showBidPopup}
-            onClose={() => setShowBidPopup(false)}
-            artworkTitle={bid.title}
-            onSubmit={handleBidSubmit}
-          />
+
         </div>
       </div>
       </div>
@@ -407,6 +402,15 @@ const BidDetails = () => {
         <h2 className={`font-semibold ${isMobile ? "text-sm mt-8 ml-4" : "text-md mb-4"}`}>Related Artworks</h2>
         <RelatedBids currentCategory={bid.category} currentBidId={bid.id} />
       </div>
+
+      {showBidPopup && (
+        <BidPopup
+          isOpen={showBidPopup}
+          onClose={() => setShowBidPopup(false)}
+          onSubmit={handleBidSubmit}
+          artworkTitle={bid?.title || "Artwork"}
+        />
+      )}
 
       {isExpanded && (
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
