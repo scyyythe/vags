@@ -18,7 +18,7 @@ const Settings = () => {
     <div className="min-h-screen bg-white">
       <Header />
       <main className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 mt-10">
-        <h1 className="text-3xl font-bold mb-8">Profile Settings</h1>
+        <h1 className="text-lg font-bold mb-8">Profile Settings</h1>
         
         <ProfileHeader
           name="Angel Canete"

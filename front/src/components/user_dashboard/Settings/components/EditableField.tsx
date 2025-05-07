@@ -70,13 +70,13 @@ const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => 
   };
   
   return (
-    <div className="mb-6">
-      <div className="text-sm text-gray-500 mb-1">{label}</div>
+    <div className="mb-6 text-xs">
+      <div className="text-[10px] text-gray-500 mb-1">{label}</div>
       
       {isEditing ? (
-        <div>
+        <div className="text-[12px]">
           {type === "text" || type === "email" ? (
-            <div className="flex">
+            <div className="flex text-[12px]">
               <Input
                 type={type === "email" ? "email" : "text"}
                 value={value as string}
@@ -84,7 +84,7 @@ const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => 
                 onKeyDown={handleKeyDown}
                 onBlur={handleClickOutside}
                 autoFocus
-                className="border-gray-300"
+                className="border-gray-300 !text-[12px]"
               />
             </div>
           ) : type === "gender" ? (
@@ -92,30 +92,28 @@ const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => 
               <RadioGroup
                 defaultValue={value as string}
                 onValueChange={(value) => handleChange(value)}
-                className="flex flex-col space-y-2"
+                className="flex flex-col space-y-2 text-[10px]"
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Female" id="female" />
-                  <Label htmlFor="female">Female</Label>
+                  <RadioGroupItem value="Female" id="female" className="text-[10px]"/>
+                  <Label htmlFor="female" className="text-[12px]">Female</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Male" id="male" />
-                  <Label htmlFor="male">Male</Label>
+                  <RadioGroupItem value="Male" id="male" className="text-[10px]" />
+                  <Label htmlFor="male" className="text-[12px]">Male</Label>
                 </div>
               </RadioGroup>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <button 
                 onClick={() => setIsEditing(false)}
-                className="text-sm text-gray-500 hover:text-gray-700"
+                className="text-[10px] text-gray-500 hover:text-gray-700"
               >
                 Done
-              </Button>
+              </button>
             </div>
           ) : type === "date" ? (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left">
+                <Button variant="outline" className="w-full justify-start text-left text-[12px]">
                   {value instanceof Date
                     ? format(value, "PP")
                     : format(new Date(value), "PP")}
@@ -142,7 +140,7 @@ const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => 
                 defaultValue={value as string}
                 onValueChange={(value) => handleChange(value)}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full text-[12px]">
                   <SelectValue placeholder="Select a country" />
                 </SelectTrigger>
                 <SelectContent>
@@ -153,14 +151,12 @@ const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => 
                   ))}
                 </SelectContent>
               </Select>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <button  
                 onClick={() => setIsEditing(false)}
-                className="text-sm text-gray-500 hover:text-gray-700"
+                className="text-[10px] text-gray-500 hover:text-gray-700"
               >
                 Done
-              </Button>
+              </button>
             </div>
           ) : type === "language" ? (
             <div className="space-y-2">
@@ -168,7 +164,7 @@ const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => 
                 defaultValue={value as string}
                 onValueChange={(value) => handleChange(value)}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full text-[12px]">
                   <SelectValue placeholder="Select a language" />
                 </SelectTrigger>
                 <SelectContent>
@@ -179,14 +175,12 @@ const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => 
                   ))}
                 </SelectContent>
               </Select>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <button  
                 onClick={() => setIsEditing(false)}
-                className="text-sm text-gray-500 hover:text-gray-700"
+                className="text-[10px] text-gray-500 hover:text-gray-700"
               >
                 Done
-              </Button>
+              </button>
             </div>
           ) : null}
         </div>
@@ -200,7 +194,7 @@ const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => 
               onClick={handleEdit}
               className="text-gray-500 hover:text-gray-700 p-1"
             >
-              <Edit className="h-4 w-4" />
+              <i className='bx bx-pencil'></i>
             </button>
           )}
         </div>
