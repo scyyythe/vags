@@ -28,22 +28,21 @@ const ActionButtons = ({
   };
 
   return (
-    <div className="flex items-center justify-between mt-8">
-      <Button
-        className="bg-red-700 hover:bg-red-800 text-white px-6"
+    <div className="flex text-[10px] items-center justify-between mt-8 ">
+      <button
+        className="bg-red-800 hover:bg-red-700 text-white font-medium px-6 py-2 rounded-full cursor-pointer"
         disabled={!hasChanges}
         onClick={handleSave}
       >
         {saveText}
-      </Button>
-      <Button
-        variant="outline"
-        className="bg-red-50 text-red-500 border-0 hover:bg-red-100"
+      </button>
+      <button
+        className="bg-red-50 text-red-500 font-medium border-0 hover:bg-red-100 px-6 py-2 rounded-full cursor-pointer"
         disabled={!hasChanges}
         onClick={onReset}
       >
         {cancelText}
-      </Button>
+      </button>
     </div>
   );
 };

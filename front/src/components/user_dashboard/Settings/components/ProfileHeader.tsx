@@ -13,11 +13,11 @@ const ProfileHeader = ({ name, email, imageUrl }: ProfileHeaderProps) => {
       <img
         src={imageUrl}
         alt={name}
-        className="w-20 h-20 rounded-full object-cover"
+        className="w-14 h-14 rounded-full object-cover"
       />
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">{name}</h2>
-        <p className="text-gray-500 text-sm">{email}</p>
+        <h2 className="text-xs font-bold text-gray-900">{name}</h2>
+        <p className="text-gray-500 text-[10px]">{email}</p>
       </div>
     </div>
   );
