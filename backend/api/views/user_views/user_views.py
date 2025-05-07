@@ -1,5 +1,5 @@
 import jwt
-from datetime import datetime, timedelta  # Correct import, using both datetime and timedelta
+from datetime import datetime, timedelta  
 import bcrypt
 from django.conf import settings
 from rest_framework.views import APIView
@@ -22,7 +22,7 @@ class CreateUserView(generics.CreateAPIView):
         user = serializer.save()
         otp = generate_otp()
         user.otp = otp
-        user.otp_expires_at = datetime.utcnow() + timedelta(minutes=5)  # Correct usage
+        user.otp_expires_at = datetime.utcnow() + timedelta(minutes=5) 
         user.save()
         send_otp_email(user.email, otp)
 
@@ -58,7 +58,7 @@ class DeleteUserView(generics.DestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
   
-# Custom JWT Token 
+
 class CustomTokenObtainPairView(APIView):
     """Handles JWT authentication for MongoEngine users"""
     permission_classes = [AllowAny] 
