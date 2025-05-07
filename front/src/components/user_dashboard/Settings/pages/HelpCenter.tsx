@@ -33,11 +33,11 @@ const HelpCenter = () => {
       
       <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8">
         <h3 className="text-xs font-medium mb-2">Need help?</h3>
-        <p className="text-gray-600 text-[10px] mb-5">
+        <p className="text-gray-600 text-[11px] mb-5">
           Find answers to common questions or contact our support team for assistance.
         </p>
         
-        <button className="bg-red-800 hover:bg-red-700 text-white text-[10px] py-1 px-2 rounded-sm">Contact Support</button>
+        <button className="bg-red-800 hover:bg-red-700 text-white text-[11px] py-1 px-2 rounded-sm">Contact Support</button>
       </div>
       
       <div className="bg-white border border-gray-200 rounded-lg p-6">
@@ -46,11 +46,11 @@ const HelpCenter = () => {
         <Accordion type="single" collapsible className="w-full">
           {faqItems.map((item, index) => (
             <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className="text-left text-[10px]">
+              <AccordionTrigger className="text-left text-[11px]">
                 {item.question}
               </AccordionTrigger>
               <AccordionContent>
-                <p className="text-gray-600 text-[10px]">{item.answer}</p>
+                <p className="text-gray-600 text-[11px]">{item.answer}</p>
               </AccordionContent>
             </AccordionItem>
           ))}
