@@ -24,6 +24,11 @@ const CreatePost = () => {
   const [price, setPrice] = useState(0);
   const [visibility, setVisibility] = useState("public");
 
+  const [height, setHeight] = useState("");
+  const [width, setWidth] = useState("");
+  const [artworkHeight, setArtworkHeight] = useState("");
+  const [artworkWidth, setArtworkWidth] = useState("");
+
   const queryClient = useQueryClient();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,7 +206,7 @@ const CreatePost = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                   <div>
                     <label htmlFor="style" className="block mb-4 text-xs">
                       Artwork Style
@@ -249,6 +254,40 @@ const CreatePost = () => {
                       style={{ fontSize: "12px", height: "35px" }}
                     />
                   </div>
+
+                  <div className="relative">
+                    <label htmlFor="medium" className="block mb-4 text-xs">
+                      Artwork Size (inches)
+                    </label>
+                    <div className="grid grid-cols-3">
+                      <div className="flex flex-col"> 
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          style={{ fontSize: '10px', marginBottom: '5px', height: '80%'}}
+                          min={0}
+                          value={artworkHeight}
+                          onChange={(e) => setArtworkHeight(e.target.value)}
+                        />
+                        <label className="text-[9px] text-center mb-1">Height</label>
+                      </div>
+                      <span className="h-5 w-5 font-bold text-sm flex items-center justify-center mx-auto mt-2">
+                        x
+                      </span>
+                      <div className="flex flex-col">
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          style={{ fontSize: '10px', marginBottom: '5px', height: '80%' }}
+                          min={0}
+                          value={artworkWidth}
+                          onChange={(e) => setArtworkWidth(e.target.value)}
+                        />
+                        <label className="text-[9px] text-center mb-1">Width</label>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
 
                 <div className="mb-6">
