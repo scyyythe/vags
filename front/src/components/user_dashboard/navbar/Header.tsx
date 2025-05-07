@@ -131,10 +131,11 @@ const Header = () => {
               className="h-8 w-8 border cursor-pointer" 
               onClick={toggleProfileDropdown}
             >
-              <AvatarImage src="/lovable-uploads/f7ccfc1f-b21e-453e-b659-2f50e1cf5b01.png" alt="User" />
-              <AvatarFallback>
-                <img src="/pics/1.jpg" alt="JAI" />
-              </AvatarFallback>
+              <Link to="/userprofile/">
+                <AvatarFallback>
+                  <img src="/pics/1.jpg" alt="JAI" />
+                </AvatarFallback>
+              </Link>
             </Avatar>
             <ProfileDropdown 
               isOpen={isProfileDropdownOpen} 
