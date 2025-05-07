@@ -313,7 +313,7 @@ const ArtworkDetails = () => {
               {/* Collapsible Sidebar */}
               {!isMobile && (
                 <div
-                  className={`absolute right-100 top-0 w-[32%] h-[140%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
+                  className={`absolute right-100 -top-8 w-[32%] h-[140%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
                     isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-1"
                   }`}
                   style={{ right: "calc(100% + 16px)", marginRight: "40px" }}
@@ -327,9 +327,13 @@ const ArtworkDetails = () => {
                       <h3 className="text-[9px] font-medium mb-1">Medium</h3>
                       <p className="text-[9px] text-gray-700">{medium || "Acrylic Paint"}</p>
                     </div>
-                    <div className="mb-1">
+                    <div className="mb-6">
                       <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
                       <p className="text-[9px] text-gray-700">{datePosted || "March 25, 2023"}</p>
+                    </div>
+                    <div className="mb-1">
+                      <h3 className="text-[9px] font-medium mb-1">Artwork Size</h3>
+                      <p className="text-[9px] text-gray-700">{"11 x 8.5"}</p>
                     </div>
                   </div>
                 </div>
@@ -345,7 +349,7 @@ const ArtworkDetails = () => {
                   </div>
                   <CollapsibleContent className="transition-all duration-500 ease-in-out">
                     <div className="bg-gray-50 rounded-md p-4 text-xs">
-                      <div className="grid grid-cols-3 gap-8 px-8">
+                      <div className="grid grid-cols-4 gap-8 px-8 whitespace-nowrap">
                         <div>
                           <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
                           <p className="text-[10px] text-gray-700">{style || "Painting"}</p>
@@ -358,6 +362,10 @@ const ArtworkDetails = () => {
                           <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
                           <p className="text-[10px] text-gray-700">{datePosted || "March 25, 2023"}</p>
                         </div>
+                        <div className="mb-1">
+                          <h3 className="text-[10px] font-medium mb-1">Artwork Size</h3>
+                          <p className="text-[10px] text-gray-700">{"11 x 8.5"}</p>
+                        </div>
                       </div>
                     </div>
                   </CollapsibleContent>
@@ -365,7 +373,7 @@ const ArtworkDetails = () => {
               )}
 
               {/* Center - Artwork Image */}
-              <div className={`relative z-0 mt-10 ${isMobile ? "px-4" : ""}`}>
+              <div className={`relative z-0 mt-8 ${isMobile ? "px-4" : ""}`}>
                 {!isMobile && (
                   <button
                     onClick={toggleDetailsPanel}
