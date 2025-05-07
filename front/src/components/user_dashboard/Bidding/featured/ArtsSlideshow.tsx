@@ -129,7 +129,7 @@ const ArtSlideshow = ({
                 Owned By
               </span>
               <div className="flex items-center gap-2 whitespace-nowrap">
-                <Link to={`/userprofile/${artwork.artist}`} className="flex items-center gap-2">
+                <Link to="/userprofile/" className="flex items-center gap-2">
                   <img
                     src={artwork.artistAvatar}
                     alt={artwork.artist}

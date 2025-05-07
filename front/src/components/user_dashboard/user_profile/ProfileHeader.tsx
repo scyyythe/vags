@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef  } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,6 +14,7 @@ interface ProfileHeaderProps {
   followers: number;
   following: number;
   items: number;
+  onBannerChange?: (file: File) => void;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -22,31 +23,69 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   name,
   followers,
   following,
-  items
+  items,
+  onBannerChange
 }) => {
   const [isFollowing, setIsFollowing] = useState(false);
-  // Add controlled open state for the dropdown
+  const [localBanner, setLocalBanner] = useState<string>(bannerImage);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [optionsOpen, setOptionsOpen] = useState(false);
 
   const toggleFollow = () => {
     setIsFollowing(!isFollowing);
   };
 
+  // Handle file selection
+  const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Preview the selected image locally
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLocalBanner(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      // Pass the file to parent or upload handler if provided
+      if (onBannerChange) {
+        onBannerChange(file);
+      }
+    }
+  };
+
+  // Trigger file input click
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+
   return (
     <div className="w-full px-4">
       {/* Banner */}
-      <div className="w-full h-52 md:h-72 rounded-lg overflow-hidden bg-blue-100">
+      <div className="relative w-full h-52 md:h-72 rounded-lg overflow-hidden bg-blue-100 cursor-pointer" onClick={triggerFileInput} title="Click to change banner image">
         <img 
-          src={bannerImage} 
+          src={localBanner} 
           alt="Profile Banner" 
           className="w-full h-full object-cover" 
+        />
+        {/* Optional overlay icon */}
+        <div className="absolute top-2 right-2 px-2 py-1 bg-black bg-opacity-50 text-white rounded-full p-1">
+          <i className='bx bx-camera'></i>
+        </div>
+        {/* Hidden file input */}
+        <input 
+          type="file" 
+          accept="image/*" 
+          ref={fileInputRef} 
+          className="hidden" 
+          onChange={handleBannerChange} 
         />
       </div>
 
       {/* Profile Info */}
       <div className="flex flex-col items-center -mt-14 md:-mt-14">
         {/* Profile Image */}
-        <div className="w-28 h-28 rounded-full border-4 border-white overflow-hidden">
+        <div className="w-28 h-28 rounded-full border-4 border-white overflow-hidden z-50">
           <img 
             src={profileImage} 
             alt={name} 
