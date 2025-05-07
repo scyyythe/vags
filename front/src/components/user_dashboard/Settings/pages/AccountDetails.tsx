@@ -38,7 +38,7 @@ const AccountDetails = () => {
       <h2 className="text-sm font-bold mb-6">Account Information</h2>
       
       <div className="bg-white border border-gray-200 rounded-lg p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
           <EditableField
             label="Full name"
             value={formData.fullName}

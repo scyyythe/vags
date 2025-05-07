@@ -51,53 +51,33 @@ const BillingSettings = () => {
   };
 
   const renderIcon = (icon: string) => {
-    if (icon === "basic" || icon === "business") {
+    if (icon === "basic") {
       return (
-        <div className="w-8 h-8 flex items-center justify-center bg-red-100 rounded">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="text-red-500"
-          >
-            <path
-              d="M22.5 0L45 22.5L33.75 33.75L22.5 22.5L11.25 33.75L0 22.5L22.5 0Z"
-              fill="currentColor"
-              transform="scale(0.5)"
-            />
-          </svg>
+        <div className="w-8 h-8 flex items-center justify-center">
+          <i className='bx bx-layer-minus text-red-800'></i>
+        </div>
+      );
+    } if (icon === "business") {
+      return (
+        <div className="w-8 h-8 flex items-center justify-center">
+          <i className='bx bx-layer text-red-800'></i>
         </div>
       );
     }
     return (
-      <div className="w-8 h-8 flex items-center justify-center bg-red-100 rounded">
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          width="20" 
-          height="20" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          strokeWidth="2" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-          className="text-red-500"
-        >
-          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-        </svg>
+      <div className="w-8 h-8 flex items-center justify-center">
+        <i className='bx bxs-bolt text-red-800'></i>
       </div>
     );
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Billing</h2>
+      <h2 className="text-sm font-bold mb-6">Billing</h2>
       
       <div className="mb-8">
-        <h3 className="text-lg font-medium mb-2">Account plans</h3>
-        <p className="text-gray-600 mb-6">
+        <h3 className="text-[13px] font-semibold mb-1">Account plans</h3>
+        <p className="text-gray-600 text-[11px] mb-6">
           Pick an account plan that fits your workflow.
         </p>
         
@@ -115,13 +95,13 @@ const BillingSettings = () => {
                   {renderIcon(plan.icon)}
                   <div>
                     <div className="flex items-center gap-1">
-                      <span className="font-medium">{plan.name}</span>
-                      <span className="text-gray-500">${plan.price}/month</span>
+                      <span className="font-medium text-xs">{plan.name}</span>
+                      <span className="text-gray-500 text-xs">${plan.price}/month</span>
                     </div>
-                    <p className="text-sm text-gray-600">{plan.description}</p>
+                    <p className=" text-gray-600 text-[10px]">{plan.description}</p>
                   </div>
                 </div>
-                <RadioGroupItem value={plan.id} id={plan.id} className="text-red-500" />
+                <RadioGroupItem value={plan.id} id={plan.id} className="text-red-800 border border-red-800" />
               </div>
             ))}
           </RadioGroup>
@@ -129,8 +109,8 @@ const BillingSettings = () => {
       </div>
       
       <div className="mb-8">
-        <h3 className="text-lg font-medium mb-2">Current plan</h3>
-        <p className="text-gray-600">
+        <h3 className="text-[13px] font-semibold mb-1">Current plan</h3>
+        <p className="text-gray-600 text-[11px] mb-6">
           We'll credit your account if you need to downgrade during the billing cycle.
         </p>
       </div>
@@ -139,8 +119,6 @@ const BillingSettings = () => {
         hasChanges={hasChanges()}
         onSave={handleSave}
         onReset={handleReset}
-        saveText="Update Settings"
-        cancelText="Cancel"
       />
     </div>
   );

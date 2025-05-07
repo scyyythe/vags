@@ -29,28 +29,28 @@ const HelpCenter = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Help Center</h2>
+      <h2 className="text-sm font-bold mb-6">Help Center</h2>
       
       <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8">
-        <h3 className="text-xl font-medium mb-4">Need help?</h3>
-        <p className="text-gray-600 mb-6">
+        <h3 className="text-xs font-medium mb-2">Need help?</h3>
+        <p className="text-gray-600 text-[10px] mb-5">
           Find answers to common questions or contact our support team for assistance.
         </p>
         
-        <Button className="bg-red-700 hover:bg-red-800 text-white">Contact Support</Button>
+        <button className="bg-red-800 hover:bg-red-700 text-white text-[10px] py-1 px-2 rounded-sm">Contact Support</button>
       </div>
       
       <div className="bg-white border border-gray-200 rounded-lg p-6">
-        <h3 className="text-xl font-medium mb-4">Frequently Asked Questions</h3>
+        <h3 className="text-xs font-medium mb-4">Frequently Asked Questions</h3>
         
         <Accordion type="single" collapsible className="w-full">
           {faqItems.map((item, index) => (
             <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className="text-left">
+              <AccordionTrigger className="text-left text-[10px]">
                 {item.question}
               </AccordionTrigger>
               <AccordionContent>
-                <p className="text-gray-600">{item.answer}</p>
+                <p className="text-gray-600 text-[10px]">{item.answer}</p>
               </AccordionContent>
             </AccordionItem>
           ))}

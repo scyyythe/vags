@@ -75,21 +75,23 @@ const NotificationsSettings = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Notifications</h2>
+      <h2 className="text-sm font-bold mb-6">Notifications</h2>
       
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <div className="space-y-8">
           {notifications.map((notification) => (
             <div key={notification.id} className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">{notification.category}</p>
-                <h3 className="font-medium">{notification.title}</h3>
+                <p className="text-[10px] text-gray-500">{notification.category}</p>
+                <h3 className="font-medium text-xs">{notification.title}</h3>
               </div>
-              <Switch
-                checked={notification.enabled}
-                onCheckedChange={() => toggleNotification(notification.id)}
-                className={notification.enabled ? "bg-red-500" : ""}
-              />
+              <div className="transform scale-50 origin-left">
+                <Switch
+                  checked={notification.enabled}
+                  onCheckedChange={() => toggleNotification(notification.id)}
+                  className={notification.enabled ? "bg-red-500" : ""}
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -99,8 +101,6 @@ const NotificationsSettings = () => {
         hasChanges={hasChanges()}
         onSave={handleSave}
         onReset={handleReset}
-        saveText="Update Settings"
-        cancelText="Cancel"
       />
     </div>
   );
