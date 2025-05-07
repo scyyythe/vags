@@ -9,7 +9,6 @@ import ArtCardMenu from "@/components/user_dashboard/Explore/cards/ArtCardMenu";
 import { useDonation } from "@/context/DonationContext";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { useArtworkContext } from "@/context/ArtworkContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
@@ -115,6 +114,7 @@ const ArtworkDetails = () => {
       artworkImage: image || "",
     });
   };
+
   const handleCommentLike = (commentId: string) => {
     setLikedComments((prev) => ({
       ...prev,
@@ -309,7 +309,7 @@ const ArtworkDetails = () => {
             }}
           >
             {/* Artwork container */}
-            <div className={`relative mr-14 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
+            <div className={`relative mr-8 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
               {/* Collapsible Sidebar */}
               {!isMobile && (
                 <div
@@ -376,7 +376,7 @@ const ArtworkDetails = () => {
                 )}
 
                 <div className="inline-block transform scale-[1.10] -mb-6 relative">
-                  <div className="w-[420px] h-[420px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
+                  <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                     <img
                       src={image}
                       alt={title}
@@ -415,7 +415,7 @@ const ArtworkDetails = () => {
             </div>
 
             {/* Right side - Title, artist, description, comments */}
-            <div className={`${isMobile ? "w-full mt-6 px-4s" : "w-full max-w-[390px] min-w-[280px]"}`}>
+            <div className={`${isMobile ? "w-full mt-6 px-4" : "w-full max-w-[390px] min-w-[280px]"}`}>
               <div className={`${isMobile ? "" : "relative top-5 left-10"}`}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center space-x-4">
