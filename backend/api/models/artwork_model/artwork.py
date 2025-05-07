@@ -9,6 +9,7 @@ class Art(Document):
     medium = StringField(max_length=100)
     art_status = StringField(max_length=100)
     price = IntField()
+    size = StringField(max_length=100, required=False)
     description = StringField(required=False)
     visibility = StringField(choices=['public', 'private'], default='public') 
     created_at = DateTimeField(default=datetime.utcnow)
