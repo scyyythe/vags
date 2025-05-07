@@ -70,7 +70,7 @@ class UserSerializer(serializers.Serializer):
         instance.save()
         return instance
 
-    # Convert to JSON format for the response
+    
     def to_representation(self, instance):
         return {
             "id": str(instance.id),
