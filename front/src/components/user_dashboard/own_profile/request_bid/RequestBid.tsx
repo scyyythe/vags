@@ -30,6 +30,13 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
   const [startingBid, setStartingBid] = useState("");
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
+  const [height, setHeight] = useState("");
+  const [width, setWidth] = useState("");
+  const [artworkHeight, setArtworkHeight] = useState("");
+  const [artworkWidth, setArtworkWidth] = useState("");
+
+
+
   const handlePublish = () => {
     if (!startDate) {
       toast({
@@ -109,7 +116,7 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
   return (
     <div>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[400px] px-10 py-6">
+        <DialogContent className="sm:max-w-[430px] px-10 py-6">
           <DialogHeader className="text-center">
             <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
               <X className="h-4 w-4" />
@@ -135,21 +142,52 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
           </p> */}
           
           <div className="space-y-6 mt-3">
-            <div>
-              <h3 className="font-medium mb-2 text-[11px]">Set a starting bid</h3>
-              <div className="space-y-2">
-                <div>
-                  <Input 
-                    id="starting-bid" 
-                    placeholder="Enter amount" 
-                    style={{ fontSize: '10px', marginTop: '6px' }}
-                    value={startingBid}
-                    onChange={(e) => setStartingBid(e.target.value)}
-                  />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <h3 className="font-medium mb-2 text-[11px]">Set a starting bid</h3>
+                <div className="space-y-2">
+                  <div>
+                    <Input 
+                      id="starting-bid" 
+                      placeholder="Enter amount" 
+                      style={{ fontSize: '10px', marginTop: '6px', width: '107%' }}
+                      value={startingBid}
+                      onChange={(e) => setStartingBid(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative left-4">
+                <h3 className="font-medium mb-2 text-[11px]">Artwork Size (inches)</h3>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="flex flex-col"> 
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      style={{ fontSize: '10px', marginBottom: '5px' }}
+                      min={0}
+                      value={artworkHeight}
+                      onChange={(e) => setArtworkHeight(e.target.value)}
+                    />
+                    <label className="text-[9px] text-center mb-1">Height</label>
+                  </div>
+                  <span className="my-auto -pr-8 pb-6 font-bold text-xs">x</span>
+                  <div className="flex flex-col relative -left-10">
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      style={{ fontSize: '10px', marginBottom: '5px' }}
+                      min={0}
+                      value={artworkWidth}
+                      onChange={(e) => setArtworkWidth(e.target.value)}
+                    />
+                    <label className="text-[9px] text-center mb-1">Width</label>
+                  </div>
                 </div>
               </div>
             </div>
-            
+
             <div>
               <h3 className="font-medium mb-3 text-[11px]">Set Auction Schedule</h3>
               <div className="mb-2">
