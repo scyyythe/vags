@@ -11,10 +11,9 @@ interface ProfileDropdownProps {
 const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
   const navigate = useNavigate();
   const { showLoginModal, setShowLoginModal } = useModal();
-  
+
   const handleEditProfile = () => {
-    navigate("/profile/edit");
-    onClose();
+    navigate('/settings/edit-profile');
   };
 
   useEffect(() => {

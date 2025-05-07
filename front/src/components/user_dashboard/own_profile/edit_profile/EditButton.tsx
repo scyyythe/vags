@@ -19,11 +19,11 @@ const EditProfile: React.FC<ProfileHeaderProps> = ({
   items
 }) => {
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleEditProfile = () => {
-        navigate('/settings/edit-profile');
-    };
+  const handleEditProfile = () => {
+    navigate('/settings/edit-profile');
+  };
 
   return (
     <div className="w-full px-4">
@@ -46,7 +46,7 @@ const EditProfile: React.FC<ProfileHeaderProps> = ({
             className="w-full h-full object-cover" 
           />
         </div>
-
+ 
         {/* Name */}
         <h1 className="text-xl md:text-xl font-bold mt-4">{name}</h1>
 
