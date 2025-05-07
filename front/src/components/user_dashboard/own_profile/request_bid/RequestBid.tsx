@@ -30,12 +30,6 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
   const [startingBid, setStartingBid] = useState("");
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
-  const [height, setHeight] = useState("");
-  const [width, setWidth] = useState("");
-  const [artworkHeight, setArtworkHeight] = useState("");
-  const [artworkWidth, setArtworkWidth] = useState("");
-
-
 
   const handlePublish = () => {
     if (!startDate) {
@@ -154,35 +148,6 @@ const RequestBid = ({ open, onOpenChange }: AuctionDialogProps) => {
                       value={startingBid}
                       onChange={(e) => setStartingBid(e.target.value)}
                     />
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative left-4">
-                <h3 className="font-medium mb-2 text-[11px]">Artwork Size (inches)</h3>
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="flex flex-col"> 
-                    <Input
-                      type="number"
-                      placeholder="0"
-                      style={{ fontSize: '10px', marginBottom: '5px' }}
-                      min={0}
-                      value={artworkHeight}
-                      onChange={(e) => setArtworkHeight(e.target.value)}
-                    />
-                    <label className="text-[9px] text-center mb-1">Height</label>
-                  </div>
-                  <span className="my-auto -pr-8 pb-6 font-bold text-xs">x</span>
-                  <div className="flex flex-col relative -left-10">
-                    <Input
-                      type="number"
-                      placeholder="0"
-                      style={{ fontSize: '10px', marginBottom: '5px' }}
-                      min={0}
-                      value={artworkWidth}
-                      onChange={(e) => setArtworkWidth(e.target.value)}
-                    />
-                    <label className="text-[9px] text-center mb-1">Width</label>
                   </div>
                 </div>
               </div>
