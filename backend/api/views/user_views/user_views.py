@@ -11,6 +11,8 @@ from api.models.user_model.users import User
 from api.serializers.user_s.users_serializers import UserSerializer 
 from api.auth.permissions import IsAdminOrOwner 
 from api.utils.email_utils import generate_otp, send_otp_email
+import traceback
+from bson import ObjectId
 
 class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
@@ -25,10 +27,26 @@ class CreateUserView(generics.CreateAPIView):
         send_otp_email(user.email, otp)
 
 
-class RetrieveUserView(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class RetrieveUserView(APIView):
     permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            if not ObjectId.is_valid(pk):
+                return Response({"error": "Invalid user ID format."}, status=status.HTTP_400_BAD_REQUEST)
+
+            user = User.objects(id=ObjectId(pk)).first()
+
+            if not user:
+                return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            serializer = UserSerializer(user, context={"request": request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            print("Error retrieving user:", e)
+            traceback.print_exc()
+            return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UpdateUserView(generics.UpdateAPIView):
     queryset = User.objects.all()

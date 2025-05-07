@@ -25,7 +25,7 @@ const Explore = () => {
     ? popularArtworks.map((artwork) => ({
         id: artwork.id,
         title: artwork.title,
-        artist: artwork.artistName,
+        artist: artwork.artist,
         image: artwork.image_url || "",
       }))
     : [];

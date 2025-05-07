@@ -12,7 +12,7 @@ interface ArtSlideshowProps {
   artworks: Artwork[];
   autoPlay?: boolean;
   interval?: number;
-  onArtworkClick: (artworkId: string, artworkImage: string) => void;
+  onArtworkClick: (artworkId: string, artworkImage: string, artistName: string) => void;
 }
 
 const ArtSlideshow = ({ artworks, autoPlay = true, interval = 3000, onArtworkClick }: ArtSlideshowProps) => {
@@ -49,7 +49,7 @@ const ArtSlideshow = ({ artworks, autoPlay = true, interval = 3000, onArtworkCli
             )}
             style={{ pointerEvents: index === currentIndex ? "auto" : "none" }}
           >
-            <div onClick={() => onArtworkClick(artwork.id, artwork.image)} className="cursor-pointer">
+            <div onClick={() => onArtworkClick(artwork.id, artwork.image, artwork.artist)} className="cursor-pointer">
               <img
                 src={artwork.image}
                 alt={artwork.title}
