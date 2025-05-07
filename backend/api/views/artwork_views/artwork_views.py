@@ -38,13 +38,34 @@ class ArtListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Art.objects.order_by('-created_at')
+    
+class ArtListViewOwner(generics.ListAPIView):
+    serializer_class = ArtSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def get_queryset(self):
+        
+        user_id = self.request.user.id  
+        return Art.objects.filter(artist__id=ObjectId(user_id)).order_by('-created_at')
 
 class ArtDetailView(generics.RetrieveAPIView):
     queryset = Art.objects.all()
     serializer_class = ArtSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+class ArtListByArtistView(generics.ListAPIView):
+    serializer_class = ArtSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        artist_id = self.kwargs.get("artist_id") 
+        if artist_id:
+            try:
+                return Art.objects.filter(artist=ObjectId(artist_id)).order_by('-created_at')
+            except Exception as e:
+                print("Invalid artist ID:", e)
+                return Art.objects.none()
+        return Art.objects.none()
 
 
 class ArtUpdateView(generics.UpdateAPIView):
