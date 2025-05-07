@@ -5,7 +5,7 @@ import { LikedArtworksContext } from "@/context/LikedArtworksProvider";
 import { toast } from "sonner";
 import TipJarIcon from "../tip_jar/TipJarIcon";
 import { useDonation } from "../../../../context/DonationContext";
-import ArtCardMenu from "./ArtCardMenu";
+// import ArtCardMenu from "./ArtCardMenu";
 import OwnerMenu from "@/components/user_dashboard/own_profile/Menu";
 import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
@@ -103,7 +103,7 @@ const ArtCard = ({
             <MoreHorizontal size={14} />
           </button>
           {/* CONDITIONAL MENU */}
-          {isExplore ? (
+          {/* {isExplore ? (
             <ArtCardMenu
               isOpen={menuOpen}
               onFavorite={handleSaved}
@@ -112,7 +112,7 @@ const ArtCard = ({
               isFavorite={isFavorite}
               isReported={false}
             />
-          ) : (
+          ) : ( */}
             <OwnerMenu
               isOpen={menuOpen}
               onRequestBid={() => console.log("Request to bid")}
@@ -122,7 +122,7 @@ const ArtCard = ({
               onArchive={() => console.log("Archive")}
               isPublic={true}
             />
-          )}
+          {/* )} */}
         </div>
       </div>
       <Link to={`/artwork/${id}`} state={{ artworkImage, artistName, title, likesCount }} className="w-full">
