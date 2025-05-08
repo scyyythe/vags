@@ -10,6 +10,8 @@ import OwnerMenu from "@/components/user_dashboard/own_profile/Menu";
 import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import useLikeStatus from "@/hooks/interactions/useLikeStatus";
+import useArtworkDetails from "@/hooks/artworks/useArtworkDetails";
+
 interface ArtCardProps {
   id: string;
   artistName: string;
@@ -41,18 +43,22 @@ const ArtCard = ({
 
   const { data, error, isLoading } = useLikeStatus(id);
   const { likedArtworks, likeCounts, setLikedArtworks, setLikeCounts, toggleLike } = useContext(LikedArtworksContext);
+  const isLiked = likedArtworks[id] || false;
   const { openPopup } = useDonation();
+  const { isLoading: detailsLoading } = useArtworkDetails();
 
   useEffect(() => {
     if (data) {
       setLikedArtworks((prev) => ({ ...prev, [id]: data.isLiked }));
-      setLikeCounts((prev) => ({ ...prev, [id]: data.likeCount }));
     }
-  }, [data, id, setLikedArtworks, setLikeCounts]);
+  }, [data, id, setLikedArtworks]);
 
-  const handleLike = useCallback(() => {
-    toggleLike(id);
-  }, [id, toggleLike]);
+  const handleLike = () => {
+    if (id) {
+      console.log("Before toggle:", isLiked);
+      toggleLike(id);
+    }
+  };
 
   const handleHide = useCallback(() => {
     setIsHidden(true);
@@ -82,7 +88,7 @@ const ArtCard = ({
   if (isHidden) {
     return null;
   }
-  if (isLoading) return <div>Loading...</div>;
+  if (detailsLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching like status</div>;
 
   return (
@@ -144,17 +150,18 @@ const ArtCard = ({
             <button
               onClick={handleLike}
               className={`p-1 rounded-full transition-colors ${
-                likedArtworks[id] ? "text-red" : "text-gray-400 hover:text-red"
+                isLiked ? "text-red-600" : "text-gray-400 hover:text-red-600"
               }`}
               aria-label="Like artwork"
             >
               <Heart
                 size={15}
-                className={likedArtworks[id] ? "text-red-600 fill-red-600" : "text-gray-800"}
-                fill={likedArtworks[id] ? "currentColor" : "none"}
+                className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
+                fill={isLiked ? "currentColor" : "none"}
               />
             </button>
-            <span className="text-[9px] text-gray-500">{likeCounts[id] ?? likesCount}</span>
+
+            <span className="text-[9px] text-gray-500">{likeCounts[id] ?? likesCount ?? 0}</span>
 
             <div
               onClick={(e) => {

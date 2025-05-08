@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 
-// Define a type for the artwork object
 interface Artwork {
   id: string;
   title: string;
