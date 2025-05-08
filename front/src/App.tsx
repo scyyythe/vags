@@ -35,6 +35,7 @@ import NotificationsSettings from "./components/user_dashboard/Settings/pages/No
 import BillingSettings from "./components/user_dashboard/Settings/pages/BillingSettings";
 import HelpCenter from "./components/user_dashboard/Settings/pages/HelpCenter";
 
+import ProtectedRoute from "./auth/ProtectedRoute";
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
 
@@ -73,22 +74,23 @@ const App = () => {
                       <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
                       <Route path="/fingerprint-register" element={<FingerprintRegister />} />
                       <Route path="/hero" element={<Hero />} />
-                      <Route path="/explore" element={<Explore />} />
-                      <Route path="/create" element={<Create />} />
-                      <Route path="/update" element={<UpdatePost />} />
-                      <Route path="/userprofile/:id" element={<UserProfile />} />
-                      <Route path="/artwork/:id" element={<ArtworkDetails />} />
-                      <Route path="/bidding" element={<Bidding />} />
-                      <Route path="/marketplace" element={<Marketplace />} />
-                      <Route path="/exhibits" element={<Exhibits />} />
 
-                      <Route path="/settings" element={<Settings />}>
-                        <Route path="edit-profile" element={<EditProfile />} />
-                        <Route path="account-details" element={<AccountDetails />} />
-                        <Route path="security" element={<SecuritySettings />} />
-                        <Route path="notifications" element={<NotificationsSettings />} />
-                        <Route path="billing" element={<BillingSettings />} />
-                        <Route path="help-center" element={<HelpCenter />} />
+                      <Route path="/explore" element={<ProtectedRoute children={<Explore />} />} />
+                      <Route path="/create" element={<ProtectedRoute children={<Create />} />} />
+                      <Route path="/update" element={<ProtectedRoute children={<UpdatePost />} />} />
+                      <Route path="/userprofile/:id" element={<ProtectedRoute children={<UserProfile />} />} />
+                      <Route path="/artwork/:id" element={<ProtectedRoute children={<ArtworkDetails />} />} />
+                      <Route path="/bidding" element={<ProtectedRoute children={<Bidding />} />} />
+                      <Route path="/marketplace" element={<ProtectedRoute children={<Marketplace />} />} />
+                      <Route path="/exhibits" element={<ProtectedRoute children={<Exhibits />} />} />
+
+                      <Route path="/settings" element={<ProtectedRoute children={<Settings />} />}>
+                        <Route path="edit-profile" element={<ProtectedRoute children={<EditProfile />} />} />
+                        <Route path="account-details" element={<ProtectedRoute children={<AccountDetails />} />} />
+                        <Route path="security" element={<ProtectedRoute children={<SecuritySettings />} />} />
+                        <Route path="notifications" element={<ProtectedRoute children={<NotificationsSettings />} />} />
+                        <Route path="billing" element={<ProtectedRoute children={<BillingSettings />} />} />
+                        <Route path="help-center" element={<ProtectedRoute children={<HelpCenter />} />} />
                       </Route>
 
                       <Route path="*" element={<NotFound />} />
