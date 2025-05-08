@@ -67,27 +67,27 @@ class CustomTokenObtainPairView(APIView):
 
         user = User.objects(email=email).first()
         if not user or not user.password or not bcrypt.checkpw(password, user.password.encode("utf-8")):
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"error": "Please check your credentials and try again.tials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-        # Generate token helper function
+      
         def generate_token(payload, exp_delta):
             payload.update({"exp": datetime.utcnow() + exp_delta, "iat": datetime.utcnow()})
             return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
 
-        # Create Access and Refresh Tokens
+   
         access_token = generate_token({
             "user_id": str(user.id), 
             "email": user.email, 
             "jti": f"{user.id}_access",
             "token_type": "access"
-        }, timedelta(hours=8))  # Correct usage of timedelta
+        }, timedelta(hours=8))  
 
         refresh_token = generate_token({
             "user_id": str(user.id), 
             "jti": f"{user.id}_refresh",
             "token_type": "refresh"
-        }, timedelta(days=7))  # Correct usage of timedelta
+        }, timedelta(days=7))  
 
         return Response({
             "access_token": access_token,

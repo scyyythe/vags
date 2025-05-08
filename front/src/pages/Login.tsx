@@ -40,12 +40,22 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setMessage(null);
 
+    setMessage(null);
+    if (!formData.email || !formData.password) {
+      toast.error("Missing information", {
+        description: "Please fill in all required fields.",
+      });
+      return;
+    }
     try {
       const response = await apiClient.post("token/", formData);
       const { access_token, refresh_token, user_id, email } = response.data;
+
+      if (!access_token || !refresh_token) {
+        throw new Error("Missing tokens");
+      }
+
       localStorage.setItem("access_token", access_token);
       localStorage.setItem("refresh_token", refresh_token);
       localStorage.setItem("user_id", user_id);
@@ -54,22 +64,17 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       toast.success("Login successful!", {
         description: "You are now logged in.",
       });
+
       navigate("/explore");
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Login failed:", error.message);
-        toast.error("Login failed", {
-          description: "Please check your details and try again.",
-        });
-      } else {
-        console.error("Unknown error:", error);
-        toast.error("Login failed", {
-          description: "An unexpected error occurred. Please try again later.",
-        });
-      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+
+      toast.error("Login failed", {
+        description: error?.response?.data?.error || "Please check your credentials and try again.",
+      });
     }
   };
-  // Google Login Success Handler
+
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (response) => {
       try {

@@ -27,6 +27,11 @@ const createAPIClient = (
     async (error) => {
       const originalRequest = error.config;
 
+      // Skip if it's a login or refresh endpoint
+      if (originalRequest.url.includes("token") || originalRequest.url.includes("login")) {
+        return Promise.reject(error);
+      }
+
       if (error.response && error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
 
@@ -34,7 +39,7 @@ const createAPIClient = (
           const refreshToken = localStorage.getItem("refresh_token");
 
           const response = await axios.post(
-            "http://127.0.0.1:8000/api/token/refresh/",
+            `${baseURL}token/refresh/`,
             { refresh: refreshToken },
             { headers: { "Content-Type": "application/json" } }
           );
