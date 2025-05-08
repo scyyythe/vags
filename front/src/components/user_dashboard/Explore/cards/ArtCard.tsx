@@ -14,6 +14,7 @@ import useArtworkDetails from "@/hooks/artworks/useArtworkDetails";
 
 interface ArtCardProps {
   id: string;
+  artistId: string;
   artistName: string;
   artistImage: string;
   artworkImage: string;
@@ -30,6 +31,7 @@ interface ArtCardProps {
 
 const ArtCard = ({
   id,
+  artistId,
   artistName,
   artistImage,
   artworkImage,
@@ -131,7 +133,7 @@ const ArtCard = ({
           )}
         </div>
       </div>
-      <Link to={`/artwork/${id}`} state={{ artworkImage, artistName, title, likesCount }} className="w-full">
+      <Link to={`/artwork/${id}`} state={{ artworkImage, artistId, artistName, title, likesCount }} className="w-full">
         <div className="aspect-square overflow-hidden p-4">
           <img
             src={artworkImage}
