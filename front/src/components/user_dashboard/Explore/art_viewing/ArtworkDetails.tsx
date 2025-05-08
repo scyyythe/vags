@@ -44,8 +44,21 @@ const ArtworkDetails = () => {
   const [likedComments, setLikedComments] = useState<{ [commentId: string]: boolean }>({});
   const [commentMenus, setCommentMenus] = useState<{ [commentId: string]: boolean }>({});
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({});
-  const { image, title, artist, likes, style, isLoading, description, medium, status, price, visibility, datePosted } =
-    useArtworkDetails();
+  const {
+    image,
+    title,
+    artistId,
+    artist,
+    likes,
+    style,
+    isLoading,
+    description,
+    medium,
+    status,
+    price,
+    visibility,
+    datePosted,
+  } = useArtworkDetails();
 
   useEffect(() => {
     if (descriptionRef.current) {
@@ -465,7 +478,11 @@ const ArtworkDetails = () => {
                   {title || "The Distorted Face"}
                 </h1>
 
-                <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}>
+                <p
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate(`/userprofile/${artistId}`)}
+                  className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
+                >
                   by {artist || "Angel Ganev"}
                 </p>
 
