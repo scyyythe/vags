@@ -7,7 +7,7 @@ const createAPIClient = (
     ? `https://${window.location.hostname}/api/` // Ngrok frontend
     : window.location.hostname.includes("vercel")
     ? import.meta.env.VITE_API_URL
-    : `https://${window.location.hostname}/api/` // Default
+    : `https://${window.location.hostname}/api/`
 ) => {
   const apiClient = axios.create({
     baseURL,
@@ -15,10 +15,15 @@ const createAPIClient = (
   });
 
   apiClient.interceptors.request.use((config) => {
-    const accessToken = localStorage.getItem("access_token");
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    const isLoginOrRefresh = config.url?.includes("token") && !config.url?.includes("refresh");
+
+    if (!isLoginOrRefresh) {
+      const accessToken = localStorage.getItem("access_token");
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
     }
+
     return config;
   });
 
@@ -27,8 +32,9 @@ const createAPIClient = (
     async (error) => {
       const originalRequest = error.config;
 
-      // Skip if it's a login or refresh endpoint
-      if (originalRequest.url.includes("token") || originalRequest.url.includes("login")) {
+      const isLoginOrRefresh = originalRequest.url?.includes("token") && !originalRequest.url?.includes("refresh");
+
+      if (isLoginOrRefresh) {
         return Promise.reject(error);
       }
 

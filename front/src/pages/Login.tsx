@@ -7,6 +7,7 @@ import apiClient from "../utils/apiClient";
 import SystemMessage from "../components/page/SystemMessage";
 import { toast } from "sonner";
 import { useGoogleLogin } from "@react-oauth/google";
+import { AxiosError } from "axios";
 
 const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [formData, setFormData] = useState({
@@ -37,19 +38,26 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setMessage(null);
+
     if (!formData.email || !formData.password) {
       toast.error("Missing information", {
         description: "Please fill in all required fields.",
       });
       return;
     }
+
     try {
-      const response = await apiClient.post("token/", formData);
+      const response = await apiClient.post<{
+        access_token: string;
+        refresh_token: string;
+        user_id: string;
+        email: string;
+      }>("token/", formData);
+
       const { access_token, refresh_token, user_id, email } = response.data;
 
       if (!access_token || !refresh_token) {
@@ -66,11 +74,13 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       });
 
       navigate("/explore");
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as AxiosError<{ error: string }>;
+
       console.error("Login error:", error);
 
       toast.error("Login failed", {
-        description: error?.response?.data?.error || "Please check your credentials and try again.",
+        description: error.response?.data?.error || "Please check your credentials and try again.",
       });
     }
   };

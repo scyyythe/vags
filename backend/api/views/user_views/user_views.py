@@ -67,7 +67,7 @@ class CustomTokenObtainPairView(APIView):
 
         user = User.objects(email=email).first()
         if not user or not user.password or not bcrypt.checkpw(password, user.password.encode("utf-8")):
-            return Response({"error": "Please check your credentials and try again.tials"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"error": "Please check your credentials and try again"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
       
