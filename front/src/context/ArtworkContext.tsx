@@ -3,12 +3,13 @@ import { createContext, useContext, useState, ReactNode } from "react";
 export interface Artwork {
   id: string;
   artistName: string;
+  artistId: string;
   artistImage: string;
   artworkImage: string;
   title?: string;
   price?: string;
   currency?: string;
-  likesCount?: number; 
+  likesCount?: number;
 }
 
 interface ArtworkContextType {
@@ -25,9 +26,5 @@ export const useArtworkContext = () => useContext(ArtworkContext);
 
 export const ArtworkProvider = ({ children }: { children: ReactNode }) => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
-  return (
-    <ArtworkContext.Provider value={{ artworks, setArtworks }}>
-      {children}
-    </ArtworkContext.Provider>
-  );
+  return <ArtworkContext.Provider value={{ artworks, setArtworks }}>{children}</ArtworkContext.Provider>;
 };
