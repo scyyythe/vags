@@ -22,11 +22,20 @@ interface Artwork {
   artworkImage: string;
   likesCount: number;
 }
-const fetchArtworks = async (currentPage: number): Promise<Artwork[]> => {
+
+const fetchArtworks = async (currentPage: number, userId?: string): Promise<Artwork[]> => {
   try {
-    const response = await apiClient.get("art/list/", {
-      params: { page: currentPage, limit: 20 },
-    });
+    const params: { page: number; limit: number; userId?: string } = {
+      page: currentPage,
+      limit: 20,
+    };
+
+    if (userId) {
+      params.userId = userId;
+    }
+
+    const response = await apiClient.get("art/list/", { params });
+
     return response.data.map((artwork: Artwork) => ({
       id: artwork.id,
       title: artwork.title,
@@ -53,10 +62,10 @@ const fetchArtworks = async (currentPage: number): Promise<Artwork[]> => {
   }
 };
 
-const useArtworks = (currentPage: number) => {
+const useArtworks = (currentPage: number, userId?: string) => {
   return useQuery({
-    queryKey: ["artworks", currentPage],
-    queryFn: () => fetchArtworks(currentPage),
+    queryKey: ["artworks", currentPage, userId],
+    queryFn: () => fetchArtworks(currentPage, userId),
     staleTime: 1000 * 60 * 5,
   });
 };
