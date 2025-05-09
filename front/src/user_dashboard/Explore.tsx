@@ -88,7 +88,7 @@ const Explore = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 pb-4">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-3">
             <div className="flex items-center justify-between mb-6 lg:w-[133%]">
               <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
@@ -113,7 +113,7 @@ const Explore = () => {
               </div>
             </div>
 
-            <div className="h-[800px] lg:w-[133%] custom-scrollbars">
+            <div className="lg:w-[133%] custom-scrollbars pb-4">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                 {isLoading ? (
                   <div className="col-span-full text-center text-sm text-gray-500 ">Loading artworks...</div>
