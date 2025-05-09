@@ -9,9 +9,9 @@ import ArtCardMenu from "./ArtCardMenu";
 import OwnerMenu from "@/components/user_dashboard/own_profile/Menu";
 import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
-import useLikeStatus from "@/hooks/interactions/useLikeStatus";
-import useArtworkDetails from "@/hooks/artworks/useArtworkDetails";
 
+import useArtworkDetails from "@/hooks/artworks/useArtworkDetails";
+import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 interface ArtCardProps {
   id: string;
   artistId: string;
@@ -41,19 +41,17 @@ const ArtCard = ({
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const { isFavorite, handleFavorite } = useFavorite(id);
 
-  const { data, error, isLoading } = useLikeStatus(id);
+  const { data, isLiked, isSaved } = useArtworkStatus(id);
+  const { handleFavorite } = useFavorite(id);
   const { likedArtworks, likeCounts, setLikedArtworks, setLikeCounts, toggleLike } = useContext(LikedArtworksContext);
-  const isLiked = likedArtworks[id] || false;
+
   const { openPopup } = useDonation();
   const { isLoading: detailsLoading } = useArtworkDetails();
 
   useEffect(() => {
-    if (data) {
-      setLikedArtworks((prev) => ({ ...prev, [id]: data.isLiked }));
-    }
-  }, [data, id, setLikedArtworks]);
+    setLikedArtworks((prev) => ({ ...prev, [id]: isLiked }));
+  }, [isLiked, id, setLikedArtworks]);
 
   const handleLike = () => {
     if (id) {
@@ -91,7 +89,6 @@ const ArtCard = ({
     return null;
   }
   if (detailsLoading) return <div>Loading...</div>;
-  if (error) return <div>Error fetching like status</div>;
 
   return (
     <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4">
@@ -117,7 +114,7 @@ const ArtCard = ({
               onFavorite={handleSaved}
               onHide={handleHide}
               onReport={handleReport}
-              isFavorite={isFavorite}
+              isFavorite={isSaved}
               isReported={false}
             />
           ) : (
