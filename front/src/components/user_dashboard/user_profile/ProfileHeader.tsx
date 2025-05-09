@@ -85,7 +85,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       {/* Profile Info */}
       <div className="flex flex-col items-center -mt-14 md:-mt-14">
         {/* Profile Image */}
-        <div className="w-28 h-28 rounded-full border-4 border-white overflow-hidden z-50">
+        <div className="w-28 h-28 rounded-full border-4 border-white overflow-hidden z-20">
           <img 
             src={profileImage} 
             alt={name} 
