@@ -1,4 +1,5 @@
 import Header from "@/components/user_dashboard/navbar/Header";
+import { Footer } from "@/components/user_dashboard/footer/Footer";
 import ArtsContainer from "@/components/user_dashboard/Bidding/featured/ArtsContainer";
 import Components from "@/components/user_dashboard/Bidding/navbar/Components";
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard"; 
@@ -109,7 +110,7 @@ const Bidding = () => {
             <Components
             />
         </main> 
-        <div className="h-[800px] lg:w-[100%] custom-scrollbars px-6">
+        <div className="lg:w-[100%] custom-scrollbars px-6 pb-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {/* BidCards */}
               {artworks.map((artwork) => (
@@ -132,6 +133,9 @@ const Bidding = () => {
               ))}
             </div>
           </div>
+      </div>
+      <div >
+        <Footer />
       </div>
     </div>
   );
