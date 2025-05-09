@@ -14,10 +14,6 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
     }
   }, [accessToken, setShowLoginModal, navigate]);
 
-  if (!accessToken) {
-    return null;
-  }
-
   return children;
 };
 

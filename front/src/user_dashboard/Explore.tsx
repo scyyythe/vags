@@ -124,6 +124,7 @@ const Explore = () => {
                       key={card.id}
                       id={card.id}
                       artistName={card.artistName}
+                      artistId={card.artist_id}
                       artistImage={card.artistImage}
                       artworkImage={card.artworkImage}
                       title={card.title}

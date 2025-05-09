@@ -7,7 +7,7 @@ const createAPIClient = (
     ? `https://${window.location.hostname}/api/` // Ngrok frontend
     : window.location.hostname.includes("vercel")
     ? import.meta.env.VITE_API_URL
-    : `https://${window.location.hostname}/api/` // Default
+    : `https://${window.location.hostname}/api/`
 ) => {
   const apiClient = axios.create({
     baseURL,
@@ -15,10 +15,15 @@ const createAPIClient = (
   });
 
   apiClient.interceptors.request.use((config) => {
-    const accessToken = localStorage.getItem("access_token");
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    const isLoginOrRefresh = config.url?.includes("token") && !config.url?.includes("refresh");
+
+    if (!isLoginOrRefresh) {
+      const accessToken = localStorage.getItem("access_token");
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
     }
+
     return config;
   });
 
@@ -27,6 +32,12 @@ const createAPIClient = (
     async (error) => {
       const originalRequest = error.config;
 
+      const isLoginOrRefresh = originalRequest.url?.includes("token") && !originalRequest.url?.includes("refresh");
+
+      if (isLoginOrRefresh) {
+        return Promise.reject(error);
+      }
+
       if (error.response && error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
 
@@ -34,7 +45,7 @@ const createAPIClient = (
           const refreshToken = localStorage.getItem("refresh_token");
 
           const response = await axios.post(
-            "http://127.0.0.1:8000/api/token/refresh/",
+            `${baseURL}token/refresh/`,
             { refresh: refreshToken },
             { headers: { "Content-Type": "application/json" } }
           );

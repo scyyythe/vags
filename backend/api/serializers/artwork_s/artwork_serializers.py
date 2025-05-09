@@ -68,24 +68,26 @@ class ArtSerializer(serializers.Serializer):
         return instance
 
     def to_representation(self, instance):
-       
+        artist_id = None
         artist_name = None
         if instance.artist:
+            artist_id = str(instance.artist.id)
             artist_name = f"{instance.artist.first_name} {instance.artist.last_name}"
 
         return {
             "id": str(instance.id),
             "title": instance.title,
-            "artist": artist_name, 
+            "artist_id": artist_id,
+            "artist": artist_name,
             "category": instance.category,
             "medium": instance.medium,
             "art_status": instance.art_status,
             "price": instance.price,
             "size": instance.size,
             "description": instance.description,
-            "visibility": instance.visibility, 
+            "visibility": instance.visibility,
             "created_at": instance.created_at,
             "updated_at": instance.updated_at,
-            "image_url": instance.image_url, 
-            "likes_count": self.get_likes_count(instance)
+            "image_url": instance.image_url,
+            "likes_count": self.get_likes_count(instance),
         }
