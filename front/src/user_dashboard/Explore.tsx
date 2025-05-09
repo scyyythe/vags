@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
+import { Footer } from "@/components/user_dashboard/footer/Footer";
 import ArtGalleryContainer from "@/components/user_dashboard/Explore/gallery/ArtGalleryContainer";
 import SearchBar from "@/components/user_dashboard/local_components/SearchBar";
 import CategoryFilter from "@/components/user_dashboard/Explore/navigation/CategoryFilter";
@@ -87,7 +88,7 @@ const Explore = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 pb-4">
           <div className="lg:col-span-3">
             <div className="flex items-center justify-between mb-6 lg:w-[133%]">
               <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
@@ -138,6 +139,10 @@ const Explore = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div >
+        <Footer />
       </div>
     </div>
   );
