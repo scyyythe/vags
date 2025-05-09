@@ -141,7 +141,7 @@ const Explore = () => {
         </div>
       </div>
 
-      <div >
+      <div>
         <Footer />
       </div>
     </div>
