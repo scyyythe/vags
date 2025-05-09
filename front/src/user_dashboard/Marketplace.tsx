@@ -1,4 +1,5 @@
 import Header from "@/components/user_dashboard/navbar/Header";
+import { Footer } from "@/components/user_dashboard/footer/Footer";
 import CategoryFilter from "@/components/user_dashboard/Explore/navigation/CategoryFilter";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import { toast } from "sonner";
@@ -84,7 +85,12 @@ const Marketplace = () => {
           </div>
         </div>
       </div>
+
+      {/* <div >
+        <Footer />
+      </div> */}
     </div>
+    
   );
 };
 

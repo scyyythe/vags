@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useRef, useEffect } from "react";
 import ProfileDropdown from "../local_components/ProfileDropdown";
+import Notifications from "../local_components/Notification";
 import { getLoggedInUserId } from "@/auth/decode";
 
 const Header = () => {
@@ -13,6 +14,8 @@ const Header = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const notificationRef = useRef(null);
   const avatarRef = useRef<HTMLDivElement>(null);
 
   const userId = getLoggedInUserId();
@@ -20,6 +23,7 @@ const Header = () => {
   if (!userId) {
     return <p>No user found</p>;
   }
+
   const toggleProfileDropdown = () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
@@ -108,9 +112,19 @@ const Header = () => {
           </button>
 
           {/* Notification Icon */}
-          <button className="button-icon">
-            <Bell size={15} />
-          </button>
+          <div className="relative top-[2px] px-1" ref={notificationRef}>
+            <button
+              onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+              className="button-icon"
+            >
+              <Bell size={15} />
+            </button>
+            {isNotificationOpen && (
+              <div className="absolute -right-44 mt-4 z-50">
+                <Notifications />
+              </div>
+            )}
+          </div>
 
           {/* Upgrade Button */}
           <Button
@@ -120,17 +134,35 @@ const Header = () => {
             Upgrade
           </Button>
 
-          {/* User Avatar */}
+          {/* Avatar with profile link */}
           <div className="relative" ref={avatarRef}>
-            <Avatar className="h-8 w-8 border cursor-pointer" onClick={toggleProfileDropdown}>
-              <Link to={`/userprofile/${userId}`}>
-                <AvatarFallback>
-                  <img src="/pics/1.jpg" alt="JAI" />
-                </AvatarFallback>
-              </Link>
-            </Avatar>
-            <ProfileDropdown isOpen={isProfileDropdownOpen} onClose={() => setIsProfileDropdownOpen(false)} />
+            {/* Avatar with profile link */}
+            <Link to={`/userprofile/${userId}`}>
+              <div className="h-8 w-8 mr-7 rounded-full overflow-hidden border cursor-pointer">
+                <img
+                  src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
+                  alt="JAI"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </Link>
+
+            {/* Dropdown toggle button */}
+            <button onClick={toggleProfileDropdown} className="absolute top-0 left-10 mt-1 ml-1 z-10">
+              <i className='bx bx-chevron-down text-xl'></i>
+            </button>
+
+            {/* ProfileDropdown component */}
+            {isProfileDropdownOpen && (
+              <div className="absolute left-20 top-10 z-50">
+                <ProfileDropdown
+                  isOpen={isProfileDropdownOpen}
+                  onClose={() => setIsProfileDropdownOpen(false)}
+                />
+              </div>
+            )}
           </div>
+
         </div>
       </div>
     </header>
