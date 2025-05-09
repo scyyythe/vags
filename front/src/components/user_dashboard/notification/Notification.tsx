@@ -129,6 +129,11 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
       navigate("/settings/notifications");
       onClose();
     };
+    
+    const handleSeeAll = () => {
+      navigate("/all-notifications");
+      onClose();
+    };
 
     return ( 
         <div className="w-[330px] max-h-[540px] rounded-xl bg-white shadow-md">
@@ -142,7 +147,7 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
                     />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-38">
-                    <DropdownMenuItem className="text-[10px]">See all</DropdownMenuItem>
+                    <DropdownMenuItem className="text-[10px]" onClick={handleSeeAll}>See all</DropdownMenuItem>
                     <DropdownMenuItem className="text-[10px]" onClick={handleNotification}>Notification settings</DropdownMenuItem>
                 </DropdownMenuContent>
                 </DropdownMenu>

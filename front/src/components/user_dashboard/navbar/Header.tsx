@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useRef, useEffect } from "react";
 import ProfileDropdown from "../local_components/ProfileDropdown";
-import Notifications from "../local_components/Notification";
+import Notifications from "../notification/Notification";
 import { getLoggedInUserId } from "@/auth/decode";
 
 const Header = () => {
@@ -121,7 +121,7 @@ const Header = () => {
             </button>
             {isNotificationOpen && (
               <div className="absolute -right-44 mt-4 z-50">
-                <Notifications />
+                <Notifications isOpen={true} onClose={() => setIsNotificationOpen(false)}/>
               </div>
             )}
           </div>

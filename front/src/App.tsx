@@ -35,6 +35,8 @@ import NotificationsSettings from "./components/user_dashboard/Settings/pages/No
 import BillingSettings from "./components/user_dashboard/Settings/pages/BillingSettings";
 import HelpCenter from "./components/user_dashboard/Settings/pages/HelpCenter";
 
+import AllNotifications from "./components/user_dashboard/notification/AllNotifications";
+
 import ProtectedRoute from "./auth/ProtectedRoute";
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
@@ -83,6 +85,8 @@ const App = () => {
                       <Route path="/bidding" element={<ProtectedRoute children={<Bidding />} />} />
                       <Route path="/marketplace" element={<ProtectedRoute children={<Marketplace />} />} />
                       <Route path="/exhibits" element={<ProtectedRoute children={<Exhibits />} />} />
+
+                      <Route path="/all-notifications" element={<AllNotifications />} />
 
                       <Route path="/settings" element={<ProtectedRoute children={<Settings />} />}>
                         <Route path="edit-profile" element={<ProtectedRoute children={<EditProfile />} />} />
