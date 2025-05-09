@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 
 const fetchLikeStatus = async (id: string) => {
-  const response = await apiClient.get(`/likes/${id}/status/`);
+  const response = await apiClient.get(`/artworks/${id}/status/`);
   return response.data;
 };
 

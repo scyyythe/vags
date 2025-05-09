@@ -8,7 +8,7 @@ const useFavorite = (id) => {
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
       try {
-        const response = await apiClient.get(`/saved/${id}/status/`);
+        const response = await apiClient.get(`/artworks/${id}/status/`);
         setIsFavorite(response.data.isSaved);
       } catch (error) {
         console.error("Failed to fetch favorite status:", error);
