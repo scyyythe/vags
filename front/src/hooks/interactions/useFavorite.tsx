@@ -5,21 +5,6 @@ import { toast } from "sonner";
 const useFavorite = (id) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
-  useEffect(() => {
-    const fetchFavoriteStatus = async () => {
-      try {
-        const response = await apiClient.get(`/artworks/${id}/status/`);
-        setIsFavorite(response.data.isSaved);
-      } catch (error) {
-        console.error("Failed to fetch favorite status:", error);
-      }
-    };
-
-    if (id) {
-      fetchFavoriteStatus();
-    }
-  }, [id]);
-
   const handleFavorite = async () => {
     try {
       const response = await apiClient.post(`saved/${id}/`);

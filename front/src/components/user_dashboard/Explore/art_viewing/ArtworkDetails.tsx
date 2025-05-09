@@ -14,11 +14,12 @@ import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import useArtworkDetails from "@/hooks/artworks/useArtworkDetails";
-
+import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
-  const isLiked = likedArtworks[id] || false;
+  const { handleFavorite } = useFavorite(id);
+  const { data, isLiked, isSaved } = useArtworkStatus(id);
   const { openPopup } = useDonation();
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobile = useIsMobile();
@@ -37,7 +38,7 @@ const ArtworkDetails = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
+
   const [isReported, setIsReported] = useState(false);
 
   const [commentLikes, setCommentLikes] = useState<{ [commentId: string]: number }>({});
@@ -108,8 +109,8 @@ const ArtworkDetails = () => {
     setMenuOpen(false);
   };
 
-  const handleFavorite = () => {
-    toggleFavorite();
+  const handleFavoriteClick = () => {
+    handleFavorite();
     setMenuOpen(false);
   };
 
@@ -464,10 +465,10 @@ const ArtworkDetails = () => {
 
                     <ArtCardMenu
                       isOpen={menuOpen}
-                      onFavorite={handleFavorite}
+                      onFavorite={handleFavoriteClick}
                       onHide={handleHide}
                       onReport={handleReport}
-                      isFavorite={isFavorite}
+                      isFavorite={isSaved}
                       isReported={isReported}
                       className={isMobile ? "mobile-menu-position" : ""}
                     />
