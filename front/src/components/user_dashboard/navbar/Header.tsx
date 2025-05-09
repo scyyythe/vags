@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useRef, useEffect } from "react";
 import ProfileDropdown from "../local_components/ProfileDropdown";
+import Notifications from "../local_components/Notification";
 import { getLoggedInUserId } from "@/auth/decode";
 
 const Header = () => {
@@ -13,6 +14,8 @@ const Header = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const notificationRef = useRef(null);
   const avatarRef = useRef<HTMLDivElement>(null);
 
   const userId = getLoggedInUserId();
@@ -20,6 +23,7 @@ const Header = () => {
   if (!userId) {
     return <p>No user found</p>;
   }
+
   const toggleProfileDropdown = () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
@@ -108,9 +112,19 @@ const Header = () => {
           </button>
 
           {/* Notification Icon */}
-          <button className="button-icon">
-            <Bell size={15} />
-          </button>
+          <div className="relative top-[2px] px-1" ref={notificationRef}>
+            <button
+              onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+              className="button-icon"
+            >
+              <Bell size={15} />
+            </button>
+            {isNotificationOpen && (
+              <div className="absolute -right-44 mt-4 z-50">
+                <Notifications />
+              </div>
+            )}
+          </div>
 
           {/* Upgrade Button */}
           <Button
