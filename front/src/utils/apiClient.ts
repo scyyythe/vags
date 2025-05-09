@@ -15,7 +15,12 @@ const createAPIClient = (
   });
 
   apiClient.interceptors.request.use((config) => {
-    const isLoginOrRefresh = config.url?.includes("token") && !config.url?.includes("refresh");
+    if (!config || !config.url) {
+      console.error("Request config is invalid:", config);
+      return Promise.reject(new Error("Invalid request configuration"));
+    }
+
+    const isLoginOrRefresh = config.url.includes("token") && !config.url.includes("refresh");
 
     if (!isLoginOrRefresh) {
       const accessToken = localStorage.getItem("access_token");
