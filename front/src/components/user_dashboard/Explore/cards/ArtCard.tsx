@@ -95,7 +95,7 @@ const ArtCard = ({
 
   return (
     <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4">
-      <div className="py-1 px-4 flex justify-between items-center">
+      <div className="py-1 px-1 flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <Avatar className="h-5 w-5 border">
             <AvatarImage src={artistImage} alt={artistName} />
@@ -134,7 +134,7 @@ const ArtCard = ({
         </div>
       </div>
       <Link to={`/artwork/${id}`} state={{ artworkImage, artistId, artistName, title, likesCount }} className="w-full">
-        <div className="aspect-square overflow-hidden p-4">
+        <div className="aspect-square overflow-hidden py-2 px-1">
           <img
             src={artworkImage}
             alt={`Artwork by ${artistName}`}
@@ -142,7 +142,7 @@ const ArtCard = ({
           />
         </div>
       </Link>
-      <div className="px-4 py-1">
+      <div className="px-1 py-1">
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium">
             {title ? title.slice(0, 10) + (title.length > 10 ? "..." : "") : "Untitled Artwork"}
