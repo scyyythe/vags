@@ -4,7 +4,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <div className="w-[100%] border-t bg-gray-100 py-2 border-none">
+    <div className="w-[100%] bg-gray-100 py-2">
       <div className="container flex items-center justify-between px-4 md:px-6">
         <div className="flex gap-4 text-[10px] text-muted-foreground">
             <a href="/privacy" className="hover:text-foreground transition-colors">

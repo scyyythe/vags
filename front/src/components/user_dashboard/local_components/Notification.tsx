@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bell, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -8,6 +9,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+
+interface NotificationsProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
 const notifications = [
   {
@@ -114,10 +120,17 @@ const notifications = [
   },
 ];
 
-export default function Notifications() {
-    const [settingsOpen, setSettingsOpen] = useState(false);
 
-    return (
+const Notification = ({ isOpen, onClose }: NotificationsProps) => {
+    const [settingsOpen, setSettingsOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const handleNotification = () => {
+      navigate("/settings/notifications");
+      onClose();
+    };
+
+    return ( 
         <div className="w-[330px] max-h-[540px] rounded-xl bg-white shadow-md">
             <div className="flex items-center justify-between p-4 border-b">
                 <h2 className="font-semibold text-sm">Notifications</h2>
@@ -130,7 +143,7 @@ export default function Notifications() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-38">
                     <DropdownMenuItem className="text-[10px]">See all</DropdownMenuItem>
-                    <DropdownMenuItem className="text-[10px]">Notification settings</DropdownMenuItem>
+                    <DropdownMenuItem className="text-[10px]" onClick={handleNotification}>Notification settings</DropdownMenuItem>
                 </DropdownMenuContent>
                 </DropdownMenu>
             </div>
@@ -197,4 +210,5 @@ export default function Notifications() {
             </ScrollArea>
         </div>
     );
-}    
+}; 
+export default Notification;  

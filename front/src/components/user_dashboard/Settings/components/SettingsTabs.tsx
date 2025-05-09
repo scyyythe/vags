@@ -1,6 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Edit, User, Shield, Bell, CreditCard, HelpCircle } from "lucide-react";
+import { User, Bell, CreditCard, HelpCircle } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const SettingsTabs = () => {
