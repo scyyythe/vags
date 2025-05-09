@@ -127,21 +127,35 @@ const Header = () => {
 
           {/* User Avatar */}
           <div className="relative" ref={avatarRef}>
-            <Avatar 
-              className="h-8 w-8 border cursor-pointer" 
-              onClick={toggleProfileDropdown}
-            >
-              <Link to="/userprofile/">
-                <AvatarFallback>
-                  <img src="/pics/1.jpg" alt="JAI" />
-                </AvatarFallback>
-              </Link>
-            </Avatar>
-            <ProfileDropdown 
-              isOpen={isProfileDropdownOpen} 
-              onClose={() => setIsProfileDropdownOpen(false)} 
-            />
+            {/* Avatar with profile link */}
+            <Link to="/userprofile/">
+              <div className="h-8 w-8 mr-6 rounded-full overflow-hidden border cursor-pointer">
+                <img
+                  src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
+                  alt="JAI"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </Link>
+
+            {/* Dropdown toggle button */}
+            <button onClick={toggleProfileDropdown} className="absolute top-0 left-10 mt-1 ml-1 z-10">
+              <i className='bx bx-chevron-down text-xl'></i>
+            </button>
+
+            {/* ProfileDropdown component */}
+            {isProfileDropdownOpen && (
+              <div className="absolute left-20 top-10 z-50">
+                {/* Profile dropdown */}
+                    <ProfileDropdown
+                      isOpen={isProfileDropdownOpen}
+                      onClose={() => setIsProfileDropdownOpen(false)}
+                    />
+            
+              </div>
+            )}
           </div>
+
         </div>
       </div>
     </header>
