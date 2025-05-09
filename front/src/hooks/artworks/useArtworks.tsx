@@ -5,6 +5,7 @@ interface Artwork {
   id: string;
   title: string;
   artistName: string;
+  artist_id: string;
   artist: string;
   description: string;
   category: string;
@@ -30,6 +31,7 @@ const fetchArtworks = async (currentPage: number): Promise<Artwork[]> => {
       id: artwork.id,
       title: artwork.title,
       artistName: artwork.artist,
+      artistId: artwork.artist_id,
       artistImage: "",
       description: artwork.description,
       style: artwork.category,

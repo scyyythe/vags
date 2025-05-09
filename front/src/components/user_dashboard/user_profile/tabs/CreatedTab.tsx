@@ -1,9 +1,10 @@
-import { useArtworkContext } from "@/context/ArtworkContext";
+import { useState, useMemo } from "react";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
-
+import useArtworks from "@/hooks/artworks/useArtworks";
 const CreatedTab = () => {
-  const { artworks } = useArtworkContext();
+  const [currentPage] = useState(1);
 
+  const { data: artworks } = useArtworks(currentPage);
   if (!artworks || artworks.length === 0) {
     return <p className="text-center text-sm text-gray-500">No artworks found.</p>;
   }
@@ -15,6 +16,7 @@ const CreatedTab = () => {
           key={art.id}
           id={art.id}
           artistName={art.artistName}
+          artistId={art.artist_id}
           artistImage={art.artistImage || ""}
           artworkImage={art.artworkImage}
           title={art.title}
