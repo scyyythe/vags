@@ -6,9 +6,9 @@ const CreatedTab = () => {
 
   const { data: artworks } = useArtworks(currentPage);
   if (!artworks || artworks.length === 0) {
-    return <p className="text-center text-sm text-gray-500">No artworks found.</p>;
+    return <p className="text-center text-sm text-gray-500">You have not created anything yet.</p>;
   }
-
+   
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-6">
       {artworks.map((art) => (
