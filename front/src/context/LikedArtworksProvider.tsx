@@ -1,4 +1,3 @@
-// src/context/LikedArtworksContext.tsx
 import { createContext, useState, ReactNode } from "react";
 import { toast } from "sonner";
 import apiClient from "@/utils/apiClient";
