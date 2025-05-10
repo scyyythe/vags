@@ -62,11 +62,12 @@ const fetchArtworks = async (currentPage: number, userId?: string): Promise<Artw
   }
 };
 
-const useArtworks = (currentPage: number, userId?: string) => {
+const useArtworks = (currentPage: number, userId?: string, enabled: boolean = true) => {
   return useQuery({
     queryKey: ["artworks", currentPage, userId],
     queryFn: () => fetchArtworks(currentPage, userId),
     staleTime: 1000 * 60 * 5,
+    enabled: enabled,
   });
 };
 
