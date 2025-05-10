@@ -9,7 +9,7 @@ import ArtCardMenu from "./ArtCardMenu";
 import OwnerMenu from "@/components/user_dashboard/own_profile/Menu";
 import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
-
+import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import useArtworkDetails from "@/hooks/artworks/useArtworkDetails";
 import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 interface ArtCardProps {
@@ -47,7 +47,7 @@ const ArtCard = ({
   const { likedArtworks, likeCounts, setLikedArtworks, setLikeCounts, toggleLike } = useContext(LikedArtworksContext);
 
   const { openPopup } = useDonation();
-  const { isLoading: detailsLoading } = useArtworkDetails();
+  const { isLoading: detailsLoading } = useArtworkDetails(id);
 
   useEffect(() => {
     setLikedArtworks((prev) => ({ ...prev, [id]: isLiked }));
@@ -88,8 +88,7 @@ const ArtCard = ({
   if (isHidden) {
     return null;
   }
-  if (detailsLoading) return <div>Loading...</div>;
-
+  if (detailsLoading) return <ArtCardSkeleton />;
   return (
     <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4">
       <div className="py-1 px-1 flex justify-between items-center">

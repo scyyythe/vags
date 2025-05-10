@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import useArtworks from "@/hooks/artworks/useArtworks";
 import useFetchPopularArtworks from "@/hooks/artworks/useFetchPopularArtworks";
+import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 
 const Explore = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const Explore = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage] = useState(1);
-  const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true);
+  const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all");
   const { data: popularArtworks } = useFetchPopularArtworks(1);
 
   const slideshowData = popularArtworks
@@ -115,7 +116,7 @@ const Explore = () => {
             <div className="lg:w-[133%] custom-scrollbars pb-4">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                 {isLoading ? (
-                  <div className="col-span-full text-center text-sm text-gray-500 ">Loading artworks...</div>
+                  Array.from({ length: 6 }).map((_, index) => <ArtCardSkeleton key={index} />)
                 ) : error ? (
                   <div className="col-span-full text-center text-sm text-gray-500 ">Error loading artworks</div>
                 ) : (
