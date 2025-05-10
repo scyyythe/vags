@@ -12,6 +12,8 @@ import useFavorite from "@/hooks/interactions/useFavorite";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import useArtworkDetails from "@/hooks/artworks/useArtworkDetails";
 import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
+import useLikeStatus from "@/hooks/interactions/useLikeStatus";
+
 interface ArtCardProps {
   id: string;
   artistId: string;
@@ -42,17 +44,20 @@ const ArtCard = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
-  const { data, isLiked, isSaved } = useArtworkStatus(id);
-  const { handleFavorite } = useFavorite(id);
+  // const { data, isLiked, isSaved } = useArtworkStatus(id);
+  // const { handleFavorite } = useFavorite(id);
+  const { data, error, isLoading } = useLikeStatus(id);
+  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
   const { likedArtworks, likeCounts, setLikedArtworks, setLikeCounts, toggleLike } = useContext(LikedArtworksContext);
 
   const { openPopup } = useDonation();
   const { isLoading: detailsLoading } = useArtworkDetails(id);
-
+  const isLiked = likedArtworks[id] || false;
   useEffect(() => {
-    setLikedArtworks((prev) => ({ ...prev, [id]: isLiked }));
-  }, [isLiked, id, setLikedArtworks]);
-
+    if (data) {
+      setLikedArtworks((prev) => ({ ...prev, [id]: data.isLiked }));
+    }
+  }, [data, id, setLikedArtworks]);
   const handleLike = () => {
     if (id) {
       toggleLike(id);
@@ -70,10 +75,10 @@ const ArtCard = ({
     setMenuOpen(false);
   }, []);
 
-  const handleSaved = useCallback(() => {
-    handleFavorite();
+  const handleFavorite = () => {
+    toggleFavorite();
     setMenuOpen(false);
-  }, [handleFavorite]);
+  };
 
   const handleTipJar = () => {
     openPopup({
@@ -109,10 +114,10 @@ const ArtCard = ({
           {isExplore ? (
             <ArtCardMenu
               isOpen={menuOpen}
-              onFavorite={handleSaved}
+              onFavorite={handleFavorite}
               onHide={handleHide}
               onReport={handleReport}
-              isFavorite={isSaved}
+              isFavorite={isFavorite}
               isReported={false}
             />
           ) : (

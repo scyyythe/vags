@@ -18,8 +18,8 @@ import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
-  const { handleFavorite } = useFavorite(id);
-  const { data, isLiked, isSaved } = useArtworkStatus(id);
+  const isLiked = likedArtworks[id] || false;
+  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
   const { openPopup } = useDonation();
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobile = useIsMobile();
@@ -73,7 +73,6 @@ const ArtworkDetails = () => {
       toggleLike(id);
     }
   };
-
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (comment.trim()) {
@@ -109,11 +108,10 @@ const ArtworkDetails = () => {
     setMenuOpen(false);
   };
 
-  const handleFavoriteClick = () => {
-    handleFavorite();
+  const handleFavorite = () => {
+    toggleFavorite();
     setMenuOpen(false);
   };
-
   const toggleDetailsPanel = () => {
     setIsDetailOpen(!isDetailOpen);
   };
@@ -472,10 +470,10 @@ const ArtworkDetails = () => {
 
                     <ArtCardMenu
                       isOpen={menuOpen}
-                      onFavorite={handleFavoriteClick}
+                      onFavorite={handleFavorite}
                       onHide={handleHide}
                       onReport={handleReport}
-                      isFavorite={isSaved}
+                      isFavorite={isFavorite}
                       isReported={isReported}
                       className={isMobile ? "mobile-menu-position" : ""}
                     />
