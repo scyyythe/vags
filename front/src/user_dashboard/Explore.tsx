@@ -18,8 +18,7 @@ const Explore = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage] = useState(1);
-
-  const { data: artworks, isLoading, error } = useArtworks(currentPage);
+  const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true);
   const { data: popularArtworks } = useFetchPopularArtworks(1);
 
   const slideshowData = popularArtworks
