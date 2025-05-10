@@ -335,7 +335,14 @@ const ArtworkDetails = () => {
                   <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
                     <div className="mb-6">
                       <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
-                      <p className="text-[9px] text-gray-700">{style || "Painting"}</p>
+                      <p className="text-[9px] text-gray-700">
+                        {style
+                          ? style
+                              .split(" ")
+                              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                              .join(" ")
+                          : "Painting"}
+                      </p>
                     </div>
                     <div className="mb-6">
                       <h3 className="text-[9px] font-medium mb-1">Medium</h3>

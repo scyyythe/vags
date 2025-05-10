@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 
-interface Artwork {
+export interface Artwork {
   id: string;
   title: string;
   artistName: string;
@@ -23,18 +23,24 @@ interface Artwork {
   likesCount: number;
 }
 
-const fetchArtworks = async (currentPage: number, userId?: string): Promise<Artwork[]> => {
+const fetchArtworks = async (
+  currentPage: number,
+  userId?: string,
+  endpointType: "all" | "created-by-me" = "all"
+): Promise<Artwork[]> => {
   try {
     const params: { page: number; limit: number; userId?: string } = {
       page: currentPage,
       limit: 20,
     };
 
-    if (userId) {
-      params.userId = userId;
+    let url = "art/list/";
+
+    if (endpointType === "created-by-me") {
+      url = "art/list/created-by-me/";
     }
 
-    const response = await apiClient.get("art/list/", { params });
+    const response = await apiClient.get(url, { params });
 
     return response.data.map((artwork: Artwork) => ({
       id: artwork.id,
@@ -62,10 +68,16 @@ const fetchArtworks = async (currentPage: number, userId?: string): Promise<Artw
   }
 };
 
-const useArtworks = (currentPage: number, userId?: string, enabled: boolean = true) => {
+const useArtworks = (
+  currentPage: number,
+  userId?: string,
+  enabled: boolean = true,
+  endpointType: "all" | "created-by-me" = "all",
+  filterCategory?: string
+) => {
   return useQuery({
-    queryKey: ["artworks", currentPage, userId],
-    queryFn: () => fetchArtworks(currentPage, userId),
+    queryKey: ["artworks", currentPage, userId, endpointType],
+    queryFn: () => fetchArtworks(currentPage, userId, endpointType),
     staleTime: 1000 * 60 * 5,
     enabled: enabled,
   });
