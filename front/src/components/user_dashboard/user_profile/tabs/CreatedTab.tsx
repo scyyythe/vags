@@ -14,7 +14,7 @@ const CreatedTab = ({ filteredArtworks, isLoading }: CreatedTabProps) => {
   }, []);
 
   if (!isLoading && filteredArtworks.length === 0) {
-    return <p className="text-center text-sm text-gray-500 col-span-full">You have not created that yet.</p>;
+    return <p className="text-center text-sm text-gray-500 col-span-full">You have not created that artwork yet.</p>;
   }
 
   return (
