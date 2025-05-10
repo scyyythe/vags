@@ -42,6 +42,7 @@ const useArtworkDetails = (explicitArtId?: string) => {
     style: state.style || artwork?.category || "Painting",
     description: state.description || artwork?.description || "No description available.",
     medium: state.medium || artwork?.medium || "Unknown Medium",
+    size: state.size || artwork?.size || "Unknown Size",
     status: state.status || artwork?.status || "Unknown Status",
     price: state.price || artwork?.price || 0,
     visibility: state.visibility || artwork?.visibility || "Public",

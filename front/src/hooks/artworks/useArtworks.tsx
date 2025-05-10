@@ -10,6 +10,7 @@ export interface Artwork {
   description: string;
   category: string;
   medium: string;
+  size: string;
   status: string;
   price: number;
   visibility: string;
@@ -51,6 +52,7 @@ const fetchArtworks = async (
       description: artwork.description,
       style: artwork.category,
       medium: artwork.medium,
+      size: artwork.size,
       status: artwork.status,
       price: artwork.price,
       visibility: artwork.visibility,
