@@ -8,8 +8,6 @@ const fetchArtworkStatus = async (id: string) => {
 };
 
 const useArtworkStatus = (id: string) => {
-  const queryClient = useQueryClient();
-
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["artworkStatus", id],
     queryFn: () => fetchArtworkStatus(id),

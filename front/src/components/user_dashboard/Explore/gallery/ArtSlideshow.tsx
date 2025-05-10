@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 
 interface Artwork {
   id: string;
@@ -29,11 +30,7 @@ const ArtSlideshow = ({ artworks, autoPlay = true, interval = 3000, onArtworkCli
   }, [autoPlay, interval, artworks.length]);
 
   if (artworks.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-muted-foreground">No artworks to display</p>
-      </div>
-    );
+    return <ArtCardSkeleton />;
   }
 
   return (

@@ -55,7 +55,6 @@ const ArtCard = ({
 
   const handleLike = () => {
     if (id) {
-      console.log("Before toggle:", isLiked);
       toggleLike(id);
     }
   };
