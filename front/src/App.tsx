@@ -1,9 +1,6 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { toast } from "sonner";
+import { Toaster }  from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState, createContext } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Index from "./pages/Index";
@@ -65,8 +62,8 @@ const App = () => {
         <TooltipProvider>
           <DonationProvider>
             <DonationWrapper>
-              <Toaster />
-              <Sonner />
+              <Toaster position="top-right" richColors />
+              {/* <Sonner /> */}
               <ModalProvider>
                 <ArtworkProvider>
                   <BrowserRouter>
