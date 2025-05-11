@@ -22,7 +22,7 @@ const CreatePost = () => {
 
   const [artStatus, setArtStatus] = useState("Active");
   const [price, setPrice] = useState(0);
-  const [visibility, setVisibility] = useState("public");
+  const [visibility, setVisibility] = useState("Public");
 
   const [height, setHeight] = useState("");
   const [width, setWidth] = useState("");
