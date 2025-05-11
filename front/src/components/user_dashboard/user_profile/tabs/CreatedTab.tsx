@@ -9,7 +9,6 @@ type CreatedTabProps = {
 };
 
 const CreatedTab = ({ filteredArtworks = [], isLoading }: CreatedTabProps) => {
-  // Default to an empty array if undefined
   const handleButtonClick = useCallback((artworkId: string) => {
     console.log(`Button clicked for artwork ID: ${artworkId}`);
   }, []);
