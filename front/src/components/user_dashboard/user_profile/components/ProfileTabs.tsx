@@ -31,7 +31,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
 
   const [selectedStatus, setSelectedStatus] = useState("Status");
   const [showStatusOptions, setShowStatusOptions] = useState(false);
-  const statusOptions = ["Active", "Archived", "Deleted"];
+  const statusOptions = ["Active", "Hidden", "Archived", "Deleted"];
 
 
   const [currentPage, setCurrentPage] = useState(1);
