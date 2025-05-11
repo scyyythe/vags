@@ -72,6 +72,8 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
       return;
     }
 
+    const loadingToast = toast.loading("Processing registration...");
+
     try {
       const response = await apiClient.post("user/register/", {
         username: formData.email.split("@")[0],
@@ -80,10 +82,13 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
         last_name: formData.lastName,
         password: formData.password,
       });
+
       console.log("Registration successful:", response.data);
+
       toast.success("Registration successful!", {
         description: "You can now log in.",
       });
+
       closeRegisterModal();
       setShowLoginModal(true);
     } catch (error: unknown) {
@@ -98,6 +103,8 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
           description: "An unexpected error occurred. Please try again later.",
         });
       }
+    } finally {
+      toast.dismiss(loadingToast);
     }
   };
 
