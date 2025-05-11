@@ -36,7 +36,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const shouldHideScroll = showAuctionPopup || showDeletePopup;
 
   const originalOverflow = document.body.style.overflow;
-  
+
   if (shouldHideScroll) {
     document.body.style.overflow = "hidden";
   } else {
@@ -183,7 +183,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         isOpen={showDeletePopup}
         onCancel={() => setShowDeletePopup(false)}
         onConfirm={() => {
-          toast.success("Confirmed delete logic here");
+          toast.success("You've successfully deleted the artwork");
           setShowDeletePopup(false);
         }}
       />

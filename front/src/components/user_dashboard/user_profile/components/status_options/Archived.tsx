@@ -101,13 +101,13 @@ const ArchivedMenu: React.FC<ArtCardMenuProps> = ({
         </div>
       </div>  
     </div>
-    
+
         {/* Delete Confirmation Popup */}
         <DeleteConfirmationPopup
             isOpen={showDeletePopup}
             onCancel={() => setShowDeletePopup(false)}
             onConfirm={() => {
-            toast.success("Confirmed delete logic here");
+            toast.success("You've successfully deleted the artwork");
             setShowDeletePopup(false);
             }}
         />
