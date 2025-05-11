@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
-// Extend the notification type to include date
 interface Notification {
   id: number;
   avatar?: string;
@@ -38,7 +37,7 @@ const notifications: Notification[] = [
     action: "commented on",
     target: "Ecosystems and conservation",
     time: "1m ago",
-    date: new Date(2025, 4, 9), // Today
+    date: new Date(2025, 4, 9),
   },
   {
     id: 2,
@@ -46,7 +45,7 @@ const notifications: Notification[] = [
     name: "Rosina Wisoky",
     action: "followed you",
     time: "20m ago",
-    date: new Date(2025, 4, 9), // Today
+    date: new Date(2025, 4, 9),
   },
   {
     id: 3,
@@ -57,7 +56,7 @@ const notifications: Notification[] = [
     token: "1EARTH",
     link: "#",
     time: "25m ago",
-    date: new Date(2025, 4, 9), // Today
+    date: new Date(2025, 4, 9), 
   },
   {
     id: 4,
@@ -67,7 +66,7 @@ const notifications: Notification[] = [
     target: "Research peat-based carbon capture",
     time: "1h ago",
     check: true,
-    date: new Date(2025, 4, 8), // Yesterday
+    date: new Date(2025, 4, 8), 
   },
   {
     id: 5,
@@ -78,7 +77,7 @@ const notifications: Notification[] = [
     target: "Carbon removal",
     time: "2h ago",
     money: true,
-    date: new Date(2025, 4, 8), // Yesterday
+    date: new Date(2025, 4, 8), 
   },
   {
     id: 6,
@@ -89,7 +88,7 @@ const notifications: Notification[] = [
     token: "1EARTH",
     link: "#",
     time: "25m ago",
-    date: new Date(2025, 4, 7), // 2 days ago
+    date: new Date(2025, 4, 7), 
   },
   {
     id: 7,
@@ -99,7 +98,7 @@ const notifications: Notification[] = [
     target: "Research peat-based carbon capture",
     time: "1h ago",
     check: true,
-    date: new Date(2025, 4, 7), // 2 days ago
+    date: new Date(2025, 4, 7), 
   },
   {
     id: 8,
@@ -110,7 +109,7 @@ const notifications: Notification[] = [
     target: "Carbon removal",
     time: "2h ago",
     money: true,
-    date: new Date(2025, 4, 6), // 3 days ago
+    date: new Date(2025, 4, 6), 
   },
   {
     id: 9,
@@ -121,7 +120,7 @@ const notifications: Notification[] = [
     token: "1EARTH",
     link: "#",
     time: "25m ago",
-    date: new Date(2025, 4, 6), // 3 days ago
+    date: new Date(2025, 4, 6), 
   },
   {
     id: 10,
@@ -131,7 +130,7 @@ const notifications: Notification[] = [
     target: "Research peat-based carbon capture",
     time: "1h ago",
     check: true,
-    date: new Date(2025, 4, 5), // 4 days ago
+    date: new Date(2025, 4, 5),
   },
   {
     id: 11,
@@ -142,7 +141,7 @@ const notifications: Notification[] = [
     target: "Carbon removal",
     time: "2h ago",
     money: true,
-    date: new Date(2025, 4, 1), // Several days ago
+    date: new Date(2025, 4, 1), 
   },
   // Add business-like notifications similar to the image
   {
@@ -152,7 +151,7 @@ const notifications: Notification[] = [
     action: "Call back at 3:00pm",
     target: "Spoke to Ms. Jenni from The Centre For Excellence - Call on 15/2/19 at 3:00pm",
     time: "3h ago",
-    date: new Date(2025, 4, 9), // Today
+    date: new Date(2025, 4, 9), 
   },
   {
     id: 13,
@@ -160,7 +159,7 @@ const notifications: Notification[] = [
     name: "Brandon Rosenthal",
     action: "Scheduled follow-up today!",
     time: "5h ago",
-    date: new Date(2025, 4, 9), // Today
+    date: new Date(2025, 4, 9), 
   },
   {
     id: 14,
@@ -168,7 +167,7 @@ const notifications: Notification[] = [
     action: "Workflow project | 5000$ | Sinform Solution",
     target: "This deal is about to close today!",
     time: "6h ago",
-    date: new Date(2025, 4, 8), // Yesterday
+    date: new Date(2025, 4, 8), 
   },
 ];
 
@@ -272,7 +271,7 @@ const AllNotifications = () => {
           </button>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg mb-6">
           <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="relative w-full sm:max-w-md">
@@ -336,7 +335,7 @@ const AllNotifications = () => {
                   >
                     <div className="flex-shrink-0 mr-4">
                       {n.avatar && (
-                        <img src={n.avatar} alt={n.name || ""} className="w-5 h-5 rounded-full object-cover" />
+                        <img src={n.avatar} alt={n.name} className="w-5 h-5 rounded-full object-cover" />
                       )}
                       {!n.avatar && n.icon === "crypto" && (
                         <div className="w-5 h-5 bg-purple-100 rounded-full flex items-center justify-center text-purple-500">
