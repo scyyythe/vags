@@ -8,6 +8,7 @@ import { useDonation } from "../../../../context/DonationContext";
 import ArtCardMenu from "./ArtCardMenu";
 import OwnerMenu from "@/components/user_dashboard/own_profile/Menu";
 import ArchivedMenu from "@/components/user_dashboard/user_profile/components/status_options/Archived";
+import DeletedMenu from "@/components/user_dashboard/user_profile/components/status_options/Deleted";
 import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
@@ -32,6 +33,7 @@ interface ArtCardProps {
   isExplore?: boolean;
   likesCount: number;
   isArchived?: boolean;
+  isDeleted?: boolean;
 }
 
 const ArtCard = ({
@@ -44,6 +46,7 @@ const ArtCard = ({
   isExplore = false,
   likesCount = 0,
   isArchived = false, 
+  isDeleted = false,
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
@@ -55,6 +58,8 @@ const ArtCard = ({
   const { openPopup } = useDonation();
   const { isLoading: detailsLoading } = useArtworkDetails(id);
 
+  const [isDeletedLocally, setIsDeletedLocally] = useState(false);
+
   const { mutate: hideArtwork } = useHideArtwork();
 
   const isLiked = likedArtworks[id] || false;
@@ -63,6 +68,7 @@ const ArtCard = ({
       setLikedArtworks((prev) => ({ ...prev, [id]: data.isLiked }));
     }
   }, [data, id, setLikedArtworks]);
+  
   const handleLike = () => {
     if (id) {
       toggleLike(id);
@@ -94,7 +100,7 @@ const ArtCard = ({
     });
   };
 
-  if (isHidden) {
+  if (isHidden || isDeletedLocally) {
     return null;
   }
 
@@ -118,7 +124,7 @@ const ArtCard = ({
           </button>
 
           {/* CONDITIONAL MENU */}
-          {isExplore ? (
+          {/* {isExplore ? (
             <ArtCardMenu
               isOpen={menuOpen}
               onFavorite={handleFavorite}
@@ -127,7 +133,24 @@ const ArtCard = ({
               isFavorite={isFavorite}
               isReported={false}
             />
-          ) : isArchived ? (
+          ) : isDeleted ? ( */}
+            <DeletedMenu
+              isOpen={menuOpen}
+              onEdit={() => {
+                console.log("Edit artwork");
+                setMenuOpen(false);
+              }}
+              onUnarchive={() => {
+                toast.success("Artwork restored");
+                setMenuOpen(false);
+              }}
+              onDelete={() => {
+                toast.success("Artwork permanently deleted");
+                setIsDeletedLocally(true);
+                setMenuOpen(false);
+              }}
+            />
+          {/* ) : isArchived ? (
             <ArchivedMenu
               isOpen={menuOpen}
               onEdit={() => console.log("Edit artwork")}
@@ -144,7 +167,7 @@ const ArtCard = ({
               onArchive={() => console.log("Archive")}
               isPublic={true}
             />
-          )}
+          )} */}
 
         </div>
       </div>

@@ -1,8 +1,7 @@
 import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Pencil, ArchiveRestore, Trash2 } from "lucide-react";
-import DeleteConfirmationPopup from "@/components/user_dashboard/own_profile/delete_popups/DeletePopup"; 
+import { ArchiveRestore, Trash2 } from "lucide-react";
+import DeletePermanently from "@/components/user_dashboard/own_profile/delete_popups/DeletePermanently"; 
 
 interface ArtCardMenuProps {
   isOpen: boolean;
@@ -14,23 +13,16 @@ interface ArtCardMenuProps {
 
 const BLACK = "#000000";
 
-const ArchivedMenu: React.FC<ArtCardMenuProps> = ({
+const DeletedMenu: React.FC<ArtCardMenuProps> = ({
   isOpen,
-  onEdit,
   onUnarchive,
   onDelete,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const navigate = useNavigate();
   const [showDeletePopup, setShowDeletePopup] = useState(false);
 
   if (!isOpen) return null;
-
-  const handleUpdateClick = () => {
-    navigate("/update");
-  };
 
   return (
     <>
@@ -40,62 +32,40 @@ const ArchivedMenu: React.FC<ArtCardMenuProps> = ({
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex flex-col items-start">
-        {/* Edit */}
-        <div className="flex items-center relative">
-          <button
-            onClick={() => {
-                handleUpdateClick();
-                setIsEditOpen(false); 
-            }}
-            className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-            aria-label="Edit"
-            onMouseEnter={() => setHoveredItem("edit")}
-            onMouseLeave={() => setHoveredItem(null)}
-          >
-            <Pencil size={10} stroke={BLACK} />
-          </button>
-          {hoveredItem === "edit" && (
-            <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-              Edit
-            </span>
-          )}
-        </div>
-
-        {/* Unarchive */}
+        {/* Restore */}
         <div className="flex items-center relative">
           <button
             onClick={onUnarchive}
             className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-            aria-label="Unarchive"
-            onMouseEnter={() => setHoveredItem("unarchive")}
+            aria-label="Restore"
+            onMouseEnter={() => setHoveredItem("restore")}
             onMouseLeave={() => setHoveredItem(null)}
           >
             <ArchiveRestore size={10} stroke={BLACK} />
           </button>
-          {hoveredItem === "unarchive" && (
+          {hoveredItem === "restore" && (
             <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-              Unarchive
+              Restore
             </span>
           )}
         </div>
 
-        {/* Delete */}
+        {/* Delete Permanently */}
         <div className="flex items-center relative">
           <button
             onClick={() => {
-                setShowDeletePopup(true);
-                setIsEditOpen(false);
+              setShowDeletePopup(true);
             }}
             className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-            aria-label="Delete"
+            aria-label="Delete Permanently"
             onMouseEnter={() => setHoveredItem("delete")}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <Trash2 size={10} className="text-red-700"  />
+            <Trash2 size={10} className="text-red-700" />
           </button>
           {hoveredItem === "delete" && (
             <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-              Delete
+              Delete Permanently
             </span>
           )}
         </div>
@@ -103,17 +73,17 @@ const ArchivedMenu: React.FC<ArtCardMenuProps> = ({
     </div>
 
     {/* Delete Confirmation Popup */}
-    <DeleteConfirmationPopup
-        isOpen={showDeletePopup}
-        onCancel={() => setShowDeletePopup(false)}
-        onConfirm={() => {
-        toast.success("You've successfully deleted the artwork");
+    <DeletePermanently
+      isOpen={showDeletePopup}
+      onCancel={() => setShowDeletePopup(false)}
+      onConfirm={() => {
+        toast.success("You've permanently deleted the artwork.");
         setShowDeletePopup(false);
-        }}
+        onDelete(); 
+      }}
     />
-
     </>
   );
 };
 
-export default ArchivedMenu;
+export default DeletedMenu;
