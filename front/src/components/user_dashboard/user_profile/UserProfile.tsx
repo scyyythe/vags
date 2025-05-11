@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
-import ProfileHeader from "@/components/user_dashboard/user_profile/ProfileHeader";
-import ProfileTabs from "@/components/user_dashboard/user_profile/ProfileTabs";
-import ArtGrid from "@/components/user_dashboard/user_profile/ArtGrid";
+import ProfileHeader from "@/components/user_dashboard/user_profile/components/ProfileHeader";
+import ProfileTabs from "@/components/user_dashboard/user_profile/components/ProfileTabs";
+import ArtGrid from "@/components/user_dashboard/user_profile/components/ArtGrid";
 import useUserDetails from "@/hooks/users/useUserDetails";
 const Index = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("created");
-  const { firstName, lastName, email, username, profileImage } = useUserDetails(id);
+  const { firstName, lastName, email, username } = useUserDetails(id);
   const userName = `${firstName} ${lastName}`;
   return (
     <div className="min-h-screen">
