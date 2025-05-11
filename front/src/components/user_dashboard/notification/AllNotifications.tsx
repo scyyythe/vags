@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Header from "@/components/user_dashboard/navbar/Header";
+import { Footer } from "@/components/user_dashboard/footer/Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router-dom";
 import { Calendar, CheckCircle2, ChevronDown, Mail, PhoneCall, Reply, Search, Trash2 } from "lucide-react";
@@ -257,9 +258,9 @@ const AllNotifications = () => {
   };
 
   return (
+    <>
     <div className="min-h-screen">
       <Header />
-      {/* <div className="mt-16"> */}
       <header className="w-full flex flex-row justify-between mt-20 px-6 md:px-8 lg:px-12 sticky top-0 z-10">
         {/* Back button */}
         <div className={`flex flex-row ${isMobile ? "px-4" : ""}`}>
@@ -453,8 +454,13 @@ const AllNotifications = () => {
           </ScrollArea>
         </div>
       </main>
-      {/* </div> */}
+        
     </div>
+      <div>
+        <Footer />
+      </div>  
+
+    </>
   );
 };
 
