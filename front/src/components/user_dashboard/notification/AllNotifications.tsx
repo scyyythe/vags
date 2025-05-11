@@ -32,7 +32,6 @@ interface Notification {
 const notifications: Notification[] = [
   {
     id: 1,
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
     name: "Gladys Dare",
     action: "commented on",
     target: "Ecosystems and conservation",
@@ -168,6 +167,15 @@ const notifications: Notification[] = [
     target: "This deal is about to close today!",
     time: "6h ago",
     date: new Date(2025, 4, 8), 
+  },
+  {
+    id: 15,
+    avatar: "https://randomuser.me/api/portraits/men/34.jpg",
+    name: "John Doe",
+    action: "liked your artwork",
+    target: "Starry Night",
+    time: "Just now",
+    date: new Date(2025, 4, 11), 
   },
 ];
 
@@ -334,26 +342,28 @@ const AllNotifications = () => {
                     className="flex p-4 bg-white border rounded-sm shadow-sm hover:bg-gray-50 transition-colors"
                   >
                     <div className="flex-shrink-0 mr-4">
-                      {n.avatar && (
-                        <img src={n.avatar} alt={n.name} className="w-5 h-5 rounded-full object-cover" />
-                      )}
-                      {!n.avatar && n.icon === "crypto" && (
+                      {n.avatar ? (
+                        <img src={n.avatar} alt={n.name || ""} className="w-5 h-5 rounded-full object-cover" />
+                      ) : n.name ? (
+                        <div className="w-5 h-5 rounded-full border bg-gray-50 flex items-center justify-center text-xs text-black uppercase">
+                          {n.name.split(" ")[0][0]}
+                        </div>
+                      ) : n.icon === "crypto" ? (
                         <div className="w-5 h-5 bg-purple-100 rounded-full flex items-center justify-center text-purple-500">
                           <CheckCircle2 className="h-5 w-5" />
                         </div>
-                      )}
-                      {!n.avatar && n.icon === "project" && (
+                      ) : n.icon === "project" ? (
                         <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center text-blue-500">
                           <CheckCircle2 className="h-5 w-5" />
                         </div>
-                      )}
+                      ) : null}
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      {n.name && <p className="font-medium text-gray-900 text-xs">{n.name}</p>}
+                      {n.name && <p className="font-medium text-gray-900 text-[11px]">{n.name}</p>}
                       <p className="text-gray-600 text-[10px] mt-1">
                         {n.action}
-                        {n.target && <span className="block mt-1 text-xs text-gray-500">{n.target}</span>}
+                        {n.target && <span className="block mt-1 text-xs text-gray-700 font-semibold">{n.target}</span>}
                       </p>
                       {n.icon === "crypto" && (
                         <div className="mt-1 text-xs">
