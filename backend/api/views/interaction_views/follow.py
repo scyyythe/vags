@@ -6,7 +6,7 @@ from api.models.user_model.users import User
 from api.serializers.interaction_s.follow import FollowSerializer
 from rest_framework.permissions import IsAuthenticated
 from api.models.interaction_model.notification import Notification
-
+from api.serializers.user_s.users_serializers import UserSerializer 
 
 class FollowCreateView(APIView):
     permission_classes = [IsAuthenticated]  
@@ -76,3 +76,30 @@ class FollowerListView(APIView):
         follower_serializer = FollowSerializer(follower_data, many=True)
 
         return Response(follower_serializer.data, status=status.HTTP_200_OK)
+    
+class FollowStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+       
+        followers = Follower.objects.filter(following=user)
+        followers_list = [f.follower for f in followers]
+        follower_count = followers.count()
+
+      
+        following = Follower.objects.filter(follower=user)
+        following_list = [f.following for f in following]
+        following_count = following.count()
+
+       
+        followers_serialized = UserSerializer(followers_list, many=True).data
+        following_serialized = UserSerializer(following_list, many=True).data
+
+        return Response({
+            "follower_count": follower_count,
+            "followers": followers_serialized,
+            "following_count": following_count,
+            "following": following_serialized
+        }, status=200)
