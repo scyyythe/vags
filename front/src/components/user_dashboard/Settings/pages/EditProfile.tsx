@@ -4,14 +4,17 @@ import { Input } from "@/components/ui/input";
 import ActionButtons from "../components/ActionButtons";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
+import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
 
 const EditProfile = () => {
   const userId = getLoggedInUserId();
   const { username, firstName, lastName, isLoading, error } = useUserDetails(userId);
+  const { mutate: updateUser } = useUpdateUserDetails();
+
   const [formData, setFormData] = useState({
     fullName: `${firstName} ${lastName}`,
     username,
-    photo:
+    profile_picture:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
   });
 
@@ -27,7 +30,7 @@ const EditProfile = () => {
       const updatedForm = {
         fullName,
         username,
-        photo: defaultPhoto,
+        profile_picture: defaultPhoto,
       };
 
       setFormData(updatedForm);
@@ -49,7 +52,7 @@ const EditProfile = () => {
       reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
-          photo: reader.result as string,
+          profile_picture: reader.result as string,
         }));
       };
       reader.readAsDataURL(file);
@@ -59,9 +62,25 @@ const EditProfile = () => {
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
-
   const handleSave = () => {
-    setOriginalData({ ...formData });
+    const [firstName, ...rest] = formData.fullName.trim().split(" ");
+    const lastName = rest.join(" ");
+
+    updateUser(
+      [
+        userId,
+        {
+          first_name: firstName,
+          last_name: lastName,
+          username: formData.username,
+        },
+      ],
+      {
+        onSuccess: () => {
+          setOriginalData({ ...formData });
+        },
+      }
+    );
   };
 
   const handleReset = () => {
@@ -79,7 +98,7 @@ const EditProfile = () => {
       <div className="mb-8">
         <p className="text-xs pl-12 text-gray-500 mb-4">Photo</p>
         <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
-          <img src={formData.photo} alt="Profile" className="w-32 h-32 rounded-full object-cover" />
+          <img src={formData.profile_picture} alt="Profile" className="w-32 h-32 rounded-full object-cover" />
           <div className="flex flex-col justify-center relative top-12">
             <input type="file" ref={fileInputRef} onChange={handlePhotoChange} accept="image/*" className="hidden" />
             <button
