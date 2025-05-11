@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import ActionButtons from "../components/ActionButtons";
 import { Edit } from "lucide-react";
+import useUserDetails from "@/hooks/users/useUserDetails";
+import { getLoggedInUserId } from "@/auth/decode";
 
 const SecuritySettings = () => {
+  const userId = getLoggedInUserId();
+  const { username, email, password, isLoading, error } = useUserDetails(userId);
   const [formData, setFormData] = useState({
-    currentPassword: "••••••••",
+    currentPassword: "",
     newPassword: "",
     confirmPassword: "",
     twoFactorEnabled: true,
   });
-  
   const [originalData, setOriginalData] = useState({ ...formData });
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [credentials, setCredentials] = useState([
@@ -30,7 +33,7 @@ const SecuritySettings = () => {
       isCurrentSession: true,
     },
   ]);
-  
+
   const [originalCredentials, setOriginalCredentials] = useState([...credentials]);
 
   const handleChange = (field: string, value: string | boolean) => {
@@ -54,52 +57,54 @@ const SecuritySettings = () => {
 
   const hasChanges = () => {
     if (isEditingPassword) return true;
-    
+
     return (
       JSON.stringify(formData) !== JSON.stringify(originalData) ||
       JSON.stringify(credentials) !== JSON.stringify(originalCredentials)
     );
   };
-  
+
+  // Remove a device from credentials
   const removeDevice = (id: number) => {
     setCredentials(credentials.filter((cred) => cred.id !== id));
   };
 
+  // Loading or error state
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error fetching user data</p>;
+
   return (
     <div>
       <h2 className="text-sm font-bold mb-6">Login Details</h2>
-      
+
       <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8">
         <div className="mb-6">
           <div className="flex justify-between items-center">
             <div>
               <p className="text-[10px] text-gray-500 mb-1">Current Password</p>
-              <p className="font-medium text-xs">{isEditingPassword ? "" : formData.currentPassword}</p>
+              <p className="font-medium text-xs">{isEditingPassword ? "" : "••••••••"}</p>
             </div>
-            <button 
+            <button
               onClick={() => setIsEditingPassword(!isEditingPassword)}
               className="text-gray-500 hover:text-gray-700"
             >
-              <i className='bx bx-pencil text-xs'></i>
+              <i className="bx bx-pencil text-xs"></i>
             </button>
           </div>
-          
+
           {isEditingPassword && (
             <div className="mt-4 space-y-4">
               <div>
                 <label className="block text-[10px] text-gray-500 mb-1">Current Password</label>
                 <Input
                   type="password"
-                  value={formData.currentPassword === "••••••••" ? "" : formData.currentPassword}
+                  value={formData.currentPassword}
                   onChange={(e) => handleChange("currentPassword", e.target.value)}
                   className="w-full"
-                  style={{
-                    fontSize: "12px",
-                  }}
                   placeholder="Enter current password"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-[10px] text-gray-500 mb-1">New Password</label>
                 <Input
@@ -107,13 +112,10 @@ const SecuritySettings = () => {
                   value={formData.newPassword}
                   onChange={(e) => handleChange("newPassword", e.target.value)}
                   className="w-full"
-                  style={{
-                    fontSize: "12px",
-                  }}
                   placeholder="Enter new password"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-[10px] text-gray-500 mb-1">Confirm Password</label>
                 <Input
@@ -121,16 +123,13 @@ const SecuritySettings = () => {
                   value={formData.confirmPassword}
                   onChange={(e) => handleChange("confirmPassword", e.target.value)}
                   className="w-full"
-                  style={{
-                    fontSize: "12px",
-                  }}
                   placeholder="Confirm new password"
                 />
               </div>
             </div>
           )}
         </div>
-        
+
         <div>
           <div className="flex items-center justify-between">
             <div className="space-y-1">
@@ -146,16 +145,16 @@ const SecuritySettings = () => {
           </div>
         </div>
       </div>
-      
+
       <h2 className="text-sm font-bold mb-6">Security Credentials</h2>
-      
+
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <div className="space-y-6">
           {credentials.map((cred) => (
             <div key={cred.id} className="flex justify-between items-center border-b pb-4 last:border-b-0 last:pb-0">
               <div className="flex items-start gap-4">
                 <div className="border border-gray-200 p-0.5 rounded">
-                  <i className='bx bx-tab'></i>
+                  <i className="bx bx-tab"></i>
                 </div>
                 <div>
                   <p className="text-[10px] text-gray-400">{cred.date}</p>
@@ -164,15 +163,10 @@ const SecuritySettings = () => {
               </div>
               <div className="flex items-center gap-4">
                 {cred.isCurrentSession && (
-                  <span className="bg-black text-white text-[10px] px-3 py-1.5 rounded-full">
-                    Current session
-                  </span>
+                  <span className="bg-black text-white text-[10px] px-3 py-1.5 rounded-full">Current session</span>
                 )}
                 {!cred.isCurrentSession && (
-                  <button
-                    onClick={() => removeDevice(cred.id)}
-                    className="text-red-500 text-[10px] hover:text-red-700"
-                  >
+                  <button onClick={() => removeDevice(cred.id)} className="text-red-500 text-[10px] hover:text-red-700">
                     Remove device
                   </button>
                 )}
@@ -181,12 +175,8 @@ const SecuritySettings = () => {
           ))}
         </div>
       </div>
-      
-      <ActionButtons
-        hasChanges={hasChanges()}
-        onSave={handleSave}
-        onReset={handleReset}
-      />
+
+      <ActionButtons hasChanges={hasChanges()} onSave={handleSave} onReset={handleReset} />
     </div>
   );
 };
