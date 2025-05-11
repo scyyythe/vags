@@ -7,12 +7,12 @@ import cloudinary.uploader
 class UserSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     username = serializers.CharField(max_length=150)
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, required=False, allow_null=True)
     email = serializers.EmailField()
     first_name = serializers.CharField(max_length=100, required=False, allow_null=True, allow_blank=True)
-    last_name = serializers.CharField(max_length=100, required=False, allow_blank=True)  # Fixed allow_blank here
-    role = serializers.CharField(max_length=100, required=False, allow_blank=True)  # Fixed allow_blank here
-    user_status = serializers.CharField(max_length=100, required=False, allow_blank=True)  # Fixed allow_blank here
+    last_name = serializers.CharField(max_length=100, required=False, allow_blank=True) 
+    role = serializers.CharField(max_length=100, required=False, allow_blank=True) 
+    user_status = serializers.CharField(max_length=100, required=False, allow_blank=True)  
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
 
