@@ -1,7 +1,7 @@
 from django.urls import path
 from api.views.interaction_views.interaction import CommentCreateView,LikeStatusView,ArtworkStatusView,LikeCreateView,SavedStatusView, CartItemCreateView, CartItemDeleteView, CartRetrieveView,SavedCreateView,LikeListView, SavedListView,CommentListView
 from api.views.interaction_views.follow import FollowCreateView,UnfollowView,FollowerListView
-from api.views.interaction_views.notifications import NotificationListView, NotificationDetailView
+from api.views.interaction_views.notifications import NotificationDeleteView,NotificationListView, NotificationDetailView,NotificationDeleteAllView
 interaction_urlpatterns = [
     path('comments/', CommentCreateView.as_view(), name='comment-create'),
     path('likes/<str:art_id>/', LikeCreateView.as_view(), name='like-create'),
@@ -21,5 +21,7 @@ interaction_urlpatterns = [
     path('followers/', FollowerListView.as_view(), name='follower-list'),
     
     path('notifications/', NotificationListView.as_view(), name='notification-list'),  
-    path('notifications/<int:pk>/', NotificationDetailView.as_view(), name='notification-detail')
+    path('notifications/<int:pk>/', NotificationDetailView.as_view(), name='notification-detail'),
+    path('notifications/<str:pk>/delete/', NotificationDeleteView.as_view(), name='notification-delete'),
+    path('notifications/delete-all/', NotificationDeleteAllView.as_view(), name='notifications-delete-all')
 ]
