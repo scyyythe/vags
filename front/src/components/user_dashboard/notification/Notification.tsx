@@ -118,6 +118,14 @@ const notifications = [
     time: "2h ago",
     money: true,
   },
+  {
+    id: 15,
+    avatar: "https://randomuser.me/api/portraits/men/34.jpg", 
+    name: "John Doe",
+    action: "liked your artwork",
+    target: "Starry Night",
+    time: "Just now",
+  }
 ];
 
 
