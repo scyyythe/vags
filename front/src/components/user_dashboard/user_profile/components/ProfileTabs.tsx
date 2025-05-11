@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import EmptyTrashPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/empty_trash/EmptyTrash"; 
 import UnhidePopup from "@/components/user_dashboard/user_profile/components/status_options/popups/unhide/Unhide";
+import UnarchivePopup from "@/components/user_dashboard/user_profile/components/status_options/popups/unarchive/Unarchive";
 
 const tabs = [
   { id: "created", label: "Created" },
@@ -38,6 +39,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
 
   const [showEmptyTrashPopup, setShowEmptyTrashPopup] = useState(false);
   const [showUnhidePopup, setShowUnhidePopup] = useState(false);
+  const [showUnarchivePopup, setShowUnarchivePopup] = useState(false);
 
   const [artworkList, setArtworkList] = useState<Artwork[]>([]);
 
@@ -79,6 +81,19 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
     setShowUnhidePopup(false);
   };
 
+  // UNARCHIVE BUTTON
+  const confirmUnarchiveAll = () => {
+    const updated = artworkList.map((art) =>
+      art.status === "Archived" ? { ...art, status: "Active" } : art
+    );
+    setArtworkList(updated);
+    toast.success("All archived artworks have been unarchived!");
+    setShowUnarchivePopup(false);
+  };
+
+  const cancelUnarchive = () => {
+    setShowUnarchivePopup(false);
+  };
 
   const handlePriceRangeSelect = (option: string) => {
     setSelectedPriceRange(option);
@@ -252,6 +267,19 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
       {/* Tab Content Rendering */}
       {activeTab === "created" && (
         <>
+          {/* ARCHIVED PAGE */}
+          {selectedStatus === "Archived" && (
+            <div className="flex justify-between items-center my-4">
+              <h2 className="text-sm font-semibold">Archived Artworks</h2>
+              <button
+                onClick={() => setShowUnarchivePopup(true)}
+                className="text-[10px] py-2 pr-2 text-yellow-700 hover:text-yellow-600 font-medium"
+              >
+                Unarchive All
+              </button>
+            </div>
+          )}
+
           {/* DELETED PAGE */}
           {selectedStatus === "Deleted" && (
             <div className="flex justify-between items-center my-4">
@@ -280,6 +308,12 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
           <CreatedTab filteredArtworks={filteredArtworksMemo} isLoading={isLoading} />
         </>
       )}
+
+      <UnarchivePopup
+        isOpen={showUnarchivePopup}
+        onCancel={cancelUnarchive}
+        onConfirm={confirmUnarchiveAll}
+      />
 
       <EmptyTrashPopup
         isOpen={showEmptyTrashPopup}
