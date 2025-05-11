@@ -35,7 +35,7 @@ class ArtSerializer(serializers.Serializer):
             validated_data['image_url'] = ''
 
         if "visibility" not in validated_data:
-            validated_data["visibility"] = "public"  
+            validated_data["visibility"] = "Public"  
         
         art = Art(**validated_data)
         art.save()
