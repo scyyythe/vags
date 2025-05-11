@@ -45,7 +45,7 @@ const ArtCard = ({
   title,
   isExplore = false,
   likesCount = 0,
-  isArchived = false, 
+  isArchived = false,
   isDeleted = false,
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -68,7 +68,7 @@ const ArtCard = ({
       setLikedArtworks((prev) => ({ ...prev, [id]: data.isLiked }));
     }
   }, [data, id, setLikedArtworks]);
-  
+
   const handleLike = () => {
     if (id) {
       toggleLike(id);
@@ -168,7 +168,6 @@ const ArtCard = ({
               isPublic={true}
             />
           )}
-
         </div>
       </div>
       <Link to={`/artwork/${id}`} state={{ artworkImage, artistId, artistName, title, likesCount }} className="w-full">

@@ -9,9 +9,11 @@ import toast from "sonner";
 
 const EditProfile = () => {
   const userId = getLoggedInUserId();
-  const { username, firstName, lastName, isLoading, error } = useUserDetails(userId);
+  const { username, firstName, lastName, profilePicture, isLoading, error } = useUserDetails(userId);
+  const fullName = `${firstName} ${lastName}`;
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { mutate: updateUser } = useUpdateUserDetails();
+
   const [formData, setFormData] = useState<{
     fullName: string;
     username: string;
@@ -114,13 +116,15 @@ const EditProfile = () => {
         <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
           {formData.profile_picture ? (
             <img
-              src={formData.profile_picture ? URL.createObjectURL(formData.profile_picture) : undefined}
+              src={URL.createObjectURL(formData.profile_picture)}
               alt="Profile"
               className="w-32 h-32 rounded-full object-cover"
             />
+          ) : profilePicture ? (
+            <img src={profilePicture} alt="Profile" className="w-32 h-32 rounded-full object-cover" />
           ) : (
             <div className="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center text-white text-4xl font-bold">
-              {formData.fullName?.charAt(0).toUpperCase() || "U"}
+              {fullName.charAt(0).toUpperCase() || "U"}
             </div>
           )}
           <div className="flex flex-col justify-center relative top-12">
