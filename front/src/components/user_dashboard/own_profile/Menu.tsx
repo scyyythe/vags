@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { DollarSign, ShoppingCart, Pencil } from "lucide-react";
+import { DollarSign, ShoppingCart, MoreHorizontal } from "lucide-react";
+import { toast } from "sonner";
+import DeleteConfirmationPopup from "@/components/user_dashboard/own_profile/DeletePopup"; 
 import AuctionPopup from "@/components/user_dashboard/own_profile/request_bid/RequestBid";
 
 interface ArtCardMenuProps {
@@ -26,6 +28,9 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const [publicStatus, setPublicStatus] = useState(isPublic);
   const [showAuctionPopup, setShowAuctionPopup] = useState(false);
   const navigate = useNavigate();
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+
 
   useEffect(() => {
     document.body.style.overflow = showAuctionPopup ? "hidden" : "auto";
@@ -88,23 +93,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             )}
           </div>
 
-          {/* Edit */}
-          <div className="flex items-center relative">
-            <button
-              onClick={handleUpdateClick}
-              className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
-              onMouseEnter={() => setHoveredItem("edit")}
-              onMouseLeave={() => setHoveredItem(null)}
-            >
-              <Pencil size={10} />
-            </button>
-            {hoveredItem === "edit" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">
-                Edit
-              </span>
-            )}
-          </div>
-
+          
           {/* Toggle Visibility */}
           <div className="flex items-center relative">
             <button
@@ -126,24 +115,68 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             )}
           </div>
 
-          {/* Archive */}
-          <div className="flex items-center -mt-[3px]">
+          {/* More Options */}
+          <div className="flex items-center relative -top-1">
             <button
-              onClick={onArchive}
-              className="p-[3px] rounded-full text-black hover:bg-gray-200 transition-colors"
-              onMouseEnter={() => setHoveredItem("archive")}
+              onClick={() => setIsEditOpen((prev) => !prev)}
+              onMouseEnter={() => setHoveredItem("edit")}
               onMouseLeave={() => setHoveredItem(null)}
+              className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
             >
-              <i className='bx bx-archive text-[11px]'></i>
+              <MoreHorizontal size={10} />
             </button>
-            {hoveredItem === "archive" && (
+
+            {hoveredItem === "edit" && (
               <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">
-                Archive
+                more
               </span>
             )}
+
+            {isEditOpen && (
+              <div className="absolute left-8 -top-7 bg-black rounded text-[9px] flex flex-col z-20 w-18">
+                <button
+                  onClick={() => {
+                    handleUpdateClick();
+                    setIsEditOpen(false); 
+                  }}
+                  className="px-3 py-1 text-left text-white"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => {
+                    onArchive();
+                    setIsEditOpen(false); 
+                  }}
+                  className="px-3 py-1 text-left text-white"
+                >
+                  Archive
+                </button>
+                <button
+                  onClick={() => {
+                    setShowDeletePopup(true);
+                    setIsEditOpen(false);
+                  }}
+                  className="px-3 py-1 text-left text-red-500 hover:text-red-400"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
+
         </div>
       </div>
+
+      <DeleteConfirmationPopup
+        isOpen={showDeletePopup}
+        onCancel={() => setShowDeletePopup(false)}
+        onConfirm={() => {
+          toast.success("Confirmed delete logic here");
+          setShowDeletePopup(false);
+        }}
+      />
+
 
       {/* Auction Popup */}
       <AuctionPopup
