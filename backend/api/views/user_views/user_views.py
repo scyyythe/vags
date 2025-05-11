@@ -54,21 +54,19 @@ class UpdateUserView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, IsAdminOrOwner]
     
 class UpdateUserDetailsView(APIView):
-    def patch(self, request, user_id):  # Use PATCH for partial updates
+    def patch(self, request, user_id):  
         try:
-            user = User.objects.get(id=ObjectId(user_id))  # Use ObjectId for MongoDB
+            user = User.objects.get(id=ObjectId(user_id))  
         except User.DoesNotExist:
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Initialize the serializer with the existing user instance and new data
+   
         serializer = UserSerializer(instance=user, data=request.data, partial=True)
-
-        # Validate the data
+       
         if serializer.is_valid():
-            serializer.save()  # Save updated user data
+            serializer.save() 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        # If validation fails, return error details
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class DeleteUserView(generics.DestroyAPIView):
