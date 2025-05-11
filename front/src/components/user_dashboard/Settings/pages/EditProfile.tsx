@@ -5,17 +5,21 @@ import ActionButtons from "../components/ActionButtons";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
+import toast from "sonner";
 
 const EditProfile = () => {
   const userId = getLoggedInUserId();
   const { username, firstName, lastName, isLoading, error } = useUserDetails(userId);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { mutate: updateUser } = useUpdateUserDetails();
-
-  const [formData, setFormData] = useState({
-    fullName: `${firstName} ${lastName}`,
-    username,
-    profile_picture:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
+  const [formData, setFormData] = useState<{
+    fullName: string;
+    username: string;
+    profile_picture: File | null;
+  }>({
+    fullName: "",
+    username: "",
+    profile_picture: null,
   });
 
   const [originalData, setOriginalData] = useState({ ...formData });
@@ -30,7 +34,7 @@ const EditProfile = () => {
       const updatedForm = {
         fullName,
         username,
-        profile_picture: defaultPhoto,
+        profile_picture: null,
       };
 
       setFormData(updatedForm);
@@ -48,14 +52,21 @@ const EditProfile = () => {
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          profile_picture: reader.result as string,
-        }));
-      };
-      reader.readAsDataURL(file);
+      const fileType = file.type;
+      const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+      if (!validTypes.includes(fileType)) {
+        alert("Please upload a valid image file (JPG, JPEG, PNG).");
+        return;
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        profile_picture: file,
+      }));
+
+      const preview = URL.createObjectURL(file);
+      setPreviewUrl(preview);
     }
   };
 
@@ -66,21 +77,24 @@ const EditProfile = () => {
     const [firstName, ...rest] = formData.fullName.trim().split(" ");
     const lastName = rest.join(" ");
 
-    updateUser(
-      [
-        userId,
-        {
-          first_name: firstName,
-          last_name: lastName,
-          username: formData.username,
-        },
-      ],
-      {
-        onSuccess: () => {
-          setOriginalData({ ...formData });
-        },
-      }
-    );
+    const updatedUser = new FormData();
+    updatedUser.append("first_name", firstName);
+    updatedUser.append("last_name", lastName);
+    updatedUser.append("username", formData.username);
+
+    if (formData.profile_picture) {
+      updatedUser.append("profile_picture", formData.profile_picture);
+    }
+
+    updateUser([userId, updatedUser], {
+      onSuccess: (data) => {
+        setOriginalData({ ...formData });
+
+        if (formData.profile_picture) {
+          setPreviewUrl(URL.createObjectURL(formData.profile_picture));
+        }
+      },
+    });
   };
 
   const handleReset = () => {
@@ -98,7 +112,17 @@ const EditProfile = () => {
       <div className="mb-8">
         <p className="text-xs pl-12 text-gray-500 mb-4">Photo</p>
         <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
-          <img src={formData.profile_picture} alt="Profile" className="w-32 h-32 rounded-full object-cover" />
+          {formData.profile_picture ? (
+            <img
+              src={formData.profile_picture ? URL.createObjectURL(formData.profile_picture) : undefined}
+              alt="Profile"
+              className="w-32 h-32 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center text-white text-4xl font-bold">
+              {formData.fullName?.charAt(0).toUpperCase() || "U"}
+            </div>
+          )}
           <div className="flex flex-col justify-center relative top-12">
             <input type="file" ref={fileInputRef} onChange={handlePhotoChange} accept="image/*" className="hidden" />
             <button
