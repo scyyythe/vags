@@ -7,7 +7,8 @@ from api.models.interaction_model.interaction import Comment, Like, CartItem, Sa
 from api.serializers.interaction_s.interaction import CommentSerializer, LikeSerializer, CartItemSerializer,SavedSerializer
 from api.models.interaction_model.notification import Notification
 from rest_framework import generics, permissions
-
+from datetime import datetime
+from django.utils.timesince import timesince
 class CommentCreateView(APIView):
     permission_classes = [IsAuthenticated]  
 
@@ -26,10 +27,21 @@ class CommentCreateView(APIView):
 
        
         comment = Comment.objects.create(content=content, user=user, art=art)
-        
+        now = datetime.now()
+        time_elapsed = timesince(art.created_at, now) 
         artist=art.artist
-        message=f"{user.first_name} commented on your artwork '{art.title}'"
-        Notification.objects.create(user=artist, message=message, art=art)
+        message = f"{user.first_name} commented on your artwork '{art.title}'"
+        Notification.objects.create(
+            user=artist,  # The artist receiving the notification
+            message=f"{user.first_name} commented on {art.title}",
+            art=art,  # The artwork being commented on
+            name=user.first_name,  # The user's first name who made the comment
+            action="commented on",  # The action description
+            target=art.title,  # The title of the artwork being commented on
+            icon="project",  # Can be an appropriate icon based on your application logic
+            time=time_elapsed,  # This represents the time of the action, you can format dynamically
+            date=datetime.now(),  # Current timestamp for the notification date
+        )
         return Response(CommentSerializer(comment).data, status=status.HTTP_201_CREATED)
 
 class CommentListView(APIView):
@@ -75,11 +87,19 @@ class LikeCreateView(APIView):
             }, status=status.HTTP_200_OK)
 
         else:
+            now = datetime.now()
+            time_elapsed = timesince(art.created_at, now) 
             Like.objects.create(user=user, art=art)
             Notification.objects.create(
-                user=art.artist,
+                user=art.artist,  
                 message=f"{user.first_name} liked your artwork '{art.title}'",
-                art=art
+                art=art,
+                name=f"{user.first_name} {user.last_name}", 
+                action="liked your artwork",
+                target=art.title,  
+                icon="like", 
+                time=time_elapsed,  #
+                date=datetime.now(), 
             )
             like_count = Like.objects.filter(art=art).count()
             return Response({
@@ -148,10 +168,22 @@ class SavedCreateView(APIView):
             return Response({"detail": "You have unsaved this artwork."}, status=status.HTTP_200_OK)
         
         else:
+            now = datetime.now()
+            time_elapsed = timesince(art.created_at, now)
             saved = Saved.objects.create(user=user, art=art) 
             artist = art.artist
             message = f"{user.first_name} saved your artwork '{art.title}'"
-            Notification.objects.create(user=artist, message=message, art=art) 
+            Notification.objects.create(
+                user=art.artist,  
+                message=f"{user.first_name} saved your artwork '{art.title}'",
+                art=art, 
+                name=f"{user.first_name} {user.last_name}", 
+                action="saved your artwork", 
+                target=art.title,  
+                icon="save",  
+                time=time_elapsed,  
+                date=datetime.now(),  
+            )
             return Response(SavedSerializer(saved).data, status=status.HTTP_201_CREATED)
 
 
