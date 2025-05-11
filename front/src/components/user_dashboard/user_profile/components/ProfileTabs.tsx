@@ -6,6 +6,8 @@ import CreatedTab from "@/components/user_dashboard/user_profile/tabs/CreatedTab
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import { toast } from "sonner";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
+import EmptyTrash from "@/components/user_dashboard/user_profile/components/status_options/empty_trash/EmptyTrash"; 
+
 const tabs = [
   { id: "created", label: "Created" },
   { id: "onBid", label: "On Bid" },
@@ -33,6 +35,9 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
   const [showStatusOptions, setShowStatusOptions] = useState(false);
   const statusOptions = ["Active", "Hidden", "Archived", "Deleted"];
 
+  const [showEmptyTrashPopup, setShowEmptyTrashPopup] = useState(false);
+
+  const [artworkList, setArtworkList] = useState<Artwork[]>([]);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -40,6 +45,21 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
   const handleMediumSelect = (option: string) => {
     setSelectedMedium(option);
     setShowMediumOptions(false);
+  };
+
+  const handleEmptyTrash = () => {
+    setShowEmptyTrashPopup(true);
+  };
+
+  const confirmEmptyTrash = () => {
+    const filtered = artworkList.filter((art) => art.status !== "Deleted");
+    setArtworkList(filtered);
+    toast.success("Trash emptied!");
+    setShowEmptyTrashPopup(false);
+  };
+
+  const cancelEmptyTrash = () => {
+    setShowEmptyTrashPopup(false);
   };
 
   const handlePriceRangeSelect = (option: string) => {
@@ -85,7 +105,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
         </div>
 
         {/* Filters */}
-        <div className="flex items-center mt-4 sm:mt-0 space-x-4 relative">
+        <div className="flex items-center mt-4 sm:mt-0 space-x-4 relative bottom-[6px]">
           <ArtCategorySelect selectedCategory={selectedCategory} onChange={(value) => setSelectedCategory(value)} />
 
           {/* Apply Filter Button */}
@@ -212,9 +232,30 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
       </div>
 
       {/* Tab Content Rendering */}
-      <div className="mt-4">
-        {activeTab === "created" && <CreatedTab filteredArtworks={filteredArtworksMemo} isLoading={isLoading} />}
-      </div>
+      {activeTab === "created" && (
+        <>
+          {selectedStatus === "Deleted" && (
+            <div className="flex justify-between items-center my-4">
+              <h2 className="text-sm font-semibold">Deleted Artworks</h2>
+              <button
+                onClick={handleEmptyTrash}
+                className="text-[10px] py-2 pr-2 text-red-700 hover:text-red-600 font-medium"
+              >
+                Empty Trash
+              </button>
+            </div>
+          )}
+          <CreatedTab filteredArtworks={filteredArtworksMemo} isLoading={isLoading} />
+        </>
+      )}
+
+      <EmptyTrash
+        isOpen={showEmptyTrashPopup}
+        onCancel={cancelEmptyTrash}
+        onConfirm={confirmEmptyTrash}
+      />
+
+
     </div>
   );
 };
