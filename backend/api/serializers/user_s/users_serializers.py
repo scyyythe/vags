@@ -2,6 +2,7 @@ from rest_framework import serializers
 from api.models.user_model.users import User
 from datetime import datetime
 import cloudinary.uploader
+from django.core.exceptions import ValidationError
 
 
 class UserSerializer(serializers.Serializer):
@@ -10,12 +11,11 @@ class UserSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, required=False, allow_null=True)
     email = serializers.EmailField()
     first_name = serializers.CharField(max_length=100, required=False, allow_null=True, allow_blank=True)
-    last_name = serializers.CharField(max_length=100, required=False, allow_blank=True) 
-    role = serializers.CharField(max_length=100, required=False, allow_blank=True) 
-    user_status = serializers.CharField(max_length=100, required=False, allow_blank=True)  
+    last_name = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    role = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    user_status = serializers.CharField(max_length=100, required=False, allow_blank=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
-
     gender = serializers.ChoiceField(choices=["Male", "Female", "Other"], required=False, allow_null=True)
     date_of_birth = serializers.DateTimeField(required=False, allow_null=True)
     profile_picture = serializers.ImageField(required=False, allow_null=True)
@@ -74,9 +74,13 @@ class UserSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         profile_picture = validated_data.pop('profile_picture', None)
         if profile_picture:
-            result = cloudinary.uploader.upload(profile_picture)
-            validated_data['profile_picture'] = result.get('secure_url', '')
+            try:
+                result = cloudinary.uploader.upload(profile_picture)
+                validated_data['profile_picture'] = result.get('secure_url', '')
+            except cloudinary.exceptions.Error as e:
+                raise serializers.ValidationError(f"Cloudinary upload error: {str(e)}")
 
+        
         instance.username = validated_data.get("username", instance.username)
         instance.email = validated_data.get("email", instance.email)
         instance.first_name = validated_data.get("first_name", instance.first_name)
@@ -93,8 +97,11 @@ class UserSerializer(serializers.Serializer):
 
         if "password" in validated_data:
             instance.set_password(validated_data["password"])
+
         instance.save()
         return instance
+
+
 
     def to_representation(self, instance):
         return {
