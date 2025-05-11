@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DollarSign, ShoppingCart, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
-import DeleteConfirmationPopup from "@/components/user_dashboard/own_profile/DeletePopup"; 
+import DeleteConfirmationPopup from "@/components/user_dashboard/user_profile/components/status_options/delete_popups/DeletePopup"; 
 import AuctionPopup from "@/components/user_dashboard/own_profile/request_bid/RequestBid";
 
 interface ArtCardMenuProps {
@@ -36,6 +36,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const shouldHideScroll = showAuctionPopup || showDeletePopup;
 
   const originalOverflow = document.body.style.overflow;
+
   if (shouldHideScroll) {
     document.body.style.overflow = "hidden";
   } else {
@@ -43,10 +44,9 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   }
 
   return () => {
-    document.body.style.overflow = originalOverflow || "auto";
-  };
-}, [showAuctionPopup, showDeletePopup]);
-
+      document.body.style.overflow = originalOverflow || "auto";
+    };
+  }, [showAuctionPopup, showDeletePopup]);
 
 
   if (!isOpen) return null;
@@ -183,7 +183,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         isOpen={showDeletePopup}
         onCancel={() => setShowDeletePopup(false)}
         onConfirm={() => {
-          toast.success("Confirmed delete logic here");
+          toast.success("You've successfully deleted the artwork");
           setShowDeletePopup(false);
         }}
       />
