@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Bookmark, EyeOff, Flag } from "lucide-react";
+import { Bookmark, EyeOff, Eye, Flag } from "lucide-react";
 
 interface ArtCardMenuProps {
   isOpen: boolean;
@@ -54,20 +54,24 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
           )}
         </div>
 
-        {/* Hide */}
+        {/* Hide / Unhide */}
         <div className="flex items-center relative">
           <button
             onClick={onHide}
             className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-            aria-label="Hide"
+            aria-label={isHidden ? "Unhide" : "Hide"}
             onMouseEnter={() => setHoveredItem("hide")}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <EyeOff size={10} fill={isHidden ? BLACK : "none"} stroke={isHidden ? BLACK : "currentColor"} />
+            {isHidden ? (
+              <Eye size={10} fill={BLACK} stroke={BLACK} />
+            ) : (
+              <EyeOff size={10} fill="none" stroke="currentColor" />
+            )}
           </button>
           {hoveredItem === "hide" && (
             <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-              Hide
+              {isHidden ? "Unhide" : "Hide"}
             </span>
           )}
         </div>
