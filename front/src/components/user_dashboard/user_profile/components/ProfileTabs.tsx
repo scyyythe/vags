@@ -6,7 +6,8 @@ import CreatedTab from "@/components/user_dashboard/user_profile/tabs/CreatedTab
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import { toast } from "sonner";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
-import EmptyTrash from "@/components/user_dashboard/user_profile/components/status_options/empty_trash/EmptyTrash"; 
+import EmptyTrashPopup from "@/components/user_dashboard/user_profile/components/status_options/empty_trash/EmptyTrash"; 
+import UnhidePopup from "@/components/user_dashboard/user_profile/components/status_options/unhide/Unhide";
 
 const tabs = [
   { id: "created", label: "Created" },
@@ -36,6 +37,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
   const statusOptions = ["Active", "Hidden", "Archived", "Deleted"];
 
   const [showEmptyTrashPopup, setShowEmptyTrashPopup] = useState(false);
+  const [showUnhidePopup, setShowUnhidePopup] = useState(false);
 
   const [artworkList, setArtworkList] = useState<Artwork[]>([]);
 
@@ -47,6 +49,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
     setShowMediumOptions(false);
   };
 
+  // EMPTY TRASH BUTTON
   const handleEmptyTrash = () => {
     setShowEmptyTrashPopup(true);
   };
@@ -61,6 +64,21 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
   const cancelEmptyTrash = () => {
     setShowEmptyTrashPopup(false);
   };
+
+  // UNHIDE BUTTON
+  const confirmUnhideAll = () => {
+    const updated = artworkList.map((art) =>
+      art.status === "Hidden" ? { ...art, status: "Active" } : art
+    );
+    setArtworkList(updated);
+    toast.success("All hidden artworks have been unhidden!");
+    setShowUnhidePopup(false);
+  };
+
+  const cancelUnhide = () => {
+    setShowUnhidePopup(false);
+  };
+
 
   const handlePriceRangeSelect = (option: string) => {
     setSelectedPriceRange(option);
@@ -234,6 +252,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
       {/* Tab Content Rendering */}
       {activeTab === "created" && (
         <>
+          {/* DELETED PAGE */}
           {selectedStatus === "Deleted" && (
             <div className="flex justify-between items-center my-4">
               <h2 className="text-sm font-semibold">Deleted Artworks</h2>
@@ -245,16 +264,34 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
               </button>
             </div>
           )}
+
+          {/* HIDDEN PAGE */}
+          {selectedStatus === "Hidden" && (
+            <div className="flex justify-between items-center my-4">
+              <h2 className="text-sm font-semibold">Hidden Artworks</h2>
+              <button
+                onClick={() => setShowUnhidePopup(true)}
+                className="text-[10px] py-2 pr-2 text-blue-700 hover:text-blue-600 font-medium"
+              >
+                Unhide All
+              </button>
+            </div>
+          )}
           <CreatedTab filteredArtworks={filteredArtworksMemo} isLoading={isLoading} />
         </>
       )}
 
-      <EmptyTrash
+      <EmptyTrashPopup
         isOpen={showEmptyTrashPopup}
         onCancel={cancelEmptyTrash}
         onConfirm={confirmEmptyTrash}
       />
 
+      <UnhidePopup
+        isOpen={showUnhidePopup}
+        onCancel={cancelUnhide}
+        onConfirm={confirmUnhideAll}
+      />
 
     </div>
   );
