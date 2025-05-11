@@ -36,6 +36,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const shouldHideScroll = showAuctionPopup || showDeletePopup;
 
   const originalOverflow = document.body.style.overflow;
+  
   if (shouldHideScroll) {
     document.body.style.overflow = "hidden";
   } else {
@@ -43,10 +44,9 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   }
 
   return () => {
-    document.body.style.overflow = originalOverflow || "auto";
-  };
-}, [showAuctionPopup, showDeletePopup]);
-
+      document.body.style.overflow = originalOverflow || "auto";
+    };
+  }, [showAuctionPopup, showDeletePopup]);
 
 
   if (!isOpen) return null;
