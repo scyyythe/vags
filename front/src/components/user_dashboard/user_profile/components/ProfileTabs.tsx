@@ -6,8 +6,8 @@ import CreatedTab from "@/components/user_dashboard/user_profile/tabs/CreatedTab
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import { toast } from "sonner";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
-import EmptyTrashPopup from "@/components/user_dashboard/user_profile/components/status_options/empty_trash/EmptyTrash"; 
-import UnhidePopup from "@/components/user_dashboard/user_profile/components/status_options/unhide/Unhide";
+import EmptyTrashPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/empty_trash/EmptyTrash"; 
+import UnhidePopup from "@/components/user_dashboard/user_profile/components/status_options/popups/unhide/Unhide";
 
 const tabs = [
   { id: "created", label: "Created" },

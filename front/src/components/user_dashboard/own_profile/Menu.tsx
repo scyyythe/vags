@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DollarSign, ShoppingCart, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
-import DeleteConfirmationPopup from "@/components/user_dashboard/user_profile/components/status_options/delete_popups/DeletePopup"; 
+import DeleteConfirmationPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/delete/DeletePopup"; 
 import AuctionPopup from "@/components/user_dashboard/own_profile/request_bid/RequestBid";
 
 interface ArtCardMenuProps {
