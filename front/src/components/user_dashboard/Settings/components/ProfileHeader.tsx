@@ -10,8 +10,8 @@ interface ProfileHeaderProps {
 
 const ProfileHeader = ({ name, email, imageUrl }: ProfileHeaderProps) => {
   const userId = getLoggedInUserId();
-  const { firstName, lastName, email: fetchedEmail, isLoading, error } = useUserDetails(userId);
-
+  const { firstName, lastName, profilePicture, email: fetchedEmail, isLoading, error } = useUserDetails(userId);
+  const fullName = `${firstName} ${lastName}`;
   const [userData, setUserData] = useState({
     name: `${firstName} ${lastName}`,
     email: fetchedEmail,
@@ -33,10 +33,10 @@ const ProfileHeader = ({ name, email, imageUrl }: ProfileHeaderProps) => {
   return (
     <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-8">
       <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-300 text-white text-xl">
-        {imageUrl ? (
-          <img src={imageUrl} alt={name} className="w-14 h-14 rounded-full object-cover" />
+        {profilePicture ? (
+          <img src={profilePicture} alt={name} className="w-14 h-14 rounded-full object-cover" />
         ) : (
-          <span>{getAvatarText(firstName)}</span>
+          <span> {fullName.charAt(0).toUpperCase() || "U"}</span>
         )}
       </div>
       <div>
