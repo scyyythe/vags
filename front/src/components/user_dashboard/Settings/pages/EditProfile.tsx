@@ -1,17 +1,39 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ActionButtons from "../components/ActionButtons";
+import useUserDetails from "@/hooks/users/useUserDetails";
+import { getLoggedInUserId } from "@/auth/decode";
 
 const EditProfile = () => {
+  const userId = getLoggedInUserId();
+  const { username, firstName, lastName, isLoading, error } = useUserDetails(userId);
   const [formData, setFormData] = useState({
-    fullName: "Angel Canete",
-    username: "angelbaby",
-    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
+    fullName: `${firstName} ${lastName}`,
+    username,
+    photo:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
   });
 
   const [originalData, setOriginalData] = useState({ ...formData });
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isLoading && !error && firstName && lastName && username) {
+      const fullName = `${firstName} ${lastName}`;
+      const defaultPhoto =
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3";
+
+      const updatedForm = {
+        fullName,
+        username,
+        photo: defaultPhoto,
+      };
+
+      setFormData(updatedForm);
+      setOriginalData(updatedForm);
+    }
+  }, [firstName, lastName, username, isLoading, error]);
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({
@@ -53,23 +75,13 @@ const EditProfile = () => {
   return (
     <div>
       <h2 className="text-sm font-bold mb-6">Edit Profile</h2>
-      
+
       <div className="mb-8">
         <p className="text-xs pl-12 text-gray-500 mb-4">Photo</p>
         <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
-          <img
-            src={formData.photo}
-            alt="Profile"
-            className="w-32 h-32 rounded-full object-cover"
-          />
+          <img src={formData.photo} alt="Profile" className="w-32 h-32 rounded-full object-cover" />
           <div className="flex flex-col justify-center relative top-12">
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handlePhotoChange}
-              accept="image/*"
-              className="hidden"
-            />
+            <input type="file" ref={fileInputRef} onChange={handlePhotoChange} accept="image/*" className="hidden" />
             <button
               onClick={triggerFileInput}
               className="text-[10px] font-medium py-2 px-3 rounded-sm bg-gray-200 hover:bg-gray-300 text-gray-800"
@@ -78,7 +90,7 @@ const EditProfile = () => {
             </button>
           </div>
         </div>
-      </div>  
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white border border-gray-200 rounded-md px-4 py-4">
@@ -100,14 +112,13 @@ const EditProfile = () => {
                 <button
                   className="absolute right-2 top-2 text-gray-400 hover:text-gray-600"
                   onClick={() => {}}
-                >
-                </button>
+                ></button>
               </div>
-            </div> 
-          </div> 
-        </div>     
+            </div>
+          </div>
+        </div>
 
-        <div className="bg-white border border-gray-200 rounded-md px-4 py-4"> 
+        <div className="bg-white border border-gray-200 rounded-md px-4 py-4">
           <div>
             <label className="block text-[10px] text-gray-500 pl-3">Username</label>
             <div className="relative">
@@ -122,21 +133,13 @@ const EditProfile = () => {
                   outline: "none",
                 }}
               />
-              <button
-                className="absolute right-2 top-2 text-gray-400 hover:text-gray-600"
-                onClick={() => {}}
-              >
-              </button>
+              <button className="absolute right-2 top-2 text-gray-400 hover:text-gray-600" onClick={() => {}}></button>
             </div>
           </div>
         </div>
-      </div>  
-      
-      <ActionButtons
-        hasChanges={hasChanges()}
-        onSave={handleSave}
-        onReset={handleReset}
-      />
+      </div>
+
+      <ActionButtons hasChanges={hasChanges()} onSave={handleSave} onReset={handleReset} />
     </div>
   );
 };
