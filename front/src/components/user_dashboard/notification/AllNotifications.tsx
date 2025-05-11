@@ -253,34 +253,36 @@ const AllNotifications = () => {
     <div className="min-h-screen">
       <Header />
       {/* <div className="mt-16"> */}
-      <header className="w-full mt-16 pt-4 px-6 md:px-8 lg:px-12 sticky top-0 z-10">
+      <header className="w-full flex flex-row justify-between mt-20 px-6 md:px-8 lg:px-12 sticky top-0 z-10">
         {/* Back button */}
-        <div className={`flex flex-row justify-between ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
-          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
-            <i className="bx bx-chevron-left text-lg mr-2"></i>
+        <div className={`flex flex-row ${isMobile ? "px-4" : ""}`}>
+          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold relative bottom-2">
+            <i className="bx bx-chevron-left text-lg mr-2 "></i>
           </button>
           <h1 className="text-sm font-bold text-gray-900">All Notifications</h1>
-          <button
+          
+        </div>
+
+        <button
             onClick={clearAllNotifications}
             disabled={displayedNotifications.length === 0}
             className="h-9 flex flex-row text-xs text-red-700 hover:text-red-600 cursor-pointer"
           >
             Clear All
           </button>
-        </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white rounded-lg shadow-sm mb-6">
-          <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b">
+        <div className="bg-white rounded-lg mb-6">
+          <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="relative w-full sm:max-w-md">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
+                <Search className="h-3 w-3 text-gray-400" />
               </div>
               <input
                 type="text"
                 placeholder="Search notifications"
-                className="pl-10 pr-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                className="pl-10 pr-4 py-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-black text-xs"
                 value={searchQuery}
                 onChange={handleSearch}
               />
@@ -291,24 +293,24 @@ const AllNotifications = () => {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full sm:w-[200px] justify-start text-left font-normal text-sm",
+                      "w-full sm:w-[200px] justify-start text-left font-normal text-xs",
                       date && "text-blue-600"
                     )}
                   >
-                    <Calendar className="mr-2 h-4 w-4" />
+                    <Calendar  className="mr-2 h-3 w-3" />
                     {date ? format(date, "MMM d, yyyy") : "Filter by date"}
-                    <ChevronDown className="ml-auto h-4 w-4 opacity-50" />
+                    <ChevronDown className="ml-auto h-3 w-3 opacity-50" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="end">
+                <PopoverContent className="w-70 p-0" align="end">
                   <CalendarComponent mode="single" selected={date} onSelect={handleDateSelect} initialFocus />
-                  <div className="p-2 border-t flex justify-between">
-                    <Button variant="ghost" size="sm" onClick={() => handleDateSelect(undefined)}>
+                  <div className="py-2 px-3 border-t flex justify-between">
+                    <button className="text-xs" onClick={() => handleDateSelect(undefined)}>
                       Clear
-                    </Button>
-                    <Button size="sm" onClick={() => setIsFilterOpen(false)}>
+                    </button>
+                    <button className="text-xs" onClick={() => setIsFilterOpen(false)}>
                       Apply
-                    </Button>
+                    </button>
                   </div>
                 </PopoverContent>
               </Popover>
@@ -317,8 +319,8 @@ const AllNotifications = () => {
 
           {date && (
             <div className="px-4 py-2 bg-blue-50 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <span className="text-sm text-blue-700">Showing notifications from {format(date, "MMMM d, yyyy")}</span>
-              <Button variant="ghost" size="sm" className="text-blue-700 h-8 text-xs" onClick={resetFilters}>
+              <span className="text-[10px] text-blue-700">Showing notifications from {format(date, "MMMM d, yyyy")}</span>
+              <Button variant="ghost" size="sm" className="text-blue-700 h-8 text-[10px]" onClick={resetFilters}>
                 Reset Filters
               </Button>
             </div>
@@ -334,28 +336,28 @@ const AllNotifications = () => {
                   >
                     <div className="flex-shrink-0 mr-4">
                       {n.avatar && (
-                        <img src={n.avatar} alt={n.name || ""} className="w-10 h-10 rounded-full object-cover" />
+                        <img src={n.avatar} alt={n.name || ""} className="w-5 h-5 rounded-full object-cover" />
                       )}
                       {!n.avatar && n.icon === "crypto" && (
-                        <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-500">
+                        <div className="w-5 h-5 bg-purple-100 rounded-full flex items-center justify-center text-purple-500">
                           <CheckCircle2 className="h-5 w-5" />
                         </div>
                       )}
                       {!n.avatar && n.icon === "project" && (
-                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-500">
+                        <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center text-blue-500">
                           <CheckCircle2 className="h-5 w-5" />
                         </div>
                       )}
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      {n.name && <p className="font-medium text-gray-900 text-sm">{n.name}</p>}
-                      <p className="text-gray-600 text-sm mt-1">
+                      {n.name && <p className="font-medium text-gray-900 text-xs">{n.name}</p>}
+                      <p className="text-gray-600 text-[10px] mt-1">
                         {n.action}
-                        {n.target && <span className="block mt-1 text-sm text-gray-500">{n.target}</span>}
+                        {n.target && <span className="block mt-1 text-xs text-gray-500">{n.target}</span>}
                       </p>
                       {n.icon === "crypto" && (
-                        <div className="mt-1 text-sm">
+                        <div className="mt-1 text-xs">
                           <span className="font-medium">{n.amount}</span> for{" "}
                           <span className="font-medium text-red-500">
                             {n.forAmount} {n.token}
@@ -366,7 +368,7 @@ const AllNotifications = () => {
                                 href={n.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-xs text-blue-600 hover:underline"
+                                className="text-[10px] text-blue-600 hover:underline"
                               >
                                 View on explorer ↗
                               </a>
@@ -375,12 +377,12 @@ const AllNotifications = () => {
                         </div>
                       )}
                       {n.donation && (
-                        <div className="mt-1 text-sm">
+                        <div className="mt-1 text-xs">
                           <span className="font-medium text-green-600">{n.donation}</span> for{" "}
                           <span className="font-medium">{n.target}</span>
                         </div>
                       )}
-                      <div className="text-xs text-gray-400 mt-2">
+                      <div className="text-[10px] text-gray-400 mt-2">
                         {n.time} · {format(n.date, "MMM d, yyyy")}
                       </div>
                     </div>
@@ -388,33 +390,33 @@ const AllNotifications = () => {
                     <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 ml-2">
                       {/* Action buttons depending on notification type */}
                       {n.name && n.name.includes("Jennifer") && (
-                        <Button variant="outline" size="sm" className="h-8 text-xs">
-                          <PhoneCall className="h-3.5 w-3.5 mr-1" /> Call
+                        <Button variant="outline" size="sm" className="h-8 text-[10px]">
+                          <PhoneCall className="h-3 w-3 mr-1" /> Call
                         </Button>
                       )}
                       {n.name && n.name.includes("Brandon") && (
                         <>
-                          <Button variant="outline" size="sm" className="h-8 text-xs">
-                            <Mail className="h-3.5 w-3.5 mr-1" /> Email
+                          <Button variant="outline" size="sm" className="h-8 text-[10px]">
+                            <Mail className="h-3 w-3 mr-1" /> Email
                           </Button>
-                          <Button variant="outline" size="sm" className="h-8 text-xs">
-                            <PhoneCall className="h-3.5 w-3.5 mr-1" /> Call
+                          <Button variant="outline" size="sm" className="h-8 text-[10px]">
+                            <PhoneCall className="h-3 w-3 mr-1" /> Call
                           </Button>
                         </>
                       )}
                       {n.icon === "project" && (
                         <>
-                          <Button variant="outline" size="sm" className="h-8 text-xs">
-                            <Mail className="h-3.5 w-3.5 mr-1" /> Email
+                          <Button variant="outline" size="sm" className="h-8 text-[10px]">
+                            <Mail className="h-3 w-3 mr-1" /> Email
                           </Button>
-                          <Button variant="outline" size="sm" className="h-8 text-xs">
-                            <PhoneCall className="h-3.5 w-3.5 mr-1" /> Call
+                          <Button variant="outline" size="sm" className="h-8 text-[10px]">
+                            <PhoneCall className="h-3 w-3 mr-1" /> Call
                           </Button>
                         </>
                       )}
                       {n.name && n.name.includes("Gladys") && (
-                        <Button variant="outline" size="sm" className="h-8 text-xs">
-                          <Reply className="h-3.5 w-3.5 mr-1" /> Reply
+                        <Button variant="outline" size="sm" className="h-8 text-[10px]">
+                          <Reply className="h-3 w-3 mr-1" /> Reply
                         </Button>
                       )}
                     </div>
@@ -423,11 +425,11 @@ const AllNotifications = () => {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                  <Bell className="h-8 w-8 text-gray-400" />
+                <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                  <Bell className="h-5 w-5 text-gray-400" />
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-1">No notifications</h3>
-                <p className="text-gray-500 max-w-sm">
+                <h3 className="text-md font-medium text-gray-900 mb-1">No notifications</h3>
+                <p className="text-gray-500 max-w-sm text-xs">
                   {searchQuery || date
                     ? "No notifications match your current filters. Try adjusting your search or date filter."
                     : "You don't have any notifications at the moment."}
