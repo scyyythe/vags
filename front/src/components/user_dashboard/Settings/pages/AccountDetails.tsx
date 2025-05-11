@@ -1,18 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EditableField from "../components/EditableField";
 import ActionButtons from "../components/ActionButtons";
+import useUserDetails from "@/hooks/users/useUserDetails";
+import { getLoggedInUserId } from "@/auth/decode";
 
 const AccountDetails = () => {
+  const userId = getLoggedInUserId();
+  const { firstName, lastName, gender, address, dateOfBirth, email, isLoading, error } = useUserDetails(userId);
   const [formData, setFormData] = useState({
-    fullName: "Angel Canete",
-    gender: "Female",
+    fullName: `${firstName} ${lastName}`,
+    gender,
     country: "Philippines",
-    dob: new Date("2003-07-17"),
+    dob: dateOfBirth ? new Date(dateOfBirth).toLocaleDateString() : "",
     language: "English",
-    email: "angelcanete5@gmail.com",
+    email,
   });
 
   const [originalData, setOriginalData] = useState({ ...formData });
+  useEffect(() => {
+    if (!isLoading && !error) {
+      const newFormData = {
+        fullName: `${firstName} ${lastName}`,
+        gender,
+        dob: dateOfBirth ? new Date(dateOfBirth).toLocaleDateString() : "Unknown",
+        email,
+        country: "Philippines",
+        language: "English",
+      };
+
+      setFormData(newFormData);
+      setOriginalData(newFormData);
+    }
+  }, [firstName, lastName, gender, dateOfBirth, email, isLoading, error]);
 
   const handleChange = (field: string, value: string | Date) => {
     setFormData((prev) => ({
@@ -32,7 +51,9 @@ const AccountDetails = () => {
   const hasChanges = () => {
     return JSON.stringify(formData) !== JSON.stringify(originalData);
   };
-
+  const getAvatarText = (firstName: string) => {
+    return firstName.charAt(0).toUpperCase();
+  };
   return (
     <div>
       <h2 className="text-sm font-bold mb-6">Account Information</h2>
