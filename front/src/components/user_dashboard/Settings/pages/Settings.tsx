@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import ProfileHeader from "../components/ProfileHeader";
 import SettingsTabs from "../components/SettingsTabs";
+import { Footer } from "@/components/user_dashboard/footer/Footer";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -30,6 +31,9 @@ const Settings = () => {
         
         <Outlet />
       </main>
+        <div>
+          <Footer />
+        </div>
     </div>
   );
 };
