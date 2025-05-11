@@ -5,7 +5,7 @@ import ActionButtons from "../components/ActionButtons";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
-import toast from "sonner";
+import { toast } from "sonner";
 
 const EditProfile = () => {
   const userId = getLoggedInUserId();
@@ -75,7 +75,11 @@ const EditProfile = () => {
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
+
   const handleSave = () => {
+    const loadingToast = toast("Updating your details...", {
+      description: "Please wait while we process your update.",
+    });
     const [firstName, ...rest] = formData.fullName.trim().split(" ");
     const lastName = rest.join(" ");
 
@@ -95,10 +99,16 @@ const EditProfile = () => {
         if (formData.profile_picture) {
           setPreviewUrl(URL.createObjectURL(formData.profile_picture));
         }
+
+        toast.success("User details updated successfully!");
+        toast.dismiss(loadingToast);
+      },
+      onError: (error) => {
+        toast.error("Failed to update user details.");
+        toast.dismiss(loadingToast);
       },
     });
   };
-
   const handleReset = () => {
     setFormData({ ...originalData });
   };
