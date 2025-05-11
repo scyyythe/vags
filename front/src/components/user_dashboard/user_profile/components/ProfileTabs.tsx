@@ -119,7 +119,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
 
   return (
     <div className="w-full mt-8">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full">
+      <div className="flex flex-col mb-4 sm:flex-row items-start sm:items-center justify-between w-full">
         {/* Tabs */}
         <div className="flex space-x-4 overflow-x-auto pb-2 w-full sm:w-auto">
           {tabs.map((tab) => (
