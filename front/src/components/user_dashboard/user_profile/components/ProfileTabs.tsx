@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import ArtGrid from "./ArtGrid";
 import { ChevronDown } from "lucide-react";
+import { mediumOptions } from "@/components/user_dashboard/user_profile/components/options/MediumOptions";
 import CreatedTab from "@/components/user_dashboard/user_profile/tabs/CreatedTab";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import { toast } from "sonner";
@@ -25,9 +26,13 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
   const [selectedPriceRange, setSelectedPriceRange] = useState("Price Range");
   const [selectedSortBy, setSelectedSortBy] = useState("Sort by");
 
-  const mediumOptions = ["Clay", "Resin", "Charcoal", "Canvas", "Ink", "3D Model"];
   const priceRangeOptions = ["Low to High", "High to Low"];
   const sortByOptions = ["Latest", "Oldest", "Most Viewed", "Most Liked"];
+
+  const [selectedStatus, setSelectedStatus] = useState("Status");
+  const [showStatusOptions, setShowStatusOptions] = useState(false);
+  const statusOptions = ["Active", "Archived", "Deleted"];
+
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -124,7 +129,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
                 </div>
 
                 {/* Price Range Filter */}
-                <div className="mb-2">
+                {/* <div className="mb-2">
                   <div
                     className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded"
                     onClick={() => setShowPriceOptions(!showPriceOptions)}
@@ -140,6 +145,34 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
                           key={idx}
                           className="px-3 py-2 cursor-pointer hover:bg-gray-100"
                           onClick={() => handlePriceRangeSelect(option)}
+                        >
+                          {option}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div> */}
+
+                {/* Status Filter */}
+                <div className="mb-2">
+                  <div
+                    className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded"
+                    onClick={() => setShowStatusOptions(!showStatusOptions)}
+                  >
+                    <span>{selectedStatus}</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </div>
+
+                  {showStatusOptions && (
+                    <div className="bg-white shadow-md rounded-md mt-1 animate-fade-in">
+                      {statusOptions.map((option, idx) => (
+                        <div
+                          key={idx}
+                          className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                          onClick={() => {
+                            setSelectedStatus(option);
+                            setShowStatusOptions(false);
+                          }}
                         >
                           {option}
                         </div>

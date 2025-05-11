@@ -1,5 +1,5 @@
 import React from 'react';
-import ArtCard from '../Bidding/cards/BidCard';
+import ArtCard from '../../Bidding/cards/BidCard';
 
 const artworks = [
     {
@@ -64,18 +64,6 @@ const ArtGrid = ({ activeTab }: { activeTab: string }) => {
 
   return (
     <div className={`grid ${gridColsClass} gap-6 mt-6`}>
-      {/* {artworks.map(artwork => (
-        <ArtCard 
-            key={artwork.id}
-            data={{
-                id: artwork.id,
-                title: artwork.title,
-                currentBid: Math.floor(Math.random() * 5) + 1,
-                timeRemaining: artwork.endTime,
-                imageUrl: artwork.image,
-            }}
-        />
-      ))} */}
     </div>
   );
 };
