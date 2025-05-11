@@ -59,16 +59,14 @@ const AccountDetails = () => {
 
     const formattedDob = formData.date_of_birth;
 
-    updateUser([
-      userId,
-      {
-        first_name: updatedFirstName,
-        last_name: updatedLastName,
-        gender: formData.gender,
-        email: formData.email,
-        date_of_birth: formattedDob,
-      },
-    ]);
+    const form = new FormData();
+    form.append("first_name", updatedFirstName);
+    form.append("last_name", updatedLastName);
+    form.append("gender", formData.gender);
+    form.append("email", formData.email);
+    form.append("date_of_birth", formattedDob);
+
+    updateUser([userId, form]);
 
     setOriginalData({ ...formData });
   };

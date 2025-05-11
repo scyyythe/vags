@@ -52,7 +52,7 @@ const useUserDetails = (id?: string) => {
   const bio = state.bio || user?.bio || "No bio available";
   const contactNumber = state.contactNumber || user?.contact_number || "No contact number";
   const address = state.address || user?.address || "No address provided";
-  const password = user?.password || "No password available"; // Get password (this should be done carefully)
+  const password = user?.password || "No password available";
 
   return {
     id,
@@ -68,7 +68,7 @@ const useUserDetails = (id?: string) => {
     bio,
     contactNumber,
     address,
-    password, // Include password in the returned object (use carefully)
+    password,
     createdAt,
     updatedAt,
     isLoading,
