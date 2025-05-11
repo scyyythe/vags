@@ -1,5 +1,5 @@
 from django.urls import path
-from api.views.artwork_views.artwork_views import ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, ArtListByArtistView,ArtDeleteView,ArtListViewOwner
+from api.views.artwork_views.artwork_views import HideArtworkView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, ArtListByArtistView,ArtDeleteView,ArtListViewOwner
 
 artwork_urlpatterns = [
     path("art/create/", ArtCreateView.as_view(), name="art-create"),
@@ -10,4 +10,5 @@ artwork_urlpatterns = [
     path('art/<str:pk>/', ArtDetailView.as_view(), name='detail_art'),
     path('art/<str:pk>/update/', ArtUpdateView.as_view(), name='update_art'),
     path('art/<str:pk>/delete/', ArtDeleteView.as_view(), name='delete_art'),
+    path('art/<str:pk>/hide/',HideArtworkView.as_view(), name='hide_art'),
 ]

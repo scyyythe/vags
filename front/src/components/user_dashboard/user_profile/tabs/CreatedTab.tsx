@@ -1,20 +1,31 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
-import useArtworks, { Artwork } from "@/hooks/artworks/useArtworks";
+import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
 };
-
 const CreatedTab = ({ filteredArtworks, isLoading }: CreatedTabProps) => {
   const handleButtonClick = useCallback((artworkId: string) => {
     console.log(`Button clicked for artwork ID: ${artworkId}`);
   }, []);
 
-  if (!isLoading && filteredArtworks.length === 0) {
-    return <p className="text-center text-sm text-gray-500 col-span-full">You have not created that artwork yet.</p>;
+  const publicArtworks = useMemo(() => {
+    return filteredArtworks.filter(
+      (artwork) =>
+        artwork.visibility === "Public" ||
+        artwork.visibility === "public" ||
+        artwork.visibility === "private" ||
+        artwork.visibility === "Private"
+    );
+  }, [filteredArtworks]);
+
+  if (!isLoading && publicArtworks.length === 0) {
+    return (
+      <p className="text-center text-sm text-gray-500 col-span-full">You have not created any public artwork yet.</p>
+    );
   }
 
   return (
@@ -22,7 +33,7 @@ const CreatedTab = ({ filteredArtworks, isLoading }: CreatedTabProps) => {
       {isLoading ? (
         <ArtCardSkeleton />
       ) : (
-        filteredArtworks.map((art: Artwork) => (
+        publicArtworks.map((art: Artwork) => (
           <ArtCard
             key={art.id}
             id={art.id}

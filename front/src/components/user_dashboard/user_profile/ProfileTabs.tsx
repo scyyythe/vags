@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 import CreatedTab from "@/components/user_dashboard/user_profile/tabs/CreatedTab";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import { toast } from "sonner";
-import useArtworks, { Artwork } from "@/hooks/artworks/useArtworks";
+import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 const tabs = [
   { id: "created", label: "Created" },
   { id: "onBid", label: "On Bid" },

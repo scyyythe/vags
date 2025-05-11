@@ -10,9 +10,10 @@ import OwnerMenu from "@/components/user_dashboard/own_profile/Menu";
 import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
-import useArtworkDetails from "@/hooks/artworks/useArtworkDetails";
+import useArtworkDetails from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import useLikeStatus from "@/hooks/interactions/useLikeStatus";
+import useHideArtwork from "@/hooks/artworks/visibility/useHideArtwork";
 
 interface ArtCardProps {
   id: string;
@@ -52,6 +53,9 @@ const ArtCard = ({
 
   const { openPopup } = useDonation();
   const { isLoading: detailsLoading } = useArtworkDetails(id);
+
+  const { mutate: hideArtwork } = useHideArtwork();
+
   const isLiked = likedArtworks[id] || false;
   useEffect(() => {
     if (data) {
@@ -64,11 +68,11 @@ const ArtCard = ({
     }
   };
 
-  const handleHide = useCallback(() => {
+  const handleHide = () => {
     setIsHidden(true);
-    toast("Artwork hidden");
+    hideArtwork(id);
     setMenuOpen(false);
-  }, []);
+  };
 
   const handleReport = useCallback(() => {
     toast("Artwork reported");

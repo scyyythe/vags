@@ -9,8 +9,8 @@ import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
-import useArtworks from "@/hooks/artworks/useArtworks";
-import useFetchPopularArtworks from "@/hooks/artworks/useFetchPopularArtworks";
+import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
+import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 
 const Explore = () => {
@@ -19,7 +19,7 @@ const Explore = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage] = useState(1);
-  const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all");
+  const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all", "public");
   const { data: popularArtworks } = useFetchPopularArtworks(1);
 
   const slideshowData = popularArtworks
