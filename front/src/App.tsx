@@ -62,8 +62,7 @@ const App = () => {
         <TooltipProvider>
           <DonationProvider>
             <DonationWrapper>
-              <Toaster position="top-right" richColors />
-              {/* <Sonner /> */}
+              <Toaster position="bottom-right" richColors />
               <ModalProvider>
                 <ArtworkProvider>
                   <BrowserRouter>
