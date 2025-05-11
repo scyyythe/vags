@@ -127,12 +127,11 @@ const Header = () => {
           </div>
 
           {/* Upgrade Button */}
-          <Button
-            size="sm"
-            className="bg-red hover:bg-red/90 rounded-full px-4 text-xs text-red-600 border border-red-600"
+          <button
+            className="bg-red hover:bg-red/90 rounded-full px-3 py-1 text-[10px] text-red-600 border border-red-600"
           >
             Upgrade
-          </Button>
+          </button>
 
           {/* Avatar with profile link */}
           <div className="relative" ref={avatarRef}>
