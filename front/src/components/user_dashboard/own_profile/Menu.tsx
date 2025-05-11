@@ -33,11 +33,21 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
 
 
   useEffect(() => {
-    document.body.style.overflow = showAuctionPopup ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [showAuctionPopup]);
+  const shouldHideScroll = showAuctionPopup || showDeletePopup;
+
+  const originalOverflow = document.body.style.overflow;
+  if (shouldHideScroll) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = originalOverflow || "auto";
+  }
+
+  return () => {
+    document.body.style.overflow = originalOverflow || "auto";
+  };
+}, [showAuctionPopup, showDeletePopup]);
+
+
 
   if (!isOpen) return null;
 
@@ -168,6 +178,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         </div>
       </div>
 
+      {/* Delete Confirmation Popup */}
       <DeleteConfirmationPopup
         isOpen={showDeletePopup}
         onCancel={() => setShowDeletePopup(false)}
@@ -176,7 +187,6 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
           setShowDeletePopup(false);
         }}
       />
-
 
       {/* Auction Popup */}
       <AuctionPopup
