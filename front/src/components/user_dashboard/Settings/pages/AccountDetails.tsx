@@ -33,7 +33,7 @@ const AccountDetails = () => {
       const newFormData = {
         fullName: `${firstName || "Unknown"} ${lastName || ""}`.trim(),
         gender: gender || "Unknown",
-        date_of_birth: formattedDob || "Unknown",
+        date_of_birth: formattedDob || "",
         email: email || "Unknown",
         country: "Philippines",
         language: "English",
@@ -45,6 +45,10 @@ const AccountDetails = () => {
   }, [firstName, lastName, gender, dateOfBirth, email, isLoading, error]);
 
   const handleChange = (field: string, value: string | Date) => {
+    if (field === "date_of_birth" && value instanceof Date) {
+      value = value.toISOString().split("T")[0];
+    }
+
     setFormData((prev) => ({
       ...prev,
       [field]: value,
