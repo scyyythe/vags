@@ -27,12 +27,14 @@ export interface Artwork {
 const fetchArtworks = async (
   currentPage: number,
   userId?: string,
-  endpointType: "all" | "created-by-me" = "all"
+  endpointType: "all" | "created-by-me" = "all",
+  filterVisibility: "public" | "private" = "public"
 ): Promise<Artwork[]> => {
   try {
-    const params: { page: number; limit: number; userId?: string } = {
+    const params: { page: number; limit: number; userId?: string; visibility?: string } = {
       page: currentPage,
       limit: 20,
+      visibility: filterVisibility,
     };
 
     let url = "art/list/";

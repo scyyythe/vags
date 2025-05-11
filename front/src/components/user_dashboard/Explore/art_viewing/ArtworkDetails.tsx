@@ -13,7 +13,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
 import useFavorite from "@/hooks/interactions/useFavorite";
-import useArtworkDetails from "@/hooks/artworks/useArtworkDetails";
+import useArtworkDetails from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();

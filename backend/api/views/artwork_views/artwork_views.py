@@ -11,6 +11,8 @@ from api.utils.cache_utils import get_cached_data, set_cache_data, delete_cache_
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from django.http import Http404
+from rest_framework.views import APIView
+from rest_framework import status
 
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
@@ -40,7 +42,9 @@ class ArtListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return Art.objects.order_by('-created_at')
+       
+        return Art.objects(visibility__iexact="public").order_by('-created_at')
+
     
 class ArtListViewOwner(generics.ListAPIView):
     serializer_class = ArtSerializer
@@ -123,3 +127,19 @@ class ArtDeleteView(generics.DestroyAPIView):
             user=artist,
             message=f"Your artwork '{title}' has been deleted successfully."
         ).save()
+
+
+class HideArtworkView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            artwork = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            raise Http404("Artwork not found")
+
+        artwork.visibility = "Hidden"
+        artwork.updated_at = datetime.utcnow()
+        artwork.save()
+
+        return Response({"message": "Artwork hidden successfully."}, status=status.HTTP_200_OK)
