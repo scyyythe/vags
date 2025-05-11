@@ -124,7 +124,7 @@ const ArtCard = ({
           </button>
 
           {/* CONDITIONAL MENU */}
-          {/* {isExplore ? (
+          {isExplore ? (
             <ArtCardMenu
               isOpen={menuOpen}
               onFavorite={handleFavorite}
@@ -133,7 +133,7 @@ const ArtCard = ({
               isFavorite={isFavorite}
               isReported={false}
             />
-          ) : isDeleted ? ( */}
+          ) : isDeleted ? (
             <DeletedMenu
               isOpen={menuOpen}
               onEdit={() => {
@@ -150,7 +150,7 @@ const ArtCard = ({
                 setMenuOpen(false);
               }}
             />
-          {/* ) : isArchived ? (
+          ) : isArchived ? (
             <ArchivedMenu
               isOpen={menuOpen}
               onEdit={() => console.log("Edit artwork")}
@@ -167,7 +167,7 @@ const ArtCard = ({
               onArchive={() => console.log("Archive")}
               isPublic={true}
             />
-          )} */}
+          )}
 
         </div>
       </div>
