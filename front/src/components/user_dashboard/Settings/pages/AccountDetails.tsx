@@ -3,27 +3,38 @@ import EditableField from "../components/EditableField";
 import ActionButtons from "../components/ActionButtons";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
+import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
 
 const AccountDetails = () => {
   const userId = getLoggedInUserId();
   const { firstName, lastName, gender, address, dateOfBirth, email, isLoading, error } = useUserDetails(userId);
+  const { mutate: updateUser } = useUpdateUserDetails();
+
   const [formData, setFormData] = useState({
-    fullName: `${firstName} ${lastName}`,
-    gender,
+    fullName: "",
+    gender: "",
     country: "Philippines",
-    dob: dateOfBirth ? new Date(dateOfBirth).toLocaleDateString() : "",
+    date_of_birth: "",
     language: "English",
-    email,
+    email: "",
   });
 
   const [originalData, setOriginalData] = useState({ ...formData });
   useEffect(() => {
     if (!isLoading && !error) {
+      let formattedDob = "";
+      if (dateOfBirth) {
+        const parsedDate = new Date(dateOfBirth);
+        if (!isNaN(parsedDate.getTime())) {
+          formattedDob = parsedDate.toISOString().split("T")[0];
+        }
+      }
+
       const newFormData = {
-        fullName: `${firstName} ${lastName}`,
-        gender,
-        dob: dateOfBirth ? new Date(dateOfBirth).toLocaleDateString() : "Unknown",
-        email,
+        fullName: `${firstName || "Unknown"} ${lastName || ""}`.trim(),
+        gender: gender || "Unknown",
+        date_of_birth: formattedDob || "Unknown",
+        email: email || "Unknown",
         country: "Philippines",
         language: "English",
       };
@@ -41,6 +52,24 @@ const AccountDetails = () => {
   };
 
   const handleSave = () => {
+    if (!formData) return;
+
+    const [updatedFirstName, ...rest] = formData.fullName.split(" ");
+    const updatedLastName = rest.join(" ");
+
+    const formattedDob = formData.date_of_birth;
+
+    updateUser([
+      userId,
+      {
+        first_name: updatedFirstName,
+        last_name: updatedLastName,
+        gender: formData.gender,
+        email: formData.email,
+        date_of_birth: formattedDob,
+      },
+    ]);
+
     setOriginalData({ ...formData });
   };
 
@@ -51,9 +80,15 @@ const AccountDetails = () => {
   const hasChanges = () => {
     return JSON.stringify(formData) !== JSON.stringify(originalData);
   };
-  const getAvatarText = (firstName: string) => {
-    return firstName.charAt(0).toUpperCase();
-  };
+
+  if (isLoading) {
+    return <div>Loading user details...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">Error fetching user details.</div>;
+  }
+
   return (
     <div>
       <h2 className="text-sm font-bold mb-6">Account Information</h2>
@@ -90,9 +125,9 @@ const AccountDetails = () => {
 
           <EditableField
             label="Date of Birth"
-            value={formData.dob}
+            value={formData.date_of_birth}
             type="date"
-            onChange={(value) => handleChange("dob", value)}
+            onChange={(value) => handleChange("date_of_birth", value)}
           />
 
           <EditableField
