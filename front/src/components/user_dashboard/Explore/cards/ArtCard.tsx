@@ -7,6 +7,8 @@ import TipJarIcon from "../tip_jar/TipJarIcon";
 import { useDonation } from "../../../../context/DonationContext";
 import ArtCardMenu from "./ArtCardMenu";
 import OwnerMenu from "@/components/user_dashboard/own_profile/Menu";
+import ArchivedMenu from "@/components/user_dashboard/user_profile/components/status_options/Archived";
+import DeletedMenu from "@/components/user_dashboard/user_profile/components/status_options/Deleted";
 import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
@@ -30,6 +32,8 @@ interface ArtCardProps {
   onButtonClick?: () => void;
   isExplore?: boolean;
   likesCount: number;
+  isArchived?: boolean;
+  isDeleted?: boolean;
 }
 
 const ArtCard = ({
@@ -41,18 +45,20 @@ const ArtCard = ({
   title,
   isExplore = false,
   likesCount = 0,
+  isArchived = false, 
+  isDeleted = false,
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
-  // const { data, isLiked, isSaved } = useArtworkStatus(id);
-  // const { handleFavorite } = useFavorite(id);
   const { data, error, isLoading } = useLikeStatus(id);
   const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
   const { likedArtworks, likeCounts, setLikedArtworks, setLikeCounts, toggleLike } = useContext(LikedArtworksContext);
 
   const { openPopup } = useDonation();
   const { isLoading: detailsLoading } = useArtworkDetails(id);
+
+  const [isDeletedLocally, setIsDeletedLocally] = useState(false);
 
   const { mutate: hideArtwork } = useHideArtwork();
 
@@ -62,6 +68,7 @@ const ArtCard = ({
       setLikedArtworks((prev) => ({ ...prev, [id]: data.isLiked }));
     }
   }, [data, id, setLikedArtworks]);
+  
   const handleLike = () => {
     if (id) {
       toggleLike(id);
@@ -93,9 +100,10 @@ const ArtCard = ({
     });
   };
 
-  if (isHidden) {
+  if (isHidden || isDeletedLocally) {
     return null;
   }
+
   if (detailsLoading) return <ArtCardSkeleton />;
   return (
     <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4">
@@ -114,6 +122,7 @@ const ArtCard = ({
           >
             <MoreHorizontal size={14} />
           </button>
+
           {/* CONDITIONAL MENU */}
           {isExplore ? (
             <ArtCardMenu
@@ -123,6 +132,30 @@ const ArtCard = ({
               onReport={handleReport}
               isFavorite={isFavorite}
               isReported={false}
+            />
+          ) : isDeleted ? (
+            <DeletedMenu
+              isOpen={menuOpen}
+              onEdit={() => {
+                console.log("Edit artwork");
+                setMenuOpen(false);
+              }}
+              onUnarchive={() => {
+                toast.success("Artwork restored");
+                setMenuOpen(false);
+              }}
+              onDelete={() => {
+                toast.success("Artwork permanently deleted");
+                setIsDeletedLocally(true);
+                setMenuOpen(false);
+              }}
+            />
+          ) : isArchived ? (
+            <ArchivedMenu
+              isOpen={menuOpen}
+              onEdit={() => console.log("Edit artwork")}
+              onUnarchive={() => console.log("Unarchive artwork")}
+              onDelete={() => console.log("Delete artwork")}
             />
           ) : (
             <OwnerMenu
@@ -135,6 +168,7 @@ const ArtCard = ({
               isPublic={true}
             />
           )}
+
         </div>
       </div>
       <Link to={`/artwork/${id}`} state={{ artworkImage, artistId, artistName, title, likesCount }} className="w-full">
