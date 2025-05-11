@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { toast } from "sonner";
 import { ArchiveRestore, Trash2 } from "lucide-react";
-import DeletePermanently from "@/components/user_dashboard/own_profile/delete_popups/DeletePermanently"; 
+import DeletePermanently from "@/components/user_dashboard/user_profile/components/status_options/delete_popups/DeletePermanently"; 
 
 interface ArtCardMenuProps {
   isOpen: boolean;

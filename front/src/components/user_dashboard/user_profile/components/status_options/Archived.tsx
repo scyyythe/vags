@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Pencil, ArchiveRestore, Trash2 } from "lucide-react";
-import DeleteConfirmationPopup from "@/components/user_dashboard/own_profile/delete_popups/DeletePopup"; 
+import DeleteConfirmationPopup from "@/components/user_dashboard/user_profile/components/status_options/delete_popups/DeletePopup"; 
 
 interface ArtCardMenuProps {
   isOpen: boolean;
