@@ -10,6 +10,7 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import useNotifications from "@/hooks/notifications/useNotification";
 
 // Extend the notification type to include date
 interface Notification {
@@ -168,83 +169,25 @@ const notifications: Notification[] = [
     action: "Workflow project | 5000$ | Sinform Solution",
     target: "This deal is about to close today!",
     time: "6h ago",
-    date: new Date(2025, 4, 8), // Yesterday
+    date: new Date(2025, 4, 8),
   },
 ];
 
 const AllNotifications = () => {
-  const [displayedNotifications, setDisplayedNotifications] = useState<Notification[]>(notifications);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-
-  // Filter notifications based on search and date
-  const filterNotifications = () => {
-    let filtered = [...notifications];
-
-    // Filter by search query
-    if (searchQuery) {
-      filtered = filtered.filter(
-        (n) =>
-          (n.name && n.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          (n.action && n.action.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          (n.target && n.target.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    }
-
-    // Filter by date
-    if (date) {
-      filtered = filtered.filter((n) => {
-        const notifDate = new Date(n.date);
-        return (
-          notifDate.getDate() === date.getDate() &&
-          notifDate.getMonth() === date.getMonth() &&
-          notifDate.getFullYear() === date.getFullYear()
-        );
-      });
-    }
-
-    setDisplayedNotifications(filtered);
-  };
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    filterNotifications();
-  };
-
-  const handleDateSelect = (selectedDate: Date | undefined) => {
-    setDate(selectedDate);
-    setIsFilterOpen(false);
-
-    // Filter notifications based on selected date
-    if (selectedDate) {
-      const filtered = notifications.filter((n) => {
-        const notifDate = new Date(n.date);
-        return (
-          notifDate.getDate() === selectedDate.getDate() &&
-          notifDate.getMonth() === selectedDate.getMonth() &&
-          notifDate.getFullYear() === selectedDate.getFullYear()
-        );
-      });
-      setDisplayedNotifications(filtered);
-    } else {
-      setDisplayedNotifications(notifications);
-    }
-  };
-
-  const clearAllNotifications = () => {
-    setDisplayedNotifications([]);
-    toast.success("All notifications cleared");
-  };
-
-  const resetFilters = () => {
-    setSearchQuery("");
-    setDate(undefined);
-    setDisplayedNotifications(notifications);
-  };
-
+  const {
+    displayedNotifications,
+    searchQuery,
+    date,
+    isFilterOpen,
+    handleSearch,
+    handleDateSelect,
+    clearAllNotifications,
+    resetFilters,
+    setIsFilterOpen,
+  } = useNotifications();
+  console.log(displayedNotifications);
   const goBack = () => {
     navigate("/");
   };
@@ -333,17 +276,19 @@ const AllNotifications = () => {
                     className="flex p-4 bg-white border rounded-sm shadow-sm hover:bg-gray-50 transition-colors"
                   >
                     <div className="flex-shrink-0 mr-4">
-                      {n.avatar && (
+                      {n.avatar ? (
                         <img src={n.avatar} alt={n.name || ""} className="w-10 h-10 rounded-full object-cover" />
-                      )}
-                      {!n.avatar && n.icon === "crypto" && (
+                      ) : n.icon === "crypto" ? (
                         <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-500">
                           <CheckCircle2 className="h-5 w-5" />
                         </div>
-                      )}
-                      {!n.avatar && n.icon === "project" && (
+                      ) : n.icon === "project" ? (
                         <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-500">
                           <CheckCircle2 className="h-5 w-5" />
+                        </div>
+                      ) : (
+                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
+                          {n.name && n.name.charAt(0).toUpperCase()}
                         </div>
                       )}
                     </div>
@@ -351,7 +296,7 @@ const AllNotifications = () => {
                     <div className="flex-1 min-w-0">
                       {n.name && <p className="font-medium text-gray-900 text-sm">{n.name}</p>}
                       <p className="text-gray-600 text-sm mt-1">
-                        {n.action}
+                        {n.action} your
                         {n.target && <span className="block mt-1 text-sm text-gray-500">{n.target}</span>}
                       </p>
                       {n.icon === "crypto" && (

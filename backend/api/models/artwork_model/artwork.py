@@ -11,7 +11,7 @@ class Art(Document):
     price = IntField()
     size = StringField(max_length=100, required=False)
     description = StringField(required=False)
-    visibility = StringField(choices=['public', 'private'], default='public') 
+    visibility = StringField(choices=['Public', 'Private', 'Hidden'], default='Public') 
     created_at = DateTimeField(default=datetime.utcnow)
     updated_at = DateTimeField(default=datetime.utcnow)
     image_url = URLField(required=False)  

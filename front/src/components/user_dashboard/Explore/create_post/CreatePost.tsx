@@ -22,7 +22,7 @@ const CreatePost = () => {
 
   const [artStatus, setArtStatus] = useState("Active");
   const [price, setPrice] = useState(0);
-  const [visibility, setVisibility] = useState("public");
+  const [visibility, setVisibility] = useState("Public");
 
   const [height, setHeight] = useState("");
   const [width, setWidth] = useState("");
@@ -72,6 +72,7 @@ const CreatePost = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const size = `${artworkHeight} x ${artworkWidth}`;
 
     // Early validations
     if (!artworkTitle.trim()) {
@@ -83,12 +84,16 @@ const CreatePost = () => {
       toast.error("Please upload an artwork image");
       return;
     }
-
+    if (!artworkHeight || !artworkWidth) {
+      toast.error("Please enter both height and width of the artwork");
+      return;
+    }
     const formData = new FormData();
     formData.append("title", artworkTitle.trim());
     formData.append("category", artworkStyle);
     formData.append("medium", medium.trim());
     formData.append("art_status", artStatus);
+    formData.append("size", size);
     formData.append("price", price.toString());
     formData.append("description", description.trim());
     formData.append("visibility", visibility);
@@ -260,25 +265,23 @@ const CreatePost = () => {
                       Artwork Size (inches)
                     </label>
                     <div className="grid grid-cols-3">
-                      <div className="flex flex-col"> 
+                      <div className="flex flex-col">
                         <Input
                           type="number"
                           placeholder="0"
-                          style={{ fontSize: '10px', marginBottom: '5px', height: '80%'}}
+                          style={{ fontSize: "10px", marginBottom: "5px", height: "80%" }}
                           min={0}
                           value={artworkHeight}
                           onChange={(e) => setArtworkHeight(e.target.value)}
                         />
                         <label className="text-[9px] text-center mb-1">Height</label>
                       </div>
-                      <span className="h-5 w-5 font-bold text-sm flex items-center justify-center mx-auto mt-2">
-                        x
-                      </span>
+                      <span className="h-5 w-5 font-bold text-sm flex items-center justify-center mx-auto mt-2">x</span>
                       <div className="flex flex-col">
                         <Input
                           type="number"
                           placeholder="0"
-                          style={{ fontSize: '10px', marginBottom: '5px', height: '80%' }}
+                          style={{ fontSize: "10px", marginBottom: "5px", height: "80%" }}
                           min={0}
                           value={artworkWidth}
                           onChange={(e) => setArtworkWidth(e.target.value)}
@@ -287,7 +290,6 @@ const CreatePost = () => {
                       </div>
                     </div>
                   </div>
-
                 </div>
 
                 <div className="mb-6">

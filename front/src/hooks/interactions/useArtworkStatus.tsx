@@ -12,6 +12,7 @@ const useArtworkStatus = (id: string) => {
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["artworkStatus", id],
+
     queryFn: () => fetchArtworkStatus(id),
     enabled: !!id,
     staleTime: 1000 * 1,

@@ -9,9 +9,12 @@ import ArtCardMenu from "./ArtCardMenu";
 import OwnerMenu from "@/components/user_dashboard/own_profile/Menu";
 import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
-
-import useArtworkDetails from "@/hooks/artworks/useArtworkDetails";
+import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+import useArtworkDetails from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
+import useLikeStatus from "@/hooks/interactions/useLikeStatus";
+import useHideArtwork from "@/hooks/artworks/visibility/useHideArtwork";
+
 interface ArtCardProps {
   id: string;
   artistId: string;
@@ -42,39 +45,44 @@ const ArtCard = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
-  const { data, isLiked, isSaved } = useArtworkStatus(id);
-  const { handleFavorite } = useFavorite(id);
+  // const { data, isLiked, isSaved } = useArtworkStatus(id);
+  // const { handleFavorite } = useFavorite(id);
+  const { data, error, isLoading } = useLikeStatus(id);
+  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
   const { likedArtworks, likeCounts, setLikedArtworks, setLikeCounts, toggleLike } = useContext(LikedArtworksContext);
 
   const { openPopup } = useDonation();
-  const { isLoading: detailsLoading } = useArtworkDetails();
+  const { isLoading: detailsLoading } = useArtworkDetails(id);
 
+  const { mutate: hideArtwork } = useHideArtwork();
+
+  const isLiked = likedArtworks[id] || false;
   useEffect(() => {
-    setLikedArtworks((prev) => ({ ...prev, [id]: isLiked }));
-  }, [isLiked, id, setLikedArtworks]);
-
+    if (data) {
+      setLikedArtworks((prev) => ({ ...prev, [id]: data.isLiked }));
+    }
+  }, [data, id, setLikedArtworks]);
   const handleLike = () => {
     if (id) {
-      console.log("Before toggle:", isLiked);
       toggleLike(id);
     }
   };
 
-  const handleHide = useCallback(() => {
+  const handleHide = () => {
     setIsHidden(true);
-    toast("Artwork hidden");
+    hideArtwork(id);
     setMenuOpen(false);
-  }, []);
+  };
 
   const handleReport = useCallback(() => {
     toast("Artwork reported");
     setMenuOpen(false);
   }, []);
 
-  const handleSaved = useCallback(() => {
-    handleFavorite();
+  const handleFavorite = () => {
+    toggleFavorite();
     setMenuOpen(false);
-  }, [handleFavorite]);
+  };
 
   const handleTipJar = () => {
     openPopup({
@@ -88,8 +96,7 @@ const ArtCard = ({
   if (isHidden) {
     return null;
   }
-  if (detailsLoading) return <div>Loading...</div>;
-
+  if (detailsLoading) return <ArtCardSkeleton />;
   return (
     <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4">
       <div className="py-1 px-1 flex justify-between items-center">
@@ -111,10 +118,10 @@ const ArtCard = ({
           {isExplore ? (
             <ArtCardMenu
               isOpen={menuOpen}
-              onFavorite={handleSaved}
+              onFavorite={handleFavorite}
               onHide={handleHide}
               onReport={handleReport}
-              isFavorite={isSaved}
+              isFavorite={isFavorite}
               isReported={false}
             />
           ) : (

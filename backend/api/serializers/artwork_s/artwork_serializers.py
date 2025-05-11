@@ -35,15 +35,15 @@ class ArtSerializer(serializers.Serializer):
             validated_data['image_url'] = ''
 
         if "visibility" not in validated_data:
-            validated_data["visibility"] = "public"  
+            validated_data["visibility"] = "Public"  
         
         art = Art(**validated_data)
         art.save()
 
-     
-        Notification.objects.create(
+        notification_message = f"Your artwork '{art.title}' has been uploaded successfully."
+        notification = Notification.objects.create(
             user=art.artist,
-            message=f"Your artwork '{art.title}' has been uploaded successfully.",
+            message=notification_message,
             art=art
         )
         return art

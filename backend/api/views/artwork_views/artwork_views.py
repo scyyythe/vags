@@ -6,11 +6,11 @@ from api.models.interaction_model.notification import Notification
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from datetime import datetime
-from django.core.cache import cache
-from api.utils.cache_utils import get_cached_data, set_cache_data, delete_cache_data
-from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from django.http import Http404
+from rest_framework.views import APIView
+from rest_framework import status
+from django.utils.timesince import timesince
 
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
@@ -26,12 +26,19 @@ class ArtCreateView(generics.ListCreateAPIView):
 
         art = serializer.save(artist=mongo_user)
         art = Art.objects.get(id=art.id)
-
-        Notification(
-            user=mongo_user,
-            message=f"Your artwork '{art.title}' has been uploaded successfully.",
-            art=art
-        ).save()
+        now = datetime.now()
+        time_elapsed = timesince(art.created_at, now)
+        # Notification.objects.create(
+        #     user=mongo_user,  # The user who uploaded the artwork
+        #     message=f"Your artwork '{art.title}' has been uploaded successfully.",
+        #     art=art,  
+        #     name=f"Your artwork '{art.title}' has been uploaded successfully.", 
+        #     action="uploaded", 
+        #     target=art.title,  
+        #     icon="upload",  
+        #     time=time_elapsed,  
+        #     date=now,  
+        # ).save()
 
 
 
@@ -40,7 +47,9 @@ class ArtListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return Art.objects.order_by('-created_at')
+       
+        return Art.objects(visibility__iexact="public").order_by('-created_at')
+
     
 class ArtListViewOwner(generics.ListAPIView):
     serializer_class = ArtSerializer
@@ -59,7 +68,7 @@ class ArtworksByArtistView(generics.RetrieveAPIView):
         artworks = Art.objects.filter(artist_id=artist_id)
 
         if not artworks:
-            raise NotFound("No artworks found for this artist")
+            raise Http404("No artworks found for this artist")
 
         return artworks
     
@@ -123,3 +132,19 @@ class ArtDeleteView(generics.DestroyAPIView):
             user=artist,
             message=f"Your artwork '{title}' has been deleted successfully."
         ).save()
+
+
+class HideArtworkView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            artwork = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            raise Http404("Artwork not found")
+
+        artwork.visibility = "Hidden"
+        artwork.updated_at = datetime.utcnow()
+        artwork.save()
+
+        return Response({"message": "Artwork hidden successfully."}, status=status.HTTP_200_OK)

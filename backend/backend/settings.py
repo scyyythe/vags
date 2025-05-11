@@ -188,7 +188,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080", 
     "http://192.168.100.31:8080",
-    "https://0794-61-245-19-236.ngrok-free.app",
+    "https://8fa2-61-245-19-236.ngrok-free.app",
     "https://vags.vercel.app",
 ]
 
