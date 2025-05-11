@@ -9,7 +9,16 @@ interface User {
   first_name?: string;
   last_name?: string;
   role?: string;
+  user_status?: string;
   created_at?: string;
+  updated_at?: string;
+  profile_picture?: string;
+  bio?: string;
+  contact_number?: string;
+  address?: string;
+  gender?: "Male" | "Female" | "Other";
+  date_of_birth?: string;
+  password: string;
 }
 
 const fetchUserById = async (id: string): Promise<User> => {
