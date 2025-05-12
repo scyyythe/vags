@@ -6,6 +6,7 @@ export interface Artwork {
   title: string;
   artistName: string;
   artist_id: string;
+  artistId: string;
   artist: string;
   description: string;
   category: string;
