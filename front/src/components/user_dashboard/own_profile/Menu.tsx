@@ -2,23 +2,26 @@ import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DollarSign, ShoppingCart, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
-import DeleteConfirmationPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/delete/DeletePopup"; 
+import DeleteConfirmationPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/delete/DeletePopup";
 import AuctionPopup from "@/components/user_dashboard/own_profile/request_bid/RequestBid";
 
 interface ArtCardMenuProps {
   isOpen: boolean;
-  onRequestBid: () => void;
+  artworkId: string;
+  onRequestBid: (id: string) => void;
   onSell: () => void;
-  onEdit: () => void;
-  onToggleVisibility: (newVisibility: boolean) => void;
+  onEdit: (id: string) => void;
+  onToggleVisibility: (newVisibility: boolean, id: string) => void;
   onArchive: () => void;
   isPublic?: boolean;
 }
 
 const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   isOpen,
+  artworkId,
   onRequestBid,
   onSell,
+  onEdit,
   onToggleVisibility,
   onArchive,
   isPublic = true,
@@ -31,36 +34,34 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
 
-
   useEffect(() => {
-  const shouldHideScroll = showAuctionPopup || showDeletePopup;
+    const shouldHideScroll = showAuctionPopup || showDeletePopup;
 
-  const originalOverflow = document.body.style.overflow;
+    const originalOverflow = document.body.style.overflow;
 
-  if (shouldHideScroll) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = originalOverflow || "auto";
-  }
+    if (shouldHideScroll) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = originalOverflow || "auto";
+    }
 
-  return () => {
+    return () => {
       document.body.style.overflow = originalOverflow || "auto";
     };
   }, [showAuctionPopup, showDeletePopup]);
-
 
   if (!isOpen) return null;
 
   const handleToggleVisibility = () => {
     const newStatus = !publicStatus;
     setPublicStatus(newStatus);
-    onToggleVisibility(newStatus);
+    onToggleVisibility(newStatus, artworkId);
   };
 
   const handleUpdateClick = () => {
-    navigate("/update");
+    onEdit(artworkId);
+    navigate(`/update/${artworkId}`);
   };
-
   return (
     <>
       <div
@@ -103,7 +104,6 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             )}
           </div>
 
-          
           {/* Toggle Visibility */}
           <div className="flex items-center relative">
             <button
@@ -115,7 +115,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
               {publicStatus ? (
                 <i className="bx bx-show-alt text-[11px]"></i>
               ) : (
-                <i className='bx bxs-hide text-[11px]' ></i>
+                <i className="bx bxs-hide text-[11px]"></i>
               )}
             </button>
             {hoveredItem === "visibility" && (
@@ -137,9 +137,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             </button>
 
             {hoveredItem === "edit" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">
-                more
-              </span>
+              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">more</span>
             )}
 
             {isEditOpen && (
@@ -147,7 +145,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
                 <button
                   onClick={() => {
                     handleUpdateClick();
-                    setIsEditOpen(false); 
+                    setIsEditOpen(false);
                   }}
                   className="px-3 py-1 text-left text-white"
                 >
@@ -156,7 +154,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
                 <button
                   onClick={() => {
                     onArchive();
-                    setIsEditOpen(false); 
+                    setIsEditOpen(false);
                   }}
                   className="px-3 py-1 text-left text-white"
                 >
@@ -174,7 +172,6 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
               </div>
             )}
           </div>
-
         </div>
       </div>
 
@@ -189,10 +186,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
       />
 
       {/* Auction Popup */}
-      <AuctionPopup
-        open={showAuctionPopup}
-        onOpenChange={setShowAuctionPopup}
-      />
+      <AuctionPopup open={showAuctionPopup} onOpenChange={setShowAuctionPopup} />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { Toaster }  from "sonner";
+import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -75,7 +75,7 @@ const App = () => {
 
                       <Route path="/explore" element={<ProtectedRoute children={<Explore />} />} />
                       <Route path="/create" element={<ProtectedRoute children={<Create />} />} />
-                      <Route path="/update" element={<ProtectedRoute children={<UpdatePost />} />} />
+                      <Route path="/update/:id" element={<ProtectedRoute children={<UpdatePost />} />} />
                       <Route path="/userprofile/:id" element={<ProtectedRoute children={<UserProfile />} />} />
                       <Route path="/artwork/:id" element={<ProtectedRoute children={<ArtworkDetails />} />} />
                       <Route path="/bidding" element={<ProtectedRoute children={<Bidding />} />} />
