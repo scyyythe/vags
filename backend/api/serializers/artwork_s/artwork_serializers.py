@@ -49,10 +49,11 @@ class ArtSerializer(serializers.Serializer):
         return art
     
     def update(self, instance, validated_data):
+        
         image = validated_data.pop('image', None)
         if image:
             result = cloudinary.uploader.upload(image)
-            validated_data['image_url'] = result['secure_url']
+            validated_data['image_url'] = result['secure_url']  
         
         instance.title = validated_data.get("title", instance.title)
         instance.category = validated_data.get("category", instance.category)
@@ -62,11 +63,14 @@ class ArtSerializer(serializers.Serializer):
         instance.size = validated_data.get("size", instance.size)
         instance.description = validated_data.get("description", instance.description)
         instance.visibility = validated_data.get("visibility", instance.visibility)
-        instance.image_url = validated_data['image_url']
-
-       
+        
+        
+        if 'image_url' in validated_data:
+            instance.image_url = validated_data['image_url']
+        
         instance.save()
         return instance
+
 
     def to_representation(self, instance):
         artist_id = None
