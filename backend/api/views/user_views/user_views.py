@@ -60,15 +60,14 @@ class UpdateUserDetailsView(APIView):
         except User.DoesNotExist:
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-   
-        serializer = UserSerializer(instance=user, data=request.data, partial=True)
+        serializer = UserSerializer(instance=user, data=request.data, partial=True, context={'request': request})
        
         if serializer.is_valid():
             serializer.save() 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class DeleteUserView(generics.DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
