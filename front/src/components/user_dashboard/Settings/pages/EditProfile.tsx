@@ -5,13 +5,15 @@ import ActionButtons from "../components/ActionButtons";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
-import toast from "sonner";
+import { toast } from "sonner";
 
 const EditProfile = () => {
   const userId = getLoggedInUserId();
-  const { username, firstName, lastName, isLoading, error } = useUserDetails(userId);
+  const { username, firstName, lastName, profilePicture, isLoading, error } = useUserDetails(userId);
+  const fullName = `${firstName} ${lastName}`;
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { mutate: updateUser } = useUpdateUserDetails();
+
   const [formData, setFormData] = useState<{
     fullName: string;
     username: string;
@@ -73,7 +75,11 @@ const EditProfile = () => {
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
+
   const handleSave = () => {
+    const loadingToast = toast("Updating your details...", {
+      description: "Please wait while we process your update.",
+    });
     const [firstName, ...rest] = formData.fullName.trim().split(" ");
     const lastName = rest.join(" ");
 
@@ -93,10 +99,16 @@ const EditProfile = () => {
         if (formData.profile_picture) {
           setPreviewUrl(URL.createObjectURL(formData.profile_picture));
         }
+
+        toast.success("User details updated successfully!");
+        toast.dismiss(loadingToast);
+      },
+      onError: (error) => {
+        toast.error("Failed to update user details.");
+        toast.dismiss(loadingToast);
       },
     });
   };
-
   const handleReset = () => {
     setFormData({ ...originalData });
   };
@@ -114,13 +126,15 @@ const EditProfile = () => {
         <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
           {formData.profile_picture ? (
             <img
-              src={formData.profile_picture ? URL.createObjectURL(formData.profile_picture) : undefined}
+              src={URL.createObjectURL(formData.profile_picture)}
               alt="Profile"
               className="w-32 h-32 rounded-full object-cover"
             />
+          ) : profilePicture ? (
+            <img src={profilePicture} alt="Profile" className="w-32 h-32 rounded-full object-cover" />
           ) : (
             <div className="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center text-white text-4xl font-bold">
-              {formData.fullName?.charAt(0).toUpperCase() || "U"}
+              {fullName.charAt(0).toUpperCase() || "U"}
             </div>
           )}
           <div className="flex flex-col justify-center relative top-12">

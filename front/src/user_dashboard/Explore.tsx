@@ -118,22 +118,30 @@ const Explore = () => {
                 {isLoading ? (
                   Array.from({ length: 6 }).map((_, index) => <ArtCardSkeleton key={index} />)
                 ) : error ? (
-                  <div className="col-span-full text-center text-sm text-gray-500 ">Error loading artworks</div>
+                  <div className="col-span-full text-center text-sm text-gray-500">Error loading artworks</div>
+                ) : filteredArtworksMemo.length === 0 && selectedCategory ? (
+                  <div className="col-span-full flex flex-col items-center justify-center text-center">
+                    <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
+                    <p className="text-sm text-gray-500">No artworks found.</p>
+                  </div>
                 ) : (
-                  filteredArtworksMemo.map((card) => (
-                    <ArtCard
-                      key={card.id}
-                      id={card.id}
-                      artistName={card.artistName}
-                      artistId={card.artist_id}
-                      artistImage={card.artistImage}
-                      artworkImage={card.artworkImage}
-                      title={card.title}
-                      onButtonClick={handleTipJar}
-                      isExplore={true}
-                      likesCount={card.likesCount}
-                    />
-                  ))
+                  filteredArtworksMemo.map((card) => {
+                    console.log(card);
+                    return (
+                      <ArtCard
+                        key={card.id}
+                        id={card.id}
+                        artistName={card.artistName}
+                        artistId={card.artist_id}
+                        artistImage={card.artistImage}
+                        artworkImage={card.artworkImage}
+                        title={card.title}
+                        onButtonClick={handleTipJar}
+                        isExplore={true}
+                        likesCount={card.likesCount}
+                      />
+                    );
+                  })
                 )}
               </div>
             </div>

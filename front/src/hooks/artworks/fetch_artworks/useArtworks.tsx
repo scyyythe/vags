@@ -5,7 +5,9 @@ export interface Artwork {
   id: string;
   title: string;
   artistName: string;
+  profile_picture: string;
   artist_id: string;
+  artistId: string;
   artist: string;
   description: string;
   category: string;
@@ -23,11 +25,10 @@ export interface Artwork {
   artworkImage: string;
   likesCount: number;
 }
-
 const fetchArtworks = async (
   currentPage: number,
   userId?: string,
-  endpointType: "all" | "created-by-me" = "all",
+  endpointType: "all" | "created-by-me" | "specific-user" = "all",
   filterVisibility: "public" | "private" = "public"
 ): Promise<Artwork[]> => {
   try {
@@ -37,10 +38,19 @@ const fetchArtworks = async (
       visibility: filterVisibility,
     };
 
+    if (endpointType === "created-by-me") {
+      params.userId = userId;
+    }
+    if (endpointType === "specific-user") {
+      params.userId = userId;
+    }
+
     let url = "art/list/";
 
     if (endpointType === "created-by-me") {
       url = "art/list/created-by-me/";
+    } else if (endpointType === "specific-user") {
+      url = "art/list/specific-user/";
     }
 
     const response = await apiClient.get(url, { params });
@@ -50,7 +60,7 @@ const fetchArtworks = async (
       title: artwork.title,
       artistName: artwork.artist,
       artistId: artwork.artist_id,
-      artistImage: "",
+      artistImage: artwork.profile_picture,
       description: artwork.description,
       style: artwork.category,
       medium: artwork.medium,
@@ -76,7 +86,7 @@ const useArtworks = (
   currentPage: number,
   userId?: string,
   enabled: boolean = true,
-  endpointType: "all" | "created-by-me" = "all",
+  endpointType: "all" | "created-by-me" | "specific-user" = "all",
   filterCategory?: string
 ) => {
   return useQuery({
