@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
-import { FiArrowDownLeft, FiArrowUpRight, FiRepeat } from "react-icons/fi";
-import { FiSearch } from "react-icons/fi";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { FiArrowDownLeft, FiArrowUpRight, FiRepeat, FiSearch, FiChevronDown, FiCalendar }  from "react-icons/fi";
 
 // Mock data
 const mockTransactions = [
@@ -133,6 +134,15 @@ const statusColors: Record<string, string> = {
   Failed: "bg-red-100 text-red-800",
 };
 
+const currencyOptions = [
+  "All",
+  "USD",
+  "EUR",
+  "PHP",
+  "GBP",
+  "IDR"
+];
+
 // Icon by type
 function TypeIcon({ type }: { type: string }) {
   if (type === "Sent")
@@ -159,77 +169,182 @@ const filterOptions = [
 //   { key: "converted", label: "Convert", count: mockTransactions.filter(t => t.type === "Converted").length },
 ];
 
-const statusOrder = ["Success", "Incomplete", "Failed"];
-
 const TransactionsTab: React.FC = () => {
-  const [filter, setFilter] = useState<string>("all");
-  const [search, setSearch] = useState<string>("");
+    const [filter, setFilter] = useState<string>("all");
+    const [search, setSearch] = useState<string>("");
+    const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+    const [showDaysDropdown, setShowDaysDropdown] = useState(false);
+    const [selectedDay, setSelectedDay] = useState("Today"); 
+    const dayOptions = ["Today", "Last 7 Days", "Last 30 Days", "All Time"];
+    const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
+    const [selectedCurrency, setSelectedCurrency] = useState("All");
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [dateRange, setDateRange] = useState([null, null]);
+    const [startDate, endDate] = dateRange;
 
-  // Filtering logic
-  const filtered = useMemo(() => {
-    let txs = [...mockTransactions];
-    if (filter !== "all") {
-      const type = filter === "converted" ? "Converted" : filter.charAt(0).toUpperCase() + filter.slice(1);
-      txs = txs.filter(t => t.type === type);
-    }
-    if (search.trim()) {
-      txs = txs.filter(
-        t =>
-          t.activity.toLowerCase().includes(search.toLowerCase()) ||
-          t.people.name.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-    return txs;
-  }, [filter, search]);
+    // Filtering logic
+    const filtered = useMemo(() => {
+        let txs = [...mockTransactions];
+        if (filter !== "all") {
+        const type = filter === "converted" ? "Converted" : filter.charAt(0).toUpperCase() + filter.slice(1);
+        txs = txs.filter(t => t.type === type);
+        }
+        if (selectedCurrency !== "All") {
+        txs = txs.filter(t => t.currency === selectedCurrency);
+        }
+        if (startDate && endDate) {
+        txs = txs.filter(t => {
+            const txDate = new Date(t.date);
+            return txDate >= startDate && txDate <= endDate;
+        });
+        }
+        if (search.trim()) {
+        txs = txs.filter(
+            t =>
+            t.activity.toLowerCase().includes(search.toLowerCase()) ||
+            t.people.name.toLowerCase().includes(search.toLowerCase())
+        );
+        }
+        return txs;
+    }, [filter, search, selectedCurrency, startDate, endDate]);
 
     return (
         <div className="w-full bg-white border-gray-200">
-        <div className="flex justify-between">
-            <div className="flex flex-wrap items-center gap-3 mb-6">
-            <select className="border rounded-full px-2 py-1 text-[10px] text-gray-700">
-                <option className="text-[10px]">Last 7 days</option>
-                <option className="text-[10px]">Last 14 days</option>
-                <option className="text-[10px]">Last 30 days</option>
-            </select>
-            <input
-                type="text"
-                className="border text-center rounded-full py-1 text-gray-700"
-                style={{ minWidth: 120, fontSize: "10px" }}
-                value="15 Mar - 22 Mar"
-                readOnly
-            />
-            <select className="border rounded-full px-2 py-1 text-[10px] text-gray-700 mr-2">
-                <option>Currency</option>
-                <option>USD</option>
-                <option>EUR</option>
-                <option>PHP</option>
-                <option>GBP</option>
-                <option>IDR</option>
-            </select>
-            <div className="flex gap-4">
-                {filterOptions.map(opt => (
+        {/* FILTERS & SEARCH BAR */}
+        <div className="flex flex-row justify-between items-center mb-6">
+            {/* Left: Filter Buttons */}
+            <div className="flex items-center gap-2">
+            {filterOptions.map(opt => (
                 <button
-                    key={opt.key}
-                    onClick={() => setFilter(opt.key)}
-                    className={`px-2 py-1 text-[10px] rounded-full font-medium border ${
+                key={opt.key}
+                onClick={() => setFilter(opt.key)}
+                className={`px-3 py-1 text-[9px] rounded-full border ${
                     filter === opt.key ? "bg-red-800 text-white border-red-800" : "bg-white text-gray-600 border-gray-200 hover:bg-red-50"
-                    }`}
+                }`}
                 >
-                    {opt.label} <span className="ml-1 text-[10px]">{opt.count}</span>
+                {opt.label} <span className="ml-1">{opt.count}</span>
                 </button>
-                ))}
-            </div>
+            ))}
             </div>
 
-            <div className="relative w-[350px] text-gray-700">
-            <FiSearch className="h-3 w-3 absolute left-3 top-2 transform text-gray-400 text-sm" />
-            <input
-                type="text"
-                placeholder="Search"
-                className="w-full pl-8 pr-2 py-1 border rounded-full text-[10px] focus:outline-none"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-            />
+            {/* Right: Search, Date Picker, Apply Filter */}
+            <div className="flex items-center gap-2">
+            {/* Date Picker Button */}
+            <div className="relative">
+                <button
+                className="flex items-center border rounded-full px-3 py-1 text-[9px] text-gray-700 bg-white hover:bg-gray-50"
+                onClick={() => setShowDatePicker(v => !v)}
+                >
+                <FiCalendar className="mr-1" />
+                {startDate && endDate
+                    ? `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`
+                    : "Pick Date"}
+                </button>
+                {showDatePicker && (
+                <div className="absolute right-0 mt-2 z-20">
+                    <DatePicker
+                        selectsRange
+                        startDate={startDate}
+                        endDate={endDate}
+                        onChange={(update) => {
+                            setDateRange(update);
+                        }}
+                        inline
+                        onCalendarClose={() => setShowDatePicker(false)}
+                        />
+                    <button
+                        className="mt-2 w-full px-3 py-1 bg-red-800 text-white text-[10px] rounded-full"
+                        onClick={() => setShowDatePicker(false)}
+                    >
+                    Apply
+                    </button>
+                </div>
+                )}
+            </div>
+
+            {/* Apply Filter Button with Currency Dropdown */}
+            <div className="relative">
+                <button
+                    className="flex items-center border rounded-full px-3 py-1 text-[9px] text-gray-700 bg-white hover:bg-gray-50"
+                    onClick={() => setShowFilterDropdown(v => !v)}
+                >
+                <FiChevronDown className="mr-1" />
+                Apply filter
+                </button>
+                
+                {showFilterDropdown && (
+                <div className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg z-20">
+                    
+                    {/* Days filter */}
+                    <div
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[9px]"
+                        onClick={() => setShowDaysDropdown(v => !v)}
+                        >
+                        Days
+                        <FiChevronDown className="ml-2" />
+                    </div>
+                    {showDaysDropdown && (
+                    <div className="mt-1">
+                        {dayOptions.map(day => (
+                        <div
+                            key={day}
+                            className={`px-4 py-1 text-[9px] cursor-pointer hover:bg-gray-200 ${
+                            selectedDay === day ? "font-bold text-blue-700" : ""
+                            }`}
+                            onClick={() => {
+                            setSelectedDay(day);
+                            setShowDaysDropdown(false);
+                            setShowFilterDropdown(false);
+                            }}
+                        >
+                            {day}
+                        </div>
+                        ))}
+                    </div>
+                    )}
+
+                    {/* Currency filter */}
+                    <div
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[9px]"
+                    onClick={() => setShowCurrencyDropdown(v => !v)}
+                    >
+                    Currency
+                    <FiChevronDown className="ml-2" />
+                    </div>
+                    {showCurrencyDropdown && (
+                    <div className="mt-1">
+                        {currencyOptions.map(opt => (
+                        <div
+                            key={opt}
+                            className={`px-4 py-1 text-[9px] cursor-pointer hover:bg-gray-200 ${
+                            selectedCurrency === opt ? "font-bold text-red-700" : ""
+                            }`}
+                            onClick={() => {
+                            setSelectedCurrency(opt);
+                            setShowCurrencyDropdown(false);
+                            setShowFilterDropdown(false);
+                            }}
+                        >
+                            {opt}
+                        </div>
+                        ))}
+                    </div>
+                    )}
+                </div>
+                )}
+            </div>
+
+            {/* Search Bar */}
+            <div className="relative w-[200px] text-gray-700">
+                <FiSearch className="h-3 w-3 absolute left-3 top-2 transform text-gray-400 text-sm" />
+                <input
+                    type="text"
+                    placeholder="Search"
+                    className="w-full pl-8 pr-2 py-1 border rounded-full text-[9px] focus:outline-none"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                />
+            </div>
             </div>
         </div>
 
