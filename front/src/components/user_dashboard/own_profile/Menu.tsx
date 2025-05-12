@@ -4,7 +4,8 @@ import { DollarSign, ShoppingCart, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import DeleteConfirmationPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/delete/DeletePopup";
 import AuctionPopup from "@/components/user_dashboard/own_profile/request_bid/RequestBid";
-
+import useDeleteArtwork from "@/hooks/mutate/visibility/useDeleteArtwork";
+import useArchivedArtwork from "@/hooks/mutate/visibility/useArchivedArtwork";
 interface ArtCardMenuProps {
   isOpen: boolean;
   artworkId: string;
@@ -33,7 +34,8 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const navigate = useNavigate();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
-
+  const deleteArtwork = useDeleteArtwork();
+  const { mutate: archiveArtwork } = useArchivedArtwork();
   useEffect(() => {
     const shouldHideScroll = showAuctionPopup || showDeletePopup;
 
@@ -57,11 +59,25 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     setPublicStatus(newStatus);
     onToggleVisibility(newStatus, artworkId);
   };
-
+  const handleConfirmDelete = () => {
+    deleteArtwork.mutate(artworkId, {
+      onSuccess: () => {
+        setShowDeletePopup(false);
+      },
+      onError: () => {
+        setShowDeletePopup(false);
+      },
+    });
+  };
   const handleUpdateClick = () => {
     onEdit(artworkId);
     navigate(`/update/${artworkId}`);
   };
+  const handleArchiveClick = () => {
+    archiveArtwork(artworkId);
+    setIsEditOpen(false);
+  };
+
   return (
     <>
       <div
@@ -153,13 +169,14 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    onArchive();
+                    handleArchiveClick();
                     setIsEditOpen(false);
                   }}
                   className="px-3 py-1 text-left text-white"
                 >
                   Archive
                 </button>
+
                 <button
                   onClick={() => {
                     setShowDeletePopup(true);
@@ -176,15 +193,12 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
       </div>
 
       {/* Delete Confirmation Popup */}
+
       <DeleteConfirmationPopup
         isOpen={showDeletePopup}
         onCancel={() => setShowDeletePopup(false)}
-        onConfirm={() => {
-          toast.success("You've successfully deleted the artwork");
-          setShowDeletePopup(false);
-        }}
+        onConfirm={handleConfirmDelete}
       />
-
       {/* Auction Popup */}
       <AuctionPopup open={showAuctionPopup} onOpenChange={setShowAuctionPopup} />
     </>

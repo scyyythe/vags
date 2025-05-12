@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect } from "react";
+import React, { useMemo, useCallback, useEffect, useState } from "react";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
@@ -9,7 +9,7 @@ type CreatedTabProps = {
   setCreatedArtworksCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const CreatedTab = ({ filteredArtworks = [], isLoading, setCreatedArtworksCount }: CreatedTabProps) => {
+const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
 
   const allArtworks = useMemo(() => {
@@ -26,9 +26,7 @@ const CreatedTab = ({ filteredArtworks = [], isLoading, setCreatedArtworksCount 
     setCreatedArtworksCount(createdArtworksCount.length);
   }, [createdArtworksCount, setCreatedArtworksCount]);
 
-  const handleButtonClick = useCallback((artworkId: string) => {
-    console.log(`Button clicked for artwork ID: ${artworkId}`);
-  }, []);
+  const handleButtonClick = useCallback((artworkId: string) => {}, []);
 
   if (!isLoading && allArtworks.length === 0) {
     return (
@@ -38,10 +36,7 @@ const CreatedTab = ({ filteredArtworks = [], isLoading, setCreatedArtworksCount 
       </div>
     );
   }
-  console.log("loggedInUserId:", loggedInUserId);
-  console.log("filteredArtworks:", filteredArtworks);
-  console.log("created items:", createdArtworksCount);
-  console.log("You have created:", createdArtworksCount);
+
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-6">
       {isLoading ? (
