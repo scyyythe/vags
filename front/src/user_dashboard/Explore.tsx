@@ -125,20 +125,23 @@ const Explore = () => {
                     <p className="text-sm text-gray-500">No artworks found.</p>
                   </div>
                 ) : (
-                  filteredArtworksMemo.map((card) => (
-                    <ArtCard
-                      key={card.id}
-                      id={card.id}
-                      artistName={card.artistName}
-                      artistId={card.artist_id}
-                      artistImage={card.artistImage}
-                      artworkImage={card.artworkImage}
-                      title={card.title}
-                      onButtonClick={handleTipJar}
-                      isExplore={true}
-                      likesCount={card.likesCount}
-                    />
-                  ))
+                  filteredArtworksMemo.map((card) => {
+                    console.log(card);
+                    return (
+                      <ArtCard
+                        key={card.id}
+                        id={card.id}
+                        artistName={card.artistName}
+                        artistId={card.artist_id}
+                        artistImage={card.artistImage}
+                        artworkImage={card.artworkImage}
+                        title={card.title}
+                        onButtonClick={handleTipJar}
+                        isExplore={true}
+                        likesCount={card.likesCount}
+                      />
+                    );
+                  })
                 )}
               </div>
             </div>
