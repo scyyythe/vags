@@ -28,17 +28,7 @@ class ArtCreateView(generics.ListCreateAPIView):
         art = Art.objects.get(id=art.id)
         now = datetime.now()
         time_elapsed = timesince(art.created_at, now)
-        # Notification.objects.create(
-        #     user=mongo_user,  # The user who uploaded the artwork
-        #     message=f"Your artwork '{art.title}' has been uploaded successfully.",
-        #     art=art,  
-        #     name=f"Your artwork '{art.title}' has been uploaded successfully.", 
-        #     action="uploaded", 
-        #     target=art.title,  
-        #     icon="upload",  
-        #     time=time_elapsed,  
-        #     date=now,  
-        # ).save()
+
 
 
 
@@ -49,14 +39,37 @@ class ArtListView(generics.ListAPIView):
     def get_queryset(self):
        
         return Art.objects(visibility__iexact="public").order_by('-created_at')
-
-    
 class ArtListViewOwner(generics.ListAPIView):
     serializer_class = ArtSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return Art.objects.filter(artist=self.request.user).order_by('-created_at')
+        user_id = self.request.query_params.get('userId', None)
+
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)  
+                return Art.objects.filter(artist=user).order_by('-created_at')
+            except User.DoesNotExist:
+                raise ValidationError("User not found.")
+        else:
+            return Art.objects.filter(artist=self.request.user).order_by('-created_at')
+
+class ArtListViewSpecificUser(generics.ListAPIView):
+    serializer_class = ArtSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        user_id = self.request.query_params.get('userId', None)
+        print(f"Received userId: {user_id}") 
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+                return Art.objects.filter(artist=user).order_by('-created_at')
+            except User.DoesNotExist:
+                raise ValidationError("User not found.")
+        else:
+            return Art.objects.all().order_by('-created_at')
 
     
 class ArtworksByArtistView(generics.RetrieveAPIView):

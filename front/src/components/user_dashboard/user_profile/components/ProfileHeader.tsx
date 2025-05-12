@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getLoggedInUserId } from "@/auth/decode";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ProfileHeaderProps {
   bannerImage: string;
@@ -82,9 +83,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       {/* Profile Info */}
       <div className="flex flex-col items-center -mt-14 md:-mt-14">
         {/* Profile Image */}
-        <div className="w-28 h-28 rounded-full border-4 border-white overflow-hidden z-20">
-          <img src={profileImage} alt={name} className="w-full h-full object-cover" />
-        </div>
+        <Avatar className="w-28 h-28 border-4 border-white z-20">
+          {profileImage ? <AvatarImage src={profileImage} alt={name} /> : null}
+          <AvatarFallback className="text-2xl font-bold bg-gray-200 text-gray-600">{name.charAt(0)}</AvatarFallback>
+        </Avatar>
 
         {/* Name */}
         <h1 className="text-xl md:text-xl font-bold mt-4">{name}</h1>
