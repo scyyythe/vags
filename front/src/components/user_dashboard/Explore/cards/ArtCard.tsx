@@ -13,7 +13,6 @@ import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import useArtworkDetails from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
-import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import useLikeStatus from "@/hooks/interactions/useLikeStatus";
 import useHideArtwork from "@/hooks/mutate/visibility/useHideArtwork";
 
