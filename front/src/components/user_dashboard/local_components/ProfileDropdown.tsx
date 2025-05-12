@@ -3,6 +3,7 @@ import { LogOut, Settings, User, Plus, Activity, Headphones } from "lucide-react
 import { useModal } from "../../../context/ModalContext";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 interface ProfileDropdownProps {
   isOpen: boolean;
   onClose: () => void;
@@ -39,7 +40,10 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
       {/* Top profile section */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div className="flex items-center gap-3">
-          <img src={profilePicture} alt={fullName} className="w-10 h-10 rounded-full object-cover" />
+          <Avatar className="w-10 h-10 rounded-full">
+            <AvatarImage src={profilePicture} alt={fullName} />
+            <AvatarFallback>{fullName?.charAt(0).toUpperCase()}</AvatarFallback>
+          </Avatar>
           <div className="leading-[14px]">
             <div className="font-semibold text-black text-[11px]">{fullName}</div>
             <div className="text-[9px] text-gray-400">Basic Plan</div>
