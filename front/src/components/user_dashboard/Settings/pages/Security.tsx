@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import ActionButtons from "../components/ActionButtons";
-import { Edit } from "lucide-react";
+import { Edit, Eye, EyeOff } from "lucide-react";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
 
 const SecuritySettings = () => {
   const userId = getLoggedInUserId();
   const { username, email, password, isLoading, error } = useUserDetails(userId);
+
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
     twoFactorEnabled: true,
   });
+
   const [originalData, setOriginalData] = useState({ ...formData });
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [credentials, setCredentials] = useState([
@@ -35,6 +37,11 @@ const SecuritySettings = () => {
   ]);
 
   const [originalCredentials, setOriginalCredentials] = useState([...credentials]);
+
+  // Password visibility toggles
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
@@ -64,12 +71,10 @@ const SecuritySettings = () => {
     );
   };
 
-  // Remove a device from credentials
   const removeDevice = (id: number) => {
     setCredentials(credentials.filter((cred) => cred.id !== id));
   };
 
-  // Loading or error state
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error fetching user data</p>;
 
@@ -94,47 +99,81 @@ const SecuritySettings = () => {
 
           {isEditingPassword && (
             <div className="mt-4 space-y-4">
+              {/* Current Password */}
               <div>
                 <label className="block text-[10px] text-gray-500 mb-1">Current Password</label>
-                <Input
-                  type="password"
-                  value={formData.currentPassword}
-                  onChange={(e) => handleChange("currentPassword", e.target.value)}
-                  className="w-full"
-                  placeholder="Enter current password"
-                />
+                <div className="relative">
+                  <Input
+                    type={showCurrentPassword ? "text" : "password"}
+                    value={formData.currentPassword}
+                    onChange={(e) => handleChange("currentPassword", e.target.value)}
+                    className="w-full pr-10"
+                    style={{ fontSize: "11px" }}
+                    placeholder="Enter current password"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    onClick={() => setShowCurrentPassword((prev) => !prev)}
+                  >
+                    {showCurrentPassword ? <EyeOff size={13} /> : <Eye size={13} />}
+                  </button>
+                </div>
               </div>
 
+              {/* New Password */}
               <div>
                 <label className="block text-[10px] text-gray-500 mb-1">New Password</label>
-                <Input
-                  type="password"
-                  value={formData.newPassword}
-                  onChange={(e) => handleChange("newPassword", e.target.value)}
-                  className="w-full"
-                  placeholder="Enter new password"
-                />
+                <div className="relative">
+                  <Input
+                    type={showNewPassword ? "text" : "password"}
+                    value={formData.newPassword}
+                    onChange={(e) => handleChange("newPassword", e.target.value)}
+                    className="w-full pr-10"
+                    style={{ fontSize: "11px" }}
+                    placeholder="Enter new password"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    onClick={() => setShowNewPassword((prev) => !prev)}
+                  >
+                    {showNewPassword ? <EyeOff size={13} /> : <Eye size={13} />}
+                  </button>
+                </div>
               </div>
 
+              {/* Confirm Password */}
               <div>
                 <label className="block text-[10px] text-gray-500 mb-1">Confirm Password</label>
-                <Input
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={(e) => handleChange("confirmPassword", e.target.value)}
-                  className="w-full"
-                  placeholder="Confirm new password"
-                />
+                <div className="relative">
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={formData.confirmPassword}
+                    onChange={(e) => handleChange("confirmPassword", e.target.value)}
+                    className="w-full pr-10"
+                    style={{ fontSize: "11px" }}
+                    placeholder="Confirm new password"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  >
+                    {showConfirmPassword ? <EyeOff size={13} /> : <Eye size={13} />}
+                  </button>
+                </div>
               </div>
             </div>
           )}
         </div>
 
+        {/* Two Factor */}
         <div>
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-[10px] text-gray-500">2-Step Verification</p>
-              <p className="font-medium text-xs">{formData.twoFactorEnabled ? "Enabled" : "Disabled"}</p>
+              <p className="font-medium text-[11px]">{formData.twoFactorEnabled ? "Enabled" : "Disabled"}</p>
             </div>
             <div className="transform scale-50 origin-left">
               <Switch
@@ -146,6 +185,7 @@ const SecuritySettings = () => {
         </div>
       </div>
 
+      {/* Security Credentials */}
       <h2 className="text-sm font-bold mb-6">Security Credentials</h2>
 
       <div className="bg-white border border-gray-200 rounded-lg p-6">
@@ -162,11 +202,13 @@ const SecuritySettings = () => {
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                {cred.isCurrentSession && (
+                {cred.isCurrentSession ? (
                   <span className="bg-black text-white text-[10px] px-3 py-1.5 rounded-full">Current session</span>
-                )}
-                {!cred.isCurrentSession && (
-                  <button onClick={() => removeDevice(cred.id)} className="text-red-500 text-[10px] hover:text-red-700">
+                ) : (
+                  <button
+                    onClick={() => removeDevice(cred.id)}
+                    className="text-red-500 text-[10px] hover:text-red-700"
+                  >
                     Remove device
                   </button>
                 )}
