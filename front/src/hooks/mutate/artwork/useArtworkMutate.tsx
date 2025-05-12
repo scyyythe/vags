@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 
 const updateArtwork = async ({ id, formData }: { id: string; formData: FormData }): Promise<Artwork> => {
-  const response = await apiClient.patch(`/art/${id}/update`, formData, {
+  const response = await apiClient.patch(`/art/${id}/update/`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -12,7 +12,7 @@ const updateArtwork = async ({ id, formData }: { id: string; formData: FormData 
   return response.data;
 };
 
-const useUpdateArtwork = () => {
+const useUpdateArtwork = (currentPage: number, isActive: boolean, category: string, visibility: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -21,12 +21,17 @@ const useUpdateArtwork = () => {
     onSuccess: (updatedArtwork) => {
       toast.success("Artwork updated successfully!");
 
-      queryClient.setQueryData<Artwork[]>(["artworks", 1, undefined, "all"], (oldData) => {
-        if (!oldData) return [];
-        return oldData.map((art) => (art.id === updatedArtwork.id ? updatedArtwork : art));
-      });
+      queryClient.setQueryData<Artwork[]>(
+        ["artworks", currentPage, undefined, isActive, category, visibility],
+        (oldData) => {
+          if (!oldData) return [];
+          return oldData.map((art) => (art.id === updatedArtwork.id ? updatedArtwork : art));
+        }
+      );
 
-      queryClient.invalidateQueries({ queryKey: ["my_artwork"] });
+      queryClient.invalidateQueries({
+        queryKey: ["artworks", currentPage, undefined, isActive, category, visibility],
+      });
     },
 
     onError: () => {
