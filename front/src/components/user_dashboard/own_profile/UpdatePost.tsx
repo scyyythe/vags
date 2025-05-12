@@ -25,17 +25,20 @@ const UpdatePost = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
   useEffect(() => {
-    if (artwork) {
-      // Set form data with artwork details when it's available
+    if (artwork && !loaded) {
       setArtworkTitle(artwork.title || "");
       setArtworkStyle(artwork.style || "");
       setMedium(artwork.medium || "");
       setDescription(artwork.description || "");
       setVisibility(artwork.visibility || "public");
       setPreviewUrl(artwork.image || null);
+      setLoaded(true);
     }
-  }, [artwork]); // This runs when `artwork` is updated
+  }, [artwork, loaded]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
