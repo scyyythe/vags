@@ -23,13 +23,14 @@ const Index = () => {
           followers={99}
           following={50}
           items={15}
+          profileUserId={id}
         />
         <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
         <ArtGrid activeTab={activeTab} />
       </div>
-        <div>
-          <Footer />
-        </div>
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 };
