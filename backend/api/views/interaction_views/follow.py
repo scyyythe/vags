@@ -64,6 +64,27 @@ class UnfollowView(APIView):
         follow.delete()
         return Response({"detail": "Successfully unfollowed the user."}, status=status.HTTP_200_OK)
 
+class CheckFollowStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        following_id = request.query_params.get('following') 
+
+        if not following_id:
+            return Response({"detail": "Following user ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            following = User.objects.get(id=following_id)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if the user is following the 'following' user
+        is_following = Follower.objects.filter(follower=user, following=following).count() > 0
+        return Response({"is_following": is_following}, status=status.HTTP_200_OK)
+
+
+
 class FollowerListView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -71,11 +92,10 @@ class FollowerListView(APIView):
        
         user = request.user
         followers = Follower.objects.filter(following=user)
-        follower_data = [{"follower": f.follower} for f in followers] 
-        
-        follower_serializer = FollowSerializer(follower_data, many=True)
+        follower_users = [f.follower for f in followers]
+        serializer = UserSerializer(follower_users, many=True)
+        return Response(serializer.data)
 
-        return Response(follower_serializer.data, status=status.HTTP_200_OK)
     
 class FollowStatsView(APIView):
     permission_classes = [IsAuthenticated]
