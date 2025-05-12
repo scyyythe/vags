@@ -12,6 +12,7 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState("created");
   const { firstName, lastName, profilePicture } = useUserDetails(id);
   const userName = `${firstName} ${lastName}`;
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -20,17 +21,13 @@ const Index = () => {
           bannerImage="/lovable-uploads/91de0ca2-cd8a-42fb-8dbe-bad642960399.png"
           profileImage={profilePicture}
           name={userName}
-          followers={99}
-          following={50}
           items={15}
           profileUserId={id}
         />
         <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
         <ArtGrid activeTab={activeTab} />
       </div>
-      <div>
-        <Footer />
-      </div>
+      <Footer />
     </div>
   );
 };

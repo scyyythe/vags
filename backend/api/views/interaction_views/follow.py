@@ -7,6 +7,11 @@ from api.serializers.interaction_s.follow import FollowSerializer
 from rest_framework.permissions import IsAuthenticated
 from api.models.interaction_model.notification import Notification
 from api.serializers.user_s.users_serializers import UserSerializer 
+from bson import ObjectId
+from bson.errors import InvalidId
+
+
+
 
 class FollowCreateView(APIView):
     permission_classes = [IsAuthenticated]  
@@ -79,7 +84,7 @@ class CheckFollowStatusView(APIView):
         except User.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Check if the user is following the 'following' user
+        
         is_following = Follower.objects.filter(follower=user, following=following).count() > 0
         return Response({"is_following": is_following}, status=status.HTTP_200_OK)
 
@@ -96,7 +101,25 @@ class FollowerListView(APIView):
         serializer = UserSerializer(follower_users, many=True)
         return Response(serializer.data)
 
-    
+class FollowCountsView(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        if not ObjectId.is_valid(pk):
+            return Response({"detail": "Invalid user ID format."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(id=ObjectId(pk))
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        followers_count = Follower.objects(following=user).count()
+        following_count = Follower.objects(follower=user).count()
+
+        return Response({
+            "followers": followers_count,
+            "following": following_count
+        }, status=status.HTTP_200_OK)
+
+         
 class FollowStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
