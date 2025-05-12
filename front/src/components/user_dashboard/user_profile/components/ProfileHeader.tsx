@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,12 +12,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFollowUser } from "@/hooks/follow/useFollowUser";
 import { useUnfollowUser } from "@/hooks/follow/useUnfollowUser";
 import useFollowStatus from "@/hooks/follow/useFollowStatus";
+import useFollowCounts from "@/hooks/follow/useFollowCount";
 interface ProfileHeaderProps {
   bannerImage: string;
   profileImage: string;
   name: string;
-  followers: number;
-  following: number;
   items: number;
   profileUserId: string;
   onBannerChange?: (file: File) => void;
@@ -26,8 +26,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   bannerImage,
   profileImage,
   name,
-  followers,
-  following,
   items,
   profileUserId,
   onBannerChange,
@@ -40,6 +38,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const followMutation = useFollowUser();
   const unfollowMutation = useUnfollowUser();
+  const { id } = useParams<{ id: string }>();
+  const { data: followCounts, error } = useFollowCounts(id || "");
+
+  if (error) {
+    console.error("Error fetching follow counts:", error.message);
+  }
 
   const { data, isLoading: isFollowStatusLoading } = useFollowStatus({
     profileUserId,
@@ -137,11 +141,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         {/* Stats */}
         <div className="flex items-center space-x-4 mt-2 text-xs md:text-xs">
           <span>
-            <strong>{followers}</strong> followers
+            <strong>{followCounts?.followers ?? 0}</strong> followers
           </span>
           <span>•</span>
           <span>
-            <strong>{following}</strong> following
+            <strong>{followCounts?.following ?? 0}</strong> following
           </span>
           <span>•</span>
           <span>
