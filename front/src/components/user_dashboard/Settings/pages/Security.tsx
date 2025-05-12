@@ -7,10 +7,13 @@ import ActionButtons from "../components/ActionButtons";
 import { Edit, Eye, EyeOff } from "lucide-react";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
-
+import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 const SecuritySettings = () => {
   const userId = getLoggedInUserId();
   const { username, email, password, isLoading, error } = useUserDetails(userId);
+  const updateUser = useUpdateUserDetails();
 
   const [formData, setFormData] = useState({
     currentPassword: "",
@@ -49,11 +52,57 @@ const SecuritySettings = () => {
       [field]: value,
     }));
   };
-
   const handleSave = () => {
-    setOriginalData({ ...formData });
-    setOriginalCredentials([...credentials]);
-    setIsEditingPassword(false);
+    const data = new FormData();
+    const { currentPassword, newPassword, confirmPassword } = formData;
+
+    const wantsToChangePassword = currentPassword || newPassword || confirmPassword;
+
+    if (wantsToChangePassword) {
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        toast.error("All password fields are required.");
+        return;
+      }
+
+      if (newPassword.length < 8) {
+        toast.error("New password must be at least 8 characters long.");
+        return;
+      }
+
+      if (newPassword === currentPassword) {
+        toast.error("New password must be different from the current password.");
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        toast.error("New passwords do not match.");
+        return;
+      }
+
+      data.append("current_password", currentPassword);
+      data.append("new_password", newPassword);
+    }
+
+    updateUser.mutate([userId, data], {
+      onSuccess: () => {
+        toast.success("User updated successfully.");
+        setOriginalData({ ...formData });
+        setOriginalCredentials([...credentials]);
+        setIsEditingPassword(false);
+      },
+      onError: (error: AxiosError<{ [key: string]: string[] | string }>) => {
+        const responseData = error.response?.data;
+        if (responseData) {
+          const firstKey = Object.keys(responseData)[0];
+          const message = Array.isArray(responseData[firstKey])
+            ? (responseData[firstKey] as string[])[0]
+            : (responseData[firstKey] as string);
+          toast.error(message || "Failed to update user.");
+        } else {
+          toast.error("Failed to update user.");
+        }
+      },
+    });
   };
 
   const handleReset = () => {
@@ -87,7 +136,9 @@ const SecuritySettings = () => {
           <div className="flex justify-between items-center">
             <div>
               <p className="text-[10px] text-gray-500 mb-1">Current Password</p>
-              <p className="font-medium text-xs">{isEditingPassword ? "" : "••••••••"}</p>
+              <p className="font-medium text-xs">
+                {isEditingPassword ? "" : "Enter your current password to make changes."}
+              </p>
             </div>
             <button
               onClick={() => setIsEditingPassword(!isEditingPassword)}
@@ -109,7 +160,7 @@ const SecuritySettings = () => {
                     onChange={(e) => handleChange("currentPassword", e.target.value)}
                     className="w-full pr-10"
                     style={{ fontSize: "11px" }}
-                    placeholder="Enter current password"
+                    placeholder={formData.currentPassword ? "" : "Enter current password"}
                   />
                   <button
                     type="button"
@@ -205,10 +256,7 @@ const SecuritySettings = () => {
                 {cred.isCurrentSession ? (
                   <span className="bg-black text-white text-[10px] px-3 py-1.5 rounded-full">Current session</span>
                 ) : (
-                  <button
-                    onClick={() => removeDevice(cred.id)}
-                    className="text-red-500 text-[10px] hover:text-red-700"
-                  >
+                  <button onClick={() => removeDevice(cred.id)} className="text-red-500 text-[10px] hover:text-red-700">
                     Remove device
                   </button>
                 )}

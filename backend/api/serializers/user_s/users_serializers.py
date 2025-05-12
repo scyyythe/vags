@@ -73,6 +73,18 @@ class UserSerializer(serializers.Serializer):
         return user
 
     def update(self, instance, validated_data):
+        current_password = self.context['request'].data.get("current_password")
+        new_password = self.context['request'].data.get("new_password")
+
+        if new_password:
+            if not current_password:
+                raise serializers.ValidationError({"current_password": "Current password is required."})
+            
+            if not instance.check_password(current_password):
+                raise serializers.ValidationError({"current_password": "Current password is incorrect."})
+            
+            instance.set_password(new_password)
+
         profile_picture = validated_data.pop('profile_picture', None)
         if profile_picture:
             try:
@@ -81,7 +93,6 @@ class UserSerializer(serializers.Serializer):
             except cloudinary.exceptions.Error as e:
                 raise serializers.ValidationError(f"Cloudinary upload error: {str(e)}")
 
-        
         instance.username = validated_data.get("username", instance.username)
         instance.email = validated_data.get("email", instance.email)
         instance.first_name = validated_data.get("first_name", instance.first_name)
@@ -96,12 +107,8 @@ class UserSerializer(serializers.Serializer):
         instance.address = validated_data.get("address", instance.address)
         instance.updated_at = datetime.utcnow()
 
-        if "password" in validated_data:
-            instance.set_password(validated_data["password"])
-
         instance.save()
         return instance
-
 
 
     def to_representation(self, instance):
