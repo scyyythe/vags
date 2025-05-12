@@ -1,6 +1,8 @@
+
 import React, { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import ActionButtons from "../components/ActionButtons";
+import ActionButtons from "../components/transaction/ActionButtons";
+import TransactionsTab from "../components/tab/TransactionTab";
 
 interface Plan {
   id: string;
@@ -69,25 +71,26 @@ const BillingSettings = () => {
 
       {activeTab === "plans" && (
         <div className="flex flex-col gap-6">
-          {/* Current Plan */}
-          <div>
-            <h3 className="text-xs font-semibold">Current plan</h3>
-            <p className="text-[10px] text-gray-600">
-              We'll credit your account if you need to downgrade during the billing cycle.
-            </p>
-          </div>
 
           {/* Account Plans */}
           <div>
-            
+            <h3 className="text-xs font-semibold">Account plans</h3>
+            <p className="text-[10px] text-gray-600 mb-3">
+              Pick an account plan that fits your workflow.
+            </p>
+          </div>
+          
+          <div className="border-b border-gray-300 mb-3" /> 
 
+          <div>
             <RadioGroup value={selectedPlan} onValueChange={setSelectedPlan} className="flex flex-row gap-6">
+              {/* Current Plan */}
               <div>
-                <h3 className="text-xs font-semibold">Account plans</h3>
-                <p className="text-[10px] text-gray-600 mb-4">
-                  Pick an account plan that fits your workflow.
+                <h3 className="text-xs font-semibold">Current plan</h3>
+                <p className="text-[10px] text-gray-600">
+                  We'll credit your account if you need to downgrade during the billing cycle.
                 </p>
-              </div>
+              </div>  
 
               <div className="w-full space-y-3">
                 {plans.map((plan) => (
@@ -135,12 +138,7 @@ const BillingSettings = () => {
         </div>
       )}
 
-      {activeTab === "transactions" && (
-        <div className="text-sm text-gray-600">
-          {/* Placeholder for future transactions content */}
-          No transactions yet.
-        </div>
-      )}
+      {activeTab === "transactions" && <TransactionsTab />}
     </div>
   );
 };
