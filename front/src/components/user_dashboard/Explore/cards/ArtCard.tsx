@@ -113,6 +113,7 @@ const ArtCard = ({
             <AvatarImage src={artistImage} alt={artistName} />
             <AvatarFallback>{artistName.charAt(0)}</AvatarFallback>
           </Avatar>
+
           <span className="text-[9px] font-medium">{artistName}</span>
         </div>
         <div className="relative text-gray-500" style={{ height: "24px" }}>

@@ -5,6 +5,7 @@ export interface Artwork {
   id: string;
   title: string;
   artistName: string;
+  profile_picture: string;
   artist_id: string;
   artistId: string;
   artist: string;
@@ -24,7 +25,6 @@ export interface Artwork {
   artworkImage: string;
   likesCount: number;
 }
-
 const fetchArtworks = async (
   currentPage: number,
   userId?: string,
@@ -60,7 +60,7 @@ const fetchArtworks = async (
       title: artwork.title,
       artistName: artwork.artist,
       artistId: artwork.artist_id,
-      artistImage: "",
+      artistImage: artwork.profile_picture,
       description: artwork.description,
       style: artwork.category,
       medium: artwork.medium,
