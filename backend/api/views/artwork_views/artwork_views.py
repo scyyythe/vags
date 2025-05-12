@@ -39,6 +39,8 @@ class ArtListView(generics.ListAPIView):
     def get_queryset(self):
        
         return Art.objects(visibility__iexact="public").order_by('-created_at')
+    
+    
 class ArtListViewOwner(generics.ListAPIView):
     serializer_class = ArtSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -54,6 +56,7 @@ class ArtListViewOwner(generics.ListAPIView):
                 raise ValidationError("User not found.")
         else:
             return Art.objects.filter(artist=self.request.user).order_by('-created_at')
+        
 
 class ArtListViewSpecificUser(generics.ListAPIView):
     serializer_class = ArtSerializer
@@ -123,11 +126,6 @@ class ArtUpdateView(generics.UpdateAPIView):
         art = serializer.save(updated_at=datetime.utcnow())
 
 
-        Notification(
-            user=art.artist,
-            message=f"Your artwork '{art.title}' has been updated successfully.",
-            art=art
-        ).save()
 
 
 class ArtDeleteView(generics.DestroyAPIView):

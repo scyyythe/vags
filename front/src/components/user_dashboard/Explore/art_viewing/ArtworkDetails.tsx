@@ -45,29 +45,13 @@ const ArtworkDetails = () => {
   const [likedComments, setLikedComments] = useState<{ [commentId: string]: boolean }>({});
   const [commentMenus, setCommentMenus] = useState<{ [commentId: string]: boolean }>({});
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({});
-  const {
-    image,
-    title,
-    artistId,
-    artist,
-    likes,
-    style,
-    isLoading,
-    description,
-    medium,
-    size,
-    status,
-    price,
-    visibility,
-    datePosted,
-  } = useArtworkDetails();
-
+  const { data: artwork, isLoading } = useArtworkDetails(id);
   useEffect(() => {
     if (descriptionRef.current) {
       const isOver = descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight;
       setIsOverflowing(isOver);
     }
-  }, [description]);
+  }, [artwork.description]);
 
   const handleLike = () => {
     if (id) {
@@ -122,9 +106,9 @@ const ArtworkDetails = () => {
 
     openPopup({
       id,
-      title: title || "Untitled Artwork",
-      artistName: artist || "Unknown Artist",
-      artworkImage: image || "",
+      title: artwork.title || "Untitled Artwork",
+      artistName: artwork.artist || "Unknown Artist",
+      artworkImage: artwork.image || "",
     });
   };
 
@@ -335,8 +319,8 @@ const ArtworkDetails = () => {
                     <div className="mb-6">
                       <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
                       <p className="text-[9px] text-gray-700">
-                        {style
-                          ? style
+                        {artwork.style
+                          ? artwork.style
                               .split(" ")
                               .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                               .join(" ")
@@ -345,17 +329,17 @@ const ArtworkDetails = () => {
                     </div>
                     <div className="mb-6">
                       <h3 className="text-[9px] font-medium mb-1">Medium</h3>
-                      <p className="text-[9px] text-gray-700">{medium || "Acrylic Paint"}</p>
+                      <p className="text-[9px] text-gray-700">{artwork.medium || "Acrylic Paint"}</p>
                     </div>
                     <div className="mb-6">
                       <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
-                      <p className="text-[9px] text-gray-700">{datePosted || "March 25, 2023"}</p>
+                      <p className="text-[9px] text-gray-700">{artwork.datePosted || "March 25, 2023"}</p>
                     </div>
                     <div className="mb-1">
                       <h3 className="text-[9px] font-medium mb-1">Artwork Size</h3>
                       <p className="text-[9px] text-gray-700">
-                        {size
-                          ? size
+                        {artwork.size
+                          ? artwork.size
                               .split(" x ")
                               .map((dim) => `${dim}″`)
                               .join(" x ")
@@ -379,21 +363,21 @@ const ArtworkDetails = () => {
                       <div className="grid grid-cols-4 gap-8 px-8 whitespace-nowrap">
                         <div>
                           <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
-                          <p className="text-[10px] text-gray-700">{style || "Painting"}</p>
+                          <p className="text-[10px] text-gray-700">{artwork.style || "Painting"}</p>
                         </div>
                         <div>
                           <h4 className="text-[10px] font-medium mb-1">Medium</h4>
-                          <p className="text-[10px] text-gray-700">{medium || "Acrylic Paint"}</p>
+                          <p className="text-[10px] text-gray-700">{artwork.medium || "Acrylic Paint"}</p>
                         </div>
                         <div>
                           <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
-                          <p className="text-[10px] text-gray-700">{datePosted || "March 25, 2023"}</p>
+                          <p className="text-[10px] text-gray-700">{artwork.datePosted || "March 25, 2023"}</p>
                         </div>
                         <div className="mb-1">
                           <h3 className="text-[10px] font-medium mb-1">Artwork Size</h3>
                           <p className="text-[9px] text-gray-700">
-                            {size
-                              ? size
+                            {artwork.size
+                              ? artwork.size
                                   .split(" x ")
                                   .map((dim) => `${dim}″`)
                                   .join(" x ")
@@ -420,8 +404,8 @@ const ArtworkDetails = () => {
                 <div className="inline-block transform scale-[1.10] -mb-6 relative">
                   <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                     <img
-                      src={image}
-                      alt={title}
+                      src={artwork.image}
+                      alt={artwork.title}
                       className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                     />
 
@@ -470,9 +454,9 @@ const ArtworkDetails = () => {
                         className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
                         fill={isLiked ? "currentColor" : "none"}
                       />
-                      {(likeCounts[id || ""] ?? likes ?? 0) > 0 && (
+                      {(likeCounts[id || ""] ?? artwork.likes ?? 0) > 0 && (
                         <span className={`${isMobile ? "text-xs" : "text-[9px]"}`}>
-                          {likeCounts[id || ""] ?? likes}
+                          {likeCounts[id || ""] ?? artwork.likes}
                         </span>
                       )}
                     </button>
@@ -496,15 +480,15 @@ const ArtworkDetails = () => {
                 </div>
 
                 <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>
-                  {title || "The Distorted Face"}
+                  {artwork.title || "The Distorted Face"}
                 </h1>
 
                 <p
                   style={{ cursor: "pointer" }}
-                  onClick={() => navigate(`/userprofile/${artistId}`)}
+                  onClick={() => navigate(`/userprofile/${artwork.artistId}`)}
                   className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
                 >
-                  by {artist || "Angel Ganev"}
+                  by {artwork.artist || "Angel Ganev"}
                 </p>
 
                 <div className="relative mt-4">
@@ -516,7 +500,7 @@ const ArtworkDetails = () => {
                     `}
                     style={{ lineHeight: "1.1rem" }}
                   >
-                    {description || "No description available."}
+                    {artwork.description || "No description available."}
                   </div>
 
                   {isOverflowing && (
@@ -550,7 +534,7 @@ const ArtworkDetails = () => {
           </button>
 
           <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
-            <img src={image} alt="Expanded artwork" className="max-h-[80vh] max-w-[90vw] object-contain" />
+            <img src={artwork.image} alt="Expanded artwork" className="max-h-[80vh] max-w-[90vw] object-contain" />
           </div>
         </div>
       )}

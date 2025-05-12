@@ -161,11 +161,12 @@ const ArtCard = ({
           ) : (
             <OwnerMenu
               isOpen={menuOpen}
-              onRequestBid={() => console.log("Request to bid")}
-              onSell={() => console.log("Sell artwork")}
-              onEdit={() => console.log("Edit artwork")}
-              onToggleVisibility={() => console.log("Toggle visibility")}
-              onArchive={() => console.log("Archive")}
+              artworkId={id}
+              onRequestBid={() => console.log("Request to bid", id)}
+              onSell={() => console.log("Sell artwork", id)}
+              onEdit={() => console.log("Edit artwork", id)}
+              onToggleVisibility={(newStatus: boolean) => console.log("Toggle visibility", newStatus, id)}
+              onArchive={() => console.log("Archive", id)}
               isPublic={true}
             />
           )}
