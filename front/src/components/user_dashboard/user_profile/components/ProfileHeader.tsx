@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,7 +8,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getLoggedInUserId } from "@/auth/decode";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { useFollowUser } from "@/hooks/follow/useFollowUser";
+import { useUnfollowUser } from "@/hooks/follow/useUnfollowUser";
+import useFollowStatus from "@/hooks/follow/useFollowStatus";
 interface ProfileHeaderProps {
   bannerImage: string;
   profileImage: string;
@@ -30,14 +32,49 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   profileUserId,
   onBannerChange,
 }) => {
-  const [isFollowing, setIsFollowing] = useState(false);
   const [localBanner, setLocalBanner] = useState<string>(bannerImage);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [optionsOpen, setOptionsOpen] = useState(false);
   const loggedInUserId = getLoggedInUserId();
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const followMutation = useFollowUser();
+  const unfollowMutation = useUnfollowUser();
 
-  const toggleFollow = () => {
-    setIsFollowing(!isFollowing);
+  const { data, isLoading: isFollowStatusLoading } = useFollowStatus({
+    profileUserId,
+  });
+  useEffect(() => {
+    if (data !== undefined) {
+      setIsFollowing(data as boolean);
+    }
+  }, [data]);
+  const toggleFollow = async () => {
+    if (!isFollowing) {
+      followMutation.mutate(
+        { following: profileUserId },
+        {
+          onSuccess: () => {
+            setIsFollowing(true);
+          },
+          onError: (error) => {
+            console.error("Follow error:", error);
+          },
+        }
+      );
+    } else {
+      unfollowMutation.mutate(
+        { following: profileUserId },
+        {
+          onSuccess: () => {
+            setIsFollowing(false);
+          },
+          onError: (error) => {
+            console.error("Unfollow error:", error);
+          },
+        }
+      );
+    }
   };
 
   // Handle file selection
@@ -62,7 +99,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
-
+  if (isFollowStatusLoading) {
+    return (
+      <button disabled className="px-8 py-[6px] rounded-full text-[10px] bg-gray-500 text-white">
+        Loading...
+      </button>
+    );
+  }
   return (
     <div className="w-full px-4">
       {/* Banner */}
@@ -110,13 +153,16 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <div className="flex items-center space-x-2 mt-4 relative">
             <button
               onClick={toggleFollow}
+              disabled={isLoading}
               className={`px-8 py-[6px] rounded-full text-[10px] ${
-                isFollowing
+                isLoading
+                  ? "bg-gray-500 text-white cursor-not-allowed"
+                  : isFollowing
                   ? "bg-white text-black border border-gray-300 hover:bg-gray-100"
                   : "bg-red-800 text-white hover:bg-red-700"
               }`}
             >
-              {isFollowing ? "Unfollow" : "Follow"}
+              {isLoading ? "Loading..." : isFollowing ? "Unfollow" : "Follow"}
             </button>
 
             <Button variant="outline" className="rounded-full border border-gray-300 p-2 w-8 h-8">
