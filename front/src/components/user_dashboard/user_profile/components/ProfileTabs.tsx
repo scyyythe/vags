@@ -18,8 +18,12 @@ const tabs = [
   { id: "onSale", label: "On Sale" },
   { id: "collections", label: "Collections" },
 ];
-
-const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab: (tab: string) => void }) => {
+type ProfileTabsProps = {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  setCreatedArtworksCount: React.Dispatch<React.SetStateAction<number>>;
+};
+const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: ProfileTabsProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterCategory, setFilterCategory] = useState("Digital Art");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -309,7 +313,11 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
               </button>
             </div>
           )}
-          <CreatedTab filteredArtworks={filteredArtworksMemo || []} isLoading={isLoading} />
+          <CreatedTab
+            filteredArtworks={filteredArtworksMemo || []}
+            isLoading={isLoading}
+            setCreatedArtworksCount={setCreatedArtworksCount}
+          />
         </>
       )}
 

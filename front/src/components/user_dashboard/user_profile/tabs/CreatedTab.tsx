@@ -1,26 +1,34 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useEffect } from "react";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
-
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
+  setCreatedArtworksCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const CreatedTab = ({ filteredArtworks = [], isLoading }: CreatedTabProps) => {
+const CreatedTab = ({ filteredArtworks = [], isLoading, setCreatedArtworksCount }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
-
-  const handleButtonClick = useCallback((artworkId: string) => {
-    console.log(`Button clicked for artwork ID: ${artworkId}`);
-  }, []);
 
   const allArtworks = useMemo(() => {
     return filteredArtworks.filter(
       (artwork) => artwork.visibility.toLowerCase() === "public" || artwork.visibility.toLowerCase() === "private"
     );
   }, [filteredArtworks]);
+
+  const createdArtworksCount = useMemo(() => {
+    return allArtworks.filter((artwork) => String(artwork.artistId) === String(loggedInUserId));
+  }, [allArtworks, loggedInUserId]);
+
+  useEffect(() => {
+    setCreatedArtworksCount(createdArtworksCount.length);
+  }, [createdArtworksCount, setCreatedArtworksCount]);
+
+  const handleButtonClick = useCallback((artworkId: string) => {
+    console.log(`Button clicked for artwork ID: ${artworkId}`);
+  }, []);
 
   if (!isLoading && allArtworks.length === 0) {
     return (
@@ -30,7 +38,10 @@ const CreatedTab = ({ filteredArtworks = [], isLoading }: CreatedTabProps) => {
       </div>
     );
   }
-
+  console.log("loggedInUserId:", loggedInUserId);
+  console.log("filteredArtworks:", filteredArtworks);
+  console.log("created items:", createdArtworksCount);
+  console.log("You have created:", createdArtworksCount);
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-6">
       {isLoading ? (
@@ -46,7 +57,7 @@ const CreatedTab = ({ filteredArtworks = [], isLoading }: CreatedTabProps) => {
               key={art.id}
               id={art.id}
               artistName={art.artistName}
-              artistId={art.artist_id}
+              artistId={art.artistId}
               artistImage={art.artistImage || ""}
               artworkImage={art.artworkImage}
               title={art.title}
