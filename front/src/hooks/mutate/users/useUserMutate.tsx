@@ -8,6 +8,7 @@ interface User {
   email: string;
   first_name: string;
   last_name: string;
+  password: string;
   role: string;
   user_status: string;
   gender: string;
@@ -24,6 +25,7 @@ interface UserDetails {
   first_name?: string;
   last_name?: string;
   role?: string;
+  password?: string;
   user_status?: string;
   gender?: string;
   date_of_birth?: string;

@@ -28,6 +28,8 @@ class User(Document):
          self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
     def check_password(self, password):
+        if not self.password:
+            return False  
         return bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
 
     @property
