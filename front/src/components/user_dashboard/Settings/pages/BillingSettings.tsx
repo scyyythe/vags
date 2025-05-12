@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import ActionButtons from "../components/transaction/ActionButtons";
+import ActionButtons from "../components/ActionButtons";
 import TransactionsTab from "../components/tab/TransactionTab";
 
 interface Plan {
@@ -138,7 +138,9 @@ const BillingSettings = () => {
         </div>
       )}
 
-      {activeTab === "transactions" && <TransactionsTab />}
+      {activeTab === "transactions" && (
+      <TransactionsTab />
+    )}
     </div>
   );
 };
