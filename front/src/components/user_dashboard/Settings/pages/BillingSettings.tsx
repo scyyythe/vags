@@ -11,7 +11,11 @@ interface Plan {
 }
 
 const BillingSettings = () => {
-  const [plans, setPlans] = useState<Plan[]>([
+  const [activeTab, setActiveTab] = useState<"plans" | "transactions">("plans");
+  const [selectedPlan, setSelectedPlan] = useState("basic");
+  const [originalPlan, setOriginalPlan] = useState(selectedPlan);
+
+  const plans: Plan[] = [
     {
       id: "basic",
       name: "Basic plan",
@@ -33,93 +37,110 @@ const BillingSettings = () => {
       description: "Includes up to ... and access to all features.",
       icon: "enterprise",
     },
-  ]);
-  
-  const [selectedPlan, setSelectedPlan] = useState("basic");
-  const [originalPlan, setOriginalPlan] = useState(selectedPlan);
+  ];
 
-  const handleSave = () => {
-    setOriginalPlan(selectedPlan);
-  };
-
-  const handleReset = () => {
-    setSelectedPlan(originalPlan);
-  };
-
-  const hasChanges = () => {
-    return selectedPlan !== originalPlan;
-  };
+  const handleSave = () => setOriginalPlan(selectedPlan);
+  const handleReset = () => setSelectedPlan(originalPlan);
+  const hasChanges = () => selectedPlan !== originalPlan;
 
   const renderIcon = (icon: string) => {
-    if (icon === "basic") {
-      return (
-        <div className="w-8 h-8 flex items-center justify-center">
-          <i className='bx bx-layer-minus text-red-800'></i>
-        </div>
-      );
-    } if (icon === "business") {
-      return (
-        <div className="w-8 h-8 flex items-center justify-center">
-          <i className='bx bx-layer text-red-800'></i>
-        </div>
-      );
-    }
-    return (
-      <div className="w-8 h-8 flex items-center justify-center">
-        <i className='bx bxs-bolt text-red-800'></i>
-      </div>
-    );
+    if (icon === "basic") return <i className="bx bx-layer-minus text-red-800 text-xl"></i>;
+    if (icon === "business") return <i className="bx bx-layer text-red-800 text-xl"></i>;
+    return <i className="bx bxs-bolt text-red-800 text-xl"></i>;
   };
 
   return (
-    <div>
-      <h2 className="text-sm font-bold mb-6">Billing</h2>
-      
-      <div className="mb-8">
-        <h3 className="text-[13px] font-semibold mb-1">Account plans</h3>
-        <p className="text-gray-600 text-[11px] mb-6">
-          Pick an account plan that fits your workflow.
-        </p>
-        
-        <div className="space-y-4">
-          <RadioGroup value={selectedPlan} onValueChange={setSelectedPlan}>
-            {plans.map((plan) => (
-              <div
-                key={plan.id}
-                className={`
-                  border rounded-lg p-4 flex items-center justify-between
-                  ${selectedPlan === plan.id ? "border-red-200 bg-red-50" : "border-gray-200"}
-                `}
-              >
-                <div className="flex items-start gap-4">
-                  {renderIcon(plan.icon)}
-                  <div>
-                    <div className="flex items-center gap-1">
-                      <span className="font-medium text-xs">{plan.name}</span>
-                      <span className="text-gray-500 text-xs">${plan.price}/month</span>
-                    </div>
-                    <p className=" text-gray-600 text-[10px]">{plan.description}</p>
-                  </div>
-                </div>
-                <RadioGroupItem value={plan.id} id={plan.id} className="text-red-800 border border-red-800" />
+    <div className="w-full max-w-full mx-auto px-4">
+      {/* Tabs */}
+      <div className="flex gap-8 mb-6 text-xs font-semibold">
+        <button
+          className={`pb-2 ${activeTab === "plans" ? "text-red-800 border-b-2 border-red-800" : "text-gray-600"}`}
+          onClick={() => setActiveTab("plans")}
+        >
+          Plans
+        </button>
+        <button
+          className={`pb-2 ${activeTab === "transactions" ? "text-red-800 border-b-2 border-red-800" : "text-gray-600"}`}
+          onClick={() => setActiveTab("transactions")}
+        >
+          Transactions
+        </button>
+      </div>
+
+      {activeTab === "plans" && (
+        <div className="flex flex-col gap-6">
+          {/* Current Plan */}
+          <div>
+            <h3 className="text-xs font-semibold">Current plan</h3>
+            <p className="text-[10px] text-gray-600">
+              We'll credit your account if you need to downgrade during the billing cycle.
+            </p>
+          </div>
+
+          {/* Account Plans */}
+          <div>
+            
+
+            <RadioGroup value={selectedPlan} onValueChange={setSelectedPlan} className="flex flex-row gap-6">
+              <div>
+                <h3 className="text-xs font-semibold">Account plans</h3>
+                <p className="text-[10px] text-gray-600 mb-4">
+                  Pick an account plan that fits your workflow.
+                </p>
               </div>
-            ))}
-          </RadioGroup>
+
+              <div className="w-full space-y-3">
+                {plans.map((plan) => (
+                  <div
+                    key={plan.id}
+                    className={`rounded-lg border flex items-center justify-between p-4 ${
+                      selectedPlan === plan.id
+                        ? "bg-red-50 border-red-200"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 flex items-center justify-center">
+                        {renderIcon(plan.icon)}
+                      </div>
+                      <div>
+                        <div className="flex gap-1 items-center text-[11px] font-medium">
+                          <span>{plan.name}</span>
+                          <span className="text-gray-500">${plan.price}/month</span>
+                        </div>
+                        <p className="text-[10px] text-gray-600">{plan.description}</p>
+                      </div>
+                    </div>
+
+                    {/* Custom radio button */}
+                    <RadioGroupItem
+                      value={plan.id}
+                      id={plan.id}
+                      className={`border border-red-800 text-red-800 ${
+                        selectedPlan === plan.id ? "bg-red-800 text-white" : ""
+                      }`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </RadioGroup>
+          </div>
+
+          {/* Action Buttons */}
+          <ActionButtons
+            hasChanges={hasChanges()}
+            onSave={handleSave}
+            onReset={handleReset}
+          />
         </div>
-      </div>
-      
-      <div className="mb-8">
-        <h3 className="text-[13px] font-semibold mb-1">Current plan</h3>
-        <p className="text-gray-600 text-[11px] mb-6">
-          We'll credit your account if you need to downgrade during the billing cycle.
-        </p>
-      </div>
-      
-      <ActionButtons
-        hasChanges={hasChanges()}
-        onSave={handleSave}
-        onReset={handleReset}
-      />
+      )}
+
+      {activeTab === "transactions" && (
+        <div className="text-sm text-gray-600">
+          {/* Placeholder for future transactions content */}
+          No transactions yet.
+        </div>
+      )}
     </div>
   );
 };
