@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import ArtGrid from "./ArtGrid";
 import { ChevronDown } from "lucide-react";
 import { mediumOptions } from "@/components/user_dashboard/user_profile/components/options/MediumOptions";
@@ -6,9 +7,10 @@ import CreatedTab from "@/components/user_dashboard/user_profile/tabs/CreatedTab
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import { toast } from "sonner";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
-import EmptyTrashPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/empty_trash/EmptyTrash"; 
+import EmptyTrashPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/empty_trash/EmptyTrash";
 import UnhidePopup from "@/components/user_dashboard/user_profile/components/status_options/popups/unhide/Unhide";
 import UnarchivePopup from "@/components/user_dashboard/user_profile/components/status_options/popups/unarchive/Unarchive";
+import { getLoggedInUserId } from "@/auth/decode";
 
 const tabs = [
   { id: "created", label: "Created" },
@@ -44,8 +46,14 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
   const [artworkList, setArtworkList] = useState<Artwork[]>([]);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const { id: userId } = useParams();
 
-  const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "created-by-me");
+  const loggedInUserId = getLoggedInUserId();
+  const isOwnProfile = userId === loggedInUserId;
+  const endpointType = isOwnProfile ? "created-by-me" : "specific-user";
+
+  const { data: artworks, isLoading } = useArtworks(currentPage, userId, true, endpointType);
+
   const handleMediumSelect = (option: string) => {
     setSelectedMedium(option);
     setShowMediumOptions(false);
@@ -69,9 +77,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
 
   // UNHIDE BUTTON
   const confirmUnhideAll = () => {
-    const updated = artworkList.map((art) =>
-      art.status === "Hidden" ? { ...art, status: "Active" } : art
-    );
+    const updated = artworkList.map((art) => (art.status === "Hidden" ? { ...art, status: "Active" } : art));
     setArtworkList(updated);
     toast.success("All hidden artworks have been unhidden!");
     setShowUnhidePopup(false);
@@ -83,9 +89,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
 
   // UNARCHIVE BUTTON
   const confirmUnarchiveAll = () => {
-    const updated = artworkList.map((art) =>
-      art.status === "Archived" ? { ...art, status: "Active" } : art
-    );
+    const updated = artworkList.map((art) => (art.status === "Archived" ? { ...art, status: "Active" } : art));
     setArtworkList(updated);
     toast.success("All archived artworks have been unarchived!");
     setShowUnarchivePopup(false);
@@ -99,18 +103,18 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
     setSelectedPriceRange(option);
     setShowPriceOptions(false);
   };
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
-    toast(`Selected category: ${category}`);
-  };
   const filteredArtworksMemo = useMemo(() => {
     return artworks?.filter((artwork) => {
       const categoryMatches =
         selectedCategory.toLowerCase() === "all" || artwork.style.toLowerCase() === selectedCategory.toLowerCase();
-
       return categoryMatches;
     });
   }, [artworks, selectedCategory]);
+
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category);
+    toast(`Selected category: ${category}`);
+  };
 
   const handleSortBySelect = (option: string) => {
     setSelectedSortBy(option);
@@ -139,7 +143,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
 
         {/* Filters */}
         <div className="flex items-center mt-4 sm:mt-0 space-x-4 relative bottom-[6px]">
-          <ArtCategorySelect selectedCategory={selectedCategory} onChange={(value) => setSelectedCategory(value)} />
+          <ArtCategorySelect selectedCategory={selectedCategory} onChange={handleCategorySelect} />
 
           {/* Apply Filter Button */}
           <div className="relative">
@@ -166,7 +170,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
                   {showMediumOptions && (
                     <div
                       className="bg-white shadow-md rounded-md mt-1 animate-fade-in overflow-y-auto"
-                      style={{ maxHeight: "110px" }} // or any height you prefer
+                      style={{ maxHeight: "110px" }}
                     >
                       {mediumOptions.map((option, idx) => (
                         <div
@@ -305,28 +309,15 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
               </button>
             </div>
           )}
-          <CreatedTab filteredArtworks={filteredArtworksMemo} isLoading={isLoading} />
+          <CreatedTab filteredArtworks={filteredArtworksMemo || []} isLoading={isLoading} />
         </>
       )}
 
-      <UnarchivePopup
-        isOpen={showUnarchivePopup}
-        onCancel={cancelUnarchive}
-        onConfirm={confirmUnarchiveAll}
-      />
+      <UnarchivePopup isOpen={showUnarchivePopup} onCancel={cancelUnarchive} onConfirm={confirmUnarchiveAll} />
 
-      <EmptyTrashPopup
-        isOpen={showEmptyTrashPopup}
-        onCancel={cancelEmptyTrash}
-        onConfirm={confirmEmptyTrash}
-      />
+      <EmptyTrashPopup isOpen={showEmptyTrashPopup} onCancel={cancelEmptyTrash} onConfirm={confirmEmptyTrash} />
 
-      <UnhidePopup
-        isOpen={showUnhidePopup}
-        onCancel={cancelUnhide}
-        onConfirm={confirmUnhideAll}
-      />
-
+      <UnhidePopup isOpen={showUnhidePopup} onCancel={cancelUnhide} onConfirm={confirmUnhideAll} />
     </div>
   );
 };

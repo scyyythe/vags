@@ -65,7 +65,8 @@ class UserSerializer(serializers.Serializer):
             bio=validated_data.get("bio"),
             contact_number=validated_data.get("contact_number"),
             address=validated_data.get("address"),
-            profile_picture=validated_data.get("profile_picture", '')
+            profile_picture=validated_data.get('profile_picture')
+
         )
         user.set_password(validated_data["password"])
         user.save()

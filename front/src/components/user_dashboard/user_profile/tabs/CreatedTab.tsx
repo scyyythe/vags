@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useMemo, useCallback } from "react";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+import { getLoggedInUserId } from "@/auth/decode";
 
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
@@ -9,6 +10,8 @@ type CreatedTabProps = {
 };
 
 const CreatedTab = ({ filteredArtworks = [], isLoading }: CreatedTabProps) => {
+  const loggedInUserId = getLoggedInUserId();
+
   const handleButtonClick = useCallback((artworkId: string) => {
     console.log(`Button clicked for artwork ID: ${artworkId}`);
   }, []);
@@ -20,7 +23,12 @@ const CreatedTab = ({ filteredArtworks = [], isLoading }: CreatedTabProps) => {
   }, [filteredArtworks]);
 
   if (!isLoading && allArtworks.length === 0) {
-    return <p className="text-center text-sm text-gray-500 col-span-full">You have not created any artwork yet.</p>;
+    return (
+      <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
+        <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
+        <p className="text-sm text-gray-500">No artworks have been created yet.</p>
+      </div>
+    );
   }
 
   return (
@@ -30,20 +38,24 @@ const CreatedTab = ({ filteredArtworks = [], isLoading }: CreatedTabProps) => {
       ) : allArtworks.length === 0 ? (
         <p className="text-center text-sm text-gray-500 col-span-full">No artworks found.</p>
       ) : (
-        allArtworks.map((art) => (
-          <ArtCard
-            key={art.id}
-            id={art.id}
-            artistName={art.artistName}
-            artistId={art.artist_id}
-            artistImage={art.artistImage || ""}
-            artworkImage={art.artworkImage}
-            title={art.title}
-            onButtonClick={() => handleButtonClick(art.id)}
-            isExplore={false}
-            likesCount={art.likesCount ?? 0}
-          />
-        ))
+        allArtworks.map((art) => {
+          const isExplore = String(art.artistId) !== String(loggedInUserId);
+
+          return (
+            <ArtCard
+              key={art.id}
+              id={art.id}
+              artistName={art.artistName}
+              artistId={art.artist_id}
+              artistImage={art.artistImage || ""}
+              artworkImage={art.artworkImage}
+              title={art.title}
+              onButtonClick={() => handleButtonClick(art.id)}
+              isExplore={isExplore}
+              likesCount={art.likesCount ?? 0}
+            />
+          );
+        })
       )}
     </div>
   );

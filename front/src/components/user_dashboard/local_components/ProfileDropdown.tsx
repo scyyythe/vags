@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { LogOut, Settings, User, Plus, Activity, Headphones } from "lucide-react";
 import { useModal } from "../../../context/ModalContext";
-
+import useUserDetails from "@/hooks/users/useUserDetails";
+import { getLoggedInUserId } from "@/auth/decode";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 interface ProfileDropdownProps {
   isOpen: boolean;
   onClose: () => void;
@@ -9,6 +11,9 @@ interface ProfileDropdownProps {
 
 const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
   const navigate = useNavigate();
+  const userId = getLoggedInUserId();
+  const { firstName, lastName, profilePicture } = useUserDetails(userId);
+  const fullName = `${firstName} ${lastName}`;
   const { setShowLoginModal } = useModal();
 
   const handleEditProfile = () => {
@@ -35,19 +40,16 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
       {/* Top profile section */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div className="flex items-center gap-3">
-          <img
-            src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
-            alt="User"
-            className="w-10 h-10 rounded-full object-cover"
-          />
+          <Avatar className="w-10 h-10 rounded-full">
+            <AvatarImage src={profilePicture} alt={fullName} />
+            <AvatarFallback>{fullName?.charAt(0).toUpperCase()}</AvatarFallback>
+          </Avatar>
           <div className="leading-[14px]">
-            <div className="font-semibold text-black text-[11px]">Angel Canete</div>
+            <div className="font-semibold text-black text-[11px]">{fullName}</div>
             <div className="text-[9px] text-gray-400">Basic Plan</div>
           </div>
         </div>
-        <button className="text-[8px] bg-blue-100 text-blue-700 px-2 rounded-md font-medium">
-          Upgrade
-        </button>
+        <button className="text-[8px] bg-blue-100 text-blue-700 px-2 rounded-md font-medium">Upgrade</button>
       </div>
 
       <hr className="my-2 border-gray-200" />
