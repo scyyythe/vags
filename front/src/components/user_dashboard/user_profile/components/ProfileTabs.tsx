@@ -53,8 +53,6 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
   const endpointType = isOwnProfile ? "created-by-me" : "specific-user";
 
   const { data: artworks, isLoading } = useArtworks(currentPage, userId, true, endpointType);
-  console.log("userId:", userId);
-  console.log("endpointType:", endpointType);
 
   const handleMediumSelect = (option: string) => {
     setSelectedMedium(option);
@@ -105,18 +103,18 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
     setSelectedPriceRange(option);
     setShowPriceOptions(false);
   };
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
-    toast(`Selected category: ${category}`);
-  };
   const filteredArtworksMemo = useMemo(() => {
     return artworks?.filter((artwork) => {
       const categoryMatches =
         selectedCategory.toLowerCase() === "all" || artwork.style.toLowerCase() === selectedCategory.toLowerCase();
-
       return categoryMatches;
     });
   }, [artworks, selectedCategory]);
+
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category);
+    toast(`Selected category: ${category}`);
+  };
 
   const handleSortBySelect = (option: string) => {
     setSelectedSortBy(option);
@@ -145,7 +143,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
 
         {/* Filters */}
         <div className="flex items-center mt-4 sm:mt-0 space-x-4 relative bottom-[6px]">
-          <ArtCategorySelect selectedCategory={selectedCategory} onChange={(value) => setSelectedCategory(value)} />
+          <ArtCategorySelect selectedCategory={selectedCategory} onChange={handleCategorySelect} />
 
           {/* Apply Filter Button */}
           <div className="relative">
@@ -172,7 +170,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
                   {showMediumOptions && (
                     <div
                       className="bg-white shadow-md rounded-md mt-1 animate-fade-in overflow-y-auto"
-                      style={{ maxHeight: "110px" }} // or any height you prefer
+                      style={{ maxHeight: "110px" }}
                     >
                       {mediumOptions.map((option, idx) => (
                         <div
@@ -311,7 +309,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
               </button>
             </div>
           )}
-          <CreatedTab filteredArtworks={artworks || []} isLoading={isLoading} />
+          <CreatedTab filteredArtworks={filteredArtworksMemo || []} isLoading={isLoading} />
         </>
       )}
 
