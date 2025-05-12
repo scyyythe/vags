@@ -36,7 +36,7 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute right-4 mt-2 w-56 bg-white rounded-2xl shadow-xl z-50 text-sm">
+    <div className="absolute right-2 mt-2 w-60 bg-white rounded-2xl shadow-xl z-50 text-sm">
       {/* Top profile section */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div className="flex items-center gap-3">
@@ -45,7 +45,7 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
             <AvatarFallback>{fullName?.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div className="leading-[14px]">
-            <div className="font-semibold text-black text-[11px]">{fullName}</div>
+            <div className="font-semibold text-black text-[11px] whitespace-nowrap">{fullName}</div>
             <div className="text-[9px] text-gray-400">Basic Plan</div>
           </div>
         </div>
