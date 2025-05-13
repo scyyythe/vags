@@ -21,7 +21,7 @@ const useDeleteArtwork = () => {
         return oldData.filter((artwork) => artwork.id !== id);
       });
 
-      queryClient.invalidateQueries({ queryKey: ["my_artwork"] });
+      queryClient.invalidateQueries({ queryKey: ["artworks"] });
     },
     onError: () => {
       toast.error("Failed to delete artwork.");
