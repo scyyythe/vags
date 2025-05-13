@@ -33,6 +33,7 @@ interface ArtCardProps {
   likesCount: number;
   isArchived?: boolean;
   isDeleted?: boolean;
+  visibility?: string;
 }
 
 const ArtCard = ({
@@ -46,6 +47,7 @@ const ArtCard = ({
   likesCount = 0,
   isArchived = false,
   isDeleted = false,
+  visibility = "public",
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
@@ -133,7 +135,7 @@ const ArtCard = ({
               isFavorite={isFavorite}
               isReported={false}
             />
-          ) : isDeleted ? (
+          ) : visibility?.toLowerCase() === "deleted" ? (
             <DeletedMenu
               isOpen={menuOpen}
               onEdit={() => {
@@ -150,7 +152,7 @@ const ArtCard = ({
                 setMenuOpen(false);
               }}
             />
-          ) : isArchived ? (
+          ) : visibility?.toLowerCase() === "archived" ? (
             <ArchivedMenu
               isOpen={menuOpen}
               onEdit={() => console.log("Edit artwork")}

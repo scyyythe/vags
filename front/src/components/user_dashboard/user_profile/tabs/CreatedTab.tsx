@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
@@ -11,6 +12,7 @@ type CreatedTabProps = {
 
 const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
+  const { id: visitedUserId } = useParams();
 
   const allArtworks = useMemo(() => {
     return filteredArtworks;
@@ -21,8 +23,12 @@ const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: Cr
   }, [allArtworks, loggedInUserId]);
 
   useEffect(() => {
-    setCreatedArtworksCount(createdArtworksCount.length);
-  }, [createdArtworksCount, setCreatedArtworksCount]);
+    if (!visitedUserId) return;
+
+    const count = allArtworks.filter((artwork) => String(artwork.artistId) === String(visitedUserId)).length;
+
+    setCreatedArtworksCount(count);
+  }, [allArtworks, visitedUserId, setCreatedArtworksCount]);
 
   const handleButtonClick = useCallback((artworkId: string) => {}, []);
 
