@@ -3,25 +3,23 @@ from api.models.artwork_model.bid import Bid, Auction
 from datetime import datetime
 
 class BidSerializer(serializers.Serializer):
-    bidder_username = serializers.CharField(source='bidder.username', read_only=True)
-    bidder_full_name = serializers.SerializerMethodField()
-    artwork = serializers.CharField()
+    bidderFullName = serializers.SerializerMethodField()
+    artwork_id = serializers.CharField(write_only=True)
     amount = serializers.FloatField()
     timestamp = serializers.DateTimeField(read_only=True)
 
-    def get_bidder_full_name(self, obj):
+    def get_bidderFullName(self, obj):
         return f"{obj.bidder.first_name} {obj.bidder.last_name}".strip()
 
     def create(self, validated_data):
-        bidder = self.context['request'].user  
-        artwork_id = validated_data.pop('artwork')
+        bidder = self.context['request'].user
+        artwork_id = validated_data.pop('artwork_id')  
 
         try:
             auction = Auction.objects.get(artwork=artwork_id, status=True)
         except Auction.DoesNotExist:
-            raise serializers.ValidationError({"error": "Auction not found or closed."})
+            raise serializers.ValidationError({"error": "Auction not found or has ended."})
 
-        # Check if the auction is expired
         if auction.end_time < datetime.utcnow():
             auction.close_auction()
             raise serializers.ValidationError({"error": "This auction has ended."})
@@ -36,9 +34,14 @@ class BidSerializer(serializers.Serializer):
 
         return bid
 
+
 class AuctionSerializer(serializers.Serializer):
+    id = serializers.CharField(source='id', read_only=True)
     artwork = serializers.CharField(source='artwork.title', read_only=True)
+    artwork_id = serializers.CharField(write_only=True)
+    start_bid_amount = serializers.FloatField(write_only=True)
     start_time = serializers.DateTimeField()
     end_time = serializers.DateTimeField()
     highest_bid = BidSerializer(read_only=True)
-    status = serializers.BooleanField()
+    status = serializers.BooleanField(read_only=True)
+

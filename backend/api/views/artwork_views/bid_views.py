@@ -6,48 +6,37 @@ from api.models.artwork_model.artwork import Art
 from api.serializers.artwork_s.bid_serializers import BidSerializer, AuctionSerializer
 from datetime import datetime
 from api.models.interaction_model.notification import Notification
-
-class CreateAuctionView(generics.CreateAPIView):
-    serializer_class = AuctionSerializer
-    permission_classes = [permissions.IsAuthenticated]  
-
-    def create(self, request, *args, **kwargs):
-        artwork_id = request.data.get("artwork")
-        start_time = request.data.get("start_time")
-        end_time = request.data.get("end_time")
-
-        if not artwork_id or not start_time or not end_time:
-            return Response({"error": "All fields are required."}, status=status.HTTP_400_BAD_REQUEST)
-
+from rest_framework.views import APIView
+class AuctionCreateView(APIView):
+    def post(self, request, *args, **kwargs):
         try:
-            artwork = Art.objects.get(id=artwork_id)
-        except Art.DoesNotExist:
-            return Response({"error": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
+           
+            artwork_id = request.data["artwork_id"]
+            start_time = datetime.fromisoformat(request.data["start_time"])
+            end_time = datetime.fromisoformat(request.data["end_time"])
+            starting_bid = request.data["starting_bid"]
 
-        if Auction.objects.filter(artwork=artwork, status=True).count() > 0:
-            return Response({"error": "An active auction for this artwork already exists."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if end_time <= start_time:
+                return Response(
+                    {"error": "End time must be after start time."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
-      
-        try:
-            start_time = datetime.strptime(start_time.replace("Z", ""), "%Y-%m-%dT%H:%M:%S")
-            end_time = datetime.strptime(end_time.replace("Z", ""), "%Y-%m-%dT%H:%M:%S")
-        except ValueError:
-            return Response({"error": "Invalid date format. Use 'YYYY-MM-DDTHH:MM:SSZ'."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if (end_time - start_time).days > 3:
+                return Response(
+                    {"error": "Auction duration cannot exceed 3 days."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
-        # Create the auction object
-        auction = Auction.objects.create(
-            artwork=artwork,
-            start_time=start_time,
-            end_time=end_time,
-            status=True
-        )
-        artist = artwork.artist  
-        Notification.objects.create(
-            user=artist,
-            message=f"Your artwork '{artwork.title}' is now up for auction!",
-            art=artwork
-        )
-        return Response(AuctionSerializer(auction).data, status=status.HTTP_201_CREATED)
+            
+            auction = Auction.create_auction(artwork_id, start_time, end_time, starting_bid)
+
+            return Response({"message": "Auction created successfully!", "auction_id": str(auction.id)},
+                            status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     
 class PlaceBidView(generics.CreateAPIView):
