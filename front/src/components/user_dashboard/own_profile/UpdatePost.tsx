@@ -105,6 +105,8 @@ const UpdatePost = () => {
       formData.append("image", selectedFile);
     }
 
+    console.log("Form Data before submitting:", formData); // Check form data
+
     setIsUploading(true);
     updateArtwork(
       { id, formData },

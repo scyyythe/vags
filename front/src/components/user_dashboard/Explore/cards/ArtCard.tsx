@@ -14,7 +14,10 @@ import useFavorite from "@/hooks/interactions/useFavorite";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import useArtworkDetails from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 import useLikeStatus from "@/hooks/interactions/useLikeStatus";
-import useHideArtwork from "@/hooks/mutate/visibility/useHideArtwork";
+import useHideArtwork from "@/hooks/mutate/visibility/private/useHideArtwork";
+import useUnArchivedArtwork from "@/hooks/mutate/visibility/arc/useUnarchivedArtwork";
+import useRestoreArtwork from "@/hooks/mutate/visibility/trash/useRestoreArtwork";
+import useDeletePermanentArtwork from "@/hooks/mutate/visibility/trash/usePermanentDelete";
 
 interface ArtCardProps {
   id: string;
@@ -58,6 +61,8 @@ const ArtCard = ({
   const [isDeletedLocally, setIsDeletedLocally] = useState(false);
 
   const { mutate: hideArtwork } = useHideArtwork();
+  const { mutate: unarchiveArtwork } = useUnArchivedArtwork();
+  const { mutate: restore } = useRestoreArtwork();
 
   const isLiked = likedArtworks[id] || false;
   useEffect(() => {
@@ -75,6 +80,14 @@ const ArtCard = ({
   const handleHide = () => {
     setIsHidden(true);
     hideArtwork(id);
+    setMenuOpen(false);
+  };
+  const handleUnarchive = () => {
+    unarchiveArtwork(id);
+    setMenuOpen(false);
+  };
+  const handleRestore = () => {
+    restore(id);
     setMenuOpen(false);
   };
 
@@ -133,15 +146,13 @@ const ArtCard = ({
             />
           ) : isDeleted ? (
             <DeletedMenu
+              artworkId={id}
               isOpen={menuOpen}
               onEdit={() => {
                 console.log("Edit artwork");
                 setMenuOpen(false);
               }}
-              onUnarchive={() => {
-                toast.success("Artwork restored");
-                setMenuOpen(false);
-              }}
+              onUnarchive={handleRestore}
               onDelete={() => {
                 toast.success("Artwork permanently deleted");
                 setIsDeletedLocally(true);
@@ -150,9 +161,10 @@ const ArtCard = ({
             />
           ) : isArchived ? (
             <ArchivedMenu
+              artworkId={id}
               isOpen={menuOpen}
               onEdit={() => console.log("Edit artwork")}
-              onUnarchive={() => console.log("Unarchive artwork")}
+              onUnarchive={handleUnarchive}
               onDelete={() => console.log("Delete artwork")}
             />
           ) : (
