@@ -9,7 +9,6 @@ type CollectionTabProps = {
   setSavedArtworksCount?: React.Dispatch<React.SetStateAction<number>>;
 };
 
-// Memoize the ArtCard component to prevent unnecessary re-renders
 const ArtCardMemoized = React.memo(ArtCard);
 
 const CollectionTab = ({ setSavedArtworksCount }: CollectionTabProps) => {
@@ -17,21 +16,17 @@ const CollectionTab = ({ setSavedArtworksCount }: CollectionTabProps) => {
   const loggedInUserId = getLoggedInUserId();
   const { id: visitedUserId } = useParams();
 
-  // Memoizing the saved artworks to avoid unnecessary recalculations
   const filteredSavedArtworks = useMemo(() => {
-    // Filter the artworks and remove any null/undefined values if necessary
     return (savedArtworks || []).filter((art) => !!art);
   }, [savedArtworks]);
 
   useEffect(() => {
     if (!visitedUserId || !setSavedArtworksCount) return;
     const count = filteredSavedArtworks.length;
-    setSavedArtworksCount(count); // Set the count of saved artworks
+    setSavedArtworksCount(count);
   }, [filteredSavedArtworks, visitedUserId, setSavedArtworksCount]);
 
-  const handleButtonClick = useCallback((artworkId: string) => {
-    // Implement button click functionality if needed
-  }, []);
+  const handleButtonClick = useCallback((artworkId: string) => {}, []);
 
   if (!isLoading && filteredSavedArtworks.length === 0) {
     return (

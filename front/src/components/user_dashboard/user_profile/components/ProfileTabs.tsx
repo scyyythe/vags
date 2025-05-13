@@ -357,14 +357,19 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
       {activeTab === "collections" && <CollectionTab />}
 
       {activeTab === "onBid" && (
-        <div>
-          <p className="text-sm">On Bid artworks go here.</p>
+        <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
+          <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
+          <p className="text-sm text-gray-500">No artworks found.</p>
         </div>
       )}
 
       {activeTab === "onSale" && (
-        <div>
-          <p className="text-sm">On Sale artworks go here.</p>
+        <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
+          <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
+          <p className="text-xs text-gray-500">
+            This section is currently under development. <br />
+            Check back soon for exciting sellers and artworks.
+          </p>
         </div>
       )}
       <UnarchivePopup isOpen={showUnarchivePopup} onCancel={cancelUnarchive} onConfirm={confirmUnarchiveAll} />
