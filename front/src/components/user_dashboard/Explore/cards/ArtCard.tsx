@@ -13,7 +13,6 @@ import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import useArtworkDetails from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
-import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import useLikeStatus from "@/hooks/interactions/useLikeStatus";
 import useHideArtwork from "@/hooks/mutate/visibility/useHideArtwork";
 
@@ -24,16 +23,12 @@ interface ArtCardProps {
   artistImage: string;
   artworkImage: string;
   title?: string;
-  price?: string;
-  currency?: string;
-  showPrice?: boolean;
-  showButton?: boolean;
-  buttonText?: string;
-  onButtonClick?: () => void;
   isExplore?: boolean;
   likesCount: number;
-  isArchived?: boolean;
   isDeleted?: boolean;
+  isArchived?: boolean;
+  visibility?: string;
+  onButtonClick?: () => void;
 }
 
 const ArtCard = ({
@@ -45,8 +40,10 @@ const ArtCard = ({
   title,
   isExplore = false,
   likesCount = 0,
-  isArchived = false,
   isDeleted = false,
+  isArchived = false,
+  visibility = "public",
+  onButtonClick,
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);

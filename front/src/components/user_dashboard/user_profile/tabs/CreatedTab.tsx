@@ -1,4 +1,5 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
@@ -7,20 +8,31 @@ import { getLoggedInUserId } from "@/auth/decode";
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
+  setCreatedArtworksCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const CreatedTab = ({ filteredArtworks = [], isLoading }: CreatedTabProps) => {
+const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
-
-  const handleButtonClick = useCallback((artworkId: string) => {
-    console.log(`Button clicked for artwork ID: ${artworkId}`);
-  }, []);
+  const { id: visitedUserId } = useParams();
+  const [currentPage] = useState(1);
+  const { data: artworks, error } = useArtworks(currentPage, undefined, true, "all", "public");
 
   const allArtworks = useMemo(() => {
-    return filteredArtworks.filter(
-      (artwork) => artwork.visibility.toLowerCase() === "public" || artwork.visibility.toLowerCase() === "private"
-    );
+    return filteredArtworks;
   }, [filteredArtworks]);
+
+  const createdArtworksCount = useMemo(() => {
+    return allArtworks.filter((artwork) => String(artwork.artistId) === String(loggedInUserId));
+  }, [allArtworks, loggedInUserId]);
+
+  useEffect(() => {
+    if (!visitedUserId) return;
+
+    const count = allArtworks.filter((artwork) => String(artwork.artistId) === String(visitedUserId)).length;
+    setCreatedArtworksCount(count);
+  }, [allArtworks, visitedUserId, setCreatedArtworksCount]);
+
+  const handleButtonClick = useCallback((artworkId: string) => {}, []);
 
   if (!isLoading && allArtworks.length === 0) {
     return (
@@ -40,19 +52,24 @@ const CreatedTab = ({ filteredArtworks = [], isLoading }: CreatedTabProps) => {
       ) : (
         allArtworks.map((art) => {
           const isExplore = String(art.artistId) !== String(loggedInUserId);
+          const isDeleted = art.visibility?.toLowerCase() === "deleted";
+          const isArchived = art.visibility?.toLowerCase() === "archived";
 
           return (
             <ArtCard
               key={art.id}
               id={art.id}
               artistName={art.artistName}
-              artistId={art.artist_id}
+              artistId={art.artistId}
               artistImage={art.artistImage || ""}
               artworkImage={art.artworkImage}
               title={art.title}
               onButtonClick={() => handleButtonClick(art.id)}
               isExplore={isExplore}
               likesCount={art.likesCount ?? 0}
+              isDeleted={isDeleted}
+              isArchived={isArchived}
+              visibility={art.visibility}
             />
           );
         })

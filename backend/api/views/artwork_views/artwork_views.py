@@ -30,8 +30,6 @@ class ArtCreateView(generics.ListCreateAPIView):
         time_elapsed = timesince(art.created_at, now)
 
 
-
-
 class ArtListView(generics.ListAPIView):
     serializer_class = ArtSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -126,8 +124,6 @@ class ArtUpdateView(generics.UpdateAPIView):
         art = serializer.save(updated_at=datetime.utcnow())
 
 
-
-
 class ArtDeleteView(generics.DestroyAPIView):
     queryset = Art.objects.all()
     serializer_class = ArtSerializer
@@ -159,3 +155,82 @@ class HideArtworkView(APIView):
         artwork.save()
 
         return Response({"message": "Artwork hidden successfully."}, status=status.HTTP_200_OK)
+    
+class UnHideArtworkView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            artwork = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            raise Http404("Artwork not found")
+
+        artwork.visibility = "Active"
+        artwork.updated_at = datetime.utcnow()
+        artwork.save()
+
+        return Response({"message": "Artwork unhidden successfully."}, status=status.HTTP_200_OK)
+    
+class DeleteArtwork(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            artwork = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            raise Http404("Artwork not found")
+
+        artwork.art_status = "Deleted"
+        artwork.visibility = "Deleted"
+        artwork.updated_at = datetime.utcnow()
+        artwork.save()
+
+        return Response({"message": "Artwork deleted successfully."}, status=status.HTTP_200_OK)
+
+class RestoreArtwork(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            artwork = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            raise Http404("Artwork not found")
+
+        artwork.art_status = "Public"
+        artwork.visibility = "Public"
+        artwork.updated_at = datetime.utcnow()
+        artwork.save()
+
+        return Response({"message": "Artwork restored successfully."}, status=status.HTTP_200_OK)
+    
+class ArchivedArtwork(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            artwork = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            raise Http404("Artwork not found")
+
+        artwork.art_status = "Archived"
+        artwork.visibility = "Archived"
+        artwork.updated_at = datetime.utcnow()
+        artwork.save()
+
+        return Response({"message": "Artwork Archived successfully."}, status=status.HTTP_200_OK)
+
+class UnArchivedArtwork(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            artwork = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            raise Http404("Artwork not found")
+
+        artwork.art_status = "Public"
+        artwork.visibility = "Public"
+        artwork.updated_at = datetime.utcnow()
+        artwork.save()
+
+        return Response({"message": "Artwork unarchived successfully."}, status=status.HTTP_200_OK)

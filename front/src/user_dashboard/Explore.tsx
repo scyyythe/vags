@@ -133,7 +133,6 @@ const Explore = () => {
                   </div>
                 ) : (
                   filteredArtworksMemo.map((card) => {
-                    console.log(card);
                     return (
                       <ArtCard
                         key={card.id}

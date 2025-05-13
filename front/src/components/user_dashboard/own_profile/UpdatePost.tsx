@@ -13,14 +13,18 @@ const UpdatePost = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const { data: artwork } = useArtworkDetails(id);
-  const { mutate: updateArtwork } = useUpdateArtwork();
-
   const [artworkTitle, setArtworkTitle] = useState("");
-  const [artworkStyle, setArtworkStyle] = useState("");
+
   const [medium, setMedium] = useState("");
   const [description, setDescription] = useState("");
-  const [visibility, setVisibility] = useState("public");
+  const [visibility, setVisibility] = useState("Public");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isActive, setIsActive] = useState(true);
+  const [category, setCategory] = useState("landscape");
+
+  const { data: artwork } = useArtworkDetails(id);
+  const { mutate: updateArtwork } = useUpdateArtwork(currentPage, isActive, category, visibility);
+  const [artworkStyle, setArtworkStyle] = useState(artwork.style || "");
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -77,6 +81,10 @@ const UpdatePost = () => {
       fileReader.readAsDataURL(file);
     }
   };
+  const handleStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log("Selected Style:", e.target.value);
+    setArtworkStyle(e.target.value);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,7 +96,7 @@ const UpdatePost = () => {
 
     const formData = new FormData();
     formData.append("title", artworkTitle);
-    formData.append("style", artworkStyle);
+    formData.append("category", artworkStyle);
     formData.append("medium", medium);
     formData.append("description", description);
     formData.append("visibility", visibility);
@@ -196,7 +204,7 @@ const UpdatePost = () => {
                       <select
                         id="style"
                         value={artworkStyle}
-                        onChange={(e) => setArtworkStyle(e.target.value)}
+                        onChange={handleStyleChange}
                         className="w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs"
                       >
                         <option value="" disabled>
@@ -208,6 +216,7 @@ const UpdatePost = () => {
                           </option>
                         ))}
                       </select>
+
                       <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path
