@@ -16,7 +16,7 @@ interface ArtGalleryContainerProps {
 
 const ArtsContainer = ({ artworks }: ArtGalleryContainerProps) => {
   return (
-    <div className="w-full max-w-[97%] mx-auto rounded-3xl overflow-hidden">
+    <div className="w-full max-w-[100%] mx-auto rounded-2xl overflow-hidden">
       {/* Slideshow container with reduced height */}
       <div className="w-full aspect-[16/9] md:aspect-[15/6] rounded-xl overflow-hidden">
         <ArtSlideshow artworks={artworks} />

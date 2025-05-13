@@ -13,7 +13,7 @@ const Components = () => {
     setSelectedCategory(category);
   };
   return (
-    <section className="mb-10">
+    <section className="w-[105%] relative -left-7">
       <div
         className={`mb-6 ${
           isMobile
