@@ -4,8 +4,8 @@ import { DollarSign, ShoppingCart, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import DeleteConfirmationPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/delete/DeletePopup";
 import AuctionPopup from "@/components/user_dashboard/own_profile/request_bid/RequestBid";
-import useDeleteArtwork from "@/hooks/mutate/visibility/useDeleteArtwork";
-import useArchivedArtwork from "@/hooks/mutate/visibility/useArchivedArtwork";
+import useDeleteArtwork from "@/hooks/mutate/visibility/trash/useDeleteArtwork";
+import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork";
 interface ArtCardMenuProps {
   isOpen: boolean;
   artworkId: string;
