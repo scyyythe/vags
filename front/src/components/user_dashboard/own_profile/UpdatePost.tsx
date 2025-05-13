@@ -37,8 +37,13 @@ const UpdatePost = () => {
       setArtworkStyle(artwork.style || "");
       setMedium(artwork.medium || "");
       setDescription(artwork.description || "");
-      setVisibility(artwork.visibility || "public");
+      setVisibility(artwork.visibility || "Public");
       setPreviewUrl(artwork.image || null);
+
+      if (artwork.visibility === "Hidden") {
+        setVisibility("Private");
+      }
+
       setLoaded(true);
     }
   }, [artwork, loaded]);
