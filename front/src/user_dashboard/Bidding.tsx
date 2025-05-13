@@ -2,12 +2,15 @@ import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
 import ArtsContainer from "@/components/user_dashboard/Bidding/featured/ArtsContainer";
 import Components from "@/components/user_dashboard/Bidding/navbar/Components";
-import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard"; 
-import { useState, useEffect } from "react";
+import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import { useNavigate } from "react-router-dom";
-
-
-interface Artwork {
+import { useEffect, useState } from "react";
+import { useFetchBiddingArtworks } from "@/hooks/auction/useAuction";
+import { ArtworkAuction } from "@/hooks/auction/useAuction";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+interface StaticArtwork {
   id: string;
   title: string;
   artist: string;
@@ -21,20 +24,19 @@ interface Artwork {
   timeRemaining: { hrs: number; mins: number; secs: number };
 }
 
-
 const Bidding = () => {
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
   const navigate = useNavigate();
+  const [staticArtworks, setStaticArtworks] = useState<StaticArtwork[]>([]);
 
+  // Static artworks for ArtsContainer
   useEffect(() => {
-    // Simulated backend fetch
-    const fetchedArtworks: Artwork[] = [
+    const fetchedArtworks: StaticArtwork[] = [
       {
         id: "1",
         title: "Human Metaloid",
         artist: "Jane Shaun",
         artistAvatar: "https://randomuser.me/api/portraits/women/1.jpg",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
+        description: "Lorem ipsum dolor sit amet...",
         image: "https://i.pinimg.com/736x/ee/25/b5/ee25b5fcde96a813deed82b3469805e2.jpg",
         endTime: "2d : 15h : 20m",
         likes: 12000,
@@ -47,7 +49,7 @@ const Bidding = () => {
         title: "Dissolution of Soul",
         artist: "Rick Splin",
         artistAvatar: "https://i.pinimg.com/474x/09/82/70/09827028e812b74970caa859cbf3dec5.jpg",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
+        description: "Lorem ipsum dolor sit amet...",
         image: "https://i.pinimg.com/474x/41/ff/68/41ff685dd8f538b1e1e5b4116991dbfc.jpg",
         endTime: "2d : 15h : 20m",
         likes: 12000,
@@ -81,20 +83,22 @@ const Bidding = () => {
         highestBid: 95000,
         timeRemaining: { hrs: 2, mins: 15, secs: 20 },
       },
-      
     ];
 
-    setArtworks(fetchedArtworks);
+    setStaticArtworks(fetchedArtworks);
   }, []);
+
+  const { data: biddingArtworks = [], isLoading, isError } = useFetchBiddingArtworks();
 
   const handlePlaceBid = (id: string) => {
     console.log(`Placing bid for artwork ID: ${id}`);
-    // Connect this to backend API
   };
 
-  const handleBidClick = (artwork: Artwork) => {
+  const handleBidClick = (artwork: ArtworkAuction) => {
     localStorage.setItem("selectedBid", JSON.stringify(artwork));
-    navigate(`/bid/${artwork.id}`);
+    navigate(`/bid/${artwork.id}`, {
+      state: { artwork },
+    });
   };
 
   return (
@@ -103,40 +107,36 @@ const Bidding = () => {
       <div className="container mx-auto px-4 sm:px-6 pt-20">
         <main className="container">
           <section className="mb-10">
-            <ArtsContainer
-              artworks={artworks} 
-            />
+            <ArtsContainer artworks={staticArtworks} />
           </section>
-            <Components
-            />
-        </main> 
+          <Components />
+        </main>
         <div className="lg:w-[100%] custom-scrollbars pb-4">
+          {isLoading && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {/* BidCards */}
-              {artworks.map((artwork) => (
-                <div
-                key={artwork.id}
-                onClick={() => handleBidClick(artwork)}
-                style={{ cursor: "pointer" }}
-              >
+              <ArtCardSkeleton />
+            </div>
+          )}
+          {isError && <p className="text-center text-red-500 py-10">Failed to fetch bidding artworks.</p>}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {biddingArtworks.map((artwork) => (
+              <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
                 <BidCard
                   data={{
                     id: artwork.id,
-                    title: artwork.title,
-                    currentBid: Math.floor(Math.random() * 5) + 1,
-                    timeRemaining: artwork.endTime,
-                    imageUrl: artwork.image,
+                    title: artwork.artwork.title,
+                    currentBid: artwork.highestBid,
+                    timeRemaining: artwork.timeRemaining,
+                    imageUrl: artwork.artwork.image_url,
                   }}
                   onPlaceBid={handlePlaceBid}
                 />
               </div>
-              ))}
-            </div>
+            ))}
           </div>
+        </div>
       </div>
-      <div >
-        <Footer />
-      </div>
+      <Footer />
     </div>
   );
 };
