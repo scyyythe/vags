@@ -200,7 +200,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         onConfirm={handleConfirmDelete}
       />
       {/* Auction Popup */}
-      <AuctionPopup open={showAuctionPopup} onOpenChange={setShowAuctionPopup} />
+      <AuctionPopup open={showAuctionPopup} onOpenChange={setShowAuctionPopup} artworkId={artworkId} />
     </>
   );
 };
