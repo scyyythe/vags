@@ -11,7 +11,7 @@ import EmptyTrashPopup from "@/components/user_dashboard/user_profile/components
 import UnhidePopup from "@/components/user_dashboard/user_profile/components/status_options/popups/unhide/Unhide";
 import UnarchivePopup from "@/components/user_dashboard/user_profile/components/status_options/popups/unarchive/Unarchive";
 import { getLoggedInUserId } from "@/auth/decode";
-
+import CollectionTab from "../tabs/CollectionTab";
 const tabs = [
   { id: "created", label: "Created" },
   { id: "onBid", label: "On Bid" },
@@ -354,7 +354,19 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
           />
         </>
       )}
+      {activeTab === "collections" && <CollectionTab />}
 
+      {activeTab === "onBid" && (
+        <div>
+          <p className="text-sm">On Bid artworks go here.</p>
+        </div>
+      )}
+
+      {activeTab === "onSale" && (
+        <div>
+          <p className="text-sm">On Sale artworks go here.</p>
+        </div>
+      )}
       <UnarchivePopup isOpen={showUnarchivePopup} onCancel={cancelUnarchive} onConfirm={confirmUnarchiveAll} />
 
       <EmptyTrashPopup isOpen={showEmptyTrashPopup} onCancel={cancelEmptyTrash} onConfirm={confirmEmptyTrash} />
