@@ -39,7 +39,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
   const priceRangeOptions = ["Low to High", "High to Low"];
   const sortByOptions = ["Latest", "Oldest", "Most Viewed", "Most Liked"];
 
-  const [selectedStatus, setSelectedStatus] = useState("Status");
+  const [selectedStatus, setSelectedStatus] = useState("Active");
   const [showStatusOptions, setShowStatusOptions] = useState(false);
   const statusOptions = ["Active", "Hidden", "Archived", "Deleted"];
 
@@ -316,7 +316,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
           <CreatedTab
             filteredArtworks={
               filteredArtworksMemo?.filter((art) => {
-                const visibility = art.visibility.toLowerCase();
+                const visibility = art.visibility?.toLowerCase();
                 const status = selectedStatus.toLowerCase();
 
                 if (status === "active") {
