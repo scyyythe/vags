@@ -1,5 +1,5 @@
 from django.urls import path
-from api.views.interaction_views.interaction import CommentCreateView,LikeStatusView,ArtworkStatusView,LikeCreateView,SavedStatusView, CartItemCreateView, CartItemDeleteView, CartRetrieveView,SavedCreateView,LikeListView, SavedListView,CommentListView
+from api.views.interaction_views.interaction import SavedArtworksListView,CommentCreateView,LikeStatusView,ArtworkStatusView,LikeCreateView,SavedStatusView, CartItemCreateView, CartItemDeleteView, CartRetrieveView,SavedCreateView,LikeListView, SavedListView,CommentListView
 from api.views.interaction_views.follow import FollowCreateView,UnfollowView,FollowerListView,FollowStatsView,CheckFollowStatusView,FollowCountsView
 from api.views.interaction_views.notifications import NotificationDeleteView,NotificationListView, NotificationDetailView,NotificationDeleteAllView
 interaction_urlpatterns = [
@@ -7,6 +7,7 @@ interaction_urlpatterns = [
     path('likes/<str:art_id>/', LikeCreateView.as_view(), name='like-create'),
     path('saved/<str:art_id>/status/', SavedStatusView.as_view()),
     path('saved/<str:art_id>/', SavedCreateView.as_view(), name='saved-art'),
+    path('saved/', SavedArtworksListView.as_view(), name='saved-artwork'),
     path('likes/<str:art_id>/count/', LikeListView.as_view(), name='like-list'),
     path('likes/<str:art_id>/status/', LikeStatusView.as_view()),
     path('artworks/<str:art_id>/status/', ArtworkStatusView.as_view(), name='artwork-status'),

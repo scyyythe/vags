@@ -56,7 +56,7 @@ const fetchPopularArtworks = async (currentPage: number): Promise<Artwork[]> => 
 
 const useFetchPopularArtworks = (currentPage: number) => {
   return useQuery({
-    queryKey: ["popularArtworks", currentPage],
+    queryKey: ["artworks", currentPage],
     queryFn: () => fetchPopularArtworks(currentPage),
     staleTime: 1000 * 60 * 5,
   });
