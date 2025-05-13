@@ -18,8 +18,12 @@ const tabs = [
   { id: "onSale", label: "On Sale" },
   { id: "collections", label: "Collections" },
 ];
-
-const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab: (tab: string) => void }) => {
+type ProfileTabsProps = {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  setCreatedArtworksCount: React.Dispatch<React.SetStateAction<number>>;
+};
+const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: ProfileTabsProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterCategory, setFilterCategory] = useState("Digital Art");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -35,7 +39,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
   const priceRangeOptions = ["Low to High", "High to Low"];
   const sortByOptions = ["Latest", "Oldest", "Most Viewed", "Most Liked"];
 
-  const [selectedStatus, setSelectedStatus] = useState("Status");
+  const [selectedStatus, setSelectedStatus] = useState("Active");
   const [showStatusOptions, setShowStatusOptions] = useState(false);
   const statusOptions = ["Active", "Hidden", "Archived", "Deleted"];
 
@@ -104,12 +108,44 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
     setShowPriceOptions(false);
   };
   const filteredArtworksMemo = useMemo(() => {
-    return artworks?.filter((artwork) => {
-      const categoryMatches =
-        selectedCategory.toLowerCase() === "all" || artwork.style.toLowerCase() === selectedCategory.toLowerCase();
-      return categoryMatches;
+    if (!artworks) return [];
+
+    let filtered = artworks;
+
+    // Filter by Category
+    filtered = filtered.filter((artwork) => {
+      return selectedCategory.toLowerCase() === "all" || artwork.style.toLowerCase() === selectedCategory.toLowerCase();
     });
-  }, [artworks, selectedCategory]);
+
+    // Filter by Visibility (Status)
+    filtered = filtered.filter((art) => {
+      const visibility = art.visibility?.toLowerCase();
+      const status = selectedStatus.toLowerCase();
+
+      if (status === "active") {
+        return visibility === "public";
+      }
+
+      return visibility === status;
+    });
+
+    // Sort
+    switch (selectedSortBy) {
+      case "Latest":
+        filtered = filtered.sort((a, b) => new Date(b.datePosted).getTime() - new Date(a.datePosted).getTime());
+        break;
+      case "Oldest":
+        filtered = filtered.sort((a, b) => new Date(a.datePosted).getTime() - new Date(b.datePosted).getTime());
+        break;
+      case "Most Liked":
+        filtered = filtered.sort((a, b) => (b.likesCount ?? 0) - (a.likesCount ?? 0));
+        break;
+      default:
+        break;
+    }
+
+    return filtered;
+  }, [artworks, selectedCategory, selectedSortBy, selectedStatus]);
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -211,32 +247,34 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
                 </div> */}
 
                 {/* Status Filter */}
-                <div className="mb-2">
-                  <div
-                    className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded"
-                    onClick={() => setShowStatusOptions(!showStatusOptions)}
-                  >
-                    <span>{selectedStatus}</span>
-                    <ChevronDown className="h-4 w-4" />
-                  </div>
-
-                  {showStatusOptions && (
-                    <div className="bg-white shadow-md rounded-md mt-1 animate-fade-in">
-                      {statusOptions.map((option, idx) => (
-                        <div
-                          key={idx}
-                          className="px-3 py-2 cursor-pointer hover:bg-gray-100"
-                          onClick={() => {
-                            setSelectedStatus(option);
-                            setShowStatusOptions(false);
-                          }}
-                        >
-                          {option}
-                        </div>
-                      ))}
+                {isOwnProfile && (
+                  <div className="mb-2">
+                    <div
+                      className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded"
+                      onClick={() => setShowStatusOptions(!showStatusOptions)}
+                    >
+                      <span>{selectedStatus}</span>
+                      <ChevronDown className="h-4 w-4" />
                     </div>
-                  )}
-                </div>
+
+                    {showStatusOptions && (
+                      <div className="bg-white shadow-md rounded-md mt-1 animate-fade-in">
+                        {statusOptions.map((option, idx) => (
+                          <div
+                            key={idx}
+                            className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => {
+                              setSelectedStatus(option);
+                              setShowStatusOptions(false);
+                            }}
+                          >
+                            {option}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Sort By Filter */}
                 <div>
@@ -309,7 +347,11 @@ const ProfileTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActive
               </button>
             </div>
           )}
-          <CreatedTab filteredArtworks={filteredArtworksMemo || []} isLoading={isLoading} />
+          <CreatedTab
+            filteredArtworks={filteredArtworksMemo}
+            isLoading={isLoading}
+            setCreatedArtworksCount={setCreatedArtworksCount}
+          />
         </>
       )}
 
