@@ -378,9 +378,9 @@ const AllNotifications = () => {
                     : "You don't have any notifications at the moment."}
                 </p>
                 {(searchQuery || date) && (
-                  <Button variant="outline" className="mt-4" onClick={resetFilters}>
+                  <button className="mt-4 text-[11px]" onClick={resetFilters}>
                     Clear Filters
-                  </Button>
+                  </button>
                 )}
               </div>
             )}

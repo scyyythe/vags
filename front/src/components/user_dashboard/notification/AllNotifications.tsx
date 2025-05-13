@@ -290,7 +290,7 @@ const AllNotifications = () => {
               <input
                 type="text"
                 placeholder="Search notifications"
-                className="pl-10 pr-4 py-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-black text-xs"
+                className="pl-10 pr-4 py-2 w-full border rounded-full focus:outline-none focus:ring-1 focus:ring-black text-xs"
                 value={searchQuery}
                 onChange={handleSearch}
               />
@@ -298,17 +298,16 @@ const AllNotifications = () => {
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                 <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
+                  <button
                     className={cn(
-                      "w-full sm:w-[200px] justify-start text-left font-normal text-xs",
+                      "w-full py-2 px-4 sm:w-[200px] flex flex-row border rounded-full justify-start text-left font-normal text-[11px]",
                       date && "text-blue-600"
                     )}
                   >
                     <Calendar  className="mr-2 h-3 w-3" />
                     {date ? format(date, "MMM d, yyyy") : "Filter by date"}
                     <ChevronDown className="ml-auto h-3 w-3 opacity-50" />
-                  </Button>
+                  </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-70 p-0" align="end">
                   <CalendarComponent mode="single" selected={date} onSelect={handleDateSelect} initialFocus />
@@ -445,7 +444,7 @@ const AllNotifications = () => {
                     : "You don't have any notifications at the moment."}
                 </p>
                 {(searchQuery || date) && (
-                  <Button variant="outline" className="mt-4" onClick={resetFilters}>
+                  <Button variant="outline" className="mt-4 text-[11px]" onClick={resetFilters}>
                     Clear Filters
                   </Button>
                 )}
