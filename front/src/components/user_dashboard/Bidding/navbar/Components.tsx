@@ -1,12 +1,17 @@
-import { Button } from "@/components/ui/button";
+import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import { useIsMobile } from "@/hooks/use-mobile";
 
+
 const Components = () => {
   const isMobile = useIsMobile();
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+  };
   return (
     <section className="mb-10">
       <div
@@ -26,7 +31,9 @@ const Components = () => {
               isMobile ? "text-sm" : "text-lg"
             )} >Feed</h2>
           <div className="flex space-x-2 w-full max-w-xs">
-            <ArtCategorySelect />
+            <ArtCategorySelect 
+            selectedCategory={selectedCategory}
+            onChange={(value) => setSelectedCategory(value)}/>
           </div>
         </div>
 
