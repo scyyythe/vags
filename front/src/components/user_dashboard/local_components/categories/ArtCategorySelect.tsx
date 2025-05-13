@@ -14,7 +14,7 @@ const ArtCategorySelect = ({ selectedCategory, onChange }: Props) => {
     <Select value={selectedCategory} onValueChange={onChange}>
       <SelectTrigger
         className={cn(
-          "bg-transparent h-8 w-35 px-3 focus:ring-0 focus:ring-offset-0 rounded-full border border-gray-300",
+          "bg-transparent h-7 w-35 px-3 focus:ring-0 focus:ring-offset-0 rounded-full border border-gray-300",
           isMobile ? "text-[10px]" : "text-[10px]"
         )}
       >

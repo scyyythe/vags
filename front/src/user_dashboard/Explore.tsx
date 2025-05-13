@@ -15,7 +15,7 @@ import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 
 const Explore = () => {
   const navigate = useNavigate();
-  const categories = ["All", "Trending", "Collections"];
+  const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage] = useState(1);
@@ -74,7 +74,7 @@ const Explore = () => {
         <div className="relative flex justify-center items-center -top-16">
           <div className="browse-container bg-white shadow-lg w-full md:w-3/4 lg:w-[85%] rounded-lg flex items-center p-4">
             <div className="flex items-center px-4 border-r">
-              <span className="text-xs font-semibold mr-5">Browse Type</span>
+              <span className="text-[10px] font-semibold mr-5">Browse Type</span>
               <div className="relative">
                 <ArtCategorySelect
                   selectedCategory={selectedCategory}
@@ -93,15 +93,22 @@ const Explore = () => {
             <div className="flex items-center justify-between mb-6 lg:w-[133%]">
               <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
               <div className="flex space-x-2 text-xs">
-                <Button
-                  size="sm"
-                  className="text-[11px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
+
+                {/* <div className="relative">
+                  <ArtCategorySelect
+                    selectedCategory={selectedCategory}
+                    onChange={(value) => setSelectedCategory(value)}
+                  />
+                </div> */}
+
+                <button
+                  className="py-1.5 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
                   onClick={handleCreateClick}
                 >
-                  <i className="bx bx-plus text-sm"></i>
+                  <i className="bx bx-plus text-xs"></i>
                   Create
-                </Button>
-                <Button
+                </button>
+                {/* <Button
                   variant="outline"
                   size="sm"
                   className="text-[11px] rounded-full flex items-center gap-1"
@@ -109,7 +116,7 @@ const Explore = () => {
                 >
                   <i className="bx bx-sort-alt-2 text-sm"></i>
                   Sort
-                </Button>
+                </Button> */}
               </div>
             </div>
 
