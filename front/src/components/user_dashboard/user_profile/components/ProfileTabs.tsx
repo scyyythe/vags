@@ -110,12 +110,26 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
   const filteredArtworksMemo = useMemo(() => {
     if (!artworks) return [];
 
-    let filtered = artworks.filter((artwork) => {
-      const categoryMatches =
-        selectedCategory.toLowerCase() === "all" || artwork.style.toLowerCase() === selectedCategory.toLowerCase();
-      return categoryMatches;
+    let filtered = artworks;
+
+    // Filter by Category
+    filtered = filtered.filter((artwork) => {
+      return selectedCategory.toLowerCase() === "all" || artwork.style.toLowerCase() === selectedCategory.toLowerCase();
     });
 
+    // Filter by Visibility (Status)
+    filtered = filtered.filter((art) => {
+      const visibility = art.visibility?.toLowerCase();
+      const status = selectedStatus.toLowerCase();
+
+      if (status === "active") {
+        return visibility === "public";
+      }
+
+      return visibility === status;
+    });
+
+    // Sort
     switch (selectedSortBy) {
       case "Latest":
         filtered = filtered.sort((a, b) => new Date(b.datePosted).getTime() - new Date(a.datePosted).getTime());
@@ -123,9 +137,6 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
       case "Oldest":
         filtered = filtered.sort((a, b) => new Date(a.datePosted).getTime() - new Date(b.datePosted).getTime());
         break;
-      // case "Most Viewed":
-      //   filtered = filtered.sort((a, b) => (b.views ?? 0) - (a.views ?? 0));
-      //   break;
       case "Most Liked":
         filtered = filtered.sort((a, b) => (b.likesCount ?? 0) - (a.likesCount ?? 0));
         break;
@@ -134,7 +145,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
     }
 
     return filtered;
-  }, [artworks, selectedCategory, selectedSortBy]);
+  }, [artworks, selectedCategory, selectedSortBy, selectedStatus]);
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -335,18 +346,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
             </div>
           )}
           <CreatedTab
-            filteredArtworks={
-              filteredArtworksMemo?.filter((art) => {
-                const visibility = art.visibility?.toLowerCase();
-                const status = selectedStatus.toLowerCase();
-
-                if (status === "active") {
-                  return visibility === "public";
-                }
-
-                return visibility === status;
-              }) || []
-            }
+            filteredArtworks={filteredArtworksMemo}
             isLoading={isLoading}
             setCreatedArtworksCount={setCreatedArtworksCount}
           />

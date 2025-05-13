@@ -156,6 +156,21 @@ class HideArtworkView(APIView):
 
         return Response({"message": "Artwork hidden successfully."}, status=status.HTTP_200_OK)
     
+class UnHideArtworkView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            artwork = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            raise Http404("Artwork not found")
+
+        artwork.visibility = "Active"
+        artwork.updated_at = datetime.utcnow()
+        artwork.save()
+
+        return Response({"message": "Artwork unhidden successfully."}, status=status.HTTP_200_OK)
+    
 class DeleteArtwork(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -171,6 +186,22 @@ class DeleteArtwork(APIView):
         artwork.save()
 
         return Response({"message": "Artwork deleted successfully."}, status=status.HTTP_200_OK)
+
+class RestoreArtwork(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            artwork = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            raise Http404("Artwork not found")
+
+        artwork.art_status = "Public"
+        artwork.visibility = "Public"
+        artwork.updated_at = datetime.utcnow()
+        artwork.save()
+
+        return Response({"message": "Artwork restored successfully."}, status=status.HTTP_200_OK)
     
 class ArchivedArtwork(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -187,3 +218,19 @@ class ArchivedArtwork(APIView):
         artwork.save()
 
         return Response({"message": "Artwork Archived successfully."}, status=status.HTTP_200_OK)
+
+class UnArchivedArtwork(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            artwork = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            raise Http404("Artwork not found")
+
+        artwork.art_status = "Public"
+        artwork.visibility = "Public"
+        artwork.updated_at = datetime.utcnow()
+        artwork.save()
+
+        return Response({"message": "Artwork unarchived successfully."}, status=status.HTTP_200_OK)
