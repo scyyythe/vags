@@ -2,7 +2,7 @@ import { Link, useLocation, NavLink } from "react-router-dom";
 import Logo from "./Logo";
 import { Bell, MessageCircle, Search, X, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import SearchBar from "@/components/user_dashboard/local_components/SearchBar";
 import { useState, useRef, useEffect } from "react";
 import ProfileDropdown from "../local_components/ProfileDropdown";
 import Notifications from "../notification/Notification";
@@ -40,10 +40,10 @@ const Header = () => {
 
         {/* Centered Navigation Links (Responsive) */}
         <nav
-          className={`absolute left-0 top-16 w-full py-4 shadow-md 
+          className={`absolute left-0 top-16 w-full py-4 shadow-md
             ${isMenuOpen ? "block" : "hidden"} md:static md:block md:w-auto md:py-0 md:shadow-none`}
         >
-          <div className="text-xs flex flex-col items-center md:flex-row md:space-x-16">
+          <div className="text-xs flex flex-col items-start md:flex-row md:space-x-24">
             <NavLink
               to="/explore"
               className={({ isActive }) => `nav-link ${isActive ? "font-bold" : ""} block py-2 px-4 md:inline-block`}
@@ -80,17 +80,18 @@ const Header = () => {
           >
             <Menu className="h-5 w-5 text-black" />
           </button>
+          
           {/* Search Icon and Sliding Search Bar (Responsive) */}
-          <div className="relative flex items-center">
+          {/* <div className="relative flex items-center">
             <button
               onClick={() => setIsSearchVisible(!isSearchVisible)}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
               <Search className="h-4 w-4 text-black" />
-            </button>
+            </button> */}
 
             {/* Sliding Search Bar */}
-            <div
+            {/* <div
               className={`absolute right-0 top-1/2 -translate-y-1/2
                 flex items-center bg-white shadow-lg rounded-full overflow-hidden
                 transition-all duration-300 ease-in-out border border-gray-200
@@ -106,7 +107,7 @@ const Header = () => {
                 <X className="h-4 w-4 text-gray-600 -ml-2" />
               </button>
             </div>
-          </div>
+          </div> */}
 
           {/* Message Icon */}
           <button className="button-icon">
