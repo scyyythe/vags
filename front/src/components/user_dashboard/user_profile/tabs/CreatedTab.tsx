@@ -4,6 +4,7 @@ import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
+
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
@@ -13,6 +14,8 @@ type CreatedTabProps = {
 const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
   const { id: visitedUserId } = useParams();
+  const [currentPage] = useState(1);
+  const { data: artworks, error } = useArtworks(currentPage, undefined, true, "all", "public");
 
   const allArtworks = useMemo(() => {
     return filteredArtworks;
@@ -26,7 +29,6 @@ const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: Cr
     if (!visitedUserId) return;
 
     const count = allArtworks.filter((artwork) => String(artwork.artistId) === String(visitedUserId)).length;
-
     setCreatedArtworksCount(count);
   }, [allArtworks, visitedUserId, setCreatedArtworksCount]);
 
@@ -50,6 +52,8 @@ const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: Cr
       ) : (
         allArtworks.map((art) => {
           const isExplore = String(art.artistId) !== String(loggedInUserId);
+          const isDeleted = art.visibility?.toLowerCase() === "deleted";
+          const isArchived = art.visibility?.toLowerCase() === "archived";
 
           return (
             <ArtCard
@@ -63,6 +67,9 @@ const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: Cr
               onButtonClick={() => handleButtonClick(art.id)}
               isExplore={isExplore}
               likesCount={art.likesCount ?? 0}
+              isDeleted={isDeleted}
+              isArchived={isArchived}
+              visibility={art.visibility}
             />
           );
         })
