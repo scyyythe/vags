@@ -17,12 +17,13 @@ const CategoryFilter = ({ categories, onSelectCategory }: CategoryFilterProps) =
 
   return (
     <div className="flex flex-wrap gap-2">
+      <span className="font-bold mr-3">Feed</span>
       {categories.map((category) => (
         <button
           key={category}
-          className={`py-1.5 px-4 rounded-full text-[11px] font-small transition-colors ${
+          className={`py-1 px-4 rounded-full text-[10px] font-small transition-colors ${
             selectedCategory === category 
-              ? "border border-gray-300 font-semibold shadow-lg" 
+              ? "border border-gray-300 font-medium shadow-md" 
               : "bg-white border border-gray-200 hover:bg-gray-100"
           }`}
           onClick={() => handleCategoryClick(category)}
