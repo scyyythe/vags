@@ -108,12 +108,33 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
     setShowPriceOptions(false);
   };
   const filteredArtworksMemo = useMemo(() => {
-    return artworks?.filter((artwork) => {
+    if (!artworks) return [];
+
+    let filtered = artworks.filter((artwork) => {
       const categoryMatches =
         selectedCategory.toLowerCase() === "all" || artwork.style.toLowerCase() === selectedCategory.toLowerCase();
       return categoryMatches;
     });
-  }, [artworks, selectedCategory]);
+
+    switch (selectedSortBy) {
+      case "Latest":
+        filtered = filtered.sort((a, b) => new Date(b.datePosted).getTime() - new Date(a.datePosted).getTime());
+        break;
+      case "Oldest":
+        filtered = filtered.sort((a, b) => new Date(a.datePosted).getTime() - new Date(b.datePosted).getTime());
+        break;
+      // case "Most Viewed":
+      //   filtered = filtered.sort((a, b) => (b.views ?? 0) - (a.views ?? 0));
+      //   break;
+      case "Most Liked":
+        filtered = filtered.sort((a, b) => (b.likesCount ?? 0) - (a.likesCount ?? 0));
+        break;
+      default:
+        break;
+    }
+
+    return filtered;
+  }, [artworks, selectedCategory, selectedSortBy]);
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
