@@ -13,9 +13,7 @@ const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: Cr
   const loggedInUserId = getLoggedInUserId();
 
   const allArtworks = useMemo(() => {
-    return filteredArtworks.filter(
-      (artwork) => artwork.visibility.toLowerCase() === "public" || artwork.visibility.toLowerCase() === "private"
-    );
+    return filteredArtworks;
   }, [filteredArtworks]);
 
   const createdArtworksCount = useMemo(() => {

@@ -314,7 +314,18 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
             </div>
           )}
           <CreatedTab
-            filteredArtworks={filteredArtworksMemo || []}
+            filteredArtworks={
+              filteredArtworksMemo?.filter((art) => {
+                const visibility = art.visibility.toLowerCase();
+                const status = selectedStatus.toLowerCase();
+
+                if (status === "active") {
+                  return visibility === "public";
+                }
+
+                return visibility === status;
+              }) || []
+            }
             isLoading={isLoading}
             setCreatedArtworksCount={setCreatedArtworksCount}
           />
