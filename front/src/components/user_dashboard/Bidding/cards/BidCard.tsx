@@ -57,12 +57,12 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }
 
   return (
     <>
-      <div className="w-full rounded-2xl border bg-white hover:shadow-lg transition-all duration-300">
+      <div className="w-full rounded-xl border bg-white hover:shadow-lg transition-all duration-300">
         <div className="relative">
           <img 
             src={data.imageUrl} 
             alt={data.title} 
-            className="w-full h-36 object-cover rounded-2xl" 
+            className="w-full h-36 object-cover rounded-xl" 
           />
             <div className="absolute top-4 right-4 font-semibold bg-white bg-opacity-60 text-black text-[9px] px-3 py-1 rounded-[3px]">
               {data.timeRemaining}

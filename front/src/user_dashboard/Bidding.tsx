@@ -110,7 +110,7 @@ const Bidding = () => {
             <Components
             />
         </main> 
-        <div className="lg:w-[100%] custom-scrollbars px-6 pb-4">
+        <div className="lg:w-[100%] custom-scrollbars pb-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {/* BidCards */}
               {artworks.map((artwork) => (
