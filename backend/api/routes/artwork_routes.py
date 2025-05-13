@@ -1,5 +1,5 @@
 from django.urls import path
-from api.views.artwork_views.artwork_views import UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,UnHideArtworkView,HideArtworkView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, ArtListByArtistView,ArtDeleteView,ArtListViewOwner
+from api.views.artwork_views.artwork_views import DeletePermanentArtwork,UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,UnHideArtworkView,HideArtworkView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, ArtListByArtistView,ArtDeleteView,ArtListViewOwner
 
 artwork_urlpatterns = [
     path("art/create/", ArtCreateView.as_view(), name="art-create"),
@@ -15,9 +15,8 @@ artwork_urlpatterns = [
     path('art/<str:pk>/unhide/',UnHideArtworkView.as_view(), name='unhide_art'),
     
     path('art/<str:pk>/delete-art/',DeleteArtwork.as_view(), name='deleting_art'),
-    path('art/<str:pk>/restore-art/',RestoreArtwork.as_view(), name='restore'),
-    path('art/<str:pk>/delete/', ArtDeleteView.as_view(), name='delete_art'),
-   
+    path('art/<str:pk>/restore/',RestoreArtwork.as_view(), name='restore'),
+    path('art/<str:pk>/delete/', DeletePermanentArtwork.as_view(), name='delete-permanent-artwork'),
     
     path('art/<str:pk>/archived/',ArchivedArtwork.as_view(), name='archived_art'),
     path('art/<str:pk>/unarchived/',UnArchivedArtwork.as_view(), name='archived_art'),

@@ -30,7 +30,7 @@ const useUpdateArtwork = (currentPage: number, isActive: boolean, category: stri
       );
 
       queryClient.invalidateQueries({
-        queryKey: ["artworks", currentPage, undefined, isActive, category, visibility],
+        queryKey: ["artworks"],
       });
     },
 

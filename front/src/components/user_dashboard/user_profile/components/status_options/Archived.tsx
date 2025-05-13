@@ -3,30 +3,40 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Pencil, ArchiveRestore, Trash2 } from "lucide-react";
 import DeleteConfirmationPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/delete/DeletePopup";
-
+import useDeleteArtwork from "@/hooks/mutate/visibility/trash/useDeleteArtwork";
 interface ArtCardMenuProps {
   isOpen: boolean;
   onEdit: () => void;
   onUnarchive: () => void;
   onDelete: () => void;
   className?: string;
+  artworkId: string;
 }
 
 const BLACK = "#000000";
 
-const ArchivedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, onEdit, onUnarchive, onDelete }) => {
+const ArchivedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onEdit, onUnarchive, onDelete }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const navigate = useNavigate();
   const [showDeletePopup, setShowDeletePopup] = useState(false);
-
+  const deleteArtwork = useDeleteArtwork();
   if (!isOpen) return null;
 
   const handleUpdateClick = () => {
-    navigate("/update");
+    navigate(`/update/${artworkId}`);
   };
-
+  const handleConfirmDelete = () => {
+    deleteArtwork.mutate(artworkId, {
+      onSuccess: () => {
+        setShowDeletePopup(false);
+      },
+      onError: () => {
+        setShowDeletePopup(false);
+      },
+    });
+  };
   return (
     <>
       <div
@@ -101,10 +111,7 @@ const ArchivedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, onEdit, onUnarchive,
       <DeleteConfirmationPopup
         isOpen={showDeletePopup}
         onCancel={() => setShowDeletePopup(false)}
-        onConfirm={() => {
-          toast.success("You've successfully deleted the artwork");
-          setShowDeletePopup(false);
-        }}
+        onConfirm={handleConfirmDelete}
       />
     </>
   );
