@@ -247,32 +247,34 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
                 </div> */}
 
                 {/* Status Filter */}
-                <div className="mb-2">
-                  <div
-                    className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded"
-                    onClick={() => setShowStatusOptions(!showStatusOptions)}
-                  >
-                    <span>{selectedStatus}</span>
-                    <ChevronDown className="h-4 w-4" />
-                  </div>
-
-                  {showStatusOptions && (
-                    <div className="bg-white shadow-md rounded-md mt-1 animate-fade-in">
-                      {statusOptions.map((option, idx) => (
-                        <div
-                          key={idx}
-                          className="px-3 py-2 cursor-pointer hover:bg-gray-100"
-                          onClick={() => {
-                            setSelectedStatus(option);
-                            setShowStatusOptions(false);
-                          }}
-                        >
-                          {option}
-                        </div>
-                      ))}
+                {isOwnProfile && (
+                  <div className="mb-2">
+                    <div
+                      className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded"
+                      onClick={() => setShowStatusOptions(!showStatusOptions)}
+                    >
+                      <span>{selectedStatus}</span>
+                      <ChevronDown className="h-4 w-4" />
                     </div>
-                  )}
-                </div>
+
+                    {showStatusOptions && (
+                      <div className="bg-white shadow-md rounded-md mt-1 animate-fade-in">
+                        {statusOptions.map((option, idx) => (
+                          <div
+                            key={idx}
+                            className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => {
+                              setSelectedStatus(option);
+                              setShowStatusOptions(false);
+                            }}
+                          >
+                            {option}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Sort By Filter */}
                 <div>
