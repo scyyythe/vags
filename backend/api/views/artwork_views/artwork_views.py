@@ -203,6 +203,20 @@ class RestoreArtwork(APIView):
 
         return Response({"message": "Artwork restored successfully."}, status=status.HTTP_200_OK)
     
+class DeletePermanentArtwork(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, pk):
+        try:
+            artwork = Art.objects.get(id=ObjectId(pk)) 
+        except Art.DoesNotExist:
+            raise Http404("Artwork not found")
+
+        artwork.delete()  
+
+        return Response({"message": "Artwork permanently deleted."}, status=status.HTTP_200_OK)
+
+    
 class ArchivedArtwork(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
