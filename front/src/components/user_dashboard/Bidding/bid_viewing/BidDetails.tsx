@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Heart, MoreHorizontal, GripVertical, } from "lucide-react";
+import { Heart, MoreHorizontal, GripVertical } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { LikedArtworksContext } from "@/context/LikedArtworksProvider";
@@ -11,22 +11,28 @@ import { useArtworkContext } from "@/context/ArtworkContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import RelatedBids from "@/components/user_dashboard/Bidding/bid_viewing/RelatedBids";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-
+import { useLocation } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 export interface BidCardData {
   id: string;
   title: string;
   currentBid: number;
   timeRemaining: string;
   imageUrl: string;
+  highestBid: number;
 }
 
 const BidDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [bid, setBid] = useState<any>(null);
+
   const [views, setViews] = useState<number>(0);
   const [showBidPopup, setShowBidPopup] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-
+  const location = useLocation();
+  const { artwork } = location.state;
   const { likes, style, description, medium, visibility, datePosted } = bid || {};
 
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
@@ -37,7 +43,7 @@ const BidDetails = () => {
   const isMobile = useIsMobile();
 
   const navigate = useNavigate();
-  const [artwork, setArtwork] = useState<any>(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [relatedArtworks, setRelatedArtworks] = useState<any[]>([]);
 
@@ -48,24 +54,6 @@ const BidDetails = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isReported, setIsReported] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("selectedBid");
-    if (stored) {
-      const parsedBid = JSON.parse(stored);
-      setBid(parsedBid);
-
-      setArtwork({
-        artworkImage: parsedBid.image,
-        title: parsedBid.title,
-        artistName: parsedBid.artist,
-        description: parsedBid.description,
-      });
-
-      localStorage.removeItem("selectedBid");
-      setIsLoading(false);
-    }
-  }, []);
 
   useEffect(() => {
     if (!id) return;
@@ -127,8 +115,14 @@ const BidDetails = () => {
     setIsExpanded(false);
   };
 
-  if (isLoading || !artwork) {
-    return <div>Loading...</div>;
+  if (!artwork) {
+    return (
+      <div>
+        {/* Skeleton loader for artwork title and image */}
+        <Skeleton height={30} width={200} />
+        <Skeleton height={200} width={200} style={{ marginTop: "20px" }} />
+      </div>
+    );
   }
 
   return (
@@ -144,13 +138,7 @@ const BidDetails = () => {
         </button>
       </div>
 
-      <div
-        className={`w-full ${
-          isMobile
-            ? "flex flex-col px-4"
-            : "flex justify-center items-start py-6"
-        }`}
-      >
+      <div className={`w-full ${isMobile ? "flex flex-col px-4" : "flex justify-center items-start py-6"}`}>
         {/* Flex container with gap between panels */}
         <div
           className={`flex ${isMobile ? "flex-col" : "flex-row"} items-start`}
@@ -160,242 +148,239 @@ const BidDetails = () => {
             marginLeft: !isMobile && isDetailOpen ? "60px" : 0,
           }}
         >
-          
-        <div
-          className={`flex ${isMobile ? "flex-col" : "flex-row"} gap-6 transition-transform duration-500 ease-in-out`}
-          style={{
-            transform: !isMobile && isDetailOpen ? "translateX(30px)" : "translateX(0)",
-          }}
-        >
-
-        {/* Artwork container */}
-        <div className={`relative -mr-4 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
-
-        {/* Collapsible Sidebar */}
-        {!isMobile && (
           <div
-            className={`absolute right-100 -top-14 w-[32%] h-[140%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
-            isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-1"
-            }`}
-            style={{ right: "calc(100% + 16px)", marginRight: "40px" }}
+            className={`flex ${isMobile ? "flex-col" : "flex-row"} gap-6 transition-transform duration-500 ease-in-out`}
+            style={{
+              transform: !isMobile && isDetailOpen ? "translateX(30px)" : "translateX(0)",
+            }}
           >
-            <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
-              <div className="mb-6">
-                <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
-                <p className="text-[9px] text-gray-700">{style || "Painting"}</p>
-              </div>
-              <div className="mb-6">
-                <h3 className="text-[9px] font-medium mb-1">Medium</h3>
-                <p className="text-[9px] text-gray-700">{medium || "Acrylic Paint"}</p>
-              </div>
-              <div className="mb-6">
-                <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
-                <p className="text-[9px] text-gray-700">{datePosted || "March 25, 2023"}</p>
-              </div>
-              <div className="mb-1">
-                <h3 className="text-[9px] font-medium mb-1">Artwork Size</h3>
-                <p className="text-[9px] text-gray-700">{"11 x 8.5"}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Mobile Information Panel (Collapsible) */}
-        {isMobile && (
-          <Collapsible className="px-4">
-            <div className="flex justify-between items-center mb-2">
-              <CollapsibleTrigger className="p-1 my-2">
-                <GripVertical size={16} />
-              </CollapsibleTrigger>
-            </div>
-              <CollapsibleContent className="transition-all duration-500 ease-in-out">
-                <div className="bg-gray-50 rounded-md p-4 text-xs whitespace-nowrap mb-8">
-                  <div className="grid grid-cols-4 gap-10 px-6">
-                    <div>
-                      <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
-                      <p className="text-[10px] text-gray-700">{style || "Painting"}</p>
+            {/* Artwork container */}
+            <div className={`relative -mr-4 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
+              {/* Collapsible Sidebar */}
+              {!isMobile && (
+                <div
+                  className={`absolute right-100 -top-14 w-[32%] h-[140%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
+                    isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-1"
+                  }`}
+                  style={{ right: "calc(100% + 16px)", marginRight: "40px" }}
+                >
+                  <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
+                    <div className="mb-6">
+                      <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
+                      <p className="text-[9px] text-gray-700">{style || "Painting"}</p>
                     </div>
-                    <div>
-                      <h4 className="text-[10px] font-medium mb-1">Medium</h4>
-                      <p className="text-[10px] text-gray-700">{medium || "Acrylic Paint"}</p>
+                    <div className="mb-6">
+                      <h3 className="text-[9px] font-medium mb-1">Medium</h3>
+                      <p className="text-[9px] text-gray-700">{medium || "Acrylic Paint"}</p>
                     </div>
-                    <div>
-                      <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
-                      <p className="text-[10px] text-gray-700">{datePosted || "March 25, 2023"}</p>
+                    <div className="mb-6">
+                      <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
+                      <p className="text-[9px] text-gray-700">{datePosted || "March 25, 2023"}</p>
                     </div>
-                    <div>
-                      <h3 className="text-[10px] font-medium mb-1">Artwork Size</h3>
-                      <p className="text-[10px] text-gray-700">{"11 x 8.5"}</p>
+                    <div className="mb-1">
+                      <h3 className="text-[9px] font-medium mb-1">Artwork Size</h3>
+                      <p className="text-[9px] text-gray-700">{"11 x 8.5"}</p>
                     </div>
                   </div>
                 </div>
-              </CollapsibleContent>
-          </Collapsible>
-        )}
+              )}
 
-        {/* Center - Artwork Image */}
-        <div className={`relative z-0  ${isMobile ? "my-6 pl-9" : "mt-3"}`}>
-            {!isMobile && (
-                <button
-                  onClick={toggleDetailsPanel}
-                  className="p-1 text-gray-500 hover:text-black absolute -left-12 top-1/2 transform -translate-y-1/2"
+              {/* Mobile Information Panel (Collapsible) */}
+              {isMobile && (
+                <Collapsible className="px-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <CollapsibleTrigger className="p-1 my-2">
+                      <GripVertical size={16} />
+                    </CollapsibleTrigger>
+                  </div>
+                  <CollapsibleContent className="transition-all duration-500 ease-in-out">
+                    <div className="bg-gray-50 rounded-md p-4 text-xs whitespace-nowrap mb-8">
+                      <div className="grid grid-cols-4 gap-10 px-6">
+                        <div>
+                          <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
+                          <p className="text-[10px] text-gray-700">{style || "Painting"}</p>
+                        </div>
+                        <div>
+                          <h4 className="text-[10px] font-medium mb-1">Medium</h4>
+                          <p className="text-[10px] text-gray-700">{medium || "Acrylic Paint"}</p>
+                        </div>
+                        <div>
+                          <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
+                          <p className="text-[10px] text-gray-700">{datePosted || "March 25, 2023"}</p>
+                        </div>
+                        <div>
+                          <h3 className="text-[10px] font-medium mb-1">Artwork Size</h3>
+                          <p className="text-[10px] text-gray-700">{"11 x 8.5"}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
+
+              {/* Center - Artwork Image */}
+              <div className={`relative z-0  ${isMobile ? "my-6 pl-9" : "mt-3"}`}>
+                {!isMobile && (
+                  <button
+                    onClick={toggleDetailsPanel}
+                    className="p-1 text-gray-500 hover:text-black absolute -left-12 top-1/2 transform -translate-y-1/2"
                   >
-                  <GripVertical size={15} />
-                </button>
-            )}
+                    <GripVertical size={15} />
+                  </button>
+                )}
 
-          <div className="inline-block transform scale-[1.10]">
-            <div className="w-[390px] h-[390px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
-              <img
-                src={artwork?.artworkImage}
-                alt={artwork?.title} 
-                className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
-              />
+                <div className="inline-block transform scale-[1.10]">
+                  <div className="w-[390px] h-[390px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
+                    <img
+                      src={artwork?.artworkImage}
+                      alt={artwork?.title}
+                      className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
+                    />
 
-              {/* Expand Button Container */}
-              <div className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}>
-                {/* Expand Icon */}
-                <div
-                  className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
-                  onClick={() => setIsExpanded(true)}
-                >
-                  <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
-                  <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
-                    Expand
-                  </span>
+                    {/* Expand Button Container */}
+                    <div
+                      className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}
+                    >
+                      {/* Expand Icon */}
+                      <div
+                        className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
+                        onClick={() => setIsExpanded(true)}
+                      >
+                        <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
+                        <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
+                          Expand
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          </div>
-          </div>
-        </div>
 
-        {/* Right side - Title, artist, description*/}
-        <div
-          className={`${isMobile ? "w-full mt-2 px-4" : "w-full max-w-[390px] min-w-[280px]"}`}
-          style={{
-            transition: "transform 0.5s cubic-bezier(.4,0,.2,1)",
-            transform: !isMobile && isDetailOpen ? "translateX(30px)" : "translateX(0)",
-          }}
-        >
-          <div className={`${isMobile ? "" : "relative left-10"}`}>
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={handleLike}
-                  className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
-                >
-                  <Heart
-                    size={isMobile ? 16 : 14}
-                    className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
-                    fill={isLiked ? "currentColor" : "none"}
+          {/* Right side - Title, artist, description*/}
+          <div
+            className={`${isMobile ? "w-full mt-2 px-4" : "w-full max-w-[390px] min-w-[280px]"}`}
+            style={{
+              transition: "transform 0.5s cubic-bezier(.4,0,.2,1)",
+              transform: !isMobile && isDetailOpen ? "translateX(30px)" : "translateX(0)",
+            }}
+          >
+            <div className={`${isMobile ? "" : "relative left-10"}`}>
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={handleLike}
+                    className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
+                  >
+                    <Heart
+                      size={isMobile ? 16 : 14}
+                      className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
+                      fill={isLiked ? "currentColor" : "none"}
+                    />
+                    {(likeCounts[id || ""] ?? 0) > 0 && (
+                      <span className={`${isMobile ? "text-xs" : "text-[9px]"}`}>{likeCounts[id || ""]}</span>
+                    )}
+                  </button>
+
+                  <div className="flex items-center space-x-2 text-xs">
+                    <i className="bx bx-show text-lg"></i>
+                    <span>{views}</span>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <button className="py-3 pr-[11px] text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
+                    <MoreHorizontal size={isMobile ? 14 : 14} />
+                  </button>
+
+                  <BidMenu
+                    isOpen={menuOpen}
+                    onHide={handleHide}
+                    onReport={handleReport}
+                    isReported={isReported}
+                    className={isMobile ? "mobile-menu-position" : ""}
                   />
-                  {(likeCounts[id || ""] ?? 0) > 0 && (
-                    <span className={`${isMobile ? "text-xs" : "text-[9px]"}`}>{likeCounts[id || ""]}</span>
-                  )}
-                </button>
-
-                <div className="flex items-center space-x-2 text-xs">
-                  <i className="bx bx-show text-lg"></i>
-                  <span>{views}</span>
                 </div>
               </div>
 
-              <div className="relative">
-                <button className="py-3 pr-[11px] text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
-                  <MoreHorizontal size={isMobile ? 14 : 14} />
-                </button>
+              <h1 className={`${isMobile ? "text-sm" : "text-xl"} font-bold mb-2`}>
+                {artwork?.title || "The Distorted Face"}
+              </h1>
 
-                <BidMenu
-                  isOpen={menuOpen}
-                  onHide={handleHide}
-                  onReport={handleReport}
-                  isReported={isReported}
-                  className={isMobile ? "mobile-menu-position" : ""}
-                />
-              </div>
-            </div>
+              <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}>
+                <span style={{ cursor: "pointer" }} onClick={() => navigate(`/userprofile/`)}>
+                  by {artwork?.artistName || "Angel Ganev"}
+                </span>
+              </p>
 
-            <h1 className={`${isMobile ? "text-sm" : "text-xl"} font-bold mb-2`}>
-              {artwork?.title || "The Distorted Face"}
-            </h1>
-
-            <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}>
-              <span
-                style={{ cursor: "pointer" }}
-                onClick={() => navigate(`/userprofile/`)}
-              >
-                by {artwork?.artistName || "Angel Ganev"}
-              </span>
-            </p>
-
-            <div className="relative mt-6">
-              <div
-                ref={descriptionRef}
-                className={`
+              <div className="relative mt-6">
+                <div
+                  ref={descriptionRef}
+                  className={`
                       text-[10px] text-gray-700 transition-all duration-300 ease-in-out
                       ${showFullDescription ? "max-h-40 overflow-y-auto pr-1" : "max-h-[3.5rem] overflow-hidden"}
                     `}
-                style={{ lineHeight: "1.25rem" }}
-              >
-                {artwork?.description || "No description available."}
-              </div>
-
-              {isOverflowing && (
-                <button
-                  onClick={() => setShowFullDescription((prev) => !prev)}
-                  className="text-[10px] text-blue-500 hover:underline mt-1 block"
+                  style={{ lineHeight: "1.25rem" }}
                 >
-                  {showFullDescription ? "Hide" : "Show More"}
-                </button>
-              )}
-            </div>
+                  {artwork?.description || "No description available."}
+                </div>
 
-            <Separator className="my-10" />
-
-            <div className="bg-gray-100 px-6 py-4 rounded-xl flex justify-between items-center text-center mt-8 shadow-sm">
-              {/* Highest Bid */}
-              <div className="flex-1">
-                <p className="text-[10px] text-gray-500 mb-1">Highest Bid</p>
-                <p className="text-xl font-semibold">{bid.highestBid}</p>
+                {isOverflowing && (
+                  <button
+                    onClick={() => setShowFullDescription((prev) => !prev)}
+                    className="text-[10px] text-blue-500 hover:underline mt-1 block"
+                  >
+                    {showFullDescription ? "Hide" : "Show More"}
+                  </button>
+                )}
               </div>
 
-              {/* Separator */}
-              <div className="w-px h-12 bg-gray-300 mx-6" />
+              <Separator className="my-10" />
 
-              {/* Auction Timer */}
-              <div className="flex-1">
-                <p className="text-[10px] text-gray-500">Auction ends in</p>
-                <div className="flex items-center justify-center gap-8">
-                  <div className="flex flex-col items-center">
-                    <p className="text-md font-semibold">{bid.timeRemaining.hrs}</p>
-                    <span className="text-[8px] text-gray-400">hrs</span>
-                  </div>
-                  {/* <span className="text-lg font-semibold">:</span> */}
-                  <div className="flex flex-col items-center">
-                    <p className="text-md font-semibold">{bid.timeRemaining.mins}</p>
-                    <span className="text-[8px] text-gray-400">mins</span>
-                  </div>
-                  {/* <span className="text-lg font-semibold">:</span> */}
-                  <div className="flex flex-col items-center">
-                    <p className="text-md font-semibold">{bid.timeRemaining.secs}</p>
-                    <span className="text-[8px] text-gray-400">secs</span>
+              <div className="bg-gray-100 px-6 py-4 rounded-xl flex justify-between items-center text-center mt-8 shadow-sm">
+                {/* Highest Bid */}
+                <div className="flex-1">
+                  <p className="text-[10px] text-gray-500 mb-1">Highest Bid</p>
+                  <p className="text-xl font-semibold">
+                    {bid.highestBid !== null && bid.highestBid !== undefined ? bid.highestBid : "No bids yet"}
+                  </p>
+                </div>
+
+                {/* Separator */}
+                <div className="w-px h-12 bg-gray-300 mx-6" />
+
+                {/* Auction Timer */}
+                <div className="flex-1">
+                  <p className="text-[10px] text-gray-500">Auction ends in</p>
+                  <div className="flex items-center justify-center gap-8">
+                    <div className="flex flex-col items-center">
+                      <p className="text-md font-semibold">{bid.timeRemaining.hrs}</p>
+                      <span className="text-[8px] text-gray-400">hrs</span>
+                    </div>
+                    {/* <span className="text-lg font-semibold">:</span> */}
+                    <div className="flex flex-col items-center">
+                      <p className="text-md font-semibold">{bid.timeRemaining.mins}</p>
+                      <span className="text-[8px] text-gray-400">mins</span>
+                    </div>
+                    {/* <span className="text-lg font-semibold">:</span> */}
+                    <div className="flex flex-col items-center">
+                      <p className="text-md font-semibold">{bid.timeRemaining.secs}</p>
+                      <span className="text-[8px] text-gray-400">secs</span>
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <button
+                onClick={() => setShowBidPopup(true)}
+                className="w-full bg-red-800 hover:bg-red-700 text-white text-xs py-3 rounded-full mt-8"
+              >
+                Place A Bid
+              </button>
             </div>
-
-            <button
-              onClick={() => setShowBidPopup(true)}
-              className="w-full bg-red-800 hover:bg-red-700 text-white text-xs py-3 rounded-full mt-8"
-            >
-              Place A Bid
-            </button>
           </div>
-
         </div>
-      </div>
       </div>
 
       <div className="container mx-auto px-4 md:px-12 mt-2 mb-2">

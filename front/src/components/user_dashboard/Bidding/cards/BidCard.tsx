@@ -1,16 +1,16 @@
-import React from 'react';
+import React from "react";
 import { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import BidMenu from "./BidMenu";
 import BidPopup from "../place_bid/BidPopup";
-
+import CountdownTimer from "@/hooks/useCountdown";
 export interface BidCardData {
   id: string;
   title: string;
   currentBid: number;
-  timeRemaining: string;
   imageUrl: string;
+  end_time: string;
 }
 
 interface BidCardProps {
@@ -28,7 +28,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }
   if (isLoading) {
     return (
       <div className="w-full rounded-2xl overflow-hidden shadow-lg bg-white animate-pulse p-4">
-        <div className="w-full h-36 bg-gray-300 rounded-xl mb-4"></div> 
+        <div className="w-full h-36 bg-gray-300 rounded-xl mb-4"></div>
         <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
         <div className="flex items-center justify-between mt-4">
           <div className="h-4 bg-gray-300 rounded w-1/3"></div>
@@ -59,39 +59,31 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }
     <>
       <div className="w-full rounded-xl border bg-white hover:shadow-lg transition-all duration-300">
         <div className="relative">
-          <img 
-            src={data.imageUrl} 
-            alt={data.title} 
-            className="w-full h-36 object-cover rounded-xl" 
-          />
-            <div className="absolute top-4 right-4 font-semibold bg-white bg-opacity-60 text-black text-[9px] px-3 py-1 rounded-[3px]">
-              {data.timeRemaining}
-            </div>
+          <img src={data.imageUrl} alt={data.title} className="w-full h-36 object-cover rounded-xl" />
+          <CountdownTimer targetTime={data.end_time} />
         </div>
-        <div className="px-6 py-5 flex flex-col gap-2"> 
+        <div className="px-6 py-5 flex flex-col gap-2">
           <div className="flex justify-between">
-            <h2 className="text-sm font-semibold">{data.title}</h2> 
-            <div className="relative text-gray-500" style={{ height: '24px' }}>
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setMenuOpen((prev) => !prev);
-                  }}
-                  className={`p-1 rounded-full text-black bg-white bg-opacity-60 ${menuOpen ? '' : ''}`}
-                >
-                  <MoreHorizontal size={14} />
-                </button>
-                <BidMenu
-                  isOpen={menuOpen}
-                  onHide={handleHide}
-                  onReport={handleReport}
-                  isReported={isReported}
-                />
+            <h2 className="text-sm font-semibold">{data.title}</h2>
+            <div className="relative text-gray-500" style={{ height: "24px" }}>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMenuOpen((prev) => !prev);
+                }}
+                className={`p-1 rounded-full text-black bg-white bg-opacity-60 ${menuOpen ? "" : ""}`}
+              >
+                <MoreHorizontal size={14} />
+              </button>
+              <BidMenu isOpen={menuOpen} onHide={handleHide} onReport={handleReport} isReported={isReported} />
             </div>
           </div>
           <div className="flex items-center justify-between">
             <div className="text-gray-500 text-[10px]">
-              Current Bid <span className="text-sm font-bold text-black ml-2">{data.currentBid}k</span>
+              Current Bid
+              <span className="text-sm font-bold text-black ml-2">
+                {data.currentBid !== null && data.currentBid !== undefined ? `${data.currentBid}k` : "0"}
+              </span>
             </div>
             <button
               onClick={(e) => {

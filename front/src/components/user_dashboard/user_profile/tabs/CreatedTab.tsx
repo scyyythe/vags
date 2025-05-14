@@ -15,7 +15,7 @@ const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: Cr
   const loggedInUserId = getLoggedInUserId();
   const { id: visitedUserId } = useParams();
   const [currentPage] = useState(1);
-  const { data: artworks, error } = useArtworks(currentPage, undefined, true, "all", "public");
+  const { data: artworks, error } = useArtworks(currentPage, undefined, true, "all", "Public");
 
   const allArtworks = useMemo(() => {
     return filteredArtworks;

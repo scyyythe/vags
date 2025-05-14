@@ -8,7 +8,7 @@ import cloudinary.uploader
 class ArtSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField(max_length=100)
-    artist = serializers.CharField(read_only=True)  
+    artist = serializers.CharField(source="artist.username")
     category = serializers.CharField(max_length=100)
     medium = serializers.CharField(max_length=100)
     art_status = serializers.CharField(max_length=100)
@@ -79,7 +79,7 @@ class ArtSerializer(serializers.Serializer):
 
         if instance.artist:
             artist_id = str(instance.artist.id)
-            profile_picture = str(instance.artist.profile_picture)  #
+            profile_picture = str(instance.artist.profile_picture)  # Ensure this doesn't break if profile_picture is None
             artist_name = f"{instance.artist.first_name} {instance.artist.last_name}"
 
         return {
@@ -100,3 +100,4 @@ class ArtSerializer(serializers.Serializer):
             "image_url": instance.image_url,
             "likes_count": self.get_likes_count(instance),
         }
+
