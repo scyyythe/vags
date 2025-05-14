@@ -10,7 +10,7 @@ const OnBidTab = () => {
   const { id: visitedUserId } = useParams();
   const { data: artworks = [], isLoading } = useArtworks(1, visitedUserId, true, "specific-user");
 
-  const onBidArtworks = artworks.filter((art) => art.status?.toLowerCase() === "onBid");
+  const onBidArtworks = artworks.filter((art) => art.status?.toLowerCase() === "onbid");
 
   const handleButtonClick = useCallback((artworkId: string) => {}, []);
 
