@@ -88,7 +88,7 @@ const BidPopup: React.FC<BidPopupProps> = ({
               />
             </div>
 
-            <div className="space-y-4 mb-6">
+            {/* <div className="space-y-4 mb-6">
               <div className="flex justify-between text-[10px]">
                 <span className="text-gray-700">Service fee</span>
                 <span className="font-medium">100</span>
@@ -99,11 +99,11 @@ const BidPopup: React.FC<BidPopupProps> = ({
                 <span className="font-medium">{marketplaceFee}</span>
               </div>
               
-            </div>
-            <div className="flex justify-between text-xs font-semibold mb-6">
-                <span>Total bid amount</span>
-                <span>{totalBidAmount}</span>
-              </div>
+            </div> */}
+            {/* <div className="flex justify-between text-xs font-semibold mb-6">
+              <span>Total bid amount</span>
+              <span>{totalBidAmount}</span>
+            </div> */}
             <button
               type="submit"
               className="w-full bg-red-800 hover:bg-red-700 text-white text-[10px] py-2 rounded-full font-medium transition-colors"
