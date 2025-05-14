@@ -33,7 +33,6 @@ const Explore = () => {
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
-    toast(`Selected category: ${category}`);
   };
 
   const filteredArtworksMemo = useMemo(() => {
@@ -59,34 +58,17 @@ const Explore = () => {
 
   const handleSortClick = () => {
     toast("Sort artworks");
-  };
+  }; 
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 sm:px-6 pt-20">
         <main className="container">
-          <section className="mb-16">
+          <section className="mb-8">
             <ArtGalleryContainer artworks={slideshowData} />
           </section>
         </main>
-
-        <div className="relative flex justify-center items-center -top-16">
-          <div className="browse-container bg-white shadow-lg w-full md:w-3/4 lg:w-[85%] rounded-lg flex items-center p-4">
-            <div className="flex items-center px-4 border-r">
-              <span className="text-[10px] font-semibold mr-5">Browse Type</span>
-              <div className="relative">
-                <ArtCategorySelect
-                  selectedCategory={selectedCategory}
-                  onChange={(value) => setSelectedCategory(value)}
-                />
-              </div>
-            </div>
-            <div className="flex-1 pl-4 bg-blue-100 bg-opacity-50 rounded-full ml-3">
-              <SearchBar onSearchChange={setSearchQuery} />
-            </div>
-          </div>
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-3">
@@ -94,12 +76,12 @@ const Explore = () => {
               <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
               <div className="flex space-x-2 text-xs">
 
-                {/* <div className="relative">
+                <div className="relative">
                   <ArtCategorySelect
                     selectedCategory={selectedCategory}
                     onChange={(value) => setSelectedCategory(value)}
                   />
-                </div> */}
+                </div>
 
                 <button
                   className="py-1.5 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
