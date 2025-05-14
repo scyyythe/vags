@@ -4,13 +4,13 @@ import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import BidMenu from "./BidMenu";
 import BidPopup from "../place_bid/BidPopup";
-
+import CountdownTimer from "@/hooks/useCountdown";
 export interface BidCardData {
   id: string;
   title: string;
   currentBid: number;
   imageUrl: string;
-  timeRemaining: { hrs: number; mins: number; secs: number };
+  end_time: string;
 }
 
 interface BidCardProps {
@@ -60,9 +60,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }
       <div className="w-full rounded-xl border bg-white hover:shadow-lg transition-all duration-300">
         <div className="relative">
           <img src={data.imageUrl} alt={data.title} className="w-full h-36 object-cover rounded-xl" />
-          <div className="absolute top-4 right-4 font-semibold bg-white bg-opacity-60 text-black text-[9px] px-3 py-1 rounded-[3px]">
-            {data.timeRemaining.hrs}h {data.timeRemaining.mins}m {data.timeRemaining.secs}s
-          </div>
+          <CountdownTimer targetTime={data.end_time} />
         </div>
         <div className="px-6 py-5 flex flex-col gap-2">
           <div className="flex justify-between">

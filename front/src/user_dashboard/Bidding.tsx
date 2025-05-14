@@ -126,7 +126,7 @@ const Bidding = () => {
                     id: artwork.id,
                     title: artwork.artwork.title,
                     currentBid: artwork.highestBid,
-                    timeRemaining: artwork.timeRemaining,
+                    end_time: artwork.end_time,
                     imageUrl: artwork.artwork.image_url,
                   }}
                   onPlaceBid={handlePlaceBid}
