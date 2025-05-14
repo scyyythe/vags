@@ -72,10 +72,9 @@ const Explore = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-3">
-            <div className="flex items-center justify-between mb-6 lg:w-[133%]">
+            <div className="flex items-center justify-between mb-6 lg:w-[133%] pl-2 sm:pl-0">
               <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
               <div className="flex space-x-2 text-xs">
-
                 <div className="relative">
                   <ArtCategorySelect
                     selectedCategory={selectedCategory}
@@ -90,19 +89,11 @@ const Explore = () => {
                   <i className="bx bx-plus text-xs"></i>
                   Create
                 </button>
-                {/* <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-[11px] rounded-full flex items-center gap-1"
-                  onClick={handleSortClick}
-                >
-                  <i className="bx bx-sort-alt-2 text-sm"></i>
-                  Sort
-                </Button> */}
               </div>
             </div>
 
-            <div className="lg:w-[133%] custom-scrollbars pb-4">
+
+            <div className="lg:w-[133%] custom-scrollbars pb-4 pl-2 sm:pl-0">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                 {isLoading ? (
                   Array.from({ length: 6 }).map((_, index) => <ArtCardSkeleton key={index} />)
