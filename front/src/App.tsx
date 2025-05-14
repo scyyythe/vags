@@ -34,6 +34,9 @@ import HelpCenter from "./components/user_dashboard/Settings/pages/HelpCenter";
 
 import AllNotifications from "./components/user_dashboard/notification/AllNotifications";
 
+
+//ADMIN
+
 import ProtectedRoute from "./auth/ProtectedRoute";
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
@@ -92,6 +95,9 @@ const App = () => {
                         <Route path="billing" element={<ProtectedRoute children={<BillingSettings />} />} />
                         <Route path="help-center" element={<ProtectedRoute children={<HelpCenter />} />} />
                       </Route>
+
+                      {/* Admin Routes */}
+                      
 
                       <Route path="*" element={<NotFound />} />
                     </Routes>
