@@ -65,7 +65,7 @@ const Explore = () => {
       <Header />
       <div className="container mx-auto px-4 sm:px-6 pt-20">
         <main className="container">
-          <section className="mb-8">
+          <section className="mb-8 w-[100%] sm:w-full">
             <ArtGalleryContainer artworks={slideshowData} />
           </section>
         </main>
