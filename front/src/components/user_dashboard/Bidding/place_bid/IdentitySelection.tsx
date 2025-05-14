@@ -43,7 +43,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={onClose}>
-      <div className="bg-white rounded-2xl w-[26%] mx-4 relative" onClick={e => e.stopPropagation()}>
+      <div className="bg-white rounded-2xl w-full max-w-xs mx-4 relative" onClick={e => e.stopPropagation()}>
         <div className="py-6 px-8">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-sm font-bold">Choose How to Display Your Identity</h2>
@@ -138,7 +138,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-[11px] py-2 rounded-full font-medium transition-colors"
+              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-[10px] py-2 rounded-full font-medium transition-colors"
             >
               Cancel
             </button>
