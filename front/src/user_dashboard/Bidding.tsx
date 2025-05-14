@@ -109,9 +109,12 @@ const Bidding = () => {
           <section className="mb-10">
             <ArtsContainer artworks={staticArtworks} />
           </section>
-          <Components />
+          <div className="pl-2 sm:pl-0">
+            <Components />
+          </div>
         </main>
-        <div className="lg:w-[100%] custom-scrollbars pb-4">
+
+        <div className="lg:w-[100%] custom-scrollbars pb-4 pl-2 sm:pl-0">
           {isLoading && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               <ArtCardSkeleton />
