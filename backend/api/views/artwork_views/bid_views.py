@@ -7,6 +7,9 @@ from api.serializers.artwork_s.bid_serializers import BidSerializer, AuctionSeri
 from datetime import datetime
 from api.models.interaction_model.notification import Notification
 from rest_framework.views import APIView
+import traceback
+from bson import ObjectId
+
 class AuctionCreateView(APIView):
     def post(self, request, *args, **kwargs):
         try:
@@ -64,6 +67,30 @@ class AuctionListView(generics.ListAPIView):
             auction.close_auction()  
 
         return Auction.objects.all()
+    
+class AuctionDetailView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, auction_id, *args, **kwargs):
+        try:
+            if not ObjectId.is_valid(auction_id):
+                return Response({"error": "Invalid auction ID."}, status=status.HTTP_400_BAD_REQUEST)
+
+            auction = Auction.objects(id=auction_id).first()
+            if not auction:
+                return Response({"error": "Auction not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            if not auction.artwork: 
+                return Response({"error": "Associated artwork not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            serializer = AuctionSerializer(auction)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class ActiveAuctionsView(generics.ListAPIView):
     serializer_class = AuctionSerializer
