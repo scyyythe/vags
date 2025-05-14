@@ -14,16 +14,10 @@ type CreatedTabProps = {
 const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
   const { id: visitedUserId } = useParams();
-  const [currentPage] = useState(1);
-  const { data: artworks, error } = useArtworks(currentPage, undefined, true, "all", "Public");
 
   const allArtworks = useMemo(() => {
     return filteredArtworks;
   }, [filteredArtworks]);
-
-  const createdArtworksCount = useMemo(() => {
-    return allArtworks.filter((artwork) => String(artwork.artistId) === String(loggedInUserId));
-  }, [allArtworks, loggedInUserId]);
 
   useEffect(() => {
     if (!visitedUserId) return;
