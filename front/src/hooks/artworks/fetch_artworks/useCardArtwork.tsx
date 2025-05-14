@@ -12,7 +12,7 @@ const fetchArtworkById = async (id: string) => {
 
 const useArtworkQuery = (id: string) => {
   return useQuery({
-    queryKey: ["artwork", id],
+    queryKey: ["artworks", id],
     queryFn: () => fetchArtworkById(id),
     enabled: !!id,
   });

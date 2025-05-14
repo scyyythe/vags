@@ -13,6 +13,7 @@ import { useFollowUser } from "@/hooks/follow/useFollowUser";
 import { useUnfollowUser } from "@/hooks/follow/useUnfollowUser";
 import useFollowStatus from "@/hooks/follow/useFollowStatus";
 import useFollowCounts from "@/hooks/follow/useFollowCount";
+import EditProfile from "../../own_profile/edit_profile/EditButton";
 interface ProfileHeaderProps {
   bannerImage: string;
   profileImage: string;
@@ -153,7 +154,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           </span>
         </div>
 
-        {loggedInUserId !== profileUserId && (
+        {loggedInUserId !== profileUserId ? (
           <div className="flex items-center space-x-2 mt-4 relative">
             <button
               onClick={toggleFollow}
@@ -195,6 +196,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+        ) : (
+          <EditProfile />
         )}
       </div>
     </div>

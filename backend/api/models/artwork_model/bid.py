@@ -10,13 +10,27 @@ class Bid(Document):
     timestamp = DateTimeField(default=datetime.utcnow)
 
 class Auction(Document):
-    artwork = ReferenceField(Art, required=True, reverse_delete_rule=2, unique=True)
+    artwork = ReferenceField(Art, required=True, unique=True)
+    start_bid_amount = FloatField(required=True, min_value=0.1)
     start_time = DateTimeField(required=True)
     end_time = DateTimeField(required=True)
-    highest_bid = ReferenceField(Bid, required=False, default=None)
-    status = BooleanField(default=True)  
+    highest_bid = ReferenceField(Bid, required=False)
+    status = BooleanField(default=True)
     bid_history = ListField(ReferenceField(Bid))
 
     def close_auction(self):
+        """Close the auction by setting its status to False."""
         self.status = False
         self.save()
+
+    @classmethod
+    def create_auction(cls, artwork_id, start_time, end_time, starting_bid):
+        """Factory method to create and save a new auction."""
+        auction = cls(
+            artwork=Art.objects.get(id=artwork_id),
+            start_bid_amount=starting_bid,
+            start_time=start_time,
+            end_time=end_time
+        )
+        auction.save()
+        return auction

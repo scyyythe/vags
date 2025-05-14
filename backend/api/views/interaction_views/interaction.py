@@ -9,6 +9,7 @@ from api.models.interaction_model.notification import Notification
 from rest_framework import generics, permissions
 from datetime import datetime
 from django.utils.timesince import timesince
+from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 class CommentCreateView(APIView):
     permission_classes = [IsAuthenticated]  
 
@@ -32,9 +33,9 @@ class CommentCreateView(APIView):
         artist=art.artist
         message = f"{user.first_name} commented on your artwork '{art.title}'"
         Notification.objects.create(
-            user=artist,  # The artist receiving the notification
+            user=artist, 
             message=f"{user.first_name} commented on {art.title}",
-            art=art,  # The artwork being commented on
+            art=art,  
             name=user.first_name,  # The user's first name who made the comment
             action="commented on",  # The action description
             target=art.title,  # The title of the artwork being commented on
@@ -185,7 +186,16 @@ class SavedCreateView(APIView):
                 date=datetime.now(),  
             )
             return Response(SavedSerializer(saved).data, status=status.HTTP_201_CREATED)
+class SavedArtworksListView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        saved_entries = Saved.objects.filter(user=user)
+        artworks = [entry.art for entry in saved_entries if entry.art is not None]
+
+        serializer = ArtSerializer(artworks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
         
 class SavedListView(generics.ListAPIView):
