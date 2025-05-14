@@ -20,7 +20,7 @@ const ArtGalleryContainer = ({ artworks }: ArtGalleryContainerProps) => {
   };
 
   return (
-    <div className="w-full mx-auto rounded-xl overflow-hidden">
+    <div className="w-full mx-auto rounded-lg overflow-hidden">
       <div className="w-full aspect-[16/9] md:aspect-[15/6] rounded-xl overflow-hidden">
         <ArtSlideshow artworks={artworks} onArtworkClick={handleArtworkClick} />
       </div>
