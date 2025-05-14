@@ -88,7 +88,7 @@ const Header = () => {
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -5 }}
-                  className="absolute top-10 right-0 z-50 bg-white border border-gray-300 rounded-md shadow-md w-60 p-2"
+                  className="absolute top-10 right-0 z-50 bg-white border border-gray-300 rounded-full shadow-md w-60 px-3"
                 >
                   <SearchBar onSearchChange={setSearchQuery} />
                 </motion.div>
