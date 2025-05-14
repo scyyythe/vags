@@ -14,6 +14,7 @@ export interface Artwork {
   medium: string;
   size: string;
   status: string;
+  art_status: string;
   price: number;
   visibility: string;
   created_at: string;
@@ -29,14 +30,17 @@ const fetchArtworks = async (
   currentPage: number,
   userId?: string,
   endpointType: "all" | "created-by-me" | "specific-user" = "all",
-  filterVisibility: "public" | "private" = "public"
+  filterVisibility?: "public" | "private"
 ): Promise<Artwork[]> => {
   try {
     const params: { page: number; limit: number; userId?: string; visibility?: string } = {
       page: currentPage,
       limit: 20,
-      visibility: filterVisibility,
     };
+
+    if (filterVisibility) {
+      params.visibility = filterVisibility;
+    }
 
     if (endpointType === "created-by-me") {
       params.userId = userId;
@@ -65,7 +69,8 @@ const fetchArtworks = async (
       style: artwork.category,
       medium: artwork.medium,
       size: artwork.size,
-      status: artwork.status,
+      status: artwork.art_status,
+
       price: artwork.price,
       visibility: artwork.visibility,
       datePosted: new Date(artwork.created_at).toLocaleDateString("en-US", {
@@ -87,11 +92,11 @@ const useArtworks = (
   userId?: string,
   enabled: boolean = true,
   endpointType: "all" | "created-by-me" | "specific-user" = "all",
-  filterCategory?: string
+  filterVisibility?: "public" | "private"
 ) => {
   return useQuery({
-    queryKey: ["artworks", currentPage, userId, endpointType],
-    queryFn: () => fetchArtworks(currentPage, userId, endpointType),
+    queryKey: ["artworks", currentPage, userId, endpointType, filterVisibility],
+    queryFn: () => fetchArtworks(currentPage, userId, endpointType, filterVisibility),
     staleTime: 1000 * 60 * 5,
     enabled: enabled,
   });

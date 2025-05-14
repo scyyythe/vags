@@ -12,6 +12,7 @@ import UnhidePopup from "@/components/user_dashboard/user_profile/components/sta
 import UnarchivePopup from "@/components/user_dashboard/user_profile/components/status_options/popups/unarchive/Unarchive";
 import { getLoggedInUserId } from "@/auth/decode";
 import CollectionTab from "../tabs/CollectionTab";
+import OnBidTab from "../tabs/OnBidTab";
 const tabs = [
   { id: "created", label: "Created" },
   { id: "onBid", label: "On Bid" },
@@ -305,7 +306,6 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
           </div>
         </div>
       </div>
-
       {/* Tab Content Rendering */}
       {activeTab === "created" && (
         <>
@@ -355,13 +355,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
         </>
       )}
       {activeTab === "collections" && <CollectionTab />}
-
-      {activeTab === "onBid" && (
-        <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
-          <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
-          <p className="text-sm text-gray-500">No artworks found.</p>
-        </div>
-      )}
+      {activeTab === "onBid" && <OnBidTab />}
 
       {activeTab === "onSale" && (
         <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
@@ -373,9 +367,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
         </div>
       )}
       <UnarchivePopup isOpen={showUnarchivePopup} onCancel={cancelUnarchive} onConfirm={confirmUnarchiveAll} />
-
       <EmptyTrashPopup isOpen={showEmptyTrashPopup} onCancel={cancelEmptyTrash} onConfirm={confirmEmptyTrash} />
-
       <UnhidePopup isOpen={showUnhidePopup} onCancel={cancelUnhide} onConfirm={confirmUnhideAll} />
     </div>
   );
