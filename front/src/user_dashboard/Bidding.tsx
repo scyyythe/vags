@@ -10,6 +10,7 @@ import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+
 interface StaticArtwork {
   id: string;
   title: string;
@@ -27,6 +28,12 @@ interface StaticArtwork {
 const Bidding = () => {
   const navigate = useNavigate();
   const [staticArtworks, setStaticArtworks] = useState<StaticArtwork[]>([]);
+  const { data, error } = useFetchBiddingArtworks();
+
+  useEffect(() => {
+    console.log("Fetched data:", data);
+    console.log("Error:", error);
+  }, [data, error]);
 
   // Static artworks for ArtsContainer
   useEffect(() => {
@@ -96,7 +103,7 @@ const Bidding = () => {
 
   const handleBidClick = (artwork: ArtworkAuction) => {
     localStorage.setItem("selectedBid", JSON.stringify(artwork));
-    navigate(`/bid/${artwork.id}`, {
+    navigate(`/bid/${artwork.id}/ `, {
       state: { artwork },
     });
   };
@@ -128,7 +135,7 @@ const Bidding = () => {
                   data={{
                     id: artwork.id,
                     title: artwork.artwork.title,
-                    currentBid: artwork.highestBid,
+                    currentBid: artwork.highest_bid,
                     end_time: artwork.end_time,
                     imageUrl: artwork.artwork.image_url,
                   }}

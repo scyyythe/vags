@@ -44,5 +44,6 @@ class AuctionSerializer(serializers.Serializer):
     end_time = serializers.DateTimeField()
     highest_bid = BidSerializer(read_only=True)
     status = serializers.BooleanField(read_only=True)
+    
 
 
