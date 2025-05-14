@@ -11,7 +11,7 @@ const SearchBar = ({ onSearchChange }) => {
         style={{ fontSize: "10px", height: "30px" }}
         onChange={(e) => onSearchChange(e.target.value)} // Update search query
       />
-      <Search size={11} className="absolute right-7 top-6.5 w-3 h-3 text-gray-400" />
+      <Search size={11} className="relative right-auto top-6.5 w-3 h-3 text-gray-500" />
     </div>
   );
 };
