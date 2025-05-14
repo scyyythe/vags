@@ -4,7 +4,7 @@ import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import BidMenu from "./BidMenu";
 import BidPopup from "../place_bid/BidPopup";
-import CountdownTimer from "@/hooks/useCountdown";
+import CountdownTimer from "@/hooks/count/useCountdown";
 export interface BidCardData {
   id: string;
   title: string;
