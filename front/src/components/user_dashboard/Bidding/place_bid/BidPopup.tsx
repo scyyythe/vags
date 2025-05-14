@@ -1,12 +1,13 @@
 import React, { useState, useEffect  } from 'react';
 import { X } from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
+import IdentitySelectionPopup from './IdentitySelection';
 
 interface BidPopupProps {
   isOpen: boolean;
   onClose: () => void;
   artworkTitle: string;
-  onSubmit: (bidAmount: number) => void;
+  onSubmit: (bidAmount: number, identity: 'anonymous' | 'username' | 'fullName') => void;
 }
 
 const BidPopup: React.FC<BidPopupProps> = ({
@@ -16,6 +17,7 @@ const BidPopup: React.FC<BidPopupProps> = ({
   onSubmit,
 }) => {
   const [bidAmount, setBidAmount] = useState<string>('');
+  const [showIdentityPopup, setShowIdentityPopup] = useState(false);
   const serviceFee = 100;
   const marketplaceFee = bidAmount ? (parseInt(bidAmount) * 0.05) : 0;
   const totalBidAmount = bidAmount ? parseInt(bidAmount) + serviceFee + marketplaceFee : 0;
@@ -38,8 +40,15 @@ const BidPopup: React.FC<BidPopupProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (bidAmount && parseInt(bidAmount) >= 90000) {
+      setShowIdentityPopup(true);
+    }
+  };
+
+  const handleIdentityConfirm = (identity: 'anonymous' | 'username' | 'fullName') => {
     if (bidAmount) {
-      onSubmit(parseInt(bidAmount));
+      onSubmit(parseInt(bidAmount), identity);
+      setShowIdentityPopup(false);
       onClose();
     }
   };
@@ -104,6 +113,11 @@ const BidPopup: React.FC<BidPopupProps> = ({
           </form>
         </div>
       </div>
+      <IdentitySelectionPopup
+        isOpen={showIdentityPopup}
+        onClose={() => setShowIdentityPopup(false)}
+        onConfirm={handleIdentityConfirm}
+      />
     </div>
   );
 };
