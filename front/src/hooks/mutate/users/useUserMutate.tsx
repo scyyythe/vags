@@ -14,6 +14,7 @@ interface User {
   gender: string;
   date_of_birth: string;
   profile_picture: File;
+  cover_photo: File;
   bio: string;
   contact_number: string;
   address: string;
@@ -30,6 +31,7 @@ interface UserDetails {
   gender?: string;
   date_of_birth?: string;
   profile_picture?: File;
+  cover_photo?: File;
   bio?: string;
   contact_number?: string;
   address?: string;

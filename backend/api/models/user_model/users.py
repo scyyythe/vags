@@ -16,8 +16,9 @@ class User(Document):
     is_oauth_user = BooleanField(default=False)
     registered_via = StringField(choices=["google", "email", "other"], required=False)
 
-    # Profile-related fields
+    
     profile_picture = URLField(required=False)  
+    cover_photo=URLField(required=False)  
     bio = StringField(required=False)  
     contact_number = StringField(required=False)  
     address = StringField(required=False) 

@@ -47,6 +47,7 @@ const useUserDetails = (id?: string) => {
   const role = state.role || user?.role || "User";
   const userStatus = state.userStatus || user?.user_status || "Active";
   const profilePicture = state.profilePicture || user?.profile_picture || "";
+  const cover_photo = state.cover_photo || user?.cover_photo || "";
   const gender = state.gender || user?.gender || "Unknown";
   const dateOfBirth = state.dateOfBirth || user?.date_of_birth || null;
   const bio = state.bio || user?.bio || "No bio available";
@@ -63,6 +64,7 @@ const useUserDetails = (id?: string) => {
     role,
     userStatus,
     profilePicture,
+    cover_photo,
     gender,
     dateOfBirth,
     bio,
