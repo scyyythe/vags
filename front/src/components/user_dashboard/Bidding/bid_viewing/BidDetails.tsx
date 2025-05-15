@@ -373,7 +373,9 @@ const BidDetails = () => {
                   <div className="flex-1">
                     <p className="text-[10px] text-gray-500 mb-1">Highest Bid</p>
                     <p className="text-xl font-semibold">
-                      {item.highest_bid !== null && item.highest_bid !== undefined ? item.highest_bid : "No bids yet"}
+                      {item.highest_bid && item.highest_bid.amount != null
+                        ? `₱${item.highest_bid.amount.toLocaleString()}`
+                        : "No bids yet"}
                     </p>
                   </div>
 
@@ -404,8 +406,10 @@ const BidDetails = () => {
           <BidPopup
             isOpen={showBidPopup}
             onClose={() => setShowBidPopup(false)}
-            onSubmit={handleBidSubmit}
+            data={item}
+            artworkId={item.artwork.id}
             artworkTitle={item.artwork.title || "Artwork"}
+            start_bid_amount={item.start_bid_amount}
           />
         )}
 
