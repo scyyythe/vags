@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { ThemeToggle } from "@/components/admin_&_moderator/theme/theme-toggle";
+import Logo from "../../user_dashboard/navbar/Logo";
 
 interface DashboardLayoutProps {
   requiredRole: "admin" | "moderator";
@@ -111,15 +112,13 @@ export const DashboardLayout = ({ requiredRole, children }: DashboardLayoutProps
     <div className="flex h-screen w-screen bg-background overflow-hidden">
       {/* Sidebar - Fixed position with z-index */}
       <div className="h-screen fixed z-10 transition-all duration-300 ease-in-out" style={{ width: isCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH }} >
-        <Sidebar
-        variant="sidebar"
-        collapsible={isCollapsed ? "icon" : "none"}
+        <div
         className="h-full border-r transition-all duration-300 overflow-y-auto scrollbar-hide">
           <SidebarHeader className="flex items-center gap-2 px-4 py-2">
             <div className={cn("flex items-center gap-2", isCollapsed && "justify-center")}>
-              <User size={24} className="text-gallery-red" />
+              <Logo />
               {!isCollapsed && (
-                <span className="text-xl font-bold">{requiredRole === "admin" ? "Admin" : "Moderator"}</span>
+                <span className="text-sm font-semibold">{requiredRole === "admin" ? "Admin" : "Moderator"}</span>
               )}
             </div>
             <Button 
@@ -131,7 +130,8 @@ export const DashboardLayout = ({ requiredRole, children }: DashboardLayoutProps
               {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
             </Button>
           </SidebarHeader>
-          <SidebarContent className="scrollbar-hide">
+
+          <SidebarContent className="scrollbar-hide text-xs">
             <SidebarGroup>
               <SidebarGroupLabel>{!isCollapsed && "Navigation"}</SidebarGroupLabel>
               <SidebarGroupContent>
@@ -139,8 +139,8 @@ export const DashboardLayout = ({ requiredRole, children }: DashboardLayoutProps
                   {getMenuItems().map((item) => (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild tooltip={isCollapsed ? item.title : undefined}>
-                        <a href={item.url} className="flex items-center gap-3">
-                          <item.icon size={18} />
+                        <a href={item.url} className="flex items-center text-xs gap-3">
+                          <item.icon size={15} />
                           {!isCollapsed && <span>{item.title}</span>}
                         </a>
                       </SidebarMenuButton>
@@ -154,15 +154,15 @@ export const DashboardLayout = ({ requiredRole, children }: DashboardLayoutProps
               <SidebarGroupLabel>{!isCollapsed && "Profile"}</SidebarGroupLabel>
               <SidebarGroupContent>
                 <div className={cn("p-4", isCollapsed && "p-2 flex flex-col items-center")}>
-                  <div className={cn("flex items-center gap-3 mb-3", isCollapsed && "flex-col mb-2")}>
+                  <div className={cn("flex text-xs items-center gap-3 mb-3", isCollapsed && "flex-col mb-2")}>
                     <Avatar>
                       <AvatarImage src={user.avatar} />
                       <AvatarFallback>{user.name.substring(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     {!isCollapsed && (
                       <div>
-                        <h4 className="font-medium">{user.name}</h4>
-                        <p className="text-sm text-muted-foreground">{user.email}</p>
+                        <p className="text-xs font-medium">{user.name}</p>
+                        <p className="text-[10px] text-muted-foreground">{user.email}</p>
                       </div>
                     )}
                   </div>
@@ -170,7 +170,7 @@ export const DashboardLayout = ({ requiredRole, children }: DashboardLayoutProps
               </SidebarGroupContent>
             </SidebarGroup>
           </SidebarContent>
-        </Sidebar>
+        </div>
       </div>
 
       {/* Main content - Use absolute positioning to prevent horizontal movement */}
