@@ -50,8 +50,6 @@ const ArtSlideshow = ({
   }
 
   const handleBidSubmit = (amount: number) => {
-    // You can add your bid logic here (e.g., API call)
-    // Optionally show a toast or feedback
     setShowBidPopup(false);
   };
   
@@ -59,7 +57,7 @@ const ArtSlideshow = ({
   return (
     <div
       className={cn(
-        "relative w-full h-full overflow-hidden rounded-xl bg-black shadow-6xl",
+        "",
         "flex items-center",
         isMobile ? "px-16 gap-1" : "px-8 py-8 gap-12"
       )}
@@ -68,7 +66,7 @@ const ArtSlideshow = ({
         <div
           key={artwork.id}
           className={cn(
-            "absolute top-0 left-0 w-full h-full flex items-center gap-12 transition-opacity duration-[2500ms] ease-in-out",
+            "absolute top-0 left-0 w-full h-full flex items-center gap-24 transition-opacity duration-[2500ms] ease-in-out",
             index === currentIndex
               ? "opacity-100 z-10"
               : "opacity-0 z-0 pointer-events-none"
@@ -78,15 +76,15 @@ const ArtSlideshow = ({
           {/* Left - Artwork Image */}
           <div
             className={cn(
-              "aspect-square overflow-hidden",
-              isMobile ? "w-[45%] -mr-8" : "w-[40%]"
+              "aspect-square overflow-hidden py-16 pl-28",
+              isMobile ? "w-[45%] -mr-8" : "w-[38%]"
             )}
           >
             <img
               src={artwork.image}
               alt={artwork.title}
               className={cn(
-                "object-cover rounded-sm",
+                "object-cover rounded-xl shadow-xl",
                 isMobile ? "w-full h-full" : "w-full h-full"
               )}
               draggable={false}
@@ -103,26 +101,26 @@ const ArtSlideshow = ({
             <h2
               className={cn(
                 "font-semibold",
-                "bg-gradient-to-r from-white via-pink-400 to-red-600 bg-clip-text text-transparent",
-                isMobile ? "text-lg mb-1" : "text-5xl mb-2"
+                "bg-gradient-to-r from-red-300 via-red-500 to-red-900 bg-clip-text text-transparent",
+                isMobile ? "text-lg mb-1" : "text-3xl"
               )}
             >
               {artwork.title}
             </h2>
 
-            <p
+            {/* <p
               className={cn(
-                "text-gray-200",
+                "text-black",
                 isMobile ? "text-[9px]" : "text-sm mb-4"
               )}
             >
               {artwork.description}
-            </p>
+            </p> */}
 
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2 mb-3">
               <span
                 className={cn(
-                  "text-gray-400",
+                  "text-gray-600",
                   isMobile ? "text-[9px]" : "text-xs"
                 )}
               >
@@ -135,13 +133,13 @@ const ArtSlideshow = ({
                     alt={artwork.artist}
                     className={cn(
                       "rounded-full",
-                      isMobile ? "w-3 h-3" : "w-5 h-5"
+                      isMobile ? "w-2 h-2" : "w-4 h-4"
                     )}
                   />
                   
                   <span
                     className={cn(
-                      "font-medium",
+                      "text-black font-medium",
                       isMobile ? "text-[9px]" : "text-xs"
                     )}
                   >
@@ -151,39 +149,65 @@ const ArtSlideshow = ({
               </div>
             </div>
 
-            <div className={cn("flex items-center mt-4", isMobile ? "gap-6" : "gap-16" )}>
+            <div className="bg-white rounded-md px-16 py-7 flex max-w-[475px]">
+              <div className="flex w-full">
+                <div className="flex-1 text-center">  
+                  <p className="text-[11px] text-black mb-3">Current Bid</p>
+                  <p className="text-2xl text-black md:text-xl font-semibold whitespace-nowrap">500k php</p>
+                </div>
+
+                <div className="border-l border-gray-300 h-19 mx-12"></div>
+
+                <div className="flex flex-col text-center">
+                <span
+                  className={cn(
+                    isMobile ? "text-black text-[10px]" : "text-black text-xs mb-2"
+                  )}
+                >
+                  Auction ends in
+                </span>
+                <div className="flex justify-center items-center gap-8">
+                  <div className="flex flex-col items-center">
+                    <span className="text-md font-semibold text-[#990000]">19</span>
+                    <span className="text-gray-500 text-[10px] mt-1">Hrs</span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <span className="text-md font-bold text-[#990000]">24</span>
+                    <span className="text-gray-500 text-[10px] mt-1">mins</span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <span className="text-md font-bold text-[#990000]">56</span>
+                    <span className="text-gray-500 text-[10px] mt-1">secs</span>
+                  </div>
+                </div>
+
+              </div>
+              </div>
+            </div>
+
+            <div className={cn("flex items-center mt-4", isMobile ? "gap-6" : "gap-8" )}>
               <button
                 onClick={() => {
                   setBidArtworkIndex(index);
                   setShowBidPopup(true);
                 }}
                 className={cn(
-                  "border border-white rounded-full font-semibold transition w-[50%]",
+                  "bg-red-800 text-white rounded-full font-medium w-[38%]",
                   isMobile
-                    ? "px-3 py-1 text-[10px] hover:border-red-600 hover:text-red-600"
-                    : "px-8 py-3 hover:border-red-600 hover:text-red-600"
+                    ? "px-3 py-1 text-[10px]"
+                    : "px-8 py-2 text-sm"
                 )}
               >
                 Bid Now
               </button>
-
-              <div className="flex flex-col text-center">
-                <span
-                  className={cn(
-                    isMobile ? "text-[10px]" : "text-xs mb-2"
-                  )}
-                >
-                  Ending In
-                </span>
-                <span
-                  className={cn(
-                    "text-red-500 font-medium",
-                    isMobile ? "text-[10px]" : "text-[16px]"
-                  )}
-                >
-                  {artwork.endTime}
-                </span>
-              </div>
+              <button className={cn(
+                  "border border-gray-400 text-gray-500 rounded-full font-medium transition w-[38%]",
+                  isMobile
+                    ? "px-3 py-1 text-[10px] "
+                    : "px-8 py-2 text-sm"
+                )}>
+                  View item
+              </button>
             </div>
           </div>
         </div>
@@ -214,7 +238,7 @@ const ArtSlideshow = ({
               isMobile ? "w-1 h-1" : "w-1 h-1",
               index === currentIndex
                 ? "bg-gray-300 w-3"
-                : "bg-white/50 hover:bg-white/70"
+                : "bg-black/50 hover:bg-white/70"
             )}
             aria-label={`Go to slide ${index + 1}`}
           />
