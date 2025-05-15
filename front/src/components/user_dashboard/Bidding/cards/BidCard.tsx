@@ -86,7 +86,11 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
             <div className="text-gray-500 text-[10px]">
               Current Bid
               <span className="text-sm font-bold text-black ml-2">
-                {data.highest_bid !== null && data.highest_bid !== undefined ? `${data.highest_bid}k` : "0"}
+                {data.highest_bid?.amount
+                  ? data.highest_bid.amount >= 1000
+                    ? `${(data.highest_bid.amount / 1000).toFixed(data.highest_bid.amount % 1000 === 0 ? 0 : 1)}k`
+                    : data.highest_bid.amount
+                  : "0"}
               </span>
             </div>
             <button

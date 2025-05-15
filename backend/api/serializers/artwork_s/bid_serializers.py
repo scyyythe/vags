@@ -59,12 +59,14 @@ class BidSerializer(serializers.Serializer):
 
 class AuctionSerializer(serializers.Serializer):
     id = serializers.CharField()
-    artwork = ArtSerializer(read_only=True)  
+    artwork = ArtSerializer(read_only=True)
     artwork_id = serializers.CharField(write_only=True)
     start_bid_amount = serializers.FloatField()
     start_time = serializers.DateTimeField()
     end_time = serializers.DateTimeField()
     highest_bid = BidSerializer(read_only=True)
+    bid_history = BidSerializer(read_only=True, many=True)  
     status = serializers.BooleanField(read_only=True)
+
 
 
