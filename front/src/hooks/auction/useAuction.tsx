@@ -28,6 +28,7 @@ export interface ArtworkAuction {
   end_time: string;
   start_time: string;
   status: boolean;
+  start_bid_amount: number;
   timeRemaining: {
     finished: boolean;
     hrs: number;
