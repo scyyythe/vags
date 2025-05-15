@@ -41,13 +41,13 @@ export const DashboardCharts = ({ userActivityData, salesData }: DashboardCharts
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
       <Card>
         <CardHeader>
-          <CardTitle>User Activity</CardTitle>
-          <CardDescription>New and active users over the last 6 months</CardDescription>
+          <CardTitle className="text-sm">User Activity</CardTitle>
+          <CardDescription className="text-xs">New and active users over the last 6 months</CardDescription>
         </CardHeader>
         <CardContent className="pt-2">
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={userActivityChartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <AreaChart className="text-[10px]" data={userActivityChartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorNewUsers" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="rgba(155, 135, 245, 0.8)" stopOpacity={0.8} />
@@ -85,24 +85,33 @@ export const DashboardCharts = ({ userActivityData, salesData }: DashboardCharts
 
       <Card>
         <CardHeader>
-          <CardTitle>Sales Analytics</CardTitle>
-          <CardDescription>Revenue over the last 6 months</CardDescription>
+          <CardTitle className="text-sm">Sales Analytics</CardTitle>
+          <CardDescription className="text-xs">Revenue over the last 6 months</CardDescription>
         </CardHeader>
         <CardContent className="pt-2">
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={salesChartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <BarChart
+                className="text-[10px]"
+                data={salesChartData}
+                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="Sales ($)" fill="rgba(255, 87, 87, 0.8)" />
+                <Bar
+                  dataKey="Sales ($)"
+                  fill="#B71C1C" // Darker red
+                  radius={[50, 50, 0, 0]} // Rounded top corners
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
+
     </div>
   );
 };
