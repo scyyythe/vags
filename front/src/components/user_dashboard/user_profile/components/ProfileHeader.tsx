@@ -19,14 +19,10 @@ interface ProfileHeaderProps {
   name: string;
   items: number;
   profileUserId: string;
+  cover: string;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({
-  profileImage,
-  name,
-  items,
-  profileUserId,
-}) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items, profileUserId, cover }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [optionsOpen, setOptionsOpen] = useState(false);
   const loggedInUserId = getLoggedInUserId();
@@ -92,10 +88,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   return (
     <div className="w-full px-4">
       {/* Cover Photo */}
-      <div
-        className="relative w-full h-52 md:h-72 rounded-lg overflow-hidden bg-blue-100 object-cover"
-      >
-        {/* <img className="w-full h-full object-cover" /> */}
+      <div className="relative w-full h-52 md:h-72 rounded-lg overflow-hidden bg-blue-100 object-cover">
+        <img src={cover} alt="Cover" className="w-full h-full object-cover" />
       </div>
 
       {/* Profile Info */}

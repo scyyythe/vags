@@ -2,6 +2,7 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
 from api.models.artwork_model.bid import Bid, Auction
+from api.models.artwork_model.bid import AuctionStatus
 from api.models.artwork_model.artwork import Art
 from api.serializers.artwork_s.bid_serializers import BidSerializer, AuctionSerializer
 from datetime import datetime
@@ -13,11 +14,10 @@ from bson import ObjectId
 class AuctionCreateView(APIView):
     def post(self, request, *args, **kwargs):
         try:
-           
             artwork_id = request.data["artwork_id"]
             start_time = datetime.fromisoformat(request.data["start_time"])
             end_time = datetime.fromisoformat(request.data["end_time"])
-            start_bid_amount = request.data["start_bid_amount"]
+            start_bid_amount = float(request.data["start_bid_amount"])
 
             
             if end_time <= start_time:
@@ -26,21 +26,69 @@ class AuctionCreateView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            
+           
             if (end_time - start_time).days > 3:
                 return Response(
                     {"error": "Auction duration cannot exceed 3 days."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            
-            auction = Auction.create_auction(artwork_id, start_time, end_time, start_bid_amount)
+            if Auction.objects(artwork=artwork_id).first():
+                return Response(
+                    {"error": "This artwork already has an auction."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
-            return Response({"message": "Auction created successfully!", "auction_id": str(auction.id)},
-                            status=status.HTTP_201_CREATED)
+            auction = Auction.create_auction(
+                artwork_id=artwork_id,
+                start_time=start_time,
+                end_time=end_time,
+                start_bid_amount=start_bid_amount
+            )
+
+            return Response(
+                {
+                    "message": "Auction created successfully!",
+                    "auction_id": str(auction.id),
+                    "status": auction.status
+                },
+                status=status.HTTP_201_CREATED
+            )
+
+        except DoesNotExist:
+            return Response(
+                {"error": "Artwork not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        except NotUniqueError:
+            return Response(
+                {"error": "This artwork is already in an active auction."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
+class AuctionListView(generics.ListAPIView):
+    serializer_class = AuctionSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+       
+        expired_auctions = Auction.objects(
+            status=AuctionStatus.ON_GOING.value,
+            end_time__lt=datetime.utcnow()
+        )
+
+        for auction in expired_auctions:
+            auction.close_auction()
+
+       
+        return Auction.objects(status=AuctionStatus.ON_GOING.value)
     
 class PlaceBidView(generics.CreateAPIView):
     serializer_class = BidSerializer
@@ -57,16 +105,7 @@ class BidHistoryView(generics.ListAPIView):
         artwork_id = self.kwargs.get('artwork_id')
         return Bid.objects.filter(artwork=artwork_id).order_by('-timestamp')
 
-class AuctionListView(generics.ListAPIView):
-    serializer_class = AuctionSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get_queryset(self):
-        expired_auctions = Auction.objects.filter(status=True, end_time__lt=datetime.utcnow)
-        for auction in expired_auctions:
-            auction.close_auction()  
-
-        return Auction.objects.all()
     
 class AuctionDetailView(APIView):
     permission_classes = [permissions.AllowAny]

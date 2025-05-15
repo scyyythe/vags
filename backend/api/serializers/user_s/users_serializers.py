@@ -19,6 +19,7 @@ class UserSerializer(serializers.Serializer):
     gender = serializers.ChoiceField(choices=["Male", "Female", "Other"], required=False, allow_null=True)
     date_of_birth = serializers.DateTimeField(required=False, allow_null=True)
     profile_picture = serializers.ImageField(required=False, allow_null=True)
+    cover_photo = serializers.ImageField(required=False, allow_null=True)
     bio = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     contact_number = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     address = serializers.CharField(required=False, allow_blank=True, allow_null=True)
@@ -50,6 +51,12 @@ class UserSerializer(serializers.Serializer):
         if profile_picture:
             result = cloudinary.uploader.upload(profile_picture)
             validated_data['profile_picture'] = result.get('secure_url', '')
+            
+        cover_photo = validated_data.pop('cover_photo', None)
+        if cover_photo:
+            result = cloudinary.uploader.upload(cover_photo)
+            validated_data['cover_photo'] = result.get('secure_url', '')
+
 
         user = User(
             username=validated_data["username"],
@@ -65,7 +72,8 @@ class UserSerializer(serializers.Serializer):
             bio=validated_data.get("bio"),
             contact_number=validated_data.get("contact_number"),
             address=validated_data.get("address"),
-            profile_picture=validated_data.get('profile_picture')
+            profile_picture=validated_data.get('profile_picture'),
+            cover_photo=validated_data.get('cover_photo')
 
         )
         user.set_password(validated_data["password"])
@@ -92,6 +100,14 @@ class UserSerializer(serializers.Serializer):
                 validated_data['profile_picture'] = result.get('secure_url', '')
             except cloudinary.exceptions.Error as e:
                 raise serializers.ValidationError(f"Cloudinary upload error: {str(e)}")
+            
+        cover_photo = validated_data.pop('cover_photo', None)
+        if cover_photo:
+            try:
+                result = cloudinary.uploader.upload(cover_photo)
+                validated_data['cover_photo'] = result.get('secure_url', '')
+            except cloudinary.exceptions.Error as e:
+                raise serializers.ValidationError(f"Cloudinary upload error: {str(e)}")
 
         instance.username = validated_data.get("username", instance.username)
         instance.email = validated_data.get("email", instance.email)
@@ -102,6 +118,7 @@ class UserSerializer(serializers.Serializer):
         instance.gender = validated_data.get("gender", instance.gender)
         instance.date_of_birth = validated_data.get("date_of_birth", instance.date_of_birth)
         instance.profile_picture = validated_data.get("profile_picture", instance.profile_picture)
+        instance.cover_photo = validated_data.get("cover_photo", instance.cover_photo)
         instance.bio = validated_data.get("bio", instance.bio)
         instance.contact_number = validated_data.get("contact_number", instance.contact_number)
         instance.address = validated_data.get("address", instance.address)
@@ -125,6 +142,7 @@ class UserSerializer(serializers.Serializer):
             "gender": instance.gender,
             "date_of_birth": instance.date_of_birth,
             "profile_picture": instance.profile_picture,
+            "cover_photo": instance.cover_photo,
             "bio": instance.bio,
             "contact_number": instance.contact_number,
             "address": instance.address

@@ -11,7 +11,7 @@ import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 const Index = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("created");
-  const { firstName, lastName, profilePicture } = useUserDetails(id);
+  const { firstName, lastName, profilePicture, cover_photo } = useUserDetails(id);
   const userName = `${firstName} ${lastName}`;
 
   const { data, isLoading } = useArtworks(1, id, true, "specific-user");
@@ -28,7 +28,7 @@ const Index = () => {
       <Header />
       <div className="container mx-auto px-4 pt-20">
         <ProfileHeader
-          bannerImage="/lovable-uploads/91de0ca2-cd8a-42fb-8dbe-bad642960399.png"
+          cover={cover_photo}
           profileImage={profilePicture}
           name={userName}
           items={createdArtworksCount}
