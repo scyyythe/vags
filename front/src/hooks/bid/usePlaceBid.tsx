@@ -36,8 +36,6 @@ export const usePlaceBid = () => {
       return response.data;
     },
     onSuccess: (data, variables) => {
-      toast.success(`Bid of ${variables.amount}K placed successfully!`);
-
       queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
     },
     onError: (error) => {

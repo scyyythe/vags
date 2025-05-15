@@ -25,7 +25,6 @@ const BidPopup: React.FC<BidPopupProps> = ({
   username = "@AnonymousArtFan",
   fullName = "Anonymous User",
   start_bid_amount,
-  data,
 }) => {
   const [bidAmount, setBidAmount] = useState<string>("");
   const [showIdentityPopup, setShowIdentityPopup] = useState(false);
@@ -49,7 +48,7 @@ const BidPopup: React.FC<BidPopupProps> = ({
     }
 
     if (bid < start_bid_amount) {
-      toast.warning("Minimum bid amount is ₱90,000.");
+      toast.warning(`Minimum bid amount is ₱${start_bid_amount}`);
       return;
     }
 
@@ -109,7 +108,6 @@ const BidPopup: React.FC<BidPopupProps> = ({
                 onChange={(e) => setBidAmount(e.target.value)}
                 className="w-full py-2 px-3 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-red-800"
                 required
-                min={start_bid_amount}
               />
             </div>
 

@@ -39,13 +39,29 @@ class BidSerializer(serializers.Serializer):
             auction.close_auction()
             raise serializers.ValidationError({"error": "This auction has ended."})
 
-        if auction.highest_bid and validated_data['amount'] <= auction.highest_bid.amount:
-            raise serializers.ValidationError({"error": "Bid must be higher than the current highest bid."})
+        current_highest_bid = auction.highest_bid
+        new_bid_amount = validated_data['amount']
 
+        if current_highest_bid:
+            is_current_bidder_highest = current_highest_bid.bidder == bidder
+            if is_current_bidder_highest:
+                # Bidder is already highest, so new bid must be strictly higher than their current highest bid
+                if new_bid_amount <= current_highest_bid.amount:
+                    raise serializers.ValidationError(
+                        {"error": "Your new bid must be higher than your current highest bid."}
+                    )
+            else:
+                # Bidder is NOT highest, so bid must be higher than the current highest bid
+                if new_bid_amount <= current_highest_bid.amount:
+                    raise serializers.ValidationError(
+                        {"error": "Bid must be higher than the current highest bid."}
+                    )
+
+        # Create the bid
         bid = Bid.objects.create(
             bidder=bidder,
             artwork=auction.artwork,
-            amount=validated_data['amount'],
+            amount=new_bid_amount,
             identity_type=validated_data['identity_type']
         )
         auction.highest_bid = bid
@@ -53,6 +69,7 @@ class BidSerializer(serializers.Serializer):
         auction.save()
 
         return bid
+
 
 
 
