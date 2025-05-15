@@ -9,6 +9,8 @@ import Notifications from "../notification/Notification";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
 const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
@@ -19,16 +21,27 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage] = useState(1);
   const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all", "public");
-  const filteredArtworksMemo = useMemo(() => {
-    return artworks?.filter((artwork) => {
-      const searchMatches =
-        artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        artwork.artistName.toLowerCase().includes(searchQuery.toLowerCase());
+  const navigate = useNavigate();
 
-      return searchMatches;
-    });
-  }, [artworks, searchQuery]);
+  const handleSearchChange = (value: string) => {
+    const params = new URLSearchParams();
+    if (value.trim()) {
+      params.set("q", value);
+    }
 
+    const isExplorePage = currentPath.includes("/explore");
+    const isBiddingPage = currentPath.includes("/bidding");
+
+    if (isExplorePage) {
+      navigate(`/explore?${params.toString()}`);
+    } else if (isBiddingPage) {
+      navigate(`/bidding?${params.toString()}`);
+    } else {
+      navigate(`/explore?${params.toString()}`);
+    }
+
+    setSearchQuery(value); // for internal filtering if needed
+  };
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const avatarRef = useRef(null);
 
@@ -73,7 +86,7 @@ const Header = () => {
         <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
           {/* SearchBar for large screens */}
           <div className="hidden md:block w-[250px] border border-gray-400 rounded-full px-3">
-            <SearchBar onSearchChange={setSearchQuery} />
+            <SearchBar onSearchChange={handleSearchChange} />
           </div>
 
           {/* Search Icon for small screens */}
@@ -95,7 +108,7 @@ const Header = () => {
                   exit={{ opacity: 0, y: -5 }}
                   className="absolute top-10 right-0 z-50 bg-white border border-gray-300 rounded-full shadow-md w-60 px-3"
                 >
-                  <SearchBar onSearchChange={setSearchQuery} />
+                  <SearchBar onSearchChange={handleSearchChange} />
                 </motion.div>
               )}
             </AnimatePresence>
