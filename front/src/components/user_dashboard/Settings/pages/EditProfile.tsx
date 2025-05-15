@@ -157,6 +157,7 @@ const EditProfile = () => {
               <div className="relative">
                 <Input
                   value={formData.fullName}
+                  disabled={true} 
                   onChange={(e) => handleChange("fullName", e.target.value)}
                   className="w-full font-semibold -mb-2 p-none border-none focus:ring-0 shadow-none"
                   style={{
