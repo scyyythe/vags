@@ -26,7 +26,8 @@ interface DashboardLayoutProps {
 export const DashboardLayout = ({ requiredRole, children }: DashboardLayoutProps) => {
   const { currentUser, logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  
+  const COLLAPSED_WIDTH = 64;
+  const EXPANDED_WIDTH = 256;
   // Get mock user data based on role if no current user
   const mockAdminUser = {
     id: "admin-123",
@@ -109,13 +110,11 @@ export const DashboardLayout = ({ requiredRole, children }: DashboardLayoutProps
   return (
     <div className="flex h-screen w-screen bg-background overflow-hidden">
       {/* Sidebar - Fixed position with z-index */}
-      <div 
-        className={cn(
-          "h-screen border-r transition-all duration-300 ease-in-out fixed z-10",
-          isCollapsed ? "w-16" : "w-64"
-        )}
-      >
-        <Sidebar variant="sidebar" collapsible={isCollapsed ? "icon" : "none"} className="border-r transition-all duration-300 scrollbar-hide">
+      <div className="h-screen fixed z-10 transition-all duration-300 ease-in-out" style={{ width: isCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH }} >
+        <Sidebar
+        variant="sidebar"
+        collapsible={isCollapsed ? "icon" : "none"}
+        className="h-full border-r transition-all duration-300 overflow-y-auto scrollbar-hide">
           <SidebarHeader className="flex items-center gap-2 px-4 py-2">
             <div className={cn("flex items-center gap-2", isCollapsed && "justify-center")}>
               <User size={24} className="text-gallery-red" />
@@ -167,15 +166,6 @@ export const DashboardLayout = ({ requiredRole, children }: DashboardLayoutProps
                       </div>
                     )}
                   </div>
-                  <Button 
-                    variant="outline" 
-                    size={isCollapsed ? "icon" : "sm"} 
-                    className={cn("w-full flex items-center gap-2", isCollapsed && "w-auto")}
-                    onClick={() => window.location.href = "/"}
-                  >
-                    <LogOut size={16} />
-                    {!isCollapsed && <span>Back to Home</span>}
-                  </Button>
                 </div>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -184,10 +174,7 @@ export const DashboardLayout = ({ requiredRole, children }: DashboardLayoutProps
       </div>
 
       {/* Main content - Use absolute positioning to prevent horizontal movement */}
-      <div className={cn(
-        "absolute top-0 bottom-0 right-0 flex flex-col no-scrollbar overflow-hidden",
-        isCollapsed ? "left-16" : "left-64"
-      )}>
+      <div className="absolute top-0 bottom-0 right-0 flex flex-col no-scrollbar overflow-hidden transition-all duration-300" style={{ left: isCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH }} >
         <header className="bg-background border-b p-4 flex justify-between items-center">
           <h1 className="text-xl font-semibold">
             Art Gallery {requiredRole === "admin" ? "Admin" : "Moderator"} Dashboard
