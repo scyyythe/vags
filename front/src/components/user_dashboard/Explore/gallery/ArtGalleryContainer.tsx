@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
-const ArtGalleryContainer = () => {
+import { Artwork } from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
+
+interface ArtGalleryContainerProps {
+  artworks: Artwork[];
+}
+
+const ArtGalleryContainer = ({ artworks }: ArtGalleryContainerProps) => {
   const navigate = useNavigate();
   const [spread, setSpread] = useState(false);
-  const [currentPage] = useState(1);
-  const { data: artworks = [] } = useFetchPopularArtworks(currentPage);
-  const handleArtworkClick = (artworkId: string, artworkImage: string, artistName: string) => {
-    navigate(`/artwork/${artworkId}`, { state: { artworkImage, artistName } });
+
+  const handleArtworkClick = (artworkId: string, image_url: string, artistName: string) => {
+    navigate(`/artwork/${artworkId}`, { state: { image_url, artistName } });
   };
 
   useEffect(() => {
-    const timeout = setTimeout(() => setSpread(true), 100);
+    const timeout = setTimeout(() => setSpread(true), 100); // trigger spread animation
     return () => clearTimeout(timeout);
   }, []);
 
