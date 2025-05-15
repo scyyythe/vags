@@ -38,8 +38,7 @@ const useNotifications = () => {
 
     const fetchNotifications = async () => {
       try {
-        // Fetch all notifications for the logged-in user
-        const response = await apiClient.get("/notifications/"); // This should hit NotificationListView
+        const response = await apiClient.get("/notifications/");
         const notifications: Notification[] = response.data;
         setDisplayedNotifications(notifications);
       } catch (error) {
@@ -51,11 +50,9 @@ const useNotifications = () => {
     fetchNotifications();
   }, [userId]);
 
-  // Filter notifications based on search and date
   const filterNotifications = () => {
     let filtered = [...displayedNotifications];
 
-    // Filter by search query
     if (searchQuery) {
       filtered = filtered.filter(
         (n) =>
@@ -65,7 +62,6 @@ const useNotifications = () => {
       );
     }
 
-    // Filter by date
     if (date) {
       filtered = filtered.filter((n) => {
         const notifDate = new Date(n.date);
@@ -89,7 +85,6 @@ const useNotifications = () => {
     setDate(selectedDate);
     setIsFilterOpen(false);
 
-    // Filter notifications based on selected date
     if (selectedDate) {
       const filtered = displayedNotifications.filter((n) => {
         const notifDate = new Date(n.date);

@@ -7,7 +7,7 @@ from api.models.interaction_model.interaction import Comment, Like, CartItem, Sa
 from api.serializers.interaction_s.interaction import CommentSerializer, LikeSerializer, CartItemSerializer,SavedSerializer
 from api.models.interaction_model.notification import Notification
 from rest_framework import generics, permissions
-from datetime import datetime
+
 from django.utils.timesince import timesince
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 class CommentCreateView(APIView):

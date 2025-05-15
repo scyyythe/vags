@@ -9,7 +9,8 @@ from api.models.interaction_model.notification import Notification
 from api.serializers.user_s.users_serializers import UserSerializer 
 from bson import ObjectId
 from bson.errors import InvalidId
-
+from datetime import datetime
+from django.utils.timesince import timesince
 
 
 
@@ -28,20 +29,30 @@ class FollowCreateView(APIView):
         except User.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
         
-        
         if user.id == following.id:
             return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
         
-       
         existing_follow = Follower.objects.filter(follower=user, following=following).first()
-        
         if existing_follow:
             return Response({"detail": "You are already following this user."}, status=status.HTTP_400_BAD_REQUEST)
         
-       
         follow = Follower.objects.create(follower=user, following=following)
-        message = f"{user.first_name} is now following you."
-        Notification.objects.create(user=following, message=message)
+
+        now = datetime.utcnow()
+        time_elapsed = timesince(now).split(',')[0] + " ago"
+
+
+        # Create the follow notification
+        Notification.objects.create(
+            user=following,
+            message=f"{user.first_name} is now following you.",
+            name=f"{user.first_name} {user.last_name}",
+            action="followed you",
+            icon="👥",
+            time=time_elapsed,
+            date=now
+        )
+
         return Response(FollowSerializer(follow).data, status=status.HTTP_201_CREATED)
 
 
