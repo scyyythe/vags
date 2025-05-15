@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 
-interface Artwork {
+export interface Artwork {
   id: string;
   title: string;
   artistName: string;
