@@ -2,6 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { calculateTimeRemaining } from "@/utils/timeUtils";
 
+export interface Bid {
+  bidderFullName: string;
+  amount: number;
+  timestamp: string;
+  identity_type: "anonymous" | "username" | "fullName";
+}
+
 export interface AuctionArtwork {
   id: string;
   title: string;
@@ -24,7 +31,8 @@ export interface AuctionArtwork {
 export interface ArtworkAuction {
   id: string;
   artwork: AuctionArtwork;
-  highest_bid: number | null;
+  highest_bid: Bid | null;
+  bid_history: Bid[];
   end_time: string;
   start_time: string;
   status: boolean;
@@ -36,30 +44,24 @@ export interface ArtworkAuction {
     secs: number;
   };
 }
+
 export const useFetchBiddingArtworks = () => {
   return useQuery<ArtworkAuction[], Error>({
     queryKey: ["biddingArtworks"],
     queryFn: async () => {
       const response = await apiClient.get("auction/");
 
-      // Update artworks by adding time remaining
-      const updatedArtworks = response.data.map((artwork: any) => {
+      const updatedArtworks = response.data.map((artwork: ArtworkAuction) => {
         const timeRemaining = calculateTimeRemaining(artwork.end_time);
-
-        // Handle possible highest_bid being null
-        const highestBid = artwork.highest_bid ?? 0;
-
         return {
           ...artwork,
           timeRemaining,
-          highest_bid: highestBid,
+          highest_bid: artwork.highest_bid ?? null,
         };
       });
-
       console.log("Updated Auction response:", updatedArtworks);
       return updatedArtworks;
     },
-
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
