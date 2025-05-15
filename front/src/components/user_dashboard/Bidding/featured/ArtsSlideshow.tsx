@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import BidPopup from "../place_bid/BidPopup";
@@ -52,7 +53,17 @@ const ArtSlideshow = ({
   const handleBidSubmit = (amount: number) => {
     setShowBidPopup(false);
   };
-  
+
+  const fadeInUp = {
+    initial: { opacity: 0, y: 40 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+  };
+
+  const fadeIn = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1, transition: { duration: 0.8, ease: "easeOut" } }
+  };
+
 
   return (
     <div
@@ -63,24 +74,27 @@ const ArtSlideshow = ({
       )}
     >
       {artworks.map((artwork, index) => (
-        <div
+        <motion.div
           key={artwork.id}
           className={cn(
-            "absolute top-0 left-0 w-full h-full flex items-center gap-24 transition-opacity duration-[2500ms] ease-in-out",
+            "absolute top-0 left-0 w-full h-full flex items-center gap-20 transition-opacity duration-[2500ms] ease-in-out",
             index === currentIndex
               ? "opacity-100 z-10"
               : "opacity-0 z-0 pointer-events-none"
           )}
           aria-hidden={index !== currentIndex}
+          initial="initial"
+          animate={index === currentIndex ? "animate" : "initial"}
+          variants={fadeIn}
         >
           {/* Left - Artwork Image */}
           <div
             className={cn(
-              "aspect-square overflow-hidden py-16 pl-28",
+              "aspect-square overflow-hidden py-16 pl-28 ml-6",
               isMobile ? "w-[45%] -mr-8" : "w-[38%]"
             )}
           >
-            <img
+            <motion.img
               src={artwork.image}
               alt={artwork.title}
               className={cn(
@@ -88,6 +102,15 @@ const ArtSlideshow = ({
                 isMobile ? "w-full h-full" : "w-full h-full"
               )}
               draggable={false}
+              animate={{
+                y: [0, -10, 0], 
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                repeatType: "loop",
+                ease: "easeInOut"
+              }}
             />
           </div>
 
@@ -168,7 +191,7 @@ const ArtSlideshow = ({
                 </span>
                 <div className="flex justify-center items-center gap-8">
                   <div className="flex flex-col items-center">
-                    <span className="text-md font-semibold text-[#990000]">19</span>
+                    <span className="text-md font-bold text-[#990000]">19</span>
                     <span className="text-gray-500 text-[10px] mt-1">Hrs</span>
                   </div>
                   <div className="flex flex-col items-center">
@@ -210,7 +233,7 @@ const ArtSlideshow = ({
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
       ))}
 
       {showBidPopup && bidArtworkIndex !== null && (
