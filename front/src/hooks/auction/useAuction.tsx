@@ -35,7 +35,7 @@ export interface ArtworkAuction {
   bid_history: Bid[];
   end_time: string;
   start_time: string;
-  status: boolean;
+  status: "on_going" | "sold" | "closed" | "no_bidder";
   start_bid_amount: number;
   timeRemaining: {
     finished: boolean;
@@ -59,6 +59,7 @@ export const useFetchBiddingArtworks = () => {
           highest_bid: artwork.highest_bid ?? null,
         };
       });
+
       console.log("Updated Auction response:", updatedArtworks);
       return updatedArtworks;
     },
