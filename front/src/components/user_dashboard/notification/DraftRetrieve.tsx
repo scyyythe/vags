@@ -171,6 +171,15 @@ const notifications: Notification[] = [
     time: "6h ago",
     date: new Date(2025, 4, 8),
   },
+  {
+    id: 15,
+    avatar: "https://randomuser.me/api/portraits/men/34.jpg",
+    name: "John Doe",
+    action: "liked your artwork",
+    target: "Starry Night",
+    time: "Just now",
+    date: new Date(2025, 4, 11),
+  },
 ];
 
 const AllNotifications = () => {
