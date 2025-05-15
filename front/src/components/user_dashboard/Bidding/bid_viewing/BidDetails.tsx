@@ -311,7 +311,7 @@ const BidDetails = () => {
                     </button>
 
                     <div className="flex items-center space-x-2 text-xs">
-                      <i className="bx bx-show text-lg"></i>
+                      <i className="bx bx-show text-[15px]"></i>
                       <span>{views}</span>
                     </div>
                   </div>
@@ -368,7 +368,7 @@ const BidDetails = () => {
 
                 <Separator className="my-10" />
 
-                <div className="bg-gray-100 px-6 py-4 rounded-xl flex justify-between items-center text-center mt-8 shadow-sm">
+                <div className="w-full bg-gray-100 px-6 py-4 rounded-xl flex justify-between items-center text-center mt-8 shadow-sm">
                   {/* Highest Bid */}
                   <div className="flex-1">
                     <p className="text-[10px] text-gray-500 mb-1">Highest Bid</p>

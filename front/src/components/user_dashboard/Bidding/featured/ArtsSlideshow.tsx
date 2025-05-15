@@ -54,14 +54,9 @@ const ArtSlideshow = ({
     setShowBidPopup(false);
   };
 
-  const fadeInUp = {
-    initial: { opacity: 0, y: 40 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
-  };
-
   const fadeIn = {
     initial: { opacity: 0 },
-    animate: { opacity: 1, transition: { duration: 0.8, ease: "easeOut" } }
+    animate: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } }
   };
 
 
@@ -74,7 +69,7 @@ const ArtSlideshow = ({
       )}
     >
       {artworks.map((artwork, index) => (
-        <motion.div
+        <div
           key={artwork.id}
           className={cn(
             "absolute top-0 left-0 w-full h-full flex items-center gap-20 transition-opacity duration-[2500ms] ease-in-out",
@@ -83,9 +78,6 @@ const ArtSlideshow = ({
               : "opacity-0 z-0 pointer-events-none"
           )}
           aria-hidden={index !== currentIndex}
-          initial="initial"
-          animate={index === currentIndex ? "animate" : "initial"}
-          variants={fadeIn}
         >
           {/* Left - Artwork Image */}
           <div
@@ -103,7 +95,7 @@ const ArtSlideshow = ({
               )}
               draggable={false}
               animate={{
-                y: [0, -10, 0], 
+                y: [0, -5, 0], 
               }}
               transition={{
                 duration: 3,
@@ -233,7 +225,7 @@ const ArtSlideshow = ({
               </button>
             </div>
           </div>
-        </motion.div>
+        </div>
       ))}
 
       {showBidPopup && bidArtworkIndex !== null && (
