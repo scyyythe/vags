@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
-import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+
 interface ArtGalleryContainerProps {
   artworks: Artwork[];
-  isLoading?: boolean;
 }
-const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContainerProps) => {
+
+const ArtGalleryContainer = ({ artworks }: ArtGalleryContainerProps) => {
   const navigate = useNavigate();
   const [spread, setSpread] = useState(false);
 
@@ -33,24 +33,6 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
   const overlap = 70; //controls how much cards overlap in the stack
 
   const cardGap = 210;
-  if (isLoading || artworks.length === 0) {
-    return (
-      <div className="w-full mx-auto rounded-lg overflow-hidden py-12 border relative text-center">
-        <h2 className="text-md font-bold pb-2">Popular this week</h2>
-        <div className="w-96 mx-auto">
-          <p className="text-[10px] text-gray-600 mt-2">
-            Dive into this week’s handpicked collection of stunning creations-each piece a bold exploration of
-            imagination, emotion, and visual storytelling.
-          </p>
-        </div>
-        <div className="flex justify-center items-center pt-6 gap-4">
-          {[...Array(5)].map((_, i) => (
-            <ArtCardSkeleton key={i} />
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div
