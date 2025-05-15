@@ -135,14 +135,14 @@ const Bidding = () => {
             <ArtsContainer artworks={staticArtworks} />
           </section>
           <div className="flex items-center justify-between -ml-7 mb-6 lg:w-[104%] pl-2 sm:pl-0">
-              <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
-              <div className="flex space-x-2 text-xs">
-                <div className="relative">
-                  <ArtCategorySelect
-                    selectedCategory={selectedCategory}
-                    onChange={(value) => setSelectedCategory(value)}
-                  />
-                </div>
+            <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
+            <div className="flex space-x-2 text-xs">
+              <div className="relative">
+                <ArtCategorySelect
+                  selectedCategory={selectedCategory}
+                  onChange={(value) => setSelectedCategory(value)}
+                />
+              </div>
             </div>
           </div>
         </main>
@@ -157,16 +157,7 @@ const Bidding = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredArtworks.map((artwork) => (
               <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
-                <BidCard
-                  data={{
-                    id: artwork.id,
-                    title: artwork.artwork.title,
-                    currentBid: artwork.highest_bid,
-                    end_time: artwork.end_time,
-                    imageUrl: artwork.artwork.image_url,
-                  }}
-                  onPlaceBid={handlePlaceBid}
-                />
+                <BidCard data={artwork} onPlaceBid={handlePlaceBid} />
               </div>
             ))}
           </div>
