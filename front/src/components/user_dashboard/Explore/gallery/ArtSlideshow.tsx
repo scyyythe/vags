@@ -9,7 +9,7 @@ interface Artwork {
   image: string;
 }
 
-interface ArtSlideshowProps {
+interface ArtSlideshowProps { 
   artworks: Artwork[];
   autoPlay?: boolean;
   interval?: number;
