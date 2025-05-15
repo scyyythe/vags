@@ -2,6 +2,8 @@ import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
 import ArtsContainer from "@/components/user_dashboard/Bidding/featured/ArtsContainer";
 import Components from "@/components/user_dashboard/Bidding/navbar/Components";
+import CategoryFilter from "@/components/user_dashboard/Explore/navigation/CategoryFilter";
+import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
@@ -31,6 +33,13 @@ const Bidding = () => {
   const { data, error } = useFetchBiddingArtworks();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
+  const categories = ["All", "Trending", "Following"];
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+  };
+
   useEffect(() => {
     console.log("Fetched data:", data);
     console.log("Error:", error);
@@ -122,11 +131,19 @@ const Bidding = () => {
       <Header />
       <div className="container mx-auto px-4 sm:px-6 pt-20">
         <main className="container">
-          <section className="mb-10">
+          <section className="mb-7">
             <ArtsContainer artworks={staticArtworks} />
           </section>
-          <div className="pl-2 sm:pl-0">
-            <Components />
+          <div className="flex items-center justify-between -ml-7 mb-6 lg:w-[104%] pl-2 sm:pl-0">
+              <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
+              <div className="flex space-x-2 text-xs">
+                <div className="relative">
+                  <ArtCategorySelect
+                    selectedCategory={selectedCategory}
+                    onChange={(value) => setSelectedCategory(value)}
+                  />
+                </div>
+            </div>
           </div>
         </main>
 
