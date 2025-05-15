@@ -15,66 +15,120 @@ const ArtGalleryContainer = ({ artworks }: ArtGalleryContainerProps) => {
   };
 
   useEffect(() => {
-    const timeout = setTimeout(() => setSpread(true), 100); // trigger spread animation
+    const timeout = setTimeout(() => setSpread(true), 100);
     return () => clearTimeout(timeout);
   }, []);
 
+  const stacked = [
+    { left: -80, rotate: -11, z: 1 }, // leftmost
+    { left: -40, rotate: -5, z: 2 },
+    { left: 0, rotate: 0, z: 3 },     // center
+    { left: 40, rotate: 5, z: 2 },
+    { left: 80, rotate: 11, z: 1 },   // rightmost
+  ];
+
+  // Fan angles for 5 cards, adjust if you have a different number
+  const fanAngles = [-12, -6, 0, 6, 12];
+
+  const overlap = 70; //controls how much cards overlap in the stack
+ 
+  const cardGap = 210;
+
   return (
-    <div className="w-full mx-auto rounded-lg overflow-hidden py-12 border">
+    <div
+      className="w-full mx-auto rounded-lg overflow-hidden py-12 border relative"
+      style={{
+        backgroundImage: `url('https://i.pinimg.com/736x/14/71/3a/14713acbcef8531935a634371213b58f.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        
+      }}
+    >
       <div className="text-center mb-10">
-        <h2 className="text-sm font-bold">Popular this week</h2>
-        <p className="text-[10px] text-gray-600 mt-2">
-          Dive into this week’s handpicked collection of stunning creation.
-        </p>
+        <h2 className="text-md font-bold pb-2">Popular this week</h2>
+        <div className="w-96 mx-auto">
+          <p className="text-[10px] text-gray-600 mt-2">
+            Dive into this week’s handpicked collection of stunning creations-each piece a bold exploration of imagination, emotion, and visual storytelling.
+          </p>
+        </div>
       </div>
 
-      <div className="relative flex justify-center items-center h-[270px]">
+
+      <div className="relative flex justify-center items-center h-[230px] pt-6">
         <div className="relative w-full max-w-7xl h-full">
           {artworks.map((art, index) => {
             const total = artworks.length;
-            const cardGap = 200; // horizontal spacing between cards
+            const cardWidth = 180;
             const centerOffset = (total - 1) / 2;
 
-            const initialLeft = `calc(50% - ${(total / 2 - index) * 20}px)`;
+            // Initial stacked/fanned position
+            const initialLeft = `calc(50% + ${(index - centerOffset) * overlap}px)`;
+            const initialRotate = fanAngles[index] || 0;
+
+            const floatConfigA = { duration: 3, delay: 0 };      // for cards 0, 2, 4
+            const floatConfigB = { duration: 3.5, delay: 0.3 };  // for cards 1,3
+
+            const { duration, delay } = (index === 1 || index === 3) ? floatConfigB : floatConfigA;
+
+            const stack = stacked[index] || { left: 0, rotate: 0, z: 1 };
+
+            // Spread position
             const spreadLeft = `calc(50% + ${(index - centerOffset) * cardGap}px)`;
 
+            // Stepped effect for spread
+            let topOffset = 0;
+            if (spread && total === 5) {
+              topOffset = (index === 1 || index === 3) ? 30 : 0;
+            }
+
             return (
-              <div
+               <div
                 key={art.id}
-                onClick={() => handleArtworkClick(art.id, art.image_url, art.artist)}
+                onClick={() => handleArtworkClick(art.id, art.image_url, art.artistName)}
                 className={
-                  "absolute top-0 transition-all duration-1000 ease-in-out cursor-pointer" +
+                  "absolute transition-all duration-1000 ease-in-out cursor-pointer" +
                   (spread ? " hover:rotate-[1.5deg] hover:-translate-y-1" : "")
                 }
                 style={{
                   left: spread ? spreadLeft : initialLeft,
+                  top: `${topOffset}px`,
                   transform: spread
-                    ? `translate(-50%, 0) scale(1)`
-                    : `translate(-50%, 0) scale(${1 - 0.05 * Math.abs(total / 2 - index)}) rotate(${
-                        index * 2 - total
-                      }px)`,
+                    ? "translate(-50%, 0) scale(1) rotate(0deg)"
+                    : `translate(-50%, 0) scale(1) rotate(${initialRotate}deg)`,
+                  zIndex: stack.z,
                 }}
               >
                 <div
-                  className="rounded-xl overflow-hidden shadow-lg transition-transform duration-500 ease-in-out hover:scale-105"
+                  className="relative rounded-lg overflow-hidden shadow-lg transition-transform duration-500 ease-in-out hover:scale-105 bg-white"
                   style={{
-                    width: "180px",
-                    height: "200px",
-                    animation: spread ? `float 3s ease-in-out infinite` : undefined,
+                    width: "158px",
+                    height: "158px",
+                    animation: spread
+                      ? `float ${duration}s ease-in-out infinite`
+                      : undefined,
+                    animationDelay: spread ? `${delay}s` : undefined,
                   }}
                 >
-                  <img src={art.image_url} alt={art.title} className="w-full h-[70%] object-cover" />
-                  <div className="px-6 py-2 bg-white/80 backdrop-blur-lg text-xs whitespace-nowrap">
-                    <div className="font-semibold">{art.title}</div>
-                    <div className="flex justify-between">
-                      <div className="text-[10px] text-gray-500">by {art.artistName}</div>
-                      <div className="text-xs text-red-500 mt-1 flex items-center gap-1">
-                        <span>♥</span> {art.likes_count}
-                      </div>
+                {/* Full card image */}
+                <img
+                  src={art.image_url}
+                  alt={art.title}
+                  className="w-full h-full object-cover"
+                />
+                {/* Info container at the bottom */}
+                <div className="absolute left-0 bottom-0 w-full px-4 pt-2 pb-1 bg-white/70 rounded-b-lg">
+                  <div className="font-semibold text-[11px] leading-tight text-black -mb-1">{art.title}</div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-[8px] text-gray-700">by {art.artistName}</div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-red-600 text-base">♥</span>
+                      <span className="text-[11px] font-medium text-black">{art.likes_count}</span>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
+
             );
           })}
         </div>
