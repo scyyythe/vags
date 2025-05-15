@@ -131,7 +131,7 @@ const Bidding = () => {
       <Header />
       <div className="container mx-auto px-4 sm:px-6 pt-20">
         <main className="container">
-          <section className="mb-7">
+          <section className="mb-8">
             <ArtsContainer artworks={staticArtworks} />
           </section>
           <div className="flex items-center justify-between -ml-7 mb-6 lg:w-[104%] pl-2 sm:pl-0">
