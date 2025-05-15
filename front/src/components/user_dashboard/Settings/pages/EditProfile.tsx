@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 const EditProfile = () => {
   const userId = getLoggedInUserId();
-  const { username, firstName, lastName, profilePicture, isLoading, error } = useUserDetails(userId);
+  const { username, firstName, lastName, profilePicture, cover_photo, isLoading, error } = useUserDetails(userId);
   const fullName = `${firstName} ${lastName}`;
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
@@ -19,7 +19,7 @@ const EditProfile = () => {
     fullName: string;
     username: string;
     profile_picture: File | null;
-    cover_photo: File | null;  // <-- Add cover photo file here
+    cover_photo: File | null;
   }>({
     fullName: "",
     username: "",
@@ -29,7 +29,7 @@ const EditProfile = () => {
 
   const [originalData, setOriginalData] = useState({ ...formData });
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const coverFileInputRef = useRef<HTMLInputElement>(null); // ref for cover photo input
+  const coverFileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isLoading && !error && firstName && lastName && username) {
@@ -162,16 +162,15 @@ const EditProfile = () => {
         <p className="text-xs pl-12 text-gray-500 mb-4">Cover Photo</p>
         <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
           {coverPreviewUrl ? (
-            <img
-              src={coverPreviewUrl}
-              alt="Cover"
-              className="w-full max-w-4xl h-48 object-cover rounded-md"
-            />
+            <img src={coverPreviewUrl} alt="Cover" className="w-full max-w-4xl h-48 object-cover rounded-md" />
+          ) : cover_photo ? (
+            <img src={cover_photo} alt="Cover" className="w-full max-w-4xl h-48 object-cover rounded-md" />
           ) : (
             <div className="w-full max-w-4xl h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-400 text-xs font-medium">
               No cover photo uploaded
             </div>
           )}
+
           <div className="flex flex-col justify-center relative top-20">
             <input
               type="file"

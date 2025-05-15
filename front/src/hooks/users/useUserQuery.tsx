@@ -13,6 +13,7 @@ interface User {
   created_at?: string;
   updated_at?: string;
   profile_picture?: string;
+  cover_photo?: string;
   bio?: string;
   contact_number?: string;
   address?: string;
