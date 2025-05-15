@@ -24,11 +24,11 @@ class Auction(Document):
         self.save()
 
     @classmethod
-    def create_auction(cls, artwork_id, start_time, end_time, starting_bid):
+    def create_auction(cls, artwork_id, start_time, end_time, start_bid_amount):
         """Factory method to create and save a new auction."""
         auction = cls(
             artwork=Art.objects.get(id=artwork_id),
-            start_bid_amount=starting_bid,
+            start_bid_amount=start_bid_amount,
             start_time=start_time,
             end_time=end_time
         )

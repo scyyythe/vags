@@ -17,7 +17,7 @@ class AuctionCreateView(APIView):
             artwork_id = request.data["artwork_id"]
             start_time = datetime.fromisoformat(request.data["start_time"])
             end_time = datetime.fromisoformat(request.data["end_time"])
-            starting_bid = request.data["starting_bid"]
+            start_bid_amount = request.data["start_bid_amount"]
 
             
             if end_time <= start_time:
@@ -34,7 +34,7 @@ class AuctionCreateView(APIView):
                 )
 
             
-            auction = Auction.create_auction(artwork_id, start_time, end_time, starting_bid)
+            auction = Auction.create_auction(artwork_id, start_time, end_time, start_bid_amount)
 
             return Response({"message": "Auction created successfully!", "auction_id": str(auction.id)},
                             status=status.HTTP_201_CREATED)
