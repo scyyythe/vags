@@ -106,7 +106,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
         isOpen={showBidPopup}
         onClose={() => setShowBidPopup(false)}
         data={data}
-        artworkId={data.id}
+        artworkId={data.artwork.id}
         artworkTitle={data.artwork.title}
         username={user?.username || "Unknown"}
         fullName={`${user?.first_name || "Unknown"} ${user?.last_name || ""}`}

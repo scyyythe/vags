@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from api.models.artwork_model.bid import Bid, Auction
-from datetime import datetime
+from datetime import datetime, timezone
+from api.models.artwork_model.artwork import Art
+from mongoengine.errors import DoesNotExist
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 
 class BidSerializer(serializers.Serializer):
@@ -9,19 +11,31 @@ class BidSerializer(serializers.Serializer):
     amount = serializers.FloatField()
     timestamp = serializers.DateTimeField(read_only=True)
     identity_type = serializers.ChoiceField(choices=["anonymous", "username", "fullName"], required=True)
+
     def get_bidderFullName(self, obj):
         return f"{obj.bidder.first_name} {obj.bidder.last_name}".strip()
 
     def create(self, validated_data):
         bidder = self.context['request'].user
-        artwork_id = validated_data.pop('artwork_id')  
+        artwork_id = validated_data.pop('artwork_id')
 
         try:
-            auction = Auction.objects.get(artwork=artwork_id, status=True)
-        except Auction.DoesNotExist:
+            artwork = Art.objects.get(id=artwork_id)
+        except DoesNotExist:
+            raise serializers.ValidationError({"error": "Artwork not found."})
+
+        try:
+            auction = Auction.objects.get(artwork=artwork, status=True)
+        except DoesNotExist:
             raise serializers.ValidationError({"error": "Auction not found or has ended."})
 
-        if auction.end_time < datetime.utcnow():
+        auction_end = auction.end_time
+        if auction_end.tzinfo is None or auction_end.tzinfo.utcoffset(auction_end) is None:
+            auction_end = auction_end.replace(tzinfo=timezone.utc)
+
+        now_utc = datetime.now(timezone.utc)
+
+        if auction_end < now_utc:
             auction.close_auction()
             raise serializers.ValidationError({"error": "This auction has ended."})
 
@@ -39,6 +53,8 @@ class BidSerializer(serializers.Serializer):
         auction.save()
 
         return bid
+
+
 
 
 class AuctionSerializer(serializers.Serializer):
