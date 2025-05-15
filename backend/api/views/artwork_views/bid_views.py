@@ -10,7 +10,7 @@ from api.models.interaction_model.notification import Notification
 from rest_framework.views import APIView
 import traceback
 from bson import ObjectId
-
+from mongoengine.queryset.visitor import Q
 class AuctionCreateView(APIView):
     def post(self, request, *args, **kwargs):
         try:
@@ -90,6 +90,37 @@ class AuctionListView(generics.ListAPIView):
        
         return Auction.objects(status=AuctionStatus.ON_GOING.value)
     
+class MyAuctionListView(generics.ListAPIView):
+    serializer_class = AuctionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        
+        user_artworks = Art.objects(artist=user.id).only('id')
+        artwork_ids = [art.id for art in user_artworks]
+
+        
+        expired_auctions = Auction.objects(
+            artwork__in=artwork_ids,
+            status=AuctionStatus.ON_GOING.value,
+            end_time__lt=datetime.utcnow()
+        )
+
+        for auction in expired_auctions:
+            auction.close_auction()
+
+        
+        queryset = Auction.objects(artwork__in=artwork_ids)
+
+        status = self.request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+
+        return queryset
+
+  
 class PlaceBidView(generics.CreateAPIView):
     serializer_class = BidSerializer
     permission_classes = [permissions.IsAuthenticated]
