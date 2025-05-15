@@ -186,7 +186,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
           <div className="relative">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-1 px-3 py-2 rounded-full border broder-gray-400"
+              className="flex items-center space-x-1 px-3 py-1.5 rounded-full border border-gray-300"
             >
               <i className="bx bx-filter"></i>
               <span className="text-[10px]">Apply Filter</span>

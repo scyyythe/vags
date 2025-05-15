@@ -12,31 +12,34 @@ const EditProfile = () => {
   const { username, firstName, lastName, profilePicture, isLoading, error } = useUserDetails(userId);
   const fullName = `${firstName} ${lastName}`;
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
   const { mutate: updateUser } = useUpdateUserDetails();
 
   const [formData, setFormData] = useState<{
     fullName: string;
     username: string;
     profile_picture: File | null;
+    cover_photo: File | null;  // <-- Add cover photo file here
   }>({
     fullName: "",
     username: "",
     profile_picture: null,
+    cover_photo: null,
   });
 
   const [originalData, setOriginalData] = useState({ ...formData });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const coverFileInputRef = useRef<HTMLInputElement>(null); // ref for cover photo input
 
   useEffect(() => {
     if (!isLoading && !error && firstName && lastName && username) {
       const fullName = `${firstName} ${lastName}`;
-      const defaultPhoto =
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3";
 
       const updatedForm = {
         fullName,
         username,
         profile_picture: null,
+        cover_photo: null,
       };
 
       setFormData(updatedForm);
@@ -51,6 +54,7 @@ const EditProfile = () => {
     }));
   };
 
+  // Handler for profile picture change (existing)
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -72,8 +76,34 @@ const EditProfile = () => {
     }
   };
 
+  // New handler for cover photo change
+  const handleCoverPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const fileType = file.type;
+      const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+      if (!validTypes.includes(fileType)) {
+        alert("Please upload a valid image file (JPG, JPEG, PNG).");
+        return;
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        cover_photo: file,
+      }));
+
+      const preview = URL.createObjectURL(file);
+      setCoverPreviewUrl(preview);
+    }
+  };
+
   const triggerFileInput = () => {
     fileInputRef.current?.click();
+  };
+
+  const triggerCoverFileInput = () => {
+    coverFileInputRef.current?.click();
   };
 
   const handleSave = () => {
@@ -91,6 +121,9 @@ const EditProfile = () => {
     if (formData.profile_picture) {
       updatedUser.append("profile_picture", formData.profile_picture);
     }
+    if (formData.cover_photo) {
+      updatedUser.append("cover_photo", formData.cover_photo);
+    }
 
     updateUser([userId, updatedUser], {
       onSuccess: (data) => {
@@ -98,6 +131,9 @@ const EditProfile = () => {
 
         if (formData.profile_picture) {
           setPreviewUrl(URL.createObjectURL(formData.profile_picture));
+        }
+        if (formData.cover_photo) {
+          setCoverPreviewUrl(URL.createObjectURL(formData.cover_photo));
         }
 
         toast.success("User details updated successfully!");
@@ -121,6 +157,40 @@ const EditProfile = () => {
     <div>
       <h2 className="text-sm font-bold mb-6">Edit Profile</h2>
 
+      {/* Cover Photo Upload Container */}
+      <div className="mb-8">
+        <p className="text-xs pl-12 text-gray-500 mb-4">Cover Photo</p>
+        <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
+          {coverPreviewUrl ? (
+            <img
+              src={coverPreviewUrl}
+              alt="Cover"
+              className="w-full max-w-4xl h-48 object-cover rounded-md"
+            />
+          ) : (
+            <div className="w-full max-w-4xl h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-400 text-xs font-medium">
+              No cover photo uploaded
+            </div>
+          )}
+          <div className="flex flex-col justify-center relative top-20">
+            <input
+              type="file"
+              ref={coverFileInputRef}
+              onChange={handleCoverPhotoChange}
+              accept="image/*"
+              className="hidden"
+            />
+            <button
+              onClick={triggerCoverFileInput}
+              className="text-[10px] font-medium py-2 px-3 rounded-sm bg-gray-200 hover:bg-gray-300 text-gray-800"
+            >
+              Change Cover Photo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Existing Profile Picture Container */}
       <div className="mb-8">
         <p className="text-xs pl-12 text-gray-500 mb-4">Photo</p>
         <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
@@ -149,6 +219,7 @@ const EditProfile = () => {
         </div>
       </div>
 
+      {/* Rest of your form (Full name, Username, etc.) remains unchanged */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white border border-gray-200 rounded-md px-4 py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -157,6 +228,7 @@ const EditProfile = () => {
               <div className="relative">
                 <Input
                   value={formData.fullName}
+                  disabled={true}
                   onChange={(e) => handleChange("fullName", e.target.value)}
                   className="w-full font-semibold -mb-2 p-none border-none focus:ring-0 shadow-none"
                   style={{
