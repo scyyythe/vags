@@ -7,22 +7,24 @@ import Confirmation from "./ConfirmRequest";
 import { useToast } from "@/hooks/use-toast";
 import { X } from "lucide-react";
 import { addDays } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import { useCreateAuction } from "@/hooks/auction/useCreateAuction";
 interface AuctionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   artworkId: string;
-  title: string;
 }
 
-const RequestBid = ({ open, artworkId, onOpenChange, title }: AuctionDialogProps) => {
+const RequestBid = ({ open, artworkId, onOpenChange }: AuctionDialogProps) => {
   const { toast } = useToast();
   const today = new Date();
   const createAuction = useCreateAuction();
+  const navigate = useNavigate();
   // Start date/time
   const [startDate, setStartDate] = useState<Date | undefined>(today);
-  const [startHours, setStartHours] = useState(0);
-  const [startMinutes, setStartMinutes] = useState(0);
+  const now = new Date();
+  const [startHours, setStartHours] = useState(now.getHours());
+  const [startMinutes, setStartMinutes] = useState(now.getMinutes());
 
   // End date/time
   const [endDate, setEndDate] = useState<Date | undefined>(today);
@@ -109,7 +111,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, title }: AuctionDialogProps
         artwork_id: artworkId,
         start_time: startDateTime.toISOString(),
         end_time: endDateTime.toISOString(),
-        starting_bid: Number(startingBid),
+        start_bid_amount: Number(startingBid),
       },
       {
         onSuccess: () => {
@@ -117,6 +119,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, title }: AuctionDialogProps
             title: "Auction created successfully",
             description: "Your auction has been published",
           });
+          navigate("/bidding");
           setIsConfirmationOpen(false);
           onOpenChange(false);
         },
@@ -142,7 +145,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, title }: AuctionDialogProps
             <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
               <X className="h-4 w-4" />
             </DialogClose>
-            <DialogTitle className="text-lg font-bold text-left">{title}</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-left">“The Distorted Face”</DialogTitle>
           </DialogHeader>
 
           {/* <div className="flex justify-center mb-4 text-xs">
