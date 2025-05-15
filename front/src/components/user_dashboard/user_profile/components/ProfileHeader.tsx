@@ -89,7 +89,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
     <div className="w-full px-4">
       {/* Cover Photo */}
       <div className="relative w-full h-52 md:h-72 rounded-lg overflow-hidden bg-blue-100 object-cover">
-        <img src={cover} alt="Cover" className="w-full h-full object-cover" />
+        <img src={cover} className="w-full h-full object-cover" />
       </div>
 
       {/* Profile Info */}
