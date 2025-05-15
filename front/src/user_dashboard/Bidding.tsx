@@ -4,13 +4,13 @@ import ArtsContainer from "@/components/user_dashboard/Bidding/featured/ArtsCont
 import Components from "@/components/user_dashboard/Bidding/navbar/Components";
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useFetchBiddingArtworks } from "@/hooks/auction/useAuction";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
-
+import { useSearchParams } from "react-router-dom";
 interface StaticArtwork {
   id: string;
   title: string;
@@ -29,7 +29,8 @@ const Bidding = () => {
   const navigate = useNavigate();
   const [staticArtworks, setStaticArtworks] = useState<StaticArtwork[]>([]);
   const { data, error } = useFetchBiddingArtworks();
-
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
   useEffect(() => {
     console.log("Fetched data:", data);
     console.log("Error:", error);
@@ -96,7 +97,15 @@ const Bidding = () => {
   }, []);
 
   const { data: biddingArtworks = [], isLoading, isError } = useFetchBiddingArtworks();
-
+  const filteredArtworks = useMemo(() => {
+    if (!searchQuery) return biddingArtworks;
+    return biddingArtworks?.filter((artwork) => {
+      return (
+        artwork.artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        artwork.artwork.artist.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    });
+  }, [biddingArtworks, searchQuery]);
   const handlePlaceBid = (id: string) => {
     console.log(`Placing bid for artwork ID: ${id}`);
   };
@@ -129,7 +138,7 @@ const Bidding = () => {
           )}
           {isError && <p className="text-center text-red-500 py-10">Failed to fetch bidding artworks.</p>}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {biddingArtworks.map((artwork) => (
+            {filteredArtworks.map((artwork) => (
               <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
                 <BidCard
                   data={{

@@ -1,51 +1,59 @@
-import React, { useState, useEffect  } from 'react';
-import { X } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import IdentitySelectionPopup from './IdentitySelection';
-
+import IdentitySelectionPopup from "./IdentitySelection";
+import { toast } from "sonner";
 interface BidPopupProps {
   isOpen: boolean;
   onClose: () => void;
   artworkTitle: string;
-  onSubmit: (bidAmount: number, identity: 'anonymous' | 'username' | 'fullName') => void;
+  onSubmit: (bidAmount: number, identity: "anonymous" | "username" | "fullName") => void;
 }
 
-const BidPopup: React.FC<BidPopupProps> = ({
-  isOpen,
-  onClose,
-  artworkTitle,
-  onSubmit,
-}) => {
-  const [bidAmount, setBidAmount] = useState<string>('');
+const BidPopup: React.FC<BidPopupProps> = ({ isOpen, onClose, artworkTitle, onSubmit }) => {
+  const [bidAmount, setBidAmount] = useState<string>("");
   const [showIdentityPopup, setShowIdentityPopup] = useState(false);
   const serviceFee = 100;
-  const marketplaceFee = bidAmount ? (parseInt(bidAmount) * 0.05) : 0;
+  const marketplaceFee = bidAmount ? parseInt(bidAmount) * 0.05 : 0;
   const totalBidAmount = bidAmount ? parseInt(bidAmount) + serviceFee + marketplaceFee : 0;
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !document.body) return;
-  
+    if (typeof window === "undefined" || !document.body) return;
+
     if (isOpen) {
-      document.body.classList.add('no-scroll');
+      document.body.classList.add("no-scroll");
     } else {
-      document.body.classList.remove('no-scroll');
+      document.body.classList.remove("no-scroll");
     }
-  
+
     return () => {
-      document.body.classList.remove('no-scroll');
+      document.body.classList.remove("no-scroll");
     };
-  }, [isOpen]);  
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (bidAmount && parseInt(bidAmount) >= 90000) {
-      setShowIdentityPopup(true);
+
+    const bid = parseInt(bidAmount);
+
+    // Validation: Check if it's a valid number
+    if (isNaN(bid)) {
+      toast.error("Please enter a valid number.");
+      return;
     }
+
+    if (bid < 90000) {
+      toast.warning("Minimum bid amount is ₱90,000.");
+      return;
+    }
+
+    // If valid, proceed to identity selection
+    setShowIdentityPopup(true);
   };
 
-  const handleIdentityConfirm = (identity: 'anonymous' | 'username' | 'fullName') => {
+  const handleIdentityConfirm = (identity: "anonymous" | "username" | "fullName") => {
     if (bidAmount) {
       onSubmit(parseInt(bidAmount), identity);
       setShowIdentityPopup(false);
@@ -55,11 +63,11 @@ const BidPopup: React.FC<BidPopupProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl w-full max-w-xs mx-4 relative"  onClick={e => e.stopPropagation()}>
+      <div className="bg-white rounded-2xl w-full max-w-xs mx-4 relative" onClick={(e) => e.stopPropagation()}>
         <div className="py-6 px-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="relative text-lg font-bold top-5">Place your bid</h2>
-            <button 
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 onClose();
@@ -69,7 +77,7 @@ const BidPopup: React.FC<BidPopupProps> = ({
               <X size={17} />
             </button>
           </div>
-          
+
           <p className="text-gray-600 text-[10px] mb-8">
             You're placing a bid for <span className="text-red-900 font-semibold">{artworkTitle}</span>
           </p>

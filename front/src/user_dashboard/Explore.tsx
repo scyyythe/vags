@@ -12,12 +12,14 @@ import ArtCategorySelect from "@/components/user_dashboard/local_components/cate
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
-
+import { useSearchParams } from "react-router-dom";
 const Explore = () => {
   const navigate = useNavigate();
   const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
+
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
   const [currentPage] = useState(1);
   const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all", "public");
   const { data: popularArtworks } = useFetchPopularArtworks(1);
