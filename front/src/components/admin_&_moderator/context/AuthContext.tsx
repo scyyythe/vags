@@ -47,10 +47,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // In a real app, you'd make an API call here
-      // For demo, we'll simulate authentication with mock data
       
-      // Simple validation
       if (!email || !password) {
         throw new Error("Email and password are required");
       }
