@@ -12,9 +12,10 @@ interface AuctionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   artworkId: string;
+  title: string;
 }
 
-const RequestBid = ({ open, artworkId, onOpenChange }: AuctionDialogProps) => {
+const RequestBid = ({ open, artworkId, onOpenChange, title }: AuctionDialogProps) => {
   const { toast } = useToast();
   const today = new Date();
   const createAuction = useCreateAuction();
@@ -141,7 +142,7 @@ const RequestBid = ({ open, artworkId, onOpenChange }: AuctionDialogProps) => {
             <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
               <X className="h-4 w-4" />
             </DialogClose>
-            <DialogTitle className="text-lg font-bold text-left">“The Distorted Face”</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-left">{title}</DialogTitle>
           </DialogHeader>
 
           {/* <div className="flex justify-center mb-4 text-xs">
