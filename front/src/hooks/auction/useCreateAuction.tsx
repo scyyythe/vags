@@ -7,7 +7,7 @@ interface CreateAuctionData {
   artwork_id: string;
   start_time: string;
   end_time: string;
-  starting_bid: number;
+  start_bid_amount: number;
 }
 
 interface ErrorResponse {
@@ -25,7 +25,7 @@ export const useCreateAuction = () => {
         artwork_id: data.artwork_id,
         start_time: data.start_time,
         end_time: data.end_time,
-        starting_bid: data.starting_bid,
+        start_bid_amount: data.start_bid_amount,
       });
 
       await apiClient.patch(`/art/${data.artwork_id}/update/`, {
