@@ -15,23 +15,18 @@ import useFollowStatus from "@/hooks/follow/useFollowStatus";
 import useFollowCounts from "@/hooks/follow/useFollowCount";
 import EditProfile from "../../own_profile/edit_profile/EditButton";
 interface ProfileHeaderProps {
-  bannerImage: string;
   profileImage: string;
   name: string;
   items: number;
   profileUserId: string;
-  onBannerChange?: (file: File) => void;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
-  bannerImage,
   profileImage,
   name,
   items,
   profileUserId,
-  onBannerChange,
 }) => {
-  const [localBanner, setLocalBanner] = useState<string>(bannerImage);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [optionsOpen, setOptionsOpen] = useState(false);
   const loggedInUserId = getLoggedInUserId();
@@ -49,6 +44,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const { data, isLoading: isFollowStatusLoading } = useFollowStatus({
     profileUserId,
   });
+
   useEffect(() => {
     if (data !== undefined) {
       setIsFollowing(data as boolean);
@@ -82,24 +78,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     }
   };
 
-  // Handle file selection
-  const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Preview the selected image locally
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLocalBanner(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-
-      // Pass the file to parent or upload handler if provided
-      if (onBannerChange) {
-        onBannerChange(file);
-      }
-    }
-  };
-
   // Trigger file input click
   const triggerFileInput = () => {
     fileInputRef.current?.click();
@@ -113,19 +91,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   }
   return (
     <div className="w-full px-4">
-      {/* Banner */}
+      {/* Cover Photo */}
       <div
-        className="relative w-full h-52 md:h-72 rounded-lg overflow-hidden bg-blue-100 cursor-pointer"
-        onClick={triggerFileInput}
-        title="Click to change banner image"
+        className="relative w-full h-52 md:h-72 rounded-lg overflow-hidden bg-blue-100 object-cover"
       >
-        <img src={localBanner} alt="Profile Banner" className="w-full h-full object-cover" />
-        {/* Optional overlay icon */}
-        <div className="absolute top-2 right-2 px-2 py-1 bg-black bg-opacity-50 text-white rounded-full p-1">
-          <i className="bx bx-camera"></i>
-        </div>
-        {/* Hidden file input */}
-        <input type="file" accept="image/*" ref={fileInputRef} className="hidden" onChange={handleBannerChange} />
+        {/* <img className="w-full h-full object-cover" /> */}
       </div>
 
       {/* Profile Info */}
