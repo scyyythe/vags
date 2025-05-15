@@ -1,29 +1,33 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import BidMenu from "./BidMenu";
 import BidPopup from "../place_bid/BidPopup";
 import CountdownTimer from "@/hooks/count/useCountdown";
-export interface BidCardData {
-  id: string;
-  title: string;
-  currentBid: number;
-  imageUrl: string;
-  end_time: string;
-}
+import { ArtworkAuction } from "@/hooks/auction/useAuction";
+import { useEffect } from "react";
 
 interface BidCardProps {
-  data: BidCardData;
+  data: ArtworkAuction;
   isLoading?: boolean;
   onPlaceBid?: (id: string, amount: number) => void;
+  user?: {
+    username: string;
+    first_name: string;
+    last_name: string;
+  };
 }
 
-const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }) => {
+const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, user }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isReported, setIsReported] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
+
+  useEffect(() => {
+    console.log("Top level start_bid_amount:", data.start_bid_amount);
+    console.log("Artwork level start_bid_amount:", data.start_bid_amount);
+  }, [data]);
 
   if (isLoading) {
     return (
@@ -59,19 +63,19 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }
     <>
       <div className="w-full rounded-xl border bg-white hover:shadow-lg transition-all duration-300">
         <div className="relative">
-          <img src={data.imageUrl} alt={data.title} className="w-full h-36 object-cover rounded-xl" />
+          <img src={data.artwork.image_url} alt={data.artwork.title} className="w-full h-36 object-cover rounded-xl" />
           <CountdownTimer targetTime={data.end_time} />
         </div>
         <div className="px-6 py-5 flex flex-col gap-2">
           <div className="flex justify-between">
-            <h2 className="text-sm font-semibold">{data.title}</h2>
+            <h2 className="text-sm font-semibold">{data.artwork.title}</h2>
             <div className="relative text-gray-500" style={{ height: "24px" }}>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setMenuOpen((prev) => !prev);
                 }}
-                className={`p-1 rounded-full text-black bg-white bg-opacity-60 ${menuOpen ? "" : ""}`}
+                className="p-1 rounded-full text-black bg-white bg-opacity-60"
               >
                 <MoreHorizontal size={14} />
               </button>
@@ -82,7 +86,11 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }
             <div className="text-gray-500 text-[10px]">
               Current Bid
               <span className="text-sm font-bold text-black ml-2">
-                {data.currentBid !== null && data.currentBid !== undefined ? `${data.currentBid}k` : "0"}
+                {data.highest_bid?.amount
+                  ? data.highest_bid.amount >= 1000
+                    ? `${(data.highest_bid.amount / 1000).toFixed(data.highest_bid.amount % 1000 === 0 ? 0 : 1)}k`
+                    : data.highest_bid.amount
+                  : "0"}
               </span>
             </div>
             <button
@@ -101,8 +109,12 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid }
       <BidPopup
         isOpen={showBidPopup}
         onClose={() => setShowBidPopup(false)}
-        artworkTitle={data.title}
-        onSubmit={handleBidSubmit}
+        data={data}
+        artworkId={data.artwork.id}
+        artworkTitle={data.artwork.title}
+        username={user?.username || "Unknown"}
+        fullName={`${user?.first_name || "Unknown"} ${user?.last_name || ""}`}
+        start_bid_amount={data.start_bid_amount}
       />
     </>
   );
