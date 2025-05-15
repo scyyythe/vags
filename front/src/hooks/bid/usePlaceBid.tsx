@@ -1,0 +1,46 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
+import apiClient from "@/utils/apiClient";
+
+type Identity = "anonymous" | "username" | "fullName";
+
+interface PlaceBidPayload {
+  artwork_id: string;
+  amount: number;
+  identity_type: Identity;
+}
+
+interface BidResponse {
+  id: string;
+  amount: number;
+  timestamp: string;
+  bidderFullName: string;
+}
+
+interface ErrorResponse {
+  error: string;
+}
+
+export const usePlaceBid = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<BidResponse, AxiosError<ErrorResponse>, PlaceBidPayload>({
+    mutationFn: async ({ artwork_id, amount, identity_type }) => {
+      const response = await apiClient.post<BidResponse>("bid/", {
+        artwork_id,
+        amount,
+        identity_type,
+      });
+
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
+    },
+    onError: (error) => {
+      const errMsg = error.response?.data?.error || "Failed to place bid.";
+      toast.error(errMsg);
+    },
+  });
+};
