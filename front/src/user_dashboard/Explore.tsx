@@ -22,15 +22,6 @@ const Explore = () => {
   const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all", "public");
   const { data: popularArtworks } = useFetchPopularArtworks(1);
 
-  const slideshowData = popularArtworks
-    ? popularArtworks.map((artwork) => ({
-        id: artwork.id,
-        title: artwork.title,
-        artist: artwork.artist,
-        image: artwork.image_url || "",
-      }))
-    : [];
-
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
@@ -58,7 +49,7 @@ const Explore = () => {
 
   const handleSortClick = () => {
     toast("Sort artworks");
-  }; 
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -66,7 +57,7 @@ const Explore = () => {
       <div className="container mx-auto px-4 sm:px-6 pt-20">
         <main className="container">
           <section className="mb-8 w-[100%] sm:w-full">
-            <ArtGalleryContainer artworks={slideshowData} />
+            <ArtGalleryContainer artworks={popularArtworks || []} />
           </section>
         </main>
 
@@ -91,7 +82,6 @@ const Explore = () => {
                 </button>
               </div>
             </div>
-
 
             <div className="lg:w-[133%] custom-scrollbars pb-4 pl-2 sm:pl-0">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">

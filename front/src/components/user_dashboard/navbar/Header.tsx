@@ -3,12 +3,12 @@ import { Link, useLocation, NavLink } from "react-router-dom";
 import Logo from "./Logo";
 import { Bell, MessageCircle, Search, X, Menu } from "lucide-react";
 import SearchBar from "@/components/user_dashboard/local_components/SearchBar";
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import ProfileDropdown from "../local_components/ProfileDropdown";
 import Notifications from "../notification/Notification";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUserDetails from "@/hooks/users/useUserDetails";
-
+import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
@@ -17,6 +17,17 @@ const Header = () => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const notificationRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage] = useState(1);
+  const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all", "public");
+  const filteredArtworksMemo = useMemo(() => {
+    return artworks?.filter((artwork) => {
+      const searchMatches =
+        artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        artwork.artistName.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return searchMatches;
+    });
+  }, [artworks, searchQuery]);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const avatarRef = useRef(null);
@@ -38,10 +49,7 @@ const Header = () => {
 
             {/* Hamburger Menu (mobile only) */}
             <div className="md:hidden ml-2 mt-1">
-              <button
-                aria-label="Toggle menu"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
+              <button aria-label="Toggle menu" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 {isMenuOpen ? <X size={15} /> : <Menu size={15} />}
               </button>
             </div>
@@ -53,16 +61,13 @@ const Header = () => {
               <NavLink
                 key={label}
                 to={`/${label.toLowerCase()}`}
-                className={({ isActive }) =>
-                  `${isActive ? "font-semibold" : ""}`
-                }
+                className={({ isActive }) => `${isActive ? "font-semibold" : ""}`}
               >
                 {label}
               </NavLink>
             ))}
           </nav>
         </div>
-        
 
         {/* Right: Searchbar + Icons + Profile */}
         <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
@@ -179,9 +184,7 @@ const Header = () => {
                 to={`/${label.toLowerCase()}`}
                 onClick={() => setIsMenuOpen(false)}
                 className={({ isActive }) =>
-                  `block text-center text-xs py-2 rounded ${
-                    isActive ? "font-semibold text-black" : "text-gray-700"
-                  }`
+                  `block text-center text-xs py-2 rounded ${isActive ? "font-semibold text-black" : "text-gray-700"}`
                 }
               >
                 {label}
