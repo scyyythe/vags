@@ -44,6 +44,7 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
           </p>
         </div>
         <div className="flex justify-center items-center pt-6 gap-4">
+          {/* Render 5 skeleton cards or however many you want */}
           {[...Array(5)].map((_, i) => (
             <ArtCardSkeleton key={i} />
           ))}
@@ -51,7 +52,6 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
       </div>
     );
   }
-
   return (
     <div
       className="w-full mx-auto rounded-lg overflow-hidden py-12 border relative"
