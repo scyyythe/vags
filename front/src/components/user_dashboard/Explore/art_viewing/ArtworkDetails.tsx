@@ -14,7 +14,8 @@ import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import useArtworkDetails from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
-import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
+import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
+
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
@@ -58,6 +59,7 @@ const ArtworkDetails = () => {
       toggleLike(id);
     }
   };
+
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (comment.trim()) {
@@ -281,6 +283,61 @@ const ArtworkDetails = () => {
   const closeExpandedView = () => {
     setIsExpanded(false);
   };
+
+  // Mock related artworks data
+  const mockRelatedArtworks = [
+    {
+      id: "rel1",
+      artistId: "artist1",
+      artistName: "Anna Rivera",
+      artistImage: "https://randomuser.me/api/portraits/women/44.jpg",
+      artworkImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+      title: "Sunset Dreams",
+      likesCount: 120,
+      visibility: "public"
+    },
+    {
+      id: "rel2",
+      artistId: "artist2",
+      artistName: "Miguel Santos",
+      artistImage: "https://randomuser.me/api/portraits/men/32.jpg",
+      artworkImage: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
+      title: "Blue Harmony",
+      likesCount: 85,
+      visibility: "public"
+    },
+    {
+      id: "rel3",
+      artistId: "artist3",
+      artistName: "Lara Cruz",
+      artistImage: "https://randomuser.me/api/portraits/women/33.jpg",
+      artworkImage: "https://i.pinimg.com/736x/b9/b7/cc/b9b7cc76307221d7ed14d55457cfa0b9.jpg",
+      title: "Urban Lights",
+      likesCount: 200,
+      visibility: "public"
+    },
+    {
+      id: "rel4",
+      artistId: "artist4",
+      artistName: "Carlos Mendez",
+      artistImage: "https://randomuser.me/api/portraits/men/45.jpg",
+      artworkImage: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=400&q=80",
+      title: "Morning Dew",
+      likesCount: 150,
+      visibility: "public"
+    },
+    {
+      id: "rel5",
+      artistId: "artist4",
+      artistName: "Chan Chan",
+      artistImage: "https://i.pinimg.com/736x/79/47/2b/79472bc4d8564dcb1951939979da1a8e.jpg",
+      artworkImage: "https://i.pinimg.com/736x/9e/1f/e4/9e1fe4f093336d7067c38b35e6936966.jpg",
+      title: "Morning Dew",
+      likesCount: 150,
+      visibility: "public"
+    },
+  ];
+
 
   return (
     <div className="min-h-screen">
@@ -522,6 +579,27 @@ const ArtworkDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Related Artworks Section */}
+      <div className="container md:px-6 mt-2 mb-2">
+        <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Artworks</h2>      
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          {mockRelatedArtworks.map((artwork) => (
+              <ArtCard
+                id={artwork.id}
+                artistId={artwork.artistId}
+                artistName={artwork.artistName}
+                artistImage={artwork.artistImage}
+                artworkImage={artwork.artworkImage}
+                title={artwork.title}
+                isExplore={true}
+                likesCount={artwork.likesCount}
+                visibility={artwork.visibility}
+              />
+          ))}
+        </div>
+      </div>
+
 
       {/* Expanded artwork view */}
       {isExpanded && (
