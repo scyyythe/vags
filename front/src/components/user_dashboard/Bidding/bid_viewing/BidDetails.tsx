@@ -63,6 +63,27 @@ const BidDetails = () => {
   const [isHidden, setIsHidden] = useState(false);
   const [isReported, setIsReported] = useState(false);
 
+
+  // Mock bid data
+  const mockBids = [
+    {
+      id: "1",
+      amount: 3000,
+      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+    },
+    {
+      id: "2",
+      amount: 2500,
+      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+    },
+    {
+      id: "3",
+      amount: 1000,
+      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+    },
+  ];
+
+
   // useEffect(() => {
   //   if (!id) return;
 
@@ -103,7 +124,7 @@ const BidDetails = () => {
 
   const handleBidSubmit = (amount: number) => {
     if (!item?.id) return;
-    toast.success(`Bid of ${amount}K placed successfully!`);
+    toast.success(`Bid of ${amount}php placed successfully!`);
   };
 
   const handleLike = () => {
@@ -299,7 +320,7 @@ const BidDetails = () => {
                       className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
                     >
                       <Heart
-                        size={isMobile ? 16 : 14}
+                        size={isMobile ? 13 : 13}
                         className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
                         fill={isLiked ? "currentColor" : "none"}
                       />
@@ -335,7 +356,7 @@ const BidDetails = () => {
                   {item.artwork.title || "The Distorted Face"}
                 </h1>
 
-                <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}>
+                <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-1`}>
                   <span
                     style={{ cursor: "pointer" }}
                     onClick={() => navigate(`/userprofile/${item.artwork.artist_id}`)}
@@ -344,11 +365,11 @@ const BidDetails = () => {
                   </span>
                 </p>
 
-                <div className="relative mt-6">
+                <div className="relative mt-2">
                   <div
                     ref={descriptionRef}
                     className={`
-                      text-[10px] text-gray-700 transition-all duration-300 ease-in-out
+                      text-[10px] text-gray-700 transition-all duration-300 ease-in-out mb-2
                       ${showFullDescription ? "max-h-40 overflow-y-auto pr-1" : "max-h-[3.5rem] overflow-hidden"}
                     `}
                     style={{ lineHeight: "1.25rem" }}
@@ -366,13 +387,13 @@ const BidDetails = () => {
                   )}
                 </div>
 
-                <Separator className="my-10" />
+                {/* <Separator className="my-2" /> */}
 
-                <div className="w-full bg-gray-100 px-6 py-4 rounded-xl flex justify-between items-center text-center mt-8 shadow-sm">
+                <div className="w-full border px-10 py-4 rounded-xl flex justify-between items-center text-center mt-4">
                   {/* Highest Bid */}
                   <div className="flex-1">
                     <p className="text-[10px] text-gray-500 mb-1">Highest Bid</p>
-                    <p className="text-xl font-semibold">
+                    <p className="text-lg font-semibold">
                       {item.highest_bid && item.highest_bid.amount != null
                         ? `₱${item.highest_bid.amount.toLocaleString()}`
                         : "No bids yet"}
@@ -380,15 +401,52 @@ const BidDetails = () => {
                   </div>
 
                   {/* Separator */}
-                  <div className="w-px h-12 bg-gray-300 mx-6" />
+                  <div className="w-[1px] h-12 bg-gray-200 mx-7" />
 
                   {/* Auction Timer */}
-                  <AuctionCountdown endTime={item.end_time} />
+                  <div>
+                    <div
+                      className=""
+                      style={{ minWidth: "140px", display: "inline-block" }}
+                    >
+                    <AuctionCountdown endTime={item.end_time} />
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Bids Section */}
+                <div className="mt-6">
+                  <h2 className="font-semibold text-[10px]">Bids</h2>
+                  <div className="w-6 h-[2px] bg-black mb-3 rounded" />
+                  <div className="max-h-20 overflow-y-auto pr-2 flex flex-col gap-1">
+                    {mockBids.length > 0 ? (
+                      mockBids.map((bid) => (
+                        <div key={bid.id} className="flex items-center gap-2">
+                          <img
+                            src={bid.user.avatar}
+                            alt={bid.user.name}
+                            className="w-4 h-4 rounded-full object-cover border"
+                          />
+                          <div>
+                            <span className="font-semibold text-[11px] mr-1">
+                              < i className='bx bx-money text-[8px] text-gray-400'></i>  {bid.amount.toLocaleString()}
+                            </span>
+                            <span className=" flex gap-1 text-[9px] text-gray-500 -mt-1">
+                              by <p className="font-medium text-gray-700">{bid.user.name}</p>
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-[11px] text-gray-400">No bids yet.</div>
+                    )}
+                  </div>
                 </div>
 
                 <button
                   onClick={() => setShowBidPopup(true)}
-                  className="w-full bg-red-800 hover:bg-red-700 text-white text-xs py-3 rounded-full mt-8"
+                  className="w-full bg-red-800 hover:bg-red-700 text-white text-xs py-2 rounded-full mt-3"
                 >
                   Place A Bid
                 </button>
@@ -398,7 +456,7 @@ const BidDetails = () => {
         </div>
 
         <div className="container mx-auto px-4 md:px-12 mt-2 mb-2">
-          <h2 className={`font-semibold ${isMobile ? "text-sm mt-8 ml-4" : "text-md mb-4"}`}>Related Artworks</h2>
+          <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Artworks</h2>
           <RelatedBids currentCategory={item.artwork.category} currentBidId={item.id} />
         </div>
 

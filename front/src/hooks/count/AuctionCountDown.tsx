@@ -35,19 +35,27 @@ const AuctionCountdown = ({ endTime }: { endTime: string | Date }) => {
 
   return (
     <div className="flex-1">
-      <p className="text-[10px] text-gray-500">Auction ends in</p>
-      <div className="flex items-center justify-center gap-8">
+      <p className="text-[10px] text-gray-500 mb-1">Auction ends in</p>
+      <div className="flex items-center justify-center gap-8  relative top-1">
         <div className="flex flex-col items-center">
-          <p className="text-md font-semibold">{timeRemaining.hrs}</p>
-          <span className="text-[8px] text-gray-400">hrs</span>
+          <div className="flex -mb-2">
+            <p className="text-md font-semibold">{timeRemaining.hrs}</p>
+            <p className="font-medium relative left-4">:</p>
+          </div>
+          <div><span className="text-[8px] text-gray-400">hrs</span></div>
         </div>
         <div className="flex flex-col items-center">
-          <p className="text-md font-semibold">{timeRemaining.mins}</p>
-          <span className="text-[8px] text-gray-400">mins</span>
+          <div className="flex -mb-2">
+            <p className="text-md font-semibold">{timeRemaining.mins}</p>
+            <p className="font-medium relative left-4">:</p>
+          </div>
+          <div><span className="text-[8px] text-gray-400">mins</span></div>
         </div>
         <div className="flex flex-col items-center">
-          <p className="text-md font-semibold">{timeRemaining.secs}</p>
-          <span className="text-[8px] text-gray-400">secs</span>
+          <div className="flex -mb-2">
+            <p className="text-md font-semibold">{timeRemaining.secs}</p>
+          </div>
+          <div><span className="text-[8px] text-gray-400">secs</span></div>
         </div>
       </div>
     </div>
