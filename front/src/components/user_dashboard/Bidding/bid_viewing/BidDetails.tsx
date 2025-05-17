@@ -19,6 +19,8 @@ import CountdownTimer from "@/hooks/count/useCountdown";
 import { useFetchBiddingArtworks } from "@/hooks/auction/useAuction";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 import AuctionCountdown from "@/hooks/count/AuctionCountDown";
+import { ArtworkAuction } from "@/hooks/auction/useAuction";
+import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 export interface BidCardData {
   id: string;
   title: string;
@@ -103,6 +105,163 @@ const BidDetails = () => {
       created_at: "2025-05-24T20:40:00Z",
     },
   ];
+
+  // Mock related artworks data
+  const mockRelatedArtworks: ArtworkAuction[] = [
+    {
+      id: "rel1",
+      artwork: {
+        id: "art1",
+        title: "Sunset Dreams",
+        artist: "Anna Rivera",
+        artist_id: "artist1",
+        category: "Landscape",
+        artistAvatar: "https://randomuser.me/api/portraits/women/44.jpg",
+        description: "A beautiful sunset over the mountains.",
+        image_url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+        likes_count: 120,
+        medium: "Oil on canvas",
+        price: 5000,
+        profile_picture: "https://randomuser.me/api/portraits/women/44.jpg",
+        size: "24x36",
+        visibility: "public",
+        created_at: "2025-01-01T00:00:00Z",
+        updated_at: "2025-01-02T00:00:00Z",
+      },
+      highest_bid: {
+        bidderFullName: "John Doe",
+        amount: 2400,
+        timestamp: "2025-05-10T14:00:00Z",
+        identity_type: "fullName",
+      },
+      bid_history: [],
+      end_time: "2025-06-01T18:00:00Z",
+      start_time: "2025-05-01T12:00:00Z",
+      status: "on_going",
+      start_bid_amount: 1000,
+      timeRemaining: {
+        finished: false,
+        hrs: 48,
+        mins: 30,
+        secs: 0,
+      },
+    },
+    {
+      id: "rel2",
+      artwork: {
+        id: "art2",
+        title: "Blue Harmony",
+        artist: "Miguel Santos",
+        artist_id: "artist2",
+        category: "Abstract",
+        artistAvatar: "https://randomuser.me/api/portraits/men/32.jpg",
+        description: "An abstract piece with vibrant blues.",
+        image_url: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
+        likes_count: 85,
+        medium: "Acrylic",
+        price: 3000,
+        profile_picture: "https://randomuser.me/api/portraits/men/32.jpg",
+        size: "30x40",
+        visibility: "public",
+        created_at: "2025-02-10T00:00:00Z",
+        updated_at: "2025-02-15T00:00:00Z",
+      },
+      highest_bid: {
+        bidderFullName: "Jane Smith",
+        amount: 1800,
+        timestamp: "2025-05-15T11:30:00Z",
+        identity_type: "username",
+      },
+      bid_history: [],
+      end_time: "2025-06-03T12:00:00Z",
+      start_time: "2025-05-05T10:00:00Z",
+      status: "on_going",
+      start_bid_amount: 800,
+      timeRemaining: {
+        finished: false,
+        hrs: 72,
+        mins: 0,
+        secs: 0,
+      },
+    },
+    {
+      id: "rel3",
+      artwork: {
+        id: "art3",
+        title: "Urban Lights",
+        artist: "Lara Cruz",
+        artist_id: "artist3",
+        category: "Cityscape",
+        artistAvatar: "https://randomuser.me/api/portraits/women/33.jpg",
+        description: "City lights glowing at night.",
+        image_url: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
+        likes_count: 200,
+        medium: "Photography",
+        price: 7000,
+        profile_picture: "https://randomuser.me/api/portraits/women/33.jpg",
+        size: "20x30",
+        visibility: "public",
+        created_at: "2025-03-01T00:00:00Z",
+        updated_at: "2025-03-05T00:00:00Z",
+      },
+      highest_bid: {
+        bidderFullName: "Alice Johnson",
+        amount: 3200,
+        timestamp: "2025-05-20T16:45:00Z",
+        identity_type: "anonymous",
+      },
+      bid_history: [],
+      end_time: "2025-06-04T20:00:00Z",
+      start_time: "2025-05-10T09:00:00Z",
+      status: "on_going",
+      start_bid_amount: 1500,
+      timeRemaining: {
+        finished: false,
+        hrs: 96,
+        mins: 15,
+        secs: 0,
+      },
+    },
+    {
+      id: "rel4",
+      artwork: {
+        id: "art4",
+        title: "Morning Dew",
+        artist: "Carlos Mendez",
+        artist_id: "artist4",
+        category: "Nature",
+        artistAvatar: "https://randomuser.me/api/portraits/men/45.jpg",
+        description: "Fresh morning dew on leaves.",
+        image_url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=400&q=80",
+        likes_count: 150,
+        medium: "Watercolor",
+        price: 4500,
+        profile_picture: "https://randomuser.me/api/portraits/men/45.jpg",
+        size: "18x24",
+        visibility: "public",
+        created_at: "2025-04-01T00:00:00Z",
+        updated_at: "2025-04-05T00:00:00Z",
+      },
+      highest_bid: {
+        bidderFullName: "Mark Lee",
+        amount: 2700,
+        timestamp: "2025-05-22T13:20:00Z",
+        identity_type: "fullName",
+      },
+      bid_history: [],
+      end_time: "2025-06-05T15:00:00Z",
+      start_time: "2025-05-12T08:00:00Z",
+      status: "on_going",
+      start_bid_amount: 1200,
+      timeRemaining: {
+        finished: false,
+        hrs: 80,
+        mins: 0,
+        secs: 0,
+      },
+    },
+  ];
+
 
 
 
@@ -481,10 +640,17 @@ const BidDetails = () => {
             </div>
           </div>
         </div>
-
-        <div className="container mx-auto px-4 md:px-12 mt-2 mb-2">
+        
+        {/* Related Artworks Section */}
+        <div className="container md:px-6 mt-2 mb-2">
           <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Artworks</h2>
-          <RelatedBids currentCategory={item.artwork.category} currentBidId={item.id} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {mockRelatedArtworks.map((art) => (
+              <div key={art.id} className="min-w-[200px] flex-shrink-0">
+                <BidCard data={art} />
+              </div>
+            ))}
+          </div>
         </div>
 
         {showBidPopup && (
