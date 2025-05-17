@@ -298,7 +298,7 @@ const BidDetails = () => {
                   )}
 
                   <div className="inline-block transform scale-[1.10]">
-                    <div className="w-[390px] h-[390px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
+                    <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                       <img
                         src={item.artwork.image_url}
                         alt={item.artwork.title}
@@ -328,18 +328,18 @@ const BidDetails = () => {
 
             {/* Right side - Title, artist, description*/}
             <div
-              className={`${isMobile ? "w-full mt-2 px-4" : "w-full max-w-[390px] min-w-[280px]"}`}
+              className={`${isMobile ? "w-full mt-2 px-4" : "w-full max-w-[390px] -mt-2"}`}
               style={{
                 transition: "transform 0.5s cubic-bezier(.4,0,.2,1)",
                 transform: !isMobile && isDetailOpen ? "translateX(30px)" : "translateX(0)",
               }}
             >
               <div className={`${isMobile ? "" : "relative left-10"}`}>
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex justify-between items-start">
                   <div className="flex items-center space-x-4">
                     <button
                       onClick={handleLike}
-                      className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
+                      className="flex items-center space-x-1 text-gray-800 rounded-3xl py-1.5 px-2 border border-gray-200"
                     >
                       <Heart
                         size={isMobile ? 13 : 13}
@@ -375,15 +375,15 @@ const BidDetails = () => {
                 </div>
 
                 <h1 className={`${isMobile ? "text-sm" : "text-xl"} font-bold mb-2`}>
-                  {item.artwork.title || "The Distorted Face"}
+                  {item.artwork.title || "No artwork name"}
                 </h1>
 
-                <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-1`}>
+                <p className={`${isMobile ? "text-[9px]" : "text-[10px]"} text-gray-600 mb-1`}>
                   <span
                     style={{ cursor: "pointer" }}
                     onClick={() => navigate(`/userprofile/${item.artwork.artist_id}`)}
                   >
-                    by {item.artwork.artist || "Angel Ganev"}
+                    by {item.artwork.artist || "Unknown"}
                   </span>
                 </p>
 
@@ -391,8 +391,8 @@ const BidDetails = () => {
                   <div
                     ref={descriptionRef}
                     className={`
-                      text-[10px] text-gray-700 transition-all duration-300 ease-in-out mb-2
-                      ${showFullDescription ? "max-h-40 overflow-y-auto pr-1" : "max-h-[3.5rem] overflow-hidden"}
+                      text-[9px] text-gray-700 transition-all duration-300 ease-in-out mb-2
+                      ${showFullDescription ? "max-h-9 overflow-y-auto pr-1" : "max-h-9 overflow-hidden"}
                     `}
                     style={{ lineHeight: "1.25rem" }}
                   >
@@ -402,7 +402,7 @@ const BidDetails = () => {
                   {isOverflowing && (
                     <button
                       onClick={() => setShowFullDescription((prev) => !prev)}
-                      className="text-[10px] text-blue-500 hover:underline mt-1 block"
+                      className="text-[9px] text-blue-500 hover:underline mt-1 block"
                     >
                       {showFullDescription ? "Hide" : "Show More"}
                     </button>
@@ -414,8 +414,8 @@ const BidDetails = () => {
                 <div className="w-full border px-10 py-4 rounded-xl flex justify-between items-center text-center mt-4">
                   {/* Highest Bid */}
                   <div className="flex-1">
-                    <p className="text-[10px] text-gray-500 mb-1">Highest Bid</p>
-                    <p className="text-lg font-semibold">
+                    <p className="text-[10px] text-gray-500 mb-2 -mt-2">Highest Bid</p>
+                    <p className="text-md font-semibold">
                       {item.highest_bid && item.highest_bid.amount != null
                         ? `₱${item.highest_bid.amount.toLocaleString()}`
                         : "No bids yet"}
@@ -438,7 +438,7 @@ const BidDetails = () => {
                 </div>
 
                 {/* Bids Section */}
-                <div className="mt-6">
+                <div className="mt-5">
                   <h2 className="font-semibold text-[10px]">Bids</h2>
                   <div className="w-6 h-[2px] bg-black mb-3 rounded" />
                   <div className="max-h-20 overflow-y-auto pr-2 flex flex-col gap-1">
