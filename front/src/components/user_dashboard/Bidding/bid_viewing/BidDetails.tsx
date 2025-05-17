@@ -63,6 +63,18 @@ const BidDetails = () => {
   const [isHidden, setIsHidden] = useState(false);
   const [isReported, setIsReported] = useState(false);
 
+  //LIST OF BIDS SECTION
+  const formatBidDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = date.toLocaleString("en-US", { month: "short" });
+    const year = date.getFullYear();
+    const hour = date.getHours().toString().padStart(2, "0");
+    const minute = date.getMinutes().toString().padStart(2, "0");
+    return `${day} ${month} ${year}, ${hour}:${minute}`;
+  };
+
+  const isOwner = true; // Replace this with your real owner check!
 
   // Mock bid data
   const mockBids = [
@@ -70,18 +82,28 @@ const BidDetails = () => {
       id: "1",
       amount: 3000,
       user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+      created_at: "2025-05-13T16:40:00Z",
     },
     {
       id: "2",
-      amount: 2500,
-      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+      amount: 3000,
+      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/women/32.jpg" },
+      created_at: "2025-05-24T20:40:00Z",
     },
     {
       id: "3",
-      amount: 1000,
-      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+      amount: 3000,
+      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/women/33.jpg" },
+      created_at: "2025-05-24T20:40:00Z",
+    },
+    {
+      id: "4",
+      amount: 3000,
+      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/women/34.jpg" },
+      created_at: "2025-05-24T20:40:00Z",
     },
   ];
+
 
 
   // useEffect(() => {
@@ -434,6 +456,11 @@ const BidDetails = () => {
                             </span>
                             <span className=" flex gap-1 text-[9px] text-gray-500 -mt-1">
                               by <p className="font-medium text-gray-700">{bid.user.name}</p>
+                              {isOwner && (
+                                <span className="ml-1 text-[9px] text-gray-400">
+                                  {formatBidDate(bid.created_at)}
+                                </span>
+                              )}
                             </span>
                           </div>
                         </div>
