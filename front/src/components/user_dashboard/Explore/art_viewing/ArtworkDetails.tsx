@@ -295,7 +295,7 @@ const ArtworkDetails = () => {
           </button>
         </div>
 
-        <div className={` ${isMobile ? "flex flex-col" : "flex justify-center items-start space-x-2"}`}>
+        <div className={` ${isMobile ? "flex flex-col" : "flex justify-center items-start space-x-2 mt-2"}`}>
           {/* Artwork, Right-side Sliding */}
           <div
             className={`${
@@ -441,8 +441,8 @@ const ArtworkDetails = () => {
             </div>
 
             {/* Right side - Title, artist, description, comments */}
-            <div className={`${isMobile ? "w-full mt-6 px-4" : "w-full max-w-[390px] min-w-[280px]"}`}>
-              <div className={`${isMobile ? "" : "relative top-5 left-10"}`}>
+            <div className={`${isMobile ? "w-full mt-6 px-4" : "w-[500px] -ml-[70px]"}`}>
+              <div className={`${isMobile ? "" : "relative top-5"}`}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center space-x-4">
                     <button
@@ -450,12 +450,12 @@ const ArtworkDetails = () => {
                       className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
                     >
                       <Heart
-                        size={isMobile ? 16 : 14}
+                        size={isMobile ? 14 : 14}
                         className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
                         fill={isLiked ? "currentColor" : "none"}
                       />
                       {(likeCounts[id || ""] ?? artwork.likes ?? 0) > 0 && (
-                        <span className={`${isMobile ? "text-xs" : "text-[9px]"}`}>
+                        <span className={`${isMobile ? "text-[10px]" : "text-xs"}`}>
                           {likeCounts[id || ""] ?? artwork.likes}
                         </span>
                       )}
@@ -495,8 +495,8 @@ const ArtworkDetails = () => {
                   <div
                     ref={descriptionRef}
                     className={`
-                      text-[10px] text-gray-700 transition-all duration-300 ease-in-out 
-                      ${showFullDescription ? "max-h-16 overflow-y-auto pr-1" : "max-h-14 overflow-hidden"}
+                      text-[9px] text-gray-700 transition-all duration-300 ease-in-out 
+                      ${showFullDescription ? "max-h-10 overflow-y-auto pr-1" : "max-h-10 overflow-hidden"}
                     `}
                     style={{ lineHeight: "1.1rem" }}
                   >
@@ -506,7 +506,7 @@ const ArtworkDetails = () => {
                   {isOverflowing && (
                     <button
                       onClick={() => setShowFullDescription((prev) => !prev)}
-                      className="text-[10px] text-blue-500 hover:underline mt-1 block"
+                      className="text-[9px] text-blue-500 hover:underline mt-1 block"
                     >
                       {showFullDescription ? "Show Less" : "Show More"}
                     </button>
