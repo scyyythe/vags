@@ -17,8 +17,7 @@ import useLikeStatus from "@/hooks/interactions/useLikeStatus";
 import useHideArtwork from "@/hooks/mutate/visibility/private/useHideArtwork";
 import useUnArchivedArtwork from "@/hooks/mutate/visibility/arc/useUnarchivedArtwork";
 import useRestoreArtwork from "@/hooks/mutate/visibility/trash/useRestoreArtwork";
-import useDeletePermanentArtwork from "@/hooks/mutate/visibility/trash/usePermanentDelete";
-
+import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 interface ArtCardProps {
   id: string;
   artistId: string;
@@ -63,7 +62,7 @@ const ArtCard = ({
   const { mutate: hideArtwork } = useHideArtwork();
   const { mutate: unarchiveArtwork } = useUnArchivedArtwork();
   const { mutate: restore } = useRestoreArtwork();
-
+  const { mutate: submitReport } = useSubmitReport();
   const isLiked = likedArtworks[id] || false;
   useEffect(() => {
     if (data) {
@@ -91,10 +90,10 @@ const ArtCard = ({
     setMenuOpen(false);
   };
 
-  const handleReport = useCallback(() => {
-    toast("Artwork reported");
+  const handleReport = () => {
+    submitReport(id);
     setMenuOpen(false);
-  }, []);
+  };
 
   const handleFavorite = () => {
     toggleFavorite();
