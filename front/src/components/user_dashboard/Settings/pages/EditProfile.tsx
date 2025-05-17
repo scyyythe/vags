@@ -31,6 +31,9 @@ const EditProfile = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const coverFileInputRef = useRef<HTMLInputElement>(null);
 
+  const [removeProfilePic, setRemoveProfilePic] = useState(false);
+  const [removeCoverPhoto, setRemoveCoverPhoto] = useState(false);
+
   useEffect(() => {
     if (!isLoading && !error && firstName && lastName && username) {
       const fullName = `${firstName} ${lastName}`;
@@ -110,6 +113,7 @@ const EditProfile = () => {
     const loadingToast = toast("Updating your details...", {
       description: "Please wait while we process your update.",
     });
+
     const [firstName, ...rest] = formData.fullName.trim().split(" ");
     const lastName = rest.join(" ");
 
@@ -125,26 +129,29 @@ const EditProfile = () => {
       updatedUser.append("cover_photo", formData.cover_photo);
     }
 
+    if (removeProfilePic) {
+      updatedUser.append("remove_profile_picture", "true");
+    }
+    if (removeCoverPhoto) {
+      updatedUser.append("remove_cover_photo", "true");
+    }
+
     updateUser([userId, updatedUser], {
-      onSuccess: (data) => {
+      onSuccess: () => {
         setOriginalData({ ...formData });
-
-        if (formData.profile_picture) {
-          setPreviewUrl(URL.createObjectURL(formData.profile_picture));
-        }
-        if (formData.cover_photo) {
-          setCoverPreviewUrl(URL.createObjectURL(formData.cover_photo));
-        }
-
+        setRemoveProfilePic(false);
+        setRemoveCoverPhoto(false);
         toast.success("User details updated successfully!");
         toast.dismiss(loadingToast);
       },
-      onError: (error) => {
+      onError: () => {
         toast.error("Failed to update user details.");
         toast.dismiss(loadingToast);
       },
     });
   };
+
+
   const handleReset = () => {
     setFormData({ ...originalData });
   };
@@ -153,6 +160,20 @@ const EditProfile = () => {
     return JSON.stringify(formData) !== JSON.stringify(originalData);
   };
 
+  const handleRemoveProfilePicture = () => {
+    setFormData((prev) => ({ ...prev, profile_picture: null }));
+    setPreviewUrl(null);
+    setRemoveProfilePic(true);
+  };
+
+  const handleRemoveCoverPhoto = () => {
+    setFormData((prev) => ({ ...prev, cover_photo: null }));
+    setCoverPreviewUrl(null);
+    setRemoveCoverPhoto(true);
+  };
+
+
+
   return (
     <div>
       <h2 className="text-sm font-bold mb-6">Edit Profile</h2>
@@ -160,18 +181,27 @@ const EditProfile = () => {
       {/* Cover Photo Upload Container */}
       <div className="mb-8">
         <p className="text-xs pl-12 text-gray-500 mb-4">Cover Photo</p>
-        <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
-          {coverPreviewUrl ? (
-            <img src={coverPreviewUrl} alt="Cover" className="w-full max-w-4xl h-48 object-cover rounded-md" />
-          ) : cover_photo ? (
-            <img src={cover_photo} alt="Cover" className="w-full max-w-4xl h-48 object-cover rounded-md" />
+          <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
+            {coverPreviewUrl || cover_photo ? (
+            <div className="relative w-full max-w-4xl">
+              <img
+                src={coverPreviewUrl || cover_photo}
+                alt="Cover"
+                className="w-full h-48 object-cover rounded-md"
+              />
+              <button
+                onClick={triggerCoverFileInput}
+                className="absolute bottom-2 right-2 bg-white p-2 shadow hover:bg-gray-100 text-[10px] font-medium py-1 px-2 rounded-full text-gray-800"
+              >
+                <i className='bx bx-camera text-sm'></i>
+              </button>
+            </div>
           ) : (
             <div className="w-full max-w-4xl h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-400 text-xs font-medium">
               No cover photo uploaded
             </div>
           )}
-
-          <div className="flex flex-col justify-center relative top-20">
+      
             <input
               type="file"
               ref={coverFileInputRef}
@@ -179,42 +209,54 @@ const EditProfile = () => {
               accept="image/*"
               className="hidden"
             />
-            <button
-              onClick={triggerCoverFileInput}
-              className="text-[10px] font-medium py-2 px-3 rounded-sm bg-gray-200 hover:bg-gray-300 text-gray-800"
-            >
-              Change Cover Photo
-            </button>
-          </div>
+
+            {(coverPreviewUrl || cover_photo) && (
+              <button
+                onClick={handleRemoveCoverPhoto}
+                className="text-[10px] font-medium py-2 px-3 rounded-sm bg-red-500 hover:bg-red-600 text-white"
+              >
+                Remove
+              </button>
+            )}
+         
         </div>
       </div>
 
-      {/* Existing Profile Picture Container */}
+      {/* Profile Picture Container */}
       <div className="mb-8">
         <p className="text-xs pl-12 text-gray-500 mb-4">Photo</p>
         <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
-          {formData.profile_picture ? (
+          {formData.profile_picture || profilePicture ? (
+          <div className="relative w-32 h-32">
             <img
-              src={URL.createObjectURL(formData.profile_picture)}
+              src={formData.profile_picture ? URL.createObjectURL(formData.profile_picture) : profilePicture}
               alt="Profile"
               className="w-32 h-32 rounded-full object-cover"
             />
-          ) : profilePicture ? (
-            <img src={profilePicture} alt="Profile" className="w-32 h-32 rounded-full object-cover" />
-          ) : (
-            <div className="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center text-white text-4xl font-bold">
-              {fullName.charAt(0).toUpperCase() || "U"}
-            </div>
-          )}
-          <div className="flex flex-col justify-center relative top-12">
-            <input type="file" ref={fileInputRef} onChange={handlePhotoChange} accept="image/*" className="hidden" />
             <button
               onClick={triggerFileInput}
-              className="text-[10px] font-medium py-2 px-3 rounded-sm bg-gray-200 hover:bg-gray-300 text-gray-800"
+              className="absolute bottom-2 right-2 bg-white p-2 shadow hover:bg-gray-100 text-[10px] font-medium py-1 px-2 rounded-full text-gray-800"
             >
-              Change
+              <i className='bx bx-camera text-sm'></i>
             </button>
           </div>
+        ) : (
+          <div className="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center text-white text-4xl font-bold">
+            {fullName.charAt(0).toUpperCase() || "U"}
+          </div>
+        )}
+    
+            <input type="file" ref={fileInputRef} onChange={handlePhotoChange} accept="image/*" className="hidden" />
+            
+            {(formData.profile_picture || profilePicture) && (
+              <button
+                onClick={handleRemoveProfilePicture}
+                className="text-[10px] font-medium py-2 px-3 rounded-sm bg-red-500 hover:bg-red-600 text-white"
+              >
+                Remove
+              </button>
+            )}
+
         </div>
       </div>
 
