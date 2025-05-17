@@ -641,9 +641,9 @@ const BidDetails = () => {
           </div>
         </div>
         
-        {/* Related Artworks Section */}
+        {/* Related Bids Section */}
         <div className="container md:px-6 mt-2 mb-2">
-          <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Artworks</h2>
+          <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Bids</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {mockRelatedArtworks.map((art) => (
               <div key={art.id} className="min-w-[200px] flex-shrink-0">
