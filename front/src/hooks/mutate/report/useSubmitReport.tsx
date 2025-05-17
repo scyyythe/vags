@@ -29,6 +29,7 @@ const useSubmitReport = () => {
     mutationFn: (id: string) => submitReport(id),
     onSuccess: (_, id) => {
       toast.success("Report submitted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["reportStatus", id] });
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
     },
     onError: (error: unknown) => {
