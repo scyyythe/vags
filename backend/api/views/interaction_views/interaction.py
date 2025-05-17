@@ -7,7 +7,7 @@ from api.models.interaction_model.interaction import Comment, Like, CartItem, Sa
 from api.serializers.interaction_s.interaction import CommentSerializer, LikeSerializer, CartItemSerializer,SavedSerializer
 from api.models.interaction_model.notification import Notification
 from rest_framework import generics, permissions
-
+from datetime import datetime
 from django.utils.timesince import timesince
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 class CommentCreateView(APIView):
@@ -36,12 +36,12 @@ class CommentCreateView(APIView):
             user=artist, 
             message=f"{user.first_name} commented on {art.title}",
             art=art,  
-            name=user.first_name,  # The user's first name who made the comment
-            action="commented on",  # The action description
-            target=art.title,  # The title of the artwork being commented on
-            icon="project",  # Can be an appropriate icon based on your application logic
-            time=time_elapsed,  # This represents the time of the action, you can format dynamically
-            date=datetime.now(),  # Current timestamp for the notification date
+            name=user.first_name,  
+            action="commented on",  
+            target=art.title,  
+            icon="project",  
+            time=time_elapsed, 
+            date=datetime.now(), 
         )
         return Response(CommentSerializer(comment).data, status=status.HTTP_201_CREATED)
 
