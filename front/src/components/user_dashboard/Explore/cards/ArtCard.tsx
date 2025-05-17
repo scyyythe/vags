@@ -18,6 +18,7 @@ import useHideArtwork from "@/hooks/mutate/visibility/private/useHideArtwork";
 import useUnArchivedArtwork from "@/hooks/mutate/visibility/arc/useUnarchivedArtwork";
 import useRestoreArtwork from "@/hooks/mutate/visibility/trash/useRestoreArtwork";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
+import useReportStatus from "@/hooks/mutate/report/useReportStatus";
 interface ArtCardProps {
   id: string;
   artistId: string;
@@ -58,11 +59,12 @@ const ArtCard = ({
   const { isLoading: detailsLoading } = useArtworkDetails(id);
 
   const [isDeletedLocally, setIsDeletedLocally] = useState(false);
-
+  const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useReportStatus(id);
   const { mutate: hideArtwork } = useHideArtwork();
   const { mutate: unarchiveArtwork } = useUnArchivedArtwork();
   const { mutate: restore } = useRestoreArtwork();
   const { mutate: submitReport } = useSubmitReport();
+
   const isLiked = likedArtworks[id] || false;
   useEffect(() => {
     if (data) {
@@ -91,10 +93,14 @@ const ArtCard = ({
   };
 
   const handleReport = () => {
+    if (reportStatusData?.reported) {
+      toast.error("You have already reported this artwork.");
+      setMenuOpen(false);
+      return;
+    }
     submitReport(id);
     setMenuOpen(false);
   };
-
   const handleFavorite = () => {
     toggleFavorite();
     setMenuOpen(false);
@@ -141,7 +147,7 @@ const ArtCard = ({
               onHide={handleHide}
               onReport={handleReport}
               isFavorite={isFavorite}
-              isReported={false}
+              isReported={reportStatusData?.reported || false}
             />
           ) : isDeleted ? (
             <DeletedMenu
