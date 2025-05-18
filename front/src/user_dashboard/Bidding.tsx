@@ -7,12 +7,12 @@ import ArtCategorySelect from "@/components/user_dashboard/local_components/cate
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
-import { useFetchBiddingArtworks } from "@/hooks/auction/useAuction";
+import useAuctions from "@/hooks/auction/useAuction";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
-import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { useSearchParams } from "react-router-dom";
+import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks";
 interface StaticArtwork {
   id: string;
   title: string;
@@ -30,12 +30,14 @@ interface StaticArtwork {
 const Bidding = () => {
   const navigate = useNavigate();
   const [staticArtworks, setStaticArtworks] = useState<StaticArtwork[]>([]);
-  const { data, error } = useFetchBiddingArtworks();
+
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
   const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
 
+  const currentPage = 1;
+  const { data: data, error } = useAuctions(currentPage);
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
@@ -45,7 +47,6 @@ const Bidding = () => {
     console.log("Error:", error);
   }, [data, error]);
 
-  // Static artworks for ArtsContainer
   useEffect(() => {
     const fetchedArtworks: StaticArtwork[] = [
       {
@@ -108,12 +109,11 @@ const Bidding = () => {
   const { data: biddingArtworks = [], isLoading, isError } = useFetchBiddingArtworks();
   const filteredArtworks = useMemo(() => {
     if (!searchQuery) return biddingArtworks;
-    return biddingArtworks?.filter((artwork) => {
-      return (
+    return biddingArtworks.filter(
+      (artwork) =>
         artwork.artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         artwork.artwork.artist.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    });
+    );
   }, [biddingArtworks, searchQuery]);
   const handlePlaceBid = (id: string) => {
     console.log(`Placing bid for artwork ID: ${id}`);

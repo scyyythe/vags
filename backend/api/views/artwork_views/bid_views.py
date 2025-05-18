@@ -90,6 +90,52 @@ class AuctionListView(generics.ListAPIView):
 
        
         return Auction.objects(status=AuctionStatus.ON_GOING.value)
+
+class AuctionListViewOwner(generics.ListAPIView):
+    serializer_class = AuctionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        
+        expired_auctions = Auction.objects(
+            artist=user.username,
+            status=AuctionStatus.ON_GOING.value,
+            end_time__lt=datetime.utcnow()
+        )
+        for auction in expired_auctions:
+            auction.close_auction()
+
+        return Auction.objects(
+            artist=user.username,
+            status=AuctionStatus.ON_GOING.value
+        )
+        
+class AuctionListViewSpecificUser(generics.ListAPIView):
+    serializer_class = AuctionSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        user_id = self.request.query_params.get('userId')
+
+        if not user_id:
+            return Auction.objects.none()  
+
+       
+        expired_auctions = Auction.objects(
+            artist=user_id,
+            status=AuctionStatus.ON_GOING.value,
+            end_time__lt=datetime.utcnow()
+        )
+        for auction in expired_auctions:
+            auction.close_auction()
+
+        return Auction.objects(
+            artist=user_id,
+            status=AuctionStatus.ON_GOING.value
+        )
+
     
 class MyAuctionListView(generics.ListAPIView):
     serializer_class = AuctionSerializer
