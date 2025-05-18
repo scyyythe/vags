@@ -116,6 +116,7 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
               )}
             </div>
           )}
+          
         </div>
       </div>
 
