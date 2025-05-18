@@ -44,9 +44,12 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     }
   };
 
+  
+
   if (!isOpen) return null;
 
   return (
+    <>
     <div
       ref={menuRef}
       className="absolute -right-1 top-8 z-10 bg-gray-100 rounded-full py-1 px-1 shadow-md"
@@ -93,46 +96,49 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
           )}
         </div>
 
-        {/* Report*/}
+        {/* Report / Undo */}
         <div className="flex items-center relative">
-          <button
-            onClick={onReport}
-            className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-            aria-label="Report"
-            onMouseEnter={() => setHoveredItem("report")}
-            onMouseLeave={() => setHoveredItem(null)}
-          >
-            <Flag size={10} fill={isReported ? "#ea384c" : "none"} stroke={isReported ? "#ea384c" : "currentColor"} />
-          </button>
+          
+            <button
+              onClick={() => setShowReportOptions(true)}
+              className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+              aria-label="Report"
+              onMouseEnter={() => setHoveredItem("report")}
+              onMouseLeave={() => setHoveredItem(null)}
+            >
+              <Flag
+                size={10}
+                fill={isReported ? "red" : "none"}
+                stroke={isReported ? "red" : "currentColor"}
+              />
+
+            </button>
+          
+
           {hoveredItem === "report" && (
             <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
               Report
             </span>
           )}
-        </div>
-
-        {/* Undo Report - Only show when content is reported */}
-          {isReported && (
-            <div className="flex items-center relative">
-              <button
-                onClick={handleUndoReport}
-                className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-                aria-label="Undo Report"
-                onMouseEnter={() => setHoveredItem("undoReport")}
-                onMouseLeave={() => setHoveredItem(null)}
-              >
-                <Undo2 size={10} stroke="currentColor" />
-              </button>
-              {hoveredItem === "undoReport" && (
-                <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                  Undo Report
-                </span>
-              )}
-            </div>
+          {hoveredItem === "undo" && (
+            <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+              Undo Report
+            </span>
           )}
-
+        </div>
       </div>
+
+      
     </div>
+    {/* Report Options Popup */}
+      {showReportOptions && (
+        <ReportOptionsPopup
+          isOpen={showReportOptions}
+          onClose={() => setShowReportOptions(false)}
+          onSubmit={handleReportSubmit}
+        />
+      )}
+    </>
   );
 };
 
