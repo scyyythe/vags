@@ -15,19 +15,7 @@ const mockUserData = {
 const FollowDemo = () => {
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <div className="mb-6">
-        <Link to="/">
-          <Button variant="outline" className="mb-6">
-            &larr; Back to Home
-          </Button>
-        </Link>
-        <h1 className="text-2xl font-bold mb-4">Follow Popups Demo</h1>
-        <p className="text-gray-600 mb-6">
-          Click on the "followers" or "following" text below to open the popups.
-        </p>
-      </div>
-
-      {/* The ProfileHeader component with the follow modals */}
+      {/* ProfileHeader component with the follow modals */}
       <ProfileHeader 
         profileImage={mockUserData.profileImage}
         name={mockUserData.name}
