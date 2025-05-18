@@ -287,61 +287,8 @@ const ArtworkDetails = () => {
     setIsExpanded(false);
   };
 
-  // Mock related artworks data
-  const mockRelatedArtworks = [
-    {
-      id: "rel1",
-      artistId: "artist1",
-      artistName: "Anna Rivera",
-      artistImage: "https://randomuser.me/api/portraits/women/44.jpg",
-      artworkImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
-      title: "Sunset Dreams",
-      likesCount: 120,
-      visibility: "public",
-    },
-    {
-      id: "rel2",
-      artistId: "artist2",
-      artistName: "Miguel Santos",
-      artistImage: "https://randomuser.me/api/portraits/men/32.jpg",
-      artworkImage: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
-      title: "Blue Harmony",
-      likesCount: 85,
-      visibility: "public",
-    },
-    {
-      id: "rel3",
-      artistId: "artist3",
-      artistName: "Lara Cruz",
-      artistImage: "https://randomuser.me/api/portraits/women/33.jpg",
-      artworkImage: "https://i.pinimg.com/736x/b9/b7/cc/b9b7cc76307221d7ed14d55457cfa0b9.jpg",
-      title: "Urban Lights",
-      likesCount: 200,
-      visibility: "public",
-    },
-    {
-      id: "rel4",
-      artistId: "artist4",
-      artistName: "Carlos Mendez",
-      artistImage: "https://randomuser.me/api/portraits/men/45.jpg",
-      artworkImage: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=400&q=80",
-      title: "Morning Dew",
-      likesCount: 150,
-      visibility: "public",
-    },
-    {
-      id: "rel5",
-      artistId: "artist4",
-      artistName: "Chan Chan",
-      artistImage: "https://i.pinimg.com/736x/79/47/2b/79472bc4d8564dcb1951939979da1a8e.jpg",
-      artworkImage: "https://i.pinimg.com/736x/9e/1f/e4/9e1fe4f093336d7067c38b35e6936966.jpg",
-      title: "Morning Dew",
-      likesCount: 150,
-      visibility: "public",
-    },
-  ];
-
   return (
+    <>
     <div className="min-h-screen">
       <Header />
 
@@ -640,6 +587,8 @@ const ArtworkDetails = () => {
         </div>
       )}
     </div>
+    
+    </>
   );
 };
 
