@@ -14,7 +14,7 @@ import { useUnfollowUser } from "@/hooks/follow/useUnfollowUser";
 import useFollowStatus from "@/hooks/follow/useFollowStatus";
 import useFollowCounts from "@/hooks/follow/useFollowCount";
 import EditProfile from "../../own_profile/edit_profile/EditButton";
-import FollowModals from "@/components/user_dashboard/own_profile/following_&_followers/components/profile/FollowModals";
+import FollowModals from "@/components/user_dashboard/own_profile/following_&_followers/owners/profile/FollowModals";
 
 interface ProfileHeaderProps {
   profileImage: string;
