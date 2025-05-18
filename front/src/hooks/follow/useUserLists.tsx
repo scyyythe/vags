@@ -2,7 +2,7 @@ import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { useFollowUser } from "@/hooks/follow/useFollowUser";
 import { useUnfollowUser } from "@/hooks/follow/useUnfollowUser";
-import type { UserData } from "@/components/user_dashboard/own_profile/following_&_followers/components/common/UserListModal";
+import type { UserData } from "@/components/user_dashboard/own_profile/following_&_followers/owners/common/UserListModal";
 
 // This is a mock implementation - in a real app, you'd fetch this data from your API
 const mockFollowers: UserData[] = Array(10).fill(null).map((_, i) => ({

@@ -34,7 +34,7 @@ import HelpCenter from "./components/user_dashboard/Settings/pages/HelpCenter";
 
 import AllNotifications from "./components/user_dashboard/notification/AllNotifications";
 
-import FollowDemo from "./components/user_dashboard/own_profile/following_&_followers/mock_data/FollowDemo";
+import FollowDemo from "./components/user_dashboard/own_profile/following_&_followers/owners/mock_data/FollowDemo";
 
 // ADMIN & MODERATOR
 import { AuthProvider } from "./components/admin_&_moderator/context/AuthContext";
