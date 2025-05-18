@@ -90,6 +90,72 @@ class AuctionListView(generics.ListAPIView):
 
        
         return Auction.objects(status=AuctionStatus.ON_GOING.value)
+
+class AuctionListViewOwner(generics.ListAPIView):
+    serializer_class = AuctionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        
+        user_artworks = Art.objects(artist=user.id).only('id')
+        artwork_ids = [art.id for art in user_artworks]
+
+        
+        expired_auctions = Auction.objects(
+            artwork__in=artwork_ids,
+            status=AuctionStatus.ON_GOING.value,
+            end_time__lt=datetime.utcnow()
+        )
+
+        for auction in expired_auctions:
+            auction.close_auction()
+
+        
+        queryset = Auction.objects(artwork__in=artwork_ids)
+
+        status = self.request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+
+        return queryset
+        
+class AuctionListViewSpecificUser(generics.ListAPIView):
+    serializer_class = AuctionSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        user_id = self.request.query_params.get('userId')
+
+        if not user_id:
+            return Auction.objects.none()
+
+        
+        user_artworks = Art.objects(artist=user_id).only('id')
+        artwork_ids = [art.id for art in user_artworks]
+
+       
+        expired_auctions = Auction.objects(
+            artwork__in=artwork_ids,
+            status=AuctionStatus.ON_GOING.value,
+            end_time__lt=datetime.utcnow()
+        )
+        for auction in expired_auctions:
+            auction.close_auction()
+
+        
+        queryset = Auction.objects(artwork__in=artwork_ids)
+
+        
+        status = self.request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+
+        return queryset
+
+
+
     
 class MyAuctionListView(generics.ListAPIView):
     serializer_class = AuctionSerializer
