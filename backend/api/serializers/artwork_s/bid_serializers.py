@@ -5,16 +5,26 @@ from datetime import datetime, timezone
 from api.models.artwork_model.artwork import Art
 from mongoengine.errors import DoesNotExist
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
-
+from api.serializers.user_s.users_serializers import UserSerializer
 class BidSerializer(serializers.Serializer):
+    user = UserSerializer(source="bidder", read_only=True) 
     bidderFullName = serializers.SerializerMethodField()
-    artwork_id = serializers.CharField(write_only=True)
+    artwork_id = serializers.CharField(write_only=True, required=False)
     amount = serializers.FloatField()
     timestamp = serializers.DateTimeField(read_only=True)
     identity_type = serializers.ChoiceField(choices=["anonymous", "username", "fullName"], required=True)
 
     def get_bidderFullName(self, obj):
-        return f"{obj.bidder.first_name} {obj.bidder.last_name}".strip()
+        identity = obj.identity_type
+        if identity == "anonymous":
+            return "Anonymous"
+        elif identity == "username":
+            return getattr(obj.bidder, "username", "Unknown User")
+        elif identity == "fullName":
+            full_name = f"{getattr(obj.bidder, 'first_name', '')} {getattr(obj.bidder, 'last_name', '')}".strip()
+            return full_name if full_name else getattr(obj.bidder, "username", "Unknown User")
+        else:
+            return "Unknown"
 
     def create(self, validated_data):
         bidder = self.context['request'].user
@@ -74,14 +84,28 @@ class BidSerializer(serializers.Serializer):
 class AuctionSerializer(serializers.Serializer):
     id = serializers.CharField()
     artwork = ArtSerializer(read_only=True)
-    artwork_id = serializers.CharField(write_only=True)
     start_bid_amount = serializers.FloatField()
     start_time = serializers.DateTimeField()
     end_time = serializers.DateTimeField()
     highest_bid = BidSerializer(read_only=True)
-    bid_history = BidSerializer(read_only=True, many=True)  
+    bid_history = BidSerializer(read_only=True, many=True)
     status = serializers.CharField(read_only=True)
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
 
+        
+        data['artwork'] = ArtSerializer(instance.artwork).data
+
+        
+        if instance.highest_bid:
+            data['highest_bid'] = BidSerializer(instance.highest_bid).data
+        else:
+            data['highest_bid'] = None
+
+        
+        data['bid_history'] = BidSerializer(instance.bid_history, many=True).data
+
+        return data
 
 

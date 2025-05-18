@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Heart, MoreHorizontal, GripVertical } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { LikedArtworksContext } from "@/context/LikedArtworksProvider";
 import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
@@ -10,19 +9,17 @@ import BidPopup from "../place_bid/BidPopup";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { useArtworkContext } from "@/context/ArtworkContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import RelatedBids from "@/components/user_dashboard/Bidding/bid_viewing/RelatedBids";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useLocation } from "react-router-dom";
-import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
-import CountdownTimer from "@/hooks/count/useCountdown";
-// import { useFetchBiddingArtworks } from "@/hooks/auction/useAuction";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 import AuctionCountdown from "@/hooks/count/AuctionCountDown";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
+import { useBidHistory } from "@/hooks/bid/useBidHistory";
+
 export interface BidCardData {
   id: string;
   title: string;
@@ -68,6 +65,8 @@ const BidDetails = () => {
   const artworkId = item?.artwork?.id ?? null;
   const { isLiked } = useArtworkStatus(artworkId);
 
+  const { data: bids = [], error } = useBidHistory(artworkId);
+
   //LIST OF BIDS SECTION
   const formatBidDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -89,8 +88,7 @@ const BidDetails = () => {
     onReport();
   };
 
-  const isOwner = true; // Replace this with your real owner check!
-
+  const isOwner = true;
   // Mock bid data
   const mockBids = [
     {
@@ -609,27 +607,41 @@ const BidDetails = () => {
                     <h2 className="font-semibold text-[10px]">Bids</h2>
                     <div className="w-6 h-[2px] bg-black mb-3 rounded" />
                     <div className="max-h-20 overflow-y-auto pr-2 flex flex-col gap-1">
-                      {mockBids.length > 0 ? (
-                        mockBids.map((bid) => (
-                          <div key={bid.id} className="flex items-center gap-2">
-                            <img
-                              src={bid.user.avatar}
-                              alt={bid.user.name}
-                              className="w-4 h-4 rounded-full object-cover border"
-                            />
-                            <div>
-                              <span className="font-semibold text-[11px] mr-1">
-                                <i className="bx bx-money text-[8px] text-gray-400"></i> {bid.amount.toLocaleString()}
-                              </span>
-                              <span className=" flex gap-1 text-[9px] text-gray-500 -mt-1">
-                                by <p className="font-medium text-gray-700">{bid.user.name}</p>
-                                {isOwner && (
-                                  <span className="ml-1 text-[9px] text-gray-400">{formatBidDate(bid.created_at)}</span>
-                                )}
-                              </span>
+                      {bids.length > 0 ? (
+                        bids.map((bid: any) => {
+                          const isAnonymous = bid.identity_type === "anonymous";
+                          const profilePicture =
+                            !isAnonymous && bid.user?.profile_picture ? bid.user.profile_picture : null;
+                          const avatarLetter = (bid.bidderFullName?.charAt(0) || "A").toUpperCase();
+                          return (
+                            <div key={bid.id || bid.timestamp} className="flex items-center gap-2">
+                              {profilePicture ? (
+                                <img
+                                  src={profilePicture}
+                                  alt={bid.bidderFullName || "Bidder"}
+                                  className="w-4 h-4 rounded-full object-cover border"
+                                />
+                              ) : (
+                                <div className="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center text-[8px] font-semibold text-gray-700 border">
+                                  {avatarLetter}
+                                </div>
+                              )}
+                              <div>
+                                <span className="font-semibold text-[11px] mr-1">
+                                  <i className="bx bx-money text-[8px] text-gray-400"></i> {bid.amount.toLocaleString()}
+                                </span>
+                                <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
+                                  by <p className="font-medium text-gray-700">{bid.bidderFullName}</p>
+                                  {isOwner && (
+                                    <span className="ml-1 text-[9px] text-gray-400">
+                                      {formatBidDate(bid.timestamp)}
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        ))
+                          );
+                        })
                       ) : (
                         <div className="text-[11px] text-gray-400">No bids yet.</div>
                       )}
