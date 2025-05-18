@@ -17,7 +17,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import CountdownTimer from "@/hooks/count/useCountdown";
-import { useFetchBiddingArtworks } from "@/hooks/auction/useAuction";
+// import { useFetchBiddingArtworks } from "@/hooks/auction/useAuction";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 import AuctionCountdown from "@/hooks/count/AuctionCountDown";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
@@ -661,7 +661,10 @@ const BidDetails = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {mockRelatedArtworks.map((art) => (
               <div key={art.id} className="min-w-[200px] flex-shrink-0">
-                <BidCard data={art} />
+                <BidCard
+                  data={art}
+                  onClick={() => navigate(`/biddetails/${art.id}`, { state: { artwork: art.artwork } })}
+                />
               </div>
             ))}
           </div>
