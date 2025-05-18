@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, UserPlus, UserMinus, Users } from "lucide-react";
+import { Search } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -43,70 +43,66 @@ const UserListModal: React.FC<UserListModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden">
-        <DialogTitle className="text-center text-xl font-bold p-4 border-b">{title}</DialogTitle>
+      <DialogContent className="w-full max-w-sm h-[70%] rounded-lg flex flex-col p-0 gap-0 overflow-hidden">
+        
+        <DialogTitle className="text-center text-md font-bold p-4">{title}</DialogTitle>
         
         {/* Search Bar */}
-        <div className="relative px-4 pt-4">
-          <Search className="absolute left-7 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <div className="relative px-8">
+          <Search className="absolute left-12 top-3.5 transform -translate-y-1/2 text-gray-400 h-3 w-3" />
           <Input
             placeholder="Search users"
-            className="pl-10 pr-4 py-2 w-full rounded-full border border-gray-300"
+            className="pl-10 pr-4 w-full h-7 rounded-full border border-gray-300 focus:outline-none focus:ring-0 focus:border-transparent"
+            style={{ fontSize: '10px' }}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         
-        {/* User List - Using ScrollArea with visible scrolling functionality */}
-        <ScrollArea className="flex-1 h-[400px] mt-4 px-4 overflow-auto">
+        {/* User List */}
+        <ScrollArea className="flex-1 h-[350px] mt-4 px-8 overflow-auto">
           <div className="pr-2">
             {filteredUsers.length > 0 ? (
               filteredUsers.map((user) => (
-                <div key={user.id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                <div key={user.id} className="flex items-center justify-between py-2 border-gray-100 last:border-0">
                   <div className="flex items-center">
-                    <Avatar className="h-12 w-12 mr-3">
+                    <Avatar className="h-7 w-7 mr-3">
                       <AvatarImage src={user.profileImage} alt={user.name} />
-                      <AvatarFallback className="bg-gray-200 text-gray-700">{user.name.charAt(0)}</AvatarFallback>
+                      <AvatarFallback className="bg-gray-200 text-gray-700 ">{user.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
                       <div className="flex items-center">
-                        <span className="font-medium">{user.name}</span>
+                        <span className="font-medium text-[11px]">{user.name}</span>
                         {title === "Followers" && user.isFollowing === false && (
                           <button 
                             onClick={() => onFollow && onFollow(user.id)} 
-                            className="text-xs text-red-600 ml-2 hover:underline font-medium cursor-pointer"
+                            className="text-[10px] text-red-600 ml-2 hover:underline cursor-pointer"
                           >
                             • Follow
                           </button>
                         )}
                       </div>
                       {title === "Following" && (
-                        <span className="text-xs text-gray-500">{user.items} items</span>
+                        <span className="text-[10px] text-gray-500">{user.items} items</span>
                       )}
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-2">
                     {title === "Followers" ? (
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="text-xs px-4 py-1 h-8 rounded-full hover:bg-gray-100 flex items-center gap-1"
+                      <button 
+                        className="text-[9px] px-4 h-5 rounded-full border hover:bg-gray-100 flex items-center gap-1"
                         onClick={() => onRemove && onRemove(user.id)}
                       >
-                        <UserMinus className="h-3 w-3" />
                         <span>Remove</span>
-                      </Button>
+                      </button>
                     ) : (
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="text-xs px-4 py-1 h-8 rounded-full text-red-800 border-red-800 hover:bg-red-50 flex items-center gap-1"
+                      <button 
+                        className="text-[9px] border px-4 py-1 h-5 rounded-full text-red-800 border-red-800 hover:bg-red-50 flex items-center gap-1"
                         onClick={() => onUnfollow && onUnfollow(user.id)}
                       >
-                        <UserMinus className="h-3 w-3" />
                         <span>Unfollow</span>
-                      </Button>
+                      </button>
                     )}
                     
                     <DropdownMenu>
@@ -119,10 +115,10 @@ const UserListModal: React.FC<UserListModalProps> = ({
                           </svg>
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-36">
-                        <DropdownMenuItem className="text-xs cursor-pointer">View Profile</DropdownMenuItem>
-                        <DropdownMenuItem className="text-xs cursor-pointer">Block User</DropdownMenuItem>
-                        <DropdownMenuItem className="text-xs cursor-pointer text-red-600">Report</DropdownMenuItem>
+                      <DropdownMenuContent align="end" className="w-10">
+                        <DropdownMenuItem className="text-[9px] cursor-pointer">View Profile</DropdownMenuItem>
+                        <DropdownMenuItem className="text-[9px] cursor-pointer">Block User</DropdownMenuItem>
+                        <DropdownMenuItem className="text-[9px] cursor-pointer text-red-600">Report</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
