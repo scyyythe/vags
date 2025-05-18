@@ -36,8 +36,23 @@ export const usePlaceBid = () => {
       return response.data;
     },
     onSuccess: (data, variables) => {
+      queryClient.setQueryData<any>(["biddingArtworks"], (oldData) => {
+        if (!oldData) return [];
+
+        return oldData.map((item) =>
+          item.artwork.id === variables.artwork_id
+            ? {
+                ...item,
+                highestBid: data.amount,
+                bidderFullName: data.bidderFullName,
+              }
+            : item
+        );
+      });
+
       queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
     },
+
     onError: (error) => {
       const errMsg = error.response?.data?.error || "Failed to place bid.";
       toast.error(errMsg);
