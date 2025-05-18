@@ -509,7 +509,7 @@ const BidDetails = () => {
                   <div className="flex justify-between items-start">
                     <div className="flex items-center space-x-4">
                       <button
-                        onClick={() => handleLike(item.artwork._id)}
+                        onClick={() => handleLike()}
                         className="flex items-center space-x-1 text-gray-800 rounded-3xl py-1.5 px-2 border border-gray-200"
                       >
                         <Heart
