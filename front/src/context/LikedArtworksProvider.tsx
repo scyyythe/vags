@@ -1,6 +1,7 @@
 import { createContext, useState, ReactNode } from "react";
 import { toast } from "sonner";
 import apiClient from "@/utils/apiClient";
+import { useQueryClient } from "@tanstack/react-query";
 
 export type LikedArtwork = {
   id: string;
@@ -26,13 +27,14 @@ export const LikedArtworksContext = createContext<LikedArtworksContextType>({
 export const LikedArtworksProvider = ({ children }: { children: ReactNode }) => {
   const [likedArtworks, setLikedArtworks] = useState<Record<string, boolean>>({});
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+  const queryClient = useQueryClient();
 
   const toggleLike = async (id: string) => {
     try {
       const response = await apiClient.post(`likes/${id}/`);
-
       const { is_liked, like_count, detail } = response.data;
 
+      // Update your local context state
       setLikedArtworks((prev) => ({ ...prev, [id]: is_liked }));
 
       if (like_count !== undefined) {
@@ -44,6 +46,14 @@ export const LikedArtworksProvider = ({ children }: { children: ReactNode }) => 
           return { ...prev, [id]: newCount };
         });
       }
+
+      // **Update React Query cache to keep UI in sync with latest like status**
+      queryClient.setQueryData(["artworkStatus", id], (oldData: any) => ({
+        ...oldData,
+        isLiked: is_liked,
+        // optionally update likeCount if you have it in the cache
+        likeCount: like_count !== undefined ? like_count : oldData?.likeCount,
+      }));
 
       toast(detail || (is_liked ? "You liked this artwork." : "You unliked this artwork."));
     } catch (error) {
