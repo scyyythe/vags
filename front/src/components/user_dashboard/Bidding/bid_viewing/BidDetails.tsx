@@ -4,6 +4,7 @@ import { Heart, MoreHorizontal, GripVertical } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { LikedArtworksContext } from "@/context/LikedArtworksProvider";
+import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import BidMenu from "@/components/user_dashboard/Bidding/cards/BidMenu";
 import BidPopup from "../place_bid/BidPopup";
 import Header from "@/components/user_dashboard/navbar/Header";
@@ -61,6 +62,8 @@ const BidDetails = () => {
   const [isOverflowing, setIsOverflowing] = useState(false);
   const descriptionRef = useRef<HTMLDivElement | null>(null);
 
+  const [showReportOptions, setShowReportOptions] = useState(false);
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isReported, setIsReported] = useState(false);
@@ -74,6 +77,16 @@ const BidDetails = () => {
     const hour = date.getHours().toString().padStart(2, "0");
     const minute = date.getMinutes().toString().padStart(2, "0");
     return `${day} ${month} ${year}, ${hour}:${minute}`;
+  };
+
+  const onReport = () => {
+    setIsReported(true);
+    toast("Report submitted!");
+  };
+
+  const handleReportSubmit = (category: string, option?: string) => {
+    console.log("Report submitted:", { category, option });
+    onReport();
   };
 
   const isOwner = true; // Replace this with your real owner check!
@@ -345,6 +358,7 @@ const BidDetails = () => {
 
   if (item) {
     return (
+      <>
       <div className="min-h-screen">
         <Header />
         {/* Back button */}
@@ -664,6 +678,15 @@ const BidDetails = () => {
           />
         )}
 
+        {/* Report Options Popup */}
+        {showReportOptions && (
+          <ReportOptionsPopup 
+            isOpen={showReportOptions}
+            onClose={() => setShowReportOptions(false)}
+            onSubmit={handleReportSubmit}
+          />
+        )}
+
         {isExpanded && (
           <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
             <button
@@ -682,7 +705,15 @@ const BidDetails = () => {
             </div>
           </div>
         )}
+        
       </div>
+      {/* Report Options Popup */}
+        <ReportOptionsPopup 
+          isOpen={showReportOptions}
+          onClose={() => setShowReportOptions(false)}
+          onSubmit={handleReportSubmit}
+        />
+      </>
     );
   }
 };
