@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import UserListModal from "../common/UserListModal";
+import UserListModal from "../../owners/common/UserListModal";
 import { useUserLists } from "@/hooks/follow/useUserLists";
 import { UserPlus, UserMinus, Users } from "lucide-react";
 

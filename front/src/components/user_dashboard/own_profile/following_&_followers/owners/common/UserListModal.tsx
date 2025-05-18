@@ -12,7 +12,7 @@ export type UserData = {
   id: string;
   name: string;
   profileImage?: string;
-  isFollowing?: boolean;
+  isFollowing?: boolean; // true if current user is following this user
   items?: number;
 };
 
@@ -24,6 +24,7 @@ interface UserListModalProps {
   onFollow?: (userId: string) => void;
   onUnfollow?: (userId: string) => void;
   onRemove?: (userId: string) => void;
+  isOwner: boolean; // <-- NEW PROP
 }
 
 const UserListModal: React.FC<UserListModalProps> = ({
@@ -34,6 +35,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
   onFollow,
   onUnfollow,
   onRemove,
+  isOwner, // <-- NEW PROP
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -41,12 +43,36 @@ const UserListModal: React.FC<UserListModalProps> = ({
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Helper for button rendering (for non-owner POV)
+  const renderFollowButton = (user: UserData) => {
+    if (user.isFollowing) {
+      return (
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-[10px] px-4 h-5 rounded-full border border-gray-300 text-gray-700 bg-white hover:bg-gray-100"
+          disabled
+        >
+          Following
+        </Button>
+      );
+    }
+    return (
+      <Button
+        variant="outline"
+        size="sm"
+        className="text-[10px] px-4 h-5 rounded-full border border-red-600 text-red-600 bg-white hover:bg-red-50"
+        onClick={() => onFollow && onFollow(user.id)}
+      >
+        Follow
+      </Button>
+    );
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="w-full max-w-sm h-[70%] rounded-lg flex flex-col p-0 gap-0 overflow-hidden">
-        
         <DialogTitle className="text-center text-md font-bold p-4">{title}</DialogTitle>
-        
         {/* Search Bar */}
         <div className="relative px-8">
           <Search className="absolute left-12 top-3.5 transform -translate-y-1/2 text-gray-400 h-3 w-3" />
@@ -58,7 +84,6 @@ const UserListModal: React.FC<UserListModalProps> = ({
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
         {/* User List */}
         <ScrollArea className="flex-1 h-[350px] mt-4 px-8 overflow-auto">
           <div className="pr-2">
@@ -73,7 +98,8 @@ const UserListModal: React.FC<UserListModalProps> = ({
                     <div className="flex flex-col">
                       <div className="flex items-center">
                         <span className="font-medium text-[11px]">{user.name}</span>
-                        {title === "Followers" && user.isFollowing === false && (
+                        {/* For non-owner, show '• Follow' for followers list if not following */}
+                        {!isOwner && title === "Followers" && user.isFollowing === false && (
                           <button 
                             onClick={() => onFollow && onFollow(user.id)} 
                             className="text-[10px] text-red-600 ml-2 hover:underline cursor-pointer"
@@ -87,24 +113,53 @@ const UserListModal: React.FC<UserListModalProps> = ({
                       )}
                     </div>
                   </div>
-                  
                   <div className="flex items-center space-x-2">
-                    {title === "Followers" ? (
-                      <button 
-                        className="text-[9px] px-4 h-5 rounded-full border hover:bg-gray-100 flex items-center gap-1"
-                        onClick={() => onRemove && onRemove(user.id)}
-                      >
-                        <span>Remove</span>
-                      </button>
+                    {/* BUTTONS LOGIC */}
+                    {isOwner ? (
+                      // OWNER POV: Show Remove (Followers) or Unfollow (Following)
+                      title === "Followers" ? (
+                        <button 
+                          className="text-[9px] px-4 h-5 rounded-full border hover:bg-gray-100 flex items-center gap-1"
+                          onClick={() => onRemove && onRemove(user.id)}
+                        >
+                          <span>Remove</span>
+                        </button>
+                      ) : (
+                        <button 
+                          className="text-[9px] border px-4 py-1 h-5 rounded-full text-red-800 border-red-800 hover:bg-red-50 flex items-center gap-1"
+                          onClick={() => onUnfollow && onUnfollow(user.id)}
+                        >
+                          <span>Unfollow</span>
+                        </button>
+                      )
                     ) : (
-                      <button 
-                        className="text-[9px] border px-4 py-1 h-5 rounded-full text-red-800 border-red-800 hover:bg-red-50 flex items-center gap-1"
-                        onClick={() => onUnfollow && onUnfollow(user.id)}
-                      >
-                        <span>Unfollow</span>
-                      </button>
+                      // OTHER USERS POV: Show Follow/Following/Unfollow buttons as per screenshots
+                      <>
+                        {(title === "Followers" || title === "Following") && (
+                          user.isFollowing ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-[10px] px-4 h-5 rounded-full border border-gray-300 text-gray-700 bg-white hover:bg-gray-100"
+                              disabled
+                            >
+                              Following
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-[10px] px-4 h-5 rounded-full border border-red-600 text-red-600 bg-white hover:bg-red-50"
+                              onClick={() => onFollow && onFollow(user.id)}
+                            >
+                              Follow
+                            </Button>
+                          )
+                        )}
+                      </>
                     )}
                     
+                    {/* Dropdown menu always visible */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-8 w-8">
