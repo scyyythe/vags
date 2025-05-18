@@ -20,7 +20,7 @@ const TrendingFollowingSection = ({
     <div className="flex flex-col gap-12">
       {/* Trending Section */}
       <section className="mb-4 w-full">
-        <h2 className="text-lg font-semibold mb-4 pl-1">🔥 Trending</h2>
+        <h2 className="text-lg font-semibold mb-4 pl-1">Trending</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {isTrendingLoading ? (
             Array.from({ length: 10 }).map((_, index) => <ArtCardSkeleton key={index} />)
@@ -47,7 +47,7 @@ const TrendingFollowingSection = ({
 
       {/* Following Section */}
       <section className="mb-4 w-full">
-        <h2 className="text-lg font-semibold mb-4 pl-1">👥 Following</h2>
+        <h2 className="text-lg font-semibold mb-4 pl-1">Following</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {isFollowingLoading ? (
             Array.from({ length: 10 }).map((_, index) => <ArtCardSkeleton key={index} />)
