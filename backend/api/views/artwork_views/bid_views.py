@@ -99,18 +99,27 @@ class AuctionListViewOwner(generics.ListAPIView):
         user = self.request.user
 
         
+        user_artworks = Art.objects(artist=user.id).only('id')
+        artwork_ids = [art.id for art in user_artworks]
+
+        
         expired_auctions = Auction.objects(
-            artist=user.username,
+            artwork__in=artwork_ids,
             status=AuctionStatus.ON_GOING.value,
             end_time__lt=datetime.utcnow()
         )
+
         for auction in expired_auctions:
             auction.close_auction()
 
-        return Auction.objects(
-            artist=user.username,
-            status=AuctionStatus.ON_GOING.value
-        )
+        
+        queryset = Auction.objects(artwork__in=artwork_ids)
+
+        status = self.request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+
+        return queryset
         
 class AuctionListViewSpecificUser(generics.ListAPIView):
     serializer_class = AuctionSerializer
@@ -120,21 +129,32 @@ class AuctionListViewSpecificUser(generics.ListAPIView):
         user_id = self.request.query_params.get('userId')
 
         if not user_id:
-            return Auction.objects.none()  
+            return Auction.objects.none()
+
+        
+        user_artworks = Art.objects(artist=user_id).only('id')
+        artwork_ids = [art.id for art in user_artworks]
 
        
         expired_auctions = Auction.objects(
-            artist=user_id,
+            artwork__in=artwork_ids,
             status=AuctionStatus.ON_GOING.value,
             end_time__lt=datetime.utcnow()
         )
         for auction in expired_auctions:
             auction.close_auction()
 
-        return Auction.objects(
-            artist=user_id,
-            status=AuctionStatus.ON_GOING.value
-        )
+        
+        queryset = Auction.objects(artwork__in=artwork_ids)
+
+        
+        status = self.request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+
+        return queryset
+
+
 
     
 class MyAuctionListView(generics.ListAPIView):
