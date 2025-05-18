@@ -9,6 +9,7 @@ import { useEffect } from "react";
 
 interface BidCardProps {
   data: ArtworkAuction;
+  onClick: () => void;
   isLoading?: boolean;
   onPlaceBid?: (id: string, amount: number) => void;
   user?: {
@@ -18,7 +19,7 @@ interface BidCardProps {
   };
 }
 
-const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, user }) => {
+const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, onClick, user }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isReported, setIsReported] = useState(false);
@@ -61,7 +62,10 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
 
   return (
     <>
-      <div className="w-full rounded-xl border bg-white hover:shadow-lg transition-all duration-300">
+      <div
+        onClick={onClick}
+        className="w-full rounded-xl border bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
+      >
         <div className="relative">
           <img src={data.artwork.image_url} alt={data.artwork.title} className="w-full h-36 object-cover rounded-xl" />
           <CountdownTimer targetTime={data.end_time} />
