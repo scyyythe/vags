@@ -3,16 +3,15 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
 import ArtGalleryContainer from "@/components/user_dashboard/Explore/gallery/ArtGalleryContainer";
-import SearchBar from "@/components/user_dashboard/local_components/SearchBar";
 import CategoryFilter from "@/components/user_dashboard/Explore/navigation/CategoryFilter";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { useSearchParams } from "react-router-dom";
+import TrendingFollowingSection from "@/components/user_dashboard/Explore/navigation/trend_following/TrendingSection";
 const Explore = () => {
   const navigate = useNavigate();
   const categories = ["All", "Trending", "Following"];
@@ -87,7 +86,11 @@ const Explore = () => {
 
             <div className="lg:w-[133%] custom-scrollbars pb-4 pl-2 sm:pl-0">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                {isLoading ? (
+                {selectedCategory.toLowerCase() === "trending" ? (
+                  <div className="col-span-full flex flex-col items-center justify-center text-left">
+                    <TrendingFollowingSection onTip={handleTipJar} />
+                  </div>
+                ) : isLoading ? (
                   Array.from({ length: 6 }).map((_, index) => <ArtCardSkeleton key={index} />)
                 ) : error ? (
                   <div className="col-span-full text-center text-sm text-gray-500">Error loading artworks</div>
@@ -97,22 +100,20 @@ const Explore = () => {
                     <p className="text-sm text-gray-500">No artworks found.</p>
                   </div>
                 ) : (
-                  filteredArtworksMemo.map((card) => {
-                    return (
-                      <ArtCard
-                        key={card.id}
-                        id={card.id}
-                        artistName={card.artistName}
-                        artistId={card.artist_id}
-                        artistImage={card.artistImage}
-                        artworkImage={card.artworkImage}
-                        title={card.title}
-                        onButtonClick={handleTipJar}
-                        isExplore={true}
-                        likesCount={card.likesCount}
-                      />
-                    );
-                  })
+                  filteredArtworksMemo.map((card) => (
+                    <ArtCard
+                      key={card.id}
+                      id={card.id}
+                      artistName={card.artistName}
+                      artistId={card.artist_id}
+                      artistImage={card.artistImage}
+                      artworkImage={card.artworkImage}
+                      title={card.title}
+                      onButtonClick={handleTipJar}
+                      isExplore={true}
+                      likesCount={card.likesCount}
+                    />
+                  ))
                 )}
               </div>
             </div>
