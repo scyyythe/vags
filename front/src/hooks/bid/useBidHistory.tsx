@@ -8,7 +8,7 @@ const fetchBidHistory = async (artworkId: string) => {
 
 export const useBidHistory = (artworkId: string) => {
   return useQuery({
-    queryKey: ["bidHistory", artworkId],
+    queryKey: ["biddingArtworks", artworkId],
     queryFn: () => fetchBidHistory(artworkId),
     enabled: !!artworkId,
   });
