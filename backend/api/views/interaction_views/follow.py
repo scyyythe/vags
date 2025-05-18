@@ -98,9 +98,7 @@ class CheckFollowStatusView(APIView):
         
         is_following = Follower.objects.filter(follower=user, following=following).count() > 0
         return Response({"is_following": is_following}, status=status.HTTP_200_OK)
-
-
-
+    
 class FollowerListView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -110,6 +108,15 @@ class FollowerListView(APIView):
         followers = Follower.objects.filter(following=user)
         follower_users = [f.follower for f in followers]
         serializer = UserSerializer(follower_users, many=True)
+        return Response(serializer.data)
+class FollowingListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        following = Follower.objects.filter(follower=user)
+        following_users = [f.following for f in following]
+        serializer = UserSerializer(following_users, many=True)
         return Response(serializer.data)
 
 class FollowCountsView(APIView):
