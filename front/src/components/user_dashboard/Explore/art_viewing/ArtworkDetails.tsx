@@ -15,7 +15,7 @@ import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comm
 import useFavorite from "@/hooks/interactions/useFavorite";
 import useArtworkDetails from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
-
+import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
@@ -46,7 +46,10 @@ const ArtworkDetails = () => {
   const [likedComments, setLikedComments] = useState<{ [commentId: string]: boolean }>({});
   const [commentMenus, setCommentMenus] = useState<{ [commentId: string]: boolean }>({});
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({});
+
+  const [currentPage] = useState(1);
   const { data: artwork, isLoading } = useArtworkDetails(id);
+  const { data: related, error } = useArtworks(currentPage, undefined, true, "all", "public");
   useEffect(() => {
     if (descriptionRef.current) {
       const isOver = descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight;
@@ -294,7 +297,7 @@ const ArtworkDetails = () => {
       artworkImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
       title: "Sunset Dreams",
       likesCount: 120,
-      visibility: "public"
+      visibility: "public",
     },
     {
       id: "rel2",
@@ -304,7 +307,7 @@ const ArtworkDetails = () => {
       artworkImage: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
       title: "Blue Harmony",
       likesCount: 85,
-      visibility: "public"
+      visibility: "public",
     },
     {
       id: "rel3",
@@ -314,7 +317,7 @@ const ArtworkDetails = () => {
       artworkImage: "https://i.pinimg.com/736x/b9/b7/cc/b9b7cc76307221d7ed14d55457cfa0b9.jpg",
       title: "Urban Lights",
       likesCount: 200,
-      visibility: "public"
+      visibility: "public",
     },
     {
       id: "rel4",
@@ -324,7 +327,7 @@ const ArtworkDetails = () => {
       artworkImage: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=400&q=80",
       title: "Morning Dew",
       likesCount: 150,
-      visibility: "public"
+      visibility: "public",
     },
     {
       id: "rel5",
@@ -334,10 +337,9 @@ const ArtworkDetails = () => {
       artworkImage: "https://i.pinimg.com/736x/9e/1f/e4/9e1fe4f093336d7067c38b35e6936966.jpg",
       title: "Morning Dew",
       likesCount: 150,
-      visibility: "public"
+      visibility: "public",
     },
   ];
-
 
   return (
     <div className="min-h-screen">
@@ -581,25 +583,46 @@ const ArtworkDetails = () => {
       </div>
 
       {/* Related Artworks Section */}
-      <div className="container md:px-6 mt-2 mb-2">
-        <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Artworks</h2>      
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {mockRelatedArtworks.map((artwork) => (
-              <ArtCard
-                id={artwork.id}
-                artistId={artwork.artistId}
-                artistName={artwork.artistName}
-                artistImage={artwork.artistImage}
-                artworkImage={artwork.artworkImage}
-                title={artwork.title}
-                isExplore={true}
-                likesCount={artwork.likesCount}
-                visibility={artwork.visibility}
-              />
-          ))}
-        </div>
-      </div>
+      {(() => {
+        related?.forEach((card) => console.log(`Artwork ID: ${card.id}, Style: "${card.style}"`));
 
+        const filteredRelated = related?.filter(
+          (card) => card.id !== id && card.style?.trim().toLowerCase() === artwork?.style?.trim().toLowerCase()
+        );
+
+        console.log("Filtered related artworks:", filteredRelated);
+
+        return (
+          related &&
+          related.length > 0 && (
+            <div className="container md:px-6 mt-2 mb-2">
+              <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Artworks</h2>
+              {filteredRelated && filteredRelated.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                  {filteredRelated.map((card) => (
+                    <ArtCard
+                      key={card.id}
+                      id={card.id}
+                      artistName={card.artistName}
+                      artistId={card.artistId}
+                      artistImage={card.artistImage}
+                      artworkImage={card.artworkImage}
+                      title={card.title}
+                      onButtonClick={handleTipJar}
+                      isExplore={true}
+                      likesCount={card.likesCount}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col justify-center items-center h-32 w-full">
+                  <p className="text-gray-500 text-sm mb-2">No related artworks found.</p>
+                </div>
+              )}
+            </div>
+          )
+        );
+      })()}
 
       {/* Expanded artwork view */}
       {isExpanded && (

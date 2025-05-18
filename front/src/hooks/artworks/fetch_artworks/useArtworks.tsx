@@ -67,6 +67,7 @@ const fetchArtworks = async (
       artistImage: artwork.profile_picture,
       description: artwork.description,
       style: artwork.category,
+      category: artwork.category,
       medium: artwork.medium,
       size: artwork.size,
       status: artwork.art_status,
