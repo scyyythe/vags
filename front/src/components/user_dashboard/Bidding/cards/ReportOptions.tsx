@@ -114,49 +114,63 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({
   return (
     <>
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg w-full max-w-md mx-4 overflow-hidden">
-          <div className="flex items-center justify-between p-4 border-b">
-            <h2 className="text-lg font-semibold">
-              {showDetails ? "Additional Information" : 
-                selectedCategory ? selectedCategory.title : "Report Content"}
-            </h2>
+        <div className="bg-white rounded-lg w-full max-w-xs mx-4 overflow-hidden">
+          <div className="flex items-center justify-between p-4 -mb-4">
+            <div className="flex items-center gap-2">
+              {(selectedCategory || showDetails) && (
+                <button
+                  onClick={handleBack}
+                  className="px-1 rounded-full hover:bg-gray-100 transition-colors"
+                  aria-label="Back"
+                >
+                  <i className='bx bx-chevron-left text-sm text-black'></i>
+                </button>
+              )}
+              <h2 className="text-xs text-black font-semibold">
+                {showDetails
+                  ? "Additional Information"
+                  : selectedCategory
+                  ? selectedCategory.title
+                  : "Report Content"}
+              </h2>
+            </div>
             <button
               onClick={onClose}
               className="p-1 rounded-full hover:bg-gray-200 transition-colors"
               aria-label="Close"
             >
-              <X size={20} />
+              <X size={15} />
             </button>
           </div>
 
           <div className="p-4 max-h-[60vh] overflow-y-auto">
             {showDetails && selectedOption ? (
               <div>
-                <p className="text-gray-700 mb-4">{selectedOption.additionalInfo}</p>
+                <p className="text-black text-[10px] mb-4">{selectedOption.additionalInfo}</p>
                 <button
                   onClick={openConfirmation}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition-colors"
+                  className="w-full bg-red-800 hover:bg-red-700 text-white text-[10px] py-2 px-4 rounded-full transition-colors"
                 >
                   Submit Report
                 </button>
               </div>
             ) : selectedCategory ? (
               <>
-                <p className="text-gray-600 mb-4">{selectedCategory.description}</p>
+                <p className="text-black text-[10px] mb-4">{selectedCategory.description}</p>
                 {selectedCategory.options?.map((option) => (
                   <button
                     key={option.id}
                     onClick={() => handleOptionSelect(option)}
-                    className="w-full text-left p-3 mb-2 bg-gray-50 hover:bg-gray-100 rounded flex items-center justify-between"
+                    className="w-full text-left text-[10px] text-black p-3 mb-2 bg-gray-50 hover:bg-gray-100 rounded flex items-center justify-between"
                   >
                     <span>{option.text}</span>
-                    <span className="text-gray-400">›</span>
+                    <span className="text-black text-sm">›</span>
                   </button>
                 ))}
                 {!selectedCategory.options && (
                   <button
                     onClick={openConfirmation}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition-colors"
+                    className="w-full bg-red-800 hover:bg-red-700 text-white text-[10px] py-2 px-4 rounded-full transition-colors"
                   >
                     Submit Report
                   </button>
@@ -167,48 +181,40 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({
                 <button
                   key={category.id}
                   onClick={() => handleCategorySelect(category)}
-                  className="w-full text-left p-3 mb-2 bg-gray-50 hover:bg-gray-100 rounded flex items-center justify-between"
+                  className="w-full text-left text-[10px] text-black p-3 mb-2 bg-gray-50 hover:bg-gray-100 rounded flex items-center justify-between"
                 >
                   <span>{category.title}</span>
-                  <span className="text-gray-400">›</span>
+                  <span className="text-black text-sm">›</span>
                 </button>
               ))
             )}
-          </div>
-
-          <div className="p-4 border-t">
-            <button
-              onClick={handleBack}
-              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded transition-colors"
-            >
-              {selectedCategory ? "Back" : "Cancel"}
-            </button>
           </div>
         </div>
       </div>
 
       <Dialog open={showConfirmation} onOpenChange={closeConfirmation}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="w-full max-w-xs rounded-lg">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-red-500" />
+            <DialogTitle className="flex items-center mb-1 text-xs">
               Confirm Report Submission
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="w-full max-w-[270px] text-[10px] text-center text-black">
               Are you sure you want to report this content? This action cannot be easily undone.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="flex gap-2 sm:gap-0">
-            <Button variant="outline" onClick={closeConfirmation}>Cancel</Button>
-            <Button 
-              variant="destructive" 
-              onClick={() => handleSubmit(
-                selectedCategory?.id || "", 
-                selectedOption?.id
-              )}
-            >
-              Yes, Report Content
-            </Button>
+          <DialogFooter>
+            <div className="w-full max-w-xs flex justify-between items-center gap-6">
+              <button className="border border-gray-600 rounded-full py-1 px-4 text-[10px]" onClick={closeConfirmation}>Cancel</button>
+              <button 
+              className="bg-red-800 hover:bg-red-700 rounded-full py-1.5 px-4 text-white text-[10px] whitespace-nowrap"
+                onClick={() => handleSubmit(
+                  selectedCategory?.id || "", 
+                  selectedOption?.id
+                )}
+              >
+                Report Content
+              </button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
