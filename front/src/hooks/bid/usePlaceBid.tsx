@@ -36,6 +36,7 @@ export const usePlaceBid = () => {
       return response.data;
     },
     onSuccess: (data, variables) => {
+      // Update cached highest bid for artwork list
       queryClient.setQueryData<any>(["biddingArtworks"], (oldData) => {
         if (!oldData) return [];
 
@@ -50,9 +51,10 @@ export const usePlaceBid = () => {
         );
       });
 
+      queryClient.invalidateQueries({ queryKey: ["biddingArtworks", variables.artwork_id] });
+
       queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
     },
-
     onError: (error) => {
       const errMsg = error.response?.data?.error || "Failed to place bid.";
       toast.error(errMsg);
