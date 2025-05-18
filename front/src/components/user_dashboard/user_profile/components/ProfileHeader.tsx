@@ -14,6 +14,8 @@ import { useUnfollowUser } from "@/hooks/follow/useUnfollowUser";
 import useFollowStatus from "@/hooks/follow/useFollowStatus";
 import useFollowCounts from "@/hooks/follow/useFollowCount";
 import EditProfile from "../../own_profile/edit_profile/EditButton";
+import FollowModals from "@/components/user_dashboard/own_profile/following_&_followers/components/profile/FollowModals";
+
 interface ProfileHeaderProps {
   profileImage: string;
   name: string;
@@ -46,6 +48,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
       setIsFollowing(data as boolean);
     }
   }, [data]);
+  
   const toggleFollow = async () => {
     if (!isFollowing) {
       followMutation.mutate(
@@ -78,6 +81,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
+  
   if (isFollowStatusLoading) {
     return (
       <button disabled className="px-8 py-[6px] rounded-full text-[10px] bg-gray-500 text-white">
@@ -85,6 +89,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
       </button>
     );
   }
+  
   return (
     <div className="w-full px-4">
       {/* Cover Photo */}
@@ -103,19 +108,21 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
         {/* Name */}
         <h1 className="text-xl md:text-xl font-bold mt-4">{name}</h1>
 
-        {/* Stats */}
-        <div className="flex items-center space-x-4 mt-2 text-xs md:text-xs">
-          <span>
-            <strong>{followCounts?.followers ?? 0}</strong> followers
-          </span>
-          <span>•</span>
-          <span>
-            <strong>{followCounts?.following ?? 0}</strong> following
-          </span>
-          <span>•</span>
-          <span>
-            <strong>{items}</strong> items
-          </span>
+        {/* Stats - Replaced with FollowModals component */}
+        <div className="flex space-x-2">
+          <FollowModals 
+            userId={profileUserId}
+            followersCount={followCounts?.followers ?? 0} 
+            followingCount={followCounts?.following ?? 0} 
+          />
+          
+          {/* Items count - separate from FollowModals */}
+          <div className="flex items-center space-x-2 mt-1.5 text-[10px] md:text-[11px]">
+            <span>•</span>
+            <span>
+              <strong>{items}</strong> items
+            </span>
+          </div>
         </div>
 
         {loggedInUserId !== profileUserId ? (
