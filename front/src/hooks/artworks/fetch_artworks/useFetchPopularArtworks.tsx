@@ -6,6 +6,7 @@ export interface Artwork {
   title: string;
   artistName: string;
   artist: string;
+  artist_id: string;
   description: string;
   category: string;
   medium: string;
@@ -31,6 +32,7 @@ const fetchPopularArtworks = async (currentPage: number): Promise<Artwork[]> => 
       id: artwork.id,
       title: artwork.title,
       artistName: artwork.artist,
+      artistId: artwork.artist_id,
       artistImage: "",
       description: artwork.description,
       style: artwork.category,

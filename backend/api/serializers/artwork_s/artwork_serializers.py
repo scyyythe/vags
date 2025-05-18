@@ -79,7 +79,7 @@ class ArtSerializer(serializers.Serializer):
 
         if instance.artist:
             artist_id = str(instance.artist.id)
-            profile_picture = str(instance.artist.profile_picture)  # Ensure this doesn't break if profile_picture is None
+            profile_picture = str(instance.artist.profile_picture)  
             artist_name = f"{instance.artist.first_name} {instance.artist.last_name}"
 
         return {
