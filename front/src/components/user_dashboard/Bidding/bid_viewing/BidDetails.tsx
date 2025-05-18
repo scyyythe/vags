@@ -19,7 +19,7 @@ import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import { useBidHistory } from "@/hooks/bid/useBidHistory";
-
+import { getLoggedInUserId } from "@/auth/decode";
 export interface BidCardData {
   id: string;
   title: string;
@@ -88,7 +88,8 @@ const BidDetails = () => {
     onReport();
   };
 
-  const isOwner = true;
+  const currentUserId = getLoggedInUserId();
+
   // Mock bid data
   const mockBids = [
     {
@@ -351,6 +352,8 @@ const BidDetails = () => {
   }
 
   if (item) {
+    const isOwner = currentUserId === item.artwork.artist_id;
+
     return (
       <>
         <div className="min-h-screen">
