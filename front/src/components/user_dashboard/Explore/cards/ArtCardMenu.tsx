@@ -1,11 +1,13 @@
 import React, { useRef, useState } from "react";
-import { Bookmark, EyeOff, Eye, Flag } from "lucide-react";
+import { Bookmark, EyeOff, Eye, Flag, Undo2 } from "lucide-react";
+import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 
 interface ArtCardMenuProps {
   isOpen: boolean;
   onFavorite: () => void;
   onHide: () => void;
   onReport: () => void;
+  onUndoReport?: () => void;
   isFavorite: boolean;
   isReported: boolean;
   isHidden?: boolean;
@@ -20,12 +22,27 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   onFavorite,
   onHide,
   onReport,
+  onUndoReport,
   isFavorite = false,
   isReported = false,
   isHidden = false,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [showReportOptions, setShowReportOptions] = useState(false);
+
+  const handleReportSubmit = (category: string, option?: string) => {
+    console.log("Report submitted:", { category, option });
+    onReport();
+    setShowReportOptions(false);
+  };
+  
+  const handleUndoReport = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onUndoReport) {
+       onUndoReport();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -93,6 +110,27 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             </span>
           )}
         </div>
+
+        {/* Undo Report - Only show when content is reported */}
+          {isReported && (
+            <div className="flex items-center relative">
+              <button
+                onClick={handleUndoReport}
+                className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+                aria-label="Undo Report"
+                onMouseEnter={() => setHoveredItem("undoReport")}
+                onMouseLeave={() => setHoveredItem(null)}
+              >
+                <Undo2 size={10} stroke="currentColor" />
+              </button>
+              {hoveredItem === "undoReport" && (
+                <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+                  Undo Report
+                </span>
+              )}
+            </div>
+          )}
+
       </div>
     </div>
   );
