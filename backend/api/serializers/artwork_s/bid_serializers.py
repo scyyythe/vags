@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from api.models.artwork_model.bid import Bid, Auction
+from api.models.artwork_model.bid import AuctionStatus
 from datetime import datetime, timezone
 from api.models.artwork_model.artwork import Art
 from mongoengine.errors import DoesNotExist
@@ -25,7 +26,7 @@ class BidSerializer(serializers.Serializer):
             raise serializers.ValidationError({"error": "Artwork not found."})
 
         try:
-            auction = Auction.objects.get(artwork=artwork, status=True)
+           auction = Auction.objects.get(artwork=artwork, status=AuctionStatus.ON_GOING.value)
         except DoesNotExist:
             raise serializers.ValidationError({"error": "Auction not found or has ended."})
 
@@ -45,13 +46,13 @@ class BidSerializer(serializers.Serializer):
         if current_highest_bid:
             is_current_bidder_highest = current_highest_bid.bidder == bidder
             if is_current_bidder_highest:
-                # Bidder is already highest, so new bid must be strictly higher than their current highest bid
+                
                 if new_bid_amount <= current_highest_bid.amount:
                     raise serializers.ValidationError(
                         {"error": "Your new bid must be higher than your current highest bid."}
                     )
             else:
-                # Bidder is NOT highest, so bid must be higher than the current highest bid
+                
                 if new_bid_amount <= current_highest_bid.amount:
                     raise serializers.ValidationError(
                         {"error": "Bid must be higher than the current highest bid."}
