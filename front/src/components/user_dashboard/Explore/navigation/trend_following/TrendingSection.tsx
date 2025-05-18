@@ -41,7 +41,7 @@ const TrendingFollowingSection = ({ onTip }: Props) => {
                 title={artwork.title}
                 onButtonClick={onTip}
                 isExplore={true}
-                likesCount={artwork.likes_count}
+                likesCount={artwork.likesCount}
               />
             ))
           )}
