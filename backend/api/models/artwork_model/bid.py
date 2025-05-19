@@ -3,6 +3,9 @@ from datetime import datetime
 from api.models.user_model.users import User
 from api.models.artwork_model.artwork import Art
 from enum import Enum
+from datetime import datetime
+from django.utils.timesince import timesince
+
 class Bid(Document):
     bidder = ReferenceField(User, required=True, reverse_delete_rule=2)
     artwork = ReferenceField(Art, required=True, reverse_delete_rule=2)
@@ -36,16 +39,59 @@ class Auction(Document):
     bid_history = ListField(ReferenceField(Bid))
 
     def close_auction(self):
-        """Close the auction and determine final status."""
+    
+        if self.status in [AuctionStatus.SOLD.value, AuctionStatus.CLOSED.value, AuctionStatus.NO_BIDDER.value]:
+            return  
+
+        now = datetime.utcnow()
+
         if self.bid_history:
+            highest = max(self.bid_history, key=lambda bid: bid.amount)
+            self.highest_bid = highest
             self.status = AuctionStatus.SOLD.value
+            self.save()
+
+            
+            time_elapsed = timesince(now).split(',')[0] + " ago"
+
+        
+            Notification.objects.create(
+                user=highest.bidder,
+                message=f"🎉 Congratulations! You won the auction for '{self.artwork.title}' with a bid of ${highest.amount:.2f}.",
+                art=self.artwork,
+                name=highest.bidder.username,
+                action="won the auction",
+                icon="🏆",
+                time=time_elapsed,
+                date=now,
+                money=True,
+                amount=str(highest.amount),
+                
+            )
+
+        
+            Notification.objects.create(
+                user=self.artwork.artist,
+                message=f"✅ Your artwork '{self.artwork.title}' was sold to {highest.bidder.username} for ${highest.amount:.2f}.",
+                art=self.artwork,
+                name=self.artwork.artist.username,
+                action="sold your artwork",
+                icon="💰",
+                time=time_elapsed,
+                date=now,
+                money=True,
+                amount=str(highest.amount),
+                
+            )
         else:
             self.status = AuctionStatus.NO_BIDDER.value
-        self.save()
+            self.save()
+
+
 
     @classmethod
     def create_auction(cls, artwork_id, start_time, end_time, start_bid_amount):
-        """Create a new auction with default status 'on_going'."""
+        
         auction = cls(
             artwork=Art.objects.get(id=artwork_id),
             start_bid_amount=start_bid_amount,

@@ -6,6 +6,7 @@ from api.models.artwork_model.artwork import Art
 from mongoengine.errors import DoesNotExist
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from api.serializers.user_s.users_serializers import UserSerializer
+
 class BidSerializer(serializers.Serializer):
     user = UserSerializer(source="bidder", read_only=True) 
     bidderFullName = serializers.SerializerMethodField()
@@ -34,9 +35,12 @@ class BidSerializer(serializers.Serializer):
             artwork = Art.objects.get(id=artwork_id)
         except DoesNotExist:
             raise serializers.ValidationError({"error": "Artwork not found."})
-
+        
+        if artwork.artist==bidder:
+            raise serializers.ValidationError({"error": "You cannot bid on your own artwork."})
+        
         try:
-           auction = Auction.objects.get(artwork=artwork, status=AuctionStatus.ON_GOING.value)
+            auction = Auction.objects.get(artwork=artwork, status=AuctionStatus.ON_GOING.value)
         except DoesNotExist:
             raise serializers.ValidationError({"error": "Auction not found or has ended."})
 
@@ -55,12 +59,12 @@ class BidSerializer(serializers.Serializer):
 
         if current_highest_bid:
             is_current_bidder_highest = current_highest_bid.bidder == bidder
+
             if is_current_bidder_highest:
-                
-                if new_bid_amount <= current_highest_bid.amount:
-                    raise serializers.ValidationError(
-                        {"error": "Your new bid must be higher than your current highest bid."}
-                    )
+              
+                raise serializers.ValidationError(
+                    {"error": "You are currently the highest bidder."}
+                )
             else:
                 
                 if new_bid_amount <= current_highest_bid.amount:
@@ -80,6 +84,8 @@ class BidSerializer(serializers.Serializer):
         auction.save()
 
         return bid
+
+
 
 class AuctionSerializer(serializers.Serializer):
     id = serializers.CharField()
