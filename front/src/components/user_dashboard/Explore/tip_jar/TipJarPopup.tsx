@@ -13,6 +13,7 @@ interface TipJarPopupProps {
   artworkTitle?: string;
   artworkImage?: string;
   artistName?: string;
+  artistId: string;
 }
 
 type PaymentMethod = "PayPal" | "GCash" | "Stripe";
@@ -23,6 +24,7 @@ const TipJarPopup = ({
   artworkTitle = "Untitled Artwork",
   artworkImage = "",
   artistName = "",
+  artistId = "",
 }: TipJarPopupProps) => {
   const [step, setStep] = useState<"amount" | "confirm" | "paypal">("amount");
 
@@ -33,6 +35,7 @@ const TipJarPopup = ({
 
   console.log("TipJarPopup - isOpen:", isOpen);
   console.log("TipJarPopup - artworkTitle:", artworkTitle);
+  console.log("TipJarPopup - artistId:", artistId);
 
   const predefinedAmounts = [
     { value: "250", label: "₱250" },
@@ -109,6 +112,7 @@ const TipJarPopup = ({
   };
   const paypalRef = usePayPalTip({
     amount: selectedAmount || customAmount,
+    artistId: artistId,
     onSuccess: (details) => {
       toast.success("Thank you for your donation!");
       onClose();
