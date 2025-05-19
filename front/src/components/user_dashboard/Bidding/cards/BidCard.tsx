@@ -6,7 +6,7 @@ import BidPopup from "../place_bid/BidPopup";
 import CountdownTimer from "@/hooks/count/useCountdown";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import { useEffect } from "react";
-import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
+import useSubmitBidReport from "@/hooks/mutate/report/useReportBid";
 import useReportStatus from "@/hooks/mutate/report/useReportStatus";
 interface BidCardProps {
   data: ArtworkAuction;
@@ -26,7 +26,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
   const [isReported, setIsReported] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
   const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useReportStatus(data.id);
-  const { mutate: submitReport } = useSubmitReport();
+  const { mutate: submitReport } = useSubmitBidReport();
 
   useEffect(() => {
     console.log("Top level start_bid_amount:", data.start_bid_amount);
@@ -63,7 +63,20 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
       setMenuOpen(false);
       return;
     }
-    submitReport({ id: data.id, issue_details: issueDetails });
+    submitReport(
+      { bid_id: data.id, issue_details: issueDetails },
+      {
+        onSuccess: (res) => {
+          console.log("✅ Report submitted successfully", res);
+          toast.success("Report submitted successfully.");
+        },
+        onError: (err) => {
+          console.error("❌ Report failed:", err);
+          toast.error("Failed to submit report.");
+        },
+      }
+    );
+
     setMenuOpen(false);
   };
 

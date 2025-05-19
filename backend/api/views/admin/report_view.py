@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from api.models.admin.report import Report
 from api.models.user_model.users import User
 from api.models.interaction_model.notification import Notification
-from api.serializers.admin.report_serializers import ReportSerializer
+from api.serializers.admin.report_serializers import ReportSerializer,BidReportSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 from datetime import datetime
@@ -64,7 +64,51 @@ class ReportCreateView(generics.ListCreateAPIView):
             date=datetime.utcnow(),
         ).save()
 
+class BidReportCreateView(generics.ListCreateAPIView):
+    serializer_class = BidReportSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return BidReport.objects.filter(user=ObjectId(self.request.user.id))
+
+    def perform_create(self, serializer):
+        try:
+            mongo_user = User.objects.get(id=ObjectId(self.request.user.id))
+        except Exception as e:
+            print("Error retrieving user:", e)
+            raise e
+
+        bid_id = self.request.data.get("bid_id")
+        if not bid_id:
+            raise serializers.ValidationError({"bid_id": "This field is required."})
+
+        try:
+            bid = Bid.objects.get(id=ObjectId(bid_id))
+        except Bid.DoesNotExist:
+            raise serializers.ValidationError({"bid_id": "Bid not found."})
+
+        existing_report = BidReport.objects.filter(
+            user=mongo_user,
+            bid=bid,
+            status__in=["Pending", "In Progress"]
+        ).first()
+
+        if existing_report:
+            raise serializers.ValidationError({
+                "detail": "You have already reported this bid and it's still under review."
+            })
+
+        report = serializer.save(user=mongo_user, bid=bid)
+
+        
+        Notification.objects.create(
+            user=bid.user, 
+            name="Bid Report Submitted",
+            action="Your bid has been reported.",
+            target=str(bid.id),
+            message="A report has been submitted for your bid. It is under review.",
+            date=datetime.utcnow(),
+        ).save()
 
 class ReportDeleteView(generics.DestroyAPIView):
     serializer_class = ReportSerializer
