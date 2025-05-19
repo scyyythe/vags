@@ -5,16 +5,17 @@ from rest_framework.response import Response
 from api.models.admin.report import Report
 from api.models.user_model.users import User
 from api.models.interaction_model.notification import Notification
-from api.serializers.admin.report_serializers import ReportSerializer,BidReportSerializer
+from api.serializers.admin.report_serializers import ReportSerializer,AuctionReportSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 from datetime import datetime
 from api.models.artwork_model.artwork import Art
+from api.models.artwork_model.bid import Bid,Auction
 from rest_framework import serializers
 from rest_framework.views import APIView
 import traceback
 import logging
-
+from api.models.admin.report  import AuctionReport
 logger = logging.getLogger(__name__)
 
 class ReportCreateView(generics.ListCreateAPIView):
@@ -64,49 +65,26 @@ class ReportCreateView(generics.ListCreateAPIView):
             date=datetime.utcnow(),
         ).save()
 
-class BidReportCreateView(generics.ListCreateAPIView):
-    serializer_class = BidReportSerializer
+class AuctionReportCreateView(generics.ListCreateAPIView):
+    serializer_class = AuctionReportSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return BidReport.objects.filter(user=ObjectId(self.request.user.id))
+        return AuctionReport.objects.filter(user=ObjectId(self.request.user.id))
 
     def perform_create(self, serializer):
-        try:
-            mongo_user = User.objects.get(id=ObjectId(self.request.user.id))
-        except Exception as e:
-            print("Error retrieving user:", e)
-            raise e
-
-        bid_id = self.request.data.get("bid_id")
-        if not bid_id:
-            raise serializers.ValidationError({"bid_id": "This field is required."})
-
-        try:
-            bid = Bid.objects.get(id=ObjectId(bid_id))
-        except Bid.DoesNotExist:
-            raise serializers.ValidationError({"bid_id": "Bid not found."})
-
-        existing_report = BidReport.objects.filter(
-            user=mongo_user,
-            bid=bid,
-            status__in=["Pending", "In Progress"]
-        ).first()
-
-        if existing_report:
-            raise serializers.ValidationError({
-                "detail": "You have already reported this bid and it's still under review."
-            })
-
-        report = serializer.save(user=mongo_user, bid=bid)
-
         
+        serializer.save()
+
+       
+        auction = serializer.instance.auction
         Notification.objects.create(
-            user=bid.user, 
-            name="Bid Report Submitted",
-            action="Your bid has been reported.",
-            target=str(bid.id),
-            message="A report has been submitted for your bid. It is under review.",
+            user=auction.artwork.artist,
+            auction=auction,
+            name="Report Successful",
+            action="Your auction has been reported.",
+            target=str(auction.id),
+            message="A report about your auction has been submitted and is under review.",
             date=datetime.utcnow(),
         ).save()
 

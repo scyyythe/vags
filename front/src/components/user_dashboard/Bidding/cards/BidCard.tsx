@@ -6,7 +6,7 @@ import BidPopup from "../place_bid/BidPopup";
 import CountdownTimer from "@/hooks/count/useCountdown";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import { useEffect } from "react";
-import useSubmitBidReport from "@/hooks/mutate/report/useReportBid";
+import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
 import useReportStatus from "@/hooks/mutate/report/useReportStatus";
 interface BidCardProps {
   data: ArtworkAuction;
@@ -26,8 +26,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
   const [isReported, setIsReported] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
   const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useReportStatus(data.id);
-  const { mutate: submitReport } = useSubmitBidReport();
-
+  const { mutate: submitAuctionReport } = useAuctionSubmitReport();
   useEffect(() => {
     console.log("Top level start_bid_amount:", data.start_bid_amount);
     console.log("Artwork level start_bid_amount:", data.start_bid_amount);
@@ -57,29 +56,17 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
   //   toast(isReported ? "Artwork report removed" : "Artwork reported");
   //   setMenuOpen(false);
   // };
+
   const handleReport = (issueDetails: string) => {
     if (reportStatusData?.reported) {
       toast.error("You have already reported this artwork.");
       setMenuOpen(false);
       return;
     }
-    submitReport(
-      { bid_id: data.id, issue_details: issueDetails },
-      {
-        onSuccess: (res) => {
-          console.log("✅ Report submitted successfully", res);
-          toast.success("Report submitted successfully.");
-        },
-        onError: (err) => {
-          console.error("❌ Report failed:", err);
-          toast.error("Failed to submit report.");
-        },
-      }
-    );
+    submitAuctionReport({ id: data.id, issue_details: issueDetails });
 
     setMenuOpen(false);
   };
-
   const handleBidSubmit = (amount: number) => {
     onPlaceBid?.(data.id, amount);
     toast(`Bid of ${amount}K placed successfully!`);
