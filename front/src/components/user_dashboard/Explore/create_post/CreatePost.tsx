@@ -221,7 +221,7 @@ const CreatePost = () => {
                         id="style"
                         value={artworkStyle}
                         onChange={(e) => setArtworkStyle(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs"
+                        className="w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs cursor-pointer"
                       >
                         <option value="" disabled>
                           Select artwork style
