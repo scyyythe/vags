@@ -36,7 +36,6 @@ export const usePlaceBid = () => {
       return response.data;
     },
     onSuccess: (data, variables) => {
-      // Update cached highest bid for artwork list
       queryClient.setQueryData<any>(["biddingArtworks"], (oldData) => {
         if (!oldData) return [];
 
