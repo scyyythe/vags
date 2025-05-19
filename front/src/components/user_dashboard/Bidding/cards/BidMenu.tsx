@@ -32,7 +32,6 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
     e.stopPropagation();
     setShowReportOptions(true);
   };
-
   const handleReportSubmit = (categoryId: string, optionId?: string) => {
     const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
     const selectedOption = selectedCategory?.options?.find((opt) => opt.id === optionId);
@@ -44,7 +43,9 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
       : "Artwork contains inappropriate or offensive content.";
 
     console.log("Report submitted:", issueDetails);
+
     onReport(issueDetails);
+
     setShowReportOptions(false);
   };
 

@@ -2,7 +2,8 @@ from mongoengine import Document, StringField, ReferenceField, DateTimeField
 from datetime import datetime
 from api.models.user_model.users import User
 from api.models.artwork_model.artwork import Art
-
+from api.models.artwork_model.bid import Bid
+from api.models.artwork_model.bid import Auction
 class Report(Document):
     user = ReferenceField(User, required=True)
     art = ReferenceField(Art, required=True)
@@ -11,3 +12,12 @@ class Report(Document):
     created_at = DateTimeField(default=datetime.utcnow)
     
     meta = {"collection": "reports"}
+
+class AuctionReport(Document):
+    user = ReferenceField(User, required=True)
+    auction = ReferenceField(Auction, required=True)
+    issue_details = StringField(required=True)
+    status = StringField(choices=["Pending", "In Progress", "Resolved"], default="Pending")
+    created_at = DateTimeField(default=datetime.utcnow)
+
+    meta = {"collection": "auction_reports"}
