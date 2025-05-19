@@ -6,7 +6,8 @@ import BidPopup from "../place_bid/BidPopup";
 import CountdownTimer from "@/hooks/count/useCountdown";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import { useEffect } from "react";
-
+import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
+import useReportStatus from "@/hooks/mutate/report/useReportStatus";
 interface BidCardProps {
   data: ArtworkAuction;
   onClick: () => void;
@@ -24,6 +25,8 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
   const [isHidden, setIsHidden] = useState(false);
   const [isReported, setIsReported] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
+  const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useReportStatus(data.id);
+  const { mutate: submitReport } = useSubmitReport();
 
   useEffect(() => {
     console.log("Top level start_bid_amount:", data.start_bid_amount);
@@ -49,9 +52,18 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
     setMenuOpen(false);
   };
 
-  const handleReport = () => {
-    setIsReported(!isReported);
-    toast(isReported ? "Artwork report removed" : "Artwork reported");
+  // const handleReport = () => {
+  //   setIsReported(!isReported);
+  //   toast(isReported ? "Artwork report removed" : "Artwork reported");
+  //   setMenuOpen(false);
+  // };
+  const handleReport = (issueDetails: string) => {
+    if (reportStatusData?.reported) {
+      toast.error("You have already reported this artwork.");
+      setMenuOpen(false);
+      return;
+    }
+    submitReport({ id: data.id, issue_details: issueDetails });
     setMenuOpen(false);
   };
 
