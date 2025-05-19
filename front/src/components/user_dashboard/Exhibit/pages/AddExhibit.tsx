@@ -103,6 +103,14 @@ const AddExhibit = () => {
     { id: 6, image: "https://i.pinimg.com/736x/42/b1/5d/42b15dc87e44a458a61c84f499799096.jpg" },
     { id: 7, image: "https://i.pinimg.com/736x/97/63/d2/9763d2e3d5005a316631330401ccc99e.jpg" },
     { id: 8, image: "https://i.pinimg.com/736x/0e/3f/e7/0e3fe7f3e1da1ac7baeab1947dfd08c3.jpg" },
+    { id: 9, image: "https://i.pinimg.com/736x/b4/01/da/b401dab097ac7f9e2e5ad0e5bb168f77.jpg" },
+    { id: 10, image: "https://i.pinimg.com/736x/6c/5b/49/6c5b490a1a86fd6b07c23599967486f6.jpg" },
+    { id: 11, image: "https://i.pinimg.com/736x/3d/aa/f2/3daaf26aafb613c049ee637ba71cc95d.jpg" },
+    { id: 12, image: "https://i.pinimg.com/736x/39/8d/54/398d54f3fbb37394b62882f30b058934.jpg" },
+    { id: 13, image: "https://i.pinimg.com/736x/34/00/33/3400334676f49e098b82459a1ed8d8c0.jpg" },
+    { id: 14, image: "https://i.pinimg.com/736x/42/b1/5d/42b15dc87e44a458a61c84f499799096.jpg" },
+    { id: 15, image: "https://i.pinimg.com/736x/97/63/d2/9763d2e3d5005a316631330401ccc99e.jpg" },
+    { id: 16, image: "https://i.pinimg.com/736x/0e/3f/e7/0e3fe7f3e1da1ac7baeab1947dfd08c3.jpg" },
   ];
 
   // For demo purposes: toggle collaborator view
@@ -845,33 +853,37 @@ const AddExhibit = () => {
             
             {/* Artwork selection section - Only show if an environment is selected */}
             {selectedEnvironment && (
-                <div>
+              <div>
                 <h3 className="text-xs font-medium mb-4">
-                    {viewMode === 'collaborator' ? `${currentCollaborator?.name}'s Artworks` : "Your Artworks"}
+                  {viewMode === 'collaborator' ? `${currentCollaborator?.name}'s Artworks` : "Your Artworks"}
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                
+                {/* Scrollable container wrapper */}
+                <div className="max-h-64 overflow-y-auto pr-1">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
                     {artworks.map((artwork) => {
-                    const isSelected = selectedArtworks.includes(artwork.id);
-                    return (
+                      const isSelected = selectedArtworks.includes(artwork.id);
+                      return (
                         <Card 
-                        key={artwork.id}
-                        onClick={() => !isSelected && handleArtworkSelect(artwork.id)}
-                        className={`cursor-pointer overflow-hidden ${
+                          key={artwork.id}
+                          onClick={() => !isSelected && handleArtworkSelect(artwork.id)}
+                          className={`cursor-pointer overflow-hidden ${
                             isSelected ? "opacity-40" : ""
-                        }`}
+                          }`}
                         >
-                        <img 
+                          <img 
                             src={artwork.image} 
                             alt={`Artwork ${artwork.id}`} 
                             className="w-full h-24 object-cover"
-                        />
+                          />
                         </Card>
-                    );
+                      );
                     })}
+                  </div>
                 </div>
-                </div>
+              </div>
             )}
-            
+
             <div className="flex justify-end">
                 <button 
                 type="submit" 
