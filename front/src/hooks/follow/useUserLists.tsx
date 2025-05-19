@@ -5,25 +5,29 @@ import { useUnfollowUser } from "@/hooks/follow/useUnfollowUser";
 import type { UserData } from "@/components/user_dashboard/own_profile/following_&_followers/owners/common/UserListModal";
 
 // This is a mock implementation - in a real app, you'd fetch this data from your API
-const mockFollowers: UserData[] = Array(10).fill(null).map((_, i) => ({
-  id: `follower-${i}`,
-  name: "Jai Anoba",
-  profileImage: "https://i.pravatar.cc/150?img=" + (i + 10),
-  isFollowing: i % 3 === 0 ? true : false, // Some users we follow back, some we don't
-}));
+const mockFollowers: UserData[] = Array(10)
+  .fill(null)
+  .map((_, i) => ({
+    id: `follower-${i}`,
+    name: "Jai Anoba",
+    profileImage: "https://i.pravatar.cc/150?img=" + (i + 10),
+    isFollowing: i % 3 === 0 ? true : false, // Some users we follow back, some we don't
+  }));
 
-const mockFollowing: UserData[] = Array(10).fill(null).map((_, i) => ({
-  id: `following-${i}`,
-  name: "Jai Anoba",
-  profileImage: "https://i.pravatar.cc/150?img=" + (i + 20),
-  items: 64
-}));
+const mockFollowing: UserData[] = Array(10)
+  .fill(null)
+  .map((_, i) => ({
+    id: `following-${i}`,
+    name: "Jai Anoba",
+    profileImage: "https://i.pravatar.cc/150?img=" + (i + 20),
+    items: 64,
+  }));
 
 export function useUserLists(userId: string) {
   const [followers, setFollowers] = useState<UserData[]>(mockFollowers);
   const [following, setFollowing] = useState<UserData[]>(mockFollowing);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const followMutation = useFollowUser();
   const unfollowMutation = useUnfollowUser();
 
@@ -31,13 +35,9 @@ export function useUserLists(userId: string) {
     setIsLoading(true);
     try {
       await followMutation.mutateAsync({ following: targetUserId });
-      
-      setFollowers(prev => 
-        prev.map(user => 
-          user.id === targetUserId ? { ...user, isFollowing: true } : user
-        )
-      );
-      
+
+      setFollowers((prev) => prev.map((user) => (user.id === targetUserId ? { ...user, isFollowing: true } : user)));
+
       toast({
         title: "Success",
         description: "You are now following this user",
@@ -58,17 +58,13 @@ export function useUserLists(userId: string) {
     setIsLoading(true);
     try {
       await unfollowMutation.mutateAsync({ following: targetUserId });
-      
+
       // Remove from following list
-      setFollowing(prev => prev.filter(user => user.id !== targetUserId));
-      
+      setFollowing((prev) => prev.filter((user) => user.id !== targetUserId));
+
       // Update followers if they exist there
-      setFollowers(prev => 
-        prev.map(user => 
-          user.id === targetUserId ? { ...user, isFollowing: false } : user
-        )
-      );
-      
+      setFollowers((prev) => prev.map((user) => (user.id === targetUserId ? { ...user, isFollowing: false } : user)));
+
       toast({
         title: "Success",
         description: "You have unfollowed this user",
@@ -88,9 +84,8 @@ export function useUserLists(userId: string) {
   const handleRemoveFollower = async (targetUserId: string) => {
     setIsLoading(true);
     try {
-      
-      setFollowers(prev => prev.filter(user => user.id !== targetUserId));
-      
+      setFollowers((prev) => prev.filter((user) => user.id !== targetUserId));
+
       toast({
         title: "Success",
         description: "Follower has been removed",
