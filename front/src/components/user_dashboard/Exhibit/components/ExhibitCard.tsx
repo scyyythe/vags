@@ -40,7 +40,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit }) => {
       setMenuOpen(false);
       return;
     }
-    submitReport(exhibit.id);
+    // submitReport(exhibit.id);
     setMenuOpen(false);
   };
 
