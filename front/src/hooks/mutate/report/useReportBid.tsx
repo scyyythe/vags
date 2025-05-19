@@ -1,28 +1,57 @@
-// useSubmitBidReport.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
+import { AxiosError } from "axios";
 
-const submitBidReport = async ({ bid_id, issue_details }: { bid_id: string; issue_details: string }) => {
-  const response = await apiClient.post("bid-reports/create/", {
+type AuctionReportInput = {
+  issue_details: string;
+};
+
+type AuctionReportResponse = {
+  id: string;
+  issue_details: string;
+  status: "Pending" | "In Progress" | "Resolved";
+  created_at: string;
+};
+
+const submitAuctionReport = async ({
+  id,
+  issue_details,
+}: {
+  id: string;
+  issue_details: string;
+}): Promise<AuctionReportResponse> => {
+  console.log("Submitting auction report:", {
+    auction_id: id,
     issue_details,
-    bid_id,
   });
+
+  const response = await apiClient.post("auction-reports/create/", {
+    auction_id: id,
+    issue_details,
+  });
+
   return response.data;
 };
 
-const useSubmitBidReport = () => {
+const useAuctionSubmitReport = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: submitBidReport,
-    onSuccess: (_, { bid_id }) => {
-      queryClient.invalidateQueries({ queryKey: ["bidReportStatus", bid_id] });
+    mutationFn: ({ id, issue_details }: { id: string; issue_details: string }) =>
+      submitAuctionReport({ id, issue_details }),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ["auctionReportStatus", id] });
+      queryClient.invalidateQueries({ queryKey: ["auctions"] });
     },
-    onError: () => {
-      toast.error("Failed to submit bid report.");
+    onError: (error: unknown) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.error || "Failed to submit auction report.");
+      } else {
+        toast.error("Failed to submit auction report.");
+      }
     },
   });
 };
 
-export default useSubmitBidReport;
+export default useAuctionSubmitReport;
