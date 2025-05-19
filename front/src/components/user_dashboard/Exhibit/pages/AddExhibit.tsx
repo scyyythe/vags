@@ -15,6 +15,7 @@ import { Card } from "@/components/ui/card";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useToast } from "@/components/ui/use-toast";
 import AddArtistDialog from "@/components/user_dashboard/Exhibit/components/AddArtistDialog";
+import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/ArtworkStyles";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
 import { Avatar } from "@/components/ui/avatar";
@@ -46,7 +47,7 @@ const slotColorSchemes = [
 
 // Color names for clearer visual distinction
 const colorNames = [
-  "Blue (Your slots)", // Owner color name
+  "Dark Blue (Your slots)", // Owner color name
   "Purple (First collaborator's slots)", // First collaborator color name
   "Dark Purple (Second collaborator's slots)", // Second collaborator color name
 ];
@@ -70,6 +71,8 @@ const AddExhibit = () => {
   const [bannerImage, setBannerImage] = useState<string | null>(null);
   const [isRemoveCollaboratorDialogOpen, setIsRemoveCollaboratorDialogOpen] = useState(false);
   const [collaboratorToRemove, setCollaboratorToRemove] = useState<Artist | null>(null);
+
+  const [artworkStyle, setArtworkStyle] = useState("");
   
   // New state for view mode (owner or collaborator)
   const [viewMode, setViewMode] = useState<'owner' | 'collaborator'>('owner');
@@ -92,14 +95,14 @@ const AddExhibit = () => {
 
   // Mock artworks data
   const artworks = [
-    { id: 1, image: "https://images.unsplash.com/photo-1533158307587-828f0a76ef46?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-    { id: 2, image: "https://images.unsplash.com/photo-1580136579312-94651dfd596d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-    { id: 3, image: "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-    { id: 4, image: "https://images.unsplash.com/photo-1594122230689-45899d9e6f69?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-    { id: 5, image: "https://images.unsplash.com/photo-1551913902-c92207136625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-    { id: 6, image: "https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-    { id: 7, image: "https://images.unsplash.com/photo-1578321862442-10c6e318211f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-    { id: 8, image: "https://images.unsplash.com/photo-1518998053901-5348d3961a04?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 1, image: "https://i.pinimg.com/736x/b4/01/da/b401dab097ac7f9e2e5ad0e5bb168f77.jpg" },
+    { id: 2, image: "https://i.pinimg.com/736x/6c/5b/49/6c5b490a1a86fd6b07c23599967486f6.jpg" },
+    { id: 3, image: "https://i.pinimg.com/736x/3d/aa/f2/3daaf26aafb613c049ee637ba71cc95d.jpg" },
+    { id: 4, image: "https://i.pinimg.com/736x/39/8d/54/398d54f3fbb37394b62882f30b058934.jpg" },
+    { id: 5, image: "https://i.pinimg.com/736x/34/00/33/3400334676f49e098b82459a1ed8d8c0.jpg" },
+    { id: 6, image: "https://i.pinimg.com/736x/42/b1/5d/42b15dc87e44a458a61c84f499799096.jpg" },
+    { id: 7, image: "https://i.pinimg.com/736x/97/63/d2/9763d2e3d5005a316631330401ccc99e.jpg" },
+    { id: 8, image: "https://i.pinimg.com/736x/0e/3f/e7/0e3fe7f3e1da1ac7baeab1947dfd08c3.jpg" },
   ];
 
   // For demo purposes: toggle collaborator view
@@ -184,14 +187,13 @@ const AddExhibit = () => {
         description: "Your artwork selections have been saved to the exhibit!",
       });
       
-      // Navigate back to exhibits page after collaborator saves
-      navigate("/");
+      navigate("/exhibits");
     }
   };
   
   // Function to complete the exhibit submission
   const completeExhibitSubmission = () => {
-    // Here you would handle the form submission to create the exhibit
+    //  Form submission to create the exhibit
     console.log({
       title,
       category,
@@ -456,9 +458,9 @@ const AddExhibit = () => {
     return (
     <div className="min-h-screen bg-background">
         <Header />
-        <div className="container mx-auto px-4 pt-20 max-w-6xl pb-4">
+        <div className="container mx-auto px-1 pt-20 max-w-6xl pb-4">
             <div className="mb-3">
-                <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+                <button onClick={() => navigate(-1)} className="flex items-center text-xs font-semibold">
                     <i className="bx bx-chevron-left text-lg mr-2"></i>
                     Go back
                 </button>
@@ -467,10 +469,10 @@ const AddExhibit = () => {
             {/* Collaborator View Notice - Only visible to collaborators */}
             {viewMode === 'collaborator' && (
             <div className="bg-[#9b87f5]/10 border border-[#9b87f5] rounded-md p-4 mb-6">
-                <h2 className="text-lg font-medium mb-2">
+                <h2 className="text-xs font-medium mb-2">
                 {currentCollaborator?.name}, you've been invited to collaborate!
                 </h2>
-                <p className="text-sm">
+                <p className="text-xs">
                 You are invited to contribute to "{title || 'Untitled Exhibit'}". 
                 Select your artwork for the slots assigned to you below.
                 </p>
@@ -504,12 +506,12 @@ const AddExhibit = () => {
                     ) : (
                     <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                         <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="bg-white text-black border-white hover:bg-gray-100"
-                        onClick={() => setBannerImage(null)}
+                            variant="outline" 
+                            size="sm"
+                            className="bg-white text-black border-white hover:bg-gray-100"
+                            onClick={() => setBannerImage(null)}
                         >
-                        Change banner
+                            Change banner
                         </Button>
                     </div>
                     )}
@@ -571,7 +573,7 @@ const AddExhibit = () => {
                             
                             {collaborators.map((collab, index) => (
                             <div key={collab.id} className="flex items-center">
-                                <div className={`w-4 h-4 mr-1 rounded ${slotColorSchemes[index + 1].replace('border-', 'bg-').replace('/10', '')}`}></div>
+                                <div className={`w-4 h-4 mr-1 rounded-full ${slotColorSchemes[index + 1].replace('border-', 'bg-').replace('/10', '')}`}></div>
                                 <span className="text-[10px]">{collab.name}'s slots</span>
                             </div>
                             ))}
@@ -661,7 +663,7 @@ const AddExhibit = () => {
                         placeholder="Enter title" 
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        className="w-full focus:outline-none focus:ring-0"
+                        className="w-full focus:outline-none focus:ring-0 h-8"
                         readOnly={viewMode === 'collaborator'}
                         style={{ fontSize: "10px" }}
                     />
@@ -671,8 +673,8 @@ const AddExhibit = () => {
                     <div>
                         <span className="text-[11px] font-medium mb-2">Exhibit Type</span>
                         <ToggleGroup type="single" value={exhibitType} onValueChange={handleExhibitTypeChange} className="mt-1.5 gap-9">
-                            <ToggleGroupItem value="solo" className="w-full text-[10px] border rounded-md">Solo</ToggleGroupItem>
-                            <ToggleGroupItem value="collab" className="w-full text-[10px] border rounded-md">Collaborative</ToggleGroupItem>
+                            <ToggleGroupItem value="solo" className="w-full text-[10px] border rounded-md h-8">Solo</ToggleGroupItem>
+                            <ToggleGroupItem value="collab" className="w-full text-[10px] border rounded-md h-8">Collaborative</ToggleGroupItem>
                         </ToggleGroup>
                     </div>
                 )}
@@ -680,22 +682,34 @@ const AddExhibit = () => {
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                     <label htmlFor="category" className="block text-[11px] font-medium mb-2">Category</label>
-                    <Select 
-                        value={category} 
-                        onValueChange={setCategory}
-                        disabled={viewMode === 'collaborator'}
-                    >
-                        <SelectTrigger className="w-full"  style={{ fontSize: "10px" }}>
-                        <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                        <SelectItem className="text-[10px]" value="digital-art">Digital Art</SelectItem>
-                        <SelectItem className="text-[10px]" value="contemporary-art">Contemporary Art</SelectItem>
-                        <SelectItem className="text-[10px]" value="photography">Photography</SelectItem>
-                        <SelectItem className="text-[10px]" value="literature">Literature</SelectItem>
-                        <SelectItem className="text-[10px]" value="street-art">Street Art</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <div className="relative">
+                            <select
+                                id="style"
+                                value={artworkStyle}
+                                onChange={(e) => setArtworkStyle(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md appearance-none pr-18 text-[10px] cursor-pointer"
+                            >
+                                <option value="" disabled>
+                                    Select artwork style
+                                </option>
+                                {ART_STYLES.map((style) => (
+                                    <option key={style} value={style.toLowerCase()}>
+                                        {style}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                    d="M4 6L8 10L12 6"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -708,7 +722,7 @@ const AddExhibit = () => {
                             type="date" 
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
-                            className="w-full"
+                            className="w-full h-8"
                             readOnly={viewMode === 'collaborator'}
                             style={{ fontSize: "10px" }}
                         />
@@ -722,7 +736,7 @@ const AddExhibit = () => {
                             type="date" 
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
-                            className="w-full"
+                            className="w-full h-8"
                             readOnly={viewMode === 'collaborator'}
                             style={{ fontSize: "10px" }}
                         />
@@ -737,7 +751,7 @@ const AddExhibit = () => {
                         placeholder="Add a description" 
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        className="w-full min-h-32"
+                        className="w-full h-20"
                         readOnly={viewMode === 'collaborator'}
                         style={{ fontSize: "10px" }}
                     />
@@ -771,18 +785,18 @@ const AddExhibit = () => {
                             }`}
                             >
                             <div className="flex items-center gap-2">
-                                <Avatar className="h-8 w-8">
+                                <Avatar className="h-5 w-5">
                                 <img src={artist.avatar} alt={artist.name} className="rounded-full" />
                                 </Avatar>
-                                <span className="text-sm">{artist.name}</span>
+                                <span className="text-[10px]">{artist.name}</span>
                             </div>
                             <Button
                                 size="sm"
                                 variant="ghost"
-                                className="h-8 w-8 p-0 rounded-full"
+                                className="h-6 w-6 p-0 rounded-full"
                                 onClick={() => handleRemoveCollaborator(artist)}
                             >
-                                <X className="h-4 w-4" />
+                                <i className='bx bx-x'></i>
                             </Button>
                             </div>
                         ))}
@@ -815,7 +829,7 @@ const AddExhibit = () => {
                             </span>
                             <div className="w-24 h-1 bg-gray-200 rounded-full overflow-hidden">
                             <div 
-                                className="h-full bg-[#9b87f5]" 
+                                className="h-full text-[10px] bg-[#9b87f5]" 
                                 style={{ 
                                 width: `${userSlots.length > 0 ? (filledSlots.length / userSlots.length) * 100 : 0}%`
                                 }}
@@ -904,32 +918,6 @@ const AddExhibit = () => {
             </AlertDialogContent>
         </AlertDialog>
 
-        {/* Notification Dialog for Collaborators */}
-        {/* <AlertDialog 
-            open={showNotificationDialog} 
-            onOpenChange={setShowNotificationDialog}
-        >
-            <AlertDialogContent className="w-full max-w-sm rounded-lg">
-            <AlertDialogHeader>
-                <AlertDialogTitle className="text-xs text-center">Notify Collaborators</AlertDialogTitle>
-                <AlertDialogDescription className="text-[10px] text-center">
-                Send invitations to your collaborators so they can select artwork for their assigned slots.
-                They will receive a link to contribute to your exhibit.
-                </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-                <div className="w-full flex justify-between">
-                    <AlertDialogCancel className="text-[10px] h-7">Cancel</AlertDialogCancel>
-                    <AlertDialogAction 
-                    className="bg-primary text-primary-foreground text-[10px] h-7"
-                    onClick={sendNotificationsToCollaborators}
-                    >
-                    Send Invitations
-                    </AlertDialogAction>
-                </div>
-            </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog> */}
     </div>
     );
 };
