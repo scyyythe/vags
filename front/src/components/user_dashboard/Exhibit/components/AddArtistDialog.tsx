@@ -43,27 +43,28 @@ const AddArtistDialog = ({ open, onOpenChange, onSelect, selectedArtists }: AddA
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="w-full max-w-[300px] rounded-lg">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold mb-4">Add Collaborator</DialogTitle>
+          <DialogTitle className="text-xs text-center font-semibold">Add Collaborator</DialogTitle>
         </DialogHeader>
         
-        <div className="relative mb-4">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+        <div className="relative mb-2">
+          <Search className="absolute left-3 top-2 h-3 w-3 text-muted-foreground" />
           <Input
             placeholder="Search for artists..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 h-7 rounded-full"
+            style={{ fontSize: "10px" }}
           />
         </div>
         
-        <div className="space-y-2 max-h-72 overflow-y-auto">
+        <div className="space-y-0.5 max-h-72 overflow-y-auto">
           {filteredFriends.length > 0 ? (
             filteredFriends.map((friend) => (
               <div 
                 key={friend.id}
-                className="flex items-center justify-between p-2 hover:bg-muted rounded cursor-pointer"
+                className="flex items-center justify-between px-1 hover:bg-muted rounded cursor-pointer"
                 onClick={() => {
                   onSelect(friend);
                   onOpenChange(false);
@@ -71,17 +72,17 @@ const AddArtistDialog = ({ open, onOpenChange, onSelect, selectedArtists }: AddA
               >
                 <div className="flex items-center gap-3">
                   <Avatar>
-                    <img src={friend.avatar} alt={friend.name} className="rounded-full" />
+                    <img src={friend.avatar} alt={friend.name} className="rounded-full p-1 h-8 w-8 relative top-1" />
                   </Avatar>
-                  <span>{friend.name}</span>
+                  <span className="text-[11px]">{friend.name}</span>
                 </div>
-                <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-                  <UserPlus className="h-4 w-4" />
+                <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
+                  <UserPlus className="h-3 w-3" />
                 </Button>
               </div>
             ))
           ) : (
-            <div className="text-center py-4 text-muted-foreground">
+            <div className="text-center text-[11px] py-4 text-muted-foreground">
               No matching artists found
             </div>
           )}
