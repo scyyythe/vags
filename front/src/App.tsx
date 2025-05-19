@@ -33,8 +33,10 @@ import BillingSettings from "./components/user_dashboard/Settings/pages/BillingS
 import HelpCenter from "./components/user_dashboard/Settings/pages/HelpCenter";
 
 import AllNotifications from "./components/user_dashboard/notification/AllNotifications";
-
 import FollowDemo from "./components/user_dashboard/own_profile/following_&_followers/owners/mock_data/FollowDemo";
+
+//EXHIBITS
+import AddExhibit from "./components/user_dashboard/Exhibit/pages/AddExhibit";
 
 // ADMIN & MODERATOR
 import { AuthProvider } from "./components/admin_&_moderator/context/AuthContext";
@@ -106,6 +108,9 @@ const App = () => {
                         <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
                         <Route path="/fingerprint-register" element={<FingerprintRegister />} />
                         <Route path="/hero" element={<Hero />} />
+
+                        {/* Exhibit */}
+                        <Route path="/add-exhibit" element={<AddExhibit />} />
 
                         <Route path="/follow-demo" element={<FollowDemo />} />
 
