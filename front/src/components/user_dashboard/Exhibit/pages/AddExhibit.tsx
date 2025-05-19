@@ -15,6 +15,8 @@ import { Card } from "@/components/ui/card";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useToast } from "@/components/ui/use-toast";
 import AddArtistDialog from "@/components/user_dashboard/Exhibit/components/AddArtistDialog";
+import Header from "@/components/user_dashboard/navbar/Header";
+import { Footer } from "@/components/user_dashboard/footer/Footer";
 import { Avatar } from "@/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
@@ -451,467 +453,485 @@ const AddExhibit = () => {
       : ownerId === currentCollaborator?.id;
   };
 
-  return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="mb-8">
-        <Button 
-          variant="ghost" 
-          className="flex items-center text-sm mb-6" 
-          onClick={() => navigate("/")}
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Go back
-        </Button>
-        
-        {/* Collaborator View Notice - Only visible to collaborators */}
-        {viewMode === 'collaborator' && (
-          <div className="bg-[#9b87f5]/10 border border-[#9b87f5] rounded-md p-4 mb-6">
-            <h2 className="text-lg font-medium mb-2">
-              {currentCollaborator?.name}, you've been invited to collaborate!
-            </h2>
-            <p className="text-sm">
-              You are invited to contribute to "{title || 'Untitled Exhibit'}". 
-              Select your artwork for the slots assigned to you below.
-            </p>
-          </div>
-        )}
-        
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Left column - Banner upload */}
-            <div>
-              <div 
-                className="bg-gray-100 rounded-lg flex flex-col items-center justify-center h-64 mb-8 relative overflow-hidden"
-                style={{
-                  backgroundImage: bannerImage ? `url(${bannerImage})` : 'none',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center'
-                }}
-              >
-                {!bannerImage ? (
-                  <>
-                    <Upload className="h-8 w-8 text-gray-400 mb-2" />
-                    <p className="text-sm text-gray-600">Add a banner</p>
-                  </>
-                ) : (
-                  <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="bg-white text-black border-white hover:bg-gray-100"
-                      onClick={() => setBannerImage(null)}
-                    >
-                      Change banner
-                    </Button>
-                  </div>
-                )}
-
-                {/* Hidden file input for banner upload */}
-                <input 
-                  type="file" 
-                  id="banner-upload" 
-                  className="hidden" 
-                  accept="image/*"
-                  onChange={handleBannerUpload}
-                  disabled={viewMode === 'collaborator'}
-                />
-                <label 
-                  htmlFor="banner-upload" 
-                  className={`absolute inset-0 ${viewMode === 'collaborator' ? '' : 'cursor-pointer'}`}
-                  aria-label="Upload banner"
-                ></label>
-              </div>
-              
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-base font-medium mb-4">Choose Virtual Environment</h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    {environments.map((env) => (
-                      <div 
-                        key={env.id}
-                        onClick={() => viewMode === 'owner' && handleEnvironmentChange(env.id)}
-                        className={`rounded-lg overflow-hidden ${viewMode === 'owner' ? 'cursor-pointer' : ''} border-2 ${
-                          selectedEnvironment === env.id ? "border-primary" : "border-transparent"
-                        } ${viewMode === 'collaborator' ? 'opacity-70' : ''}`}
-                      >
-                        <img 
-                          src={env.image} 
-                          alt={`Environment ${env.id}`} 
-                          className="w-full h-24 object-cover"
-                        />
-                        <div className="p-2 text-xs text-center">
-                          {env.slots} slots
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Display available slots only if an environment is selected */}
-                {selectedEnvironment && (
-                  <div>
-                    <h3 className="text-base font-medium mb-4">Available Slots</h3>
-                    
-                    {/* Color coding legend - only for collaborative exhibits */}
-                    {exhibitType === 'collab' && (
-                      <div className="mb-3 flex flex-wrap gap-3">
-                        {/* Show color legend for current participants */}
-                        <div className="flex items-center">
-                          <div className={`w-4 h-4 mr-1 rounded ${slotColorSchemes[0].replace('border-', 'bg-').replace('/10', '')}`}></div>
-                          <span className="text-xs">{colorNames[0]}</span>
-                        </div>
-                        
-                        {collaborators.map((collab, index) => (
-                          <div key={collab.id} className="flex items-center">
-                            <div className={`w-4 h-4 mr-1 rounded ${slotColorSchemes[index + 1].replace('border-', 'bg-').replace('/10', '')}`}></div>
-                            <span className="text-xs">{collab.name}'s slots</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    
-                    <div className="grid grid-cols-3 gap-3">
-                      {availableSlots.map((slotId) => {
-                        const assignedArtworkId = slotArtworkMap[slotId];
-                        const assignedArtwork = assignedArtworkId ? getArtworkById(assignedArtworkId) : null;
-                        const slotColor = getSlotColor(slotId);
-                        const slotOwner = slotOwnerMap[slotId];
-                        const userCanInteract = canInteractWithSlot(slotId);
-                        
-                        return (
-                          <div 
-                            key={slotId}
-                            onClick={() => userCanInteract && handleSlotSelect(slotId)}
-                            className={`h-16 rounded-lg relative overflow-hidden border flex items-center justify-center ${
-                              userCanInteract ? 'cursor-pointer' : ''
-                            } transition-colors ${
-                              selectedSlots.includes(slotId) 
-                                ? assignedArtwork 
-                                  ? "border-primary" 
-                                  : slotColor
-                                : !userCanInteract 
-                                  ? slotColor + " opacity-60"
-                                  : exhibitType === 'solo' ? 'border-gray-200' : slotColor
-                            }`}
-                          >
-                            {assignedArtwork ? (
-                              <>
-                                <img 
-                                  src={assignedArtwork.image}
-                                  alt={`Artwork ${assignedArtworkId}`}
-                                  className="w-full h-full object-cover"
-                                />
-                                {userCanInteract && (
-                                  <div 
-                                    className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleClearSlot(slotId);
-                                    }}
-                                  >
-                                    <span className="text-white text-xs">Remove</span>
-                                  </div>
-                                )}
-                              </>
-                            ) : (
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <div className="flex flex-col items-center justify-center w-full h-full">
-                                    <span className="text-xs font-semibold">{slotId}</span>
-                                    <span className="text-[10px] text-gray-500">
-                                      {getUserName(slotOwner || currentUser.id)}
-                                    </span>
-                                  </div>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-2">
-                                  <p className="text-xs">{getUserName(slotOwner || currentUser.id)}</p>
-                                </PopoverContent>
-                              </Popover>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <div className="mt-2 text-xs text-gray-500">
-                      {exhibitType === "collab" ? 
-                        "Slots are evenly distributed among collaborators" : 
-                        "Select slots for your artwork placement"}
-                    </div>
-                  </div>
-                )}
-
-                {viewMode === 'owner' && (
-                  <div>
-                    <h3 className="text-base font-medium mb-2">Exhibit Type</h3>
-                    <ToggleGroup type="single" value={exhibitType} onValueChange={handleExhibitTypeChange}>
-                      <ToggleGroupItem value="solo" className="w-full">Solo</ToggleGroupItem>
-                      <ToggleGroupItem value="collab" className="w-full">Collaborative</ToggleGroupItem>
-                    </ToggleGroup>
-                  </div>
-                )}
-              </div>
+    return (
+    <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 pt-20 max-w-6xl pb-4">
+            <div className="mb-3">
+                <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+                    <i className="bx bx-chevron-left text-lg mr-2"></i>
+                    Go back
+                </button>
             </div>
             
-            {/* Right column - Form fields */}
-            <div className="space-y-6">
-              <div>
-                <label htmlFor="title" className="block text-sm font-medium mb-2">Exhibit Title</label>
-                <Input 
-                  id="title" 
-                  placeholder="Enter title" 
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="w-full"
-                  readOnly={viewMode === 'collaborator'}
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
+            {/* Collaborator View Notice - Only visible to collaborators */}
+            {viewMode === 'collaborator' && (
+            <div className="bg-[#9b87f5]/10 border border-[#9b87f5] rounded-md p-4 mb-6">
+                <h2 className="text-lg font-medium mb-2">
+                {currentCollaborator?.name}, you've been invited to collaborate!
+                </h2>
+                <p className="text-sm">
+                You are invited to contribute to "{title || 'Untitled Exhibit'}". 
+                Select your artwork for the slots assigned to you below.
+                </p>
+            </div>
+            )}
+            
+            <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Left column - Banner upload */}
                 <div>
-                  <label htmlFor="category" className="block text-sm font-medium mb-2">Category</label>
-                  <Select 
-                    value={category} 
-                    onValueChange={setCategory}
-                    disabled={viewMode === 'collaborator'}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="digital-art">Digital Art</SelectItem>
-                      <SelectItem value="contemporary-art">Contemporary Art</SelectItem>
-                      <SelectItem value="photography">Photography</SelectItem>
-                      <SelectItem value="literature">Literature</SelectItem>
-                      <SelectItem value="street-art">Street Art</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2">Duration</label>
-                <div className="flex items-center space-x-4">
-                  <div className="w-full">
-                    <div className="text-xs text-gray-500 mb-1">Start Date</div>
-                    <Input 
-                      type="date" 
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="w-full"
-                      readOnly={viewMode === 'collaborator'}
-                    />
-                  </div>
-                  
-                  <div className="flex items-center">-</div>
-                  
-                  <div className="w-full">
-                    <div className="text-xs text-gray-500 mb-1">End Date</div>
-                    <Input 
-                      type="date" 
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="w-full"
-                      readOnly={viewMode === 'collaborator'}
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium mb-2">Description</label>
-                <Textarea 
-                  id="description" 
-                  placeholder="Add a description" 
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full min-h-32"
-                  readOnly={viewMode === 'collaborator'}
-                />
-              </div>
-
-              {exhibitType === "collab" && viewMode === 'owner' && (
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-medium">Add Artist(s)</label>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      className="flex items-center gap-1"
-                      onClick={() => setIsAddArtistDialogOpen(true)}
-                      disabled={collaborators.length >= 2}
-                    >
-                      <Plus className="h-3 w-3" /> Add
-                    </Button>
-                  </div>
-                  
-                  {/* Display selected collaborators */}
-                  {collaborators.length > 0 ? (
-                    <div className="space-y-2">
-                      {collaborators.map((artist, index) => (
-                        <div 
-                          key={artist.id} 
-                          className={`flex items-center justify-between p-2 rounded-md ${
-                            slotColorSchemes[index + 1].replace('border-', 'bg-')
-                          }`}
+                <div 
+                    className="w-full bg-gray-100 rounded-lg flex flex-col items-center justify-center h-64 mb-8 relative overflow-hidden"
+                    style={{
+                    backgroundImage: bannerImage ? `url(${bannerImage})` : 'none',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                    }}
+                >
+                    {!bannerImage ? (
+                    <>
+                        <div className="bg-white p-2 rounded-full inline-block mb-2">
+                            <img
+                            width="20"
+                            height="20"
+                            src="./pics/icons8-cloud-upload.gif"
+                            alt="external-upload-network-and-cloud-computing-flatart-icons-solid-flatarticons"
+                            />
+                        </div>
+                        <p className="text-xs text-gray-600">Add a banner</p>
+                    </>
+                    ) : (
+                    <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                        <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="bg-white text-black border-white hover:bg-gray-100"
+                        onClick={() => setBannerImage(null)}
                         >
-                          <div className="flex items-center gap-2">
-                            <Avatar className="h-8 w-8">
-                              <img src={artist.avatar} alt={artist.name} className="rounded-full" />
-                            </Avatar>
-                            <span className="text-sm">{artist.name}</span>
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-8 w-8 p-0 rounded-full"
-                            onClick={() => handleRemoveCollaborator(artist)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
+                        Change banner
+                        </Button>
                     </div>
-                  ) : (
-                    <div className="text-sm text-muted-foreground py-2 border rounded-md p-4 text-center">
-                      No collaborators added yet. Add up to 2 collaborators.
+                    )}
+
+                    {/* Hidden file input for banner upload */}
+                    <input 
+                        type="file" 
+                        id="banner-upload" 
+                        className="hidden" 
+                        accept="image/*"
+                        onChange={handleBannerUpload}
+                        disabled={viewMode === 'collaborator'}
+                    />
+                    <label 
+                        htmlFor="banner-upload" 
+                        className={`absolute inset-0 ${viewMode === 'collaborator' ? '' : 'cursor-pointer'}`}
+                        aria-label="Upload banner"
+                    ></label>
+                </div>
+                
+                <div className="space-y-6">
+                    <div>
+                    <h3 className="text-xs font-medium mb-4">Choose Virtual Environment</h3>
+                    <div className="grid grid-cols-3 gap-2">
+                        {environments.map((env) => (
+                            <div 
+                                key={env.id}
+                                onClick={() => viewMode === 'owner' && handleEnvironmentChange(env.id)}
+                                className={`rounded-lg overflow-hidden ${viewMode === 'owner' ? 'cursor-pointer' : ''} border-2 ${
+                                selectedEnvironment === env.id ? "border-gray-200" : "border-transparent"
+                                } ${viewMode === 'collaborator' ? 'opacity-70' : ''}`}
+                            >
+                                <img 
+                                    src={env.image} 
+                                    alt={`Environment ${env.id}`} 
+                                    className="w-full h-24 object-cover"
+                                />
+                                <div className="p-2 text-[10px] text-center">
+                                    {env.slots} slots
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                  )}
-                </div>
-              )}
-              
-              {/* Collaborator Selection Status - Only visible in collaborator view */}
-              {viewMode === 'collaborator' && (
-                <div className="border rounded-md p-4 bg-gray-50">
-                  <h3 className="text-sm font-medium mb-2">Your Artwork Selection</h3>
-                  
-                  {/* Count collaborator's assigned slots and selected artworks */}
-                  {(() => {
-                    const userSlots = Object.entries(slotOwnerMap)
-                      .filter(([_, userId]) => userId === currentCollaborator?.id)
-                      .map(([slotId]) => Number(slotId));
-                    
-                    const filledSlots = userSlots.filter(slotId => slotArtworkMap[slotId]);
-                    
-                    return (
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs">
-                          {filledSlots.length} of {userSlots.length} slots filled
-                        </span>
-                        <div className="w-24 h-1 bg-gray-200 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-[#9b87f5]" 
-                            style={{ 
-                              width: `${userSlots.length > 0 ? (filledSlots.length / userSlots.length) * 100 : 0}%`
-                            }}
-                          ></div>
+                    </div>
+
+                    {/* Display available slots only if an environment is selected */}
+                    {selectedEnvironment && (
+                    <div>
+                        <h3 className="text-xs font-medium mb-4">Available Slots</h3>
+                        
+                        {/* Color coding legend - only for collaborative exhibits */}
+                        {exhibitType === 'collab' && (
+                        <div className="mb-3 flex flex-wrap gap-3">
+                            {/* Show color legend for current participants */}
+                            <div className="flex items-center">
+                            <div className={`w-3 h-3 mr-1 rounded-full ${slotColorSchemes[0].replace('border-', 'bg-').replace('/10', '')}`}></div>
+                            <span className="text-[10px]">{colorNames[0]}</span>
+                            </div>
+                            
+                            {collaborators.map((collab, index) => (
+                            <div key={collab.id} className="flex items-center">
+                                <div className={`w-4 h-4 mr-1 rounded ${slotColorSchemes[index + 1].replace('border-', 'bg-').replace('/10', '')}`}></div>
+                                <span className="text-[10px]">{collab.name}'s slots</span>
+                            </div>
+                            ))}
                         </div>
-                      </div>
-                    );
-                  })()}
+                        )}
+                        
+                        <div className="grid grid-cols-3 gap-3">
+                        {availableSlots.map((slotId) => {
+                            const assignedArtworkId = slotArtworkMap[slotId];
+                            const assignedArtwork = assignedArtworkId ? getArtworkById(assignedArtworkId) : null;
+                            const slotColor = getSlotColor(slotId);
+                            const slotOwner = slotOwnerMap[slotId];
+                            const userCanInteract = canInteractWithSlot(slotId);
+                            
+                            return (
+                            <div 
+                                key={slotId}
+                                onClick={() => userCanInteract && handleSlotSelect(slotId)}
+                                className={`h-16 rounded-lg relative overflow-hidden border flex items-center justify-center ${
+                                userCanInteract ? 'cursor-pointer' : ''
+                                } transition-colors ${
+                                selectedSlots.includes(slotId) 
+                                    ? assignedArtwork 
+                                    ? "border-primary" 
+                                    : slotColor
+                                    : !userCanInteract 
+                                    ? slotColor + " opacity-60"
+                                    : exhibitType === 'solo' ? 'border-gray-200' : slotColor
+                                }`}
+                            >
+                                {assignedArtwork ? (
+                                <>
+                                    <img 
+                                    src={assignedArtwork.image}
+                                    alt={`Artwork ${assignedArtworkId}`}
+                                    className="w-full h-full object-cover"
+                                    />
+                                    {userCanInteract && (
+                                    <div 
+                                        className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity"
+                                        onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleClearSlot(slotId);
+                                        }}
+                                    >
+                                        <span className="text-white text-[10px]">Remove</span>
+                                    </div>
+                                    )}
+                                </>
+                                ) : (
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                    <div className="flex flex-col items-center justify-center w-full h-full">
+                                        <span className="text-xs font-semibold">{slotId}</span>
+                                        <span className="text-[10px] text-gray-500">
+                                        {getUserName(slotOwner || currentUser.id)}
+                                        </span>
+                                    </div>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-2">
+                                    <p className="text-xs">{getUserName(slotOwner || currentUser.id)}</p>
+                                    </PopoverContent>
+                                </Popover>
+                                )}
+                            </div>
+                            );
+                        })}
+                        </div>
+                        <div className="mt-2 text-[10px] text-gray-500">
+                        {exhibitType === "collab" ? 
+                            "Slots are evenly distributed among collaborators" : 
+                            "Select slots for your artwork placement"}
+                        </div>
+                    </div>
+                    )}
+
+                    
                 </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Artwork selection section - Only show if an environment is selected */}
-          {selectedEnvironment && (
-            <div>
-              <h3 className="text-lg font-medium mb-4">
-                {viewMode === 'collaborator' ? `${currentCollaborator?.name}'s Artworks` : "Your Artworks"}
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
-                {artworks.map((artwork) => {
-                  const isSelected = selectedArtworks.includes(artwork.id);
-                  return (
-                    <Card 
-                      key={artwork.id}
-                      onClick={() => !isSelected && handleArtworkSelect(artwork.id)}
-                      className={`cursor-pointer overflow-hidden ${
-                        isSelected ? "opacity-40" : ""
-                      }`}
+                </div>
+                
+                {/* Right column - Form fields */}
+                <div className="space-y-6">
+                <div>
+                    <label htmlFor="title" className="block text-[11px] font-medium mb-2">Exhibit Title</label>
+                    <Input 
+                        id="title" 
+                        placeholder="Enter title" 
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="w-full focus:outline-none focus:ring-0"
+                        readOnly={viewMode === 'collaborator'}
+                        style={{ fontSize: "10px" }}
+                    />
+                </div>
+                
+                {viewMode === 'owner' && (
+                    <div>
+                        <span className="text-[11px] font-medium mb-2">Exhibit Type</span>
+                        <ToggleGroup type="single" value={exhibitType} onValueChange={handleExhibitTypeChange} className="mt-1.5 gap-9">
+                            <ToggleGroupItem value="solo" className="w-full text-[10px] border rounded-md">Solo</ToggleGroupItem>
+                            <ToggleGroupItem value="collab" className="w-full text-[10px] border rounded-md">Collaborative</ToggleGroupItem>
+                        </ToggleGroup>
+                    </div>
+                )}
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                    <label htmlFor="category" className="block text-[11px] font-medium mb-2">Category</label>
+                    <Select 
+                        value={category} 
+                        onValueChange={setCategory}
+                        disabled={viewMode === 'collaborator'}
                     >
-                      <img 
-                        src={artwork.image} 
-                        alt={`Artwork ${artwork.id}`} 
-                        className="w-full h-24 object-cover"
-                      />
-                    </Card>
-                  );
-                })}
-              </div>
+                        <SelectTrigger className="w-full"  style={{ fontSize: "10px" }}>
+                        <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                        <SelectItem className="text-[10px]" value="digital-art">Digital Art</SelectItem>
+                        <SelectItem className="text-[10px]" value="contemporary-art">Contemporary Art</SelectItem>
+                        <SelectItem className="text-[10px]" value="photography">Photography</SelectItem>
+                        <SelectItem className="text-[10px]" value="literature">Literature</SelectItem>
+                        <SelectItem className="text-[10px]" value="street-art">Street Art</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label className="block text-[11px] font-medium mb-2">Duration</label>
+                    <div className="flex items-center space-x-4">
+                    <div className="w-full">
+                        <div className="text-[10px] text-gray-500 mb-1">Start Date</div>
+                        <Input 
+                            type="date" 
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="w-full"
+                            readOnly={viewMode === 'collaborator'}
+                            style={{ fontSize: "10px" }}
+                        />
+                    </div>
+                    
+                    <div className="flex items-center relative top-2">-</div>
+                    
+                    <div className="w-full">
+                        <div className="text-[10px] text-gray-500 mb-1">End Date</div>
+                        <Input 
+                            type="date" 
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="w-full"
+                            readOnly={viewMode === 'collaborator'}
+                            style={{ fontSize: "10px" }}
+                        />
+                    </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label htmlFor="description" className="block text-[11px] font-medium mb-2">Description</label>
+                    <Textarea 
+                        id="description" 
+                        placeholder="Add a description" 
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="w-full min-h-32"
+                        readOnly={viewMode === 'collaborator'}
+                        style={{ fontSize: "10px" }}
+                    />
+                </div>
+
+                {exhibitType === "collab" && viewMode === 'owner' && (
+                    <div>
+                    <div className="flex items-center justify-between mb-2">
+                        <label className="block text-[11px] font-medium">Add Artist(s)</label>
+                        <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            className="flex items-center gap-1 h-5"
+                            onClick={() => setIsAddArtistDialogOpen(true)}
+                            disabled={collaborators.length >= 2}
+                            style={{ fontSize: "10px" }}
+                        >
+                        <i className="bx bx-plus text-xs"></i> Add
+                        </Button>
+                    </div>
+                    
+                    {/* Display selected collaborators */}
+                    {collaborators.length > 0 ? (
+                        <div className="space-y-2">
+                        {collaborators.map((artist, index) => (
+                            <div 
+                            key={artist.id} 
+                            className={`flex items-center justify-between p-2 rounded-md ${
+                                slotColorSchemes[index + 1].replace('border-', 'bg-')
+                            }`}
+                            >
+                            <div className="flex items-center gap-2">
+                                <Avatar className="h-8 w-8">
+                                <img src={artist.avatar} alt={artist.name} className="rounded-full" />
+                                </Avatar>
+                                <span className="text-sm">{artist.name}</span>
+                            </div>
+                            <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-8 w-8 p-0 rounded-full"
+                                onClick={() => handleRemoveCollaborator(artist)}
+                            >
+                                <X className="h-4 w-4" />
+                            </Button>
+                            </div>
+                        ))}
+                        </div>
+                    ) : (
+                        <div className="text-[10px] text-muted-foreground py-2 p-4 text-center">
+                        No collaborators added yet. Add up to 2 collaborators.
+                        </div>
+                    )}
+                    </div>
+                )}
+                
+                {/* Collaborator Selection Status - Only visible in collaborator view */}
+                {viewMode === 'collaborator' && (
+                    <div className="border rounded-md p-4 bg-gray-50">
+                    <h3 className="text-sm font-medium mb-2">Your Artwork Selection</h3>
+                    
+                    {/* Count collaborator's assigned slots and selected artworks */}
+                    {(() => {
+                        const userSlots = Object.entries(slotOwnerMap)
+                        .filter(([_, userId]) => userId === currentCollaborator?.id)
+                        .map(([slotId]) => Number(slotId));
+                        
+                        const filledSlots = userSlots.filter(slotId => slotArtworkMap[slotId]);
+                        
+                        return (
+                        <div className="flex items-center justify-between">
+                            <span className="text-[10px]">
+                            {filledSlots.length} of {userSlots.length} slots filled
+                            </span>
+                            <div className="w-24 h-1 bg-gray-200 rounded-full overflow-hidden">
+                            <div 
+                                className="h-full bg-[#9b87f5]" 
+                                style={{ 
+                                width: `${userSlots.length > 0 ? (filledSlots.length / userSlots.length) * 100 : 0}%`
+                                }}
+                            ></div>
+                            </div>
+                        </div>
+                        );
+                    })()}
+                    </div>
+                )}
+                </div>
             </div>
-          )}
-          
-          <div className="flex justify-end">
-            <Button 
-              type="submit" 
-              className="bg-red-600 hover:bg-red-700 text-white px-8"
-            >
-              {viewMode === 'collaborator' ? "Save Selections" : "Exhibit Now"}
-            </Button>
-          </div>
-        </form>
-      </div>
+            
+            {/* Artwork selection section - Only show if an environment is selected */}
+            {selectedEnvironment && (
+                <div>
+                <h3 className="text-xs font-medium mb-4">
+                    {viewMode === 'collaborator' ? `${currentCollaborator?.name}'s Artworks` : "Your Artworks"}
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                    {artworks.map((artwork) => {
+                    const isSelected = selectedArtworks.includes(artwork.id);
+                    return (
+                        <Card 
+                        key={artwork.id}
+                        onClick={() => !isSelected && handleArtworkSelect(artwork.id)}
+                        className={`cursor-pointer overflow-hidden ${
+                            isSelected ? "opacity-40" : ""
+                        }`}
+                        >
+                        <img 
+                            src={artwork.image} 
+                            alt={`Artwork ${artwork.id}`} 
+                            className="w-full h-24 object-cover"
+                        />
+                        </Card>
+                    );
+                    })}
+                </div>
+                </div>
+            )}
+            
+            <div className="flex justify-end">
+                <button 
+                type="submit" 
+                className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full"
+                >
+                {viewMode === 'collaborator' ? "Save Selections" : "Exhibit Now"}
+                </button>
+            </div>
+            </form>
+        </div>
 
-      {/* Add Artist Dialog */}
-      <AddArtistDialog 
-        open={isAddArtistDialogOpen}
-        onOpenChange={setIsAddArtistDialogOpen}
-        onSelect={handleAddCollaborator}
-        selectedArtists={collaborators}
-      />
+        {/* Add Artist Dialog */}
+        <AddArtistDialog 
+            open={isAddArtistDialogOpen}
+            onOpenChange={setIsAddArtistDialogOpen}
+            onSelect={handleAddCollaborator}
+            selectedArtists={collaborators}
+        />
 
-      {/* Confirm Remove Collaborator Dialog */}
-      <AlertDialog 
-        open={isRemoveCollaboratorDialogOpen} 
-        onOpenChange={setIsRemoveCollaboratorDialogOpen}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove Collaborator</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to remove {collaboratorToRemove?.name} from this exhibit?
-              Their slot assignments will be redistributed.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              className="bg-red-600 hover:bg-red-700 text-white"
-              onClick={confirmRemoveCollaborator}
-            >
-              Remove
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        {/* Confirm Remove Collaborator Dialog */}
+        <AlertDialog 
+            open={isRemoveCollaboratorDialogOpen} 
+            onOpenChange={setIsRemoveCollaboratorDialogOpen}
+        >
+            <AlertDialogContent className="w-full max-w-sm rounded-lg">
+            <AlertDialogHeader>
+                <AlertDialogTitle className="text-xs text-center">Remove Collaborator</AlertDialogTitle>
+                <AlertDialogDescription className="text-[10px] text-center">
+                Are you sure you want to remove {collaboratorToRemove?.name} from this exhibit?
+                Their slot assignments will be redistributed.
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <div className="w-full flex justify-between px-20">
+                    <AlertDialogCancel className="text-[10px] h-7">Cancel</AlertDialogCancel>
+                    <AlertDialogAction 
+                    className="bg-red-700 hover:bg-red-600 text-white text-[10px] h-7"
+                    onClick={confirmRemoveCollaborator}
+                    >
+                    Remove
+                    </AlertDialogAction>
+                </div>
+            </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
 
-      {/* Notification Dialog for Collaborators */}
-      <AlertDialog 
-        open={showNotificationDialog} 
-        onOpenChange={setShowNotificationDialog}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Notify Collaborators</AlertDialogTitle>
-            <AlertDialogDescription>
-              Send invitations to your collaborators so they can select artwork for their assigned slots.
-              They will receive a link to contribute to your exhibit.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              className="bg-primary text-primary-foreground"
-              onClick={sendNotificationsToCollaborators}
-            >
-              Send Invitations
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        {/* Notification Dialog for Collaborators */}
+        {/* <AlertDialog 
+            open={showNotificationDialog} 
+            onOpenChange={setShowNotificationDialog}
+        >
+            <AlertDialogContent className="w-full max-w-sm rounded-lg">
+            <AlertDialogHeader>
+                <AlertDialogTitle className="text-xs text-center">Notify Collaborators</AlertDialogTitle>
+                <AlertDialogDescription className="text-[10px] text-center">
+                Send invitations to your collaborators so they can select artwork for their assigned slots.
+                They will receive a link to contribute to your exhibit.
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <div className="w-full flex justify-between">
+                    <AlertDialogCancel className="text-[10px] h-7">Cancel</AlertDialogCancel>
+                    <AlertDialogAction 
+                    className="bg-primary text-primary-foreground text-[10px] h-7"
+                    onClick={sendNotificationsToCollaborators}
+                    >
+                    Send Invitations
+                    </AlertDialogAction>
+                </div>
+            </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog> */}
     </div>
-  );
+    );
 };
 
 export default AddExhibit;
