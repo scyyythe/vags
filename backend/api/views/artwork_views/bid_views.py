@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 import traceback
 from bson import ObjectId
 from mongoengine.queryset.visitor import Q
-
+from datetime import datetime, timezone 
 class AuctionCreateView(APIView):
     def post(self, request, *args, **kwargs):
         try:
@@ -79,17 +79,21 @@ class AuctionListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-       
+        now_utc = datetime.now(timezone.utc)
+
+        
         expired_auctions = Auction.objects(
             status=AuctionStatus.ON_GOING.value,
-            end_time__lt=datetime.utcnow()
+            end_time__lt=now_utc
         )
 
+        
         for auction in expired_auctions:
             auction.close_auction()
+            auction.reload() 
 
-       
-        return Auction.objects(status=AuctionStatus.ON_GOING.value)
+      
+        return Auction.objects()
 
 class AuctionListViewOwner(generics.ListAPIView):
     serializer_class = AuctionSerializer
