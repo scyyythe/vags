@@ -92,15 +92,16 @@ const ArtCard = ({
     setMenuOpen(false);
   };
 
-  const handleReport = () => {
+  const handleReport = (issueDetails: string) => {
     if (reportStatusData?.reported) {
       toast.error("You have already reported this artwork.");
       setMenuOpen(false);
       return;
     }
-    submitReport(id);
+    submitReport({ id, issue_details: issueDetails });
     setMenuOpen(false);
   };
+
   const handleFavorite = () => {
     toggleFavorite();
     setMenuOpen(false);
