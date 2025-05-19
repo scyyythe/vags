@@ -5,7 +5,7 @@ import { reportCategories } from "./ReportOptions";
 interface ArtCardMenuProps {
   isOpen: boolean;
   onHide: () => void;
-  onReport: (issue_details: string) => void;
+  onReport: (issueDetails: string) => Promise<void>;
   onUndoReport?: () => void;
   isReported: boolean;
   isHidden?: boolean;
@@ -32,20 +32,19 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
     e.stopPropagation();
     setShowReportOptions(true);
   };
-
-  const handleReportSubmit = (categoryId: string, optionId?: string) => {
+  const handleReportSubmit = async (categoryId: string, optionId?: string) => {
     const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
     const selectedOption = selectedCategory?.options?.find((opt) => opt.id === optionId);
 
     const issueDetails = selectedOption
-      ? `Category: ${selectedCategory?.title} | Option: ${selectedOption.text} | Info: ${selectedOption.additionalInfo}`
+      ? `Category: ${selectedCategory.title} | Option: ${selectedOption.text} | Info: ${selectedOption.additionalInfo}`
       : selectedCategory
       ? `Category: ${selectedCategory.title}`
       : "Artwork contains inappropriate or offensive content.";
 
     console.log("Report submitted:", issueDetails);
-    onReport(issueDetails);
-    setShowReportOptions(false);
+
+    await onReport(issueDetails);
   };
 
   const handleUndoReport = (e: React.MouseEvent) => {

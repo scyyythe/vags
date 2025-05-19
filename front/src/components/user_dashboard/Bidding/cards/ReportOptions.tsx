@@ -109,11 +109,17 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
     setShowDetails(true);
   };
 
-  const handleSubmit = (categoryId: string, optionId?: string) => {
-    setShowConfirmation(false);
-    onSubmit(categoryId, optionId);
-    toast.success("Report submitted successfully. Thank you for your feedback.");
-    onClose();
+  const handleSubmit = async (categoryId: string, optionId?: string) => {
+    try {
+      await onSubmit(categoryId, optionId);
+
+      toast.success("Report submitted successfully. Thank you for your feedback.");
+      onClose();
+    } catch (error) {
+      toast.error("Failed to submit report. Please try again.");
+    } finally {
+      setShowConfirmation(false);
+    }
   };
 
   const openConfirmation = () => {

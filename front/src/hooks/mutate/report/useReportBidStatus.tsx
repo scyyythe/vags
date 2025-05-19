@@ -7,13 +7,13 @@ type ReportStatusResponse = {
 };
 
 const fetchReportStatus = async (id: string): Promise<ReportStatusResponse> => {
-  const response = await apiClient.get(`artworks/${id}/report-status/`);
+  const response = await apiClient.get(`auction/${id}/report-status/`);
   return response.data;
 };
 
 const useBidReportStatus = (id: string) => {
   return useQuery({
-    queryKey: ["reportStatus", id],
+    queryKey: ["auctionReportStatus", id],
     queryFn: () => fetchReportStatus(id),
     staleTime: 1000 * 60,
   });
