@@ -39,6 +39,7 @@ export const useCreateAuction = () => {
       toast.success("Auction created successfully!");
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
       queryClient.invalidateQueries({ queryKey: ["auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
