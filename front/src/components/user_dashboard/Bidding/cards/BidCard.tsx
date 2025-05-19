@@ -7,7 +7,7 @@ import CountdownTimer from "@/hooks/count/useCountdown";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import { useEffect } from "react";
 import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
-import useReportStatus from "@/hooks/mutate/report/useReportStatus";
+import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
 interface BidCardProps {
   data: ArtworkAuction;
   onClick: () => void;
@@ -23,9 +23,10 @@ interface BidCardProps {
 const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, onClick, user }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const [isReported, setIsReported] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
-  const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useReportStatus(data.id);
+  const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useBidReportStatus(data.id);
+  const isReported = reportStatusData?.reported === true;
+
   const { mutate: submitAuctionReport } = useAuctionSubmitReport();
   useEffect(() => {
     console.log("Top level start_bid_amount:", data.start_bid_amount);
