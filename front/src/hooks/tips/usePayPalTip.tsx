@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-
+import apiClient from "@/utils/apiClient";
 declare global {
   interface Window {
     paypal: any;
@@ -7,13 +7,14 @@ declare global {
 }
 
 type PaypalDetails = Record<string, unknown>;
-
 export function usePayPalTip({
   amount,
+  artistId,
   onSuccess,
   onError,
 }: {
   amount: string;
+  artistId: string;
   onSuccess: (details: PaypalDetails) => void;
   onError?: (error: unknown) => void;
 }) {
@@ -47,10 +48,28 @@ export function usePayPalTip({
           });
         },
         onApprove: async (data, actions) => {
-          const details = await actions.order.capture();
-          onSuccess(details);
+          try {
+            const details = await actions.order.capture();
+
+            const payload = {
+              orderID: data.orderID,
+              amount: parseFloat(amount),
+              sender_id: localStorage.getItem("user_id"),
+              receiver_id: artistId,
+            };
+
+            console.log("💰 PayPal Tip Payload:", payload);
+
+            await apiClient.post("paypal/verify/", payload);
+
+            onSuccess(details);
+          } catch (err) {
+            console.error("PayPal verification failed:", err);
+            if (onError) onError(err);
+          }
         },
         onError: (err) => {
+          console.error("PayPal button error:", err);
           if (onError) onError(err);
         },
       })
@@ -59,7 +78,7 @@ export function usePayPalTip({
     return () => {
       paypalElement.innerHTML = "";
     };
-  }, [amount, onSuccess, onError]);
+  }, [amount, artistId, onSuccess, onError]);
 
   return paypalRef;
 }

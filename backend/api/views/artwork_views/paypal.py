@@ -4,6 +4,7 @@ from rest_framework import status
 import requests
 from api.models.artwork_model.tip import Tip
 from api.models.user_model.users import User
+from api.serializers.artwork_s.tip_serializers import PayPalVerifySerializer
 
 PAYPAL_CLIENT_ID = "ATdS3EPVWsnSLLq78MSvmBABGBnoaBfk61SOAl3VD8HjqCbC7rrPGMRtd1Z3wwrADmqdgKAOjvRVoJYw"
 PAYPAL_SECRET = "EFS831oKh3OoRdzABo85_HTp-kKjsB9LP0thCdAyKyc8ayRqHTj2izUwfQoK9Bes2PQqZspRpcvh024st"
