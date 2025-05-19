@@ -6,8 +6,8 @@ import BidPopup from "../place_bid/BidPopup";
 import CountdownTimer from "@/hooks/count/useCountdown";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import { useEffect } from "react";
-import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
-import useReportStatus from "@/hooks/mutate/report/useReportStatus";
+import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
+import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
 interface BidCardProps {
   data: ArtworkAuction;
   onClick: () => void;
@@ -23,11 +23,11 @@ interface BidCardProps {
 const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, onClick, user }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const [isReported, setIsReported] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
-  const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useReportStatus(data.id);
-  const { mutate: submitReport } = useSubmitReport();
+  const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useBidReportStatus(data.id);
+  const isReported = reportStatusData?.reported === true;
 
+  const { mutate: submitAuctionReport } = useAuctionSubmitReport();
   useEffect(() => {
     console.log("Top level start_bid_amount:", data.start_bid_amount);
     console.log("Artwork level start_bid_amount:", data.start_bid_amount);
@@ -57,16 +57,17 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
   //   toast(isReported ? "Artwork report removed" : "Artwork reported");
   //   setMenuOpen(false);
   // };
+
   const handleReport = (issueDetails: string) => {
     if (reportStatusData?.reported) {
       toast.error("You have already reported this artwork.");
       setMenuOpen(false);
       return;
     }
-    submitReport({ id: data.id, issue_details: issueDetails });
+    submitAuctionReport({ id: data.id, issue_details: issueDetails });
+
     setMenuOpen(false);
   };
-
   const handleBidSubmit = (amount: number) => {
     onPlaceBid?.(data.id, amount);
     toast(`Bid of ${amount}K placed successfully!`);

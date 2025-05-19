@@ -1,5 +1,5 @@
 from django.urls import path
-from api.views.admin.report_view import ReportStatus,ReportCreateView, UserReportsView, ReportDeleteView, ReportUpdateView
+from api.views.admin.report_view import ReportStatus,ReportCreateView,AuctionReportStatus, UserReportsView, ReportDeleteView, ReportUpdateView,AuctionReportCreateView
 from api.views.admin.admin_report import AdminUpdateReportStatusView
 
 report_urlpatterns = [
@@ -10,5 +10,6 @@ report_urlpatterns = [
     path('reports/<str:pk>/update/', ReportUpdateView.as_view(), name='report_update'),
     path('artworks/<str:pk>/report-status/', ReportStatus.as_view(), name='report-status'),
 
-
+    path("auction-reports/create/", AuctionReportCreateView.as_view(), name="create-bid-report"),
+    path('auction/<str:pk>/report-status/', AuctionReportStatus.as_view(), name='report-status'),
 ]
