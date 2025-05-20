@@ -59,7 +59,7 @@ const OnBidTab = () => {
           <p className="text-sm text-gray-500">{tabEmptyMessages[activeTab]}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 border">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {filteredAuctions.map((auction) => (
             <BidCard key={auction.id} data={auction} onClick={() => handleBidClick(auction)} />
           ))}
