@@ -19,7 +19,7 @@ const mockExhibits = [
     image: "https://images.unsplash.com/photo-1533158307587-828f0a76ef46?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     category: "Digital Art",
     likes: 125,
-    views: 1.5, // 1.5k
+    views: 1.5,
     isSolo: true,
   },
   {
@@ -91,7 +91,7 @@ const mockExhibits = [
     id: "7",
     title: "Cultural Heritage",
     description: "A celebration of traditional art forms and techniques passed down through generations of artisans.",
-    image: "https://images.unsplash.com/photo-1578321862442-10c6e318211f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "https://i.pinimg.com/736x/a1/a8/42/a1a842b4254e1c79b2491caa0f5520e1.jpg",
     category: "Traditional Art",
     likes: 99,
     views: 1.0,
@@ -216,7 +216,11 @@ const Exhibits = () => {
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {sortedExhibits.map((exhibit) => (
-            <ExhibitCard key={exhibit.id} exhibit={exhibit} />
+            <ExhibitCard 
+              key={exhibit.id} 
+              exhibit={exhibit} 
+              onClick={() => navigate(`/view-exhibit/${exhibit.id}`)} // 👈 Navigate to the exhibit viewing page
+            />
           ))}
         </div>
       </div>
