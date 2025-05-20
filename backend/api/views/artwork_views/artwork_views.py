@@ -35,8 +35,11 @@ class ArtListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-       
-        return Art.objects(visibility__iexact="public").order_by('-created_at')
+        return Art.objects(
+            visibility__iexact="public",
+            art_status__iexact="active"
+        ).order_by('-created_at')
+
     
     
 class ArtListViewOwner(generics.ListAPIView):
@@ -49,11 +52,18 @@ class ArtListViewOwner(generics.ListAPIView):
         if user_id:
             try:
                 user = User.objects.get(id=user_id)  
-                return Art.objects.filter(artist=user).order_by('-created_at')
+                return Art.objects.filter(
+                    artist=user,
+                    art_status__iexact="active"
+                ).order_by('-created_at')
             except User.DoesNotExist:
                 raise ValidationError("User not found.")
         else:
-            return Art.objects.filter(artist=self.request.user).order_by('-created_at')
+            return Art.objects.filter(
+                artist=self.request.user,
+                art_status__iexact="active"
+            ).order_by('-created_at')
+
         
 
 class ArtListViewSpecificUser(generics.ListAPIView):
@@ -66,11 +76,18 @@ class ArtListViewSpecificUser(generics.ListAPIView):
         if user_id:
             try:
                 user = User.objects.get(id=user_id)
-                return Art.objects.filter(artist=user).order_by('-created_at')
+                return Art.objects.filter(
+                    artist=user,
+                    art_status__iexact="active"
+                ).order_by('-created_at')
             except User.DoesNotExist:
                 raise ValidationError("User not found.")
         else:
-            return Art.objects.all().order_by('-created_at')
+           
+            return Art.objects.filter(
+                art_status__iexact="active"
+            ).order_by('-created_at')
+
 
     
 class ArtworksByArtistView(generics.RetrieveAPIView):

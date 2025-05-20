@@ -31,3 +31,4 @@ class Notification(Document):
     check = BooleanField(default=False) 
 
     meta = {'collection': 'notifications'}
+    
