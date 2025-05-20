@@ -89,7 +89,7 @@ class LikeCreateView(APIView):
 
         else:
             now = datetime.now()
-            time_elapsed = timesince(art.created_at, now) 
+            time_elapsed = timesince(now) 
             Like.objects.create(user=user, art=art)
             Notification.objects.create(
                 user=art.artist,  

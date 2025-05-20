@@ -83,6 +83,7 @@ const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
         artworkImage={currentArtwork?.artworkImage}
         artistId={currentArtwork?.artistId}
         artistName={currentArtwork?.artistName}
+        artId={currentArtwork?.id}
       />
     </>
   );

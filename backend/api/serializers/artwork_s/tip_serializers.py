@@ -37,3 +37,4 @@ class PayPalVerifySerializer(serializers.Serializer):
     sender_id = serializers.CharField(required=True)
     receiver_id = serializers.CharField(required=True)
     amount = serializers.FloatField(required=True)
+    art_id = serializers.CharField(required=True) 
