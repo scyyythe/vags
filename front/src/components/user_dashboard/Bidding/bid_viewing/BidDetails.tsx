@@ -668,10 +668,10 @@ const BidDetails = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {mockRelatedArtworks.map((art) => (
                 <div key={art.id} className="min-w-[200px] flex-shrink-0">
-                  <BidCard
+                  {/* <BidCard
                     data={art}
                     onClick={() => navigate(`/biddetails/${art.id}`, { state: { artwork: art.artwork } })}
-                  />
+                  /> */}
                 </div>
               ))}
             </div>

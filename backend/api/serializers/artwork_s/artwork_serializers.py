@@ -39,13 +39,6 @@ class ArtSerializer(serializers.Serializer):
         
         art = Art(**validated_data)
         art.save()
-
-        notification_message = f"Your artwork '{art.title}' has been uploaded successfully."
-        notification = Notification.objects.create(
-            user=art.artist,
-            message=notification_message,
-            art=art
-        )
         return art
     
     def update(self, instance, validated_data):
