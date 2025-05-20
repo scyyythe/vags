@@ -513,7 +513,7 @@ const ExhibitViewing = () => {
         return (
           related.length > 0 && (
             <div className="container md:px-6 mt-2 mb-2">
-              <h2 className={`font-medium ${isMobile ? "text-xs ml-1" : "text-xs mb-4"}`}>Related Artworks</h2>
+              <h2 className={`font-medium ${isMobile ? "text-xs ml-1" : "text-xs mb-4"}`}>Related Exhibits</h2>
               {filteredRelated && filteredRelated.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                   {filteredRelated.map((card) => (
@@ -522,7 +522,7 @@ const ExhibitViewing = () => {
                 </div>
               ) : (
                 <div className="flex flex-col justify-center items-center h-32 w-full">
-                  <p className="text-gray-500 text-xs mb-2">No related artworks found.</p>
+                  <p className="text-gray-500 text-xs mb-2">No related exhibits found.</p>
                 </div>
               )}
             </div>
