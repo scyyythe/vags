@@ -13,8 +13,12 @@ import UnarchivePopup from "@/components/user_dashboard/user_profile/components/
 import { getLoggedInUserId } from "@/auth/decode";
 import CollectionTab from "../tabs/CollectionTab";
 import OnBidTab from "../tabs/OnBidTab";
+import ExhibitTab from "@/components/user_dashboard/user_profile/tabs/ExhibitsTab";
+
+
 const tabs = [
   { id: "created", label: "Created" },
+  { id: "exhibits", label: "Exhibits" },
   { id: "onBid", label: "On Bid" },
   { id: "onSale", label: "On Sale" },
   { id: "collections", label: "Collections" },
@@ -354,8 +358,11 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
           />
         </>
       )}
+
       {activeTab === "collections" && <CollectionTab />}
       {activeTab === "onBid" && <OnBidTab />}
+
+      {activeTab === "exhibits" && <ExhibitTab />}
 
       {activeTab === "onSale" && (
         <div className="flex flex-col items-center justify-center col-span-full text-center p-4">

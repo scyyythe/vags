@@ -24,6 +24,7 @@ const Index = () => {
     }
   }, [id, data, isLoading]);
   return (
+    <>
     <div className="min-h-screen">
       <Header />
       <div className="container mx-auto px-4 pt-20">
@@ -41,8 +42,10 @@ const Index = () => {
         />
         <ArtGrid activeTab={activeTab} />
       </div>
-      <Footer />
+      
     </div>
+      <Footer />
+    </>
   );
 };
 
