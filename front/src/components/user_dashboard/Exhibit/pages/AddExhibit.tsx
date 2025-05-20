@@ -223,7 +223,7 @@ const AddExhibit = () => {
     });
     
     // Navigate back to exhibits page after submission
-    navigate("/");
+    navigate("/exhibits");
   };
 
   // Function to send notifications to collaborators
@@ -425,14 +425,12 @@ const AddExhibit = () => {
   // Generate array of slots based on current environment
   const availableSlots = currentEnvironment ? Array.from({ length: currentEnvironment.slots }, (_, i) => i + 1) : [];
 
-  // Find artwork by ID
   const getArtworkById = (id: number) => artworks.find(artwork => artwork.id === id);
 
   // Get color scheme index based on user ID
   const getColorSchemeIndex = (userId: number) => {
     if (userId === currentUser.id) return 0; // Owner
     
-    // Find the index of the collaborator
     const collaboratorIndex = collaborators.findIndex(c => c.id === userId);
     return collaboratorIndex + 1; // +1 because owner is index 0
   };
