@@ -887,7 +887,7 @@ const AddExhibit = () => {
                 type="submit" 
                 className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full"
                 >
-                {viewMode === 'collaborator' ? "Save Selections" : "Exhibit Now"}
+                {viewMode === 'collaborator' ? "Save Selections" : "Publish Exhibit"}
                 </button>
             </div>
             </form>
