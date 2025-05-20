@@ -12,6 +12,9 @@ import traceback
 from bson import ObjectId
 from mongoengine.queryset.visitor import Q
 from datetime import datetime, timezone 
+from mongoengine import DoesNotExist
+from mongoengine.errors import NotUniqueError
+from mongoengine.queryset.visitor import Q
 class AuctionCreateView(APIView):
     def post(self, request, *args, **kwargs):
         try:
@@ -20,7 +23,13 @@ class AuctionCreateView(APIView):
             end_time = datetime.fromisoformat(request.data["end_time"])
             start_bid_amount = float(request.data["start_bid_amount"])
 
+            artwork = Art.objects.get(id=artwork_id)
             
+            if artwork.art_status != "Active":
+                return Response(
+                    {"error": "Auction can only be created for artworks with status 'Active'."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             if end_time <= start_time:
                 return Response(
                     {"error": "End time must be after start time."},
@@ -34,11 +43,38 @@ class AuctionCreateView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            if Auction.objects(artwork=artwork_id).first():
+            existing_auction = Auction.objects(
+                artwork=artwork_id,
+                status=AuctionStatus.ON_GOING.value
+            ).first()
+
+            if existing_auction:
                 return Response(
-                    {"error": "This artwork already has an auction."},
+                    {"error": "This artwork already has an active auction."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
+
+            
+            sold_auction = Auction.objects(
+                artwork=artwork_id,
+                status=AuctionStatus.SOLD.value
+            ).first()
+
+            if sold_auction:
+                return Response(
+                    {"error": "This artwork has already been sold in a previous auction."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+            previous_auction = Auction.objects(
+                artwork=artwork_id,
+                status="closed",  
+                bid_history__size=0  
+            ).first()
+
+            if previous_auction:
+                previous_auction.status = "reauctioned"
+                previous_auction.save()
 
             auction = Auction.create_auction(
                 artwork_id=artwork_id,
@@ -60,12 +96,6 @@ class AuctionCreateView(APIView):
             return Response(
                 {"error": "Artwork not found."},
                 status=status.HTTP_404_NOT_FOUND
-            )
-
-        except NotUniqueError:
-            return Response(
-                {"error": "This artwork is already in an active auction."},
-                status=status.HTTP_400_BAD_REQUEST
             )
 
         except Exception as e:
