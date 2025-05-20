@@ -10,11 +10,13 @@ type PaypalDetails = Record<string, unknown>;
 export function usePayPalTip({
   amount,
   artistId,
+  id,
   onSuccess,
   onError,
 }: {
   amount: string;
   artistId: string;
+  id: string;
   onSuccess: (details: PaypalDetails) => void;
   onError?: (error: unknown) => void;
 }) {
@@ -56,6 +58,7 @@ export function usePayPalTip({
               amount: parseFloat(amount),
               sender_id: localStorage.getItem("user_id"),
               receiver_id: artistId,
+              art_id: id,
             };
 
             console.log("💰 PayPal Tip Payload:", payload);
@@ -63,8 +66,18 @@ export function usePayPalTip({
             await apiClient.post("paypal/verify/", payload);
 
             onSuccess(details);
-          } catch (err) {
-            console.error("PayPal verification failed:", err);
+          } catch (err: any) {
+            if (err.response) {
+              console.error("🔴 PayPal verification failed:");
+              console.error("Status:", err.response.status);
+              console.error("Data:", err.response.data);
+              console.error("Headers:", err.response.headers);
+            } else if (err.request) {
+              console.error("❗ No response received:", err.request);
+            } else {
+              console.error("❌ Error:", err.message);
+            }
+
             if (onError) onError(err);
           }
         },
@@ -78,7 +91,7 @@ export function usePayPalTip({
     return () => {
       paypalElement.innerHTML = "";
     };
-  }, [amount, artistId, onSuccess, onError]);
+  }, [amount, artistId, id, onSuccess, onError]);
 
   return paypalRef;
 }

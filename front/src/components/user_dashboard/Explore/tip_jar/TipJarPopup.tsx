@@ -14,6 +14,7 @@ interface TipJarPopupProps {
   artworkImage?: string;
   artistName?: string;
   artistId: string;
+  artId: string;
 }
 
 type PaymentMethod = "PayPal" | "GCash" | "Stripe";
@@ -25,6 +26,7 @@ const TipJarPopup = ({
   artworkImage = "",
   artistName = "",
   artistId = "",
+  artId = "",
 }: TipJarPopupProps) => {
   const [step, setStep] = useState<"amount" | "confirm" | "paypal">("amount");
 
@@ -36,6 +38,7 @@ const TipJarPopup = ({
   console.log("TipJarPopup - isOpen:", isOpen);
   console.log("TipJarPopup - artworkTitle:", artworkTitle);
   console.log("TipJarPopup - artistId:", artistId);
+  console.log("TipJarPopup - artworkid:", artId);
 
   const predefinedAmounts = [
     { value: "250", label: "₱250" },
@@ -113,6 +116,7 @@ const TipJarPopup = ({
   const paypalRef = usePayPalTip({
     amount: selectedAmount || customAmount,
     artistId: artistId,
+    id: artId,
     onSuccess: (details) => {
       toast.success("Thank you for your donation!");
       onClose();
@@ -305,21 +309,16 @@ const TipJarPopup = ({
       </div>
       {/* PayPal payment step */}
       {step === "paypal" && (
-        <div className="p-6 text-center">
-          <h2 className="text-sm font-medium mb-4">Pay with PayPal</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
+            <h2 className="text-xs font-small mb-4">Pay with PayPal</h2>
 
-          {/* The PayPal button container */}
-          <div
-            ref={paypalRef} // <-- the ref returned from your hook, explained below
-            className="mx-auto"
-          />
+            <div ref={paypalRef} className="mx-auto" />
 
-          <button
-            onClick={() => setStep("amount")} // Cancel & go back button
-            className="mt-4 text-xs text-gray-500 underline"
-          >
-            Cancel and go back
-          </button>
+            <button onClick={() => setStep("amount")} className="mt-4 text-xs text-gray-500 underline">
+              Cancel and go back
+            </button>
+          </div>
         </div>
       )}
     </div>
