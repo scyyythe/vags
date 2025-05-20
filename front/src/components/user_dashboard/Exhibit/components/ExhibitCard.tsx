@@ -22,9 +22,10 @@ interface ExhibitProps {
       avatar?: string;
     }[];
   };
+  onClick?: () => void; 
 }
 
-const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit }) => {
+const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const { mutate: submitReport } = useSubmitReport();
@@ -61,7 +62,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit }) => {
   };
 
   return (
-    <div className="w-full rounded-xl bg-white border hover:shadow-lg transition-all duration-300 cursor-pointer relative">
+    <div className="w-full rounded-xl bg-white border hover:shadow-lg transition-all duration-300 cursor-pointer relative" onClick={onClick}>
       <div className="relative">
         <img 
           src={exhibit.image} 
