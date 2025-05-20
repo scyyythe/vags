@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Heart, MoreHorizontal, GripVertical } from "lucide-react";
 import { toast } from "sonner";
@@ -20,6 +20,7 @@ import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import { useBidHistory } from "@/hooks/bid/useBidHistory";
 import { getLoggedInUserId } from "@/auth/decode";
+import useAuctions from "@/hooks/auction/useAuction";
 export interface BidCardData {
   id: string;
   title: string;
@@ -33,6 +34,8 @@ const BidDetails = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data: item, isLoading } = useFetchBiddingArtworkById(id!);
+  const { data: allAuctions = [] } = useAuctions(1);
+
   useEffect(() => {
     if (item) {
       console.log("Fetched auction item:", item);
@@ -89,6 +92,17 @@ const BidDetails = () => {
   };
 
   const currentUserId = getLoggedInUserId();
+
+  const relatedBids = useMemo(() => {
+    if (!item || !item.artwork?.category) return [];
+
+    return allAuctions.filter(
+      (art) =>
+        art.status === "on_going" &&
+        art.id !== item.id &&
+        art.artwork?.category?.trim().toLowerCase() === item.artwork.category.trim().toLowerCase()
+    );
+  }, [item, allAuctions]);
 
   // Mock bid data
   const mockBids = [
@@ -663,19 +677,30 @@ const BidDetails = () => {
           </div>
 
           {/* Related Bids Section */}
-          <div className="container md:px-6 mt-2 mb-2">
-            <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Bids</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {mockRelatedArtworks.map((art) => (
-                <div key={art.id} className="min-w-[200px] flex-shrink-0">
-                  {/* <BidCard
-                    data={art}
-                    onClick={() => navigate(`/biddetails/${art.id}`, { state: { artwork: art.artwork } })}
-                  /> */}
-                </div>
-              ))}
+          {relatedBids.length > 0 ? (
+            <div className="container md:px-6 mt-2 mb-2">
+              <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Bids</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {relatedBids.map((art) => (
+                  <div key={art.id} className="min-w-[200px] flex-shrink-0">
+                    <BidCard
+                      data={art}
+                      onClick={() =>
+                        navigate(`/bid/${art.id}`, {
+                          state: { artwork: art.artwork },
+                        })
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="container md:px-6 mt-2 mb-2">
+              <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Bids</h2>
+              <p className="text-gray-500 text-xs mb-2">No related bids found.</p>
+            </div>
+          )}
 
           {showBidPopup && (
             <BidPopup
