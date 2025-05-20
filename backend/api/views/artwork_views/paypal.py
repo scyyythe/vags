@@ -99,11 +99,9 @@ class PayPalVerifyPaymentView(APIView):
 
         Notification.objects.create(
             user=receiver,
-            message=f"{sender.first_name} tipped you ${paypal_amount} for your artwork '{art.title}'",
+            action=f"{sender.first_name} tipped you ${paypal_amount} for your artwork '{art.title}'",
             art=art,
             name=f"{sender.first_name} {sender.last_name}",
-            action="tipped you",
-            target=art.title,
             icon="💰",
             date=now,
             amount=str(paypal_amount),

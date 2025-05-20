@@ -74,21 +74,34 @@ class AuctionReportCreateView(generics.ListCreateAPIView):
         return AuctionReport.objects.filter(user=ObjectId(self.request.user.id))
 
     def perform_create(self, serializer):
-        
-        serializer.save()
+        # Save the report instance
+        report = serializer.save()
 
-       
-        auction = serializer.instance.auction
+        auction = report.auction
+        reporter = report.user       
+        artist = auction.artwork.artist  
+
+        now = datetime.utcnow()
+
+        
         Notification.objects.create(
-            user=auction.artwork.artist,
+            user=reporter,
             auction=auction,
-            name="Report Successful",
-            action="Your auction has been reported.",
-            target=str(auction.id),
-            message="A report about your auction has been submitted and is under review.",
-            date=datetime.utcnow(),
+            name="Report Submitted",
+            action="You submitted a report.",
+            target=auction.artwork.title,
+            date=now,
         ).save()
 
+       
+        Notification.objects.create(
+            user=artist,
+            auction=auction,
+            name="Auction Reported",
+            target=auction.artwork.title,
+            action="A report about your auction has been submitted and is under review.",
+            date=now,
+        ).save()
 class ReportDeleteView(generics.DestroyAPIView):
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]
