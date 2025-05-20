@@ -82,7 +82,9 @@ const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
         onClose={closePopup}
         artworkTitle={currentArtwork?.title}
         artworkImage={currentArtwork?.artworkImage}
+        artistId={currentArtwork?.artistId}
         artistName={currentArtwork?.artistName}
+        artId={currentArtwork?.id}
       />
     </>
   );
@@ -130,7 +132,10 @@ const App = () => {
                           <Route path="edit-profile" element={<ProtectedRoute children={<EditProfile />} />} />
                           <Route path="account-details" element={<ProtectedRoute children={<AccountDetails />} />} />
                           <Route path="security" element={<ProtectedRoute children={<SecuritySettings />} />} />
-                          <Route path="notifications" element={<ProtectedRoute children={<NotificationsSettings />} />} />
+                          <Route
+                            path="notifications"
+                            element={<ProtectedRoute children={<NotificationsSettings />} />}
+                          />
                           <Route path="billing" element={<ProtectedRoute children={<BillingSettings />} />} />
                           <Route path="help-center" element={<ProtectedRoute children={<HelpCenter />} />} />
                         </Route>

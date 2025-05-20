@@ -113,6 +113,7 @@ const ArtCard = ({
       title: title || "Untitled Artwork",
       artistName,
       artworkImage,
+      artistId,
     });
   };
 
