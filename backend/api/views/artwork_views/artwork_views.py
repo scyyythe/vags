@@ -11,6 +11,8 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework import status
 from django.utils.timesince import timesince
+from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
@@ -48,23 +50,23 @@ class ArtListViewOwner(generics.ListAPIView):
 
     def get_queryset(self):
         user_id = self.request.query_params.get('userId', None)
+        valid_statuses = ["Active", "onBid", "Hidden"]
 
         if user_id:
             try:
-                user = User.objects.get(id=user_id)  
+                user = User.objects.get(id=user_id)
                 return Art.objects.filter(
                     artist=user,
-                    art_status__iexact="active"
+                    art_status__in=valid_statuses
                 ).order_by('-created_at')
             except User.DoesNotExist:
                 raise ValidationError("User not found.")
         else:
             return Art.objects.filter(
                 artist=self.request.user,
-                art_status__iexact="active"
+                art_status__in=valid_statuses
             ).order_by('-created_at')
 
-        
 
 class ArtListViewSpecificUser(generics.ListAPIView):
     serializer_class = ArtSerializer
@@ -72,21 +74,23 @@ class ArtListViewSpecificUser(generics.ListAPIView):
 
     def get_queryset(self):
         user_id = self.request.query_params.get('userId', None)
-        print(f"Received userId: {user_id}") 
+        print(f"Received userId: {user_id}")
+        valid_statuses = ["Active", "onBid", "Hidden"]
+
         if user_id:
             try:
                 user = User.objects.get(id=user_id)
                 return Art.objects.filter(
                     artist=user,
-                    art_status__iexact="active"
+                    art_status__in=valid_statuses
                 ).order_by('-created_at')
             except User.DoesNotExist:
                 raise ValidationError("User not found.")
         else:
-           
             return Art.objects.filter(
-                art_status__iexact="active"
+                art_status__in=valid_statuses
             ).order_by('-created_at')
+
 
 
     
