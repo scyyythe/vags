@@ -13,7 +13,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
 import useFavorite from "@/hooks/interactions/useFavorite";
-import ExhibitCard from "@/components/user_dashboard/Exhibit/components/ExhibitCard";
+import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 
 const ExhibitViewing = () => {
   const { id } = useParams<{ id: string }>();

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
-import ExhibitCard from "@/components/user_dashboard/Exhibit/components/ExhibitCard";
+import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import {
   DropdownMenu,
   DropdownMenuContent,
