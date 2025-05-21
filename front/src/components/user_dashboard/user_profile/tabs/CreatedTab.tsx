@@ -8,23 +8,15 @@ import { getLoggedInUserId } from "@/auth/decode";
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
-  setCreatedArtworksCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: CreatedTabProps) => {
+const CreatedTab = ({ filteredArtworks, isLoading }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
   const { id: visitedUserId } = useParams();
 
   const allArtworks = useMemo(() => {
     return filteredArtworks;
   }, [filteredArtworks]);
-
-  useEffect(() => {
-    if (!visitedUserId) return;
-
-    const count = allArtworks.filter((artwork) => String(artwork.artistId) === String(visitedUserId)).length;
-    setCreatedArtworksCount(count);
-  }, [allArtworks, visitedUserId, setCreatedArtworksCount]);
 
   const handleButtonClick = useCallback((artworkId: string) => {}, []);
 

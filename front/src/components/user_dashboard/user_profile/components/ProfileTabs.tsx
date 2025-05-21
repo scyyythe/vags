@@ -15,7 +15,6 @@ import CollectionTab from "../tabs/CollectionTab";
 import OnBidTab from "../tabs/OnBidTab";
 import ExhibitTab from "@/components/user_dashboard/user_profile/tabs/ExhibitsTab";
 
-
 const tabs = [
   { id: "created", label: "Created" },
   { id: "exhibits", label: "Exhibits" },
@@ -26,9 +25,8 @@ const tabs = [
 type ProfileTabsProps = {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  setCreatedArtworksCount: React.Dispatch<React.SetStateAction<number>>;
 };
-const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: ProfileTabsProps) => {
+const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterCategory, setFilterCategory] = useState("Digital Art");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -351,11 +349,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
               </button>
             </div>
           )}
-          <CreatedTab
-            filteredArtworks={filteredArtworksMemo}
-            isLoading={isLoading}
-            setCreatedArtworksCount={setCreatedArtworksCount}
-          />
+          <CreatedTab filteredArtworks={filteredArtworksMemo} isLoading={isLoading} />
         </>
       )}
 
