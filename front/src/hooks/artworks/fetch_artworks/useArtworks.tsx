@@ -30,7 +30,7 @@ const fetchArtworks = async (
   currentPage: number,
   userId?: string,
   endpointType: "all" | "created-by-me" | "specific-user" = "all",
-  filterVisibility?: "public" | "private"
+  filterVisibility?: "public" | "private" | "hidden" | "deleted" | "archived"
 ): Promise<Artwork[]> => {
   try {
     const params: { page: number; limit: number; userId?: string; visibility?: string } = {
@@ -93,7 +93,7 @@ const useArtworks = (
   userId?: string,
   enabled: boolean = true,
   endpointType: "all" | "created-by-me" | "specific-user" = "all",
-  filterVisibility?: "public" | "private"
+  filterVisibility?: "public" | "private" | "hidden" | "deleted" | "archived"
 ) => {
   return useQuery({
     queryKey: ["artworks", currentPage, userId, endpointType, filterVisibility],

@@ -4,19 +4,20 @@ import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
-
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
+  filterVisibility?: string; // e.g. "hidden", "deleted", "archived"
 };
 
-const CreatedTab = ({ filteredArtworks, isLoading }: CreatedTabProps) => {
+const CreatedTab = ({ filteredArtworks, isLoading, filterVisibility }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
-  const { id: visitedUserId } = useParams();
 
+  // Filter artworks based on visibility if filterVisibility is given
   const allArtworks = useMemo(() => {
-    return filteredArtworks;
-  }, [filteredArtworks]);
+    if (!filterVisibility) return filteredArtworks;
+    return filteredArtworks.filter((art) => art.visibility?.toLowerCase() === filterVisibility.toLowerCase());
+  }, [filteredArtworks, filterVisibility]);
 
   const handleButtonClick = useCallback((artworkId: string) => {}, []);
 
