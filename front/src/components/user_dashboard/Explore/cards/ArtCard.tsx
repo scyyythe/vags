@@ -128,7 +128,7 @@ const ArtCard = ({
         <div className="flex items-center space-x-2">
           <Avatar className="h-5 w-5 border">
             <AvatarImage src={artistImage} alt={artistName} />
-            <AvatarFallback>{artistName.charAt(0)}</AvatarFallback>
+            <AvatarFallback>{(artistName || "?").charAt(0)}</AvatarFallback>
           </Avatar>
 
           <span className="text-[9px] font-medium">{artistName}</span>

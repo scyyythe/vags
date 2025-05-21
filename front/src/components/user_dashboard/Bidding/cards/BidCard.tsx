@@ -10,7 +10,7 @@ import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
 import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
 interface BidCardProps {
   data: ArtworkAuction;
-  onClick: () => void;
+  onClick?: () => void;
   isLoading?: boolean;
   onPlaceBid?: (id: string, amount: number) => void;
   user?: {

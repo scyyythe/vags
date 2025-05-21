@@ -123,10 +123,23 @@ const CreatePost = () => {
       if (axios.isAxiosError(error)) {
         console.error("Upload error:", error.response?.data);
         const errors = error.response?.data;
-        if (errors?.image?.[0]) {
-          toast.error(errors.image[0], { id: "upload" });
+
+        if (Array.isArray(errors) && errors.length > 0) {
+          toast.error(errors[0], { id: "upload" });
+        } else if (errors) {
+          if (typeof errors.detail === "string") {
+            toast.error(errors.detail, { id: "upload" });
+          } else if (errors.image?.length) {
+            toast.error(errors.image[0], { id: "upload" });
+          } else if (typeof errors.error === "string") {
+            toast.error(errors.error, { id: "upload" });
+          } else if (typeof errors === "string") {
+            toast.error(errors, { id: "upload" });
+          } else {
+            toast.error("Upload failed", { id: "upload" });
+          }
         } else {
-          toast.error(errors?.error || "Upload failed", { id: "upload" });
+          toast.error("Upload failed", { id: "upload" });
         }
       } else {
         console.error("Unexpected error:", error);
