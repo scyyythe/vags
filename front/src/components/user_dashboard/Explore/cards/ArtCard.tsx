@@ -126,10 +126,12 @@ const ArtCard = ({
     <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4">
       <div className="py-1 px-1 flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          <Avatar className="h-5 w-5 border">
-            <AvatarImage src={artistImage} alt={artistName} />
-            <AvatarFallback>{(artistName || "?").charAt(0)}</AvatarFallback>
-          </Avatar>
+          <Link to={`/userprofile/${artistId}`}>
+            <Avatar className="h-5 w-5 border">
+              <AvatarImage src={artistImage} alt={artistName} />
+              <AvatarFallback>{(artistName || "?").charAt(0)}</AvatarFallback>
+            </Avatar>
+          </Link>
 
           <span className="text-[9px] font-medium">{artistName}</span>
         </div>

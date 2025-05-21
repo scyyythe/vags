@@ -9,7 +9,6 @@ function useOwnedArtworksCount(userId: string) {
     if (!isLoading && data) {
       const ownedArtworks = data.filter(
         (artwork) =>
-          // Adjust fields based on your data!
           (artwork.artistId === userId || artwork.artistId === userId || artwork.artistId === userId) &&
           artwork.visibility === "Public" &&
           (artwork.status === "Active" || artwork.status === "OnBid")
