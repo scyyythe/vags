@@ -2,6 +2,7 @@ from mongoengine import Document, StringField, ReferenceField, IntField, DateTim
 from datetime import datetime
 from ..user_model.users import User
 from ..artwork_model.artwork import Art
+from ..exhibit_model.exhibit import Exhibit
 
 
 class Comment(Document):
@@ -20,7 +21,14 @@ class Like(Document):
     created_at = DateTimeField(default=datetime.utcnow)
 
     meta = {'collection': 'likes'}
+    
+class LikeExhibit(Document):
+    user = ReferenceField(User)  
+    exhibit = ReferenceField(Exhibit) 
+    created_at = DateTimeField(default=datetime.utcnow)
 
+    meta = {'collection': 'exhibit_likes'}
+    
 class Saved(Document):
     user = ReferenceField(User, required=True)
     art = ReferenceField(Art, required=True)

@@ -1,10 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status,parsers
 from api.serializers.exhibit_s.exhibit_seriliazers import ExhibitSerializer
 from api.models.exhibit_model.exhibit import Exhibit
 
 class ExhibitCreateView(APIView):
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
+
     def post(self, request):
         serializer = ExhibitSerializer(data=request.data)
         if serializer.is_valid():
