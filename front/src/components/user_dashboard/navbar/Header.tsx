@@ -31,16 +31,18 @@ const Header = () => {
 
     const isExplorePage = currentPath.includes("/explore");
     const isBiddingPage = currentPath.includes("/bidding");
-
+    const isExhibitPage = currentPath.includes("/exhibits");
     if (isExplorePage) {
       navigate(`/explore?${params.toString()}`);
     } else if (isBiddingPage) {
       navigate(`/bidding?${params.toString()}`);
+    } else if (isExhibitPage) {
+      navigate(`/exhibit?${params.toString()}`);
     } else {
       navigate(`/explore?${params.toString()}`);
     }
 
-    setSearchQuery(value); // for internal filtering if needed
+    setSearchQuery(value);
   };
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const avatarRef = useRef(null);
