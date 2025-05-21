@@ -122,7 +122,6 @@ const ExhibitsTab = () => {
       
       // Remove the published exhibit from the pending requests
       const updatedRequests = pendingRequests.filter(req => req.id !== selectedExhibit.id);
-      // Note: In a real app with state management, you would update the state here
       
       // Close the pending section if there are no more requests
       if (updatedRequests.length === 0) {
@@ -166,14 +165,14 @@ const ExhibitsTab = () => {
               >
                 {/* Pending Icon with notification indicator */}
                 <div className="relative">
-                  <i className={`bx ${hasReadyExhibits ? 'bx-check-circle text-green-500' : 'bx-time text-yellow-500'} cursor-pointer text-[15px]`}></i>
+                  <i className={`bx ${hasReadyExhibits ? 'bx-time text-yellow-500 mr-4': ''} cursor-pointer text-[15px]`}></i>
                   {hasUnreadRequests && (
-                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-600 rounded-full"></span>
+                    <span className="absolute -top-1 right-2.5 w-2 h-2 bg-red-600 rounded-full"></span>
                   )}
                 </div>
                 {/* Tooltip */}
                 <span className="absolute top-6 mb-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded px-2 py-1 text-[10px] text-black bg-white border shadow group-hover:opacity-100 opacity-0 transition-opacity pointer-events-none">
-                  {hasReadyExhibits ? 'Ready to Publish' : 'Pending Requests'}
+                  {hasReadyExhibits ? 'Pending Requests' : ''}
                 </span>
               </button>
             )}
@@ -272,7 +271,7 @@ const ExhibitsTab = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500 text-[10px]">No pending requests at the moment.</p>
+            <p className="text-gray-500 text-[11px]">No pending requests at the moment.</p>
           )}
         </div>
       )}
