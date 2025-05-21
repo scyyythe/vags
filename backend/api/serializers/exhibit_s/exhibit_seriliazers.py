@@ -8,37 +8,75 @@ from datetime import datetime
 class ExhibitSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField(max_length=100)
-    description = serializers.CharField(required=False)
-    tags = serializers.ListField(child=serializers.CharField(), required=False)
-    images = serializers.ListField(child=serializers.ImageField(), required=True)
-
+    description = serializers.CharField(required=False, allow_blank=True)
+    tags = serializers.ListField(child=serializers.CharField(), required=False, default=[])
+    banner = serializers.ImageField(required=False, allow_null=True)  # Accept image file here
     owner = serializers.CharField()
-    collaborators = serializers.ListField(child=serializers.CharField(), required=False)
-    artworks = serializers.ListField(child=serializers.CharField(), required=False)
-
-    visibility = serializers.ChoiceField(choices=['public', 'private'], default='private')
-    is_published = serializers.BooleanField(default=False)
-    preview_mode = serializers.BooleanField(default=True)
-    scheduled_at = serializers.DateTimeField(required=False)
+    exhibit_type = serializers.ChoiceField(choices=['Solo', 'Collaborative'], required=False, allow_null=True)
+    collaborators = serializers.ListField(child=serializers.CharField(), required=False, default=[])
+    artworks = serializers.ListField(child=serializers.CharField(), required=False, default=[])
+    category = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    visibility = serializers.ChoiceField(choices=['Public', 'Private', 'Pending'], default='Pending')
+    start_time = serializers.DateTimeField()
+    end_time = serializers.DateTimeField()
+    chosen_env = serializers.ChoiceField(choices=['4 Slots', '6 Slots', '9 Slots'], required=False, allow_null=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
+    viewed_by = serializers.ListField(child=serializers.CharField(), required=False, default=[])
+
+    def upload_banner(self, banner_file):
+        if banner_file:
+            upload_result = cloudinary.uploader.upload(banner_file)
+            return upload_result.get("secure_url", "")
+        return ""
 
     def create(self, validated_data):
-        image_files = validated_data.pop("images", [])
-        image_urls = []
+        banner_file = validated_data.pop("banner", None)
+        if banner_file:
+            validated_data["banner"] = self.upload_banner(banner_file)
+        else:
+            validated_data["banner"] = ""
 
-        for img in image_files:
-            uploaded = cloudinary.uploader.upload(img)
-            image_urls.append(uploaded.get("secure_url", ""))
+        owner_id = validated_data.pop("owner")
+        collaborators_ids = validated_data.pop("collaborators", [])
+        artworks_ids = validated_data.pop("artworks", [])
+        viewed_by_ids = validated_data.pop("viewed_by", [])
 
-        validated_data["images"] = image_urls
-        validated_data["owner"] = User.objects.get(id=validated_data["owner"])
-        validated_data["collaborators"] = [User.objects.get(id=uid) for uid in validated_data.get("collaborators", [])]
-        validated_data["artworks"] = [Art.objects.get(id=aid) for aid in validated_data.get("artworks", [])]
+        validated_data["owner"] = User.objects.get(id=owner_id)
+        validated_data["collaborators"] = [User.objects.get(id=uid) for uid in collaborators_ids]
+        validated_data["artworks"] = [Art.objects.get(id=aid) for aid in artworks_ids]
+        validated_data["viewed_by"] = [User.objects.get(id=uid) for uid in viewed_by_ids]
 
         exhibit = Exhibit(**validated_data)
         exhibit.save()
         return exhibit
+
+    def update(self, instance, validated_data):
+        banner_file = validated_data.pop("banner", None)
+        if banner_file:
+            instance.banner = self.upload_banner(banner_file)
+
+        if "owner" in validated_data:
+            instance.owner = User.objects.get(id=validated_data.pop("owner"))
+
+        if "collaborators" in validated_data:
+            collaborators_ids = validated_data.pop("collaborators")
+            instance.collaborators = [User.objects.get(id=uid) for uid in collaborators_ids]
+
+        if "artworks" in validated_data:
+            artworks_ids = validated_data.pop("artworks")
+            instance.artworks = [Art.objects.get(id=aid) for aid in artworks_ids]
+
+        if "viewed_by" in validated_data:
+            viewed_by_ids = validated_data.pop("viewed_by")
+            instance.viewed_by = [User.objects.get(id=uid) for uid in viewed_by_ids]
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.updated_at = datetime.utcnow()
+        instance.save()
+        return instance
 
     def to_representation(self, instance):
         return {
@@ -46,16 +84,17 @@ class ExhibitSerializer(serializers.Serializer):
             "title": instance.title,
             "description": instance.description,
             "tags": instance.tags,
-            "images": [str(img) for img in instance.images],
-            "owner": str(instance.owner.id),
+            "banner": instance.banner,
+            "owner": str(instance.owner.id) if instance.owner else None,
+            "exhibit_type": instance.exhibit_type,
             "collaborators": [str(u.id) for u in instance.collaborators],
             "artworks": [str(a.id) for a in instance.artworks],
+            "category": instance.category,
             "visibility": instance.visibility,
-            "is_published": instance.is_published,
-            "preview_mode": instance.preview_mode,
-            "scheduled_at": instance.scheduled_at,
+            "start_time": instance.start_time,
+            "end_time": instance.end_time,
+            "chosen_env": instance.chosen_env,
             "created_at": instance.created_at,
             "updated_at": instance.updated_at,
+            "viewed_by": [str(u.id) for u in instance.viewed_by],
         }
-
-
