@@ -12,7 +12,7 @@ interface ExhibitSlotsProps {
   selectedSlots: number[];
   handleSlotSelect: (slotId: number) => void;
   handleClearSlot: (slotId: number) => void;
-  canInteractWithSlot: (slotId: number) => boolean; // Changed return type to boolean
+  canInteractWithSlot: (slotId: number) => boolean; 
   getUserName: (userId: number) => string;
   getSlotColor: (slotId: number) => string;
   collaborators: Artist[];
@@ -48,12 +48,12 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
 
   // Helper function to safely convert border color to background color
   const getBgColorClass = (colorScheme: string | undefined) => {
-    if (!colorScheme) return "bg-gray-200"; // Default fallback color
+    if (!colorScheme) return "bg-gray-200"; 
     
     try {
       return colorScheme.replace('border-', 'bg-').replace('/10', '');
     } catch (error) {
-      return "bg-gray-200"; // Fallback if replacement fails
+      return "bg-gray-200"; 
     }
   };
 

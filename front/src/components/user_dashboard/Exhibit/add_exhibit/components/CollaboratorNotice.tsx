@@ -19,7 +19,7 @@ const CollaboratorNotice: React.FC<CollaboratorNoticeProps> = ({
       <h2 className="text-xs font-medium mb-2">
         {currentCollaborator?.name}, you've been invited to collaborate!
       </h2>
-      <p className="text-xs">
+      <p className="text-[10px]">
         You are invited to contribute to "{title || 'Untitled Exhibit'}". 
         Select your artwork for the slots assigned to you below.
       </p>
