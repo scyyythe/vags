@@ -7,7 +7,7 @@ import useAuctions, { ArtworkAuction } from "@/hooks/auction/useAuction";
 import { useNavigate } from "react-router-dom";
 
 const OnBidTab = () => {
-  const [activeTab, setActiveTab] = useState<"on_going" | "sold" | "closed">("on_going");
+  const [activeTab, setActiveTab] = useState<"on_going" | "sold" | "closed" | "joined_auctions">("on_going");
   const navigate = useNavigate();
   const { id: visitedUserId } = useParams();
   const loggedInUserId = getLoggedInUserId();
@@ -27,6 +27,7 @@ const OnBidTab = () => {
     on_going: "No artworks are currently on bid.",
     sold: "No artworks have been sold yet.",
     closed: "No artworks without bidders.",
+    joined_auctions: "You haven't joined any auctions yet.",
   };
   const handleBidClick = (artwork: ArtworkAuction) => {
     localStorage.setItem("selectedBid", JSON.stringify(artwork));
@@ -38,7 +39,7 @@ const OnBidTab = () => {
     <div>
       {/* Tabs */}
       <div className="flex space-x-8 text-[10px] pl-2 border-gray-300 mb-7">
-        {["on_going", "sold", "closed"].map((tab) => (
+        {["on_going", "sold", "closed", "joined_auctions"].map((tab) => (
           <button
             key={tab}
             className={`pb-2 font-medium ${
@@ -56,7 +57,7 @@ const OnBidTab = () => {
       ) : filteredAuctions.length === 0 ? (
         <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
           <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
-          <p className="text-sm text-gray-500">{tabEmptyMessages[activeTab]}</p>
+          <p className="text-xs text-gray-500">{tabEmptyMessages[activeTab]}</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
