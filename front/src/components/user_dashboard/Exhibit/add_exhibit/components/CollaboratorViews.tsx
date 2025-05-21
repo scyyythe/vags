@@ -102,17 +102,14 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   };
 
   useEffect(() => {
-    // Simulate fetching exhibit data
     setTimeout(() => {
       const data = exhibitData || mockExhibitData;
       setExhibit(data);
       setSlotArtworkMap(data.slotArtworkMap);
       
-      // Find which collaborator the current user is
       const currentUser = data.collaborators.find(c => c.id === mockCollaborator.id);
       setCurrentCollaborator(currentUser || null);
       
-      // Mark selected artworks
       const selectedIds = Object.values(data.slotArtworkMap);
       setSelectedArtworks(selectedIds);
       
@@ -121,11 +118,11 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   }, [exhibitData, exhibitId]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading exhibit data...</div>;
+    return <div className="min-h-screen text-xs flex items-center justify-center">Loading exhibit data...</div>;
   }
 
   if (!exhibit) {
-    return <div className="min-h-screen flex items-center justify-center">Exhibit not found</div>;
+    return <div className="min-h-screen text-xs flex items-center justify-center">Exhibit not found</div>;
   }
 
   const currentEnvironment = environments.find(env => env.id === exhibit.environment);
@@ -134,12 +131,10 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const handleArtworkSelect = (artworkId: number) => {
     if (!currentCollaborator) return;
     
-    // Find slots assigned to current collaborator that don't have artwork
     const availableUserSlots = Object.entries(exhibit.slotOwnerMap)
       .filter(([slotId, userId]) => userId === currentCollaborator.id && !slotArtworkMap[Number(slotId)])
       .map(([slotId]) => Number(slotId));
     
-    // Find the first available slot for the current collaborator
     const availableSlot = availableUserSlots[0];
     
     if (!availableSlot) {
@@ -151,20 +146,17 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
       return;
     }
     
-    // Assign artwork to the slot
     setSlotArtworkMap(prev => ({
       ...prev,
       [availableSlot]: artworkId
     }));
     
-    // Mark this artwork as selected
     setSelectedArtworks(prev => [...prev, artworkId]);
   };
 
   const handleClearSlot = (slotId: number) => {
     if (!currentCollaborator) return;
     
-    // Ensure the collaborator owns this slot
     if (exhibit.slotOwnerMap[slotId] !== currentCollaborator.id) {
       return;
     }
@@ -180,7 +172,6 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   };
 
   const handleSaveSelections = () => {
-    // Here you would save the collaborator's selections to your backend
     
     toast({
       title: "Selections Saved",
@@ -190,7 +181,6 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     navigate("/exhibits");
   };
 
-  // Get color scheme index based on user ID
   const getColorSchemeIndex = (userId: number) => {
     if (userId === exhibit.owner.id) return 0; // Owner
     
@@ -198,7 +188,6 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     return collaboratorIndex + 1; // +1 because owner is index 0
   };
 
-  // Get slot color based on owner
   const getSlotColor = (slotId: number) => {
     const ownerId = exhibit.slotOwnerMap[slotId];
     if (!ownerId) return slotColorSchemes[0]; 
@@ -206,20 +195,17 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     return slotColorSchemes[getColorSchemeIndex(ownerId)];
   };
 
-  // Get user name by ID
   const getUserName = (userId: number) => {
     if (userId === exhibit.owner.id) return `${exhibit.owner.name}'s slot`;
     const collaborator = exhibit.collaborators.find(c => c.id === userId);
     return collaborator ? `${collaborator.name}'s slot` : "";
   };
 
-  // Determine if the current collaborator can interact with a slot
   const canInteractWithSlot = (slotId: number) => {
     const ownerId = exhibit.slotOwnerMap[slotId];
     return currentCollaborator ? ownerId === currentCollaborator.id : false;
   };
 
-  // Calculate how many of the collaborator's slots are filled
   const getUserSlotStats = () => {
     if (!currentCollaborator) return { total: 0, filled: 0 };
     
@@ -240,18 +226,17 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="container mx-auto px-1 pt-20 max-w-6xl pb-4">
+      <div className="container mx-auto pt-20 max-w-6xl pb-4">
         <div className="mb-3">
-          <button onClick={() => navigate(-1)} className="flex items-center text-xs font-semibold">
-            <i className="bx bx-chevron-left text-lg mr-2"></i>
-            Go back
+          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+            <i className="bx bx-chevron-left text-lg mr-2"></i>Go back
           </button>
         </div>
         
         {/* Collaborator View Notice */}
-        <div className="bg-[#9b87f5]/10 border border-[#9b87f5] rounded-md p-4 mb-6">
-          <h2 className="text-[10px] font-medium mb-1">
-            {currentCollaborator?.name}, you've been invited to collaborate!
+        <div className=" mb-6">
+          <h2 className="text-[11px] font-medium mb-1">
+            Exhibit Collaboration
           </h2>
           <p className="text-[9px]">
             You are invited to contribute to "{exhibit.title}". 
@@ -262,11 +247,11 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
         <div className="space-y-8">
           {/* Banner Image */}
           <div 
-            className="w-full rounded-lg h-48 mb-4 relative overflow-hidden bg-cover bg-center"
+            className="w-full rounded-lg h-64 mb-4 relative overflow-hidden bg-cover bg-center"
             style={{ backgroundImage: `url(${exhibit.bannerImage})` }}
           >
             <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center text-white">
-              <h1 className="text-xl font-bold mb-2">{exhibit.title}</h1>
+              <h1 className="text-lg font-bold mb-2">{exhibit.title}</h1>
               <p className="text-xs">
                 {new Date(exhibit.startDate).toLocaleDateString()} - {new Date(exhibit.endDate).toLocaleDateString()}
               </p>
@@ -396,7 +381,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
           <div className="flex justify-end mt-8">
             <button 
               onClick={handleSaveSelections}
-              className="bg-red-700 hover:bg-red-600 text-white text-[11px] px-8 py-1.5 rounded-full"
+              className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full"
             >
               Save Selections
             </button>
