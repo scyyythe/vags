@@ -36,22 +36,22 @@ const AddArtistDialog = ({
   const mockArtists: Artist[] = [
     {
       id: 201,
-      name: "Jane Artist",
+      name: "Jai Anoba",
       avatar: "https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
     },
     {
       id: 202,
-      name: "Sam Creator",
+      name: "Jimmy Boy",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
     },
     {
       id: 203,
-      name: "Pat Edwards",
+      name: "Jera Anderson",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
     },
     {
       id: 204,
-      name: "Taylor Jones",
+      name: "Jandeb Lap ",
       avatar: "https://images.unsplash.com/photo-1492681290082-e932832941e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
     }
   ];
@@ -71,17 +71,18 @@ const AddArtistDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-w-sm rounded-lg">
         <DialogHeader>
-          <DialogTitle className="text-center text-sm">Add Collaborator</DialogTitle>
+          <DialogTitle className="text-center text-xs">Add Collaborator</DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4 py-2">
+        <div className="w-full max-w-sm space-y-4 py-0.5">
           <Input
             placeholder="Search artists..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="text-xs"
+            style={{fontSize: "10px"}}
+            className="rounded-full"
           />
           
           {filteredArtists.length > 0 ? (
@@ -93,10 +94,10 @@ const AddArtistDialog = ({
                   onClick={() => handleSelect(artist)}
                 >
                   <div className="flex items-center space-x-3">
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-5 w-5">
                       <img src={artist.avatar} alt={artist.name} />
                     </Avatar>
-                    <span className="text-xs">{artist.name}</span>
+                    <span className="text-[10px]">{artist.name}</span>
                   </div>
                   <Button 
                     size="sm" 
@@ -115,15 +116,6 @@ const AddArtistDialog = ({
           )}
         </div>
         
-        <DialogFooter>
-          <Button 
-            variant="outline" 
-            className="w-full text-xs"
-            onClick={() => onOpenChange(false)}
-          >
-            Cancel
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
