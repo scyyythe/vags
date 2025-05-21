@@ -251,8 +251,8 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
             style={{ backgroundImage: `url(${exhibit.bannerImage})` }}
           >
             <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center text-white">
-              <h1 className="text-lg font-bold mb-2">{exhibit.title}</h1>
-              <p className="text-xs">
+              <h1 className="text-md font-bold mb-2">{exhibit.title}</h1>
+              <p className="text-[11px]">
                 {new Date(exhibit.startDate).toLocaleDateString()} - {new Date(exhibit.endDate).toLocaleDateString()}
               </p>
             </div>
