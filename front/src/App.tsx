@@ -39,6 +39,7 @@ import FollowDemo from "./components/user_dashboard/own_profile/following_&_foll
 import AddExhibit from "./components/user_dashboard/Exhibit/add_exhibit/AddExhibit";
 import ExhibitViewing from "./components/user_dashboard/Exhibit/exhibit_viewing/ViewExhibit";
 import CollaboratorView from "./components/user_dashboard/Exhibit/add_exhibit/components/CollaboratorViews";
+import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/ExhibitReview"; 
 
 // ADMIN & MODERATOR
 import { AuthProvider } from "./components/admin_&_moderator/context/AuthContext";
@@ -117,6 +118,7 @@ const App = () => {
                         <Route path="/add-exhibit" element={<AddExhibit />} />
                         <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />
                         <Route path="/collaborator/exhibit/:exhibitId" element={<CollaboratorView />} />
+                        <Route path="/exhibitreview" element={<ExhibitReview />} />
 
                         <Route path="/follow-demo" element={<FollowDemo />} />
 
