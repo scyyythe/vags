@@ -7,12 +7,13 @@ from api.serializers.interaction_s.follow import FollowSerializer
 from rest_framework.permissions import IsAuthenticated
 from api.models.interaction_model.notification import Notification
 from api.serializers.user_s.users_serializers import UserSerializer 
+from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from bson import ObjectId
 from bson.errors import InvalidId
 from datetime import datetime
 from django.utils.timesince import timesince
-
-
+from api.models.artwork_model.artwork import Art
+from django.db.models import Q
 
 class FollowCreateView(APIView):
     permission_classes = [IsAuthenticated]  
@@ -98,6 +99,30 @@ class CheckFollowStatusView(APIView):
         
         is_following = Follower.objects.filter(follower=user, following=following).count() > 0
         return Response({"is_following": is_following}, status=status.HTTP_200_OK)
+    
+class FollowedArtworksView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        page = int(request.query_params.get('page', 1))
+        page_size = 10
+        skip = (page - 1) * page_size
+
+        followed_users = Follower.objects.filter(follower=user).only('following')
+        followed_ids = [f.following.id for f in followed_users]
+
+        if not followed_ids:
+            return Response([], status=status.HTTP_200_OK)
+
+        
+        artworks = Art.objects.filter(
+            artist__in=followed_ids,
+            visibility="Public"
+        ).order_by('-created_at')[skip:skip + page_size]
+
+        serialized = ArtSerializer(artworks, many=True)
+        return Response(serialized.data, status=status.HTTP_200_OK)
     
 class FollowerListView(APIView):
     permission_classes = [IsAuthenticated]
