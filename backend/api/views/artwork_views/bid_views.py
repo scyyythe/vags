@@ -1,5 +1,6 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_framework import status
 from api.models.artwork_model.bid import Bid, Auction
 from api.models.artwork_model.bid import AuctionStatus
@@ -240,20 +241,29 @@ class BidHistoryView(generics.ListAPIView):
 
     
 class AuctionDetailView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly ]
 
     def get(self, request, auction_id, *args, **kwargs):
         try:
+           
             if not ObjectId.is_valid(auction_id):
                 return Response({"error": "Invalid auction ID."}, status=status.HTTP_400_BAD_REQUEST)
 
+           
             auction = Auction.objects(id=auction_id).first()
             if not auction:
                 return Response({"error": "Auction not found."}, status=status.HTTP_404_NOT_FOUND)
 
-            if not auction.artwork: 
+            if not auction.artwork:
                 return Response({"error": "Associated artwork not found."}, status=status.HTTP_404_NOT_FOUND)
 
+            
+            user = request.user if request.user and request.user.is_authenticated else None
+            if user and user not in auction.viewed_by:
+                auction.viewed_by.append(user)
+                auction.save()
+
+           
             serializer = AuctionSerializer(auction)
             return Response(serializer.data, status=status.HTTP_200_OK)
 

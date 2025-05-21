@@ -43,6 +43,7 @@ export interface ArtworkAuction {
     mins: number;
     secs: number;
   };
+  viewers: string[];
 }
 
 const fetchAuctions = async (
