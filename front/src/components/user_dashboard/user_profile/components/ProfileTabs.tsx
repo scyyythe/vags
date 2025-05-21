@@ -115,22 +115,24 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
     let filtered = artworks;
 
-    // Filter by Category
     filtered = filtered.filter((artwork) => {
       return selectedCategory.toLowerCase() === "all" || artwork.style.toLowerCase() === selectedCategory.toLowerCase();
     });
 
-    // Filter by Visibility (Status)
+    const statusMap: Record<string, string> = {
+      active: "public",
+      hidden: "private",
+      archived: "archived",
+      deleted: "deleted",
+    };
+
     filtered = filtered.filter((art) => {
-      const visibility = art.visibility?.toLowerCase();
-      const status = selectedStatus.toLowerCase();
-
-      if (status === "active") {
-        return visibility === "public";
-      }
-
-      return visibility === status;
+      const mapped = statusMap[selectedStatus.toLowerCase()];
+      return art.visibility?.toLowerCase() === mapped;
     });
+
+    console.log("Filtering artworks, status:", selectedStatus);
+    artworks.forEach((art) => console.log(art.visibility));
 
     // Sort
     switch (selectedSortBy) {
