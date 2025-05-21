@@ -201,7 +201,7 @@ class DeleteArtwork(APIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
-        artwork.art_status = "Deleted"
+        artwork.art_status = "Active"
         artwork.visibility = "Deleted"
         artwork.updated_at = datetime.utcnow()
         artwork.save()
@@ -217,7 +217,7 @@ class RestoreArtwork(APIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
-        artwork.art_status = "Public"
+        artwork.art_status = "Active"
         artwork.visibility = "Public"
         artwork.updated_at = datetime.utcnow()
         artwork.save()
@@ -247,7 +247,7 @@ class ArchivedArtwork(APIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
-        artwork.art_status = "Archived"
+        artwork.art_status = "Active"
         artwork.visibility = "Archived"
         artwork.updated_at = datetime.utcnow()
         artwork.save()
@@ -263,7 +263,7 @@ class UnArchivedArtwork(APIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
-        artwork.art_status = "Public"
+        artwork.art_status = "Active"
         artwork.visibility = "Public"
         artwork.updated_at = datetime.utcnow()
         artwork.save()
