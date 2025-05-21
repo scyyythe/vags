@@ -69,7 +69,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   // Mock current user (collaborator) data - in a real app this would come from auth context
   const mockCollaborator: Artist = {
     id: 201,
-    name: "Jane Artist",
+    name: "Jai Anoba",
     avatar: "https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
   };
 
@@ -88,14 +88,14 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     slotArtworkMap: { 1: 1, 2: 2 }, // Owner has already placed some artwork
     owner: {
       id: 100,
-      name: "Alex Gallery",
+      name: "Jera Anderson",
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
     },
     collaborators: [
       mockCollaborator,
       {
         id: 202,
-        name: "Sam Creator",
+        name: "Angel Canete",
         avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
       }
     ]
@@ -171,10 +171,8 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     
     const artworkId = slotArtworkMap[slotId];
     if (artworkId) {
-      // Remove the artwork from selected artworks
       setSelectedArtworks(prev => prev.filter(id => id !== artworkId));
       
-      // Remove the slot-artwork mapping
       const newSlotArtworkMap = { ...slotArtworkMap };
       delete newSlotArtworkMap[slotId];
       setSlotArtworkMap(newSlotArtworkMap);
@@ -189,7 +187,6 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
       description: "Your artwork selections have been saved to the exhibit!",
     });
     
-    // Navigate back to exhibits page
     navigate("/exhibits");
   };
 
@@ -204,7 +201,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   // Get slot color based on owner
   const getSlotColor = (slotId: number) => {
     const ownerId = exhibit.slotOwnerMap[slotId];
-    if (!ownerId) return slotColorSchemes[0]; // Default to owner color
+    if (!ownerId) return slotColorSchemes[0]; 
     
     return slotColorSchemes[getColorSchemeIndex(ownerId)];
   };
@@ -253,10 +250,10 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
         
         {/* Collaborator View Notice */}
         <div className="bg-[#9b87f5]/10 border border-[#9b87f5] rounded-md p-4 mb-6">
-          <h2 className="text-sm font-medium mb-2">
+          <h2 className="text-[10px] font-medium mb-1">
             {currentCollaborator?.name}, you've been invited to collaborate!
           </h2>
-          <p className="text-xs">
+          <p className="text-[9px]">
             You are invited to contribute to "{exhibit.title}". 
             Please select your artwork for the slots assigned to you below.
           </p>
@@ -269,8 +266,8 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
             style={{ backgroundImage: `url(${exhibit.bannerImage})` }}
           >
             <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center text-white">
-              <h1 className="text-2xl font-bold mb-2">{exhibit.title}</h1>
-              <p className="text-sm">
+              <h1 className="text-xl font-bold mb-2">{exhibit.title}</h1>
+              <p className="text-xs">
                 {new Date(exhibit.startDate).toLocaleDateString()} - {new Date(exhibit.endDate).toLocaleDateString()}
               </p>
             </div>
@@ -280,19 +277,19 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
             {/* Left Column - Slots */}
             <div className="space-y-6">
               <div>
-                <h3 className="text-sm font-medium mb-4">Available Slots</h3>
+                <h3 className="text-xs font-medium mb-4">Available Slots</h3>
                 
                 {/* Color coding legend */}
                 <div className="mb-3 flex flex-wrap gap-3">
                   <div className="flex items-center">
                     <div className={`w-3 h-3 mr-1 rounded-full ${slotColorSchemes[0].replace('border-', 'bg-').replace('/10', '')}`}></div>
-                    <span className="text-xs">{exhibit.owner.name}'s slots</span>
+                    <span className="text-[10px]">{exhibit.owner.name}'s slots</span>
                   </div>
                   
                   {exhibit.collaborators.map((collab, index) => (
                     <div key={collab.id} className="flex items-center">
                       <div className={`w-3 h-3 mr-1 rounded-full ${slotColorSchemes[index + 1].replace('border-', 'bg-').replace('/10', '')}`}></div>
-                      <span className="text-xs">{collab.name}'s slots</span>
+                      <span className="text-[10px]">{collab.name}'s slots</span>
                     </div>
                   ))}
                 </div>
@@ -308,7 +305,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                     return (
                       <div 
                         key={slotId}
-                        className={`h-24 rounded-lg relative overflow-hidden border flex items-center justify-center transition-colors 
+                        className={`h-[93px] rounded-lg relative overflow-hidden border flex items-center justify-center transition-colors 
                           ${userCanInteract ? 'cursor-pointer' : ''}
                           ${!userCanInteract ? slotColor + " opacity-75" : slotColor}`
                         }
@@ -325,7 +322,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                                 className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
                                 onClick={() => handleClearSlot(slotId)}
                               >
-                                <span className="text-white text-xs">Remove</span>
+                                <span className="text-white text-[10px]">Remove</span>
                               </div>
                             )}
                           </>
@@ -333,14 +330,14 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                           <Popover>
                             <PopoverTrigger asChild>
                               <div className="flex flex-col items-center justify-center w-full h-full">
-                                <span className="text-sm font-semibold">{slotId}</span>
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs font-semibold">{slotId}</span>
+                                <span className="text-[10px] text-gray-500">
                                   {getUserName(slotOwner)}
                                 </span>
                               </div>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-2">
-                              <p className="text-xs">{getUserName(slotOwner)}</p>
+                              <p className="text-[10px]">{getUserName(slotOwner)}</p>
                             </PopoverContent>
                           </Popover>
                         )}
@@ -352,9 +349,9 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
               
               {/* Collaborator progress status */}
               <div className="border rounded-md p-4 bg-gray-50">
-                <h3 className="text-sm font-medium mb-2">Your Artwork Selection</h3>
+                <h3 className="text-[11px] font-medium mb-2">Your Artwork Selection</h3>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs">
+                  <span className="text-[10px]">
                     {slotStats.filled} of {slotStats.total} slots filled
                   </span>
                   <div className="w-24 h-1 bg-gray-200 rounded-full overflow-hidden">
@@ -371,7 +368,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
             
             {/* Right Column - Artworks */}
             <div>
-              <h3 className="text-sm font-medium mb-4">Your Artworks</h3>
+              <h3 className="text-xs font-medium mb-4">Your Artworks</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-96 overflow-y-auto pr-1">
                 {artworks.map((artwork) => {
                   const isSelected = selectedArtworks.includes(artwork.id);
@@ -386,7 +383,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                       <img 
                         src={artwork.image} 
                         alt={`Artwork ${artwork.id}`} 
-                        className="w-full h-24 object-cover"
+                        className="w-full h-[96px] object-cover"
                       />
                     </Card>
                   );
@@ -397,12 +394,12 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
           
           {/* Submit button */}
           <div className="flex justify-end mt-8">
-            <Button 
+            <button 
               onClick={handleSaveSelections}
-              className="bg-red-700 hover:bg-red-600 text-white px-6"
+              className="bg-red-700 hover:bg-red-600 text-white text-[11px] px-8 py-1.5 rounded-full"
             >
               Save Selections
-            </Button>
+            </button>
           </div>
         </div>
       </div>
