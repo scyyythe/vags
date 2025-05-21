@@ -7,15 +7,9 @@ function useOwnedArtworksCount(userId: string) {
 
   useEffect(() => {
     if (!isLoading && data) {
-      const ownedArtworks = data.filter(
-        (artwork) =>
-          (artwork.artistId === userId || artwork.artistId === userId || artwork.artistId === userId) &&
-          artwork.visibility === "Public" &&
-          (artwork.status === "Active" || artwork.status === "OnBid")
-      );
-      setOwnedCount(ownedArtworks.length);
+      setOwnedCount(data.length);
     }
-  }, [data, isLoading, userId]);
+  }, [data, isLoading]);
 
   return ownedCount;
 }

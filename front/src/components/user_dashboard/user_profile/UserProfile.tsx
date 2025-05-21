@@ -8,14 +8,23 @@ import ArtGrid from "@/components/user_dashboard/user_profile/components/ArtGrid
 import useUserDetails from "@/hooks/users/useUserDetails";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import useOwnedArtworksCount from "@/hooks/artworks/fetch_artworks/useOwnedArtworksCount ";
+
 const Index = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("created");
   const { firstName, lastName, profilePicture, cover_photo } = useUserDetails(id);
+
   const userName = `${firstName} ${lastName}`;
   const ownedArtworksCount = useOwnedArtworksCount(id!);
   const { data, isLoading } = useArtworks(1, id, true, "specific-user");
+  const [createdArtworksCount, setCreatedArtworksCount] = useState(0);
 
+  useEffect(() => {
+    if (!isLoading && data) {
+      const userArtworks = data.filter((artwork) => artwork.artistId === id && artwork.visibility === "public");
+      setCreatedArtworksCount(userArtworks.length);
+    }
+  }, [id, data, isLoading]);
   return (
     <>
       <div className="min-h-screen">
@@ -28,7 +37,11 @@ const Index = () => {
             items={ownedArtworksCount}
             profileUserId={id}
           />
-          <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+          <ProfileTabs
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            setCreatedArtworksCount={setCreatedArtworksCount}
+          />
           <ArtGrid activeTab={activeTab} />
         </div>
       </div>
