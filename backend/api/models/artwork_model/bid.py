@@ -1,4 +1,4 @@
-from mongoengine import Document, ReferenceField, FloatField, DateTimeField, BooleanField, ListField,StringField
+from mongoengine import Document, ReferenceField, FloatField, DateTimeField, BooleanField, ListField,StringField,CASCADE
 from datetime import datetime
 from api.models.user_model.users import User
 from api.models.artwork_model.artwork import Art
@@ -37,6 +37,7 @@ class Auction(Document):
     )
     
     bid_history = ListField(ReferenceField(Bid))
+    viewed_by = ListField(ReferenceField(User, reverse_delete_rule=CASCADE), default=[])
 
     def close_auction(self):
         from api.models.interaction_model.notification import Notification

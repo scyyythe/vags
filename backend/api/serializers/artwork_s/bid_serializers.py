@@ -96,7 +96,9 @@ class AuctionSerializer(serializers.Serializer):
     highest_bid = BidSerializer(read_only=True)
     bid_history = BidSerializer(read_only=True, many=True)
     status = serializers.CharField(read_only=True)
-
+    viewers = serializers.SerializerMethodField()
+    def get_viewers(self, obj):
+        return [user.username for user in obj.viewed_by]
     def to_representation(self, instance):
         data = super().to_representation(instance)
 
