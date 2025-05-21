@@ -4,6 +4,8 @@ from datetime import datetime
 from api.models.interaction_model.interaction import Comment, Like
 from api.models.interaction_model.notification import Notification
 import cloudinary.uploader
+from api.utils.content_moderation import moderate_image
+from rest_framework.exceptions import ValidationError
 
 class ArtSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
@@ -30,31 +32,36 @@ class ArtSerializer(serializers.Serializer):
         image = validated_data.pop('image', None)
         if image:
             result = cloudinary.uploader.upload(image)
-            validated_data['image_url'] = result.get('secure_url', '')
+            image_url = result.get('secure_url', '')
+            
+            
+            if not moderate_image(image_url):
+                raise ValidationError("Image contains inappropriate content and was rejected.")
+            
+            validated_data['image_url'] = image_url
         else:
             validated_data['image_url'] = ''
 
         if "visibility" not in validated_data:
-            validated_data["visibility"] = "Public"  
-        
+            validated_data["visibility"] = "Public"
+
         art = Art(**validated_data)
         art.save()
-
-        notification_message = f"Your artwork '{art.title}' has been uploaded successfully."
-        notification = Notification.objects.create(
-            user=art.artist,
-            message=notification_message,
-            art=art
-        )
         return art
-    
+
     def update(self, instance, validated_data):
-        
         image = validated_data.pop('image', None)
         if image:
             result = cloudinary.uploader.upload(image)
-            validated_data['image_url'] = result['secure_url']  
-        
+            image_url = result.get('secure_url', '')
+
+            
+            if not moderate_image(image_url):
+                raise ValidationError("Image contains inappropriate content.")
+
+            validated_data['image_url'] = image_url
+
+       
         instance.title = validated_data.get("title", instance.title)
         instance.category = validated_data.get("category", instance.category)
         instance.medium = validated_data.get("medium", instance.medium)
@@ -63,11 +70,10 @@ class ArtSerializer(serializers.Serializer):
         instance.size = validated_data.get("size", instance.size)
         instance.description = validated_data.get("description", instance.description)
         instance.visibility = validated_data.get("visibility", instance.visibility)
-        
-        
+
         if 'image_url' in validated_data:
             instance.image_url = validated_data['image_url']
-        
+
         instance.save()
         return instance
 

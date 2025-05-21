@@ -12,6 +12,7 @@ import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPop
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { useSearchParams } from "react-router-dom";
 import TrendingFollowingSection from "@/components/user_dashboard/Explore/navigation/trend_following/TrendingSection";
+import FollowingSection from "@/components/user_dashboard/Explore/navigation/trend_following/FollowingSection";
 const Explore = () => {
   const navigate = useNavigate();
   const categories = ["All", "Trending", "Following"];
@@ -89,6 +90,10 @@ const Explore = () => {
                 {selectedCategory.toLowerCase() === "trending" ? (
                   <div className="col-span-full flex flex-col items-center justify-center text-left">
                     <TrendingFollowingSection onTip={handleTipJar} />
+                  </div>
+                ) : selectedCategory.toLowerCase() === "following" ? (
+                  <div className="col-span-full flex flex-col items-center justify-center text-left">
+                    <FollowingSection onTip={handleTipJar} />
                   </div>
                 ) : isLoading ? (
                   Array.from({ length: 6 }).map((_, index) => <ArtCardSkeleton key={index} />)

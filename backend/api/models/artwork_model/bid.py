@@ -60,14 +60,15 @@ class Auction(Document):
             artwork.art_status = "Sold"
             artwork.save()
 
-            time_elapsed = timesince(now).split(',')[0] + " ago"
+            now = datetime.utcnow()
+            time_elapsed = timesince(tip.timestamp or now) + " ago" 
 
             Notification.objects.create(
                 user=highest.bidder,
-                message=f" Congratulations! You won the auction for '{artwork.title}' with a bid of ${highest.amount:.2f}.",
+                action=f" Congratulations! You won the auction for '{artwork.title}' with a bid of ${highest.amount:.2f}.",
                 art=artwork,
-                name=highest.bidder.username,
-                action="won the auction",
+                name="Bidding Successful!",
+                target=artwork.title,  
                 icon="🏆",
                 date=now,
                 money=True,
@@ -76,11 +77,10 @@ class Auction(Document):
 
             Notification.objects.create(
                 user=artwork.artist,
-                message=f"Your artwork '{artwork.title}' was sold to {highest.bidder.username} for ${highest.amount:.2f}.",
+                action=f"Your artwork '{artwork.title}' was sold to {highest.bidder.username} for ${highest.amount:.2f}.",
                 art=artwork,
-                name=artwork.artist.username,
-                action="sold your artwork",
-                icon="💰",
+                name = "You sold your artwork!",
+                target=artwork.title,  
                 date=now,
                 money=True,
                 amount=str(highest.amount),
