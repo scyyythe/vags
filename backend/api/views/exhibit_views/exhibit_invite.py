@@ -9,6 +9,7 @@ class ExhibitInvitationCreateView(APIView):
         serializer = ExhibitInvitationSerializer(data=request.data)
         if serializer.is_valid():
             invitation = serializer.save()
+            
             return Response(ExhibitInvitationSerializer(invitation).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
