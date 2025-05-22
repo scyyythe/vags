@@ -164,9 +164,7 @@ const OnBidTab = () => {
         <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
           <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
           <p className="text-xs text-gray-500">
-            {activeTab === "my_bids"
-              ? tabEmptyMessages.my_bids[myBidFilter]
-              : tabEmptyMessages[activeTab]}
+            {activeTab === "my_bids" ? tabEmptyMessages.my_bids[myBidFilter] : tabEmptyMessages[activeTab]}
           </p>
         </div>
       ) : (
