@@ -1,21 +1,24 @@
 import { useParams } from "react-router-dom";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 import { format } from "date-fns";
+import ArtworkSummarySkeleton from "@/components/skeletons/ArtworkSummarySkeleton";
 export const ArtworkSummary: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data: artworkData, error, isLoading } = useFetchBiddingArtworkById(id);
-  console.log("Artwork ID from URL:", id);
 
   if (isLoading) {
-    return <div>Loading artwork...</div>;
+    return <ArtworkSummarySkeleton />;
   }
-
   if (error) {
-    return <div>Error loading artwork: {error.message}</div>;
+    return <div className="text-red-600">Error loading artwork: {error.message}</div>;
   }
-
   if (!artworkData) {
-    return <div>No artwork found.</div>;
+    return (
+      <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
+        <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
+        <p className="text-xs text-gray-500">No artwork foun</p>
+      </div>
+    );
   }
   const formattedDate = format(new Date(artworkData.end_time), "MMMM d, yyyy 'at' h:mm a");
   return (
