@@ -29,15 +29,3 @@ class Exhibit(Document):
         'indexes': ['owner', 'visibility', 'start_time']
     }
 
-    def clean(self):
-        for img in self.images:
-            if img.content_type not in ALLOWED_IMAGE_TYPES:
-                raise ValidationError("Unsupported file format.")
-            if img.length > 25 * 1024 * 1024:
-                raise ValidationError("Image exceeds 25MB limit.")
-
-       
-        valid_contributors = {str(self.owner.id)} | {str(collab.id) for collab in self.collaborators}
-        for art in self.artworks:
-            if str(art.artist.id) not in valid_contributors:
-                raise ValidationError(f"Artwork '{art.title}' is not owned by the exhibit owner or collaborators.")
