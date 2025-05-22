@@ -1,3 +1,4 @@
+import { User } from "@/hooks/users/useUserQuery";
 // Artist type definition
 export type Artist = {
   id: number;
@@ -5,8 +6,8 @@ export type Artist = {
   avatar: string;
 };
 
-// View mode type definition 
-export type ViewMode = 'owner' | 'collaborator' | 'review' | 'monitoring' | 'preview';
+// View mode type definition
+export type ViewMode = "owner" | "collaborator" | "review" | "monitoring" | "preview";
 
 // Environment definition
 export type Environment = {
@@ -32,7 +33,7 @@ export type ExhibitData = {
   description: string;
   selectedEnvironment: number;
   bannerImage: string | null;
-  collaborators: Artist[];
+  collaborators: User[];
   slotOwnerMap: Record<number, number>;
   slotArtworkMap: Record<number, number>;
   status?: string;

@@ -2,10 +2,11 @@ import React from "react";
 import { Artist } from "../components/types";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
+import { User } from "@/hooks/users/useUserQuery";
 interface ExhibitSlotsProps {
   selectedEnvironment: number | null;
   environments: { id: number; image: string; slots: number }[];
-  slotOwnerMap: Record<number, number>;
+  slotOwnerMap: Record<number, string>;
   slotArtworkMap: Record<number, string>;
   artworks: Artwork[];
   exhibitType: string;
@@ -13,10 +14,10 @@ interface ExhibitSlotsProps {
   handleSlotSelect: (slotId: number) => void;
   handleClearSlot: (slotId: number) => void;
   canInteractWithSlot: (slotId: number) => boolean;
-  getUserName: (userId: number) => string;
+  getUserName: (userId: string) => string;
   getSlotColor: (slotId: number) => string;
-  collaborators: Artist[];
-  currentUser: Artist;
+  collaborators: User[];
+  currentUser: User;
   colorNames: string[];
   slotColorSchemes: string[];
 }
@@ -78,7 +79,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
             return (
               <div key={collab.id} className="flex items-center">
                 <div className={`w-4 h-4 mr-1 rounded-full ${getBgColorClass(colorScheme)}`}></div>
-                <span className="text-[10px]">{collab.name}'s slots</span>
+                <span className="text-[10px]">{`${collab.first_name} ${collab.last_name || ""}`.trim()}'s slots</span>
               </div>
             );
           })}
