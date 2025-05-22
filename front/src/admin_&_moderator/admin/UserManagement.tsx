@@ -85,38 +85,39 @@ const UserManagement = () => {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold tracking-tight mb-6">User Management</h2>
+      <h2 className="text-sm font-semibold tracking-tight mb-1">User Management</h2>
       
-      <Card className="mb-6">
+      <div className="mb-6">
         <CardHeader>
-          <CardTitle>Manage Users</CardTitle>
-          <CardDescription>View and manage all user accounts</CardDescription>
+          <div className="text-xs font-medium">Manage Users</div>
+          <CardDescription className="text-[10px]">View and manage all user accounts</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-3.5 h-3 w-3 text-muted-foreground" />
               <Input
                 placeholder="Search users..."
-                className="pl-8"
+                className="pl-8 rounded-full h-10"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                style={{fontSize: "10px"}}
               />
             </div>
-            <Select
+            <Select 
               value={filterRole}
               onValueChange={setFilterRole}
             >
-              <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px] rounded-full text-[10px]">
                 <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Roles</SelectLabel>
-                  <SelectItem value="all">All Roles</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="moderator">Moderator</SelectItem>
-                  <SelectItem value="user">User</SelectItem>
+              <SelectContent className="z-50 absolute">
+                <SelectGroup >
+                  <SelectLabel className="text-[10px]">Roles</SelectLabel>
+                  <SelectItem value="all" className="text-[10px]">All Roles</SelectItem>
+                  <SelectItem value="admin" className="text-[10px]">Admin</SelectItem>
+                  <SelectItem value="moderator" className="text-[10px]">Moderator</SelectItem>
+                  <SelectItem value="user" className="text-[10px]">User</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -125,7 +126,7 @@ const UserManagement = () => {
           <div className="rounded-md border">
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="text-xs">
                   <TableHead>User</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Role</TableHead>
@@ -138,46 +139,46 @@ const UserManagement = () => {
                   <TableRow key={user.id}>
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
+                        <Avatar className="h-5 w-5">
                           <AvatarImage src={user.avatar} alt={user.name} />
-                          <AvatarFallback>{user.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+                          <AvatarFallback className="text-xs">{user.name.substring(0, 2).toUpperCase()}</AvatarFallback>
                         </Avatar>
-                        <div>
-                          <div className="font-medium">{user.name}</div>
-                          <div className="text-sm text-muted-foreground">{user.email}</div>
+                        <div> 
+                          <div className="font-medium text-[11px]">{user.name}</div>
+                          <div className="text-[10px] text-muted-foreground">{user.email}</div>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
                       {user.isBanned ? (
-                        <Badge variant="destructive">Banned</Badge>
+                        <Badge variant="destructive" className="text-[9px]">Banned</Badge>
                       ) : user.isActive ? (
-                        <Badge variant="default" className="bg-green-500">Active</Badge>
+                        <Badge variant="default" className="bg-green-500 text-[9px]">Active</Badge>
                       ) : (
-                        <Badge variant="secondary">Inactive</Badge>
+                        <Badge variant="secondary" className="text-[9px]">Inactive</Badge>
                       )}
                       {user.isFlagged && (
-                        <Badge variant="outline" className="ml-2 bg-amber-100 text-amber-800 hover:bg-amber-100">
+                        <Badge variant="outline" className="ml-2 text-[9px] bg-amber-100 text-amber-800 hover:bg-amber-100">
                           Flagged
                         </Badge>
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={
+                      <Badge className="text-[9px]" variant={
                         user.role === "admin" ? "destructive" :
-                        user.role === "moderator" ? "default" : "outline"
+                        user.role === "moderator" ? "default" : "outline" 
                       }>
                         {user.role}
                       </Badge>
                     </TableCell>
-                    <TableCell>{user.createdAt.toLocaleDateString()}</TableCell>
+                    <TableCell className="text-[10px]">{user.createdAt.toLocaleDateString()}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
                         {!user.isActive && !user.isBanned && (
                           <Button 
                             size="sm" 
                             variant="ghost" 
-                            className="h-8 w-8 p-0"
+                            className="h-5 w-5 p-0"
                             onClick={() => activateUser(user.id)}
                             title="Activate User"
                           >
@@ -189,7 +190,7 @@ const UserManagement = () => {
                           <Button 
                             size="sm" 
                             variant="ghost" 
-                            className="h-8 w-8 p-0"
+                            className="h-5 w-5 p-0"
                             onClick={() => deactivateUser(user.id)}
                             title="Deactivate User"
                           >
@@ -201,7 +202,7 @@ const UserManagement = () => {
                           <Button 
                             size="sm" 
                             variant="ghost" 
-                            className="h-8 w-8 p-0"
+                            className="h-5 w-5 p-0"
                             onClick={() => user.role === "user" ? promoteToModerator(user.id) : demoteToUser(user.id)}
                             title={user.role === "user" ? "Promote to Moderator" : "Demote to User"}
                           >
@@ -213,7 +214,7 @@ const UserManagement = () => {
                           <Button 
                             size="sm" 
                             variant="ghost" 
-                            className="h-8 w-8 p-0"
+                            className="h-5 w-5 p-0"
                             onClick={() => unbanUser(user.id)}
                             title="Unban User"
                           >
@@ -224,7 +225,7 @@ const UserManagement = () => {
                             <Button 
                               size="sm" 
                               variant="ghost" 
-                              className="h-8 w-8 p-0"
+                              className="h-5 w-5 p-0"
                               onClick={() => banUser(user.id)}
                               title="Ban User"
                             >
@@ -236,7 +237,7 @@ const UserManagement = () => {
                         <Button 
                           size="sm" 
                           variant="ghost" 
-                          className="h-8 w-8 p-0"
+                          className="h-5 w-5 p-0"
                           onClick={() => viewUserDetails(user.id)}
                           title="View User Details"
                         >
@@ -250,7 +251,7 @@ const UserManagement = () => {
             </Table>
           </div>
         </CardContent>
-      </Card>
+      </div>
 
       {/* User Details Dialog */}
       {selectedUser && (
