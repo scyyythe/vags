@@ -13,7 +13,10 @@ from api.auth.permissions import IsAdminOrOwner
 from api.utils.email_utils import generate_otp, send_otp_email
 import traceback
 from bson import ObjectId
+from rest_framework import status
+from rest_framework.response import Response
 
+                            
 class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
@@ -26,7 +29,17 @@ class CreateUserView(generics.CreateAPIView):
         user.save()
         send_otp_email(user.email, otp)
 
+class ListAllUsersView(APIView):
+    permission_classes = [IsAuthenticated]  
 
+    def get(self, request):
+        try:
+            users = User.objects.all()
+            serializer = UserSerializer(users, many=True, context={"request": request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print("Error listing users:", e)
+            return Response({"error": "Failed to fetch users."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 class RetrieveUserView(APIView):
     permission_classes = [IsAuthenticated]
 
