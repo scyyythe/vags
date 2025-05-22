@@ -222,7 +222,7 @@ class MyAuctionListView(generics.ListAPIView):
 
         return queryset
 
-  
+
 class PlaceBidView(generics.CreateAPIView):
     serializer_class = BidSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -238,8 +238,6 @@ class BidHistoryView(generics.ListAPIView):
         artwork_id = self.kwargs.get('artwork_id')
         return Bid.objects.filter(artwork=artwork_id).order_by('-timestamp')
 
-
-    
 class AuctionDetailView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly ]
 
@@ -313,3 +311,13 @@ class HighestBidView(generics.RetrieveAPIView):
             return Response({"message": "No bids placed yet."}, status=status.HTTP_200_OK)
         
         return Response(BidSerializer(auction.highest_bid).data, status=status.HTTP_200_OK)
+
+
+class MyBidsAuctionListView(generics.ListAPIView):
+    serializer_class = AuctionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user_id = str(self.request.user.id)
+        return Auction.objects(bids__user=user_id).distinct()
+    
