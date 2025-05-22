@@ -27,13 +27,7 @@ interface BidCardProps {
   };
 }
 
-const BidCard: React.FC<BidCardProps> = ({
-  data,
-  isLoading = false,
-  onPlaceBid,
-  onClick,
-  user,
-}) => {
+const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, onClick, user }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
@@ -92,11 +86,7 @@ const BidCard: React.FC<BidCardProps> = ({
         className="w-full rounded-xl border bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
       >
         <div className="relative">
-          <img
-            src={data.artwork.image_url}
-            alt={data.artwork.title}
-            className="w-full h-36 object-cover rounded-xl"
-          />
+          <img src={data.artwork.image_url} alt={data.artwork.title} className="w-full h-36 object-cover rounded-xl" />
           <CountdownTimer targetTime={data.end_time} />
         </div>
         <div className="px-6 py-5 flex flex-col gap-2">
@@ -112,12 +102,7 @@ const BidCard: React.FC<BidCardProps> = ({
               >
                 <MoreHorizontal size={14} />
               </button>
-              <BidMenu
-                isOpen={menuOpen}
-                onHide={handleHide}
-                onReport={handleReport}
-                isReported={isReported}
-              />
+              <BidMenu isOpen={menuOpen} onHide={handleHide} onReport={handleReport} isReported={isReported} />
             </div>
           </div>
 
@@ -127,9 +112,7 @@ const BidCard: React.FC<BidCardProps> = ({
               <span className="text-sm font-bold text-black ml-2">
                 {data.highest_bid?.amount
                   ? data.highest_bid.amount >= 1000
-                    ? `${(data.highest_bid.amount / 1000).toFixed(
-                        data.highest_bid.amount % 1000 === 0 ? 0 : 1
-                      )}k`
+                    ? `${(data.highest_bid.amount / 1000).toFixed(data.highest_bid.amount % 1000 === 0 ? 0 : 1)}k`
                     : data.highest_bid.amount
                   : "0"}
               </span>
@@ -139,7 +122,7 @@ const BidCard: React.FC<BidCardProps> = ({
               onClick={(e) => {
                 e.stopPropagation();
                 if (hasWon) {
-                  navigate("/bid-winner");
+                  navigate(`/bid-winner/${data.id}`);
                 } else {
                   setShowBidPopup(true);
                 }

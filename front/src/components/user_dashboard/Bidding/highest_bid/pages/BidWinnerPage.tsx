@@ -14,10 +14,15 @@ import { GCashPayment } from "@/components/user_dashboard/Bidding/highest_bid/pa
 import { StripePayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/Stripe";
 import { PayPalPayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/PayPal";
 import { toast } from "sonner";
-
+import { useParams } from "react-router-dom";
+import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
+import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
+import { Bid } from "@/hooks/auction/useAuction";
 const BidWinnerPageContent = () => {
-  const { selectedPaymentMethod } = usePayment(); 
+  const { selectedPaymentMethod } = usePayment();
   const [showModal, setShowModal] = useState(false);
+  const { id } = useParams<{ id: string }>();
+  const { data: artworkData, error, isLoading } = useFetchBiddingArtworkById(id || "");
 
   const renderSelectedPaymentComponent = () => {
     switch (selectedPaymentMethod) {
@@ -30,11 +35,7 @@ const BidWinnerPageContent = () => {
       case "stripe":
         return <StripePayment />;
       default:
-        return (
-          <div className="text-center text-sm text-gray-600 p-4">
-            No payment method selected.
-          </div>
-        );
+        return <div className="text-center text-sm text-gray-600 p-4">No payment method selected.</div>;
     }
   };
 
@@ -53,23 +54,19 @@ const BidWinnerPageContent = () => {
 
       <div className="container px-10 max-w-7xl">
         <div className="text-center mb-8">
-          <h1 className="text-sm md:text-md font-bold text-gray-900">
-            Congratulations! You're the highest bidder
-          </h1>
-          <p className="text-[11px] text-gray-600 mt-2">
-            Complete your purchase to claim this artwork
-          </p>
+          <h1 className="text-sm md:text-md font-bold text-gray-900">Congratulations! You're the highest bidder</h1>
+          <p className="text-[11px] text-gray-600 mt-2">Complete your purchase to claim this artwork</p>
         </div>
 
         <div className="space-y-8">
           <div className="bg-white rounded-xl overflow-hidden">
-            <ArtworkSummary artwork={mockArtwork} bid={mockBid} />
+            <ArtworkSummary />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-1">
               <div className="bg-white rounded-xl border overflow-hidden">
-                <BidDetails bid={mockBid} />
+                <BidDetails />
               </div>
             </div>
             <div className="md:col-span-2">
