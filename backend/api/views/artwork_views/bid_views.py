@@ -319,5 +319,5 @@ class MyBidsAuctionListView(generics.ListAPIView):
 
     def get_queryset(self):
         user_id = str(self.request.user.id)
-        return Auction.objects(bids__user=user_id).distinct()
+        return Auction.objects(bid_history__bidder=user_id).distinct()
     

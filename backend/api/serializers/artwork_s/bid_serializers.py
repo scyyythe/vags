@@ -101,9 +101,11 @@ class AuctionSerializer(serializers.Serializer):
         return [user.username for user in obj.viewed_by]
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        user = self.context.get("request").user
+        request = self.context.get("request", None)
+        user = getattr(request, "user", None)
 
-        # Existing serializations
+
+       
         data['artwork'] = ArtSerializer(instance.artwork).data
         data['highest_bid'] = (
             BidSerializer(instance.highest_bid).data if instance.highest_bid else None
@@ -112,18 +114,12 @@ class AuctionSerializer(serializers.Serializer):
 
         if user and not user.is_anonymous:
             user_id = str(user.id)
-
-            # Did user join?
             data['joinedByCurrentUser'] = any(
                 str(bid.bidder.id) == user_id for bid in instance.bid_history
             )
-
-            # Is user the highest bidder?
             data['isHighestBidder'] = (
                 instance.highest_bid and str(instance.highest_bid.bidder.id) == user_id
             )
-
-            # Did user lose the auction?
             data['isLost'] = (
                 instance.status == AuctionStatus.CLOSED.value and
                 data['joinedByCurrentUser'] and
@@ -133,6 +129,7 @@ class AuctionSerializer(serializers.Serializer):
             data['joinedByCurrentUser'] = False
             data['isHighestBidder'] = False
             data['isLost'] = False
+
 
         return data
 
