@@ -174,17 +174,17 @@ class SavedCreateView(APIView):
             saved = Saved.objects.create(user=user, art=art) 
             artist = art.artist
             message = f"{user.first_name} saved your artwork '{art.title}'"
-            Notification.objects.create(
-                user=art.artist,  
-                message=f"{user.first_name} saved your artwork '{art.title}'",
-                art=art, 
-                name=f"{user.first_name} {user.last_name}", 
-                action="saved your artwork", 
-                target=art.title,  
-                icon="save",  
-                time=time_elapsed,  
-                date=datetime.now(),  
-            )
+            # Notification.objects.create(
+            #     user=art.artist,  
+            #     message=f"{user.first_name} saved your artwork '{art.title}'",
+            #     art=art, 
+            #     name=f"{user.first_name} {user.last_name}", 
+            #     action="saved your artwork", 
+            #     target=art.title,  
+            #     icon="save",  
+            #     time=time_elapsed,  
+            #     date=datetime.now(),  
+            # )
             return Response(SavedSerializer(saved).data, status=status.HTTP_201_CREATED)
 class SavedArtworksListView(APIView):
     permission_classes = [IsAuthenticated]
