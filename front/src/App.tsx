@@ -68,6 +68,10 @@ import ActivityLogs from "./admin_&_moderator/moderator/ActivityLogs";
 
 import ProtectedRoute from "./auth/ProtectedRoute";
 
+//Exhibit
+import Gallery3D from "./components/gallery/Gallery3D";
+
+
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
 
@@ -341,6 +345,8 @@ const App = () => {
                             </SidebarProvider>
                           }
                         />
+                        {/*Exhibit*/}
+                        <Route path="/gallery-3d" element={<Gallery3D />} />
 
                         {/* Not Found */}
                         <Route path="*" element={<NotFound />} />
