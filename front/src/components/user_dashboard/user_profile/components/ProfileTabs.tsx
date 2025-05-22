@@ -13,8 +13,11 @@ import UnarchivePopup from "@/components/user_dashboard/user_profile/components/
 import { getLoggedInUserId } from "@/auth/decode";
 import CollectionTab from "../tabs/CollectionTab";
 import OnBidTab from "../tabs/OnBidTab";
+import ExhibitTab from "@/components/user_dashboard/user_profile/tabs/ExhibitsTab";
+
 const tabs = [
   { id: "created", label: "Created" },
+  { id: "exhibits", label: "Exhibits" },
   { id: "onBid", label: "On Bid" },
   { id: "onSale", label: "On Sale" },
   { id: "collections", label: "Collections" },
@@ -22,9 +25,8 @@ const tabs = [
 type ProfileTabsProps = {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  setCreatedArtworksCount: React.Dispatch<React.SetStateAction<number>>;
 };
-const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: ProfileTabsProps) => {
+const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterCategory, setFilterCategory] = useState("Digital Art");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -113,22 +115,24 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
 
     let filtered = artworks;
 
-    // Filter by Category
     filtered = filtered.filter((artwork) => {
       return selectedCategory.toLowerCase() === "all" || artwork.style.toLowerCase() === selectedCategory.toLowerCase();
     });
 
-    // Filter by Visibility (Status)
+    const statusMap: Record<string, string> = {
+      active: "public",
+      hidden: "private",
+      archived: "archived",
+      deleted: "deleted",
+    };
+
     filtered = filtered.filter((art) => {
-      const visibility = art.visibility?.toLowerCase();
-      const status = selectedStatus.toLowerCase();
-
-      if (status === "active") {
-        return visibility === "public";
-      }
-
-      return visibility === status;
+      const mapped = statusMap[selectedStatus.toLowerCase()];
+      return art.visibility?.toLowerCase() === mapped;
     });
+
+    console.log("Filtering artworks, status:", selectedStatus);
+    artworks.forEach((art) => console.log(art.visibility));
 
     // Sort
     switch (selectedSortBy) {
@@ -347,15 +351,14 @@ const ProfileTabs = ({ activeTab, setActiveTab, setCreatedArtworksCount }: Profi
               </button>
             </div>
           )}
-          <CreatedTab
-            filteredArtworks={filteredArtworksMemo}
-            isLoading={isLoading}
-            setCreatedArtworksCount={setCreatedArtworksCount}
-          />
+          <CreatedTab filteredArtworks={filteredArtworksMemo} isLoading={isLoading} />
         </>
       )}
+
       {activeTab === "collections" && <CollectionTab />}
       {activeTab === "onBid" && <OnBidTab />}
+
+      {activeTab === "exhibits" && <ExhibitTab />}
 
       {activeTab === "onSale" && (
         <div className="flex flex-col items-center justify-center col-span-full text-center p-4">

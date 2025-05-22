@@ -57,7 +57,7 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center text-xs space-x-20">
+        <nav className="hidden md:flex items-start text-xs space-x-20">
           <ScrollLink
             to="discover"
             spy={true}

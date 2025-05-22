@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Gavel, Eye, CheckCircle, XCircle } from "lucide-react";
 
 const AdminDashboard = () => {
-  return (
+  return ( 
     <div className="space-y-6">
       <div>
         <h2 className="text-sm font-semibold tracking-tight mb-6">Admin Dashboard</h2>

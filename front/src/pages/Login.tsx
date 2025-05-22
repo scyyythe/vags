@@ -131,7 +131,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center p-8 md:p-10 lg:py-12 lg:px-16 bg-white rounded-3xl">
+    <div className="w-full flex flex-col justify-center py-8 px-14 md:py-8 md:px-14 lg:py-8 lg:px-14 bg-white rounded-2xl">
       <div className="flex justify-between">
         {/* Fingerprint Icon and Sliding Text Container */}
         <div className="relative bottom-2 flex items-center gap-2">
@@ -145,17 +145,17 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
           </div>
 
           {/* Sliding Text */}
-          <div
+          {/* <div
             className={`overflow-hidden transition-all duration-300 ease-out ${
               showFingerprintText ? "max-w-[200px] opacity-100" : "max-w-0 opacity-0"
             }`}
           >
             <span className="whitespace-nowrap text-[10px] relative bottom-1">Sign in with fingerprint</span>
-          </div>
+          </div> */}
         </div>
 
         {/* Not a Member Text */}
-        <p className="text-xs text-gray-600 mb-6">
+        <p className="text-[10px] text-gray-600 mb-6">
           Not a member?{" "}
           <button
             onClick={() => {
@@ -170,9 +170,9 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       </div>
 
       {/* Welcome Text */}
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold mb-2">Hi, Welcome Back!</h1>
-        <p className="text-gray-600 text-xs">Start your day with us.</p>
+      <div className="text-center mb-4">
+        <h1 className="text-lg font-bold mb-2">Hi, Welcome Back!</h1>
+        <p className="text-gray-600 text-[11px]">Start your day with us.</p>
       </div>
 
       {/* Error Message */}
@@ -180,7 +180,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
 
       {/* Social Buttons and Form */}
       <div className="space-y-6">
-        <div className="flex flex-col md:flex-row gap-4 text-[11px]">
+        <div className="flex flex-col md:flex-row gap-4 text-[9px]">
           <SocialButton
             provider="google"
             text="Sign In with Google"
@@ -188,23 +188,23 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
             onClick={() => handleGoogleLogin()}
           />
 
-          <SocialButton
+          {/* <SocialButton
             provider="facebook"
             text="Sign Up with Facebook"
             icon="bx bxl-facebook"
             onClick={() => toast("Facebook login not implemented")}
-          />
+          /> */}
         </div>
 
         {/* Divider */}
         <div className="relative flex items-center justify-center">
           <div className="flex-grow border-t border-gray-500"></div>
-          <span className="flex-shrink mx-4 text-gray-500 text-xs">Or</span>
+          <span className="flex-shrink mx-4 text-gray-500 text-[10px]">Or</span>
           <div className="flex-grow border-t border-gray-500"></div>
         </div>
 
         {/* Login Form */}
-        <form className="space-y-5 text-xs" onSubmit={handleSubmit}>
+        <form className="space-y-5" onSubmit={handleSubmit}>
           <InputField
             type="email"
             label="Email Address"
@@ -227,32 +227,33 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
             />
             <button
               type="button"
-              className="absolute right-3 top-3/4 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              className="absolute right-3 top-[42px] transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
               onClick={() => setShowPassword(!showPassword)}
             >
-              <i className={showPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "18px" }}></i>
+              <i className={showPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "15px" }}></i>
             </button>
+            <div className="relative flex justify-between text-[9px] -top-[60px]">
+              <span></span>
+              <button
+                type="button"
+                onClick={() => {
+                  closeLoginModal();
+                  setShowForgotPasswordModal(true);
+                }}
+                className="text-black hover:text-red-700"
+              >
+                Forgot Password?
+              </button>
+            </div>
           </div>
 
           {/* Forgot Password Link */}
-          <div className="relative flex justify-between text-[11px] -top-[77px]">
-            <span></span>
-            <button
-              type="button"
-              onClick={() => {
-                closeLoginModal();
-                setShowForgotPasswordModal(true);
-              }}
-              className="text-black hover:text-red-700"
-            >
-              Forgot Password?
-            </button>
-          </div>
+          
 
           {/* Login Button */}
           <button
             type="submit"
-            className="relative -top-5 w-full bg-red-900 text-white text-sm font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
+            className="w-full bg-red-900 text-white text-xs font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
           >
             Login
           </button>

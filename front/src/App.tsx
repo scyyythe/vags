@@ -33,8 +33,17 @@ import BillingSettings from "./components/user_dashboard/Settings/pages/BillingS
 import HelpCenter from "./components/user_dashboard/Settings/pages/HelpCenter";
 
 import AllNotifications from "./components/user_dashboard/notification/AllNotifications";
-
 import FollowDemo from "./components/user_dashboard/own_profile/following_&_followers/owners/mock_data/FollowDemo";
+
+//HIGHEST BID
+import BidWinnerPage from "./components/user_dashboard/Bidding/highest_bid/pages/BidWinnerPage";
+import PaymentPage from "@/components/user_dashboard/Bidding/highest_bid/pages/PaymentPage";
+
+//EXHIBITS
+import AddExhibit from "./components/user_dashboard/Exhibit/add_exhibit/AddExhibit";
+import ExhibitViewing from "./components/user_dashboard/Exhibit/exhibit_viewing/ViewExhibit";
+import CollaboratorView from "./components/user_dashboard/Exhibit/add_exhibit/components/CollaboratorViews";
+import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/ExhibitReview";
 
 // ADMIN & MODERATOR
 import { AuthProvider } from "./components/admin_&_moderator/context/AuthContext";
@@ -83,7 +92,9 @@ const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
         onClose={closePopup}
         artworkTitle={currentArtwork?.title}
         artworkImage={currentArtwork?.artworkImage}
+        artistId={currentArtwork?.artistId}
         artistName={currentArtwork?.artistName}
+        artId={currentArtwork?.id}
       />
     </>
   );
@@ -111,6 +122,16 @@ const App = () => {
                         <Route path="/fingerprint-register" element={<FingerprintRegister />} />
                         <Route path="/hero" element={<Hero />} />
 
+                        {/* Bid */}
+                        <Route path="/bid-winner/:id" element={<BidWinnerPage />} />
+                        <Route path="/payment" element={<PaymentPage />} />
+
+                        {/* Exhibit */}
+                        <Route path="/add-exhibit" element={<AddExhibit />} />
+                        <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />
+                        <Route path="/collaborator/exhibit/:exhibitId" element={<CollaboratorView />} />
+                        <Route path="/exhibitreview" element={<ExhibitReview />} />
+
                         <Route path="/follow-demo" element={<FollowDemo />} />
 
                         <Route path="/explore" element={<ProtectedRoute children={<Explore />} />} />
@@ -127,7 +148,10 @@ const App = () => {
                           <Route path="edit-profile" element={<ProtectedRoute children={<EditProfile />} />} />
                           <Route path="account-details" element={<ProtectedRoute children={<AccountDetails />} />} />
                           <Route path="security" element={<ProtectedRoute children={<SecuritySettings />} />} />
-                          <Route path="notifications" element={<ProtectedRoute children={<NotificationsSettings />} />} />
+                          <Route
+                            path="notifications"
+                            element={<ProtectedRoute children={<NotificationsSettings />} />}
+                          />
                           <Route path="billing" element={<ProtectedRoute children={<BillingSettings />} />} />
                           <Route path="help-center" element={<ProtectedRoute children={<HelpCenter />} />} />
                         </Route>

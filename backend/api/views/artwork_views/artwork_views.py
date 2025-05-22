@@ -11,6 +11,8 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework import status
 from django.utils.timesince import timesince
+from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
@@ -35,8 +37,11 @@ class ArtListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-       
-        return Art.objects(visibility__iexact="public").order_by('-created_at')
+        return Art.objects(
+            visibility__iexact="public",
+            art_status__iexact="active"
+        ).order_by('-created_at')
+
     
     
 class ArtListViewOwner(generics.ListAPIView):
@@ -45,16 +50,23 @@ class ArtListViewOwner(generics.ListAPIView):
 
     def get_queryset(self):
         user_id = self.request.query_params.get('userId', None)
+        valid_statuses = ["Active", "onBid", "Hidden"]
 
         if user_id:
             try:
-                user = User.objects.get(id=user_id)  
-                return Art.objects.filter(artist=user).order_by('-created_at')
+                user = User.objects.get(id=user_id)
+                return Art.objects.filter(
+                    artist=user,
+                    art_status__in=valid_statuses
+                ).order_by('-created_at')
             except User.DoesNotExist:
                 raise ValidationError("User not found.")
         else:
-            return Art.objects.filter(artist=self.request.user).order_by('-created_at')
-        
+            return Art.objects.filter(
+                artist=self.request.user,
+                art_status__in=valid_statuses
+            ).order_by('-created_at')
+
 
 class ArtListViewSpecificUser(generics.ListAPIView):
     serializer_class = ArtSerializer
@@ -62,15 +74,24 @@ class ArtListViewSpecificUser(generics.ListAPIView):
 
     def get_queryset(self):
         user_id = self.request.query_params.get('userId', None)
-        print(f"Received userId: {user_id}") 
+        print(f"Received userId: {user_id}")
+        valid_statuses = ["Active", "onBid", "Hidden"]
+
         if user_id:
             try:
                 user = User.objects.get(id=user_id)
-                return Art.objects.filter(artist=user).order_by('-created_at')
+                return Art.objects.filter(
+                    artist=user,
+                    art_status__in=valid_statuses
+                ).order_by('-created_at')
             except User.DoesNotExist:
                 raise ValidationError("User not found.")
         else:
-            return Art.objects.all().order_by('-created_at')
+            return Art.objects.filter(
+                art_status__in=valid_statuses
+            ).order_by('-created_at')
+
+
 
     
 class ArtworksByArtistView(generics.RetrieveAPIView):
@@ -180,7 +201,7 @@ class DeleteArtwork(APIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
-        artwork.art_status = "Deleted"
+        artwork.art_status = "Active"
         artwork.visibility = "Deleted"
         artwork.updated_at = datetime.utcnow()
         artwork.save()
@@ -196,7 +217,7 @@ class RestoreArtwork(APIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
-        artwork.art_status = "Public"
+        artwork.art_status = "Active"
         artwork.visibility = "Public"
         artwork.updated_at = datetime.utcnow()
         artwork.save()
@@ -226,7 +247,7 @@ class ArchivedArtwork(APIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
-        artwork.art_status = "Archived"
+        artwork.art_status = "Active"
         artwork.visibility = "Archived"
         artwork.updated_at = datetime.utcnow()
         artwork.save()
@@ -242,7 +263,7 @@ class UnArchivedArtwork(APIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
-        artwork.art_status = "Public"
+        artwork.art_status = "Active"
         artwork.visibility = "Public"
         artwork.updated_at = datetime.utcnow()
         artwork.save()

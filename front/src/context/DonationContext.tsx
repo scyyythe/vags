@@ -12,6 +12,7 @@ interface ArtworkInfo {
   title?: string;
   artistName: string;
   artworkImage: string;
+  artistId: string;
 }
 
 const DonationContext = createContext<DonationContextProps>({

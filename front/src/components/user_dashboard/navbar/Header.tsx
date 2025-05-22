@@ -31,16 +31,18 @@ const Header = () => {
 
     const isExplorePage = currentPath.includes("/explore");
     const isBiddingPage = currentPath.includes("/bidding");
-
+    const isExhibitPage = currentPath.includes("/exhibits");
     if (isExplorePage) {
       navigate(`/explore?${params.toString()}`);
     } else if (isBiddingPage) {
       navigate(`/bidding?${params.toString()}`);
+    } else if (isExhibitPage) {
+      navigate(`/exhibit?${params.toString()}`);
     } else {
       navigate(`/explore?${params.toString()}`);
     }
 
-    setSearchQuery(value); // for internal filtering if needed
+    setSearchQuery(value);
   };
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const avatarRef = useRef(null);
@@ -114,7 +116,7 @@ const Header = () => {
             </AnimatePresence>
           </div>
 
-          <button className="button-icon hover:scale-110 transition" title="Messages">
+          <button className="button-icon hover:scale-110 transition pb-0.5" title="Messages">
             <MessageCircle size={15} />
           </button>
 
@@ -133,7 +135,7 @@ const Header = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute -right-36 mt-4 z-50"
+                  className="absolute -right-[90px] mt-4 z-50"
                 >
                   <Notifications isOpen={true} onClose={() => setIsNotificationOpen(false)} />
                 </motion.div>
@@ -141,9 +143,9 @@ const Header = () => {
             </AnimatePresence>
           </div>
 
-          {/* Upgrade button: always visible, shrinks on small screens */}
-          <button className="hover:bg-red-50 rounded-full px-2 sm:px-3 py-1 text-[10px] text-red-600 border border-red-600 transition">
-            Upgrade
+          {/* Top up */}
+          <button className="text-[10px] pt-0.5 hover:scale-110 transition">
+            <i className='bx bx-wallet-alt text-[16px]'></i>
           </button>
 
           {/* Profile Avatar + Chevron (always visible) */}
