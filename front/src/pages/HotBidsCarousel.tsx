@@ -26,12 +26,14 @@ const HotBidsCarousel = () => {
     return <div className="text-center py-10 text-red-500">Failed to load bids.</div>;
   }
 
-  const sortedHotBids = [...hotBids]
+  const filteredBids = hotBids
     .filter((auction) => auction.bid_history && auction.bid_history.length > 0)
-    .sort((a, b) => b.bid_history.length - a.bid_history.length)
-    .slice(0, 5);
+    .sort((a, b) => b.bid_history.length - a.bid_history.length);
+
+  const sortedHotBids = filteredBids.slice(0, Math.min(filteredBids.length, 5));
 
   const itemCount = sortedHotBids.length;
+
   const radius = 250;
 
   const goToPrevious = () => {
@@ -49,7 +51,7 @@ const HotBidsCarousel = () => {
 
         <div className=" flex justify-center items-center h-[460px] -mb-20">
           {sortedHotBids.map((bid, index) => {
-            const angle = ((index - currentIndex) * 120) % 360;
+            const angle = ((index - currentIndex) * (360 / itemCount)) % 360;
             const radians = (angle * Math.PI) / 180;
             const x = Math.sin(radians) * radius * 1.9;
             const y = -Math.abs(Math.cos(radians) * radius * 0.4);
