@@ -190,7 +190,46 @@ class AuctionListViewSpecificUser(generics.ListAPIView):
         return queryset
 
 
+class AuctionListViewParticipated(generics.ListAPIView):
+    serializer_class = AuctionSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        user_id = self.request.query_params.get('userId')
+        if not user_id:
+            return Auction.objects.none()
+
+        now_utc = datetime.now(timezone.utc)
+
+        # Close expired auctions before querying
+        expired_auctions = Auction.objects(
+            status=AuctionStatus.ON_GOING.value,
+            end_time__lt=now_utc
+        )
+        for auction in expired_auctions:
+            auction.close_auction()
+            auction.reload()
+
+        # Filter auctions where the user has participated (in bid_history or viewed_by)
+        # Assuming bid_history is a list of Bid objects with bidder user reference or username
+
+        # We'll filter all auctions where any bid in bid_history has a bidder matching user_id
+
+        # MongoEngine doesn't support deep filtering in arrays easily, so we do it manually here:
+        participated_auctions = []
+        all_auctions = Auction.objects()
+
+        for auction in all_auctions:
+            # Check if user participated in bids
+            participated = any(
+                (getattr(bid.bidder, 'id', None) and str(bid.bidder.id) == user_id)
+                or (getattr(bid.bidder, 'username', None) == user_id)
+                for bid in auction.bid_history
+            )
+            if participated:
+                participated_auctions.append(auction)
+
+        return participated_auctions
     
 class MyAuctionListView(generics.ListAPIView):
     serializer_class = AuctionSerializer
@@ -262,7 +301,7 @@ class AuctionDetailView(APIView):
                 auction.save()
 
            
-            serializer = AuctionSerializer(auction)
+            serializer = AuctionSerializer(auction, context={"request": request})
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
@@ -319,5 +358,16 @@ class MyBidsAuctionListView(generics.ListAPIView):
 
     def get_queryset(self):
         user_id = str(self.request.user.id)
-        return Auction.objects(bid_history__bidder=user_id).distinct()
-    
+        filter_type = self.request.query_params.get("filter")
+
+        base_qs = Auction.objects(bid_history__bidder=user_id).distinct()
+
+        if filter_type == "won":
+            return base_qs.filter(status="sold", highest_bid__bidder=user_id)
+        elif filter_type == "active":
+            return base_qs.filter(status="on_going")
+        elif filter_type == "lost":
+            return base_qs.filter(status="closed", highest_bid__bidder__ne=user_id)
+        
+        return base_qs
+

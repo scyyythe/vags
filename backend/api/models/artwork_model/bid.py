@@ -62,7 +62,7 @@ class Auction(Document):
             artwork.save()
 
             now = datetime.utcnow()
-            time_elapsed = timesince(tip.timestamp or now) + " ago" 
+            time_elapsed = timesince(highest.timestamp or now) + " ago"
 
             Notification.objects.create(
                 user=highest.bidder,

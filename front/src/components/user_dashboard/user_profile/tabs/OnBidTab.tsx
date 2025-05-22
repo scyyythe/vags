@@ -9,6 +9,7 @@ type ExtendedAuction = ArtworkAuction & {
   isPaid?: boolean;
   joinedByCurrentUser?: boolean;
   isHighestBidder?: boolean;
+  isLost?: boolean;
 };
 
 type MyBidFilter = "all" | "active" | "won" | "lost";
@@ -22,7 +23,12 @@ const OnBidTab = () => {
   const { id: visitedUserId } = useParams();
   const loggedInUserId = getLoggedInUserId();
   const isMyProfile = !visitedUserId || visitedUserId === loggedInUserId;
-
+  const { data: participatedAuctions = [], isLoading: isLoadingParticipated } = useAuctions(
+    1,
+    loggedInUserId,
+    true,
+    "participated"
+  );
   const { data: auctions = [], isLoading } = useAuctions(
     1,
     isMyProfile ? loggedInUserId : visitedUserId,
@@ -30,46 +36,65 @@ const OnBidTab = () => {
     isMyProfile ? "created-by-me" : "specific-user"
   );
 
-  const filteredAuctions = (auctions as ExtendedAuction[]).filter((a) => {
+  const participatedAuctionsWithFlags = participatedAuctions.map((auction) => {
+    const isHighestBidder = auction.highest_bid?.user?.id === loggedInUserId;
+    const joinedByCurrentUser = auction.bid_history?.some((bid) => bid.user?.id === loggedInUserId) ?? false;
+    const isPaid = auction.status === "sold" && isHighestBidder;
+    const isLost = !isHighestBidder && (auction.status === "sold" || auction.status === "closed");
+
+    return {
+      ...auction,
+      isHighestBidder,
+      joinedByCurrentUser,
+      isPaid,
+      isLost,
+    };
+  });
+
+  const auctionsToDisplay: ExtendedAuction[] =
+    activeTab === "my_bids" ? participatedAuctionsWithFlags : (auctions as ExtendedAuction[]);
+
+  const filteredAuctions = auctionsToDisplay.filter((a) => {
     if (activeTab === "my_bids") {
       if (!a.joinedByCurrentUser) return false;
 
       switch (myBidFilter) {
         case "active":
-          return a.isHighestBidder && !a.isPaid;
+          return a.isHighestBidder && a.status === "on_going";
         case "won":
-          return a.isHighestBidder && a.isPaid;
+          return a.isHighestBidder && a.status === "sold" && a.isPaid;
         case "lost":
-          return !a.isHighestBidder;
+          return a.isLost;
         case "all":
         default:
           return true;
       }
     }
 
+    // For other tabs, just filter by status (on_going, sold, closed)
     return a.status === activeTab;
   });
 
-  // Inject mock bid if won tab is selected and no data
-  if (activeTab === "my_bids" && myBidFilter === "won" && !isLoading && filteredAuctions.length === 0) {
-    filteredAuctions.push({
-      id: "mock-bid-1",
-      isPaid: true,
-      isHighestBidder: true,
-      joinedByCurrentUser: true,
-      start_bid_amount: 5000,
-      end_time: new Date(Date.now() - 3600 * 1000).toISOString(), 
-      artwork: {
-        id: "mock-artwork-1",
-        title: "Abstract Dreams in Blue",
-        image_url: "https://i.pinimg.com/736x/5f/f4/d2/5ff4d298d53b6fcdf20bd865668c0ea5.jpg",
-      },
-      highest_bid: {
-        amount: 5000,
-      },
-      status: "sold",
-    } as ExtendedAuction);
-  }
+  // // Inject mock bid if won tab is selected and no data
+  // if (activeTab === "my_bids" && myBidFilter === "won" && !isLoading && filteredAuctions.length === 0) {
+  //   filteredAuctions.push({
+  //     id: "mock-bid-1",
+  //     isPaid: true,
+  //     isHighestBidder: true,
+  //     joinedByCurrentUser: true,
+  //     start_bid_amount: 5000,
+  //     end_time: new Date(Date.now() - 3600 * 1000).toISOString(),
+  //     artwork: {
+  //       id: "mock-artwork-1",
+  //       title: "Abstract Dreams in Blue",
+  //       image_url: "https://i.pinimg.com/736x/5f/f4/d2/5ff4d298d53b6fcdf20bd865668c0ea5.jpg",
+  //     },
+  //     highest_bid: {
+  //       amount: 5000,
+  //     },
+  //     status: "sold",
+  //   } as ExtendedAuction);
+  // }
 
   const tabEmptyMessages = {
     on_going: "No artworks are currently on bid.",

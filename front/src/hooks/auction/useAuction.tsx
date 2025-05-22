@@ -1,8 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { calculateTimeRemaining } from "@/utils/timeUtils";
-
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  role?: string;
+  user_status?: string;
+  created_at?: string;
+  updated_at?: string;
+  profile_picture?: string;
+  cover_photo?: string;
+  bio?: string;
+  contact_number?: string;
+  address?: string;
+  gender?: "Male" | "Female" | "Other";
+  date_of_birth?: string;
+  password: string;
+}
 export interface Bid {
+  user?: User;
   bidderFullName: string;
   amount: number;
   timestamp: string;
@@ -35,7 +54,7 @@ export interface ArtworkAuction {
   bid_history: Bid[];
   end_time: string;
   start_time: string;
-  status: "on_going" | "sold" | "closed" | "no_bidder";
+  status: "on_going" | "sold" | "closed" | "no_bidder" | "reauctioned";
   start_bid_amount: number;
   timeRemaining: {
     finished: boolean;
@@ -44,12 +63,16 @@ export interface ArtworkAuction {
     secs: number;
   };
   viewers: string[];
+
+  joinedByCurrentUser: boolean;
+  isHighestBidder: boolean | null;
+  isLost: boolean;
 }
 
 const fetchAuctions = async (
   currentPage: number,
   userId?: string,
-  endpointType: "all" | "created-by-me" | "specific-user" = "all"
+  endpointType: "all" | "created-by-me" | "specific-user" | "participated" = "all"
 ): Promise<ArtworkAuction[]> => {
   const params: { page: number; limit: number; userId?: string } = {
     page: currentPage,
@@ -66,6 +89,8 @@ const fetchAuctions = async (
     url = "auction/list/created-by-me/";
   } else if (endpointType === "specific-user") {
     url = "auction/list/specific-user/";
+  } else if (endpointType === "participated") {
+    url = "auction/list/participated/";
   }
 
   const response = await apiClient.get(url, { params });
@@ -81,7 +106,7 @@ const useAuctions = (
   currentPage: number,
   userId?: string,
   enabled = true,
-  endpointType: "all" | "created-by-me" | "specific-user" = "all"
+  endpointType: "all" | "created-by-me" | "specific-user" | "participated" = "all"
 ) => {
   return useQuery<ArtworkAuction[], Error>({
     queryKey: ["auctions", currentPage, userId, endpointType],
