@@ -134,24 +134,24 @@ export function SystemLogs({ logs: initialLogs }: SystemLogsProps) {
             {filteredLogs.length > 0 ? (
               filteredLogs.map((log) => (
                 <TableRow key={log.id}>
-                  <TableCell className="text-2xs">{log.timestamp}</TableCell>
-                  <TableCell className="text-2xs">{log.action}</TableCell>
-                  <TableCell className="text-2xs">
+                  <TableCell className="text-[10px]">{log.timestamp}</TableCell>
+                  <TableCell className="text-[10px]">{log.action}</TableCell>
+                  <TableCell className="text-[10px]">
                     <div className="flex flex-col space-y-1">
-                      <div className="text-2xs">{log.performedBy.name}</div>
+                      <div className="text-[10px]">{log.performedBy.name}</div>
                       <div>{getRoleBadge(log.performedBy.role)}</div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-2xs">{getSeverityBadge(log.severity)}</TableCell>
-                  <TableCell className="text-2xs max-w-xs truncate">{log.details}</TableCell>
-                  <TableCell className="text-2xs text-right">
+                  <TableCell className="text-[10px]">{getSeverityBadge(log.severity)}</TableCell>
+                  <TableCell className="text-[10px] max-w-xs truncate">{log.details}</TableCell>
+                  <TableCell className="text-[10px] text-right">
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      className="h-6 text-2xs"
+                      className="h-6 text-[10px]"
                       onClick={() => handleViewLogDetails(log)}
                     >
-                      <FileText className="h-3 w-3 mr-1" />
+                      <FileText className="h-2 w-2 mr-1" />
                       View
                     </Button>
                   </TableCell>
@@ -168,51 +168,51 @@ export function SystemLogs({ logs: initialLogs }: SystemLogsProps) {
         </Table>
       </div>
 
-      <div className="flex justify-end">
+      {/* <div className="flex justify-end">
         <Button 
           variant="outline" 
           size="sm" 
-          className="text-xs flex items-center gap-1"
+          className="text-[10px] flex items-center gap-1"
           onClick={handleExportLogs}
           disabled={isExporting}
         >
           <Download className="h-3 w-3" />
           {isExporting ? "Exporting..." : "Export Logs"}
         </Button>
-      </div>
+      </div> */}
 
       {/* Log Details Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="w-full max-w-sm rounded-lg">
           <DialogHeader>
             <DialogTitle className="text-sm">Log Details</DialogTitle>
-            <DialogDescription className="text-xs">
+            <DialogDescription className="text-[11px]">
               Complete information about this system log.
             </DialogDescription>
           </DialogHeader>
           
           {selectedLog && (
             <div className="space-y-4 pt-4">
-              <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="grid grid-cols-2 gap-2 text-[11px]">
                 <div className="font-medium">Log ID:</div>
-                <div>{selectedLog.id}</div>
+                <div className="text-[10px]">{selectedLog.id}</div>
                 
                 <div className="font-medium">Timestamp:</div>
-                <div>{selectedLog.timestamp}</div>
+                <div className="text-[10px]">{selectedLog.timestamp}</div>
                 
                 <div className="font-medium">Action:</div>
-                <div>{selectedLog.action}</div>
+                <div className="text-[10px]">{selectedLog.action}</div>
                 
                 <div className="font-medium">Performed By:</div>
-                <div>{selectedLog.performedBy.name} ({selectedLog.performedBy.role})</div>
+                <div className="text-[10px]">{selectedLog.performedBy.name} ({selectedLog.performedBy.role})</div>
                 
                 <div className="font-medium">Severity:</div>
-                <div>{getSeverityBadge(selectedLog.severity)}</div>
+                <div className="text-[10px]">{getSeverityBadge(selectedLog.severity)}</div>
               </div>
               
               <div>
-                <div className="font-medium text-xs mb-2">Details:</div>
-                <div className="text-xs bg-gray-50 p-3 rounded">{selectedLog.details}</div>
+                <div className="font-medium text-[11px] mb-2">Details:</div>
+                <div className="text-[10px] bg-gray-50 p-3 rounded">{selectedLog.details}</div>
               </div>
             </div>
           )}

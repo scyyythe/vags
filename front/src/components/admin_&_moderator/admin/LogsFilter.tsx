@@ -63,10 +63,10 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
           <form onSubmit={handleSearchSubmit} className="w-full">
-            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
+            <Search className="absolute left-2 top-4 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
             <Input
               placeholder="Search logs..."
-              className="pl-8 text-xs"
+              className="pl-8 rounded-full h-8"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{fontSize:"10px"}}
@@ -80,14 +80,14 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
             toast.info(`Severity filter set to: ${value}`);
           }}
         >
-          <SelectTrigger className="w-[140px] text-xs">
+          <SelectTrigger className="w-[140px] text-[10px] rounded-full h-8">
             <SelectValue placeholder="Filter by severity" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all" className="text-xs">All Severities</SelectItem>
-            <SelectItem value="info" className="text-xs">Info</SelectItem>
-            <SelectItem value="warning" className="text-xs">Warning</SelectItem>
-            <SelectItem value="error" className="text-xs">Error</SelectItem>
+            <SelectItem value="all" className="text-[10px]">All Severities</SelectItem>
+            <SelectItem value="info" className="text-[10px]">Info</SelectItem>
+            <SelectItem value="warning" className="text-[10px]">Warning</SelectItem>
+            <SelectItem value="error" className="text-[10px]">Error</SelectItem>
           </SelectContent>
         </Select>
         <Select
@@ -97,36 +97,36 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
             toast.info(`Role filter set to: ${value}`);
           }}
         >
-          <SelectTrigger className="w-[140px] text-xs">
+          <SelectTrigger className="w-[140px] text-[10px] rounded-full h-8">
             <SelectValue placeholder="Filter by role" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all" className="text-xs">All Roles</SelectItem>
-            <SelectItem value="admin" className="text-xs">Admin</SelectItem>
-            <SelectItem value="moderator" className="text-xs">Moderator</SelectItem>
-            <SelectItem value="system" className="text-xs">System</SelectItem>
+            <SelectItem value="all" className="text-[10px]">All Roles</SelectItem>
+            <SelectItem value="admin" className="text-[10px]">Admin</SelectItem>
+            <SelectItem value="moderator" className="text-[10px]">Moderator</SelectItem>
+            <SelectItem value="system" className="text-[10px]">System</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="flex justify-between">
-        <Button 
+        {/* <Button 
           variant="outline" 
           size="sm" 
-          className="text-xs flex items-center gap-1"
+          className="text-[10px] flex items-center gap-1 h-8"
           onClick={handleClearFilters}
         >
-          <RefreshCw className="h-3 w-3" />
+          <RefreshCw className="h-2 w-2" />
           Clear Filters
-        </Button>
+        </Button> */}
         <Button 
           variant="outline" 
           size="sm" 
-          className="text-xs flex items-center gap-1"
+          className="text-[10px] flex items-center gap-1 h-8"
           onClick={handleExportLogs}
           disabled={isExporting}
         >
-          <Download className="h-3 w-3" />
+          <Download className="h-2 w-2" />
           {isExporting ? "Exporting..." : "Export Logs"}
         </Button>
       </div>
