@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
-
+import BidDetailsSkeleton from "@/components/skeletons/BidDetailsSkeleton";
 export const BidDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data: bid, error, isLoading } = useFetchBiddingArtworkById(id || "");
@@ -17,7 +17,7 @@ export const BidDetails: React.FC = () => {
   const formattedDeadline = format(paymentDeadline, "MMMM d, yyyy 'at' h:mm a");
   const hoursRemaining = Math.ceil((paymentDeadline.getTime() - new Date().getTime()) / (1000 * 60 * 60));
   if (isLoading) {
-    return <p>Loading bid details...</p>;
+    return <BidDetailsSkeleton />;
   }
 
   if (error) {
@@ -25,12 +25,14 @@ export const BidDetails: React.FC = () => {
   }
 
   if (!bid) {
-    return <p>No bid data found.</p>;
+    return (
+      <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
+        <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
+        <p className="text-xs text-gray-500">No artwork foun</p>
+      </div>
+    );
   }
 
-  if (!bid.highest_bid) {
-    return <p>No highest bid found.</p>;
-  }
   return (
     <div className="p-6">
       <h3 className="text-xs font-semibold text-gray-900 mb-4">Final Bid Details</h3>
