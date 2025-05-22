@@ -45,6 +45,27 @@ import ExhibitViewing from "./components/user_dashboard/Exhibit/exhibit_viewing/
 import CollaboratorView from "./components/user_dashboard/Exhibit/add_exhibit/components/CollaboratorViews";
 import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/ExhibitReview";
 
+//ADMIN & MODERATOR
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AdminLayout } from "@/components/admin_&_moderator/layout/AdminLayout";
+
+// Admin routes
+import AdminDashboard from "@/components/admin_&_moderator/pages/admin/AdminDashboard";
+import AdminUsers from "@/components/admin_&_moderator/pages/admin/AdminUsers";
+import AdminConfig from "@/components/admin_&_moderator/pages/admin/AdminConfig";
+import AdminSecurity from "@/components/admin_&_moderator/pages/admin/AdminSecurity";
+import AdminAnalytics from "@/components/admin_&_moderator/pages/admin/AdminAnalytics";
+
+// Moderator routes
+import ModeratorDashboard from "@/components/admin_&_moderator/pages/moderator/ModeratorDashboard";
+import ModeratorReports from "@/components/admin_&_moderator/pages/moderator/ModeratorReports";
+import ModeratorContent from "@/components/admin_&_moderator/pages/moderator/ModeratorContent";
+import ModeratorUsers from "@/components/admin_&_moderator/pages/moderator/ModeratorUsers";
+import ModeratorNotifications from "@/components/admin_&_moderator/pages/moderator/ModeratorNotifications";
+
+// Role protection
+import RoleProtectedRoute from "@/components/admin_&_moderator/auth/RoleProtectedRoute";
+
 import ProtectedRoute from "./auth/ProtectedRoute";
 
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -121,6 +142,109 @@ const App = () => {
                           <Route path="help-center" element={<ProtectedRoute children={<HelpCenter />} />} />
                         </Route>
 
+                        {/* Admin Routes */}
+                        <Route 
+                          path="/admin" 
+                          element={
+                            
+                              <AdminLayout role="admin">
+                                <AdminDashboard />
+                              </AdminLayout>
+                            
+                          } 
+                        />
+                        <Route 
+                          path="/admin/users" 
+                          element={
+                            
+                              <AdminLayout role="admin">
+                                <AdminUsers />
+                              </AdminLayout>
+                            
+                          } 
+                        />
+                        <Route 
+                          path="/admin/config" 
+                          element={
+                            
+                              <AdminLayout role="admin">
+                                <AdminConfig />
+                              </AdminLayout>
+                            
+                          } 
+                        />
+                        <Route 
+                          path="/admin/security" 
+                          element={
+                            
+                              <AdminLayout role="admin">
+                                <AdminSecurity />
+                              </AdminLayout>
+                            
+                          } 
+                        />
+                        <Route 
+                          path="/admin/analytics" 
+                          element={
+                            
+                              <AdminLayout role="admin">
+                                <AdminAnalytics />
+                              </AdminLayout>
+                            
+                          } 
+                        />
+
+                        {/* Moderator Routes */}
+                        <Route 
+                          path="/moderator" 
+                          element={
+                            
+                              <AdminLayout role="moderator">
+                                <ModeratorDashboard />
+                              </AdminLayout>
+                            
+                          } 
+                        />
+                        <Route 
+                          path="/moderator/reports" 
+                          element={
+                            
+                              <AdminLayout role="moderator">
+                                <ModeratorReports />
+                              </AdminLayout>
+                            
+                          } 
+                        />
+                        <Route 
+                          path="/moderator/content" 
+                          element={
+                            
+                              <AdminLayout role="moderator">
+                                <ModeratorContent />
+                              </AdminLayout>
+                            
+                          } 
+                        />
+                        <Route 
+                          path="/moderator/users" 
+                          element={
+                            
+                              <AdminLayout role="moderator">
+                                <ModeratorUsers />
+                              </AdminLayout>
+                            
+                          } 
+                        />
+                        <Route 
+                          path="/moderator/notifications" 
+                          element={
+                            
+                              <AdminLayout role="moderator">
+                                <ModeratorNotifications />
+                              </AdminLayout>
+                            
+                          } 
+                        />
                         
                         {/* Not Found */}
                         <Route path="*" element={<NotFound />} />
