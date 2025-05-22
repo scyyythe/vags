@@ -16,7 +16,8 @@ import ArtworkSelector from "./components/ArtworkSelector";
 import ModeStatusDisplay from "./components/ModeStatusDisplay";
 import CollaboratorNotice from "./components/CollaboratorNotice";
 import ExhibitDialogs from "./components/ExhibitDialogs";
-
+import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
+import { getLoggedInUserId } from "@/auth/decode";
 // Import types
 import { Artist, ViewMode, Environment, Artwork, SubmissionStatus } from "./components/types";
 
@@ -238,9 +239,9 @@ const AddExhibit = () => {
   const [endDate, setEndDate] = useState("");
   const [description, setDescription] = useState("");
   const [selectedEnvironment, setSelectedEnvironment] = useState<number | null>(null);
-  const [selectedArtworks, setSelectedArtworks] = useState<number[]>([]);
+  const [selectedArtworks, setSelectedArtworks] = useState<string[]>([]);
   const [selectedSlots, setSelectedSlots] = useState<number[]>([]);
-  const [slotArtworkMap, setSlotArtworkMap] = useState<Record<number, number>>({});
+  const [slotArtworkMap, setSlotArtworkMap] = useState<Record<number, string>>({});
   const [isAddArtistDialogOpen, setIsAddArtistDialogOpen] = useState(false);
   const [collaborators, setCollaborators] = useState<Artist[]>([]);
   const [slotOwnerMap, setSlotOwnerMap] = useState<Record<number, number>>({});
@@ -254,6 +255,11 @@ const AddExhibit = () => {
   const [currentCollaborator, setCurrentCollaborator] = useState<Artist | null>(null);
   const [showNotificationDialog, setShowNotificationDialog] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
+  const userId = getLoggedInUserId();
+  const { data: artworks = [] } = useArtworks(1, userId ?? undefined, !!userId, "created-by-me", "public", true);
+  useEffect(() => {
+    console.log("Fetched artworks:", artworks);
+  }, [artworks]);
 
   // Mock current user data
   const currentUser: Artist = {
@@ -283,26 +289,6 @@ const AddExhibit = () => {
         "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       slots: 9,
     },
-  ];
-
-  // Mock artworks data
-  const artworks: Artwork[] = [
-    { id: 1, image: "https://i.pinimg.com/736x/b4/01/da/b401dab097ac7f9e2e5ad0e5bb168f77.jpg" },
-    { id: 2, image: "https://i.pinimg.com/736x/6c/5b/49/6c5b490a1a86fd6b07c23599967486f6.jpg" },
-    { id: 3, image: "https://i.pinimg.com/736x/3d/aa/f2/3daaf26aafb613c049ee637ba71cc95d.jpg" },
-    { id: 4, image: "https://i.pinimg.com/736x/39/8d/54/398d54f3fbb37394b62882f30b058934.jpg" },
-    { id: 5, image: "https://i.pinimg.com/736x/34/00/33/3400334676f49e098b82459a1ed8d8c0.jpg" },
-    { id: 6, image: "https://i.pinimg.com/736x/42/b1/5d/42b15dc87e44a458a61c84f499799096.jpg" },
-    { id: 7, image: "https://i.pinimg.com/736x/97/63/d2/9763d2e3d5005a316631330401ccc99e.jpg" },
-    { id: 8, image: "https://i.pinimg.com/736x/0e/3f/e7/0e3fe7f3e1da1ac7baeab1947dfd08c3.jpg" },
-    { id: 9, image: "https://i.pinimg.com/736x/b4/01/da/b401dab097ac7f9e2e5ad0e5bb168f77.jpg" },
-    { id: 10, image: "https://i.pinimg.com/736x/6c/5b/49/6c5b490a1a86fd6b07c23599967486f6.jpg" },
-    { id: 11, image: "https://i.pinimg.com/736x/3d/aa/f2/3daaf26aafb613c049ee637ba71cc95d.jpg" },
-    { id: 12, image: "https://i.pinimg.com/736x/39/8d/54/398d54f3fbb37394b62882f30b058934.jpg" },
-    { id: 13, image: "https://i.pinimg.com/736x/34/00/33/3400334676f49e098b82459a1ed8d8c0.jpg" },
-    { id: 14, image: "https://i.pinimg.com/736x/42/b1/5d/42b15dc87e44a458a61c84f499799096.jpg" },
-    { id: 15, image: "https://i.pinimg.com/736x/97/63/d2/9763d2e3d5005a316631330401ccc99e.jpg" },
-    { id: 16, image: "https://i.pinimg.com/736x/0e/3f/e7/0e3fe7f3e1da1ac7baeab1947dfd08c3.jpg" },
   ];
 
   // Load exhibit data based on exhibitId and mode
@@ -338,7 +324,7 @@ const AddExhibit = () => {
       setSlotArtworkMap(exhibitData.slotArtworkMap);
 
       // Mark selected artworks
-      const selectedIds = Object.values(exhibitData.slotArtworkMap) as number[];
+      const selectedIds = Object.values(exhibitData.slotArtworkMap) as string[];
       setSelectedArtworks(selectedIds);
 
       // Mark selected slots
@@ -476,7 +462,7 @@ const AddExhibit = () => {
     completeExhibitSubmission();
   };
 
-  const handleArtworkSelect = (artworkId: number) => {
+  const handleArtworkSelect = (artworkId: string) => {
     // Determine which user is currently making selections
     const currentUserId = viewMode === "owner" ? currentUser.id : currentCollaborator?.id;
     if (!currentUserId) return;
