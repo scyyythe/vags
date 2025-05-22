@@ -6,9 +6,15 @@ export const useMyParticipatedAuctions = () => {
   return useQuery<ArtworkAuction[], Error>({
     queryKey: ["myParticipatedAuctions"],
     queryFn: async () => {
-      const response = await apiClient.get("auction/my-bids/");
-
-      return response.data;
+      console.log("Fetching my-bids from backend...");
+      try {
+        const response = await apiClient.get("auction/my-bids/");
+        console.log("Response data:", response.data);
+        return response.data;
+      } catch (error: any) {
+        console.error("Error fetching my-bids:", error.response?.data || error.message);
+        throw error;
+      }
     },
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
