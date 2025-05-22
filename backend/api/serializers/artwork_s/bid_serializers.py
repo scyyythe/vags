@@ -99,27 +99,42 @@ class AuctionSerializer(serializers.Serializer):
     viewers = serializers.SerializerMethodField()
     def get_viewers(self, obj):
         return [user.username for user in obj.viewed_by]
+    
     def to_representation(self, instance):
         data = super().to_representation(instance)
         request = self.context.get("request", None)
         user = getattr(request, "user", None)
 
-
-       
         data['artwork'] = ArtSerializer(instance.artwork).data
         data['highest_bid'] = (
             BidSerializer(instance.highest_bid).data if instance.highest_bid else None
         )
         data['bid_history'] = BidSerializer(instance.bid_history, many=True).data
+        data['viewers'] = [u.username for u in instance.viewed_by]
 
         if user and not user.is_anonymous:
             user_id = str(user.id)
-            data['joinedByCurrentUser'] = any(
-                str(bid.bidder.id) == user_id for bid in instance.bid_history
+            username = str(user.username)
+
+            joined_by_bid_history = any(
+                (getattr(bid.bidder, 'id', None) and str(bid.bidder.id) == user_id)
+                or (getattr(bid.bidder, 'username', None) == username)
+                for bid in instance.bid_history
             )
+
+            joined_by_viewers = username in data['viewers']
+
+            data['joinedByCurrentUser'] = joined_by_bid_history or joined_by_viewers
+
             data['isHighestBidder'] = (
-                instance.highest_bid and str(instance.highest_bid.bidder.id) == user_id
+                instance.highest_bid and
+                (
+                    (getattr(instance.highest_bid.bidder, 'id', None) and str(instance.highest_bid.bidder.id) == user_id)
+                    or
+                    (getattr(instance.highest_bid.bidder, 'username', None) == username)
+                )
             )
+
             data['isLost'] = (
                 instance.status == AuctionStatus.CLOSED.value and
                 data['joinedByCurrentUser'] and
@@ -130,8 +145,8 @@ class AuctionSerializer(serializers.Serializer):
             data['isHighestBidder'] = False
             data['isLost'] = False
 
-
         return data
+
 
 
 
