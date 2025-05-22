@@ -16,10 +16,10 @@ import ArtworkSelector from "./components/ArtworkSelector";
 import ModeStatusDisplay from "./components/ModeStatusDisplay";
 import CollaboratorNotice from "./components/CollaboratorNotice";
 import ExhibitDialogs from "./components/ExhibitDialogs";
-import { useCreateExhibit } from "@/hooks/mutate/exhibit/AddExhibit";
+
 // Import types
 import { Artist, ViewMode, Environment, Artwork, SubmissionStatus } from "./components/types";
-import { createExhibit, ExhibitPayload } from "@/hooks/mutate/exhibit/exhibit";
+
 // Color schemes for slots by user
 const slotColorSchemes = [
   "border-primary bg-primary/10", // Owner (primary color)
@@ -47,6 +47,7 @@ const mockExhibitData: Record<number, any> = {
     selectedEnvironment: 2,
     bannerImage:
       "https://images.unsplash.com/photo-1580136579312-94651dfd596d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+
     collaborators: [
       {
         id: 201,
@@ -72,6 +73,7 @@ const mockExhibitData: Record<number, any> = {
     slotArtworkMap: {
       1: 1,
       2: 2, // Owner already placed artwork
+
       3: 3, // First collaborator placed one artwork
       // Second collaborator has not placed any artwork yet
     },
@@ -88,6 +90,7 @@ const mockExhibitData: Record<number, any> = {
     selectedEnvironment: 1,
     bannerImage:
       "https://images.unsplash.com/photo-1594122230689-45899d9e6f69?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+
     collaborators: [
       {
         id: 201,
@@ -126,6 +129,7 @@ const mockExhibitData: Record<number, any> = {
     selectedEnvironment: 3,
     bannerImage:
       "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+
     collaborators: [
       {
         id: 202,
@@ -175,6 +179,7 @@ const mockExhibitData: Record<number, any> = {
     selectedEnvironment: 3,
     bannerImage:
       "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+
     collaborators: [
       {
         id: 201,
@@ -224,7 +229,6 @@ const AddExhibit = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const mode = queryParams.get("mode") || "";
-  const { mutate: createExhibit } = useCreateExhibit();
 
   // State variables
   const [title, setTitle] = useState("");
@@ -301,30 +305,8 @@ const AddExhibit = () => {
     { id: 16, image: "https://i.pinimg.com/736x/0e/3f/e7/0e3fe7f3e1da1ac7baeab1947dfd08c3.jpg" },
   ];
 
-  // Function to complete the exhibit submission
-  const completeExhibitSubmission = () => {
-    console.log({
-      title,
-      category,
-      exhibitType,
-      startDate,
-      endDate,
-      description,
-      selectedEnvironment,
-      selectedArtworks,
-      selectedSlots,
-      slotArtworkMap,
-      collaborators,
-      bannerImage,
-    });
+  // Load exhibit data based on exhibitId and mode
 
-    toast({
-      title: "Exhibit Created",
-      description: "Your exhibit has been successfully created!",
-    });
-
-    navigate("/exhibits");
-  };
   useEffect(() => {
     if (exhibitId && mockExhibitData[Number(exhibitId)]) {
       const exhibitData = mockExhibitData[Number(exhibitId)];
@@ -452,6 +434,29 @@ const AddExhibit = () => {
   };
 
   // Function to complete the exhibit submission
+  const completeExhibitSubmission = () => {
+    console.log({
+      title,
+      category,
+      exhibitType,
+      startDate,
+      endDate,
+      description,
+      selectedEnvironment,
+      selectedArtworks,
+      selectedSlots,
+      slotArtworkMap,
+      collaborators,
+      bannerImage,
+    });
+
+    toast({
+      title: "Exhibit Created",
+      description: "Your exhibit has been successfully created!",
+    });
+
+    navigate("/exhibits");
+  };
 
   // Function to send notifications to collaborators
   const sendNotificationsToCollaborators = () => {
