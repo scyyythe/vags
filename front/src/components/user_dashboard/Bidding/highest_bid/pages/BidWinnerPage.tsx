@@ -45,7 +45,7 @@ const BidWinnerPageContent = () => {
       </header>
 
       <div className="mb-3 ml-10">
-        <button onClick={() => window.history.back()} className="flex items-center text-sm font-semibold">
+        <button onClick={() => window.history.back()} className="flex items-center text-xs font-semibold">
           <i className="bx bx-chevron-left text-lg mr-2"></i>
           Back
         </button>

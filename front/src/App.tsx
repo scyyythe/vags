@@ -38,7 +38,6 @@ import FollowDemo from "./components/user_dashboard/own_profile/following_&_foll
 //HIGHEST BID
 import BidWinnerPage from "./components/user_dashboard/Bidding/highest_bid/pages/BidWinnerPage";
 import PaymentPage from "@/components/user_dashboard/Bidding/highest_bid/pages/PaymentPage";
-// import MyAuctionsPage from "./pages/MyAuctionsPage";
 
 //EXHIBITS
 import AddExhibit from "./components/user_dashboard/Exhibit/add_exhibit/AddExhibit";
