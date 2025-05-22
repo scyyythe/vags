@@ -15,45 +15,42 @@ export const GCashPayment = () => {
   };
 
   return (
-    <Card className="shadow-lg border-0 rounded-xl overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-blue-50 to-white pb-6">
-        <CardTitle className="flex items-center text-gray-900">
-          <svg viewBox="0 0 24 24" className="mr-2 h-5 w-5 text-blue-500" fill="currentColor">
-            <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-1 10H4c-.55 0-1-.45-1-1V9c0-.55.45-1 1-1h16c.55 0 1 .45 1 1v6c0 .55-.45 1-1 1z" />
-          </svg>
+    <div className="overflow-hidden">
+        <div className="p-4 text-center text-xs text-gray-900 font-semibold border-none -mb-6">
           GCash Payment
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-6">
+        </div>
+      <div className="p-6">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="gcashNumber" className="text-gray-700">GCash Mobile Number</Label>
+            <Label htmlFor="gcashNumber" className="text-gray-700 text-[11px]">GCash Mobile Number</Label>
             <Input 
               id="gcashNumber" 
               placeholder="09XX XXX XXXX" 
               required 
-              className="border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 rounded-lg"
+              className="border-gray-300 rounded-full h-8"
+              style={{fontSize:"10px"}}
             />
           </div>
               
           <div className="space-y-2">
-            <Label htmlFor="gcashName" className="text-gray-700">Account Name</Label>
+            <Label htmlFor="gcashName" className="text-gray-700 text-[11px]">Account Name</Label>
             <Input 
               id="gcashName" 
               placeholder="Full Name" 
               required 
-              className="border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 rounded-lg"
+              className="border-gray-300 rounded-full h-8"
+              style={{fontSize:"10px"}}
             />
           </div>
           
           <Button 
             type="submit" 
-            className="w-full bg-blue-500 hover:bg-blue-600 rounded-lg py-6"
+            className="w-full h-9 bg-blue-700 hover:bg-blue-600 rounded-full text-[11px]"
           >
             Pay ₱5,000.00
           </Button>
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
