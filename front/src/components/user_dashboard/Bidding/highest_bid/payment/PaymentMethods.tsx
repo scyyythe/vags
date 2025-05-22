@@ -29,7 +29,7 @@ export const PaymentMethods = () => {
     { 
       id: "creditCard", 
       label: "Credit/Debit Card",
-      icon: <CreditCard className="h-4 w-4" />,
+      icon: <CreditCard className="h-3 w-3" />,
       color: "bg-red-500 hover:bg-red-600"
     }
   ];
@@ -41,13 +41,13 @@ export const PaymentMethods = () => {
   };
 
   return (
-    <Card className="border-0 shadow-md overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-white to-gray-50 border-b">
-        <CardTitle className="flex items-center justify-between text-xl">
+    <Card className="border-0  overflow-hidden">
+      <CardHeader className="-mb-8">
+        <CardTitle className="flex items-center justify-between text-xs">
           <span className="text-gray-800">Payment Methods</span>
           {selectedPaymentMethod && (
             <Button 
-              className="bg-red-500 hover:bg-red-600 text-white"
+              className="bg-red-500 hover:bg-red-600 text-xs text-white"
               onClick={handleProceedToPayment}
             >
               Proceed to Payment <ArrowRight className="ml-2 h-4 w-4" />
@@ -61,27 +61,27 @@ export const PaymentMethods = () => {
             <Button
               key={method.id}
               variant={selectedPaymentMethod === method.id ? "default" : "outline"}
-              className={`h-16 justify-start transition-all ${
+              className={`h-10 justify-start transition-all ${
                 selectedPaymentMethod === method.id
                   ? `${method.color} text-white`
-                  : "hover:bg-gray-50 border-2"
+                  : "hover:bg-gray-50b"
               } rounded-xl`}
               onClick={() => selectPaymentMethod(method.id)}
             >
               <div className="flex items-center">
                 {method.icon}
-                <span className="ml-2">{method.label}</span>
+                <span className="text-[10px] ml-2">{method.label}</span>
               </div>
             </Button>
           ))}
         </div>
         
-        <div className="mt-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
+        <div className="mt-6">
           <div className="flex items-center">
-            <svg viewBox="0 0 24 24" className="h-5 w-5 text-gray-500 mr-2" fill="currentColor">
+            <svg viewBox="0 0 24 24" className="h-3 w-3 text-gray-500 mr-2" fill="currentColor">
               <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v5.7c0 4.83-3.4 8.94-7 10-3.6-1.06-7-5.17-7-10V6.3l7-3.12z" />
             </svg>
-            <p className="text-sm text-gray-600">
+            <p className="text-[10px] text-gray-600">
               All payment methods are secured with end-to-end encryption. Your financial information is never stored on our servers.
             </p>
           </div>
