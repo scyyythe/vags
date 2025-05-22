@@ -29,7 +29,7 @@ const ConfirmPurchaseButton = () => {
           if (selectedPaymentMethod) {
             navigate("/payment");
           } else {
-            alert("Please select a payment method before proceeding.");
+            toast("Please select a payment method before proceeding.");
           }
         }}
         className="w-44 text-center bg-red-700 hover:bg-red-600 text-[11px] text-white px-2 py-2 rounded-full cursor-pointer overflow-hidden"
