@@ -8,6 +8,7 @@ export interface Artwork {
   artist: string;
   artist_id: string;
   description: string;
+  profile_picture: string;
   category: string;
   medium: string;
   status: string;
@@ -22,10 +23,10 @@ export interface Artwork {
   artworkImage: string;
   likesCount: number;
 }
-const fetchPopularArtworks = async (currentPage: number): Promise<Artwork[]> => {
+const fetchPopularArtworks = async (limit = 5): Promise<Artwork[]> => {
   try {
     const response = await apiClient.get("art/list/", {
-      params: { sort: "likes", limit: 5 },
+      params: { sort: "likes", limit },
     });
 
     const artworks = response.data.map((artwork: Artwork) => ({
@@ -33,7 +34,7 @@ const fetchPopularArtworks = async (currentPage: number): Promise<Artwork[]> => 
       title: artwork.title,
       artistName: artwork.artist,
       artistId: artwork.artist_id,
-      artistImage: "",
+      artistImage: artwork.profile_picture,
       description: artwork.description,
       style: artwork.category,
       medium: artwork.medium,
@@ -49,17 +50,17 @@ const fetchPopularArtworks = async (currentPage: number): Promise<Artwork[]> => 
       likes_count: artwork.likes_count,
     }));
 
-    return artworks.sort((a, b) => b.likes_count - a.likes_count).slice(0, 5);
+    return artworks.sort((a, b) => b.likes_count - a.likes_count).slice(0, limit);
   } catch (error) {
     console.error("Error fetching popular artworks: ", error);
     throw error;
   }
 };
 
-const useFetchPopularArtworks = (currentPage: number) => {
+const useFetchPopularArtworks = (limit = 5) => {
   return useQuery({
-    queryKey: ["artworks", currentPage],
-    queryFn: () => fetchPopularArtworks(currentPage),
+    queryKey: ["popular-artworks", limit],
+    queryFn: () => fetchPopularArtworks(limit),
     staleTime: 1000 * 60 * 5,
   });
 };
