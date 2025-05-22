@@ -38,6 +38,10 @@ import FollowDemo from "./components/user_dashboard/own_profile/following_&_foll
 //HIGHEST BID
 import BidWinnerPage from "./components/user_dashboard/Bidding/highest_bid/pages/BidWinnerPage";
 import PaymentPage from "@/components/user_dashboard/Bidding/highest_bid/pages/PaymentPage";
+// import { PaypalPage } from "./components/user_dashboard/Bidding/highest_bid/payment/PayPal";
+// import GCashPage from "@/components/user_dashboard/Bidding/highest_bid/payment/Gcash";
+// import StripePage from "./components/user_dashboard/Bidding/highest_bid/payment/Stripe";
+// import DebitCreditPage from "@/components/user_dashboard/Bidding/highest_bid/payment/CreditCard";
 // import MyAuctionsPage from "./pages/MyAuctionsPage";
 
 //EXHIBITS
