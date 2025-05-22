@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import apiClient from "@/utils/apiClient";
 
-interface User {
+export interface User {
   id: string;
   username: string;
   email: string;

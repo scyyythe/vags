@@ -6,24 +6,30 @@ import { cn } from "@/lib/utils";
 import gcashLogo from "../../../../../public/pics/gcash.png";
 import paypalLogo from "../../../../../public/pics/paypal.png";
 import stripeLogo from "../../../../../public/pics/stripe.png";
+import { usePayPalTip } from "@/hooks/tips/usePayPalTip";
 interface TipJarPopupProps {
   isOpen: boolean;
   onClose: () => void;
   artworkTitle?: string;
   artworkImage?: string;
   artistName?: string;
+  artistId: string;
+  artId: string;
 }
 
-type PaymentMethod = "PayPal" | "GCash" | "Stripe"; 
+type PaymentMethod = "PayPal" | "GCash" | "Stripe";
 
-const TipJarPopup = ({ 
-  isOpen, 
-  onClose, 
+const TipJarPopup = ({
+  isOpen,
+  onClose,
   artworkTitle = "Untitled Artwork",
   artworkImage = "",
-  artistName = ""
+  artistName = "",
+  artistId = "",
+  artId = "",
 }: TipJarPopupProps) => {
-  const [step, setStep] = useState<"amount" | "confirm">("amount");
+  const [step, setStep] = useState<"amount" | "confirm" | "paypal">("amount");
+
   const [selectedAmount, setSelectedAmount] = useState<string | null>(null);
   const [customAmount, setCustomAmount] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("PayPal");
@@ -31,6 +37,8 @@ const TipJarPopup = ({
 
   console.log("TipJarPopup - isOpen:", isOpen);
   console.log("TipJarPopup - artworkTitle:", artworkTitle);
+  console.log("TipJarPopup - artistId:", artistId);
+  console.log("TipJarPopup - artworkid:", artId);
 
   const predefinedAmounts = [
     { value: "250", label: "₱250" },
@@ -102,14 +110,36 @@ const TipJarPopup = ({
       toast.error("Please select or enter an amount");
       return;
     }
-    
+
     setStep("confirm");
   };
-  
+  const paypalRef = usePayPalTip({
+    amount: selectedAmount || customAmount,
+    artistId: artistId,
+    id: artId,
+    onSuccess: (details) => {
+      toast.success("Thank you for your donation!");
+      onClose();
+    },
+    onError: (error) => {
+      toast.error("PayPal payment failed. Please try again.");
+      console.error(error);
+    },
+  });
+
   const handleConfirmDonation = () => {
     const amount = selectedAmount || customAmount;
-    toast.success(`Donation of ₱${amount} sent via ${paymentMethod}!`);
-    onClose();
+    if (!amount) {
+      toast.error("Invalid amount.");
+      return;
+    }
+
+    if (paymentMethod === "PayPal") {
+      setStep("paypal");
+    } else {
+      toast.success(`Donation of ₱${amount} sent via ${paymentMethod}!`);
+      onClose();
+    }
   };
 
   const handleCancel = () => {
@@ -124,12 +154,12 @@ const TipJarPopup = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-6">
-      <div 
-        ref={popupRef} 
+      <div
+        ref={popupRef}
         className="bg-white rounded-sm max-w-md w-full shadow-xl overflow-hidden animate-fadeIn relative"
       >
         {step === "amount" && (
-          <button 
+          <button
             onClick={handleCancel}
             className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10"
             aria-label="Close"
@@ -142,15 +172,15 @@ const TipJarPopup = ({
           <div className="p-8 text-center">
             <h2 className="text-sm font-small mb-6">Are you sure you want to send a donation?</h2>
             <div className="flex gap-4 justify-center">
-              <Button 
-                onClick={handleConfirmDonation} 
+              <Button
+                onClick={handleConfirmDonation}
                 className="w-[35%] bg-[#B5191D] hover:bg-[#9b1518] text-white text-xs font-medium rounded-full py-1 px-4"
               >
                 Yes
               </Button>
-              <Button 
+              <Button
                 variant="outline"
-                onClick={handleCancel} 
+                onClick={handleCancel}
                 className="w-[35%] bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-medium rounded-full py-1 px-4"
               >
                 No
@@ -161,15 +191,11 @@ const TipJarPopup = ({
           <div className="py-6 px-16">
             <div className="text-center mb-4">
               <h2 className="text-xl font-bold">{artworkTitle}</h2>
-              
+
               <div className="flex justify-center my-4">
                 <div className="w-16 h-16 rounded-sm overflow-hidden border border-gray-200 shadow-lg">
                   {artworkImage ? (
-                    <img 
-                      src={artworkImage} 
-                      alt={artworkTitle} 
-                      className="w-full h-full object-cover" 
-                    />
+                    <img src={artworkImage} alt={artworkTitle} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
                       No Image
@@ -177,9 +203,9 @@ const TipJarPopup = ({
                   )}
                 </div>
               </div>
-              
+
               <p className="text-gray-600 text-xs mb-6">How much you wanna donate?</p>
-              
+
               <div className="grid grid-cols-3 gap-2 mb-4">
                 {predefinedAmounts.slice(0, 3).map((amount) => (
                   <button
@@ -196,7 +222,7 @@ const TipJarPopup = ({
                   </button>
                 ))}
               </div>
-              
+
               <div className="grid grid-cols-3 gap-2 mb-5">
                 {predefinedAmounts.slice(3).map((amount) => (
                   <button
@@ -213,7 +239,6 @@ const TipJarPopup = ({
                   </button>
                 ))}
               </div>
-              
 
               {/* Divider */}
               <div className="relative flex items-center justify-center mb-5">
@@ -221,7 +246,7 @@ const TipJarPopup = ({
                 <span className="flex-shrink mx-4 text-gray-500 text-xs">or</span>
                 <div className="flex-grow border-t border-gray-400"></div>
               </div>
-              
+
               <input
                 type="text"
                 value={customAmount}
@@ -229,7 +254,7 @@ const TipJarPopup = ({
                 placeholder="Enter amount manually"
                 className="w-full p-2 text-[10px] border border-gray-300 rounded-sm text-center mb-6"
               />
-              
+
               <div className="mb-6">
                 <p className="text-left text-xs font-medium mb-4">payment method</p>
                 <div className="flex flex-col gap-1">
@@ -243,7 +268,7 @@ const TipJarPopup = ({
                       checked={paymentMethod === "PayPal"}
                       onChange={() => handlePaymentMethodSelect("PayPal")}
                       className="form-radio accent-red-900 h-3 w-3 cursor-pointer"
-                      />
+                    />
                   </label>
                   <label className="flex items-center justify-between">
                     <div className="flex gap-4">
@@ -268,11 +293,10 @@ const TipJarPopup = ({
                       onChange={() => handlePaymentMethodSelect("Stripe")}
                       className="form-radio accent-red-900 h-3 w-3 cursor-pointer"
                     />
-                    
                   </label>
                 </div>
               </div>
-              
+
               <Button
                 onClick={handleProceedToDonate}
                 className="w-full bg-red-800 hover:bg-red-700 text-white text-xs font-medium py-3 rounded-full"
@@ -283,6 +307,20 @@ const TipJarPopup = ({
           </div>
         )}
       </div>
+      {/* PayPal payment step */}
+      {step === "paypal" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
+            <h2 className="text-xs font-small mb-4">Pay with PayPal</h2>
+
+            <div ref={paypalRef} className="mx-auto" />
+
+            <button onClick={() => setStep("amount")} className="mt-4 text-xs text-gray-500 underline">
+              Cancel and go back
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

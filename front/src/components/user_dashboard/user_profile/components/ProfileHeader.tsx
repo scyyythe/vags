@@ -48,7 +48,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
       setIsFollowing(data as boolean);
     }
   }, [data]);
-  
+
   const toggleFollow = async () => {
     if (!isFollowing) {
       followMutation.mutate(
@@ -81,7 +81,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
-  
+
   if (isFollowStatusLoading) {
     return (
       <button disabled className="px-8 py-[6px] rounded-full text-[10px] bg-gray-500 text-white">
@@ -89,7 +89,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
       </button>
     );
   }
-  
+
   return (
     <div className="w-full px-4">
       {/* Cover Photo */}
@@ -110,12 +110,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
 
         {/* Stats - Replaced with FollowModals component */}
         <div className="flex space-x-2">
-          <FollowModals 
+          <FollowModals
             userId={profileUserId}
-            followersCount={followCounts?.followers ?? 0} 
-            followingCount={followCounts?.following ?? 0} 
+            followersCount={followCounts?.followers ?? 0}
+            followingCount={followCounts?.following ?? 0}
           />
-          
+
           {/* Items count - separate from FollowModals */}
           <div className="flex items-center space-x-2 mt-1.5 text-[10px] md:text-[11px]">
             <span>•</span>

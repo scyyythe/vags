@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import BidMenu from "./BidMenu";
 import BidPopup from "../place_bid/BidPopup";
 import CountdownTimer from "@/hooks/count/useCountdown";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
-import { useEffect } from "react";
+import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
+import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
+
+interface ExtendedArtworkAuction extends ArtworkAuction {
+  isPaid?: boolean;
+  isHighestBidder?: boolean;
+  joinedByCurrentUser?: boolean;
+}
 
 interface BidCardProps {
-  data: ArtworkAuction;
-  onClick: () => void;
+  data: ExtendedArtworkAuction;
+  onClick?: () => void;
   isLoading?: boolean;
   onPlaceBid?: (id: string, amount: number) => void;
   user?: {
@@ -22,12 +30,15 @@ interface BidCardProps {
 const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, onClick, user }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const [isReported, setIsReported] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
+  const { data: reportStatusData } = useBidReportStatus(data.id);
+  const isReported = reportStatusData?.reported === true;
+
+  const navigate = useNavigate();
+  const { mutate: submitAuctionReport } = useAuctionSubmitReport();
 
   useEffect(() => {
     console.log("Top level start_bid_amount:", data.start_bid_amount);
-    console.log("Artwork level start_bid_amount:", data.start_bid_amount);
   }, [data]);
 
   if (isLoading) {
@@ -49,9 +60,13 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
     setMenuOpen(false);
   };
 
-  const handleReport = () => {
-    setIsReported(!isReported);
-    toast(isReported ? "Artwork report removed" : "Artwork reported");
+  const handleReport = (issueDetails: string) => {
+    if (reportStatusData?.reported) {
+      toast.error("You have already reported this artwork.");
+      setMenuOpen(false);
+      return;
+    }
+    submitAuctionReport({ id: data.id, issue_details: issueDetails });
     setMenuOpen(false);
   };
 
@@ -59,6 +74,10 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
     onPlaceBid?.(data.id, amount);
     toast(`Bid of ${amount}K placed successfully!`);
   };
+
+  if (isHidden) return null;
+
+  const hasWon = data.isHighestBidder && data.isPaid;
 
   return (
     <>
@@ -73,7 +92,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
         <div className="px-6 py-5 flex flex-col gap-2">
           <div className="flex justify-between">
             <h2 className="text-sm font-semibold">{data.artwork.title}</h2>
-            <div className="relative text-gray-500" style={{ height: "24px" }}>
+            <div className="relative text-gray-500" style={{ height: "24px" }} onClick={(e) => e.stopPropagation()}>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -86,9 +105,10 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
               <BidMenu isOpen={menuOpen} onHide={handleHide} onReport={handleReport} isReported={isReported} />
             </div>
           </div>
+
           <div className="flex items-center justify-between">
             <div className="text-gray-500 text-[10px]">
-              Current Bid
+              {hasWon ? "Your Bid" : "Current Bid"}
               <span className="text-sm font-bold text-black ml-2">
                 {data.highest_bid?.amount
                   ? data.highest_bid.amount >= 1000
@@ -97,14 +117,19 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
                   : "0"}
               </span>
             </div>
+
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setShowBidPopup(true);
+                if (hasWon) {
+                  navigate(`/bid-winner/${data.id}`);
+                } else {
+                  setShowBidPopup(true);
+                }
               }}
               className="bg-red-800 hover:bg-red-700 text-white text-[9px] px-6 py-2 rounded-full whitespace-nowrap"
             >
-              Place A Bid
+              {hasWon ? "Complete Purchase" : "Place A Bid"}
             </button>
           </div>
         </div>

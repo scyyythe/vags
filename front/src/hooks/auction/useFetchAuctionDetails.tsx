@@ -5,7 +5,7 @@ import { ArtworkAuction } from "./useAuction";
 
 export const useFetchBiddingArtworkById = (id: string) => {
   return useQuery<ArtworkAuction, Error>({
-    queryKey: ["biddingArtwork", id],
+    queryKey: ["biddingArtworks", id],
     queryFn: async () => {
       const response = await apiClient.get(`auction/${id}/`);
       const artwork = response.data;
@@ -17,7 +17,8 @@ export const useFetchBiddingArtworkById = (id: string) => {
       };
     },
     enabled: !!id,
-    staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchInterval: 5000,
   });
 };

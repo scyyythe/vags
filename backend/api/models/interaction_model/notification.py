@@ -2,20 +2,21 @@ from mongoengine import Document, StringField, ReferenceField, DateTimeField, Bo
 from datetime import datetime
 from api.models.user_model.users import User
 from api.models.artwork_model.artwork import Art
+from api.models.artwork_model.bid import Auction
 
 class Notification(Document):
     # Existing fields
     user = ReferenceField(User, required=True)
-    message = StringField(required=True)
+    message = StringField(required=False)
     art = ReferenceField(Art, required=False)
+    auction = ReferenceField(Auction, required=False)
     created_at = DateTimeField(default=datetime.utcnow)
     is_read = BooleanField(default=False)
 
-    # New fields to store time and date dynamically
-    time = StringField(required=False)  # To store the elapsed time (e.g., "1m ago")
-    date = DateTimeField(required=False)  # To store the exact timestamp (e.g., when the notification was created)
+    
+    time = StringField(required=False)  
+    date = DateTimeField(required=False) 
 
-    # Optional extended fields to align with custom structure
     avatar = StringField(required=False)
     name = StringField(required=False)
     action = StringField(required=False)
@@ -30,3 +31,4 @@ class Notification(Document):
     check = BooleanField(default=False) 
 
     meta = {'collection': 'notifications'}
+    

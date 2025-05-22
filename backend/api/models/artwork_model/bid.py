@@ -1,8 +1,11 @@
-from mongoengine import Document, ReferenceField, FloatField, DateTimeField, BooleanField, ListField,StringField
+from mongoengine import Document, ReferenceField, FloatField, DateTimeField, BooleanField, ListField,StringField,CASCADE
 from datetime import datetime
 from api.models.user_model.users import User
 from api.models.artwork_model.artwork import Art
 from enum import Enum
+from datetime import datetime
+from django.utils.timesince import timesince
+from mongoengine import DoesNotExist
 class Bid(Document):
     bidder = ReferenceField(User, required=True, reverse_delete_rule=2)
     artwork = ReferenceField(Art, required=True, reverse_delete_rule=2)
@@ -19,9 +22,9 @@ class AuctionStatus(Enum):
     SOLD = "sold"
     CLOSED = "closed"
     NO_BIDDER = "no_bidder"
-
+    RE_AUCTIONED="reauctioned"
 class Auction(Document):
-    artwork = ReferenceField(Art, required=True, unique=True)
+    artwork = ReferenceField(Art, required=True)
     start_bid_amount = FloatField(required=True, min_value=0.1)
     start_time = DateTimeField(required=True)
     end_time = DateTimeField(required=True)
@@ -34,18 +37,68 @@ class Auction(Document):
     )
     
     bid_history = ListField(ReferenceField(Bid))
+    viewed_by = ListField(ReferenceField(User, reverse_delete_rule=CASCADE), default=[])
 
     def close_auction(self):
-        """Close the auction and determine final status."""
+        from api.models.interaction_model.notification import Notification
+        if self.status in [AuctionStatus.SOLD.value, AuctionStatus.CLOSED.value, AuctionStatus.NO_BIDDER.value]:
+            return  
+
+        now = datetime.utcnow()
+
+        try:
+            artwork = self.artwork  
+        except DoesNotExist:
+            return  
+
         if self.bid_history:
+            highest = max(self.bid_history, key=lambda bid: bid.amount)
+            self.highest_bid = highest
             self.status = AuctionStatus.SOLD.value
+            self.save()
+
+          
+            artwork.art_status = "Sold"
+            artwork.save()
+
+            now = datetime.utcnow()
+            time_elapsed = timesince(highest.timestamp or now) + " ago"
+
+            Notification.objects.create(
+                user=highest.bidder,
+                action=f" Congratulations! You won the auction for '{artwork.title}' with a bid of ${highest.amount:.2f}.",
+                art=artwork,
+                name="Bidding Successful!",
+                target=artwork.title,  
+                icon="🏆",
+                date=now,
+                money=True,
+                amount=str(highest.amount),
+            )
+
+            Notification.objects.create(
+                user=artwork.artist,
+                action=f"Your artwork '{artwork.title}' was sold to {highest.bidder.username} for ${highest.amount:.2f}.",
+                art=artwork,
+                name = "You sold your artwork!",
+                target=artwork.title,  
+                date=now,
+                money=True,
+                amount=str(highest.amount),
+            )
         else:
-            self.status = AuctionStatus.NO_BIDDER.value
-        self.save()
+            self.status = AuctionStatus.CLOSED.value
+            self.save()
+           
+            artwork.art_status = "Active"
+            artwork.save()
+
+
+
 
     @classmethod
     def create_auction(cls, artwork_id, start_time, end_time, start_bid_amount):
-        """Create a new auction with default status 'on_going'."""
+        
         auction = cls(
             artwork=Art.objects.get(id=artwork_id),
             start_bid_amount=start_bid_amount,

@@ -6,6 +6,7 @@ from api.models.artwork_model.artwork import Art
 from mongoengine.errors import DoesNotExist
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from api.serializers.user_s.users_serializers import UserSerializer
+
 class BidSerializer(serializers.Serializer):
     user = UserSerializer(source="bidder", read_only=True) 
     bidderFullName = serializers.SerializerMethodField()
@@ -34,9 +35,12 @@ class BidSerializer(serializers.Serializer):
             artwork = Art.objects.get(id=artwork_id)
         except DoesNotExist:
             raise serializers.ValidationError({"error": "Artwork not found."})
-
+        
+        if artwork.artist==bidder:
+            raise serializers.ValidationError({"error": "You cannot bid on your own artwork."})
+        
         try:
-           auction = Auction.objects.get(artwork=artwork, status=AuctionStatus.ON_GOING.value)
+            auction = Auction.objects.get(artwork=artwork, status=AuctionStatus.ON_GOING.value)
         except DoesNotExist:
             raise serializers.ValidationError({"error": "Auction not found or has ended."})
 
@@ -55,12 +59,12 @@ class BidSerializer(serializers.Serializer):
 
         if current_highest_bid:
             is_current_bidder_highest = current_highest_bid.bidder == bidder
+
             if is_current_bidder_highest:
-                
-                if new_bid_amount <= current_highest_bid.amount:
-                    raise serializers.ValidationError(
-                        {"error": "Your new bid must be higher than your current highest bid."}
-                    )
+              
+                raise serializers.ValidationError(
+                    {"error": "You are currently the highest bidder."}
+                )
             else:
                 
                 if new_bid_amount <= current_highest_bid.amount:
@@ -81,6 +85,8 @@ class BidSerializer(serializers.Serializer):
 
         return bid
 
+
+
 class AuctionSerializer(serializers.Serializer):
     id = serializers.CharField()
     artwork = ArtSerializer(read_only=True)
@@ -90,22 +96,57 @@ class AuctionSerializer(serializers.Serializer):
     highest_bid = BidSerializer(read_only=True)
     bid_history = BidSerializer(read_only=True, many=True)
     status = serializers.CharField(read_only=True)
-
+    viewers = serializers.SerializerMethodField()
+    def get_viewers(self, obj):
+        return [user.username for user in obj.viewed_by]
+    
     def to_representation(self, instance):
         data = super().to_representation(instance)
+        request = self.context.get("request", None)
+        user = getattr(request, "user", None)
 
-        
         data['artwork'] = ArtSerializer(instance.artwork).data
-
-        
-        if instance.highest_bid:
-            data['highest_bid'] = BidSerializer(instance.highest_bid).data
-        else:
-            data['highest_bid'] = None
-
-        
+        data['highest_bid'] = (
+            BidSerializer(instance.highest_bid).data if instance.highest_bid else None
+        )
         data['bid_history'] = BidSerializer(instance.bid_history, many=True).data
+        data['viewers'] = [u.username for u in instance.viewed_by]
+
+        if user and not user.is_anonymous:
+            user_id = str(user.id)
+            username = str(user.username)
+
+            joined_by_bid_history = any(
+                (getattr(bid.bidder, 'id', None) and str(bid.bidder.id) == user_id)
+                or (getattr(bid.bidder, 'username', None) == username)
+                for bid in instance.bid_history
+            )
+
+            joined_by_viewers = username in data['viewers']
+
+            data['joinedByCurrentUser'] = joined_by_bid_history or joined_by_viewers
+
+            data['isHighestBidder'] = (
+                instance.highest_bid and
+                (
+                    (getattr(instance.highest_bid.bidder, 'id', None) and str(instance.highest_bid.bidder.id) == user_id)
+                    or
+                    (getattr(instance.highest_bid.bidder, 'username', None) == username)
+                )
+            )
+
+            data['isLost'] = (
+                instance.status == AuctionStatus.CLOSED.value and
+                data['joinedByCurrentUser'] and
+                not data['isHighestBidder']
+            )
+        else:
+            data['joinedByCurrentUser'] = False
+            data['isHighestBidder'] = False
+            data['isLost'] = False
 
         return data
+
+
 
 

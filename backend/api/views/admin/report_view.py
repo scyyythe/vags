@@ -5,16 +5,18 @@ from rest_framework.response import Response
 from api.models.admin.report import Report
 from api.models.user_model.users import User
 from api.models.interaction_model.notification import Notification
-from api.serializers.admin.report_serializers import ReportSerializer
+from api.serializers.admin.report_serializers import ReportSerializer,AuctionReportSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 from datetime import datetime
 from api.models.artwork_model.artwork import Art
+from api.models.artwork_model.bid import Bid,Auction
 from rest_framework import serializers
 from rest_framework.views import APIView
 import traceback
 import logging
-
+from api.models.admin.report  import AuctionReport
+from bson.errors import InvalidId
 logger = logging.getLogger(__name__)
 
 class ReportCreateView(generics.ListCreateAPIView):
@@ -64,8 +66,42 @@ class ReportCreateView(generics.ListCreateAPIView):
             date=datetime.utcnow(),
         ).save()
 
+class AuctionReportCreateView(generics.ListCreateAPIView):
+    serializer_class = AuctionReportSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return AuctionReport.objects.filter(user=ObjectId(self.request.user.id))
 
+    def perform_create(self, serializer):
+        # Save the report instance
+        report = serializer.save()
+
+        auction = report.auction
+        reporter = report.user       
+        artist = auction.artwork.artist  
+
+        now = datetime.utcnow()
+
+        
+        Notification.objects.create(
+            user=reporter,
+            auction=auction,
+            name="Report Submitted",
+            action="You submitted a report.",
+            target=auction.artwork.title,
+            date=now,
+        ).save()
+
+       
+        Notification.objects.create(
+            user=artist,
+            auction=auction,
+            name="Auction Reported",
+            target=auction.artwork.title,
+            action="A report about your auction has been submitted and is under review.",
+            date=now,
+        ).save()
 class ReportDeleteView(generics.DestroyAPIView):
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]
@@ -98,7 +134,37 @@ class ReportStatus(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
             
+class AuctionReportStatus(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request, pk):
+        user_id = request.user.id
+        try:
+            # Validate ObjectIds
+            auction_obj_id = ObjectId(pk)
+            user_obj_id = ObjectId(user_id) if isinstance(user_id, str) else user_id
+
+            # Query the AuctionReport collection instead of Report
+            reported = AuctionReport.objects.filter(
+                user=user_obj_id,
+                auction=auction_obj_id
+            ).count() > 0
+
+            return Response({"reported": reported}, status=status.HTTP_200_OK)
+
+        except InvalidId:
+            # This will catch invalid ObjectId format
+            return Response(
+                {"error": "Invalid auction ID."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as e:
+            # Log the actual error for debugging
+            logger.error(f"Error fetching report status: {e}")
+            return Response(
+                {"error": "Failed to fetch report status."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 class UserReportsView(generics.ListAPIView):
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]

@@ -114,6 +114,7 @@ const ArtworkDetails = () => {
       title: artwork.title || "Untitled Artwork",
       artistName: artwork.artist || "Unknown Artist",
       artworkImage: artwork.image || "",
+      artistId: artwork.artistId,
     });
   };
 
@@ -289,305 +290,304 @@ const ArtworkDetails = () => {
 
   return (
     <>
-    <div className="min-h-screen">
-      <Header />
+      <div className="min-h-screen">
+        <Header />
 
-      <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
-        {/* Back button */}
-        <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
-          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
-            <i className="bx bx-chevron-left text-lg mr-2"></i>
-            Go back
-          </button>
-        </div>
+        <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
+          {/* Back button */}
+          <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
+            <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+              <i className="bx bx-chevron-left text-lg mr-2"></i>
+              Go back
+            </button>
+          </div>
 
-        <div className={` ${isMobile ? "flex flex-col" : "flex justify-center items-start space-x-2 mt-2"}`}>
-          {/* Artwork, Right-side Sliding */}
-          <div
-            className={`${
-              isMobile ? "w-full" : "flex justify-center items-start transition-transform duration-500 ease-in-out"
-            }`}
-            style={{
-              transform: !isMobile && isDetailOpen ? "translateX(70px)" : "translateX(0)",
-            }}
-          >
-            {/* Artwork container */}
-            <div className={`relative mr-8 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
-              {/* Collapsible Sidebar */}
-              {!isMobile && (
-                <div
-                  className={`absolute right-100 -top-8 w-[32%] h-[140%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
-                    isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-1"
-                  }`}
-                  style={{ right: "calc(100% + 16px)", marginRight: "40px" }}
-                >
-                  <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
-                    <div className="mb-6">
-                      <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
-                      <p className="text-[9px] text-gray-700">
-                        {artwork.style
-                          ? artwork.style
-                              .split(" ")
-                              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                              .join(" ")
-                          : "Painting"}
-                      </p>
-                    </div>
-                    <div className="mb-6">
-                      <h3 className="text-[9px] font-medium mb-1">Medium</h3>
-                      <p className="text-[9px] text-gray-700">{artwork.medium || "Acrylic Paint"}</p>
-                    </div>
-                    <div className="mb-6">
-                      <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
-                      <p className="text-[9px] text-gray-700">{artwork.datePosted || "March 25, 2023"}</p>
-                    </div>
-                    <div className="mb-1">
-                      <h3 className="text-[9px] font-medium mb-1">Artwork Size</h3>
-                      <p className="text-[9px] text-gray-700">
-                        {artwork.size
-                          ? artwork.size
-                              .split(" x ")
-                              .map((dim) => `${dim}″`)
-                              .join(" x ")
-                          : "20 x 20″"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Mobile Information Panel (Collapsible) */}
-              {isMobile && (
-                <Collapsible className="px-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <CollapsibleTrigger className="p-1 -mb-2 mt-2">
-                      <GripVertical size={16} />
-                    </CollapsibleTrigger>
-                  </div>
-                  <CollapsibleContent className="transition-all duration-500 ease-in-out">
-                    <div className="bg-gray-50 rounded-md p-4 text-xs">
-                      <div className="grid grid-cols-4 gap-8 px-8 whitespace-nowrap">
-                        <div>
-                          <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
-                          <p className="text-[10px] text-gray-700">{artwork.style || "Painting"}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-[10px] font-medium mb-1">Medium</h4>
-                          <p className="text-[10px] text-gray-700">{artwork.medium || "Acrylic Paint"}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
-                          <p className="text-[10px] text-gray-700">{artwork.datePosted || "March 25, 2023"}</p>
-                        </div>
-                        <div className="mb-1">
-                          <h3 className="text-[10px] font-medium mb-1">Artwork Size</h3>
-                          <p className="text-[9px] text-gray-700">
-                            {artwork.size
-                              ? artwork.size
-                                  .split(" x ")
-                                  .map((dim) => `${dim}″`)
-                                  .join(" x ")
-                              : "20 x 20″"}
-                          </p>
-                        </div>
+          <div className={` ${isMobile ? "flex flex-col" : "flex justify-center items-start space-x-2 mt-2"}`}>
+            {/* Artwork, Right-side Sliding */}
+            <div
+              className={`${
+                isMobile ? "w-full" : "flex justify-center items-start transition-transform duration-500 ease-in-out"
+              }`}
+              style={{
+                transform: !isMobile && isDetailOpen ? "translateX(70px)" : "translateX(0)",
+              }}
+            >
+              {/* Artwork container */}
+              <div className={`relative mr-8 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
+                {/* Collapsible Sidebar */}
+                {!isMobile && (
+                  <div
+                    className={`absolute right-100 -top-8 w-[32%] h-[140%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
+                      isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-1"
+                    }`}
+                    style={{ right: "calc(100% + 16px)", marginRight: "40px" }}
+                  >
+                    <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
+                      <div className="mb-6">
+                        <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
+                        <p className="text-[9px] text-gray-700">
+                          {artwork.style
+                            ? artwork.style
+                                .split(" ")
+                                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                .join(" ")
+                            : "Painting"}
+                        </p>
+                      </div>
+                      <div className="mb-6">
+                        <h3 className="text-[9px] font-medium mb-1">Medium</h3>
+                        <p className="text-[9px] text-gray-700">{artwork.medium || "Acrylic Paint"}</p>
+                      </div>
+                      <div className="mb-6">
+                        <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
+                        <p className="text-[9px] text-gray-700">{artwork.datePosted || "March 25, 2023"}</p>
+                      </div>
+                      <div className="mb-1">
+                        <h3 className="text-[9px] font-medium mb-1">Artwork Size</h3>
+                        <p className="text-[9px] text-gray-700">
+                          {artwork.size
+                            ? artwork.size
+                                .split(" x ")
+                                .map((dim) => `${dim}″`)
+                                .join(" x ")
+                            : "20 x 20″"}
+                        </p>
                       </div>
                     </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              )}
-
-              {/* Center - Artwork Image */}
-              <div className={`relative z-0 mt-8 ${isMobile ? "px-4" : ""}`}>
-                {!isMobile && (
-                  <button
-                    onClick={toggleDetailsPanel}
-                    className="p-1 text-gray-500 hover:text-black absolute -left-12 top-1/2 transform -translate-y-1/2S"
-                  >
-                    <GripVertical size={15} />
-                  </button>
+                  </div>
                 )}
 
-                <div className="inline-block transform scale-[1.10] -mb-6 relative">
-                  <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
-                    <img
-                      src={artwork.image}
-                      alt={artwork.title}
-                      className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
-                    />
-
-                    {/* TipJar + Expand Button Container */}
-                    <div
-                      className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}
-                    >
-                      {/* Expand Icon */}
-                      <div
-                        className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
-                        onClick={() => setIsExpanded(true)}
-                      >
-                        <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
-                        <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
-                          Expand
-                        </span>
+                {/* Mobile Information Panel (Collapsible) */}
+                {isMobile && (
+                  <Collapsible className="px-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <CollapsibleTrigger className="p-1 -mb-2 mt-2">
+                        <GripVertical size={16} />
+                      </CollapsibleTrigger>
+                    </div>
+                    <CollapsibleContent className="transition-all duration-500 ease-in-out">
+                      <div className="bg-gray-50 rounded-md p-4 text-xs">
+                        <div className="grid grid-cols-4 gap-8 px-8 whitespace-nowrap">
+                          <div>
+                            <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
+                            <p className="text-[10px] text-gray-700">{artwork.style || "Painting"}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-[10px] font-medium mb-1">Medium</h4>
+                            <p className="text-[10px] text-gray-700">{artwork.medium || "Acrylic Paint"}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
+                            <p className="text-[10px] text-gray-700">{artwork.datePosted || "March 25, 2023"}</p>
+                          </div>
+                          <div className="mb-1">
+                            <h3 className="text-[10px] font-medium mb-1">Artwork Size</h3>
+                            <p className="text-[9px] text-gray-700">
+                              {artwork.size
+                                ? artwork.size
+                                    .split(" x ")
+                                    .map((dim) => `${dim}″`)
+                                    .join(" x ")
+                                : "20 x 20″"}
+                            </p>
+                          </div>
+                        </div>
                       </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                )}
 
-                      {/* TipJar Icon */}
+                {/* Center - Artwork Image */}
+                <div className={`relative z-0 mt-8 ${isMobile ? "px-4" : ""}`}>
+                  {!isMobile && (
+                    <button
+                      onClick={toggleDetailsPanel}
+                      className="p-1 text-gray-500 hover:text-black absolute -left-12 top-1/2 transform -translate-y-1/2S"
+                    >
+                      <GripVertical size={15} />
+                    </button>
+                  )}
+
+                  <div className="inline-block transform scale-[1.10] -mb-6 relative">
+                    <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
+                      <img
+                        src={artwork.image}
+                        alt={artwork.title}
+                        className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
+                      />
+
+                      {/* TipJar + Expand Button Container */}
                       <div
-                        className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer animate-tipjar"
-                        onClick={handleTipJar}
+                        className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}
                       >
-                        <i className="bx bx-box text-[12px] mr-[6px]"></i>
-                        <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700 animate-donate">
-                          Donate
-                        </span>
+                        {/* Expand Icon */}
+                        <div
+                          className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
+                          onClick={() => setIsExpanded(true)}
+                        >
+                          <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
+                          <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
+                            Expand
+                          </span>
+                        </div>
+
+                        {/* TipJar Icon */}
+                        <div
+                          className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer animate-tipjar"
+                          onClick={handleTipJar}
+                        >
+                          <i className="bx bx-box text-[12px] mr-[6px]"></i>
+                          <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700 animate-donate">
+                            Donate
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Right side - Title, artist, description, comments */}
-            <div className={`${isMobile ? "w-full mt-6 px-4" : "w-[500px] -ml-[70px]"}`}>
-              <div className={`${isMobile ? "" : "relative top-5"}`}>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center space-x-4">
-                    <button
-                      onClick={handleLike}
-                      className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
-                    >
-                      <Heart
-                        size={isMobile ? 14 : 14}
-                        className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
-                        fill={isLiked ? "currentColor" : "none"}
+              {/* Right side - Title, artist, description, comments */}
+              <div className={`${isMobile ? "w-full mt-6 px-4" : "w-[500px] -ml-[70px]"}`}>
+                <div className={`${isMobile ? "" : "relative top-5"}`}>
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center space-x-4">
+                      <button
+                        onClick={handleLike}
+                        className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
+                      >
+                        <Heart
+                          size={isMobile ? 14 : 14}
+                          className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
+                          fill={isLiked ? "currentColor" : "none"}
+                        />
+                        {(likeCounts[id || ""] ?? artwork.likes ?? 0) > 0 && (
+                          <span className={`${isMobile ? "text-[10px]" : "text-xs"}`}>
+                            {likeCounts[id || ""] ?? artwork.likes}
+                          </span>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="relative">
+                      <button className="py-3 pr- text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
+                        <MoreHorizontal size={isMobile ? 14 : 14} />
+                      </button>
+
+                      <ArtCardMenu
+                        isOpen={menuOpen}
+                        onFavorite={handleFavorite}
+                        onHide={handleHide}
+                        onReport={handleReport}
+                        isFavorite={isFavorite}
+                        isReported={isReported}
+                        className={isMobile ? "mobile-menu-position" : ""}
                       />
-                      {(likeCounts[id || ""] ?? artwork.likes ?? 0) > 0 && (
-                        <span className={`${isMobile ? "text-[10px]" : "text-xs"}`}>
-                          {likeCounts[id || ""] ?? artwork.likes}
-                        </span>
-                      )}
-                    </button>
+                    </div>
                   </div>
 
-                  <div className="relative">
-                    <button className="py-3 pr- text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
-                      <MoreHorizontal size={isMobile ? 14 : 14} />
-                    </button>
+                  <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>
+                    {artwork.title || "The Distorted Face"}
+                  </h1>
 
-                    <ArtCardMenu
-                      isOpen={menuOpen}
-                      onFavorite={handleFavorite}
-                      onHide={handleHide}
-                      onReport={handleReport}
-                      isFavorite={isFavorite}
-                      isReported={isReported}
-                      className={isMobile ? "mobile-menu-position" : ""}
-                    />
-                  </div>
-                </div>
+                  <p
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate(`/userprofile/${artwork.artistId}`)}
+                    className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
+                  >
+                    by {artwork.artist || "Angel Ganev"}
+                  </p>
 
-                <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>
-                  {artwork.title || "The Distorted Face"}
-                </h1>
-
-                <p
-                  style={{ cursor: "pointer" }}
-                  onClick={() => navigate(`/userprofile/${artwork.artistId}`)}
-                  className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
-                >
-                  by {artwork.artist || "Angel Ganev"}
-                </p>
-
-                <div className="relative mt-4">
-                  <div
-                    ref={descriptionRef}
-                    className={`
+                  <div className="relative mt-4">
+                    <div
+                      ref={descriptionRef}
+                      className={`
                       text-[9px] text-gray-700 transition-all duration-300 ease-in-out 
                       ${showFullDescription ? "max-h-10 overflow-y-auto pr-1" : "max-h-10 overflow-hidden"}
                     `}
-                    style={{ lineHeight: "1.1rem" }}
-                  >
-                    {artwork.description || "No description available."}
+                      style={{ lineHeight: "1.1rem" }}
+                    >
+                      {artwork.description || "No description available."}
+                    </div>
+
+                    {isOverflowing && (
+                      <button
+                        onClick={() => setShowFullDescription((prev) => !prev)}
+                        className="text-[9px] text-blue-500 hover:underline mt-1 block"
+                      >
+                        {showFullDescription ? "Show Less" : "Show More"}
+                      </button>
+                    )}
                   </div>
 
-                  {isOverflowing && (
-                    <button
-                      onClick={() => setShowFullDescription((prev) => !prev)}
-                      className="text-[9px] text-blue-500 hover:underline mt-1 block"
-                    >
-                      {showFullDescription ? "Show Less" : "Show More"}
-                    </button>
-                  )}
+                  <Separator className="my-6" />
+
+                  {/* Comment Section */}
+                  <CommentSection artworkId={id} />
                 </div>
-
-                <Separator className="my-6" />
-
-                {/* Comment Section */}
-                <CommentSection artworkId={id} />
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Related Artworks Section */}
-      {(() => {
-        related?.forEach((card) => console.log(`Artwork ID: ${card.id}, Style: "${card.style}"`));
+        {/* Related Artworks Section */}
+        {(() => {
+          related?.forEach((card) => console.log(`Artwork ID: ${card.id}, Style: "${card.style}"`));
 
-        const filteredRelated = related?.filter(
-          (card) => card.id !== id && card.style?.trim().toLowerCase() === artwork?.style?.trim().toLowerCase()
-        );
+          const filteredRelated = related?.filter(
+            (card) => card.id !== id && card.style?.trim().toLowerCase() === artwork?.style?.trim().toLowerCase()
+          );
 
-        console.log("Filtered related artworks:", filteredRelated);
+          console.log("Filtered related artworks:", filteredRelated);
 
-        return (
-          related &&
-          related.length > 0 && (
-            <div className="container md:px-6 mt-2 mb-2">
-              <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Artworks</h2>
-              {filteredRelated && filteredRelated.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                  {filteredRelated.map((card) => (
-                    <ArtCard
-                      key={card.id}
-                      id={card.id}
-                      artistName={card.artistName}
-                      artistId={card.artistId}
-                      artistImage={card.artistImage}
-                      artworkImage={card.artworkImage}
-                      title={card.title}
-                      onButtonClick={handleTipJar}
-                      isExplore={true}
-                      likesCount={card.likesCount}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col justify-center items-center h-32 w-full">
-                  <p className="text-gray-500 text-sm mb-2">No related artworks found.</p>
-                </div>
-              )}
+          return (
+            related &&
+            related.length > 0 && (
+              <div className="container md:px-6 mt-2 mb-2">
+                <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Artworks</h2>
+                {filteredRelated && filteredRelated.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                    {filteredRelated.map((card) => (
+                      <ArtCard
+                        key={card.id}
+                        id={card.id}
+                        artistName={card.artistName}
+                        artistId={card.artistId}
+                        artistImage={card.artistImage}
+                        artworkImage={card.artworkImage}
+                        title={card.title}
+                        onButtonClick={handleTipJar}
+                        isExplore={true}
+                        likesCount={card.likesCount}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col justify-center items-center h-32 w-full">
+                    <p className="text-gray-500 text-sm mb-2">No related artworks found.</p>
+                  </div>
+                )}
+              </div>
+            )
+          );
+        })()}
+
+        {/* Expanded artwork view */}
+        {isExpanded && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
+            <button
+              onClick={closeExpandedView}
+              className="absolute top-[14px] right-[35px] text-white text-3xl font-bold z-[60]"
+            >
+              <i className="bx bx-x text-2xl"></i>
+            </button>
+
+            <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
+              <img src={artwork.image} alt="Expanded artwork" className="max-h-[80vh] max-w-[90vw] object-contain" />
             </div>
-          )
-        );
-      })()}
-
-      {/* Expanded artwork view */}
-      {isExpanded && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
-          <button
-            onClick={closeExpandedView}
-            className="absolute top-[14px] right-[35px] text-white text-3xl font-bold z-[60]"
-          >
-            <i className="bx bx-x text-2xl"></i>
-          </button>
-
-          <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
-            <img src={artwork.image} alt="Expanded artwork" className="max-h-[80vh] max-w-[90vw] object-contain" />
           </div>
-        </div>
-      )}
-    </div>
-    
+        )}
+      </div>
     </>
   );
 };

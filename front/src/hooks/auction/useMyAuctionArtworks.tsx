@@ -10,7 +10,9 @@ export const useMyAuctionArtworks = (status?: "on_going" | "sold" | "closed" | "
         params: status ? { status } : {},
       });
 
-      const updatedArtworks = response.data.map((artwork: ArtworkAuction) => {
+      const artworks: ArtworkAuction[] = response.data ?? [];
+
+      const updatedArtworks = artworks.map((artwork) => {
         const timeRemaining = calculateTimeRemaining(artwork.end_time);
         return {
           ...artwork,

@@ -4,27 +4,20 @@ import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
-
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
-  setCreatedArtworksCount: React.Dispatch<React.SetStateAction<number>>;
+  filterVisibility?: string; // e.g. "hidden", "deleted", "archived"
 };
 
-const CreatedTab = ({ filteredArtworks, isLoading, setCreatedArtworksCount }: CreatedTabProps) => {
+const CreatedTab = ({ filteredArtworks, isLoading, filterVisibility }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
-  const { id: visitedUserId } = useParams();
 
+  // Filter artworks based on visibility if filterVisibility is given
   const allArtworks = useMemo(() => {
-    return filteredArtworks;
-  }, [filteredArtworks]);
-
-  useEffect(() => {
-    if (!visitedUserId) return;
-
-    const count = allArtworks.filter((artwork) => String(artwork.artistId) === String(visitedUserId)).length;
-    setCreatedArtworksCount(count);
-  }, [allArtworks, visitedUserId, setCreatedArtworksCount]);
+    if (!filterVisibility) return filteredArtworks;
+    return filteredArtworks.filter((art) => art.visibility?.toLowerCase() === filterVisibility.toLowerCase());
+  }, [filteredArtworks, filterVisibility]);
 
   const handleButtonClick = useCallback((artworkId: string) => {}, []);
 

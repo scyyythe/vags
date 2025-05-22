@@ -30,7 +30,8 @@ const fetchArtworks = async (
   currentPage: number,
   userId?: string,
   endpointType: "all" | "created-by-me" | "specific-user" = "all",
-  filterVisibility?: "public" | "private"
+  filterVisibility?: "public" | "private" | "hidden" | "deleted" | "archived",
+  onlyActivePublic: boolean = false
 ): Promise<Artwork[]> => {
   try {
     const params: { page: number; limit: number; userId?: string; visibility?: string } = {
@@ -42,10 +43,7 @@ const fetchArtworks = async (
       params.visibility = filterVisibility;
     }
 
-    if (endpointType === "created-by-me") {
-      params.userId = userId;
-    }
-    if (endpointType === "specific-user") {
+    if (endpointType === "created-by-me" || endpointType === "specific-user") {
       params.userId = userId;
     }
 
@@ -59,7 +57,7 @@ const fetchArtworks = async (
 
     const response = await apiClient.get(url, { params });
 
-    return response.data.map((artwork: Artwork) => ({
+    let artworks = response.data.map((artwork: Artwork) => ({
       id: artwork.id,
       title: artwork.title,
       artistName: artwork.artist,
@@ -71,7 +69,6 @@ const fetchArtworks = async (
       medium: artwork.medium,
       size: artwork.size,
       status: artwork.art_status,
-
       price: artwork.price,
       visibility: artwork.visibility,
       datePosted: new Date(artwork.created_at).toLocaleDateString("en-US", {
@@ -82,6 +79,12 @@ const fetchArtworks = async (
       artworkImage: artwork.image_url,
       likesCount: artwork.likes_count,
     }));
+
+    if (onlyActivePublic) {
+      artworks = artworks.filter((art) => art.status === "Active" && art.visibility === "Public");
+    }
+
+    return artworks;
   } catch (error) {
     console.error("Error fetching artworks: ", error);
     throw error;
@@ -93,11 +96,12 @@ const useArtworks = (
   userId?: string,
   enabled: boolean = true,
   endpointType: "all" | "created-by-me" | "specific-user" = "all",
-  filterVisibility?: "public" | "private"
+  filterVisibility?: "public" | "private" | "hidden" | "deleted" | "archived",
+  onlyActivePublic: boolean = false
 ) => {
   return useQuery({
-    queryKey: ["artworks", currentPage, userId, endpointType, filterVisibility],
-    queryFn: () => fetchArtworks(currentPage, userId, endpointType, filterVisibility),
+    queryKey: ["artworks", currentPage, userId, endpointType, filterVisibility, onlyActivePublic],
+    queryFn: () => fetchArtworks(currentPage, userId, endpointType, filterVisibility, onlyActivePublic),
     staleTime: 1000 * 60 * 5,
     enabled: enabled,
   });

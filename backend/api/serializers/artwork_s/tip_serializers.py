@@ -31,3 +31,10 @@ class TipSerializer(serializers.Serializer):
             amount=validated_data['amount']
         )
         return tip
+    
+class PayPalVerifySerializer(serializers.Serializer):
+    orderID = serializers.CharField(required=True)
+    sender_id = serializers.CharField(required=True)
+    receiver_id = serializers.CharField(required=True)
+    amount = serializers.FloatField(required=True)
+    art_id = serializers.CharField(required=True) 

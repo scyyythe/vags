@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@
 import DateTimePicker from "./DateTimePicker";
 import Confirmation from "./ConfirmRequest";
 import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { X } from "lucide-react";
 import { addDays } from "date-fns";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +17,6 @@ interface AuctionDialogProps {
 }
 
 const RequestBid = ({ open, artworkId, onOpenChange }: AuctionDialogProps) => {
-  const { toast } = useToast();
   const today = new Date();
   const createAuction = useCreateAuction();
   const navigate = useNavigate();
@@ -36,64 +36,64 @@ const RequestBid = ({ open, artworkId, onOpenChange }: AuctionDialogProps) => {
 
   const handlePublish = () => {
     if (!startDate) {
-      toast({
-        title: "Missing start date",
-        description: "Please select a start date for the auction",
-        variant: "destructive",
-      });
+      toast.error("Please select a start date for the auction");
+      // toast({
+      //   title: "Missing start date",
+      //   description: "Please select a start date for the auction",
+      //   variant: "destructive",
+      // });
       return;
     }
 
     if (!endDate) {
-      toast({
-        title: "Missing end date",
-        description: "Please select an end date for the auction",
-        variant: "destructive",
-      });
+      toast.error("Please select an end date for the auction");
+      // toast({
+      //   title: "Missing end date",
+      //   description: "Please select an end date for the auction",
+      //   variant: "destructive",
+      // });
       return;
     }
 
     if (!startingBid || isNaN(Number(startingBid)) || Number(startingBid) <= 0) {
-      toast({
-        title: "Invalid starting bid",
-        description: "Please enter a valid starting bid amount",
-        variant: "destructive",
-      });
+      toast.error("Please enter a valid starting bid amount");
+      // toast({
+      //   title: "Invalid starting bid",
+      //   description: "Please enter a valid starting bid amount",
+      //   variant: "destructive",
+      // });
       return;
     }
 
-    // Create Date objects for start and end times
     const startDateTime = new Date(startDate);
     startDateTime.setHours(startHours, startMinutes, 0, 0);
 
     const endDateTime = new Date(endDate);
     endDateTime.setHours(endHours, endMinutes, 0, 0);
 
-    // Validate that end date is after start date
     if (endDateTime <= startDateTime) {
-      toast({
-        title: "Invalid auction duration",
-        description: "End time must be after start time",
-        variant: "destructive",
-      });
+      toast.error("End time must be after start time");
+      // toast({
+      //   title: "Invalid auction duration",
+      //   description: "End time must be after start time",
+      //   variant: "destructive",
+      // });
       return;
     }
 
-    // Calculate duration in milliseconds
     const durationMs = endDateTime.getTime() - startDateTime.getTime();
     const durationDays = durationMs / (1000 * 60 * 60 * 24);
 
-    // Validate that duration doesn't exceed 3 days
     if (durationDays > 3) {
-      toast({
-        title: "Invalid auction duration",
-        description: "Auction duration cannot exceed 3 days",
-        variant: "destructive",
-      });
+      toast.error("Auction duration cannot exceed 3 days");
+      // toast({
+      //   title: "Invalid auction duration",
+      //   description: "Auction duration cannot exceed 3 days",
+      //   variant: "destructive",
+      // });
       return;
     }
 
-    // If all validations pass, open confirmation dialog
     setIsConfirmationOpen(true);
   };
 
@@ -115,20 +115,22 @@ const RequestBid = ({ open, artworkId, onOpenChange }: AuctionDialogProps) => {
       },
       {
         onSuccess: () => {
-          toast({
-            title: "Auction created successfully",
-            description: "Your auction has been published",
-          });
-          navigate("/bidding");
+          toast.success("Auction created successfully");
+          // toast({
+          //   title: "Auction created successfully",
+          //   description: "Your auction has been published",
+          // });
+
           setIsConfirmationOpen(false);
           onOpenChange(false);
         },
         onError: () => {
-          toast({
-            title: "Error",
-            description: "Failed to create auction",
-            variant: "destructive",
-          });
+          toast.success("Failed to create auction");
+          // toast({
+          //   title: "Error",
+          //   description: "Failed to create auction",
+          //   variant: "destructive",
+          // });
         },
       }
     );
