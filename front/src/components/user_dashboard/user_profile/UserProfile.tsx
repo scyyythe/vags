@@ -37,11 +37,7 @@ const Index = () => {
             items={ownedArtworksCount}
             profileUserId={id}
           />
-          <ProfileTabs
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            setCreatedArtworksCount={setCreatedArtworksCount}
-          />
+          <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
           <ArtGrid activeTab={activeTab} />
         </div>
       </div>
