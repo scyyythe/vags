@@ -92,7 +92,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
         <div className="px-6 py-5 flex flex-col gap-2">
           <div className="flex justify-between">
             <h2 className="text-sm font-semibold">{data.artwork.title}</h2>
-            <div className="relative text-gray-500" style={{ height: "24px" }}>
+            <div className="relative text-gray-500" style={{ height: "24px" }} onClick={(e) => e.stopPropagation()}>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
