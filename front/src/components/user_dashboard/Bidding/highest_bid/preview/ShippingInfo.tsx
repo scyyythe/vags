@@ -137,50 +137,51 @@ export const ShippingInfo = () => {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   <div>
-                    <p className="text-sm text-muted-foreground">Full Name</p>
-                    <p className="font-medium">{shippingInfo.fullName}</p>
+                    <p className="text-[10px] text-muted-foreground">Full Name</p>
+                    <p className="font-medium text-[11px]">{shippingInfo.fullName}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Phone Number</p>
-                    <p className="font-medium">
+                    <p className="text-[10px] text-muted-foreground">Phone Number</p>
+                    <p className="font-medium text-[11px]">
                       {shippingInfo.phoneNumber || "Not provided"}
                     </p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-sm text-muted-foreground">Address</p>
-                  <p className="font-medium">{shippingInfo.address}</p>
+                  <p className="text-[10px] text-muted-foreground">Address</p>
+                  <p className="font-medium text-[11px]">{shippingInfo.address}</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   <div>
-                    <p className="text-sm text-muted-foreground">City</p>
-                    <p className="font-medium">{shippingInfo.city}</p>
+                    <p className="text-[10px] text-muted-foreground">City</p>
+                    <p className="font-medium text-[11px]">{shippingInfo.city}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-[10px] text-muted-foreground">
                       State/Province
                     </p>
-                    <p className="font-medium">
+                    <p className="font-medium text-[11px]">
                       {shippingInfo.state || "Not provided"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Postal Code</p>
-                    <p className="font-medium">
+                    <p className="text-[10px] text-muted-foreground">Postal Code</p>
+                    <p className="font-medium text-[11px]">
                       {shippingInfo.postalCode || "Not provided"}
                     </p>
                   </div>
+                  <div>
+                    <p className="text-[10px] text-muted-foreground">Country</p>
+                    <p className="font-medium text-[11px]">{shippingInfo.country}</p>
+                  </div>
                 </div>
 
-                <div>
-                  <p className="text-sm text-muted-foreground">Country</p>
-                  <p className="font-medium">{shippingInfo.country}</p>
-                </div>
+                
 
                 <div className="pt-2">
-                  <p className="text-artwork-secondary font-medium">
+                  <p className="text-artwork-secondary text-[11px] font-medium">
                     Estimated delivery: 7-10 business days
                   </p>
                 </div>

@@ -6,7 +6,7 @@ export const TermsReminder = () => {
     <Card className="border-none">
       <CardContent className="-ml-6">
         <div className="flex items-start gap-2">
-          <FileText className="text-muted-foreground mt-0.5 h-3 w-3" />
+          <i className='bx bx-file text-gray-500 text-xs'></i>
           <div>
             <p className="text-muted-foreground text-[10px]">
               By proceeding with this purchase, you acknowledge that all sales are final.
