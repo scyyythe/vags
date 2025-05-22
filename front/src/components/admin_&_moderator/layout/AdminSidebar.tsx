@@ -23,6 +23,7 @@ import {
   Users,
   LayoutDashboard,
 } from "lucide-react";
+import Logo from "@/components/user_dashboard/navbar/Logo";
 
 type AdminSidebarProps = {
   role: "admin" | "moderator";
@@ -67,10 +68,10 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
       collapsible="icon"
     >
       <div className="flex justify-center p-4">
-        <svg
+        <svg 
           viewBox="0 0 24 24"
           className={`h-8 w-8 logo-icon ${isCollapsed ? "mx-auto" : ""}`}
-          fill="currentColor"
+          fill="red"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path d="M22.672 7.991L13 2.28a2.276 2.276 0 0 0-2 0L1.328 7.991A2.275 2.275 0 0 0 0 10v0a2.276 2.276 0 0 0 2.272 2.273h.004L11 13l8.724-.727h.004A2.276 2.276 0 0 0 22 10v0a2.275 2.275 0 0 0-.672-2.009z" />
