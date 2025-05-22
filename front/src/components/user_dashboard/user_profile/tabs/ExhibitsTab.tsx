@@ -162,24 +162,33 @@ const ExhibitsTab = () => {
 
                     {/* Conditional Button */}
                     {req.isOwner ? (
-                      <Link
-                        to={`/exhibitreview?id=${req.exhibitId}`}
-                        className={`h-6 text-[9px] text-white px-3.5 py-1 rounded-full flex items-center justify-center ${
-                          req.type === "ready"
-                            ? "bg-green-600 hover:bg-green-700"
-                            : "bg-amber-600 hover:bg-amber-700"
-                        }`}
-                      >
-                        {req.type === "ready" ? "Publish" : "Review"}
-                      </Link>
-                    ) : (
-                      <button
-                        onClick={() => handleRequestClick(req)}
-                        className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-[#9b87f5] hover:bg-[#7E69AB]"
-                      >
-                        View
-                      </button>
-                    )}
+  req.type === "ready" ? (
+    <button
+      onClick={() => {
+        setSelectedExhibit(req);
+        setShowPublishDialog(true);
+      }}
+      className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-green-600 hover:bg-green-700 flex items-center justify-center"
+    >
+      Publish
+    </button>
+  ) : (
+    <Link
+      to={`/exhibitreview?id=${req.exhibitId}`}
+      className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-amber-600 hover:bg-amber-700 flex items-center justify-center"
+    >
+      Review
+    </Link>
+  )
+) : (
+  <button
+    onClick={() => handleRequestClick(req)}
+    className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-[#9b87f5] hover:bg-[#7E69AB]"
+  >
+    View
+  </button>
+)}
+
                   </div>
                 </li>
               ))}
