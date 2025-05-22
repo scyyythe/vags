@@ -43,14 +43,14 @@ const Hero = () => {
                 transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
               >
                 <div className="relative bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
-                  <img src="/pics/2.jpg" alt="Greek Statue" className="h-40 rounded-2xl" />
+                  <img src="https://i.pinimg.com/736x/05/cd/22/05cd22dcb9011ed310c56697cbd24f71.jpg" alt="Greek Statue" className="h-40 rounded-2xl" />
                   <div className="p-2 flex justify-between items-center">
                     <div>
                       <p className="text-sm font-medium">Greek Statue</p>
                       <p className="text-xs text-gray-500">Claude Banks</p>
                     </div>
                     <div className="w-6 h-6 rounded-full overflow-hidden">
-                      <img src="/pics/111.jpg" alt="Artist" className="w-full h-full object-cover" />
+                      <img src="https://i.pinimg.com/736x/a3/e3/11/a3e311abe61ffe88653cec16b45f051f.jpg" alt="Artist" className="w-full h-full object-cover" />
                     </div>
                   </div>
                 </div>
@@ -63,14 +63,14 @@ const Hero = () => {
                 transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
               >
                 <div className="relative bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
-                  <img src="/pics/3.jpg" alt="Greek Statue" className="h-40 rounded-2xl" />
+                  <img src="https://i.pinimg.com/736x/c0/c4/55/c0c455d82e5e79271b269de05f172ff3.jpg" alt="Greek Statue" className="h-40 rounded-2xl" />
                   <div className="p-2 flex justify-between items-center">
                     <div>
                       <p className="text-sm font-medium">Greek Statue</p>
                       <p className="text-xs text-gray-500">Claude Banks</p>
                     </div>
                     <div className="w-6 h-6 rounded-full overflow-hidden">
-                      <img src="/pics/9.jpg" alt="Artist" className="w-full h-full object-cover" />
+                      <img src="https://i.pinimg.com/736x/25/ab/d4/25abd43af1249abee3c20a8ad38f9c17.jpg" alt="Artist" className="w-full h-full object-cover" />
                     </div>
                   </div>
                 </div>
@@ -83,14 +83,14 @@ const Hero = () => {
                 transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
               >
                 <div className="relative bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
-                  <img src="/pics/4.jpg" alt="Greek Statue" className="h-40 rounded-2xl" />
+                  <img src="https://i.pinimg.com/736x/e8/6b/c5/e86bc57aab2ab8dc32777cc35b49e1ba.jpg" alt="Greek Statue" className="h-40 rounded-2xl" />
                   <div className="p-2 flex justify-between items-center">
                     <div>
                       <p className="text-sm font-medium">Greek Statue</p>
                       <p className="text-xs text-gray-500">Claude Banks</p>
                     </div>
                     <div className="w-6 h-6 rounded-full overflow-hidden">
-                      <img src="/pics/333.jpg" alt="Artist" className="w-full h-full object-cover" />
+                      <img src="https://i.pinimg.com/736x/c4/d7/2b/c4d72b3a75003a35cf819ae68c54d0f2.jpg" alt="Artist" className="w-full h-full object-cover" />
                     </div>
                   </div>
                 </div>
