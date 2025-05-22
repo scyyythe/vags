@@ -2,12 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PaymentMethod } from "@/components/types/index";
 import { usePayment } from "@/context/PaymentContext";
-import { CreditCard, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const PaymentMethods = () => {
   const { selectedPaymentMethod, selectPaymentMethod } = usePayment();
-  const navigate = useNavigate();
 
   const paymentMethods: { id: PaymentMethod; label: string; icon: React.ReactNode; color: string }[] = [
     { 
@@ -36,25 +34,11 @@ export const PaymentMethods = () => {
     },
   ];
 
-  const handleProceedToPayment = () => {
-    if (selectedPaymentMethod) {
-      navigate("/payment");
-    }
-  };
-
   return (
-    <Card className="border-0  overflow-hidden">
+    <Card className="border-0 overflow-hidden">
       <CardHeader className="-mb-8">
         <CardTitle className="flex items-center justify-between text-xs">
           <span className="text-gray-800">Payment Methods</span>
-          {selectedPaymentMethod && (
-            <Button 
-              className="bg-red-500 hover:bg-red-600 text-xs text-white"
-              onClick={handleProceedToPayment}
-            >
-              Proceed to Payment <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          )}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
@@ -62,13 +46,13 @@ export const PaymentMethods = () => {
           {paymentMethods.map((method) => (
             <Button
               key={method.id}
+              onClick={() => selectPaymentMethod(method.id)}
               variant={selectedPaymentMethod === method.id ? "default" : "outline"}
               className={`h-10 justify-start transition-all ${
                 selectedPaymentMethod === method.id
-                  ? `${method.color} text-white`
-                  : "hover:bg-gray-50b"
+                  ? `${method.color} text-white ring-2 ring-offset-2 ring-primary`
+                  : "hover:bg-gray-50"
               } rounded-xl`}
-              onClick={() => selectPaymentMethod(method.id)}
             >
               <div className="flex items-center">
                 {method.icon}
@@ -77,7 +61,6 @@ export const PaymentMethods = () => {
             </Button>
           ))}
         </div>
-        
         <div className="mt-6">
           <div className="flex items-center">
             <i className='bx bx-shield text-sm text-gray-500 mr-2 pb-0.5'></i>
