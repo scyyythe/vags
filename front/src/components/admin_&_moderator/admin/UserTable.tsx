@@ -18,7 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search } from "lucide-react";
+import { Search, MoreHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 export type User = {
@@ -84,12 +84,13 @@ export function UserTable({
   return (
     <div className="space-y-4">
       <div className="flex items-center relative">
-        <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
         <Input
           placeholder="Search users..."
-          className="pl-8 text-xs"
+          className="pl-8 rounded-full h-8"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          style={{fontSize:"10px"}}
         />
       </div>
 
@@ -108,7 +109,7 @@ export function UserTable({
             {filteredUsers.length > 0 ? (
               filteredUsers.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell className="text-2xs">
+                  <TableCell className="text-[11px]">
                     <div className="flex items-center space-x-2">
                       <Avatar className="h-6 w-6">
                         <AvatarImage src={user.avatar} />
@@ -117,27 +118,27 @@ export function UserTable({
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <div className="font-medium text-2xs">{user.name}</div>
-                        <div className="text-3xs text-gray-500">{user.email}</div>
+                        <div className="font-medium">{user.name}</div>
+                        <div className="text-[10px] text-gray-500">{user.email}</div>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-2xs">{getRoleBadge(user.role)}</TableCell>
-                  <TableCell className="text-2xs">{getStatusBadge(user.status)}</TableCell>
-                  <TableCell className="text-2xs">{user.joinDate}</TableCell>
-                  <TableCell className="text-2xs text-right">
+                  <TableCell className="text-[10px]">{getRoleBadge(user.role)}</TableCell>
+                  <TableCell className="text-[10px]">{getStatusBadge(user.status)}</TableCell>
+                  <TableCell className="text-[10px]">{user.joinDate}</TableCell>
+                  <TableCell className="text-[10px] text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-6 text-2xs">
-                          Actions
+                        <Button variant="ghost" size="icon" className="h-6 w-6 p-0">
+                          <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-40">
-                        <DropdownMenuLabel className="text-xs">User Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel className="text-[11px]">User Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {user.role !== "admin" && (
                           <DropdownMenuItem 
-                            className="text-xs"
+                            className="text-[10px]"
                             onClick={() => onPromoteUser && onPromoteUser(user.id)}
                           >
                             {user.role === "moderator" ? "Demote to User" : "Promote to Moderator"}
@@ -145,14 +146,14 @@ export function UserTable({
                         )}
                         {user.status === "active" ? (
                           <DropdownMenuItem 
-                            className="text-xs"
+                            className="text-[10px]"
                             onClick={() => onSuspendUser && onSuspendUser(user.id)}
                           >
                             Suspend User
                           </DropdownMenuItem>
                         ) : (
                           <DropdownMenuItem 
-                            className="text-xs"
+                            className="text-[10px]"
                             onClick={() => onReinstateUser && onReinstateUser(user.id)}
                           >
                             Reinstate User
@@ -160,14 +161,14 @@ export function UserTable({
                         )}
                         {user.status !== "banned" ? (
                           <DropdownMenuItem 
-                            className="text-xs text-red-500"
+                            className="text-[10px] text-red-500"
                             onClick={() => onBanUser && onBanUser(user.id)}
                           >
                             Ban User
                           </DropdownMenuItem>
                         ) : (
                           <DropdownMenuItem 
-                            className="text-xs"
+                            className="text-[10px]"
                             onClick={() => onReinstateUser && onReinstateUser(user.id)}
                           >
                             Unban User
@@ -175,7 +176,7 @@ export function UserTable({
                         )}
                         <DropdownMenuSeparator />
                         <DropdownMenuItem 
-                          className="text-xs text-red-500"
+                          className="text-[10px] text-red-500"
                           onClick={() => onDeleteUser && onDeleteUser(user.id)}
                         >
                           Delete Account
