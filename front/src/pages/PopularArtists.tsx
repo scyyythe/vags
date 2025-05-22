@@ -4,9 +4,9 @@ import { motion } from 'framer-motion';
 // Artist data
 const artists = Array(12).fill(null).map((_, index) => ({
   id: index + 1,
-  name: 'Claude Banks',
+  name: 'Angel Canete',
   followers: '30k',
-  image: `/pics/111.jpg`
+  image: `https://i.pinimg.com/736x/b7/81/f8/b781f8392aeaaba8a341cc9aee443a23.jpg`
 }));
 
 const PopularArtists = () => {
