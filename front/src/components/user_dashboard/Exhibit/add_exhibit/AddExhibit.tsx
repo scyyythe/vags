@@ -301,39 +301,47 @@ const AddExhibit = () => {
     { id: 16, image: "https://i.pinimg.com/736x/0e/3f/e7/0e3fe7f3e1da1ac7baeab1947dfd08c3.jpg" },
   ];
 
-  // Load exhibit data based on exhibitId and mode
+  // Function to complete the exhibit submission
   const completeExhibitSubmission = () => {
-    const payload: ExhibitPayload = {
+    console.log({
       title,
-      description,
       category,
-      artworkStyle,
       exhibitType,
       startDate,
       endDate,
+      description,
+      selectedEnvironment,
+      selectedArtworks,
+      selectedSlots,
+      slotArtworkMap,
       collaborators,
-      environment: selectedEnvironment,
-      artworks: selectedArtworks,
       bannerImage,
-    };
-
-    createExhibit(payload, {
-      onSuccess: () => {
-        navigate("/exhibits");
-      },
     });
+
+    toast({
+      title: "Exhibit Created",
+      description: "Your exhibit has been successfully created!",
+    });
+
+    navigate("/exhibits");
   };
   useEffect(() => {
     if (exhibitId && mockExhibitData[Number(exhibitId)]) {
       const exhibitData = mockExhibitData[Number(exhibitId)];
 
-      // Set view mode
-      if (mode === "review" || mode === "monitoring" || mode === "preview") {
-        setViewMode(mode);
+      // Set view mode based on URL parameter
+      if (mode === "review") {
+        setViewMode("review");
+        setIsReadOnly(true);
+      } else if (mode === "monitoring") {
+        setViewMode("monitoring");
+        setIsReadOnly(true);
+      } else if (mode === "preview") {
+        setViewMode("preview");
         setIsReadOnly(true);
       }
 
-      // Populate form fields
+      // Populate form with exhibit data
       setTitle(exhibitData.title);
       setCategory(exhibitData.category);
       setArtworkStyle(exhibitData.artworkStyle.toLowerCase());
@@ -347,27 +355,27 @@ const AddExhibit = () => {
       setSlotOwnerMap(exhibitData.slotOwnerMap);
       setSlotArtworkMap(exhibitData.slotArtworkMap);
 
+      // Mark selected artworks
       const selectedIds = Object.values(exhibitData.slotArtworkMap) as number[];
       setSelectedArtworks(selectedIds);
 
+      // Mark selected slots
       const selectedSlotIds = Object.keys(exhibitData.slotArtworkMap).map(Number);
       setSelectedSlots(selectedSlotIds);
-    }
-  }, [exhibitId, mode]);
+    } else {
+      // For demo purposes: toggle collaborator view
+      const urlParams = new URLSearchParams(window.location.search);
+      const collaboratorId = urlParams.get("collaborator");
 
-  // Separate effect to handle collaborator view detection
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const collaboratorId = urlParams.get("collaborator");
-
-    if (collaboratorId) {
-      const collab = collaborators.find((c) => c.id === Number(collaboratorId));
-      if (collab) {
-        setViewMode("collaborator");
-        setCurrentCollaborator(collab);
+      if (collaboratorId) {
+        const collab = collaborators.find((c) => c.id === Number(collaboratorId));
+        if (collab) {
+          setViewMode("collaborator");
+          setCurrentCollaborator(collab);
+        }
       }
     }
-  }, [collaborators]);
+  }, [exhibitId, mode, collaborators]);
 
   // Function to distribute slots among participants
   const distributeSlots = () => {
