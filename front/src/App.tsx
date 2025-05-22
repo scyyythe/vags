@@ -43,7 +43,7 @@ import PaymentPage from "@/components/user_dashboard/Bidding/highest_bid/pages/P
 import AddExhibit from "./components/user_dashboard/Exhibit/add_exhibit/AddExhibit";
 import ExhibitViewing from "./components/user_dashboard/Exhibit/exhibit_viewing/ViewExhibit";
 import CollaboratorView from "./components/user_dashboard/Exhibit/add_exhibit/components/CollaboratorViews";
-import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/ExhibitReview"; 
+import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/ExhibitReview";
 
 // ADMIN & MODERATOR
 import { AuthProvider } from "./components/admin_&_moderator/context/AuthContext";
@@ -119,9 +119,9 @@ const App = () => {
                         <Route path="/hero" element={<Hero />} />
 
                         {/* Bid */}
-                        <Route path="/bid-winner" element={<BidWinnerPage />} />
+                        <Route path="/bid-winner/:id" element={<BidWinnerPage />} />
                         <Route path="/payment" element={<PaymentPage />} />
-                        
+
                         {/* Exhibit */}
                         <Route path="/add-exhibit" element={<AddExhibit />} />
                         <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />

@@ -64,9 +64,9 @@ export interface ArtworkAuction {
   };
   viewers: string[];
 
-  joinedByCurrentUser: boolean;
-  isHighestBidder: boolean | null;
-  isLost: boolean;
+  joinedByCurrentUser?: boolean;
+  isHighestBidder?: boolean | null;
+  isLost?: boolean;
 }
 
 const fetchAuctions = async (
