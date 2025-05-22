@@ -7,22 +7,22 @@ const hotBids = [
     id: 1,
     title: 'Greek Statue',
     artist: 'Claude Banks',
-    image: '/pics/333.jpg',
-    profile: '/pics/55.jpg'
+    image: 'https://i.pinimg.com/736x/36/8c/e2/368ce235497faa78bc726d660213f750.jpg',
+    profile: 'https://i.pinimg.com/736x/0d/16/8e/0d168e2fd560157618bd701d346a4d9b.jpg'
   },
   {
     id: 2,
     title: 'Ancient Sculpture',
     artist: 'Claude Banks',
-    image: '/pics/222.jpg',
-    profile: '/pics/88.jpg'
+    image: 'https://i.pinimg.com/736x/2b/70/f8/2b70f8c1ebf959e3e3c6019563430cfb.jpg',
+    profile: 'https://i.pinimg.com/736x/66/91/9e/66919ebf625fc5a45a4ad4814c6f9371.jpg'
   },
   {
     id: 3,
     title: 'Modern Art',
     artist: 'Claude Banks',
-    image: '/pics/44.jpg',
-    profile: '/pics/22.jpg'
+    image: 'https://i.pinimg.com/736x/96/e5/51/96e551d5690b0ff3e27d3cd3182fedc0.jpg',
+    profile: 'https://i.pinimg.com/736x/9d/27/eb/9d27eb4e41185b7d0cd910f3a8f9befa.jpg'
   }
 ];
 
