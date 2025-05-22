@@ -14,15 +14,10 @@ import { GCashPayment } from "@/components/user_dashboard/Bidding/highest_bid/pa
 import { StripePayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/Stripe";
 import { PayPalPayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/PayPal";
 import { toast } from "sonner";
-import { useParams } from "react-router-dom";
-import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
-import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
-import { Bid } from "@/hooks/auction/useAuction";
+
 const BidWinnerPageContent = () => {
   const { selectedPaymentMethod } = usePayment();
   const [showModal, setShowModal] = useState(false);
-  const { id } = useParams<{ id: string }>();
-  const { data: artworkData, error, isLoading } = useFetchBiddingArtworkById(id || "");
 
   const renderSelectedPaymentComponent = () => {
     switch (selectedPaymentMethod) {
