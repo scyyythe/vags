@@ -265,16 +265,20 @@ const ExhibitReview = () => {
                 {/* Slot 5 */}
                 <div className="w-[120px] p-2 text-center flex flex-col items-center justify-start">
                     <div className="border rounded-md w-[100px] h-[65px]">
+                       <div className="relative top-4">
                         <p className="text-[10px] font-semibold">7</p>
-                        <p className="text-[10px] text-gray-500">Alex Chen's slot</p>  
+                        <p className="text-[10px] text-gray-500">Alex Chen's slot</p> 
+                      </div>
                     </div>
                 </div>
 
                 {/* Slot 6 */}
                 <div className="w-[120px] p-2 text-center flex flex-col items-center justify-start">   
                     <div className="border rounded-md w-[100px] h-[65px]">
-                       <p className="text-[10px] font-semibold">8</p>
+                      <div className="relative top-4">
+                        <p className="text-[10px] font-semibold">8</p>
                         <p className="text-[10px] text-gray-500">Jera's slot</p> 
+                      </div>
                     </div>    
                 </div>
                 </div>
