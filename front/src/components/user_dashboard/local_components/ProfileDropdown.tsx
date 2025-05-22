@@ -46,10 +46,9 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
           </Avatar>
           <div className="leading-[14px]">
             <div className="font-semibold text-black text-[11px] whitespace-nowrap">{fullName}</div>
-            <div className="text-[9px] text-gray-400">Basic Plan</div>
+            <div className="text-[9px] text-gray-400">jamaicaanuba3@gmail.com</div>
           </div>
         </div>
-        <button className="text-[8px] bg-blue-100 text-blue-700 px-2 rounded-md font-medium">Upgrade</button>
       </div>
 
       <hr className="my-2 border-gray-200" />
