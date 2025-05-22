@@ -1,7 +1,5 @@
 import { Artwork, Bid } from "@/components/types/index";
 import { format } from "date-fns";
-import { Card, CardContent } from "@/components/ui/card";
-import { Image } from "lucide-react";
 
 interface ArtworkSummaryProps {
   artwork: Artwork;
@@ -17,7 +15,7 @@ export const ArtworkSummary: React.FC<ArtworkSummaryProps> = ({ artwork, bid }) 
     
       <div className="w-full md:w-[600px] h-72 md:h-[260px] relative rounded-xl md:mr-6">
         <img
-          src="https://i.pinimg.com/736x/c4/a1/e3/c4a1e3bc39fa859b4d5a8948d9e85525.jpg"
+          src="https://i.pinimg.com/736x/5f/f4/d2/5ff4d298d53b6fcdf20bd865668c0ea5.jpg"
           alt={artwork.title}
           className="object-cover w-full h-full rounded-xl shadow-md"
         />
