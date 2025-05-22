@@ -1,28 +1,30 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-
+import React from "react";
+import { motion } from "framer-motion";
+import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
+import PopularArtworksSkeleton from "@/components/skeletons/PopularArtworksSkeleton";
 const Hero = () => {
+  const { data: artworks, isLoading } = useFetchPopularArtworks(3);
+
   return (
     <section className="relative pt-24 pb-16 px-6 md:px-12" id="discover">
       <div className="w-full max-w-[100%] md:max-w-[100%] lg:max-w-[100%] mx-auto pt-16">
-        
         {/* Hero Title */}
-        <motion.div 
+        <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-6xl md:text-7xl font-extrabold mb-6" style={{ lineHeight: '1.3' }}>
-            Discover, Collect & Sell<br />Artworks
+          <h1 className="text-6xl md:text-7xl font-extrabold mb-6" style={{ lineHeight: "1.3" }}>
+            Discover, Collect & Sell
+            <br />
+            Artworks
           </h1>
-          <p className="text-2sm text-black max-w-2xl mx-auto">
-            Step inside and let the art speak to you.
-          </p>
+          <p className="text-2sm text-black max-w-2xl mx-auto">Step inside and let the art speak to you.</p>
         </motion.div>
 
         {/* Background Gradient */}
-        <motion.div 
+        <motion.div
           className="relative mx-auto max-w-5xl aspect-[16/9] mt-24"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -32,95 +34,68 @@ const Hero = () => {
 
           {/* Black Card Container */}
           <div className="relative bg-black rounded-3xl p-10 md:p-16 flex flex-col items-center justify-center top-32 md:-ml-[125px] w-full md:w-[125%]">
-            
             {/* Artwork Cards */}
-            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 w-full md:w-[89%] -top-48">
-              
-              <motion.div 
-                className="artwork-card"
-                initial={{ y: 10 }}
-                animate={{ y: [30, 10, 30] }}
-                transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-              >
-                <div className="relative bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
-                  <img src="https://i.pinimg.com/736x/05/cd/22/05cd22dcb9011ed310c56697cbd24f71.jpg" alt="Greek Statue" className="h-40 rounded-2xl" />
-                  <div className="p-2 flex justify-between items-center">
-                    <div>
-                      <p className="text-sm font-medium">Greek Statue</p>
-                      <p className="text-xs text-gray-500">Claude Banks</p>
+            {isLoading ? (
+              <PopularArtworksSkeleton />
+            ) : (
+              <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 w-full md:w-[89%] -top-48">
+                {artworks?.map((artwork) => (
+                  <motion.div
+                    key={artwork.id}
+                    className="artwork-card"
+                    initial={{ y: -10 }}
+                    animate={{ y: [-10, 0, -10] }}
+                    transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
+                  >
+                    <div className="relative bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
+                      <img src={artwork.image_url} alt="Greek Statue" className="h-40 rounded-2xl" />
+                      <div className="p-2 flex justify-between items-center">
+                        <div>
+                          <p className="text-sm font-medium">{artwork.title}</p>
+                          <p className="text-xs text-gray-500">{artwork.artistName}</p>
+                        </div>
+                        <div className="w-6 h-6 rounded-full overflow-hidden">
+                          <img
+                            src={artwork.artistImage}
+                            alt="Artist"
+                            className="w-full h-full object-contain rounded-full"
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div className="w-6 h-6 rounded-full overflow-hidden">
-                      <img src="https://i.pinimg.com/736x/a3/e3/11/a3e311abe61ffe88653cec16b45f051f.jpg" alt="Artist" className="w-full h-full object-cover" />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-              
-              <motion.div 
-                className="artwork-card"
-                initial={{ y: -10 }}
-                animate={{ y: [-10, 0, -10] }}
-                transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-              >
-                <div className="relative bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
-                  <img src="https://i.pinimg.com/736x/c0/c4/55/c0c455d82e5e79271b269de05f172ff3.jpg" alt="Greek Statue" className="h-40 rounded-2xl" />
-                  <div className="p-2 flex justify-between items-center">
-                    <div>
-                      <p className="text-sm font-medium">Greek Statue</p>
-                      <p className="text-xs text-gray-500">Claude Banks</p>
-                    </div>
-                    <div className="w-6 h-6 rounded-full overflow-hidden">
-                      <img src="https://i.pinimg.com/736x/25/ab/d4/25abd43af1249abee3c20a8ad38f9c17.jpg" alt="Artist" className="w-full h-full object-cover" />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-              
-              <motion.div 
-                className="artwork-card"
-                initial={{ y: 10 }}
-                animate={{ y: [30, 10, 30] }}
-                transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-              >
-                <div className="relative bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
-                  <img src="https://i.pinimg.com/736x/e8/6b/c5/e86bc57aab2ab8dc32777cc35b49e1ba.jpg" alt="Greek Statue" className="h-40 rounded-2xl" />
-                  <div className="p-2 flex justify-between items-center">
-                    <div>
-                      <p className="text-sm font-medium">Greek Statue</p>
-                      <p className="text-xs text-gray-500">Claude Banks</p>
-                    </div>
-                    <div className="w-6 h-6 rounded-full overflow-hidden">
-                      <img src="https://i.pinimg.com/736x/c4/d7/2b/c4d72b3a75003a35cf819ae68c54d0f2.jpg" alt="Artist" className="w-full h-full object-cover" />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-
-            </div>
-
+                  </motion.div>
+                ))}
+              </div>
+            )}
             {/* Stats */}
             <div className="-mt-12 flex justify-center space-x-12 md:space-x-60">
               <div className="text-center">
                 <p className="text-lg md:text-3xl font-semibold text-white">30k+</p>
-                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>Products</p>
+                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
+                  Products
+                </p>
               </div>
               <div className="text-center">
                 <p className="text-xl md:text-3xl font-semibold text-white">10k+</p>
-                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>Biddings</p>
+                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
+                  Biddings
+                </p>
               </div>
               <div className="text-center">
                 <p className="text-xl md:text-3xl font-semibold text-white">12k+</p>
-                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>Exhibits</p>
+                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
+                  Exhibits
+                </p>
               </div>
               <div className="text-center">
                 <p className="text-lg md:text-3xl font-semibold text-white">20k+</p>
-                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>Artists</p>
+                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
+                  Artists
+                </p>
               </div>
             </div>
-
           </div>
         </motion.div>
-
       </div>
     </section>
   );
