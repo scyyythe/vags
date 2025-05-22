@@ -10,16 +10,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
+import { User } from "@/hooks/users/useUserQuery";
 interface ExhibitDialogsProps {
   isRemoveCollaboratorDialogOpen: boolean;
   setIsRemoveCollaboratorDialogOpen: (open: boolean) => void;
-  collaboratorToRemove: Artist | null;
+  collaboratorToRemove: User | null;
   confirmRemoveCollaborator: () => void;
   showNotificationDialog: boolean;
   setShowNotificationDialog: (open: boolean) => void;
   sendNotificationsToCollaborators: () => void;
-  collaborators: Artist[];
+  collaborators: User[];
 }
 
 const ExhibitDialogs: React.FC<ExhibitDialogsProps> = ({
@@ -30,27 +30,27 @@ const ExhibitDialogs: React.FC<ExhibitDialogsProps> = ({
   showNotificationDialog,
   setShowNotificationDialog,
   sendNotificationsToCollaborators,
-  collaborators
+  collaborators,
 }) => {
   return (
     <>
       {/* Confirm Remove Collaborator Dialog */}
-      <AlertDialog 
-        open={isRemoveCollaboratorDialogOpen} 
-        onOpenChange={setIsRemoveCollaboratorDialogOpen}
-      >
+      <AlertDialog open={isRemoveCollaboratorDialogOpen} onOpenChange={setIsRemoveCollaboratorDialogOpen}>
         <AlertDialogContent className="w-full max-w-sm rounded-lg">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-xs text-center">Remove Collaborator</AlertDialogTitle>
             <AlertDialogDescription className="text-[10px] text-center">
-              Are you sure you want to remove {collaboratorToRemove?.name} from this exhibit?
-              Their slot assignments will be redistributed.
+              Are you sure you want to remove{" "}
+              {collaboratorToRemove
+                ? `${collaboratorToRemove.first_name || ""} ${collaboratorToRemove.last_name || ""}`.trim()
+                : ""}
+              from this exhibit? Their slot assignments will be redistributed.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <div className="w-full flex justify-between px-20">
               <AlertDialogCancel className="text-[10px] h-7">Cancel</AlertDialogCancel>
-              <AlertDialogAction 
+              <AlertDialogAction
                 className="bg-red-700 hover:bg-red-600 text-white text-[10px] h-7"
                 onClick={confirmRemoveCollaborator}
               >
@@ -62,22 +62,19 @@ const ExhibitDialogs: React.FC<ExhibitDialogsProps> = ({
       </AlertDialog>
 
       {/* Send Notifications Dialog */}
-      <AlertDialog 
-        open={showNotificationDialog} 
-        onOpenChange={setShowNotificationDialog}
-      >
+      <AlertDialog open={showNotificationDialog} onOpenChange={setShowNotificationDialog}>
         <AlertDialogContent className="w-full max-w-sm rounded-lg">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-sm text-center">Send Invitations</AlertDialogTitle>
             <AlertDialogDescription className="text-xs text-center">
-              Send invitations to {collaborators.length} collaborator{collaborators.length > 1 ? 's' : ''}? 
-              They will be notified to select their artwork for their assigned slots.
+              Send invitations to {collaborators.length} collaborator{collaborators.length > 1 ? "s" : ""}? They will be
+              notified to select their artwork for their assigned slots.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <div className="w-full flex justify-between px-20">
               <AlertDialogCancel className="text-[10px] h-7">Cancel</AlertDialogCancel>
-              <AlertDialogAction 
+              <AlertDialogAction
                 className="bg-red-700 hover:bg-red-600 text-white text-[10px] h-7"
                 onClick={sendNotificationsToCollaborators}
               >

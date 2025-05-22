@@ -1,12 +1,12 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
-
+import { User } from "@/hooks/users/useUserQuery";
 interface ArtworkSelectorProps {
   artworks: Artwork[];
   selectedArtworks: string[];
   handleArtworkSelect: (artworkId: string) => void;
-  currentCollaborator: { name: string } | null;
+  currentCollaborator: User | null;
   viewMode: string;
 }
 
@@ -20,7 +20,7 @@ const ArtworkSelector: React.FC<ArtworkSelectorProps> = ({
   return (
     <div>
       <h3 className="text-xs font-medium mb-4">
-        {viewMode === "collaborator" ? `${currentCollaborator?.name}'s Artworks` : "Your Artworks"}
+        {viewMode === "collaborator" ? `${currentCollaborator?.first_name}'s Artworks` : "Your Artworks"}
       </h3>
 
       <div className="max-h-64 overflow-y-auto pr-1">

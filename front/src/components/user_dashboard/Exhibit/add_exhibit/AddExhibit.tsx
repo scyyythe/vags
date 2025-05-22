@@ -20,7 +20,8 @@ import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { getLoggedInUserId } from "@/auth/decode";
 // Import types
 import { Artist, ViewMode, Environment, Artwork, SubmissionStatus } from "./components/types";
-
+import useUserQuery from "@/hooks/users/useUserQuery";
+import { User } from "@/hooks/users/useUserQuery";
 // Color schemes for slots by user
 const slotColorSchemes = [
   "border-primary bg-primary/10", // Owner (primary color)
@@ -243,31 +244,40 @@ const AddExhibit = () => {
   const [selectedSlots, setSelectedSlots] = useState<number[]>([]);
   const [slotArtworkMap, setSlotArtworkMap] = useState<Record<number, string>>({});
   const [isAddArtistDialogOpen, setIsAddArtistDialogOpen] = useState(false);
-  const [collaborators, setCollaborators] = useState<Artist[]>([]);
-  const [slotOwnerMap, setSlotOwnerMap] = useState<Record<number, number>>({});
+  const [collaborators, setCollaborators] = useState<User[]>([]);
+  const [slotOwnerMap, setSlotOwnerMap] = useState<Record<number, string>>({});
+
   const [bannerImage, setBannerImage] = useState<string | null>(null);
   const [isRemoveCollaboratorDialogOpen, setIsRemoveCollaboratorDialogOpen] = useState(false);
-  const [collaboratorToRemove, setCollaboratorToRemove] = useState<Artist | null>(null);
+  const [collaboratorToRemove, setCollaboratorToRemove] = useState<User | null>(null);
   const [artworkStyle, setArtworkStyle] = useState("");
 
   // View mode state
   const [viewMode, setViewMode] = useState<ViewMode>("owner");
-  const [currentCollaborator, setCurrentCollaborator] = useState<Artist | null>(null);
+  const [currentCollaborator, setCurrentCollaborator] = useState<User | null>(null);
   const [showNotificationDialog, setShowNotificationDialog] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
-  const userId = getLoggedInUserId();
-  const { data: artworks = [] } = useArtworks(1, userId ?? undefined, !!userId, "created-by-me", "public", true);
+  const currentUserId = getLoggedInUserId();
+  const { data: artworks = [] } = useArtworks(
+    1,
+    currentUserId ?? undefined,
+    !!currentUserId,
+    "created-by-me",
+    "public",
+    true
+  );
+  const { data: currentUser, isLoading } = useUserQuery(currentUserId ?? "");
   useEffect(() => {
     console.log("Fetched artworks:", artworks);
   }, [artworks]);
 
-  // Mock current user data
-  const currentUser: Artist = {
-    id: 100,
-    name: "You",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80",
-  };
+  // // Mock current user data
+  // const currentUser: User = {
+  //   id: 100,
+  //   name: "You",
+  //   avatar:
+  //     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80",
+  // };
 
   // Mock environments data with different slot capacities
   const environments: Environment[] = [
@@ -336,7 +346,8 @@ const AddExhibit = () => {
       const collaboratorId = urlParams.get("collaborator");
 
       if (collaboratorId) {
-        const collab = collaborators.find((c) => c.id === Number(collaboratorId));
+        const collab = collaborators.find((c) => c.id.toString() === collaboratorId);
+
         if (collab) {
           setViewMode("collaborator");
           setCurrentCollaborator(collab);
@@ -360,7 +371,7 @@ const AddExhibit = () => {
     setSlotArtworkMap({});
     setSelectedArtworks([]);
 
-    const newSlotOwnerMap: Record<number, number> = {};
+    const newSlotOwnerMap: Record<number, string> = {};
 
     // Calculate how many slots each participant gets
     const baseSlots = Math.floor(totalSlots / totalParticipants);
@@ -379,7 +390,8 @@ const AddExhibit = () => {
       // Assign a block of slots to this user
       for (let i = 0; i < slotsForUser; i++) {
         if (slotIndex <= totalSlots) {
-          newSlotOwnerMap[slotIndex] = userId;
+          newSlotOwnerMap[slotIndex] = userId.toString();
+
           slotIndex++;
         }
       }
@@ -449,7 +461,7 @@ const AddExhibit = () => {
     // Prepare notifications for all collaborators
     const notificationsToSend = collaborators.map((collab) => ({
       collaboratorId: collab.id,
-      collaboratorName: collab.name,
+      collaboratorName: collab.first_name,
       exhibitId: Math.floor(Math.random() * 1000) + 1, // In a real app, this would be the actual exhibit ID
       exhibitTitle: title || "Untitled Exhibit",
     }));
@@ -463,13 +475,14 @@ const AddExhibit = () => {
   };
 
   const handleArtworkSelect = (artworkId: string) => {
-    // Determine which user is currently making selections
-    const currentUserId = viewMode === "owner" ? currentUser.id : currentCollaborator?.id;
+    const currentUserId = getLoggedInUserId() ?? (viewMode === "owner" ? currentUser.id : currentCollaborator?.id);
+
     if (!currentUserId) return;
 
-    // Find slots assigned to current user that don't have artwork
+    const currentUserIdStr = currentUserId.toString();
+
     const availableUserSlots = Object.entries(slotOwnerMap)
-      .filter(([slotId, userId]) => userId === currentUserId && !slotArtworkMap[Number(slotId)])
+      .filter(([slotId, userId]) => userId.toString() === currentUserIdStr && !slotArtworkMap[Number(slotId)])
       .map(([slotId]) => Number(slotId));
 
     // Find the first available slot for the current user
@@ -501,11 +514,10 @@ const AddExhibit = () => {
 
   const handleSlotSelect = (slotId: number) => {
     // Determine which user is currently making selections
-    const currentUserId = viewMode === "owner" ? currentUser.id : currentCollaborator?.id;
+    const currentUserId = getLoggedInUserId() ?? (viewMode === "owner" ? currentUser.id : currentCollaborator?.id);
     if (!currentUserId) return;
 
-    // Check if this slot belongs to the current user
-    if (slotOwnerMap[slotId] !== currentUserId) {
+    if (slotOwnerMap[slotId] !== currentUserId.toString()) {
       toast({
         title: "Access denied",
         description: "This slot is assigned to another participant.",
@@ -536,7 +548,7 @@ const AddExhibit = () => {
   // Handle clearing a slot
   const handleClearSlot = (slotId: number) => {
     // Determine which user is currently making selections
-    const currentUserId = viewMode === "owner" ? currentUser.id : currentCollaborator?.id;
+    const currentUserId = getLoggedInUserId() ?? (viewMode === "owner" ? currentUser.id : currentCollaborator?.id);
     if (!currentUserId) return;
 
     // Ensure the user owns this slot
@@ -557,7 +569,7 @@ const AddExhibit = () => {
   };
 
   // Handle adding a collaborator
-  const handleAddCollaborator = (artist: Artist) => {
+  const handleAddCollaborator = (artist: User) => {
     if (collaborators.length >= 2) {
       toast({
         title: "Maximum collaborators reached",
@@ -572,7 +584,7 @@ const AddExhibit = () => {
   };
 
   // Handle removing a collaborator
-  const handleRemoveCollaborator = (artist: Artist) => {
+  const handleRemoveCollaborator = (artist: User) => {
     setCollaboratorToRemove(artist);
     setIsRemoveCollaboratorDialogOpen(true);
   };
@@ -630,44 +642,48 @@ const AddExhibit = () => {
 
   // Get slot color based on owner - only for collaborative exhibits
   const getSlotColor = (slotId: number) => {
-    // If solo exhibit, no color coding
     if (exhibitType === "solo") return "border-gray-200";
 
-    const ownerId = slotOwnerMap[slotId];
-    if (!ownerId) return slotColorSchemes[0]; // Default to owner color
+    const ownerId = slotOwnerMap[slotId.toString()];
+    if (!ownerId) return slotColorSchemes[0];
 
-    // Get color scheme index based on user ID
-    const getColorSchemeIndex = (userId: number) => {
-      if (userId === currentUser.id) return 0; // Owner
+    const getColorSchemeIndex = (userId: string) => {
+      if (userId === String(currentUser.id)) return 0; // convert currentUser.id to string here
 
-      const collaboratorIndex = collaborators.findIndex((c) => c.id === userId);
-      return collaboratorIndex + 1; // +1 because owner is index 0
+      const collaboratorIndex = collaborators.findIndex((c) => String(c.id) === userId);
+
+      return collaboratorIndex + 1;
     };
 
     return slotColorSchemes[getColorSchemeIndex(ownerId)];
   };
 
   // Get user name by ID
-  const getUserName = (userId: number) => {
-    if (userId === currentUser.id) return "Your slot";
-    const collaborator = collaborators.find((c) => c.id === userId);
-    return collaborator ? `${collaborator.name}'s slot` : "";
+  const getUserName = (userId: string) => {
+    if (userId === currentUser.id.toString()) return "Your slot";
+
+    const collaborator = collaborators.find((c) => c.id.toString() === userId);
+    return collaborator ? `${collaborator.first_name}'s slot` : "";
   };
 
   // Determine if the current user can interact with a slot
   const canInteractWithSlot = (slotId: number): boolean => {
-    if (isReadOnly) return false; // No interaction in read-only modes
+    if (isReadOnly) return false;
 
     const ownerId = slotOwnerMap[slotId];
-    return viewMode === "owner" ? ownerId === currentUser.id : ownerId === currentCollaborator?.id;
+    if (!ownerId) return false;
+
+    return viewMode === "owner"
+      ? ownerId === currentUser.id.toString()
+      : ownerId === currentCollaborator?.id?.toString();
   };
 
   // Function to get collaborator submission status
-  const getCollaboratorSubmissionStatus = (collaboratorId: number): SubmissionStatus => {
+  const getCollaboratorSubmissionStatus = (collaboratorId: string): SubmissionStatus => {
     // Get slots assigned to this collaborator
     const collaboratorSlots = Object.entries(slotOwnerMap)
-      .filter(([_, userId]) => Number(userId) === collaboratorId)
-      .map(([slotId]) => Number(slotId));
+      .filter(([_, userId]) => userId === collaboratorId) // Compare as strings
+      .map(([slotId]) => Number(slotId)); // Convert slotId to number if needed
 
     // Count filled slots
     const filledSlots = collaboratorSlots.filter((slotId) => slotArtworkMap[slotId]);
