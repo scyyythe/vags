@@ -256,7 +256,7 @@ const AddExhibit = () => {
   const [showNotificationDialog, setShowNotificationDialog] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const userId = getLoggedInUserId();
-  const { data: artworks = [] } = useArtworks(1, userId ?? undefined, !!userId, "created-by-me", "public");
+  const { data: artworks = [] } = useArtworks(1, userId ?? undefined, !!userId, "created-by-me", "public", true);
   useEffect(() => {
     console.log("Fetched artworks:", artworks);
   }, [artworks]);
