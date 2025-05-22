@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks";
-
+import AuctionFeatureSkeleton from "@/components/skeletons/AuctionFeatureSkeleton";
 const AuctionFeature = (initialTime) => {
   const { data: auctions } = useFetchBiddingArtworks();
 
-  const featured =
-    auctions && auctions.length > 0
-      ? auctions.reduce((max, item) => {
-          const maxBid = max.highest_bid ? max.highest_bid.amount : 0;
-          const itemBid = item.highest_bid ? item.highest_bid.amount : 0;
+  const featured = useMemo(() => {
+    if (!auctions || auctions.length === 0) return null;
+    return auctions.reduce((max, item) => {
+      const maxBid = max.highest_bid ? max.highest_bid.amount : 0;
+      const itemBid = item.highest_bid ? item.highest_bid.amount : 0;
+      return itemBid > maxBid ? item : max;
+    });
+  }, [auctions]);
 
-          return itemBid > maxBid ? item : max;
-        })
-      : null;
   const [timeLeft, setTimeLeft] = useState(initialTime);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -44,6 +45,10 @@ const AuctionFeature = (initialTime) => {
     return () => clearInterval(timer);
   }, []);
 
+  if (!featured || !featured.artwork) {
+    return <AuctionFeatureSkeleton />;
+  }
+
   return (
     <section className="py-20 px-6 md:px-12 bg-black text-white" id="auctions">
       <div className="max-w-screen-xl mx-auto">
@@ -66,7 +71,7 @@ const AuctionFeature = (initialTime) => {
             <img
               src={featured.artwork.image_url}
               alt={featured.artwork.title}
-              className="w-full max-h-[430px] object-contain filter brightness-90 contrast-125"
+              className="w-full max-h-[430px] object-contain"
             />
           </motion.div>
 
