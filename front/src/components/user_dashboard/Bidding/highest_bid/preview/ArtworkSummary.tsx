@@ -5,7 +5,7 @@ export const ArtworkSummary: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data: artworkData, error, isLoading } = useFetchBiddingArtworkById(id);
   console.log("Artwork ID from URL:", id);
-  const formattedDate = format(new Date(artworkData.end_time), "MMMM d, yyyy 'at' h:mm a");
+
   if (isLoading) {
     return <div>Loading artwork...</div>;
   }
@@ -17,6 +17,7 @@ export const ArtworkSummary: React.FC = () => {
   if (!artworkData) {
     return <div>No artwork found.</div>;
   }
+  const formattedDate = format(new Date(artworkData.end_time), "MMMM d, yyyy 'at' h:mm a");
   return (
     <div className="overflow-hidden flex justify-center items-center w-full">
       <div className="flex flex-col md:flex-row justify-center items-center p-4 md:pl-32">
@@ -45,9 +46,7 @@ export const ArtworkSummary: React.FC = () => {
 
           <div className="my-4">
             <p className="text-[11px] text-gray-500 mb-1">Auction ended</p>
-            <p className="text-xs text-gray-700">
-              {format(new Date(artworkData.end_time), "MMMM d, yyyy 'at' h:mm a")}
-            </p>
+            <p className="text-xs text-gray-700">{formattedDate}</p>
           </div>
         </div>
       </div>
