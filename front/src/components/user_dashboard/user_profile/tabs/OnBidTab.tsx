@@ -7,7 +7,7 @@ import useAuctions, { ArtworkAuction } from "@/hooks/auction/useAuction";
 import { useNavigate } from "react-router-dom";
 
 const OnBidTab = () => {
-  const [activeTab, setActiveTab] = useState<"on_going" | "sold" | "closed" | "joined_auctions">("on_going");
+  const [activeTab, setActiveTab] = useState<"on_going" | "sold" | "closed" | "joined_bids">("on_going");
   const navigate = useNavigate();
   const { id: visitedUserId } = useParams();
   const loggedInUserId = getLoggedInUserId();
@@ -27,7 +27,7 @@ const OnBidTab = () => {
     on_going: "No artworks are currently on bid.",
     sold: "No artworks have been sold yet.",
     closed: "No artworks without bidders.",
-    joined_auctions: "You haven't joined any auctions yet.",
+    joined_bids: "You haven't joined any auctions yet.",
   };
   const handleBidClick = (artwork: ArtworkAuction) => {
     localStorage.setItem("selectedBid", JSON.stringify(artwork));
@@ -39,7 +39,7 @@ const OnBidTab = () => {
     <div>
       {/* Tabs */}
       <div className="flex space-x-8 text-[10px] pl-2 border-gray-300 mb-7">
-        {["on_going", "sold", "closed", "joined_auctions"].map((tab) => (
+        {["on_going", "sold", "closed", "joined_bids"].map((tab) => (
           <button
             key={tab}
             className={`pb-2 font-medium ${
