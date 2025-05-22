@@ -175,13 +175,13 @@ export const DashboardLayout = ({ requiredRole, children }: DashboardLayoutProps
 
       {/* Main content - Use absolute positioning to prevent horizontal movement */}
       <div className="absolute top-0 bottom-0 right-0 flex flex-col no-scrollbar overflow-hidden transition-all duration-300" style={{ left: isCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH }} >
-        <header className="bg-background border-b p-4 flex justify-between items-center">
-          <h1 className="text-xl font-semibold">
+        <header className="bg-background py-2.5 px-4 flex justify-between items-center">
+          <h1 className="text-sm font-semibold">
             Art Gallery {requiredRole === "admin" ? "Admin" : "Moderator"} Dashboard
           </h1>
           <div className="flex items-center gap-3">
             {/* Theme Toggle */}
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
             
             {/* Notifications Dropdown */}
             <DropdownMenu>
