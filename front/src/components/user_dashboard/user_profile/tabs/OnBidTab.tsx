@@ -5,13 +5,17 @@ import { getLoggedInUserId } from "@/auth/decode";
 import BidCard from "../../Bidding/cards/BidCard";
 import useAuctions, { ArtworkAuction } from "@/hooks/auction/useAuction";
 
-type ExtendedAuction = ArtworkAuction & { 
-  isPaid?: boolean; 
-  joinedByCurrentUser?: boolean; 
+type ExtendedAuction = ArtworkAuction & {
+  isPaid?: boolean;
+  joinedByCurrentUser?: boolean;
+  isHighestBidder?: boolean;
 };
 
+type MyBidFilter = "all" | "active" | "won" | "lost";
+
 const OnBidTab = () => {
-  const [activeTab, setActiveTab] = useState<"on_going" | "sold" | "closed" | "joined_bids" | "winning_bids">("on_going");
+  const [activeTab, setActiveTab] = useState<"on_going" | "sold" | "closed" | "my_bids">("on_going");
+  const [myBidFilter, setMyBidFilter] = useState<MyBidFilter>("all");
   const [showDropdown, setShowDropdown] = useState(false);
 
   const navigate = useNavigate();
@@ -26,14 +30,23 @@ const OnBidTab = () => {
     isMyProfile ? "created-by-me" : "specific-user"
   );
 
-  // Filtering logic based on activeTab
   const filteredAuctions = (auctions as ExtendedAuction[]).filter((a) => {
-    if (activeTab === "joined_bids") {
-      return a.joinedByCurrentUser === true;
+    if (activeTab === "my_bids") {
+      if (!a.joinedByCurrentUser) return false;
+
+      switch (myBidFilter) {
+        case "active":
+          return a.isHighestBidder && !a.isPaid;
+        case "won":
+          return a.isHighestBidder && a.isPaid;
+        case "lost":
+          return !a.isHighestBidder;
+        case "all":
+        default:
+          return true;
+      }
     }
-    if (activeTab === "winning_bids") {
-      return a.isPaid === true;
-    }
+
     return a.status === activeTab;
   });
 
@@ -41,8 +54,12 @@ const OnBidTab = () => {
     on_going: "No artworks are currently on bid.",
     sold: "No artworks have been sold yet.",
     closed: "No artworks without bidders.",
-    joined_bids: "You haven't joined any auctions yet.",
-    confirmed_bids: "You haven't confirmed any bids yet.",
+    my_bids: {
+      all: "You haven't joined any auctions yet.",
+      active: "No active winning bids.",
+      won: "No confirmed bids yet.",
+      lost: "You haven't lost any auctions yet.",
+    },
   };
 
   const handleBidClick = (artwork: ArtworkAuction) => {
@@ -69,61 +86,59 @@ const OnBidTab = () => {
           </button>
         ))}
 
-        {/* JOINED BIDS / CONFIRMED BIDS Tab */}
+        {/* MY BIDS Tab */}
         <div className="relative flex items-center space-x-1">
-          {/* Label button toggles to joined_bids */}
           <button
             className={`pb-2 font-medium ${
-              (activeTab === "joined_bids" || activeTab === "winning_bids")
-                ? "border-b-2 border-red-800 text-red-800"
-                : "text-gray-600"
+              activeTab === "my_bids" ? "border-b-2 border-red-800 text-red-800" : "text-gray-600"
             }`}
             onClick={() => {
-              setActiveTab("joined_bids");
+              setActiveTab("my_bids");
               setShowDropdown(false);
+              setMyBidFilter("all");
             }}
           >
-            {activeTab === "winning_bids" ? "WINNING BIDS" : "JOINED BIDS"}
+            MY BIDS ({myBidFilter.toUpperCase()})
           </button>
 
-          {/* Chevron icon opens dropdown only if joined_bids or confirmed_bids */}
-          <button
-            className="pb-2"
-            onClick={() => {
-              if (activeTab === "joined_bids" || activeTab === "winning_bids") {
-                setShowDropdown((prev) => !prev);
-              }
-            }}
-          >
-            <svg
-              className={`w-3 h-3 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
+          {/* Chevron */}
+          {activeTab === "my_bids" && (
+            <button
+              className="pb-2"
+              onClick={() => setShowDropdown((prev) => !prev)}
             >
-              <path d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {/* Dropdown menu */}
-          {(activeTab === "joined_bids" || activeTab === "winning_bids") && showDropdown && (
-            <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-full z-10 text-[10px]">
-              <button
-                className={`block px-4 py-2 text-left w-full whitespace-nowrap ${
-                  activeTab === "winning_bids" ? "text-black" : ""
-                }`}
-                onClick={() => {
-                  setActiveTab(activeTab === "joined_bids" ? "winning_bids" : "joined_bids");
-                  setShowDropdown(false);
-                }}
+              <svg
+                className={`w-3 h-3 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
               >
-                {activeTab === "joined_bids" ? "WINNING BIDS" : "JOINED BIDS"}
-              </button>
+                <path d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          )}
+
+          {/* Dropdown */}
+          {activeTab === "my_bids" && showDropdown && (
+            <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded shadow z-10 text-[10px]">
+              {(["all", "active", "won", "lost"] as MyBidFilter[]).map((option) => (
+                <button
+                  key={option}
+                  className={`block px-4 py-2 text-left w-full whitespace-nowrap ${
+                    myBidFilter === option ? "font-semibold text-black" : "text-gray-600"
+                  }`}
+                  onClick={() => {
+                    setMyBidFilter(option);
+                    setShowDropdown(false);
+                  }}
+                >
+                  {option.toUpperCase()}
+                </button>
+              ))}
             </div>
           )}
         </div>
-
       </div>
 
       {/* Content */}
@@ -132,7 +147,11 @@ const OnBidTab = () => {
       ) : filteredAuctions.length === 0 ? (
         <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
           <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
-          <p className="text-xs text-gray-500">{tabEmptyMessages[activeTab]}</p>
+          <p className="text-xs text-gray-500">
+            {activeTab === "my_bids"
+              ? tabEmptyMessages.my_bids[myBidFilter]
+              : tabEmptyMessages[activeTab]}
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
