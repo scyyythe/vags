@@ -20,20 +20,20 @@ export const BidDetails: React.FC<BidSummaryProps> = ({ bid }) => {
       
       <div className="space-y-5">
         <div>
-          <p className="text-[11px] text-gray-500 mb-1">Your winning bid</p>
-          <p className="text-xl font-bold text-red-700">
+          <p className="text-[10px] text-gray-500 mb-1">Your winning bid</p>
+          <p className="text-lg font-bold text-red-700">
             {bid.currency}{bid.amount.toLocaleString()}
           </p>
         </div>
         
         <div>
-          <p className="text-[11px] text-gray-500 mb-1">Bidding reference number</p>
-          <p className="text-xs font-medium text-gray-700">{bid.referenceNumber}</p>
+          <p className="text-[10px] text-gray-500 mb-1">Bidding reference number</p>
+          <p className="text-[11px] font-medium text-gray-700">{bid.referenceNumber}</p>
         </div>
         
         <div>
-          <p className="text-[11px] text-gray-500 mb-1">Auction ID</p>
-          <p className="text-xs font-medium text-gray-700">{bid.auctionId}</p>
+          <p className="text-[10px] text-gray-500 mb-1">Auction ID</p>
+          <p className="text-[11px] font-medium text-gray-700">{bid.auctionId}</p>
         </div>
         
         <div className="flex items-start gap-3 p-4 rounded-lg bg-amber-50 border border-amber-200">

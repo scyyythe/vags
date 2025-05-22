@@ -21,7 +21,7 @@ export interface Bid {
   paymentDeadline: string;
 }
 
-export type PaymentMethod = "creditCard" | "gcash" | "paypal";
+export type PaymentMethod = "creditCard" | "gcash" | "paypal" | "stripe";
 
 export interface ShippingInfo {
   fullName: string;

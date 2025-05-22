@@ -6,7 +6,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { PaymentProvider, usePayment } from "@/context/PaymentContext";
 import { CreditCardPayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/CreditCard";
 import { GCashPayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/Gcash";
+import { StripePayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/Stripe";
 import { PayPalPayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/PayPal";
+import Header from "@/components/user_dashboard/navbar/Header";
 
 const PaymentContent = () => {
   const navigate = useNavigate();
@@ -20,6 +22,8 @@ const PaymentContent = () => {
         return <GCashPayment />;
       case "paypal":
         return <PayPalPayment />;
+      case "stripe":
+        return <StripePayment />;
       default:
         return (
           <div className="text-center py-8">
@@ -38,24 +42,9 @@ const PaymentContent = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-50 py-12">
       {/* Header */}
-      <header className="w-full border-b py-4 px-6 bg-white shadow-sm fixed top-0 left-0 right-0 z-10">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="w-8 h-8">
-            <svg viewBox="0 0 24 24" className="text-red-500 w-8 h-8" fill="currentColor">
-              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v5.7c0 4.83-3.4 8.94-7 10-3.6-1.06-7-5.17-7-10V6.3l7-3.12z" />
-            </svg>
-          </div>
-          <div className="hidden md:flex space-x-2">
-            <button className="px-4 py-2 text-gray-600 hover:text-gray-900">Explore</button>
-            <button className="px-4 py-2 text-gray-600 hover:text-gray-900">Exhibits</button>
-            <button className="px-4 py-2 text-gray-600 hover:text-gray-900">Bidding</button>
-            <button className="px-4 py-2 text-gray-600 hover:text-gray-900">Marketplace</button>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="w-8 h-8 rounded-full bg-gray-200"></div>
-          </div>
-        </div>
-      </header>
+       <header className="mb-20">
+          <Header />
+        </header>
 
       <div className="container max-w-md pt-20 px-4">
         <Button 
