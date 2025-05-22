@@ -35,10 +35,11 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
         <SidebarTrigger className="mr-2" aria-label="Toggle sidebar" />
         
         <div className="hidden sm:flex items-center relative w-64">
-          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
           <Input
             placeholder="Search..."
-            className="pl-8 h-8 text-xs focus-visible:ring-primary"
+            className="pl-8 h-8 rounded-full focus-visible:ring-primary"
+            style={{fontSize:"10px"}}
           />
         </div>
       </div>
