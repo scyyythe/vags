@@ -15,77 +15,76 @@ export const CreditCardPayment = () => {
   };
 
   return (
-    <Card className="shadow-lg border-0 rounded-xl overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-red-50 to-white pb-6">
-        <CardTitle className="flex items-center text-gray-900">
-          <CreditCard className="mr-2 h-5 w-5 text-red-500" />
+    <div className="overflow-hidden">
+        <div className="p-4 text-center text-xs text-gray-900 font-semibold border-none -mb-6">
           Credit/Debit Card Payment
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-5">
+        </div>
+      <div className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div className="space-y-2">
-            <Label htmlFor="cardName" className="text-gray-700">Name on Card</Label>
+            <Label htmlFor="cardName" className="text-gray-700 text-[11px]">Name on Card</Label>
             <Input 
               id="cardName" 
-              placeholder="John Smith" 
+              placeholder="Enter your card name" 
               required 
-              className="border-gray-300 focus:border-red-300 focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-lg"
+              className="border-gray-300 rounded-full h-8"
+              style={{fontSize:"10px"}}
             />
           </div>
               
           <div className="space-y-2">
-            <Label htmlFor="cardNumber" className="text-gray-700">Card Number</Label>
+            <Label htmlFor="cardNumber" className="text-gray-700 text-[11px]">Card Number</Label>
             <Input 
               id="cardNumber" 
               placeholder="1234 5678 9012 3456" 
               required 
-              className="border-gray-300 focus:border-red-300 focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-lg"
+              className="border-gray-300 rounded-full h-8"
+              style={{fontSize:"10px"}}
             />
           </div>
               
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="expiry" className="text-gray-700">Expiry Date</Label>
+              <Label htmlFor="expiry" className="text-gray-700 text-[11px]">Expiry Date</Label>
               <Input 
                 id="expiry" 
                 placeholder="MM/YY" 
                 required 
-                className="border-gray-300 focus:border-red-300 focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-lg"
+                className="border-gray-300 rounded-full h-8"
+                style={{fontSize:"10px"}}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="cvc" className="text-gray-700">CVC</Label>
+              <Label htmlFor="cvc" className="text-gray-700 text-[11px]">CVC</Label>
               <Input 
                 id="cvc" 
                 placeholder="123" 
                 required 
-                className="border-gray-300 focus:border-red-300 focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-lg"
+                className="border-gray-300 rounded-full h-8"
+                style={{fontSize:"10px"}}
               />
             </div>
           </div>
               
           <div className="flex items-center justify-between mt-6 mb-2">
             <div className="flex items-center">
-              <svg viewBox="0 0 24 24" className="h-6 w-6 text-gray-400" fill="currentColor">
-                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v5.7c0 4.83-3.4 8.94-7 10-3.6-1.06-7-5.17-7-10V6.3l7-3.12z" />
-              </svg>
-              <span className="ml-2 text-xs text-gray-500">Secured by Stripe</span>
+              <i className='bx bx-shield text-gray-400 text-xs'></i>
+              <span className="ml-2 text-[10px] text-gray-500">Secured by Stripe</span>
             </div>
             <div className="flex space-x-2">
-              <img src="https://cdn.jsdelivr.net/gh/creativetimofficial/public-assets@master/soft-ui-design-system/assets/img/logos/mastercard.png" alt="mastercard" className="h-6" />
-              <img src="https://cdn.jsdelivr.net/gh/creativetimofficial/public-assets@master/soft-ui-design-system/assets/img/logos/visa.png" alt="visa" className="h-6" />
+              <i className='bx bxl-mastercard text-lg text-gray-500' ></i>
+              <i className='bx bxl-visa text-lg text-gray-500' ></i>
             </div>
           </div>
           
           <Button 
             type="submit" 
-            className="w-full bg-red-500 hover:bg-red-600 rounded-lg py-6"
+            className="w-full h-9 bg-red-700 hover:bg-red-600 rounded-full text-[11px]"
           >
             Pay ₱5,000.00
           </Button>
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };

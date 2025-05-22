@@ -108,7 +108,7 @@ const BidWinnerPageContent = () => {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
-          <div className="bg-white max-w-md w-full rounded-xl shadow-lg p-6 relative">
+          <div className="bg-white max-w-xs w-full rounded-xl shadow-lg p-4 relative">
             <button
               className="absolute top-2 right-3 text-gray-400 hover:text-gray-600 text-lg"
               onClick={() => setShowModal(false)}
