@@ -122,7 +122,6 @@ const App = () => {
                         </Route>
 
                         
-
                         {/* Not Found */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>
