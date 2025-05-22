@@ -1,22 +1,26 @@
 import { useParams } from "react-router-dom";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 import { format } from "date-fns";
+import ArtworkSummarySkeleton from "@/components/skeletons/ArtworkSummarySkeleton";
 export const ArtworkSummary: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data: artworkData, error, isLoading } = useFetchBiddingArtworkById(id);
-  console.log("Artwork ID from URL:", id);
-  const formattedEndDate = format(new Date(artworkData.end_time), "MMMM d, yyyy 'at' h:mm a");
+
   if (isLoading) {
-    return <div>Loading artwork...</div>;
+    return <ArtworkSummarySkeleton />;
   }
-
   if (error) {
-    return <div>Error loading artwork: {error.message}</div>;
+    return <div className="text-red-600">Error loading artwork: {error.message}</div>;
   }
-
   if (!artworkData) {
-    return <div>No artwork found.</div>;
+    return (
+      <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
+        <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
+        <p className="text-xs text-gray-500">No artwork foun</p>
+      </div>
+    );
   }
+  const formattedDate = format(new Date(artworkData.end_time), "MMMM d, yyyy 'at' h:mm a");
   return (
     <div className="overflow-hidden flex justify-center items-center w-full">
       <div className="flex flex-col md:flex-row justify-center items-center p-4 md:pl-32">
@@ -45,7 +49,7 @@ export const ArtworkSummary: React.FC = () => {
 
           <div className="my-4">
             <p className="text-[11px] text-gray-500 mb-1">Auction ended</p>
-            <p className="text-xs text-gray-700">{formattedEndDate}</p>
+            <p className="text-xs text-gray-700">{formattedDate}</p>
           </div>
         </div>
       </div>
