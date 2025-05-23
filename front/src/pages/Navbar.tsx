@@ -52,7 +52,7 @@ const Navbar = () => {
       )}
     >
       <div className="max-w-screen-xl mx-auto flex items-center justify-between">
-        <Link to="/hero" className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center space-x-2">
           <img src="/pics/logo.png" alt="logo" className=" w-11 h-11 " />
         </Link>
 
@@ -66,7 +66,7 @@ const Navbar = () => {
             duration={100}
             className="cursor-pointer hover:text-primary transition-colors"
             onClick={() => setShowMenu(false)}
-          >
+          > 
             Discover
           </ScrollLink>
           <ScrollLink
