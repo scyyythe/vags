@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from api.models.interaction_model.notification import Notification
+from api.serializers.user_s.users_serializers import UserSerializer
 class NotificationSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
-    user = serializers.CharField()
+    user = UserSerializer(read_only=True) 
     avatar = serializers.CharField(required=False, allow_blank=True)
     name = serializers.CharField(required=False, allow_blank=True)
     message = serializers.CharField()
@@ -20,27 +21,3 @@ class NotificationSerializer(serializers.Serializer):
     donation = serializers.CharField(required=False, allow_blank=True)
     date = serializers.DateTimeField(source='created_at', format="%Y-%m-%d %H:%M:%S")
     time = serializers.CharField(required=False)
-
-    def to_representation(self, instance):
-        formatted_time = instance.created_at.strftime("%Y-%m-%d %H:%M:%S") if instance.created_at else None
-        return {
-            "id": str(instance.id),
-            "user": str(instance.user.id) if instance.user else None,
-            "avatar": instance.avatar or "",
-            "name": instance.name or "",
-            "message": instance.message,
-            "action": instance.action or "",
-            "target": instance.target or "",
-            "created_at": formatted_time,
-            "date": formatted_time,
-            "time": instance.time or "", 
-            "is_read": instance.is_read,
-            "check": instance.check,
-            "money": instance.money,
-            "icon": instance.icon or "",
-            "amount": instance.amount or "",
-            "forAmount": instance.forAmount or "",
-            "token": instance.token or "",
-            "link": instance.link or "",
-            "donation": instance.donation or ""
-        }

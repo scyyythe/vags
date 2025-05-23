@@ -3,8 +3,28 @@ import { toast } from "sonner";
 import apiClient from "@/utils/apiClient";
 import { getLoggedInUserId } from "@/auth/decode";
 
+interface User {
+  id: string;
+  username?: string;
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  role?: string;
+  user_status?: string;
+  created_at?: string;
+  updated_at?: string;
+  profile_picture?: string;
+  cover_photo?: string;
+  bio?: string;
+  contact_number?: string;
+  address?: string;
+  gender?: "Male" | "Female" | "Other";
+  date_of_birth?: string;
+  password: string;
+}
 interface Notification {
   id: number;
+  user: User;
   avatar?: string;
   name?: string;
   action: string;
@@ -18,7 +38,7 @@ interface Notification {
   token?: string;
   link?: string;
   donation?: string;
-  date: Date;
+  date: string;
   artworkTitle?: string;
   artworkMessage?: string;
 }
@@ -41,6 +61,7 @@ const useNotifications = () => {
         const response = await apiClient.get("/notifications/");
         const notifications: Notification[] = response.data;
         setDisplayedNotifications(notifications);
+        console.log(response.data);
       } catch (error) {
         console.error("Failed to fetch notifications", error);
         toast.error("Failed to fetch notifications");
