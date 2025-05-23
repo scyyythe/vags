@@ -3,8 +3,11 @@ import { motion } from "framer-motion";
 import { MoreHorizontal, Heart } from "lucide-react";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+import { useModal } from '../context/ModalContext'; 
+
 const ExploreArtworks = () => {
   const { data: artworks, isLoading } = useArtworks(1, undefined, true, "all", "public", true);
+  const { showRegisterModal, setShowRegisterModal } = useModal(); 
 
   const container = {
     hidden: { opacity: 0 },
@@ -37,7 +40,7 @@ const ExploreArtworks = () => {
           </motion.h2>
 
           <motion.a
-            href="#"
+            onClick={() => setShowRegisterModal(true)}
             className="bg-black text-white text-sm font-small rounded-full px-4 py-2 hover:bg-gray-800 transition-colors"
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -57,9 +60,9 @@ const ExploreArtworks = () => {
         >
           {artworks.slice(0, 8).map((artwork) => (
             <motion.div key={artwork.id} variants={item} className="card-hover">
-              <div className="bg-white p-3 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="bg-white px-5 py-3 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="relative group">
-                  <div className="flex justify-between items-center p-2">
+                  <div className="flex justify-between items-center pt-2 px-2 pb-4">
                     <div className="flex items-center space-x-1">
                       <div className="w-5 h-5 rounded-full overflow-hidden mr-2">
                         <img
@@ -81,14 +84,14 @@ const ExploreArtworks = () => {
                     className="w-full aspect-square object-cover rounded-xl transition-transform duration-300"
                   />
 
-                  <div className="p-2">
+                  <div className="pt-4 px-2 pb-2">
                     <div className="flex justify-between items-center mb-1">
-                      <h3 className="text-sm font-medium">{artwork.title}</h3>
-                      <button className="text-gray-500 hover:text-red-500 transition-colors relative top-4">
+                      <h3 className="text-sm font-medium relative top-1">{artwork.title}</h3>
+                      <button className="text-gray-500 hover:text-red-500 transition-colors relative top-1" 
+                      onClick={() => setShowRegisterModal(true)}>
                         <Heart className="w-4 h-4" />
                       </button>
                     </div>
-                    <p className="text-xs text-gray-500">{artwork.price}</p>
                   </div>
                 </div>
               </div>
