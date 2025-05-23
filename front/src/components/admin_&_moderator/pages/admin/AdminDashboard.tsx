@@ -167,17 +167,17 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold">Admin Dashboard</h1>
-        <p className="text-xs text-muted-foreground">
+        <h1 className="text-md font-bold">Admin Dashboard</h1>
+        <p className="text-[10px] text-muted-foreground">
           Welcome to the admin dashboard. Manage your platform from here.
         </p>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4" onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:inline-grid sm:grid-cols-3">
-          <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
-          <TabsTrigger value="users" className="text-xs">User Management</TabsTrigger>
-          <TabsTrigger value="logs" className="text-xs">System Logs</TabsTrigger>
+          <TabsTrigger value="overview" className="text-[10px]">Overview</TabsTrigger>
+          <TabsTrigger value="users" className="text-[10px]">User Management</TabsTrigger>
+          <TabsTrigger value="logs" className="text-[10px]">System Logs</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
@@ -214,7 +214,7 @@ const AdminDashboard = () => {
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm">Platform Activity</CardTitle>
+                <CardTitle className="text-xs">Platform Activity</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-[200px]">
@@ -256,7 +256,7 @@ const AdminDashboard = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm">Recent System Logs</CardTitle>
+                <CardTitle className="text-xs">Recent System Logs</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
@@ -267,11 +267,11 @@ const AdminDashboard = () => {
                     >
                       <div>
                         <p className="text-xs font-medium">{log.action}</p>
-                        <p className="text-3xs text-muted-foreground truncate max-w-[180px]">
+                        <p className="text-[10px] text-muted-foreground truncate max-w-[180px]">
                           {log.details}
                         </p>
                       </div>
-                      <p className="text-3xs text-muted-foreground">
+                      <p className="text-[10px] text-muted-foreground">
                         {log.timestamp.split(" ")[1]}
                       </p>
                     </div>
