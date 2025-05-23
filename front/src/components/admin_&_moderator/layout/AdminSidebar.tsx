@@ -89,8 +89,6 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
         </div>
       )}
 
-      <SidebarTrigger className="m-2 self-end" />
-
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs">

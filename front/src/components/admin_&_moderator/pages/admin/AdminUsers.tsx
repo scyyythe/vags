@@ -203,21 +203,21 @@ const AdminUsers = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl font-bold">User Management</h1>
-          <p className="text-xs text-muted-foreground">
+          <h1 className="text-md font-bold">User Management</h1>
+          <p className="text-[10px] text-muted-foreground">
             Manage users, roles, and permissions across the platform
           </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="text-xs">
+            <Button size="sm" className="text-[9px] rounded-full h-7">
               Add User
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle className="text-sm">Add New User</DialogTitle>
-              <DialogDescription className="text-xs">
+              <DialogDescription className="text-[10px]">
                 Create a new user account with specific roles and permissions.
               </DialogDescription>
             </DialogHeader>
@@ -231,9 +231,9 @@ const AdminUsers = () => {
                     <FormItem>
                       <FormLabel className="text-xs">Name</FormLabel>
                       <FormControl>
-                        <Input className="text-xs" placeholder="John Doe" {...field} />
+                        <Input className="h-8 rounded-full" placeholder="enter name" {...field} style={{fontSize:"10px"}}/>
                       </FormControl>
-                      <FormMessage className="text-2xs" />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
@@ -244,9 +244,9 @@ const AdminUsers = () => {
                     <FormItem>
                       <FormLabel className="text-xs">Email</FormLabel>
                       <FormControl>
-                        <Input className="text-xs" placeholder="john@example.com" {...field} />
+                        <Input className="h-8 rounded-full" placeholder="enter email" {...field} style={{fontSize:"10px"}}/>
                       </FormControl>
-                      <FormMessage className="text-2xs" />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
@@ -261,20 +261,20 @@ const AdminUsers = () => {
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
-                          <SelectTrigger className="text-xs">
+                          <SelectTrigger className="h-8 rounded-full" style={{fontSize:"10px"}}>
                             <SelectValue placeholder="Select a role" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="admin" className="text-xs">Admin</SelectItem>
-                            <SelectItem value="moderator" className="text-xs">Moderator</SelectItem>
-                            <SelectItem value="user" className="text-xs">User</SelectItem>
+                            <SelectItem value="admin" className="text-[10px]">Admin</SelectItem>
+                            <SelectItem value="moderator" className="text-[10px]">Moderator</SelectItem>
+                            <SelectItem value="user" className="text-[10px]">User</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
-                      <FormDescription className="text-2xs">
+                      <FormDescription className="text-[10px]">
                         This determines what actions the user can take on the platform.
                       </FormDescription>
-                      <FormMessage className="text-2xs" />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
@@ -282,13 +282,13 @@ const AdminUsers = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="text-xs"
+                    className="text-[11px] rounded-full h-8"
                     onClick={() => setOpen(false)}
                     type="button"
                   >
                     Cancel
                   </Button>
-                  <Button size="sm" className="text-xs" type="submit">
+                  <Button size="sm" className="text-[11px] rounded-full h-8" type="submit">
                     Add User
                   </Button>
                 </div>
