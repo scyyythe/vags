@@ -197,8 +197,14 @@ const EditProfile = () => {
               </button>
             </div>
           ) : (
-            <div className="w-full max-w-4xl h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-400 text-xs font-medium">
+            <div className="relative w-full max-w-4xl h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-400 text-xs font-medium">
               No cover photo uploaded
+              <button
+                onClick={triggerCoverFileInput}
+                className="absolute bottom-2 right-2 bg-white p-2 shadow hover:bg-gray-100 text-[10px] font-medium py-1 px-2 rounded-full text-gray-800"
+              >
+                <i className='bx bx-camera text-sm'></i>
+              </button>
             </div>
           )}
       
@@ -241,10 +247,16 @@ const EditProfile = () => {
             </button>
           </div>
         ) : (
-          <div className="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center text-white text-4xl font-bold">
+          <div className="relative w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center text-white text-4xl font-bold">
             {fullName.charAt(0).toUpperCase() || "U"}
-          </div>
-        )}
+                <button
+                  onClick={triggerFileInput}
+                  className="absolute bottom-2 right-2 bg-white shadow hover:bg-gray-100 text-[10px] font-medium px-2 rounded-full text-gray-800"
+                >
+                  <i className='bx bx-camera text-sm'></i>
+                </button>
+              </div>
+            )}
     
             <input type="file" ref={fileInputRef} onChange={handlePhotoChange} accept="image/*" className="hidden" />
             
