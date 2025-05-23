@@ -12,6 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useModal } from "@/context/ModalContext";
 
 type AdminHeaderProps = {
   role: "admin" | "moderator";
@@ -23,44 +25,44 @@ type AdminHeaderProps = {
 };
 
 export function AdminHeader({ role, user }: AdminHeaderProps) {
+  const navigate = useNavigate();
+  const { setShowLoginModal } = useModal();
+  const onClose = () => {
+    setShowLoginModal(false);
+  };
+
   const initials = user.name
     .split(" ")
     .map((n) => n[0])
     .join("");
 
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
+    setShowLoginModal(true);
+    onClose();
+  };
   return (
     <header className="border-b bg-white h-14 px-4 flex items-center justify-between">
       <div className="flex-1 flex items-center">
         {/* Add an additional sidebar trigger in the header for easier access */}
         <SidebarTrigger className="mr-2" aria-label="Toggle sidebar" />
-        
+
         <div className="hidden sm:flex items-center relative w-64">
           <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <Input
-            placeholder="Search..."
-            className="pl-8 h-8 text-xs focus-visible:ring-primary"
-          />
+          <Input placeholder="Search..." className="pl-8 h-8 text-xs focus-visible:ring-primary" />
         </div>
       </div>
 
       <div className="flex items-center space-x-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative"
-          aria-label="Notifications"
-        >
+        <Button variant="ghost" size="icon" className="relative" aria-label="Notifications">
           <Bell className="h-4 w-4" />
           <span className="absolute top-1 right-1 h-2 w-2 bg-primary rounded-full"></span>
         </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="relative h-8 w-8 rounded-full"
-              aria-label="User menu"
-            >
+            <Button variant="ghost" className="relative h-8 w-8 rounded-full" aria-label="User menu">
               <Avatar className="h-8 w-8">
                 <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback className="text-xs">{initials}</AvatarFallback>
@@ -81,7 +83,7 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-xs text-destructive">
+            <DropdownMenuItem className="text-xs text-destructive" onClick={handleLogout}>
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
