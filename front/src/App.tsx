@@ -68,6 +68,10 @@ import RoleProtectedRoute from "@/components/admin_&_moderator/auth/RoleProtecte
 
 import ProtectedRoute from "./auth/ProtectedRoute";
 
+//Exhibit
+import Gallery3D from "./components/gallery/Gallery3D";
+
+
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
 
