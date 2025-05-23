@@ -39,6 +39,14 @@ export function UserTable({
       user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  const formatDate = (isoDateString: string) => {
+    const date = new Date(isoDateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   const getStatusBadge = (status: User["user_status"]) => {
     switch (status) {
@@ -110,7 +118,7 @@ export function UserTable({
                   </TableCell>
                   <TableCell className="text-[10px]">{getRoleBadge(user.role)}</TableCell>
                   <TableCell className="text-[10px]">{getStatusBadge(user.user_status)}</TableCell>
-                  <TableCell className="text-[10px]">{user.created_at}</TableCell>
+                  <TableCell className="text-[10px]">{formatDate(user.created_at)}</TableCell>
                   <TableCell className="text-[10px] text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
