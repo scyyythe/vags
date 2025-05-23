@@ -249,6 +249,8 @@ const App = () => {
                             
                           } 
                         />
+                        {/*Exhibit*/}
+                        <Route path="/gallery-3d" element={<Gallery3D />} />
                         
                         {/* Not Found */}
                         <Route path="*" element={<NotFound />} />
