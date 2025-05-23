@@ -40,7 +40,6 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     setMessage(null);
 
     if (!formData.email || !formData.password) {
@@ -56,9 +55,10 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         refresh_token: string;
         user_id: string;
         email: string;
+        role: string;
       }>("token/", formData);
 
-      const { access_token, refresh_token, user_id, email } = response.data;
+      const { access_token, refresh_token, user_id, email, role } = response.data;
 
       if (!access_token || !refresh_token) {
         throw new Error("Missing tokens");
@@ -68,12 +68,19 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       localStorage.setItem("refresh_token", refresh_token);
       localStorage.setItem("user_id", user_id);
       localStorage.setItem("email", email);
+      localStorage.setItem("role", role);
 
       toast.success("Login successful!", {
         description: "You are now logged in.",
       });
 
-      navigate("/explore");
+      if (role === "Admin") {
+        navigate("/admin");
+      } else if (role === "Moderator") {
+        navigate("/moderator");
+      } else {
+        navigate("/explore");
+      }
     } catch (err) {
       const error = err as AxiosError<{ error: string }>;
 
@@ -248,7 +255,6 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
           </div>
 
           {/* Forgot Password Link */}
-          
 
           {/* Login Button */}
           <button
