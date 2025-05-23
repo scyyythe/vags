@@ -64,14 +64,29 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
-
+    // Password validation rules
+    const password = formData.password;
+    const hasMinLength = password.length >= 8;
+    const hasUniqueChar = /[^A-Za-z0-9]/.test(password);
     if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
       toast.error("Missing information", {
         description: "Please fill in all required fields.",
       });
       return;
     }
+    if (!hasMinLength) {
+      toast.error("Password too short", {
+        description: "Password must be at least 8 characters long.",
+      });
+      return;
+    }
 
+    if (!hasUniqueChar) {
+      toast.error("Password must be stronger", {
+        description: "Password must contain at least one special character (e.g. !, @, #, $).",
+      });
+      return;
+    }
     const loadingToast = toast.loading("Processing registration...");
 
     try {
@@ -183,7 +198,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
             <InputField
               type="text"
               label="First Name"
-              placeholder="First name"  
+              placeholder="First name"
               icon="bx bx-user"
               name="firstName"
               value={formData.firstName}
