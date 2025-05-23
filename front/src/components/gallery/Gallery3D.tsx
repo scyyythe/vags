@@ -72,7 +72,7 @@ const Gallery3D = () => {
     // Load model
     const loader = new GLTFLoader();
     loader.load(
-      "/gallery_scenes/10art_scene4.glb",
+      "/gallery_scenes/10art_scene_apart.glb",
       (gltf) => {
         scene.add(gltf.scene);
 
@@ -91,6 +91,63 @@ const Gallery3D = () => {
           title: "The Scream",
           artist: "Edvard Munch"
         },
+        {
+          imageMesh: "art_template3",
+          titleMesh: "title_template3",
+          imageUrl: "https://images.vexels.com/media/users/3/207752/isolated/preview/697b63a22a36168f444beff7ade7e00b-david-abstract-art.png",
+          title: "Starry Night",
+          artist: "Vincent van Gogh"
+        },
+        {
+          imageMesh: "art_template4",
+          titleMesh: "title_template4",
+          imageUrl: "https://png.pngtree.com/png-vector/20240120/ourmid/pngtree-owl-in-a-hypnotic-fractal-galaxy-of-patterns-png-image_11472209.png",
+          title: "The Scream",
+          artist: "Edvard Munch"
+        },
+        {
+          imageMesh: "art_template5",
+          titleMesh: "title_template5",
+          imageUrl: "https://images.vexels.com/media/users/3/207752/isolated/preview/697b63a22a36168f444beff7ade7e00b-david-abstract-art.png",
+          title: "Starry Night",
+          artist: "Vincent van Gogh"
+        },
+        {
+          imageMesh: "art_template6",
+          titleMesh: "title_template6",
+          imageUrl: "https://png.pngtree.com/png-vector/20240120/ourmid/pngtree-owl-in-a-hypnotic-fractal-galaxy-of-patterns-png-image_11472209.png",
+          title: "The Scream",
+          artist: "Edvard Munch"
+        },
+        {
+          imageMesh: "art_template7",
+          titleMesh: "title_template7",
+          imageUrl: "https://images.vexels.com/media/users/3/207752/isolated/preview/697b63a22a36168f444beff7ade7e00b-david-abstract-art.png",
+          title: "Starry Night",
+          artist: "Vincent van Gogh"
+        },
+        {
+          imageMesh: "art_template8",
+          titleMesh: "title_template8",
+          imageUrl: "https://img.freepik.com/free-photo/tradition-pattern-nature-celebration-bird-white_1417-554.jpg?semt=ais_hybrid&w=740",
+          title: "The Scream",
+          artist: "Edvard Munch"
+        },
+        {
+          imageMesh: "art_template9",
+          titleMesh: "title_template9",
+          imageUrl: "https://i.pinimg.com/736x/f2/a1/f5/f2a1f5a00ceefc664add2f820689bf57.jpg",
+          title: "Starry Night",
+          artist: "Vincent van Gogh"
+        },
+        {
+          imageMesh: "art_template10",
+          titleMesh: "title_template10",
+          imageUrl: "https://png.pngtree.com/png-vector/20200123/ourmid/pngtree-hand-drawn-mandala-art-png-image_2133833.jpg",
+          title: "The Scream",
+          artist: "Edvard Munch"
+        },
+        
         // More entries...
       ];
 
