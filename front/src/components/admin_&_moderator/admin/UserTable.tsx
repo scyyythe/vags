@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,16 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, MoreHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: "admin" | "moderator" | "user";
-  status: "active" | "suspended" | "banned";
-  joinDate: string;
-  avatar?: string;
-};
+import { User } from "@/hooks/users/useUserQuery";
 
 interface UserTableProps {
   initialUsers: User[];
@@ -39,7 +23,6 @@ interface UserTableProps {
   onReinstateUser?: (id: string) => void;
   onDeleteUser?: (id: string) => void;
 }
-
 export function UserTable({
   initialUsers,
   onPromoteUser,
@@ -53,17 +36,17 @@ export function UserTable({
 
   const filteredUsers = users.filter(
     (user) =>
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const getStatusBadge = (status: User["status"]) => {
+  const getStatusBadge = (status: User["user_status"]) => {
     switch (status) {
-      case "active":
+      case "Active":
         return <Badge className="bg-green-100 text-green-800 hover:bg-green-200 text-3xs">Active</Badge>;
-      case "suspended":
+      case "Suspended":
         return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 text-3xs">Suspended</Badge>;
-      case "banned":
+      case "Banned":
         return <Badge className="bg-red-100 text-red-800 hover:bg-red-200 text-3xs">Banned</Badge>;
       default:
         return null;
@@ -71,7 +54,8 @@ export function UserTable({
   };
 
   const getRoleBadge = (role: User["role"]) => {
-    switch (role) {
+    const normalizedRole = role.toLowerCase();
+    switch (normalizedRole) {
       case "admin":
         return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200 text-3xs">Admin</Badge>;
       case "moderator":
@@ -90,7 +74,7 @@ export function UserTable({
           className="pl-8 rounded-full h-8"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          style={{fontSize:"10px"}}
+          style={{ fontSize: "10px" }}
         />
       </div>
 
@@ -112,20 +96,21 @@ export function UserTable({
                   <TableCell className="text-[11px]">
                     <div className="flex items-center space-x-2">
                       <Avatar className="h-6 w-6">
-                        <AvatarImage src={user.avatar} />
+                        <AvatarImage src={user.profile_picture} />
                         <AvatarFallback className="text-2xs">
-                          {user.name.charAt(0)}
+                          {`${user?.first_name?.charAt(0) ?? ""}${user?.last_name?.charAt(0) ?? ""}`}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <div className="font-medium">{user.name}</div>
+                        <div className="font-medium">{`${user?.first_name ?? ""} ${user?.last_name ?? ""}`}</div>
+
                         <div className="text-[10px] text-gray-500">{user.email}</div>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="text-[10px]">{getRoleBadge(user.role)}</TableCell>
-                  <TableCell className="text-[10px]">{getStatusBadge(user.status)}</TableCell>
-                  <TableCell className="text-[10px]">{user.joinDate}</TableCell>
+                  <TableCell className="text-[10px]">{getStatusBadge(user.user_status)}</TableCell>
+                  <TableCell className="text-[10px]">{user.created_at}</TableCell>
                   <TableCell className="text-[10px] text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -136,38 +121,38 @@ export function UserTable({
                       <DropdownMenuContent align="end" className="w-40">
                         <DropdownMenuLabel className="text-[11px]">User Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {user.role !== "admin" && (
-                          <DropdownMenuItem 
+                        {user.role !== "Admin" && (
+                          <DropdownMenuItem
                             className="text-[10px]"
                             onClick={() => onPromoteUser && onPromoteUser(user.id)}
                           >
-                            {user.role === "moderator" ? "Demote to User" : "Promote to Moderator"}
+                            {user.role === "Moderator" ? "Demote to User" : "Promote to Moderator"}
                           </DropdownMenuItem>
                         )}
-                        {user.status === "active" ? (
-                          <DropdownMenuItem 
+                        {user.user_status === "Active" ? (
+                          <DropdownMenuItem
                             className="text-[10px]"
                             onClick={() => onSuspendUser && onSuspendUser(user.id)}
                           >
                             Suspend User
                           </DropdownMenuItem>
                         ) : (
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             className="text-[10px]"
                             onClick={() => onReinstateUser && onReinstateUser(user.id)}
                           >
                             Reinstate User
                           </DropdownMenuItem>
                         )}
-                        {user.status !== "banned" ? (
-                          <DropdownMenuItem 
+                        {user.user_status !== "Banned" ? (
+                          <DropdownMenuItem
                             className="text-[10px] text-red-500"
                             onClick={() => onBanUser && onBanUser(user.id)}
                           >
                             Ban User
                           </DropdownMenuItem>
                         ) : (
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             className="text-[10px]"
                             onClick={() => onReinstateUser && onReinstateUser(user.id)}
                           >
@@ -175,7 +160,7 @@ export function UserTable({
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           className="text-[10px] text-red-500"
                           onClick={() => onDeleteUser && onDeleteUser(user.id)}
                         >

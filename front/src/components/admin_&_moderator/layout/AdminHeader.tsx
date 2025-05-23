@@ -14,7 +14,8 @@ import {
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useModal } from "@/context/ModalContext";
-
+import useUserQuery from "@/hooks/users/useUserQuery";
+import { getLoggedInUserId } from "@/auth/decode";
 type AdminHeaderProps = {
   role: "admin" | "moderator";
   user: {
@@ -26,15 +27,20 @@ type AdminHeaderProps = {
 
 export function AdminHeader({ role, user }: AdminHeaderProps) {
   const navigate = useNavigate();
+  const userId = getLoggedInUserId();
+  const { data: admin, isLoading, isError } = useUserQuery(userId);
+
   const { setShowLoginModal } = useModal();
   const onClose = () => {
     setShowLoginModal(false);
   };
 
-  const initials = user.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("");
+  const initials = admin?.first_name
+    ? admin.first_name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+    : "";
 
   const handleLogout = () => {
     localStorage.clear();
@@ -68,8 +74,11 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full" aria-label="User menu">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                {admin && admin.profile_picture ? (
+                  <AvatarImage src={admin.profile_picture} alt={`${admin.first_name} ${admin.last_name}`} />
+                ) : (
+                  <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                )}
               </Avatar>
             </Button>
           </DropdownMenuTrigger>

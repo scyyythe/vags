@@ -34,12 +34,15 @@ class ListAllUsersView(APIView):
 
     def get(self, request):
         try:
-            users = User.objects.all()
+            users = User.objects(role__in=["Admin", "Moderator", "User"])
             serializer = UserSerializer(users, many=True, context={"request": request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             print("Error listing users:", e)
             return Response({"error": "Failed to fetch users."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+        
 class RetrieveUserView(APIView):
     permission_classes = [IsAuthenticated]
 
