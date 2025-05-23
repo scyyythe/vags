@@ -4,7 +4,7 @@ import { useModal } from "../../../context/ModalContext";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-interface ProfileDropdownProps {
+export interface ProfileDropdownProps {
   isOpen: boolean;
   onClose: () => void;
 }

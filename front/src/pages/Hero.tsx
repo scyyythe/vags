@@ -39,32 +39,46 @@ const Hero = () => {
               <PopularArtworksSkeleton />
             ) : (
               <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 w-full md:w-[89%] -top-48">
-                {artworks?.map((artwork) => (
-                  <motion.div
-                    key={artwork.id}
-                    className="artwork-card"
-                    initial={{ y: -10 }}
-                    animate={{ y: [-10, 0, -10] }}
-                    transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-                  >
-                    <div className="relative bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
-                      <img src={artwork.image_url} alt="Greek Statue" className="h-40 rounded-2xl" />
-                      <div className="p-2 flex justify-between items-center">
-                        <div>
-                          <p className="text-sm font-medium">{artwork.title}</p>
-                          <p className="text-xs text-gray-500">{artwork.artistName}</p>
-                        </div>
-                        <div className="w-6 h-6 rounded-full overflow-hidden">
-                          <img
-                            src={artwork.artistImage}
-                            alt="Artist"
-                            className="w-full h-full object-contain rounded-full"
-                          />
+                {artworks?.map((artwork, index) => {
+                  let initialY, animateY;
+                  if (index % 3 === 0) {
+                    initialY = 10;
+                    animateY = [30, 10, 30];
+                  } else if (index % 3 === 1) {
+                    initialY = -20;
+                    animateY = [-40, -20, -40];
+                  } else {
+                    initialY = 10;
+                    animateY = [30, 10, 30];
+                  }
+
+                  return (
+                    <motion.div
+                      key={artwork.id}
+                      className="artwork-card"
+                      initial={{ y: initialY }}
+                      animate={{ y: animateY }}
+                      transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
+                    >
+                      <div className="relative bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
+                        <img src={artwork.image_url} alt={artwork.title} className="h-40 rounded-2xl" />
+                        <div className="p-2 flex justify-between items-center">
+                          <div>
+                            <p className="text-sm font-medium">{artwork.title}</p>
+                            <p className="text-xs text-gray-500">{artwork.artistName}</p>
+                          </div>
+                          <div className="w-6 h-6 rounded-full overflow-hidden">
+                            <img
+                              src={artwork.artistImage}
+                              alt="Artist"
+                              className="w-full h-full object-cover rounded-full"
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  );
+                })}
               </div>
             )}
             {/* Stats */}
