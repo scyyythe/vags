@@ -34,12 +34,15 @@ class ListAllUsersView(APIView):
 
     def get(self, request):
         try:
-            users = User.objects.all()
+            users = User.objects(role__in=["Admin", "Moderator", "User"])
             serializer = UserSerializer(users, many=True, context={"request": request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             print("Error listing users:", e)
             return Response({"error": "Failed to fetch users."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+        
 class RetrieveUserView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -90,39 +93,42 @@ class DeleteUserView(generics.DestroyAPIView):
 class CustomTokenObtainPairView(APIView):
     """Handles JWT authentication for MongoEngine users"""
     permission_classes = [AllowAny] 
+
     def post(self, request):
-        email, password = request.data.get("email"), request.data.get("password").encode("utf-8")
+        email = request.data.get("email")
+        password = request.data.get("password").encode("utf-8")
 
         user = User.objects(email=email).first()
         if not user or not user.password or not bcrypt.checkpw(password, user.password.encode("utf-8")):
             return Response({"error": "Please check your credentials and try again"}, status=status.HTTP_401_UNAUTHORIZED)
 
-
-      
         def generate_token(payload, exp_delta):
             payload.update({"exp": datetime.utcnow() + exp_delta, "iat": datetime.utcnow()})
             return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
 
-   
         access_token = generate_token({
-            "user_id": str(user.id), 
-            "email": user.email, 
+            "user_id": str(user.id),
+            "email": user.email,
+            "role": user.role, 
             "jti": f"{user.id}_access",
             "token_type": "access"
-        }, timedelta(hours=8))  
+        }, timedelta(hours=8))
 
         refresh_token = generate_token({
-            "user_id": str(user.id), 
+            "user_id": str(user.id),
+            "role": user.role,  
             "jti": f"{user.id}_refresh",
             "token_type": "refresh"
-        }, timedelta(days=7))  
+        }, timedelta(days=7))
 
         return Response({
             "access_token": access_token,
             "refresh_token": refresh_token,
             "user_id": str(user.id),
-            "email": user.email
+            "email": user.email,
+            "role": user.role 
         }, status=status.HTTP_200_OK)
+
 
 class CustomTokenRefreshView(APIView):
     """Handles JWT token refresh"""
