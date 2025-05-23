@@ -27,13 +27,6 @@ const Gallery3D = () => {
     renderer.setSize(width, height);
     mount.appendChild(renderer.domElement);
 
-    // Lights
-    // const ambientLight = new THREE.AmbientLight(0xffffff, 20);
-    // scene.add(ambientLight);
-    // const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    // directionalLight.position.set(5, 10, 7.5);
-    // scene.add(directionalLight);
-
     // Controls
     const controls = new PointerLockControls(camera, renderer.domElement);
 
@@ -53,6 +46,7 @@ const Gallery3D = () => {
     });
 
     scene.add(controls.getObject());
+
 
     // Movement variables
     const moveForward = false;
@@ -78,15 +72,88 @@ const Gallery3D = () => {
     // Load model
     const loader = new GLTFLoader();
     loader.load(
-      "/gallery_scenes/10art_scene.glb",
+      "/gallery_scenes/10art_scene4.glb",
       (gltf) => {
         scene.add(gltf.scene);
-      },
-      undefined,
-      (error) => {
-        console.error("Error loading model:", error);
-      }
-    );
+
+        const artworks = [
+        {
+          imageMesh: "art_template1",
+          titleMesh: "title_template1",
+          imageUrl: "https://images.vexels.com/media/users/3/207752/isolated/preview/697b63a22a36168f444beff7ade7e00b-david-abstract-art.png",
+          title: "Starry Night",
+          artist: "Vincent van Gogh"
+        },
+        {
+          imageMesh: "art_template2",
+          titleMesh: "title_template2",
+          imageUrl: "https://png.pngtree.com/png-vector/20240120/ourmid/pngtree-owl-in-a-hypnotic-fractal-galaxy-of-patterns-png-image_11472209.png",
+          title: "The Scream",
+          artist: "Edvard Munch"
+        },
+        // More entries...
+      ];
+
+      const textureLoader = new THREE.TextureLoader();
+
+      artworks.forEach(({ imageMesh, titleMesh, imageUrl, title, artist }) => {
+        const artObj = gltf.scene.getObjectByName(imageMesh) as THREE.Mesh;
+        const titleObj = gltf.scene.getObjectByName(titleMesh) as THREE.Mesh;
+
+        // 🖼 Apply artwork image
+        if (artObj && artObj.material !== undefined) {
+  textureLoader.load(imageUrl, (texture) => {
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.center.set(0.5, 0.5); // Center pivot for offsetting
+
+    // Manually set frame dimensions here
+    const frameWidth = artObj.scale.x;
+    const frameHeight = artObj.scale.y;
+    const frameAspect = frameWidth / frameHeight;
+    const imageAspect = texture.image.width / texture.image.height;
+
+    if (imageAspect > frameAspect) {
+      // Wider image: scale height to fit, crop sides
+      const scale = frameAspect / imageAspect;
+      texture.repeat.set(1, scale);
+      texture.offset.set(0, (1 - scale) / 2);
+    } else {
+      // Taller image: scale width to fit, crop top/bottom
+      const scale = imageAspect / frameAspect;
+      texture.repeat.set(scale, 1);
+      texture.offset.set((1 - scale) / 2, 0);
+    }
+
+    artObj.material = new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
+    });
+  });
+}
+
+
+        // 📝 Apply title + artist using canvas texture
+        if (titleObj && titleObj.material !== undefined) {
+          const canvas = document.createElement("canvas");
+          canvas.width = 512;
+          canvas.height = 128;
+          const ctx = canvas.getContext("2d")!;
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#000000";
+          ctx.font = "bold 32px Arial";
+          ctx.fillText(title, 20, 50);
+          ctx.font = "24px Arial";
+          ctx.fillText("by " + artist, 20, 100);
+
+          const texture = new THREE.CanvasTexture(canvas);
+          const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+          titleObj.material = mat;
+        }
+      });
+    });
+
 
     // Clock for delta time
     const clock = new THREE.Clock();
