@@ -33,12 +33,14 @@ export function UserTable({
 }: UserTableProps) {
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [searchQuery, setSearchQuery] = useState("");
+  const filteredUsers = users.filter((user) => {
+    const firstName = user.first_name || "";
+    const email = user.email || "";
+    const query = searchQuery.toLowerCase();
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    return firstName.toLowerCase().includes(query) || email.toLowerCase().includes(query);
+  });
+
   const formatDate = (isoDateString: string) => {
     const date = new Date(isoDateString);
     return date.toLocaleDateString("en-US", {
@@ -62,11 +64,14 @@ export function UserTable({
   };
 
   const getRoleBadge = (role: User["role"]) => {
-    const normalizedRole = role.toLowerCase();
-    switch (normalizedRole) {
-      case "admin":
+    if (!role) {
+      return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 text-3xs">User</Badge>;
+    }
+
+    switch (role) {
+      case "Admin":
         return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200 text-3xs">Admin</Badge>;
-      case "moderator":
+      case "Moderator":
         return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 text-3xs">Moderator</Badge>;
       default:
         return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 text-3xs">User</Badge>;

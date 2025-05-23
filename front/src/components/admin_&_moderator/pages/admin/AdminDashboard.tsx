@@ -1,71 +1,14 @@
 import { useState, useEffect } from "react";
 import { StatCard } from "@/components/admin_&_moderator/admin/StatCard";
-import { UserTable, User } from "@/components/admin_&_moderator/admin/UserTable";
+import { UserTable } from "@/components/admin_&_moderator/admin/UserTable";
 import { SystemLogs, SystemLog } from "@/components/admin_&_moderator/admin/SystemLogs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Users,
-  FileCheck,
-  Cog,
-  Calendar,
-  ArrowUp,
-  Search,
-} from "lucide-react";
+import { Users, FileCheck, Cog, Calendar, ArrowUp, Search } from "lucide-react";
 import { toast } from "sonner";
-
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-
-const mockUsers: User[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    role: "admin",
-    status: "active",
-    joinDate: "2023-01-15",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    role: "moderator",
-    status: "active",
-    joinDate: "2023-02-20",
-  },
-  {
-    id: "3",
-    name: "Alice Johnson",
-    email: "alice@example.com",
-    role: "user",
-    status: "active",
-    joinDate: "2023-03-10",
-  },
-  {
-    id: "4",
-    name: "Bob Williams",
-    email: "bob@example.com",
-    role: "user",
-    status: "suspended",
-    joinDate: "2023-04-05",
-  },
-  {
-    id: "5",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    role: "user",
-    status: "banned",
-    joinDate: "2023-05-12",
-  },
-];
+import { User } from "@/hooks/users/useUserQuery";
+import useAllUsersQuery from "@/hooks/users/useAllUsersQuery";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const mockLogs: SystemLog[] = [
   {
@@ -142,7 +85,7 @@ const activityData = [
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
-
+  const { data: users, isLoading, error } = useAllUsersQuery();
   // Ensure these handler functions actually modify state in a real app
   const handlePromoteUser = (id: string) => {
     toast.success("User role updated successfully");
@@ -175,9 +118,15 @@ const AdminDashboard = () => {
 
       <Tabs defaultValue="overview" className="space-y-4" onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:inline-grid sm:grid-cols-3">
-          <TabsTrigger value="overview" className="text-[10px]">Overview</TabsTrigger>
-          <TabsTrigger value="users" className="text-[10px]">User Management</TabsTrigger>
-          <TabsTrigger value="logs" className="text-[10px]">System Logs</TabsTrigger>
+          <TabsTrigger value="overview" className="text-[10px]">
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="users" className="text-[10px]">
+            User Management
+          </TabsTrigger>
+          <TabsTrigger value="logs" className="text-[10px]">
+            System Logs
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
@@ -196,12 +145,7 @@ const AdminDashboard = () => {
               icon={FileCheck}
               trend={{ value: 8, positive: true }}
             />
-            <StatCard
-              title="System Status"
-              value="Healthy"
-              description="All systems operational"
-              icon={Cog}
-            />
+            <StatCard title="System Status" value="Healthy" description="All systems operational" icon={Cog} />
             <StatCard
               title="Sales Volume (7d)"
               value="$24,389"
@@ -219,41 +163,20 @@ const AdminDashboard = () => {
               <CardContent>
                 <div className="h-[200px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
-                      data={activityData}
-                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                    >
+                    <AreaChart data={activityData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="date" tick={{ fontSize: 10 }} />
                       <YAxis tick={{ fontSize: 10 }} />
                       <Tooltip contentStyle={{ fontSize: 10 }} />
-                      <Area
-                        type="monotone"
-                        dataKey="users"
-                        stackId="1"
-                        stroke="#8884d8"
-                        fill="#8884d8"
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="artworks"
-                        stackId="1"
-                        stroke="#82ca9d"
-                        fill="#82ca9d"
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="bids"
-                        stackId="1"
-                        stroke="#ffc658"
-                        fill="#ffc658"
-                      />
+                      <Area type="monotone" dataKey="users" stackId="1" stroke="#8884d8" fill="#8884d8" />
+                      <Area type="monotone" dataKey="artworks" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
+                      <Area type="monotone" dataKey="bids" stackId="1" stroke="#ffc658" fill="#ffc658" />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle className="text-xs">Recent System Logs</CardTitle>
@@ -261,19 +184,12 @@ const AdminDashboard = () => {
               <CardContent>
                 <div className="space-y-2">
                   {mockLogs.slice(0, 3).map((log) => (
-                    <div
-                      key={log.id}
-                      className="flex justify-between items-start border-b pb-2 last:border-0"
-                    >
+                    <div key={log.id} className="flex justify-between items-start border-b pb-2 last:border-0">
                       <div>
                         <p className="text-xs font-medium">{log.action}</p>
-                        <p className="text-[10px] text-muted-foreground truncate max-w-[180px]">
-                          {log.details}
-                        </p>
+                        <p className="text-[10px] text-muted-foreground truncate max-w-[180px]">{log.details}</p>
                       </div>
-                      <p className="text-[10px] text-muted-foreground">
-                        {log.timestamp.split(" ")[1]}
-                      </p>
+                      <p className="text-[10px] text-muted-foreground">{log.timestamp.split(" ")[1]}</p>
                     </div>
                   ))}
                 </div>
@@ -289,7 +205,7 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <UserTable
-                initialUsers={mockUsers}
+                initialUsers={users}
                 onPromoteUser={handlePromoteUser}
                 onSuspendUser={handleSuspendUser}
                 onBanUser={handleBanUser}
