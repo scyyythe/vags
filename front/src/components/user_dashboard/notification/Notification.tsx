@@ -220,8 +220,7 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
                 )}
                 {n.donation && (
                   <>
-                    <span className="font-medium text-green-600">{n.donation}</span> ... for{" "}
-                    <span className="font-medium">{n.target}</span>
+                    <span className="font-medium text-green-600"> {n.donation} </span>
                   </>
                 )}
                 <div className="text-[10px] text-muted-foreground mt-1">{formatDateTime(n.date)}</div>
