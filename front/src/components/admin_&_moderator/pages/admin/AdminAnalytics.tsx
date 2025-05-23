@@ -68,32 +68,32 @@ const AdminAnalytics = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl font-bold">Analytics Dashboard</h1>
-          <p className="text-xs text-muted-foreground">
+          <h1 className="text-md font-bold">Analytics Dashboard</h1>
+          <p className="text-[10px] text-muted-foreground">
             View comprehensive platform statistics and reports
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Select defaultValue="7d" onValueChange={setTimeRange}>
-            <SelectTrigger className="w-28 h-8 text-xs">
+            <SelectTrigger className="w-28 h-8 text-[10px] rounded-full">
               <SelectValue placeholder="Time Range" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="24h" className="text-xs">Last 24 Hours</SelectItem>
-              <SelectItem value="7d" className="text-xs">Last 7 Days</SelectItem>
-              <SelectItem value="30d" className="text-xs">Last 30 Days</SelectItem>
-              <SelectItem value="90d" className="text-xs">Last 90 Days</SelectItem>
-              <SelectItem value="1y" className="text-xs">Last Year</SelectItem>
+              <SelectItem value="24h" className="text-[10px]">Last 24 Hours</SelectItem>
+              <SelectItem value="7d" className="text-[10px]">Last 7 Days</SelectItem>
+              <SelectItem value="30d" className="text-[10px]">Last 30 Days</SelectItem>
+              <SelectItem value="90d" className="text-[10px]">Last 90 Days</SelectItem>
+              <SelectItem value="1y" className="text-[10px]">Last Year</SelectItem>
             </SelectContent>
           </Select>
           <Select defaultValue="csv">
-            <SelectTrigger className="w-20 h-8 text-xs">
+            <SelectTrigger className="w-20 h-8 text-[10px] rounded-full">
               <SelectValue placeholder="Export" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="csv" className="text-xs" onSelect={() => handleExport("csv")}>CSV</SelectItem>
-              <SelectItem value="pdf" className="text-xs" onSelect={() => handleExport("pdf")}>PDF</SelectItem>
-              <SelectItem value="xlsx" className="text-xs" onSelect={() => handleExport("xlsx")}>Excel</SelectItem>
+              <SelectItem value="csv" className="text-[10px]" onSelect={() => handleExport("csv")}>CSV</SelectItem>
+              <SelectItem value="pdf" className="text-[10px]" onSelect={() => handleExport("pdf")}>PDF</SelectItem>
+              <SelectItem value="xlsx" className="text-[10px]" onSelect={() => handleExport("xlsx")}>Excel</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -103,7 +103,7 @@ const AdminAnalytics = () => {
         <Card>
           <CardHeader>
             <CardTitle className="text-sm">User Activity</CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-[11px]">
               Active users over time
             </CardDescription>
           </CardHeader>
@@ -138,7 +138,7 @@ const AdminAnalytics = () => {
         <Card>
           <CardHeader>
             <CardTitle className="text-sm">Sales Volume</CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-[11px]">
               Total sales over time
             </CardDescription>
           </CardHeader>
@@ -158,7 +158,7 @@ const AdminAnalytics = () => {
                   <XAxis dataKey="name" tick={{ fontSize: 10 }} />
                   <YAxis tick={{ fontSize: 10 }} />
                   <Tooltip contentStyle={{ fontSize: 10 }} />
-                  <Bar dataKey="sales" fill="#DC2626" />
+                  <Bar dataKey="sales" fill="#DC2626" radius={[20, 20, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -170,7 +170,7 @@ const AdminAnalytics = () => {
         <Card>
           <CardHeader>
             <CardTitle className="text-sm">Content Categories</CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-[11px]">
               Distribution of artwork by category
             </CardDescription>
           </CardHeader>
@@ -186,6 +186,7 @@ const AdminAnalytics = () => {
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
+                    style={{fontSize:"10px"}}
                     label={({ name, percent }) => 
                       `${name}: ${(percent * 100).toFixed(0)}%`
                     }
@@ -204,7 +205,7 @@ const AdminAnalytics = () => {
         <Card>
           <CardHeader>
             <CardTitle className="text-sm">Device Usage</CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-[11px]">
               Platform visits by device type
             </CardDescription>
           </CardHeader>
@@ -238,55 +239,55 @@ const AdminAnalytics = () => {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle className="text-sm">Key Performance Metrics</CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-[11px]">
               Summary of platform performance for {timeRange === "7d" ? "the last 7 days" : timeRange === "30d" ? "the last 30 days" : "the selected period"}
             </CardDescription>
           </div>
-          <Button variant="outline" size="sm" className="text-xs">
+          <Button variant="outline" size="sm" className="text-[10px] rounded-full h-8">
             View Full Report
           </Button>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-1">
-              <p className="text-2xs text-muted-foreground">Total Users</p>
+              <p className="text-xs text-muted-foreground">Total Users</p>
               <p className="text-sm font-bold">8,942</p>
-              <p className="text-3xs text-green-600">+12% vs. last period</p>
+              <p className="text-xs text-green-600">+12% vs. last period</p>
             </div>
             <div className="space-y-1">
-              <p className="text-2xs text-muted-foreground">New Artworks</p>
+              <p className="text-xs text-muted-foreground">New Artworks</p>
               <p className="text-sm font-bold">1,257</p>
-              <p className="text-3xs text-green-600">+8% vs. last period</p>
+              <p className="text-xs text-green-600">+8% vs. last period</p>
             </div>
             <div className="space-y-1">
-              <p className="text-2xs text-muted-foreground">Total Sales</p>
+              <p className="text-xs text-muted-foreground">Total Sales</p>
               <p className="text-sm font-bold">$324,581</p>
-              <p className="text-3xs text-green-600">+15% vs. last period</p>
+              <p className="text-xs text-green-600">+15% vs. last period</p>
             </div>
             <div className="space-y-1">
-              <p className="text-2xs text-muted-foreground">Platform Revenue</p>
+              <p className="text-xs text-muted-foreground">Platform Revenue</p>
               <p className="text-sm font-bold">$32,458</p>
-              <p className="text-3xs text-green-600">+15% vs. last period</p>
+              <p className="text-xs text-green-600">+15% vs. last period</p>
             </div>
             <div className="space-y-1">
-              <p className="text-2xs text-muted-foreground">Avg. Bid Amount</p>
+              <p className="text-xs text-muted-foreground">Avg. Bid Amount</p>
               <p className="text-sm font-bold">$428</p>
-              <p className="text-3xs text-red-600">-3% vs. last period</p>
+              <p className="text-xs text-red-600">-3% vs. last period</p>
             </div>
             <div className="space-y-1">
-              <p className="text-2xs text-muted-foreground">Active Auctions</p>
+              <p className="text-xs text-muted-foreground">Active Auctions</p>
               <p className="text-sm font-bold">432</p>
-              <p className="text-3xs text-green-600">+7% vs. last period</p>
+              <p className="text-xs text-green-600">+7% vs. last period</p>
             </div>
             <div className="space-y-1">
-              <p className="text-2xs text-muted-foreground">Completed Auctions</p>
+              <p className="text-xs text-muted-foreground">Completed Auctions</p>
               <p className="text-sm font-bold">187</p>
-              <p className="text-3xs text-green-600">+5% vs. last period</p>
+              <p className="text-xs text-green-600">+5% vs. last period</p>
             </div>
             <div className="space-y-1">
-              <p className="text-2xs text-muted-foreground">Avg. Time on Site</p>
+              <p className="text-xs text-muted-foreground">Avg. Time on Site</p>
               <p className="text-sm font-bold">12m 37s</p>
-              <p className="text-3xs text-green-600">+8% vs. last period</p>
+              <p className="text-xs text-green-600">+8% vs. last period</p>
             </div>
           </div>
         </CardContent>
