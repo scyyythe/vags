@@ -9,7 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-
+import useNotifications from "@/hooks/notifications/useNotification";
 interface NotificationsProps {
   isOpen: boolean;
   onClose: () => void;
@@ -120,108 +120,116 @@ const notifications = [
   },
   {
     id: 15,
-    avatar: "https://randomuser.me/api/portraits/men/34.jpg", 
+    avatar: "https://randomuser.me/api/portraits/men/34.jpg",
     name: "John Doe",
     action: "liked your artwork",
     target: "Starry Night",
     time: "Just now",
-  }
+  },
 ];
 
-
 const Notification = ({ isOpen, onClose }: NotificationsProps) => {
-    const [settingsOpen, setSettingsOpen] = useState(false);
-    const navigate = useNavigate();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
-    const handleNotification = () => {
-      navigate("/settings/notifications");
-      onClose();
-    };
-    
-    const handleSeeAll = () => {
-      navigate("/all-notifications");
-      onClose();
-    };
+  const navigate = useNavigate();
+  const { displayedNotifications } = useNotifications();
+  const handleNotification = () => {
+    navigate("/settings/notifications");
+    onClose();
+  };
 
-    return ( 
-        <div className="w-[330px] max-h-[540px] rounded-xl bg-white shadow-md">
-            <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="font-semibold text-sm">Notifications</h2>
-                <DropdownMenu open={settingsOpen} onOpenChange={setSettingsOpen}>                
-                  <DropdownMenuTrigger asChild>
-                    <Settings
-                    className="w-3 h-3 text-muted-foreground cursor-pointer"
-                    onClick={() => setSettingsOpen((prev) => !prev)}
-                    />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-38">
-                    <DropdownMenuItem className="text-[10px]" onClick={handleSeeAll}>See all</DropdownMenuItem>
-                    <DropdownMenuItem className="text-[10px]" onClick={handleNotification}>Notification settings</DropdownMenuItem>
-                </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
-        
-            <ScrollArea className="h-[480px] px-4 py-2">
-                <div className="space-y-4 pr-2">
-                {notifications.map((n) => (
-                    <div key={n.id} className="flex items-start gap-3">
-                    {n.avatar && (
-                        <img
-                        src={n.avatar}
-                        alt={n.name}                         
-                        className="w-6 h-6 rounded-full object-cover"
-                        />
-                    )}
-                    {!n.avatar && n.icon === "crypto" && (
-                        <div className="w-6 h-6 bg-muted rounded-full flex items-center justify-center text-sm font-medium">
-                        ⬤
-                        </div>
-                    )}
-                    <div className="text-[10px] leading-snug">
-                        {n.name && (
-                        <>
-                            <span className="font-medium">{n.name}</span> {n.action}
-                            {n.target && (
-                            <span className="font-medium"> {n.target}</span>
-                            )}
-                        </>
-                        )}
-                        {!n.name && n.icon === "crypto" && (
-                        <>
-                            {n.action}{" "}...                             
-                            <span className="font-medium">{n.amount}</span> for{" "}
-                            <span className="font-medium text-red-500">
-                            {n.forAmount} {n.token}
-                            </span>
-                            <div>
-                            <a
-                                href={n.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-[10px] text-blue-600 hover:underline"
-                            >
-                                View on explorer ↗
-                            </a>
-                            </div>
-                        </>
-                        )}
-                        {n.donation && (
-                        <>
-                            <span className="font-medium text-green-600">
-                            {n.donation}
-                            </span>{" "}...                             
-                            for <span className="font-medium">{n.target}</span>
-                        </>
-                        )}
-                        <div className="text-[10px] text-muted-foreground mt-1">
-                        {n.time}
-                        </div>
-                    </div>
-                    </div>
-                ))}
+  const handleSeeAll = () => {
+    navigate("/all-notifications");
+    onClose();
+  };
+  const formatDateTime = (dateTimeString: string) => {
+    const date = new Date(dateTimeString);
+    return date.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  };
+
+  return (
+    <div className="w-[330px] max-h-[540px] rounded-xl bg-white shadow-md">
+      <div className="flex items-center justify-between p-4 border-b">
+        <h2 className="font-semibold text-sm">Notifications</h2>
+        <DropdownMenu open={settingsOpen} onOpenChange={setSettingsOpen}>
+          <DropdownMenuTrigger asChild>
+            <Settings
+              className="w-3 h-3 text-muted-foreground cursor-pointer"
+              onClick={() => setSettingsOpen((prev) => !prev)}
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-38">
+            <DropdownMenuItem className="text-[10px]" onClick={handleSeeAll}>
+              See all
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-[10px]" onClick={handleNotification}>
+              Notification settings
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <ScrollArea className="h-[480px] px-4 py-2">
+        <div className="space-y-4 pr-2">
+          {displayedNotifications.map((n) => (
+            <div key={n.id} className="flex items-start gap-3">
+              {n.avatar ? (
+                <img src={n.user.profile_picture} alt={n.name} className="w-6 h-6 rounded-full object-cover" />
+              ) : n.icon === "crypto" ? (
+                <div className="w-6 h-6 bg-muted rounded-full flex items-center justify-center text-sm font-medium">
+                  ⬤
                 </div>
-            </ScrollArea>
+              ) : (
+                <div className="w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center font-regular text-xs">
+                  {n.name ? n.name.charAt(0).toUpperCase() : "?"}
+                </div>
+              )}
+
+              <div className="text-[10px] leading-snug">
+                {n.name && (
+                  <>
+                    <span className="font-medium">{n.name}</span> {n.action}
+                    {n.target && <span className="font-medium"> {n.target}</span>}
+                  </>
+                )}
+                {!n.name && n.icon === "crypto" && (
+                  <>
+                    {n.action} ...
+                    <span className="font-medium">{n.amount}</span> for{" "}
+                    <span className="font-medium text-red-500">
+                      {n.forAmount} {n.token}
+                    </span>
+                    <div>
+                      <a
+                        href={n.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] text-blue-600 hover:underline"
+                      >
+                        View on explorer ↗
+                      </a>
+                    </div>
+                  </>
+                )}
+                {n.donation && (
+                  <>
+                    <span className="font-medium text-green-600"> {n.donation} </span>
+                  </>
+                )}
+                <div className="text-[10px] text-muted-foreground mt-1">{formatDateTime(n.date)}</div>
+              </div>
+            </div>
+          ))}
         </div>
-    );
-}; 
-export default Notification;  
+      </ScrollArea>
+    </div>
+  );
+};
+export default Notification;

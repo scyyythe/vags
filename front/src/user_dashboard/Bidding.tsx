@@ -134,7 +134,7 @@ const Bidding = () => {
           <section className="mb-8">
             <ArtsContainer artworks={staticArtworks} />
           </section>
-          <div className="flex items-center justify-between -ml-7 mb-6 lg:w-[104%] pl-2 sm:pl-0">
+          <div className="flex items-center justify-between -ml-7 mb-6 w-[114%] md:w-[105%] lg:w-[105%] pl-2 sm:pl-0">
             <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
             <div className="flex space-x-2 text-xs">
               <div className="relative">

@@ -45,35 +45,26 @@ import ExhibitViewing from "./components/user_dashboard/Exhibit/exhibit_viewing/
 import CollaboratorView from "./components/user_dashboard/Exhibit/add_exhibit/components/CollaboratorViews";
 import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/ExhibitReview";
 
-// ADMIN & MODERATOR
-import { AuthProvider } from "./components/admin_&_moderator/context/AuthContext";
-import { DashboardLayout } from "./components/admin_&_moderator/dashboard/DashboardLayout";
+//ADMIN & MODERATOR
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { AdminLayout } from "@/components/admin_&_moderator/layout/AdminLayout";
 
-// Admin Pages
-import AdminDashboard from "./admin_&_moderator/admin/AdminDashboard";
-import UserManagement from "./admin_&_moderator/admin/UserManagement";
-import ArtworkManagement from "./admin_&_moderator/admin/ArtworkManagement";
-import ExhibitionManagement from "./admin_&_moderator/admin/ExhibitionManagement";
-import ExhibitionThemes from "./admin_&_moderator/admin/ExhibitionThemes";
-import ExhibitionRooms from "./admin_&_moderator/admin/ExhibitionRooms";
-import ExhibitionAnalytics from "./admin_&_moderator/admin/ExhibitionAnalytics";
-import BidsTransactions from "./admin_&_moderator/admin/BidsTransaction";
-import ModeratorOversight from "./admin_&_moderator/admin/ModeratorOversight";
-import ReportsIssues from "./admin_&_moderator/admin/ReportsIssues";
-import ContentModeration from "./admin_&_moderator/admin/ContentModeration";
-import SystemSettings from "./admin_&_moderator/admin/SystemSettings";
-import AnalyticsDashboard from "./admin_&_moderator/admin/AnalyticsDashboard";
+// Admin routes
+import AdminDashboard from "@/components/admin_&_moderator/pages/admin/AdminDashboard";
+import AdminUsers from "@/components/admin_&_moderator/pages/admin/AdminUsers";
+import AdminConfig from "@/components/admin_&_moderator/pages/admin/AdminConfig";
+import AdminSecurity from "@/components/admin_&_moderator/pages/admin/AdminSecurity";
+import AdminAnalytics from "@/components/admin_&_moderator/pages/admin/AdminAnalytics";
 
-// Moderator Pages
-import ModeratorDashboard from "./admin_&_moderator/moderator/ModeratorDashboard";
-import ArtworkReview from "./admin_&_moderator/moderator/ArtworkReview";
-import BidReview from "./admin_&_moderator/moderator/BidReview";
-import UserActivity from "./admin_&_moderator/moderator/UserActivity";
-import ModeratorReportsIssues from "./admin_&_moderator/moderator/ReportsIssues";
-import ModeratorContentModeration from "./admin_&_moderator/moderator/ContentModeration";
-import ExhibitionSupport from "./admin_&_moderator/moderator/ExhibitionSupport";
-import ActivityLogs from "./admin_&_moderator/moderator/ActivityLogs";
+// Moderator routes
+import ModeratorDashboard from "@/components/admin_&_moderator/pages/moderator/ModeratorDashboard";
+import ModeratorReports from "@/components/admin_&_moderator/pages/moderator/ModeratorReports";
+import ModeratorContent from "@/components/admin_&_moderator/pages/moderator/ModeratorContent";
+import ModeratorUsers from "@/components/admin_&_moderator/pages/moderator/ModeratorUsers";
+import ModeratorNotifications from "@/components/admin_&_moderator/pages/moderator/ModeratorNotifications";
+
+// Role protection
+import RoleProtectedRoute from "@/components/admin_&_moderator/auth/RoleProtectedRoute";
 
 import ProtectedRoute from "./auth/ProtectedRoute";
 
@@ -105,7 +96,6 @@ const queryClient = new QueryClient();
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
         <LikedArtworksProvider>
           <TooltipProvider>
             <DonationProvider>
@@ -156,222 +146,110 @@ const App = () => {
                           <Route path="help-center" element={<ProtectedRoute children={<HelpCenter />} />} />
                         </Route>
 
-                        {/* ADMIN Routes (WITH SidebarProvider) */}
-                        <Route
-                          path="/admin"
+                        {/* Admin Routes */}
+                        <Route 
+                          path="/admin" 
                           element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
+                            
+                              <AdminLayout role="admin">
                                 <AdminDashboard />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
+                              </AdminLayout>
+                            
+                          } 
                         />
-                        <Route
-                          path="/admin/users"
+                        <Route 
+                          path="/admin/users" 
                           element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
-                                <UserManagement />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
+                            
+                              <AdminLayout role="admin">
+                                <AdminUsers />
+                              </AdminLayout>
+                            
+                          } 
                         />
-                        <Route
-                          path="/admin/artworks"
+                        <Route 
+                          path="/admin/config" 
                           element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
-                                <ArtworkManagement />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
+                            
+                              <AdminLayout role="admin">
+                                <AdminConfig />
+                              </AdminLayout>
+                            
+                          } 
                         />
-                        <Route
-                          path="/admin/exhibitions"
+                        <Route 
+                          path="/admin/security" 
                           element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
-                                <ExhibitionManagement />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
+                            
+                              <AdminLayout role="admin">
+                                <AdminSecurity />
+                              </AdminLayout>
+                            
+                          } 
                         />
-                        <Route
-                          path="/admin/exhibitions/themes"
+                        <Route 
+                          path="/admin/analytics" 
                           element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
-                                <ExhibitionThemes />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
-                        />
-                        <Route
-                          path="/admin/exhibitions/rooms"
-                          element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
-                                <ExhibitionRooms />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
-                        />
-                        <Route
-                          path="/admin/exhibitions/analytics"
-                          element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
-                                <ExhibitionAnalytics />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
-                        />
-                        <Route
-                          path="/admin/bids"
-                          element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
-                                <BidsTransactions />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
-                        />
-                        <Route
-                          path="/admin/moderators"
-                          element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
-                                <ModeratorOversight />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
-                        />
-                        <Route
-                          path="/admin/reports"
-                          element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
-                                <ReportsIssues />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
-                        />
-                        <Route
-                          path="/admin/content"
-                          element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
-                                <ContentModeration />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
-                        />
-                        <Route
-                          path="/admin/settings"
-                          element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
-                                <SystemSettings />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
-                        />
-                        <Route
-                          path="/admin/analytics"
-                          element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="admin">
-                                <AnalyticsDashboard />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
+                            
+                              <AdminLayout role="admin">
+                                <AdminAnalytics />
+                              </AdminLayout>
+                            
+                          } 
                         />
 
-                        {/* MODERATOR Routes (WITH SidebarProvider) */}
-                        <Route
-                          path="/moderator"
+                        {/* Moderator Routes */}
+                        <Route 
+                          path="/moderator" 
                           element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="moderator">
+                            
+                              <AdminLayout role="moderator">
                                 <ModeratorDashboard />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
+                              </AdminLayout>
+                            
+                          } 
                         />
-                        <Route
-                          path="/moderator/artworks"
+                        <Route 
+                          path="/moderator/reports" 
                           element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="moderator">
-                                <ArtworkReview />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
+                            
+                              <AdminLayout role="moderator">
+                                <ModeratorReports />
+                              </AdminLayout>
+                            
+                          } 
                         />
-                        <Route
-                          path="/moderator/bids"
+                        <Route 
+                          path="/moderator/content" 
                           element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="moderator">
-                                <BidReview />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
+                            
+                              <AdminLayout role="moderator">
+                                <ModeratorContent />
+                              </AdminLayout>
+                            
+                          } 
                         />
-                        <Route
-                          path="/moderator/users"
+                        <Route 
+                          path="/moderator/users" 
                           element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="moderator">
-                                <UserActivity />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
+                            
+                              <AdminLayout role="moderator">
+                                <ModeratorUsers />
+                              </AdminLayout>
+                            
+                          } 
                         />
-                        <Route
-                          path="/moderator/reports"
+                        <Route 
+                          path="/moderator/notifications" 
                           element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="moderator">
-                                <ModeratorReportsIssues />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
+                            
+                              <AdminLayout role="moderator">
+                                <ModeratorNotifications />
+                              </AdminLayout>
+                            
+                          } 
                         />
-                        <Route
-                          path="/moderator/content"
-                          element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="moderator">
-                                <ModeratorContentModeration />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
-                        />
-                        <Route
-                          path="/moderator/exhibitions"
-                          element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="moderator">
-                                <ExhibitionSupport />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
-                        />
-                        <Route
-                          path="/moderator/logs"
-                          element={
-                            <SidebarProvider>
-                              <DashboardLayout requiredRole="moderator">
-                                <ActivityLogs />
-                              </DashboardLayout>
-                            </SidebarProvider>
-                          }
-                        />
-                        {/*Exhibit*/}
-                        <Route path="/gallery-3d" element={<Gallery3D />} />
-
+                        
                         {/* Not Found */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>
@@ -382,7 +260,6 @@ const App = () => {
             </DonationProvider>
           </TooltipProvider>
         </LikedArtworksProvider>
-      </AuthProvider>
     </QueryClientProvider>
   );
 };
