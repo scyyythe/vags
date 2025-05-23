@@ -112,6 +112,9 @@ const App = () => {
                         <Route path="/fingerprint-register" element={<FingerprintRegister />} />
                         <Route path="/hero" element={<Hero />} />
 
+                        {/* Gallery */}
+                        <Route path="/gallery-3d" element={<Gallery3D />} />
+
                         {/* Bid */}
                         <Route path="/bid-winner/:id" element={<BidWinnerPage />} />
                         <Route path="/payment" element={<PaymentPage />} />
