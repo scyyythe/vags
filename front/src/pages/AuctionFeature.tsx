@@ -2,8 +2,11 @@ import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks";
 import AuctionFeatureSkeleton from "@/components/skeletons/AuctionFeatureSkeleton";
+import { useModal } from '../context/ModalContext'; 
+
 const AuctionFeature = (initialTime) => {
   const { data: auctions } = useFetchBiddingArtworks();
+  const { showRegisterModal, setShowRegisterModal } = useModal(); 
 
   const featured = useMemo(() => {
     if (!auctions || auctions.length === 0) return null;
@@ -54,7 +57,7 @@ const AuctionFeature = (initialTime) => {
       <div className="max-w-screen-xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
           <motion.div
-            className="relative overflow-hidden rounded-2xl"
+            className="relative overflow-hidden rounded-xl"
             initial={{ opacity: 0, x: -50, y: 0 }}
             whileInView={{ opacity: 1, x: 0 }}
             animate={{
@@ -71,7 +74,7 @@ const AuctionFeature = (initialTime) => {
             <img
               src={featured.artwork.image_url}
               alt={featured.artwork.title}
-              className="w-full max-h-[430px] object-contain"
+              className="w-full max-w-lg max-h-[430px] object-contain"
             />
           </motion.div>
 
@@ -144,10 +147,13 @@ const AuctionFeature = (initialTime) => {
             </div>
 
             <div className="flex space-x-8">
-              <button className="bg-red-700 text-white text-xs flex-1 rounded-full px-4 py-2 hover:bg-red-600">
+              <button className="bg-red-700 text-white text-xs flex-1 rounded-full px-4 py-2 hover:bg-red-600" 
+              onClick={() => setShowRegisterModal(true)}>
                 Place a bid
               </button>
-              <button className="btn-secondary flex-1 text-xs rounded-full">View item</button>
+              <button className="btn-secondary flex-1 text-xs rounded-full" 
+              onClick={() => setShowRegisterModal(true)}>
+                View item</button>
             </div>
           </motion.div>
         </div>
