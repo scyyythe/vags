@@ -202,8 +202,8 @@ const ModeratorNotifications = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl font-bold">Notifications</h1>
-          <p className="text-xs text-muted-foreground">
+          <h1 className="text-md font-bold">Notifications</h1>
+          <p className="text-[10px] text-muted-foreground">
             View and manage system and user notifications
           </p>
         </div>
@@ -211,7 +211,7 @@ const ModeratorNotifications = () => {
           <Button
             size="sm"
             variant="outline"
-            className="text-xs"
+            className="text-[10px] rounded-full h-8"
             disabled={unreadCount === 0}
             onClick={handleMarkAllAsRead}
           >
@@ -219,7 +219,7 @@ const ModeratorNotifications = () => {
           </Button>
           <Button
             size="sm"
-            className="text-xs"
+            className="text-[10px] rounded-full h-8"
             onClick={() => setCreateDialogOpen(true)}
           >
             Create Notification
@@ -229,23 +229,24 @@ const ModeratorNotifications = () => {
 
       <div className="flex justify-between items-center">
         <div className="flex gap-2 items-center">
-          <Badge className="bg-primary">{unreadCount}</Badge>
+          <Badge className="bg-red-600 text-[10px]">{unreadCount}</Badge>
           <span className="text-xs font-medium">Unread Notifications</span>
         </div>
         <div className="relative w-64">
           <Input
             placeholder="Search notifications..."
-            className="text-xs"
+            className="pl-8 rounded-full h-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            style={{fontSize:"10px"}}
           />
         </div>
       </div>
 
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm">Notification Center</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-xs">Notification Center</CardTitle>
+          <CardDescription className="text-[11px]">
             Recent system messages and alerts
           </CardDescription>
         </CardHeader>
@@ -256,22 +257,22 @@ const ModeratorNotifications = () => {
                 <div
                   key={notification.id}
                   className={`border rounded-md p-3 cursor-pointer hover:bg-muted/50 ${
-                    notification.status === "unread" ? "bg-muted/20 border-l-4 border-l-primary" : ""
+                    notification.status === "unread" ? "bg-muted/20 border-l-4 border-l-red-600" : ""
                   }`}
                   onClick={() => handleViewNotification(notification)}
                 >
                   <div className="flex justify-between">
                     <div className="flex items-center gap-2">
                       {getTypeIcon(notification.type)}
-                      <h3 className={`text-xs ${notification.status === "unread" ? "font-semibold" : ""}`}>
+                      <h3 className={`text-[11px] ${notification.status === "unread" ? "font-semibold" : ""}`}>
                         {notification.title}
                       </h3>
                     </div>
-                    <span className="text-3xs text-muted-foreground">
+                    <span className="text-[10px] text-muted-foreground">
                       {formatDateTime(notification.createdAt)}
                     </span>
                   </div>
-                  <p className="text-2xs text-muted-foreground mt-1 line-clamp-1">
+                  <p className="text-[10px] text-muted-foreground mt-1 line-clamp-1">
                     {notification.message}
                   </p>
                 </div>
@@ -292,7 +293,7 @@ const ModeratorNotifications = () => {
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle className="text-sm">Create System Notification</DialogTitle>
-            <DialogDescription className="text-xs">
+            <DialogDescription className="text-[11px]">
               Create a new notification to be sent to all moderators
             </DialogDescription>
           </DialogHeader>
@@ -309,9 +310,9 @@ const ModeratorNotifications = () => {
                   <FormItem>
                     <FormLabel className="text-xs">Notification Title</FormLabel>
                     <FormControl>
-                      <Input className="text-xs" placeholder="Enter notification title" {...field} />
+                      <Input className="text-xs rounded-full h-8" placeholder="Enter notification title" style={{fontSize:"10px"}} {...field} />
                     </FormControl>
-                    <FormMessage className="text-2xs" />
+                    <FormMessage className="rounded-full h-8 text-[10px]" />
                   </FormItem>
                 )}
               />
@@ -323,12 +324,12 @@ const ModeratorNotifications = () => {
                     <FormLabel className="text-xs">Message</FormLabel>
                     <FormControl>
                       <Textarea
-                        className="w-full h-24 p-2 text-xs border rounded-md"
+                        className="w-full h-24 p-2 text-[10px] border rounded-md"
                         placeholder="Enter notification message"
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription className="text-3xs">
+                    <FormDescription className="text-[10px]">
                       This message will be visible to all system moderators.
                     </FormDescription>
                     <FormMessage className="text-2xs" />
@@ -340,12 +341,13 @@ const ModeratorNotifications = () => {
                   type="button"
                   size="sm"
                   variant="outline"
-                  className="text-xs"
+                  className="rounded-full h-8"
                   onClick={() => setCreateDialogOpen(false)}
+                  style={{fontSize:"10px"}}
                 >
                   Cancel
                 </Button>
-                <Button type="submit" size="sm" className="text-xs">
+                <Button type="submit" size="sm" className="rounded-full h-8" style={{fontSize:"10px"}}>
                   Create Notification
                 </Button>
               </div>
@@ -361,11 +363,11 @@ const ModeratorNotifications = () => {
               {selectedNotification?.title}
             </DialogTitle>
             {selectedNotification && (
-              <DialogDescription className="text-xs flex justify-between">
+              <DialogDescription className="text-[11px] flex justify-between">
                 <span>
                   {selectedNotification.type.charAt(0).toUpperCase() + selectedNotification.type.slice(1)} Notification
                 </span>
-                <span>
+                <span className="text-[10px]">
                   {formatDateTime(selectedNotification.createdAt)}
                 </span>
               </DialogDescription>
@@ -380,7 +382,7 @@ const ModeratorNotifications = () => {
 
               {selectedNotification.relatedId && (
                 <div>
-                  <p className="text-2xs text-muted-foreground">
+                  <p className="text-[11px] text-muted-foreground">
                     Reference ID: {selectedNotification.relatedId}
                   </p>
                 </div>
@@ -390,15 +392,17 @@ const ModeratorNotifications = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-xs"
+                  className="rounded-full h-8"
                   onClick={() => handleArchiveNotification(selectedNotification.id)}
+                  style={{fontSize:"10px"}}
                 >
                   Archive
                 </Button>
                 {selectedNotification.relatedId && (
                   <Button
                     size="sm"
-                    className="text-xs"
+                    className="rounded-full h-8"
+                    style={{fontSize:"10px"}}
                     onClick={() => {
                       toast.success("Opening related content");
                       setViewDialogOpen(false);
