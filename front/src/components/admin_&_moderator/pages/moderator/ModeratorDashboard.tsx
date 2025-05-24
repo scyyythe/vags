@@ -108,21 +108,21 @@ const ModeratorDashboard = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold">Moderator Dashboard</h1>
-        <p className="text-xs text-muted-foreground">
+        <h1 className="text-md font-bold">Moderator Dashboard</h1>
+        <p className="text-[10px] text-muted-foreground">
           Monitor reports, manage content, and maintain community standards
         </p>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:inline-grid sm:grid-cols-3">
-          <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
-          <TabsTrigger value="reports" className="text-xs">Active Reports</TabsTrigger>
-          <TabsTrigger value="content" className="text-xs">Flagged Content</TabsTrigger>
+          <TabsTrigger value="overview" className="text-[10px]">Overview</TabsTrigger>
+          <TabsTrigger value="reports" className="text-[10px]">Active Reports</TabsTrigger>
+          <TabsTrigger value="content" className="text-[10px]">Flagged Content</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
-          <div className="stats-grid">
+          <div className="flex grid-rows-4 space-x-10">
             <StatCard
               title="Pending Reports"
               value="24"
@@ -165,10 +165,10 @@ const ModeratorDashboard = () => {
                   </div>
                   <div>
                     <h4 className="text-xs font-medium">High Priority: Copyright Strike</h4>
-                    <p className="text-3xs text-muted-foreground">
+                    <p className="text-[11px] text-muted-foreground">
                       Artwork ID art56789 reported for copyright infringement. Requires immediate review.
                     </p>
-                    <p className="text-3xs text-gray-500 mt-1">30 minutes ago</p>
+                    <p className="text-[10px] text-gray-500 mt-1">30 minutes ago</p>
                   </div>
                 </div>
                 
@@ -178,10 +178,10 @@ const ModeratorDashboard = () => {
                   </div>
                   <div>
                     <h4 className="text-xs font-medium">Suspicious User Activity</h4>
-                    <p className="text-3xs text-muted-foreground">
+                    <p className="text-[11px] text-muted-foreground">
                       User ID user456 has received multiple reports in the last 24 hours.
                     </p>
-                    <p className="text-3xs text-gray-500 mt-1">2 hours ago</p>
+                    <p className="text-[10px] text-gray-500 mt-1">2 hours ago</p>
                   </div>
                 </div>
                 
@@ -191,10 +191,10 @@ const ModeratorDashboard = () => {
                   </div>
                   <div>
                     <h4 className="text-xs font-medium">New Escalated Report</h4>
-                    <p className="text-3xs text-muted-foreground">
+                    <p className="text-[11px] text-muted-foreground">
                       Admin has requested review of bid dispute on auction #8745.
                     </p>
-                    <p className="text-3xs text-gray-500 mt-1">5 hours ago</p>
+                    <p className="text-[10px] text-gray-500 mt-1">5 hours ago</p>
                   </div>
                 </div>
               </div>
@@ -210,31 +210,31 @@ const ModeratorDashboard = () => {
                 <div className="flex justify-between items-start border-b pb-2">
                   <div>
                     <p className="text-xs font-medium">Content Removed: Artwork #2356</p>
-                    <p className="text-3xs text-muted-foreground">
+                    <p className="text-[11px] text-muted-foreground">
                       Removed for terms of service violation
                     </p>
                   </div>
-                  <p className="text-3xs text-muted-foreground">Yesterday</p>
+                  <p className="text-[10px] text-muted-foreground">Yesterday</p>
                 </div>
 
                 <div className="flex justify-between items-start border-b pb-2">
                   <div>
                     <p className="text-xs font-medium">User Muted: @artlover556</p>
-                    <p className="text-3xs text-muted-foreground">
+                    <p className="text-[11px] text-muted-foreground">
                       24-hour mute for harassment in comments
                     </p>
                   </div>
-                  <p className="text-3xs text-muted-foreground">2 days ago</p>
+                  <p className="text-[10px] text-muted-foreground">2 days ago</p>
                 </div>
 
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-xs font-medium">Dispute Resolved: Bid #8972</p>
-                    <p className="text-3xs text-muted-foreground">
+                    <p className="text-[11px] text-muted-foreground">
                       Mediated between buyer and seller
                     </p>
                   </div>
-                  <p className="text-3xs text-muted-foreground">3 days ago</p>
+                  <p className="text-[10px] text-muted-foreground">3 days ago</p>
                 </div>
               </div>
             </CardContent>
