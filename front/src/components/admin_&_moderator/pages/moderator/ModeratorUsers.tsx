@@ -189,27 +189,28 @@ const ModeratorUsers = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold">User Moderation</h1>
-        <p className="text-xs text-muted-foreground">
+        <h1 className="text-md font-bold">User Moderation</h1>
+        <p className="text-[10px] text-muted-foreground">
           Monitor and manage user activity and enforce community guidelines
         </p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-2 top-4 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
           <Input
             placeholder="Search users..."
-            className="pl-8 text-xs"
+            className="pl-8 rounded-full h-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            style={{fontSize:"10px"}}
           />
         </div>
         <Select
           value={statusFilter}
           onValueChange={(value) => setStatusFilter(value as ModUser["status"] | "all")}
         >
-          <SelectTrigger className="w-[180px] text-xs">
+          <SelectTrigger className="w-[180px] text-[10px] rounded-full h-8">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
@@ -225,7 +226,7 @@ const ModeratorUsers = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm">Users</CardTitle>
-          <CardDescription className="text-xs">
+          <CardDescription className="text-[10px]">
             {statusFilter === "all" ? "All users" : `Users with ${statusFilter} status`}
           </CardDescription>
         </CardHeader>
@@ -247,33 +248,33 @@ const ModeratorUsers = () => {
                     <tr key={user.id} className="border-t">
                       <td className="p-2">
                         <div className="flex items-center space-x-2">
-                          <Avatar className="h-6 w-6">
+                          <Avatar className="h-5 w-5">
                             <AvatarImage src={user.avatar} />
-                            <AvatarFallback className="text-2xs">
+                            <AvatarFallback className="text-xs">
                               {user.username.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
                           <div>
                             <div className="font-medium text-xs">{user.username}</div>
-                            <div className="text-3xs text-muted-foreground">{user.email}</div>
+                            <div className="text-[10px] text-muted-foreground">{user.email}</div>
                           </div>
                         </div>
                       </td>
-                      <td className="p-2">{getStatusBadge(user.status)}</td>
+                      <td className="p-2 text-[10px]">{getStatusBadge(user.status)}</td>
                       <td className="p-2">
                         <div className="text-xs">
                           {user.reportCount}
                           {user.reportCount > 5 && (
-                            <span className="ml-1 text-3xs text-red-600">(High)</span>
+                            <span className="ml-1 text-[11px] text-red-600">(High)</span>
                           )}
                         </div>
                       </td>
-                      <td className="p-2 text-xs">{user.lastActive}</td>
+                      <td className="p-2 text-[11px]">{user.lastActive}</td>
                       <td className="p-2 text-right">
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 text-xs"
+                          className="h-7 text-[10px]"
                           onClick={() => handleViewUser(user)}
                         >
                           View
@@ -282,7 +283,7 @@ const ModeratorUsers = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 text-xs"
+                            className="h-7 text-[10px]"
                             onClick={() => handleWarnUser(user.id)}
                           >
                             Warn
@@ -291,7 +292,7 @@ const ModeratorUsers = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 text-xs"
+                            className="h-7 text-[10px]"
                             onClick={() => handleRestoreUser(user.id)}
                           >
                             Restore
@@ -302,7 +303,7 @@ const ModeratorUsers = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="p-4 text-center text-sm text-muted-foreground">
+                    <td colSpan={5} className="p-4 text-center text-xs text-muted-foreground">
                       No users found
                     </td>
                   </tr>
@@ -317,7 +318,7 @@ const ModeratorUsers = () => {
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle className="text-sm">User Profile</DialogTitle>
-            <DialogDescription className="text-xs">
+            <DialogDescription className="text-[11px]">
               View and manage user details
             </DialogDescription>
           </DialogHeader>
@@ -325,25 +326,25 @@ const ModeratorUsers = () => {
           {selectedUser && (
             <Tabs defaultValue="overview">
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
-                <TabsTrigger value="actions" className="text-xs">Actions</TabsTrigger>
-                <TabsTrigger value="notes" className="text-xs">Notes</TabsTrigger>
+                <TabsTrigger value="overview" className="text-[10px]">Overview</TabsTrigger>
+                <TabsTrigger value="actions" className="text-[10px]">Actions</TabsTrigger>
+                <TabsTrigger value="notes" className="text-[10px]">Notes</TabsTrigger>
               </TabsList>
 
               <TabsContent value="overview" className="space-y-4">
                 <div className="flex items-center space-x-4 pt-2">
-                  <Avatar className="h-16 w-16">
+                  <Avatar className="h-8 w-8">
                     <AvatarImage src={selectedUser.avatar} />
-                    <AvatarFallback className="text-lg">
+                    <AvatarFallback className="text-sm">
                       {selectedUser.username.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="text-sm font-semibold">{selectedUser.username}</h3>
-                    <p className="text-xs text-muted-foreground">{selectedUser.email}</p>
-                    <div className="flex items-center mt-1 space-x-2">
+                    <h3 className="text-xs font-semibold">{selectedUser.username}</h3>
+                    <p className="text-[11px] text-muted-foreground">{selectedUser.email}</p>
+                    <div className="flex items-center mt-1 space-x-2 text-[10px]">
                       {getStatusBadge(selectedUser.status)}
-                      <span className="text-3xs">
+                      <span className="text-[10px]">
                         Member since {selectedUser.dateJoined}
                       </span>
                     </div>
@@ -352,8 +353,8 @@ const ModeratorUsers = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <h4 className="text-xs font-medium">Report Count</h4>
-                    <p className="text-2xs">
+                    <h4 className="text-[11px] font-medium">Report Count</h4>
+                    <p className="text-[11px]">
                       {selectedUser.reportCount}
                       {selectedUser.reportCount > 5 && (
                         <span className="ml-1 text-red-600">(High)</span>
@@ -361,15 +362,15 @@ const ModeratorUsers = () => {
                     </p>
                   </div>
                   <div>
-                    <h4 className="text-xs font-medium">Last Active</h4>
-                    <p className="text-2xs">{selectedUser.lastActive}</p>
+                    <h4 className="text-[11px] font-medium">Last Active</h4>
+                    <p className="text-[11px]">{selectedUser.lastActive}</p>
                   </div>
                 </div>
 
                 {selectedUser.notes && (
                   <div>
-                    <h4 className="text-xs font-medium">Moderator Notes</h4>
-                    <p className="text-2xs border p-2 rounded-md mt-1 bg-gray-50">
+                    <h4 className="text-[11px] font-medium">Moderator Notes</h4>
+                    <p className="text-[10px] border p-2 rounded-md mt-1 bg-gray-50">
                       {selectedUser.notes}
                     </p>
                   </div>
