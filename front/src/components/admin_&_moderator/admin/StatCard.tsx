@@ -20,7 +20,7 @@ export function StatCard({
   trend,
 }: StatCardProps) {
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
         <CardTitle className="text-[11px] font-medium">{title}</CardTitle>
         <Icon className="h-4 w-4 text-muted-foreground" />
