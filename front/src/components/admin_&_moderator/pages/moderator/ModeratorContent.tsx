@@ -148,15 +148,15 @@ const ModeratorContent = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl font-bold">Content Moderation</h1>
-          <p className="text-xs text-muted-foreground">
+          <h1 className="text-md font-bold">Content Moderation</h1>
+          <p className="text-[10px] text-muted-foreground">
             Review and take action on flagged content
           </p>
         </div>
         <Button 
           variant="outline" 
           size="sm" 
-          className="text-xs flex items-center gap-1"
+          className="text-[10px] flex items-center gap-1 h-8"
           onClick={handleDownloadReport}
         >
           <Download className="h-3 w-3" /> Export Report
@@ -165,12 +165,13 @@ const ModeratorContent = () => {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-2 top-4 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
           <Input
             placeholder="Search content..."
-            className="pl-8 text-xs"
+            className="pl-8 rounded-full h-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            style={{fontSize:"10px"}}
           />
         </div>
         <Tabs 
@@ -179,11 +180,11 @@ const ModeratorContent = () => {
           className="sm:w-auto"
         >
           <TabsList className="grid w-full grid-cols-5 h-9">
-            <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
-            <TabsTrigger value="artwork" className="text-xs">Artwork</TabsTrigger>
-            <TabsTrigger value="comment" className="text-xs">Comments</TabsTrigger>
-            <TabsTrigger value="user" className="text-xs">Users</TabsTrigger>
-            <TabsTrigger value="bid" className="text-xs">Bids</TabsTrigger>
+            <TabsTrigger value="all" className="text-[10px]">All</TabsTrigger>
+            <TabsTrigger value="artwork" className="text-[10px]">Artwork</TabsTrigger>
+            <TabsTrigger value="comment" className="text-[10px]">Comments</TabsTrigger>
+            <TabsTrigger value="user" className="text-[10px]">Users</TabsTrigger>
+            <TabsTrigger value="bid" className="text-[10px]">Bids</TabsTrigger>
           </TabsList>
         </Tabs>
         <Tabs 
@@ -192,8 +193,8 @@ const ModeratorContent = () => {
           className="sm:w-auto"
         >
           <TabsList className="grid w-full grid-cols-2 h-9">
-            <TabsTrigger value="reports" className="text-xs">Most Reported</TabsTrigger>
-            <TabsTrigger value="date" className="text-xs">Most Recent</TabsTrigger>
+            <TabsTrigger value="reports" className="text-[10px]">Most Reported</TabsTrigger>
+            <TabsTrigger value="date" className="text-[10px]">Most Recent</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -205,15 +206,15 @@ const ModeratorContent = () => {
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-sm">{content.title}</CardTitle>
-                    <CardDescription className="text-xs">
+                    <CardTitle className="text-xs">{content.title}</CardTitle>
+                    <CardDescription className="text-[11px]">
                       Created by {content.creator} on {content.dateCreated}
                     </CardDescription>
                   </div>
-                  <Badge className={`text-3xs ${getContentTypeColor(content.contentType)}`}>
-                    <span className="flex items-center gap-1">
+                  <Badge className={`text-[11px] ${getContentTypeColor(content.contentType)}`}>
+                    <span className="flex items-center gap-1 text-[10px]">
                       {getContentTypeIcon(content.contentType)}
-                      <span className="capitalize">{content.contentType}</span>
+                      <span className="capitalize text-[10px]">{content.contentType}</span>
                     </span>
                   </Badge>
                 </div>
@@ -228,17 +229,17 @@ const ModeratorContent = () => {
                         className="object-cover w-full h-full"
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                        <Badge className="bg-red-500 text-3xs">Flagged</Badge>
+                        <Badge className="bg-red-500 text-[11px]">Flagged</Badge>
                       </div>
                     </div>
                   )}
                   <div className="flex-1 space-y-2">
                     <div>
-                      <h3 className="text-xs font-medium">Reported for: {content.reportReason}</h3>
-                      <p className="text-3xs text-red-600">Reported {content.timesReported} times</p>
+                      <h3 className="text-[11px] font-medium">Reported for: {content.reportReason}</h3>
+                      <p className="text-[11px] text-red-600">Reported {content.timesReported} times</p>
                     </div>
                     <div className="bg-gray-50 p-2 rounded-md">
-                      <p className="text-2xs">{content.description}</p>
+                      <p className="text-[11px]">{content.description}</p>
                     </div>
                   </div>
                 </div>
@@ -246,7 +247,7 @@ const ModeratorContent = () => {
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="text-xs h-7 px-2"
+                    className="text-[10px] h-7 px-2 rounded-full"
                     onClick={() => handleApprove(content.id)}
                   >
                     Approve
@@ -254,7 +255,7 @@ const ModeratorContent = () => {
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="text-xs h-7 px-2"
+                    className="text-[10px] h-7 px-2 rounded-full"
                     onClick={() => handleWarn(content.id)}
                   >
                     Warn User
@@ -262,7 +263,7 @@ const ModeratorContent = () => {
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="text-xs h-7 px-2"
+                    className="text-[10px] h-7 px-2 rounded-full"
                     onClick={() => handleEscalate(content.id)}
                   >
                     Escalate
@@ -270,7 +271,7 @@ const ModeratorContent = () => {
                   <Button 
                     variant="destructive" 
                     size="sm" 
-                    className="text-xs h-7 px-2"
+                    className="text-[10px] h-7 px-2 rounded-full"
                     onClick={() => handleRemove(content.id)}
                   >
                     Remove
@@ -282,8 +283,8 @@ const ModeratorContent = () => {
         ) : (
           <Card>
             <CardContent className="flex flex-col items-center justify-center h-48">
-              <p className="text-sm text-muted-foreground">No flagged content found</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground">No flagged content found</p>
+              <p className="text-[11px] text-muted-foreground">
                 {searchQuery ? "Try adjusting your search terms" : "All content has been reviewed"}
               </p>
             </CardContent>
