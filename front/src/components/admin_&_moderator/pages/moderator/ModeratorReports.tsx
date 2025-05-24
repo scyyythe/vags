@@ -155,24 +155,24 @@ const ModeratorReports = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold">Report Management</h1>
-        <p className="text-xs text-muted-foreground">
+        <h1 className="text-md font-bold">Report Management</h1>
+        <p className="text-[10px] text-muted-foreground">
           Review and respond to user-submitted reports
         </p>
       </div>
 
       <Tabs defaultValue="all" className="space-y-4">
         <TabsList className="grid w-full grid-cols-4 sm:w-auto sm:inline-grid sm:grid-cols-4">
-          <TabsTrigger value="all" className="text-xs">
+          <TabsTrigger value="all" className="text-[10px]">
             All Reports
           </TabsTrigger>
-          <TabsTrigger value="pending" className="text-xs">
+          <TabsTrigger value="pending" className="text-[10px]">
             Pending
           </TabsTrigger>
-          <TabsTrigger value="investigating" className="text-xs">
+          <TabsTrigger value="investigating" className="text-[10px]">
             Investigating
           </TabsTrigger>
-          <TabsTrigger value="resolved" className="text-xs">
+          <TabsTrigger value="resolved" className="text-[10px]">
             Resolved
           </TabsTrigger>
         </TabsList>
@@ -181,7 +181,7 @@ const ModeratorReports = () => {
           <Card>
             <CardHeader>
               <CardTitle className="text-sm">All Reports</CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-[10px]">
                 Complete list of all reports in the system
               </CardDescription>
             </CardHeader>
