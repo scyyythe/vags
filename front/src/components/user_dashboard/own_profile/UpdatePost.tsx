@@ -34,7 +34,7 @@ const UpdatePost = () => {
   useEffect(() => {
     if (artwork && !loaded) {
       setArtworkTitle(artwork.title || "");
-      setArtworkStyle(artwork.style || "");
+      setArtworkStyle(artwork.category || "");
       setMedium(artwork.medium || "");
       setDescription(artwork.description || "");
       setVisibility(artwork.visibility || "Public");

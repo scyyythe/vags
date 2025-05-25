@@ -4,15 +4,26 @@ import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
+import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
-  filterVisibility?: string; // e.g. "hidden", "deleted", "archived"
+  filterVisibility?: string;
 };
 
 const CreatedTab = ({ filteredArtworks, isLoading, filterVisibility }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
+  const artworkIds = useMemo(() => filteredArtworks.map((art) => art.id), [filteredArtworks]);
 
+  const { data: bulkStatus, isLoading: statusLoading } = useBulkArtworkStatus(artworkIds);
+
+  const bulkStatusLookup = React.useMemo(() => {
+    if (!bulkStatus) return {};
+    return bulkStatus.reduce((acc, item) => {
+      acc[item.artwork_id] = item;
+      return acc;
+    }, {});
+  }, [bulkStatus]);
   // Filter artworks based on visibility if filterVisibility is given
   const allArtworks = useMemo(() => {
     if (!filterVisibility) return filteredArtworks;
@@ -41,7 +52,7 @@ const CreatedTab = ({ filteredArtworks, isLoading, filterVisibility }: CreatedTa
           const isExplore = String(art.artistId) !== String(loggedInUserId);
           const isDeleted = art.visibility?.toLowerCase() === "deleted";
           const isArchived = art.visibility?.toLowerCase() === "archived";
-
+          const status = bulkStatusLookup[art.id];
           return (
             <ArtCard
               key={art.id}
@@ -57,6 +68,8 @@ const CreatedTab = ({ filteredArtworks, isLoading, filterVisibility }: CreatedTa
               isDeleted={isDeleted}
               isArchived={isArchived}
               visibility={art.visibility}
+              isLikedFromBulk={status ? status.isLiked : false}
+              isSavedFromBulk={status ? status.isSaved : false}
             />
           );
         })
