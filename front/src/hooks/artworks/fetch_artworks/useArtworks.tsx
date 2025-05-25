@@ -36,7 +36,7 @@ const fetchArtworks = async (
   try {
     const params: { page: number; limit: number; userId?: string; visibility?: string } = {
       page: currentPage,
-      limit: 20,
+      limit: 100,
     };
 
     if (filterVisibility) {
@@ -47,7 +47,7 @@ const fetchArtworks = async (
       params.userId = userId;
     }
 
-    let url = "art/list/";
+    let url = "art/list/bulk/";
 
     if (endpointType === "created-by-me") {
       url = "art/list/created-by-me/";

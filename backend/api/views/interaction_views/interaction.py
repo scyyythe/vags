@@ -256,7 +256,30 @@ class ArtworkStatusView(generics.GenericAPIView):
             "isLiked": is_liked,
         }, status=status.HTTP_200_OK)
 
+class ArtworkBulkStatusView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request, *args, **kwargs):
+        artwork_ids_param = request.query_params.get("artwork_ids", "")
+        if not artwork_ids_param:
+            return Response({"detail": "No artwork IDs provided."}, status=400)
+
+        artwork_ids = artwork_ids_param.split(",")
+
+        artworks = Art.objects(id__in=artwork_ids)  #
+        status_data = []
+
+        for art in artworks:
+            is_saved = Saved.objects(art=art, user=request.user).count() > 0
+            is_liked = Like.objects(art=art, user=request.user).count() > 0
+
+            status_data.append({
+                "artwork_id": str(art.id),
+                "isSaved": is_saved,
+                "isLiked": is_liked,
+            })
+
+        return Response(status_data, status=200)
 
         
                         

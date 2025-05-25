@@ -12,14 +12,14 @@ import DeletedMenu from "@/components/user_dashboard/user_profile/components/sta
 import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
-import useArtworkDetails from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
+import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 import useLikeStatus from "@/hooks/interactions/useLikeStatus";
 import useHideArtwork from "@/hooks/mutate/visibility/private/useHideArtwork";
 import useUnArchivedArtwork from "@/hooks/mutate/visibility/arc/useUnarchivedArtwork";
 import useRestoreArtwork from "@/hooks/mutate/visibility/trash/useRestoreArtwork";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import useReportStatus from "@/hooks/mutate/report/useReportStatus";
-interface ArtCardProps {
+export interface ArtCardProps {
   id: string;
   artistId: string;
   artistName: string;
@@ -32,6 +32,8 @@ interface ArtCardProps {
   isArchived?: boolean;
   visibility?: string;
   onButtonClick?: () => void;
+  isLikedFromBulk?: boolean;
+  isSavedFromBulk?: boolean;
 }
 
 const ArtCard = ({
@@ -47,16 +49,18 @@ const ArtCard = ({
   isArchived = false,
   visibility = "public",
   onButtonClick,
+  isLikedFromBulk,
+  isSavedFromBulk,
 }: ArtCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
-  const { data, error, isLoading } = useLikeStatus(id);
-  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
+  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id, isSavedFromBulk ?? false);
+
   const { likedArtworks, likeCounts, setLikedArtworks, setLikeCounts, toggleLike } = useContext(LikedArtworksContext);
 
   const { openPopup } = useDonation();
-  const { isLoading: detailsLoading } = useArtworkDetails(id);
+  const { isLoading: detailsLoading } = useFetchArtworkById(id);
 
   const [isDeletedLocally, setIsDeletedLocally] = useState(false);
   const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useReportStatus(id);
@@ -65,12 +69,11 @@ const ArtCard = ({
   const { mutate: restore } = useRestoreArtwork();
   const { mutate: submitReport } = useSubmitReport();
 
-  const isLiked = likedArtworks[id] || false;
+  const isLiked = typeof isLikedFromBulk === "boolean" ? isLikedFromBulk : likedArtworks[id] ?? false;
+
   useEffect(() => {
-    if (data) {
-      setLikedArtworks((prev) => ({ ...prev, [id]: data.isLiked }));
-    }
-  }, [data, id, setLikedArtworks]);
+    setLikedArtworks((prev) => ({ ...prev, [id]: isLiked }));
+  }, [isLiked, id, setLikedArtworks]);
 
   const handleLike = () => {
     if (id) {
@@ -190,7 +193,7 @@ const ArtCard = ({
           )}
         </div>
       </div>
-      <Link to={`/artwork/${id}`} state={{ artworkImage, artistId, artistName, title, likesCount }} className="w-full">
+      <Link to={`/artwork/${id}`} className="w-full">
         <div className="aspect-square overflow-hidden py-2 px-1">
           <img
             src={artworkImage}
@@ -211,7 +214,7 @@ const ArtCard = ({
               className={`p-1 rounded-full transition-colors ${
                 isLiked ? "text-red-600" : "text-gray-400 hover:text-red-600"
               }`}
-              aria-label="Like artwork"
+              aria-label={isLiked ? "Unlike" : "Like"}
             >
               <Heart
                 size={15}
