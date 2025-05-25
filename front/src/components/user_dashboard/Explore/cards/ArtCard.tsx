@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback, memo } from "react";
 import { Heart, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LikedArtworksContext } from "@/context/LikedArtworksProvider";
@@ -258,4 +258,4 @@ const ArtCard = ({
   );
 };
 
-export default ArtCard;
+export default memo(ArtCard);

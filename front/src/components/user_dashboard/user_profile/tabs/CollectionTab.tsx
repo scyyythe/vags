@@ -4,12 +4,11 @@ import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
 import useSavedArtworks from "@/hooks/artworks/fetch_artworks/useSavedArtworks";
-
+import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
+import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 type CollectionTabProps = {
   setSavedArtworksCount?: React.Dispatch<React.SetStateAction<number>>;
 };
-
-const ArtCardMemoized = React.memo(ArtCard);
 
 const CollectionTab = ({ setSavedArtworksCount }: CollectionTabProps) => {
   const { savedArtworks, isLoading } = useSavedArtworks();
@@ -17,14 +16,29 @@ const CollectionTab = ({ setSavedArtworksCount }: CollectionTabProps) => {
   const { id: visitedUserId } = useParams();
 
   const filteredSavedArtworks = useMemo(() => {
-    return (savedArtworks || []).filter((art) => !!art);
+    return (savedArtworks || []).filter((art) => art && typeof art.id === "string" && art.id.trim() !== "");
   }, [savedArtworks]);
+
+  const artworkIds = useMemo(() => filteredSavedArtworks.map((art) => art.id), [filteredSavedArtworks]);
+
+  const { data: bulkStatus, isLoading: statusLoading } = useBulkArtworkStatus(artworkIds);
+  const { data: reportStatus } = useBulkReportStatus(artworkIds);
 
   useEffect(() => {
     if (!visitedUserId || !setSavedArtworksCount) return;
     const count = filteredSavedArtworks.length;
     setSavedArtworksCount(count);
   }, [filteredSavedArtworks, visitedUserId, setSavedArtworksCount]);
+
+  const bulkStatusLookup = React.useMemo(() => {
+    if (!bulkStatus) return {};
+    return bulkStatus.reduce((acc, item) => {
+      acc[item.artwork_id] = item;
+      return acc;
+    }, {});
+  }, [bulkStatus]);
+
+  const reportStatusLookup = reportStatus || {};
 
   const handleButtonClick = useCallback((artworkId: string) => {}, []);
 
@@ -46,22 +60,30 @@ const CollectionTab = ({ setSavedArtworksCount }: CollectionTabProps) => {
           const isExplore = String(art.artistId) !== String(loggedInUserId);
           const isDeleted = art.visibility?.toLowerCase() === "deleted";
           const isArchived = art.visibility?.toLowerCase() === "archived";
+          const status = bulkStatusLookup[art.id];
+          const report = reportStatusLookup[art.id];
+
+          const transformedArtwork = {
+            ...art,
+            artworkImage: art.artworkImage || art.image_url || "",
+            artistProfilePicture: art.artistImage || art.profile_picture || "",
+            artistName: art.artist || art.artistName,
+            likesCount: art.likes_count,
+          };
 
           return (
-            <ArtCardMemoized
+            <ArtCard
               key={art.id}
-              id={art.id}
-              artistName={art.artist || "Unknown"}
-              artistId={art.artist_id}
-              artistImage={art.profile_picture || ""}
-              artworkImage={art.image_url}
-              title={art.title}
+              artwork={transformedArtwork}
+              status={status}
+              report={report}
               onButtonClick={() => handleButtonClick(art.id)}
               isExplore={isExplore}
-              likesCount={art.likes_count ?? 0}
               isDeleted={isDeleted}
               isArchived={isArchived}
               visibility={art.visibility}
+              isLikedFromBulk={status ? status.isLiked : false}
+              isSavedFromBulk={status ? status.isSaved : false}
             />
           );
         })
