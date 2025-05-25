@@ -82,7 +82,11 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
   return (
     <>
       <div
-        onClick={onClick}
+        onClick={() => {
+          navigate(`/bid/${data.id}/`, {
+            state: { item: data },
+          });
+        }}
         className="w-full rounded-xl border bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
       >
         <div className="relative">

@@ -119,13 +119,6 @@ const Bidding = () => {
     console.log(`Placing bid for artwork ID: ${id}`);
   };
 
-  const handleBidClick = (artwork: ArtworkAuction) => {
-    localStorage.setItem("selectedBid", JSON.stringify(artwork));
-    navigate(`/bid/${artwork.id}/ `, {
-      state: { artwork },
-    });
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -156,9 +149,7 @@ const Bidding = () => {
           {isError && <p className="text-center text-red-500 py-10">Failed to fetch bidding artworks.</p>}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredArtworks.map((artwork) => (
-              <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
-                <BidCard data={artwork} onPlaceBid={handlePlaceBid} />
-              </div>
+              <BidCard data={artwork} onPlaceBid={handlePlaceBid} />
             ))}
           </div>
         </div>
