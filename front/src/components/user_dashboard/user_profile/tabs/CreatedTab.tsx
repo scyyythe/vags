@@ -5,6 +5,7 @@ import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtwork
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
 import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
+import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
@@ -16,6 +17,7 @@ const CreatedTab = ({ filteredArtworks, isLoading, filterVisibility }: CreatedTa
   const artworkIds = useMemo(() => filteredArtworks.map((art) => art.id), [filteredArtworks]);
 
   const { data: bulkStatus, isLoading: statusLoading } = useBulkArtworkStatus(artworkIds);
+  const { data: reportStatus } = useBulkReportStatus(artworkIds);
 
   const bulkStatusLookup = React.useMemo(() => {
     if (!bulkStatus) return {};
@@ -24,7 +26,9 @@ const CreatedTab = ({ filteredArtworks, isLoading, filterVisibility }: CreatedTa
       return acc;
     }, {});
   }, [bulkStatus]);
-  // Filter artworks based on visibility if filterVisibility is given
+
+  const reportStatusLookup = reportStatus || {};
+
   const allArtworks = useMemo(() => {
     if (!filterVisibility) return filteredArtworks;
     return filteredArtworks.filter((art) => art.visibility?.toLowerCase() === filterVisibility.toLowerCase());
@@ -53,18 +57,15 @@ const CreatedTab = ({ filteredArtworks, isLoading, filterVisibility }: CreatedTa
           const isDeleted = art.visibility?.toLowerCase() === "deleted";
           const isArchived = art.visibility?.toLowerCase() === "archived";
           const status = bulkStatusLookup[art.id];
+          const report = reportStatusLookup[art.id];
           return (
             <ArtCard
               key={art.id}
-              id={art.id}
-              artistName={art.artistName}
-              artistId={art.artistId}
-              artistImage={art.artistImage || ""}
-              artworkImage={art.artworkImage}
-              title={art.title}
+              artwork={art}
+              status={status}
+              report={report}
               onButtonClick={() => handleButtonClick(art.id)}
               isExplore={isExplore}
-              likesCount={art.likesCount ?? 0}
               isDeleted={isDeleted}
               isArchived={isArchived}
               visibility={art.visibility}
