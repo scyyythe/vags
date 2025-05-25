@@ -89,21 +89,21 @@ const AdminConfig = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold">Platform Configuration</h1>
-        <p className="text-xs text-muted-foreground">
+        <h1 className="text-md font-bold">Platform Configuration</h1>
+        <p className="text-[10px] text-muted-foreground">
           Configure global platform settings and features
         </p>
       </div>
 
       <Tabs defaultValue="general" className="space-y-4">
         <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:inline-grid sm:grid-cols-3">
-          <TabsTrigger value="general" className="text-xs">
+          <TabsTrigger value="general" className="text-[10px]">
             General Settings
           </TabsTrigger>
-          <TabsTrigger value="financial" className="text-xs">
+          <TabsTrigger value="financial" className="text-[10px]">
             Financial Settings
           </TabsTrigger>
-          <TabsTrigger value="maintenance" className="text-xs">
+          <TabsTrigger value="maintenance" className="text-[10px]">
             Maintenance
           </TabsTrigger>
         </TabsList>
@@ -111,8 +111,8 @@ const AdminConfig = () => {
         <TabsContent value="general" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Feature Controls</CardTitle>
-              <CardDescription className="text-xs">
+              <CardTitle className="text-xs">Feature Controls</CardTitle>
+              <CardDescription className="text-[11px]">
                 Enable or disable platform features
               </CardDescription>
             </CardHeader>
@@ -152,8 +152,8 @@ const AdminConfig = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Default Rules</CardTitle>
-              <CardDescription className="text-xs">
+              <CardTitle className="text-xs">Default Rules</CardTitle>
+              <CardDescription className="text-[11px]">
                 Configure default platform-wide rules
               </CardDescription>
             </CardHeader>
@@ -168,14 +168,14 @@ const AdminConfig = () => {
                     name="biddingTimeLimit"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs">Bidding Time Limit (hours)</FormLabel>
+                        <FormLabel className="text-[11px]">Bidding Time Limit (hours)</FormLabel>
                         <FormControl>
-                          <Input className="text-xs" {...field} type="number" min="1" />
+                          <Input className="rounded-full h-8" style={{fontSize:"10px"}} {...field} type="number" min="1" />
                         </FormControl>
-                        <FormDescription className="text-2xs">
+                        <FormDescription className="text-[11px]">
                           Default time period for auctions
                         </FormDescription>
-                        <FormMessage className="text-2xs" />
+                        <FormMessage className="text-xs" />
                       </FormItem>
                     )}
                   />
@@ -184,11 +184,11 @@ const AdminConfig = () => {
                     name="minBidIncrement"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs">Minimum Bid Increment (%)</FormLabel>
+                        <FormLabel className="text-[11px]">Minimum Bid Increment (%)</FormLabel>
                         <FormControl>
-                          <Input className="text-xs" {...field} type="number" min="1" max="100" />
+                          <Input className="rounded-full h-8" style={{fontSize:"10px"}} {...field} type="number" min="1" max="100" />
                         </FormControl>
-                        <FormDescription className="text-2xs">
+                        <FormDescription className="text-[11px]">
                           Minimum percentage increase for new bids
                         </FormDescription>
                         <FormMessage className="text-2xs" />
@@ -200,18 +200,18 @@ const AdminConfig = () => {
                     name="sellerCommissionRate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs">Seller Commission Rate (%)</FormLabel>
+                        <FormLabel className="text-[11px]">Seller Commission Rate (%)</FormLabel>
                         <FormControl>
-                          <Input className="text-xs" {...field} type="number" min="0" max="100" />
+                          <Input className="rounded-full h-8" style={{fontSize:"10px"}} {...field} type="number" min="0" max="100" />
                         </FormControl>
-                        <FormDescription className="text-2xs">
+                        <FormDescription className="text-[11px]">
                           Platform fee taken from sales
                         </FormDescription>
-                        <FormMessage className="text-2xs" />
+                        <FormMessage className="text-xs" />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" size="sm" className="text-xs">
+                  <Button type="submit" size="sm" className="text-[10px] h-7 rounded-full">
                     Save Settings
                   </Button>
                 </form>

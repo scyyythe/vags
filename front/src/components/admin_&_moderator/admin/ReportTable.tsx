@@ -110,12 +110,13 @@ export function ReportTable({
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-2 top-4 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
           <Input
             placeholder="Search reports..."
-            className="pl-8 text-xs"
+            className="pl-8 rounded-full h-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ fontSize: "10px" }}
           />
         </div>
         
@@ -123,15 +124,15 @@ export function ReportTable({
           value={statusFilter}
           onValueChange={(value) => setStatusFilter(value as Report["status"] | "all")}
         >
-          <SelectTrigger className="w-[140px] text-xs">
+          <SelectTrigger className="w-[140px] text-[10px] rounded-full h-8">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all" className="text-xs">All Status</SelectItem>
-            <SelectItem value="pending" className="text-xs">Pending</SelectItem>
-            <SelectItem value="investigating" className="text-xs">Investigating</SelectItem>
-            <SelectItem value="resolved" className="text-xs">Resolved</SelectItem>
-            <SelectItem value="dismissed" className="text-xs">Dismissed</SelectItem>
+            <SelectItem value="all" className="text-[10px]">All Status</SelectItem>
+            <SelectItem value="pending" className="text-[10px]">Pending</SelectItem>
+            <SelectItem value="investigating" className="text-[10px]">Investigating</SelectItem>
+            <SelectItem value="resolved" className="text-[10px]">Resolved</SelectItem>
+            <SelectItem value="dismissed" className="text-[10px]">Dismissed</SelectItem>
           </SelectContent>
         </Select>
         
@@ -139,16 +140,16 @@ export function ReportTable({
           value={typeFilter}
           onValueChange={(value) => setTypeFilter(value as Report["reportType"] | "all")}
         >
-          <SelectTrigger className="w-[140px] text-xs">
+          <SelectTrigger className="w-[140px] text-[10px] rounded-full h-8">
             <SelectValue placeholder="Filter by type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all" className="text-xs">All Types</SelectItem>
-            <SelectItem value="offensive" className="text-xs">Offensive</SelectItem>
-            <SelectItem value="fraud" className="text-xs">Fraud</SelectItem>
-            <SelectItem value="spam" className="text-xs">Spam</SelectItem>
-            <SelectItem value="plagiarism" className="text-xs">Plagiarism</SelectItem>
-            <SelectItem value="other" className="text-xs">Other</SelectItem>
+            <SelectItem value="all" className="text-[10px]">All Types</SelectItem>
+            <SelectItem value="offensive" className="text-[10px]">Offensive</SelectItem>
+            <SelectItem value="fraud" className="text-[10px]">Fraud</SelectItem>
+            <SelectItem value="spam" className="text-[10px]">Spam</SelectItem>
+            <SelectItem value="plagiarism" className="text-[10px]">Plagiarism</SelectItem>
+            <SelectItem value="other" className="text-[10px]">Other</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -168,18 +169,18 @@ export function ReportTable({
             {filteredReports.length > 0 ? (
               filteredReports.map((report) => (
                 <TableRow key={report.id}>
-                  <TableCell className="text-2xs">
+                  <TableCell className="text-[10px]">
                     {getTypeBadge(report.reportType)}
                   </TableCell>
-                  <TableCell className="text-2xs">
+                  <TableCell className="text-[11px]">
                     <div>
-                      <div className="font-medium text-2xs capitalize">{report.reportedType}</div>
-                      <div className="text-3xs text-gray-500">ID: {report.reportedId.substring(0, 8)}...</div>
+                      <div className="font-medium text-[11px] capitalize">{report.reportedType}</div>
+                      <div className="text-[10px] text-gray-500">ID: {report.reportedId.substring(0, 8)}...</div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-2xs">{getStatusBadge(report.status)}</TableCell>
-                  <TableCell className="text-2xs">{report.dateReported}</TableCell>
-                  <TableCell className="text-2xs text-right">
+                  <TableCell className="text-[10px]">{getStatusBadge(report.status)}</TableCell>
+                  <TableCell className="text-[11px]">{report.dateReported}</TableCell>
+                  <TableCell className="text-[10px] text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="sm" className="h-6 text-2xs">
@@ -187,11 +188,11 @@ export function ReportTable({
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-40">
-                        <DropdownMenuLabel className="text-xs">Report Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel className="text-[11px]">Report Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {report.status === "pending" && (
                           <DropdownMenuItem 
-                            className="text-xs"
+                            className="text-[10px]"
                             onClick={() => onInvestigateReport && onInvestigateReport(report.id)}
                           >
                             Investigate
@@ -200,13 +201,13 @@ export function ReportTable({
                         {(report.status === "pending" || report.status === "investigating") && (
                           <>
                             <DropdownMenuItem 
-                              className="text-xs"
+                              className="text-[10px]"
                               onClick={() => onResolveReport && onResolveReport(report.id)}
                             >
                               Resolve
                             </DropdownMenuItem>
                             <DropdownMenuItem 
-                              className="text-xs"
+                              className="text-[10px]"
                               onClick={() => onDismissReport && onDismissReport(report.id)}
                             >
                               Dismiss
@@ -214,7 +215,7 @@ export function ReportTable({
                           </>
                         )}
                         <DropdownMenuItem 
-                          className="text-xs"
+                          className="text-[10px]"
                           onClick={() => onEscalateReport && onEscalateReport(report.id)}
                         >
                           Escalate to Admin
@@ -236,7 +237,7 @@ export function ReportTable({
       </div>
       
       <div className="flex justify-between">
-        <Button 
+        {/* <Button 
           variant="outline" 
           size="sm" 
           className="text-xs"
@@ -247,13 +248,13 @@ export function ReportTable({
           }}
         >
           Clear Filters
-        </Button>
+        </Button> */}
         <Button 
           variant="outline" 
           size="sm" 
-          className="text-xs flex items-center gap-1"
+          className="text-[11px] flex items-center gap-1 h-8"
           onClick={handleExportReports}
-        >
+        > 
           <Download className="h-3 w-3" />
           Export Reports
         </Button>

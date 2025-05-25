@@ -127,8 +127,8 @@ const AdminSecurity = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold">Security & Compliance</h1>
-        <p className="text-xs text-muted-foreground">
+        <h1 className="text-md font-bold">Security & Compliance</h1>
+        <p className="text-[10px] text-muted-foreground">
           Manage platform security settings and monitor system activity
         </p>
       </div>
@@ -137,7 +137,7 @@ const AdminSecurity = () => {
         <Card>
           <CardHeader>
             <CardTitle className="text-sm">Security Settings</CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-[11px]">
               Configure security and authentication policies
             </CardDescription>
           </CardHeader>
@@ -172,7 +172,7 @@ const AdminSecurity = () => {
             />
             <Button
               size="sm"
-              className="text-xs"
+              className="text-[10px] rounded-full h-7"
               onClick={() => toast.success("Security settings saved")}
             >
               Save Settings
@@ -183,7 +183,7 @@ const AdminSecurity = () => {
         <Card>
           <CardHeader>
             <CardTitle className="text-sm">Security Alerts</CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-[11px]">
               Recent security events requiring attention
             </CardDescription>
           </CardHeader>
@@ -191,30 +191,30 @@ const AdminSecurity = () => {
             <div className="space-y-4">
               <div className="border-l-4 border-amber-500 pl-3 py-2 bg-amber-50 rounded">
                 <p className="text-xs font-medium">Multiple Login Failures</p>
-                <p className="text-3xs text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground">
                   5 failed login attempts for user 'admin@example.com'
                 </p>
-                <p className="text-3xs text-muted-foreground">10 minutes ago</p>
+                <p className="text-[9px] text-muted-foreground">10 minutes ago</p>
               </div>
               <div className="border-l-4 border-red-500 pl-3 py-2 bg-red-50 rounded">
                 <p className="text-xs font-medium">Suspicious IP Activity</p>
-                <p className="text-3xs text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground">
                   Unusual login pattern detected from IP 203.0.113.15
                 </p>
-                <p className="text-3xs text-muted-foreground">1 hour ago</p>
+                <p className="text-[9px] text-muted-foreground">1 hour ago</p>
               </div>
               <div className="border-l-4 border-amber-500 pl-3 py-2 bg-amber-50 rounded">
                 <p className="text-xs font-medium">Account Permission Change</p>
-                <p className="text-3xs text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground">
                   User 'moderator4' granted admin privileges
                 </p>
-                <p className="text-3xs text-muted-foreground">Yesterday</p>
+                <p className="text-[9px] text-muted-foreground">Yesterday</p>
               </div>
 
               <Button
                 variant="outline"
                 size="sm"
-                className="text-xs w-full"
+                className="text-[11px] w-full rounded-full h-8"
                 onClick={handleResetSecurity}
               >
                 Clear All Alerts
@@ -227,7 +227,7 @@ const AdminSecurity = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm">Security Audit Log</CardTitle>
-          <CardDescription className="text-xs">
+          <CardDescription className="text-[11px]">
             Complete record of security-related events
           </CardDescription>
         </CardHeader>
