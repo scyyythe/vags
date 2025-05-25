@@ -76,7 +76,7 @@ const fetchAuctions = async (
 ): Promise<ArtworkAuction[]> => {
   const params: { page: number; limit: number; userId?: string } = {
     page: currentPage,
-    limit: 20,
+    limit: 100,
   };
 
   if (endpointType !== "all" && userId) {

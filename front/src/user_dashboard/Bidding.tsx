@@ -6,7 +6,7 @@ import CategoryFilter from "@/components/user_dashboard/Explore/navigation/Categ
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import useAuctions from "@/hooks/auction/useAuction";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -37,15 +37,10 @@ const Bidding = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const currentPage = 1;
-  const { data: data, error } = useAuctions(currentPage);
+
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
-
-  useEffect(() => {
-    console.log("Fetched data:", data);
-    console.log("Error:", error);
-  }, [data, error]);
 
   useEffect(() => {
     const fetchedArtworks: StaticArtwork[] = [
@@ -119,6 +114,13 @@ const Bidding = () => {
     console.log(`Placing bid for artwork ID: ${id}`);
   };
 
+  const handleBidClick = (artwork: ArtworkAuction) => {
+    localStorage.setItem("selectedBid", JSON.stringify(artwork));
+    navigate(`/bid/${artwork.id}/ `, {
+      state: { artwork },
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -149,7 +151,9 @@ const Bidding = () => {
           {isError && <p className="text-center text-red-500 py-10">Failed to fetch bidding artworks.</p>}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredArtworks.map((artwork) => (
-              <BidCard data={artwork} onPlaceBid={handlePlaceBid} />
+              <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
+                <BidCard data={artwork} onPlaceBid={handlePlaceBid} />
+              </div>
             ))}
           </div>
         </div>
@@ -159,4 +163,4 @@ const Bidding = () => {
   );
 };
 
-export default Bidding;
+export default memo(Bidding);

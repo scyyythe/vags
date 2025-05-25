@@ -111,19 +111,19 @@ class AuctionListView(generics.ListAPIView):
 
     def get_queryset(self):
         now_utc = datetime.now(timezone.utc)
-
-        
         expired_auctions = Auction.objects(
             status=AuctionStatus.ON_GOING.value,
             end_time__lt=now_utc
         )
-
-        
         for auction in expired_auctions:
             auction.close_auction()
-            auction.reload() 
+            auction.reload()
 
-      
+        auction_ids = self.request.query_params.get("auction_ids")
+        if auction_ids:
+            ids = auction_ids.split(",")
+            return Auction.objects(id__in=ids)
+
         return Auction.objects()
 
 class AuctionListViewOwner(generics.ListAPIView):
