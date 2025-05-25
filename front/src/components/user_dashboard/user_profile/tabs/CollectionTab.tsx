@@ -66,7 +66,7 @@ const CollectionTab = ({ setSavedArtworksCount }: CollectionTabProps) => {
           const transformedArtwork = {
             ...art,
             artworkImage: art.artworkImage || art.image_url || "",
-            artistProfilePicture: art.artistImage || art.profile_picture || "",
+            artistImage: art.artistImage || art.profile_picture || "",
             artistName: art.artist || art.artistName,
             likesCount: art.likes_count,
           };
