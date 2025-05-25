@@ -13,14 +13,19 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
 import useFavorite from "@/hooks/interactions/useFavorite";
-import useArtworkDetails from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
+import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
+import { useLocation } from "react-router-dom";
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+
+  const { isLikedFromBulk = undefined, isSavedFromBulk = undefined } = location.state || {};
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
-  const isLiked = likedArtworks[id] || false;
-  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
+  const isLiked = typeof isLikedFromBulk === "boolean" ? isLikedFromBulk : likedArtworks[id] ?? false;
+  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id, isSavedFromBulk ?? false);
+
   const { openPopup } = useDonation();
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobile = useIsMobile();
@@ -48,7 +53,7 @@ const ArtworkDetails = () => {
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({});
 
   const [currentPage] = useState(1);
-  const { data: artwork, isLoading } = useArtworkDetails(id);
+  const { data: artwork, isLoading } = useFetchArtworkById(id);
   const { data: related, error } = useArtworks(currentPage, undefined, true, "all", "public");
   useEffect(() => {
     if (descriptionRef.current) {
@@ -113,7 +118,7 @@ const ArtworkDetails = () => {
       id,
       title: artwork.title || "Untitled Artwork",
       artistName: artwork.artist || "Unknown Artist",
-      artworkImage: artwork.image || "",
+      artworkImage: artwork.artworkImage || "",
       artistId: artwork.artistId,
     });
   };
@@ -411,7 +416,7 @@ const ArtworkDetails = () => {
                   <div className="inline-block transform scale-[1.10] -mb-6 relative">
                     <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                       <img
-                        src={artwork.image}
+                        src={artwork.image_url}
                         alt={artwork.title}
                         className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                       />
@@ -461,9 +466,9 @@ const ArtworkDetails = () => {
                           className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
                           fill={isLiked ? "currentColor" : "none"}
                         />
-                        {(likeCounts[id || ""] ?? artwork.likes ?? 0) > 0 && (
+                        {(likeCounts[id || ""] ?? artwork.likes_count ?? 0) > 0 && (
                           <span className={`${isMobile ? "text-[10px]" : "text-xs"}`}>
-                            {likeCounts[id || ""] ?? artwork.likes}
+                            {likeCounts[id || ""] ?? artwork.likes_count}
                           </span>
                         )}
                       </button>
@@ -532,10 +537,8 @@ const ArtworkDetails = () => {
 
         {/* Related Artworks Section */}
         {(() => {
-          related?.forEach((card) => console.log(`Artwork ID: ${card.id}, Style: "${card.style}"`));
-
           const filteredRelated = related?.filter(
-            (card) => card.id !== id && card.style?.trim().toLowerCase() === artwork?.style?.trim().toLowerCase()
+            (card) => card.id !== id && card.category?.trim().toLowerCase() === artwork?.category?.trim().toLowerCase()
           );
 
           console.log("Filtered related artworks:", filteredRelated);
@@ -583,7 +586,11 @@ const ArtworkDetails = () => {
             </button>
 
             <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
-              <img src={artwork.image} alt="Expanded artwork" className="max-h-[80vh] max-w-[90vw] object-contain" />
+              <img
+                src={artwork.artworkImage}
+                alt="Expanded artwork"
+                className="max-h-[80vh] max-w-[90vw] object-contain"
+              />
             </div>
           </div>
         )}

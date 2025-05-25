@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/ArtworkStyles";
-import useArtworkDetails from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
+import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 import useUpdateArtwork from "@/hooks/mutate/artwork/useArtworkMutate";
 
 const UpdatePost = () => {
@@ -22,7 +22,7 @@ const UpdatePost = () => {
   const [isActive, setIsActive] = useState(true);
   const [category, setCategory] = useState("landscape");
 
-  const { data: artwork } = useArtworkDetails(id);
+  const { data: artwork } = useFetchArtworkById(id);
   const { mutate: updateArtwork } = useUpdateArtwork(currentPage, isActive, category, visibility);
   const [artworkStyle, setArtworkStyle] = useState(artwork.style || "");
 
@@ -38,7 +38,7 @@ const UpdatePost = () => {
       setMedium(artwork.medium || "");
       setDescription(artwork.description || "");
       setVisibility(artwork.visibility || "Public");
-      setPreviewUrl(artwork.image || null);
+      setPreviewUrl(artwork.image_url || null);
 
       if (artwork.visibility === "Hidden") {
         setVisibility("Private");

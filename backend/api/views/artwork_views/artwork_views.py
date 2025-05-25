@@ -42,7 +42,17 @@ class ArtListView(generics.ListAPIView):
             art_status__iexact="active"
         ).order_by('-created_at')
 
-    
+class ArtBulkListView(generics.ListAPIView):
+    serializer_class = ArtSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        valid_statuses = ["Active", "onBid"]
+        return Art.objects.filter(
+            visibility__iexact="public",
+            art_status__in=valid_statuses
+        ).order_by('-created_at')
+   
     
 class ArtListViewOwner(generics.ListAPIView):
     serializer_class = ArtSerializer
@@ -119,7 +129,25 @@ class ArtDetailView(generics.RetrieveAPIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
+class BulkArtDetailView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def get(self, request, *args, **kwargs):
+        ids = request.query_params.getlist('ids')
+
+        
+        if len(ids) == 1 and ',' in ids[0]:
+            ids = ids[0].split(',')
+
+        
+        try:
+            object_ids = [ObjectId(id) for id in ids]
+        except Exception:
+            return Response({"error": "One or more IDs are not valid ObjectId values."}, status=400)
+
+        artworks = Art.objects.filter(id__in=object_ids)
+        serializer = ArtSerializer(artworks, many=True)
+        return Response(serializer.data)
 
 class ArtListByArtistView(generics.ListAPIView):
     serializer_class = ArtSerializer

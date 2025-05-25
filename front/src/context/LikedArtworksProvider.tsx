@@ -48,7 +48,7 @@ export const LikedArtworksProvider = ({ children }: { children: ReactNode }) => 
       }
 
       // **Update React Query cache to keep UI in sync with latest like status**
-      queryClient.setQueryData(["artworkStatus", id], (oldData: any) => ({
+      queryClient.setQueryData(["bulkArtworkStatus", id], (oldData: any) => ({
         ...oldData,
         isLiked: is_liked,
         // optionally update likeCount if you have it in the cache
