@@ -56,11 +56,11 @@ const ArtworkDetails = () => {
   const { data: artwork, isLoading } = useFetchArtworkById(id);
   const { data: related, error } = useArtworks(currentPage, undefined, true, "all", "public");
   useEffect(() => {
-    if (descriptionRef.current) {
-      const isOver = descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight;
-      setIsOverflowing(isOver);
-    }
-  }, [artwork.description]);
+    if (!artwork || !descriptionRef.current) return;
+
+    const isOver = descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight;
+    setIsOverflowing(isOver);
+  }, [artwork]);
 
   const handleLike = () => {
     if (id) {
@@ -540,8 +540,6 @@ const ArtworkDetails = () => {
           const filteredRelated = related?.filter(
             (card) => card.id !== id && card.category?.trim().toLowerCase() === artwork?.category?.trim().toLowerCase()
           );
-
-          console.log("Filtered related artworks:", filteredRelated);
 
           return (
             related &&
