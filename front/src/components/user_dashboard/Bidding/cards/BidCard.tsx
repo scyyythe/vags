@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
@@ -82,11 +82,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
   return (
     <>
       <div
-        onClick={() => {
-          navigate(`/bid/${data.id}/`, {
-            state: { item: data },
-          });
-        }}
+        onClick={onClick}
         className="w-full rounded-xl border bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
       >
         <div className="relative">
@@ -153,4 +149,4 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
   );
 };
 
-export default BidCard;
+export default memo(BidCard);

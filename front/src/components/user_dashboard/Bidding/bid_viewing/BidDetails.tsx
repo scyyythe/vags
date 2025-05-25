@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
+import { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Heart, MoreHorizontal, GripVertical } from "lucide-react";
 import { toast } from "sonner";
@@ -21,7 +21,6 @@ import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import { useBidHistory } from "@/hooks/bid/useBidHistory";
 import { getLoggedInUserId } from "@/auth/decode";
 import useAuctions from "@/hooks/auction/useAuction";
-import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 export interface BidCardData {
   id: string;
   title: string;
@@ -35,26 +34,24 @@ export interface BidCardData {
 const BidDetails = () => {
   const { id } = useParams<{ id: string }>();
 
+  const { data: item, isLoading } = useFetchBiddingArtworkById(id!);
   const { data: allAuctions = [] } = useAuctions(1);
+
+  useEffect(() => {
+    if (item) {
+      console.log("Fetched auction item:", item);
+    }
+  }, [item]);
 
   const [views, setViews] = useState<number>(0);
   const [showBidPopup, setShowBidPopup] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const location = useLocation();
-
-  const { item, isLikedFromBulk } = location.state || {};
-  const artwork = item?.artwork;
-
-  useEffect(() => {
-    if (item) {
-      console.log("Fetched auction item:", item);
-    } else {
-      console.warn("No item received in location.state");
-    }
-  }, [item]);
+  const { artwork } = location.state;
 
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
 
+  const { artworks } = useArtworkContext();
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobile = useIsMobile();
 
@@ -70,19 +67,10 @@ const BidDetails = () => {
   const [isHidden, setIsHidden] = useState(false);
   const [isReported, setIsReported] = useState(false);
   const artworkId = item?.artwork?.id ?? null;
-
-  const { data: bulkStatus, isLoading: statusLoading } = useBulkArtworkStatus([id]);
-
-  const isLiked = typeof isLikedFromBulk === "boolean" ? isLikedFromBulk : likedArtworks[id] ?? false;
+  const artworkIds = artworks?.map((a) => a.id) || [];
+  const { data } = useArtworkStatus(artworkIds);
+  const isLiked = data?.isLiked;
   const { data: bids = [], error } = useBidHistory(artworkId);
-
-  const bulkStatusLookup = React.useMemo(() => {
-    if (!bulkStatus) return {};
-    return bulkStatus.reduce((acc, item) => {
-      acc[item.artwork_id] = item;
-      return acc;
-    }, {});
-  }, [bulkStatus]);
 
   //LIST OF BIDS SECTION
   const formatBidDate = (dateString: string) => {
@@ -117,6 +105,207 @@ const BidDetails = () => {
         art.artwork?.category?.trim().toLowerCase() === item.artwork.category.trim().toLowerCase()
     );
   }, [item, allAuctions]);
+
+  // Mock bid data
+  const mockBids = [
+    {
+      id: "1",
+      amount: 3000,
+      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+      created_at: "2025-05-13T16:40:00Z",
+    },
+    {
+      id: "2",
+      amount: 3000,
+      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/women/32.jpg" },
+      created_at: "2025-05-24T20:40:00Z",
+    },
+    {
+      id: "3",
+      amount: 3000,
+      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/women/33.jpg" },
+      created_at: "2025-05-24T20:40:00Z",
+    },
+    {
+      id: "4",
+      amount: 3000,
+      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/women/34.jpg" },
+      created_at: "2025-05-24T20:40:00Z",
+    },
+  ];
+
+  // // Mock related artworks data
+  // const mockRelatedArtworks: ArtworkAuction[] = [
+  //   {
+  //     id: "rel1",
+  //     artwork: {
+  //       id: "art1",
+  //       title: "Sunset Dreams",
+  //       artist: "Anna Rivera",
+  //       artist_id: "artist1",
+  //       category: "Landscape",
+  //       artistAvatar: "https://randomuser.me/api/portraits/women/44.jpg",
+  //       description: "A beautiful sunset over the mountains.",
+  //       image_url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+  //       likes_count: 120,
+  //       medium: "Oil on canvas",
+  //       price: 5000,
+  //       profile_picture: "https://randomuser.me/api/portraits/women/44.jpg",
+  //       size: "24x36",
+  //       visibility: "public",
+  //       created_at: "2025-01-01T00:00:00Z",
+  //       updated_at: "2025-01-02T00:00:00Z",
+  //     },
+  //     highest_bid: {
+  //       bidderFullName: "John Doe",
+  //       amount: 2400,
+  //       timestamp: "2025-05-10T14:00:00Z",
+  //       identity_type: "fullName",
+  //     },
+  //     bid_history: [],
+  //     end_time: "2025-06-01T18:00:00Z",
+  //     start_time: "2025-05-01T12:00:00Z",
+  //     status: "on_going",
+  //     start_bid_amount: 1000,
+  //     timeRemaining: {
+  //       finished: false,
+  //       hrs: 48,
+  //       mins: 30,
+  //       secs: 0,
+  //     },
+  //   },
+  //   {
+  //     id: "rel2",
+  //     artwork: {
+  //       id: "art2",
+  //       title: "Blue Harmony",
+  //       artist: "Miguel Santos",
+  //       artist_id: "artist2",
+  //       category: "Abstract",
+  //       artistAvatar: "https://randomuser.me/api/portraits/men/32.jpg",
+  //       description: "An abstract piece with vibrant blues.",
+  //       image_url: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
+  //       likes_count: 85,
+  //       medium: "Acrylic",
+  //       price: 3000,
+  //       profile_picture: "https://randomuser.me/api/portraits/men/32.jpg",
+  //       size: "30x40",
+  //       visibility: "public",
+  //       created_at: "2025-02-10T00:00:00Z",
+  //       updated_at: "2025-02-15T00:00:00Z",
+  //     },
+  //     highest_bid: {
+  //       bidderFullName: "Jane Smith",
+  //       amount: 1800,
+  //       timestamp: "2025-05-15T11:30:00Z",
+  //       identity_type: "username",
+  //     },
+  //     bid_history: [],
+  //     end_time: "2025-06-03T12:00:00Z",
+  //     start_time: "2025-05-05T10:00:00Z",
+  //     status: "on_going",
+  //     start_bid_amount: 800,
+  //     timeRemaining: {
+  //       finished: false,
+  //       hrs: 72,
+  //       mins: 0,
+  //       secs: 0,
+  //     },
+  //   },
+  //   {
+  //     id: "rel3",
+  //     artwork: {
+  //       id: "art3",
+  //       title: "Urban Lights",
+  //       artist: "Lara Cruz",
+  //       artist_id: "artist3",
+  //       category: "Cityscape",
+  //       artistAvatar: "https://randomuser.me/api/portraits/women/33.jpg",
+  //       description: "City lights glowing at night.",
+  //       image_url: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
+  //       likes_count: 200,
+  //       medium: "Photography",
+  //       price: 7000,
+  //       profile_picture: "https://randomuser.me/api/portraits/women/33.jpg",
+  //       size: "20x30",
+  //       visibility: "public",
+  //       created_at: "2025-03-01T00:00:00Z",
+  //       updated_at: "2025-03-05T00:00:00Z",
+  //     },
+  //     highest_bid: {
+  //       bidderFullName: "Alice Johnson",
+  //       amount: 3200,
+  //       timestamp: "2025-05-20T16:45:00Z",
+  //       identity_type: "anonymous",
+  //     },
+  //     bid_history: [],
+  //     end_time: "2025-06-04T20:00:00Z",
+  //     start_time: "2025-05-10T09:00:00Z",
+  //     status: "on_going",
+  //     start_bid_amount: 1500,
+  //     timeRemaining: {
+  //       finished: false,
+  //       hrs: 96,
+  //       mins: 15,
+  //       secs: 0,
+  //     },
+  //   },
+  //   {
+  //     id: "rel4",
+  //     artwork: {
+  //       id: "art4",
+  //       title: "Morning Dew",
+  //       artist: "Carlos Mendez",
+  //       artist_id: "artist4",
+  //       category: "Nature",
+  //       artistAvatar: "https://randomuser.me/api/portraits/men/45.jpg",
+  //       description: "Fresh morning dew on leaves.",
+  //       image_url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=400&q=80",
+  //       likes_count: 150,
+  //       medium: "Watercolor",
+  //       price: 4500,
+  //       profile_picture: "https://randomuser.me/api/portraits/men/45.jpg",
+  //       size: "18x24",
+  //       visibility: "public",
+  //       created_at: "2025-04-01T00:00:00Z",
+  //       updated_at: "2025-04-05T00:00:00Z",
+  //     },
+  //     highest_bid: {
+  //       bidderFullName: "Mark Lee",
+  //       amount: 2700,
+  //       timestamp: "2025-05-22T13:20:00Z",
+  //       identity_type: "fullName",
+  //     },
+  //     bid_history: [],
+  //     end_time: "2025-06-05T15:00:00Z",
+  //     start_time: "2025-05-12T08:00:00Z",
+  //     status: "on_going",
+  //     start_bid_amount: 1200,
+  //     timeRemaining: {
+  //       finished: false,
+  //       hrs: 80,
+  //       mins: 0,
+  //       secs: 0,
+  //     },
+  //   },
+  // ];
+
+  // useEffect(() => {
+  //   if (!id) return;
+
+  //   const viewedKey = `viewed_bid_${id}`;
+  //   const alreadyViewed = localStorage.getItem(viewedKey);
+
+  //   if (!alreadyViewed) {
+  //     fetch(`/api/bids/${id}/view`, { method: "POST" })
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         if (data.views !== undefined) setViews(data.views);
+  //         localStorage.setItem(viewedKey, "true"); // mark as viewed
+  //       })
+  //       .catch((err) => console.error("Failed to increment views:", err));
+  //   }
+  // }, [id]);
 
   useEffect(() => {
     if (descriptionRef.current) {
@@ -174,9 +363,9 @@ const BidDetails = () => {
     setIsExpanded(false);
   };
 
-  // if (isLoading || !artwork) {
-  //   return <ArtCardSkeleton />;
-  // }
+  if (isLoading || !artwork) {
+    return <ArtCardSkeleton />;
+  }
 
   if (item) {
     const isOwner = currentUserId === item.artwork.artist_id;
@@ -498,11 +687,11 @@ const BidDetails = () => {
                   <div key={art.id} className="min-w-[200px] flex-shrink-0">
                     <BidCard
                       data={art}
-                      onClick={() => {
-                        navigate(`/bid/${art.id}/`, {
-                          state: { item: art },
-                        });
-                      }}
+                      onClick={() =>
+                        navigate(`/bid/${art.id}`, {
+                          state: { artwork: art.artwork },
+                        })
+                      }
                     />
                   </div>
                 ))}
