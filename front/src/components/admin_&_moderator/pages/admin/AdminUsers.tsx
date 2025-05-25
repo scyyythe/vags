@@ -144,7 +144,7 @@ const AdminUsers = () => {
         <div>
           <h1 className="text-md font-bold">User Management</h1>
           <p className="text-[10px] text-muted-foreground">Manage users, roles, and permissions across the platform</p>
-        </div>
+        </div> 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button size="sm" className="text-[9px] rounded-full h-7">
@@ -214,9 +214,6 @@ const AdminUsers = () => {
                             </SelectItem>
                             <SelectItem value="moderator" className="text-[10px]">
                               Moderator
-                            </SelectItem>
-                            <SelectItem value="user" className="text-[10px]">
-                              User
                             </SelectItem>
                           </SelectContent>
                         </Select>

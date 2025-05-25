@@ -68,6 +68,10 @@ import RoleProtectedRoute from "@/components/admin_&_moderator/auth/RoleProtecte
 
 import ProtectedRoute from "./auth/ProtectedRoute";
 
+//Exhibit
+import Gallery3D from "./components/gallery/Gallery3D";
+
+
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
 
@@ -107,6 +111,9 @@ const App = () => {
                         <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
                         <Route path="/fingerprint-register" element={<FingerprintRegister />} />
                         <Route path="/hero" element={<Hero />} />
+
+                        {/* Gallery */}
+                        <Route path="/gallery-3d" element={<Gallery3D />} />
 
                         {/* Bid */}
                         <Route path="/bid-winner/:id" element={<BidWinnerPage />} />
