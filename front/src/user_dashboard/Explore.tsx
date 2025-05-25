@@ -14,6 +14,7 @@ import { useSearchParams } from "react-router-dom";
 import TrendingFollowingSection from "@/components/user_dashboard/Explore/navigation/trend_following/TrendingSection";
 import FollowingSection from "@/components/user_dashboard/Explore/navigation/trend_following/FollowingSection";
 import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
+import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 const Explore = () => {
   const navigate = useNavigate();
   const categories = ["All", "Trending", "Following"];
@@ -25,7 +26,8 @@ const Explore = () => {
   const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all", "public");
   const { data: popularArtworks } = useFetchPopularArtworks(5);
   const artworkIds = artworks?.map((a) => a.id) || [];
-  const { data: bulkStatus, isLoading: statusLoading } = useBulkArtworkStatus(artworkIds);
+  const { data: bulkStatus } = useBulkArtworkStatus(artworkIds);
+  const { data: reportStatus } = useBulkReportStatus(artworkIds);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
@@ -34,10 +36,12 @@ const Explore = () => {
   const bulkStatusLookup = React.useMemo(() => {
     if (!bulkStatus) return {};
     return bulkStatus.reduce((acc, item) => {
-      acc[item.artwork_id] = item;
+      acc[String(item.artwork_id)] = item;
       return acc;
-    }, {});
+    }, {} as Record<string, (typeof bulkStatus)[0]>);
   }, [bulkStatus]);
+
+  const reportStatusLookup = reportStatus || {};
 
   const filteredArtworksMemo = useMemo(() => {
     return artworks?.filter((artwork) => {
@@ -117,22 +121,17 @@ const Explore = () => {
                   </div>
                 ) : (
                   filteredArtworksMemo?.map((card) => {
-                    const status = bulkStatusLookup[card.id];
+                    const status = bulkStatusLookup[String(card.id)];
+                    const report = reportStatusLookup[String(card.id)];
 
                     return (
                       <ArtCard
                         key={card.id}
-                        id={card.id}
-                        artistName={card.artistName}
-                        artistId={card.artistId}
-                        artistImage={card.artistImage}
-                        artworkImage={card.artworkImage}
-                        title={card.title}
+                        artwork={card}
+                        status={status}
+                        report={report}
                         onButtonClick={handleTipJar}
                         isExplore={true}
-                        likesCount={card.likesCount}
-                        isLikedFromBulk={status ? status.isLiked : false}
-                        isSavedFromBulk={status ? status.isSaved : false}
                       />
                     );
                   })

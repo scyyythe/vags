@@ -19,39 +19,45 @@ import useUnArchivedArtwork from "@/hooks/mutate/visibility/arc/useUnarchivedArt
 import useRestoreArtwork from "@/hooks/mutate/visibility/trash/useRestoreArtwork";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import useReportStatus from "@/hooks/mutate/report/useReportStatus";
+import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 export interface ArtCardProps {
-  id: string;
-  artistId: string;
-  artistName: string;
-  artistImage: string;
-  artworkImage: string;
-  title?: string;
+  artwork: Artwork;
   isExplore?: boolean;
-  likesCount: number;
   isDeleted?: boolean;
   isArchived?: boolean;
   visibility?: string;
   onButtonClick?: () => void;
   isLikedFromBulk?: boolean;
   isSavedFromBulk?: boolean;
+  isReportedFromBulk?: boolean;
+  reportStatusFromBulk?: "Pending" | "In Progress" | "Resolved" | null;
+
+  status?: {
+    isLiked?: boolean;
+    isSaved?: boolean;
+  };
+  report?: {
+    reported?: boolean;
+    status?: "Pending" | "In Progress" | "Resolved" | null;
+  };
 }
 
 const ArtCard = ({
-  id,
-  artistId,
-  artistName,
-  artistImage,
-  artworkImage,
-  title,
+  artwork,
   isExplore = false,
-  likesCount = 0,
   isDeleted = false,
   isArchived = false,
   visibility = "public",
   onButtonClick,
   isLikedFromBulk,
   isSavedFromBulk,
+  isReportedFromBulk,
+  reportStatusFromBulk,
+  status = { isLiked: false, isSaved: false },
+  report,
 }: ArtCardProps) => {
+  const { id, artistId, artistName, artistImage, artworkImage, title, likesCount = 0 } = artwork;
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
@@ -63,7 +69,7 @@ const ArtCard = ({
   const { isLoading: detailsLoading } = useFetchArtworkById(id);
 
   const [isDeletedLocally, setIsDeletedLocally] = useState(false);
-  const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useReportStatus(id);
+
   const { mutate: hideArtwork } = useHideArtwork();
   const { mutate: unarchiveArtwork } = useUnArchivedArtwork();
   const { mutate: restore } = useRestoreArtwork();
@@ -96,11 +102,12 @@ const ArtCard = ({
   };
 
   const handleReport = (issueDetails: string) => {
-    if (reportStatusData?.reported) {
+    if (isReportedFromBulk) {
       toast.error("You have already reported this artwork.");
       setMenuOpen(false);
       return;
     }
+
     submitReport({ id, issue_details: issueDetails });
     setMenuOpen(false);
   };
@@ -153,8 +160,8 @@ const ArtCard = ({
               onFavorite={handleFavorite}
               onHide={handleHide}
               onReport={handleReport}
-              isFavorite={isFavorite}
-              isReported={reportStatusData?.reported || false}
+              isFavorite={status.isSaved}
+              isReported={isReportedFromBulk}
             />
           ) : isDeleted ? (
             <DeletedMenu
@@ -193,15 +200,26 @@ const ArtCard = ({
           )}
         </div>
       </div>
-      <Link to={`/artwork/${id}`} className="w-full">
+      <Link
+        to={`/artwork/${artwork.id}`}
+        state={{
+          artwork,
+          isLikedFromBulk: status?.isLiked,
+          isSavedFromBulk: status?.isSaved,
+          isReportedFromBulk: report?.reported,
+          reportStatusFromBulk: report?.status,
+        }}
+        className="w-full"
+      >
         <div className="aspect-square overflow-hidden py-2 px-1">
           <img
-            src={artworkImage}
-            alt={`Artwork by ${artistName}`}
+            src={artwork.artworkImage}
+            alt={`Artwork by ${artwork.artistName}`}
             className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
           />
         </div>
       </Link>
+
       <div className="px-1 py-1">
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium">
@@ -212,14 +230,14 @@ const ArtCard = ({
             <button
               onClick={handleLike}
               className={`p-1 rounded-full transition-colors ${
-                isLiked ? "text-red-600" : "text-gray-400 hover:text-red-600"
+                status.isLiked ? "text-red-600" : "text-gray-400 hover:text-red-600"
               }`}
-              aria-label={isLiked ? "Unlike" : "Like"}
+              aria-label={status.isLiked ? "Unlike" : "Like"}
             >
               <Heart
                 size={15}
-                className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
-                fill={isLiked ? "currentColor" : "none"}
+                className={status.isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
+                fill={status.isLiked ? "currentColor" : "none"}
               />
             </button>
 

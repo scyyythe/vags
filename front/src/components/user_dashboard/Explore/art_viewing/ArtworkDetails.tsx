@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Heart, MoreHorizontal, GripVertical, Reply } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,14 +17,13 @@ import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkD
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { useLocation } from "react-router-dom";
+import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
+import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
 
-  const { isLikedFromBulk = undefined, isSavedFromBulk = undefined } = location.state || {};
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
-  const isLiked = typeof isLikedFromBulk === "boolean" ? isLikedFromBulk : likedArtworks[id] ?? false;
-  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id, isSavedFromBulk ?? false);
 
   const { openPopup } = useDonation();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -53,8 +52,25 @@ const ArtworkDetails = () => {
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({});
 
   const [currentPage] = useState(1);
-  const { data: artwork, isLoading } = useFetchArtworkById(id);
+
   const { data: related, error } = useArtworks(currentPage, undefined, true, "all", "public");
+
+  const { data: bulkStatus, isLoading: statusLoading } = useBulkArtworkStatus([id]);
+  const { data: report_status } = useBulkReportStatus([id]);
+  const { artwork, isLikedFromBulk, isSavedFromBulk, isReportedFromBulk, reportStatusFromBulk } = location.state || {};
+
+  const isLiked = typeof isLikedFromBulk === "boolean" ? isLikedFromBulk : likedArtworks[id] ?? false;
+  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id, isSavedFromBulk ?? false);
+
+  const bulkStatusLookup = React.useMemo(() => {
+    if (!bulkStatus) return {};
+    return bulkStatus.reduce((acc, item) => {
+      acc[item.artwork_id] = item;
+      return acc;
+    }, {});
+  }, [bulkStatus]);
+  const reportStatusLookup = report_status || {};
+
   useEffect(() => {
     if (!artwork || !descriptionRef.current) return;
 
@@ -160,28 +176,28 @@ const ArtworkDetails = () => {
     setShowEmojiPicker(false);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white">
-        <Header />
-        <div className="container mx-auto pt-24 px-4">
-          <div className="animate-pulse">
-            <div className="h-8 w-40 bg-gray-200 rounded mb-8"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              <div className="lg:col-span-7">
-                <div className="h-96 bg-gray-200 rounded"></div>
-              </div>
-              <div className="lg:col-span-5">
-                <div className="h-12 bg-gray-200 rounded mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded mb-6 w-1/3"></div>
-                <div className="h-24 bg-gray-200 rounded mb-8"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-white">
+  //       <Header />
+  //       <div className="container mx-auto pt-24 px-4">
+  //         <div className="animate-pulse">
+  //           <div className="h-8 w-40 bg-gray-200 rounded mb-8"></div>
+  //           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+  //             <div className="lg:col-span-7">
+  //               <div className="h-96 bg-gray-200 rounded"></div>
+  //             </div>
+  //             <div className="lg:col-span-5">
+  //               <div className="h-12 bg-gray-200 rounded mb-4"></div>
+  //               <div className="h-4 bg-gray-200 rounded mb-6 w-1/3"></div>
+  //               <div className="h-24 bg-gray-200 rounded mb-8"></div>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (!id) {
     return (
@@ -416,7 +432,7 @@ const ArtworkDetails = () => {
                   <div className="inline-block transform scale-[1.10] -mb-6 relative">
                     <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                       <img
-                        src={artwork.image_url}
+                        src={artwork.artworkImage}
                         alt={artwork.title}
                         className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                       />
@@ -466,9 +482,9 @@ const ArtworkDetails = () => {
                           className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
                           fill={isLiked ? "currentColor" : "none"}
                         />
-                        {(likeCounts[id || ""] ?? artwork.likes_count ?? 0) > 0 && (
+                        {(likeCounts[id || ""] ?? artwork.likesCount ?? 0) > 0 && (
                           <span className={`${isMobile ? "text-[10px]" : "text-xs"}`}>
-                            {likeCounts[id || ""] ?? artwork.likes_count}
+                            {likeCounts[id || ""] ?? artwork.likesCount}
                           </span>
                         )}
                       </button>
@@ -485,7 +501,7 @@ const ArtworkDetails = () => {
                         onHide={handleHide}
                         onReport={handleReport}
                         isFavorite={isFavorite}
-                        isReported={isReported}
+                        isReported={isReportedFromBulk}
                         className={isMobile ? "mobile-menu-position" : ""}
                       />
                     </div>
@@ -548,20 +564,20 @@ const ArtworkDetails = () => {
                 <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Artworks</h2>
                 {filteredRelated && filteredRelated.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                    {filteredRelated.map((card) => (
-                      <ArtCard
-                        key={card.id}
-                        id={card.id}
-                        artistName={card.artistName}
-                        artistId={card.artistId}
-                        artistImage={card.artistImage}
-                        artworkImage={card.artworkImage}
-                        title={card.title}
-                        onButtonClick={handleTipJar}
-                        isExplore={true}
-                        likesCount={card.likesCount}
-                      />
-                    ))}
+                    {filteredRelated.map((card) => {
+                      const status = bulkStatusLookup[card.id];
+                      const report = reportStatusLookup[card.id];
+                      return (
+                        <ArtCard
+                          key={card.id}
+                          artwork={card}
+                          status={status}
+                          report={report}
+                          onButtonClick={handleTipJar}
+                          isExplore={true}
+                        />
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="flex flex-col justify-center items-center h-32 w-full">
