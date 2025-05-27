@@ -74,7 +74,7 @@ class AuctionReportCreateView(generics.ListCreateAPIView):
         return AuctionReport.objects.filter(user=ObjectId(self.request.user.id))
 
     def perform_create(self, serializer):
-        # Save the report instance
+       
         report = serializer.save()
 
         auction = report.auction
@@ -102,6 +102,7 @@ class AuctionReportCreateView(generics.ListCreateAPIView):
             action="A report about your auction has been submitted and is under review.",
             date=now,
         ).save()
+        
 class ReportDeleteView(generics.DestroyAPIView):
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]
@@ -133,7 +134,35 @@ class ReportStatus(APIView):
                 {"error": "Failed to fetch report status."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-            
+class BulkReportStatus(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        ids = request.query_params.get("ids", "")
+        id_list = [id.strip() for id in ids.split(",") if id.strip()]
+        if not id_list:
+            return Response({"error": "No artwork IDs provided"}, status=400)
+
+        try:
+            object_ids = [ObjectId(id) for id in id_list]
+            user_obj_id = ObjectId(request.user.id)
+
+            reports = Report.objects.filter(user=user_obj_id, art__in=object_ids)
+
+            reported_ids = set(str(report.art.id) for report in reports)
+
+            result = {
+                str(art_id): {
+                    "reported": str(art_id) in reported_ids,
+                    "status": None  
+                }
+                for art_id in object_ids
+            }
+
+            return Response(result, status=200)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)  
+             
 class AuctionReportStatus(APIView):
     permission_classes = [IsAuthenticated]
 

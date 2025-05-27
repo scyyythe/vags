@@ -12,6 +12,8 @@ interface ArtCardMenuProps {
   isReported: boolean;
   isHidden?: boolean;
   className?: string;
+  isReportedFromBulk?: boolean;
+  reportStatusFromBulk?: "Pending" | "In Progress" | "Resolved" | null;
 }
 
 const YELLOW = "#ffc107";
@@ -26,6 +28,8 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   isFavorite = false,
   isReported = false,
   isHidden = false,
+  isReportedFromBulk,
+  reportStatusFromBulk,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);

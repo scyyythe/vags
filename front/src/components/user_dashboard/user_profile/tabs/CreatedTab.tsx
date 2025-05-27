@@ -4,16 +4,31 @@ import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
+import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
+import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
-  filterVisibility?: string; // e.g. "hidden", "deleted", "archived"
+  filterVisibility?: string;
 };
 
 const CreatedTab = ({ filteredArtworks, isLoading, filterVisibility }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
+  const artworkIds = useMemo(() => filteredArtworks.map((art) => art.id), [filteredArtworks]);
 
-  // Filter artworks based on visibility if filterVisibility is given
+  const { data: bulkStatus, isLoading: statusLoading } = useBulkArtworkStatus(artworkIds);
+  const { data: reportStatus } = useBulkReportStatus(artworkIds);
+
+  const bulkStatusLookup = React.useMemo(() => {
+    if (!bulkStatus) return {};
+    return bulkStatus.reduce((acc, item) => {
+      acc[item.artwork_id] = item;
+      return acc;
+    }, {});
+  }, [bulkStatus]);
+
+  const reportStatusLookup = reportStatus || {};
+
   const allArtworks = useMemo(() => {
     if (!filterVisibility) return filteredArtworks;
     return filteredArtworks.filter((art) => art.visibility?.toLowerCase() === filterVisibility.toLowerCase());
@@ -41,22 +56,21 @@ const CreatedTab = ({ filteredArtworks, isLoading, filterVisibility }: CreatedTa
           const isExplore = String(art.artistId) !== String(loggedInUserId);
           const isDeleted = art.visibility?.toLowerCase() === "deleted";
           const isArchived = art.visibility?.toLowerCase() === "archived";
-
+          const status = bulkStatusLookup[art.id];
+          const report = reportStatusLookup[art.id];
           return (
             <ArtCard
               key={art.id}
-              id={art.id}
-              artistName={art.artistName}
-              artistId={art.artistId}
-              artistImage={art.artistImage || ""}
-              artworkImage={art.artworkImage}
-              title={art.title}
+              artwork={art}
+              status={status}
+              report={report}
               onButtonClick={() => handleButtonClick(art.id)}
               isExplore={isExplore}
-              likesCount={art.likesCount ?? 0}
               isDeleted={isDeleted}
               isArchived={isArchived}
               visibility={art.visibility}
+              isLikedFromBulk={status ? status.isLiked : false}
+              isSavedFromBulk={status ? status.isSaved : false}
             />
           );
         })

@@ -67,8 +67,9 @@ const BidDetails = () => {
   const [isHidden, setIsHidden] = useState(false);
   const [isReported, setIsReported] = useState(false);
   const artworkId = item?.artwork?.id ?? null;
-  const { isLiked } = useArtworkStatus(artworkId);
-
+  const artworkIds = artworks?.map((a) => a.id) || [];
+  const { data } = useArtworkStatus(artworkIds);
+  const isLiked = data?.isLiked;
   const { data: bids = [], error } = useBidHistory(artworkId);
 
   //LIST OF BIDS SECTION

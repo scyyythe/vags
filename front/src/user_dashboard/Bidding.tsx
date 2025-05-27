@@ -6,7 +6,7 @@ import CategoryFilter from "@/components/user_dashboard/Explore/navigation/Categ
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import useAuctions from "@/hooks/auction/useAuction";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -37,15 +37,10 @@ const Bidding = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const currentPage = 1;
-  const { data: data, error } = useAuctions(currentPage);
+
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
-
-  useEffect(() => {
-    console.log("Fetched data:", data);
-    console.log("Error:", error);
-  }, [data, error]);
 
   useEffect(() => {
     const fetchedArtworks: StaticArtwork[] = [
@@ -168,4 +163,4 @@ const Bidding = () => {
   );
 };
 
-export default Bidding;
+export default memo(Bidding);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Heart, MoreHorizontal, GripVertical, Reply } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,14 +13,18 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
 import useFavorite from "@/hooks/interactions/useFavorite";
-import useArtworkDetails from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
+import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
+import { useLocation } from "react-router-dom";
+import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
+import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
-  const isLiked = likedArtworks[id] || false;
-  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
+
   const { openPopup } = useDonation();
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobile = useIsMobile();
@@ -48,14 +52,31 @@ const ArtworkDetails = () => {
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({});
 
   const [currentPage] = useState(1);
-  const { data: artwork, isLoading } = useArtworkDetails(id);
+
   const { data: related, error } = useArtworks(currentPage, undefined, true, "all", "public");
+
+  const { data: bulkStatus, isLoading: statusLoading } = useBulkArtworkStatus([id]);
+  const { data: report_status } = useBulkReportStatus([id]);
+  const { artwork, isLikedFromBulk, isSavedFromBulk, isReportedFromBulk, reportStatusFromBulk } = location.state || {};
+
+  const isLiked = typeof isLikedFromBulk === "boolean" ? isLikedFromBulk : likedArtworks[id] ?? false;
+  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id, isSavedFromBulk ?? false);
+
+  const bulkStatusLookup = React.useMemo(() => {
+    if (!bulkStatus) return {};
+    return bulkStatus.reduce((acc, item) => {
+      acc[item.artwork_id] = item;
+      return acc;
+    }, {});
+  }, [bulkStatus]);
+  const reportStatusLookup = report_status || {};
+
   useEffect(() => {
-    if (descriptionRef.current) {
-      const isOver = descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight;
-      setIsOverflowing(isOver);
-    }
-  }, [artwork.description]);
+    if (!artwork || !descriptionRef.current) return;
+
+    const isOver = descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight;
+    setIsOverflowing(isOver);
+  }, [artwork]);
 
   const handleLike = () => {
     if (id) {
@@ -113,7 +134,7 @@ const ArtworkDetails = () => {
       id,
       title: artwork.title || "Untitled Artwork",
       artistName: artwork.artist || "Unknown Artist",
-      artworkImage: artwork.image || "",
+      artworkImage: artwork.artworkImage || "",
       artistId: artwork.artistId,
     });
   };
@@ -155,28 +176,28 @@ const ArtworkDetails = () => {
     setShowEmojiPicker(false);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white">
-        <Header />
-        <div className="container mx-auto pt-24 px-4">
-          <div className="animate-pulse">
-            <div className="h-8 w-40 bg-gray-200 rounded mb-8"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              <div className="lg:col-span-7">
-                <div className="h-96 bg-gray-200 rounded"></div>
-              </div>
-              <div className="lg:col-span-5">
-                <div className="h-12 bg-gray-200 rounded mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded mb-6 w-1/3"></div>
-                <div className="h-24 bg-gray-200 rounded mb-8"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-white">
+  //       <Header />
+  //       <div className="container mx-auto pt-24 px-4">
+  //         <div className="animate-pulse">
+  //           <div className="h-8 w-40 bg-gray-200 rounded mb-8"></div>
+  //           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+  //             <div className="lg:col-span-7">
+  //               <div className="h-96 bg-gray-200 rounded"></div>
+  //             </div>
+  //             <div className="lg:col-span-5">
+  //               <div className="h-12 bg-gray-200 rounded mb-4"></div>
+  //               <div className="h-4 bg-gray-200 rounded mb-6 w-1/3"></div>
+  //               <div className="h-24 bg-gray-200 rounded mb-8"></div>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (!id) {
     return (
@@ -411,7 +432,7 @@ const ArtworkDetails = () => {
                   <div className="inline-block transform scale-[1.10] -mb-6 relative">
                     <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                       <img
-                        src={artwork.image}
+                        src={artwork.artworkImage}
                         alt={artwork.title}
                         className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                       />
@@ -461,9 +482,9 @@ const ArtworkDetails = () => {
                           className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
                           fill={isLiked ? "currentColor" : "none"}
                         />
-                        {(likeCounts[id || ""] ?? artwork.likes ?? 0) > 0 && (
+                        {(likeCounts[id || ""] ?? artwork.likesCount ?? 0) > 0 && (
                           <span className={`${isMobile ? "text-[10px]" : "text-xs"}`}>
-                            {likeCounts[id || ""] ?? artwork.likes}
+                            {likeCounts[id || ""] ?? artwork.likesCount}
                           </span>
                         )}
                       </button>
@@ -480,7 +501,7 @@ const ArtworkDetails = () => {
                         onHide={handleHide}
                         onReport={handleReport}
                         isFavorite={isFavorite}
-                        isReported={isReported}
+                        isReported={isReportedFromBulk}
                         className={isMobile ? "mobile-menu-position" : ""}
                       />
                     </div>
@@ -532,13 +553,9 @@ const ArtworkDetails = () => {
 
         {/* Related Artworks Section */}
         {(() => {
-          related?.forEach((card) => console.log(`Artwork ID: ${card.id}, Style: "${card.style}"`));
-
           const filteredRelated = related?.filter(
-            (card) => card.id !== id && card.style?.trim().toLowerCase() === artwork?.style?.trim().toLowerCase()
+            (card) => card.id !== id && card.category?.trim().toLowerCase() === artwork?.category?.trim().toLowerCase()
           );
-
-          console.log("Filtered related artworks:", filteredRelated);
 
           return (
             related &&
@@ -547,20 +564,20 @@ const ArtworkDetails = () => {
                 <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Artworks</h2>
                 {filteredRelated && filteredRelated.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                    {filteredRelated.map((card) => (
-                      <ArtCard
-                        key={card.id}
-                        id={card.id}
-                        artistName={card.artistName}
-                        artistId={card.artistId}
-                        artistImage={card.artistImage}
-                        artworkImage={card.artworkImage}
-                        title={card.title}
-                        onButtonClick={handleTipJar}
-                        isExplore={true}
-                        likesCount={card.likesCount}
-                      />
-                    ))}
+                    {filteredRelated.map((card) => {
+                      const status = bulkStatusLookup[card.id];
+                      const report = reportStatusLookup[card.id];
+                      return (
+                        <ArtCard
+                          key={card.id}
+                          artwork={card}
+                          status={status}
+                          report={report}
+                          onButtonClick={handleTipJar}
+                          isExplore={true}
+                        />
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="flex flex-col justify-center items-center h-32 w-full">
@@ -583,7 +600,11 @@ const ArtworkDetails = () => {
             </button>
 
             <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
-              <img src={artwork.image} alt="Expanded artwork" className="max-h-[80vh] max-w-[90vw] object-contain" />
+              <img
+                src={artwork.artworkImage}
+                alt="Expanded artwork"
+                className="max-h-[80vh] max-w-[90vw] object-contain"
+              />
             </div>
           </div>
         )}
