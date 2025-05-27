@@ -148,10 +148,10 @@ const Header = () => {
             <i className='bx bx-wallet-alt text-[16px]'></i>
           </button>
 
-          {/* Profile Avatar + Chevron (always visible) */}
+          {/* Profile Avatar + Chevron */}
           <div className="relative flex items-center" ref={avatarRef}>
             <Link to={`/userprofile/${userId}`}>
-              <div className="h-8 w-8 rounded-full overflow-hidden border cursor-pointer flex items-center justify-center bg-gray-300">
+              <div className="h-7 w-7 rounded-full overflow-hidden border cursor-pointer flex items-center justify-center bg-gray-300">
                 {profilePicture ? (
                   <img src={profilePicture} alt="Avatar" className="h-full w-full object-cover" />
                 ) : (
