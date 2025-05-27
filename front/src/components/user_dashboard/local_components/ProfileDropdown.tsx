@@ -40,7 +40,7 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
       {/* Top profile section */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div className="flex items-center gap-3">
-          <Avatar className="w-10 h-10 rounded-full">
+          <Avatar className="w-7 h-7 rounded-full">
             <AvatarImage src={profilePicture} alt={fullName} />
             <AvatarFallback>{fullName?.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
