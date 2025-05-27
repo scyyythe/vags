@@ -52,7 +52,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
         </div>
       </div>
     );
-  }
+  };
 
   const handleHide = () => {
     setIsHidden(true);
@@ -83,58 +83,69 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
     <>
       <div
         onClick={onClick}
-        className="w-full rounded-xl border hover:shadow-lg transition-all duration-300 cursor-pointer"
+        className="w-full rounded-2xl overflow-hidden shadow-lg bg-white hover:shadow-xl transition-all duration-300 cursor-pointer"
       >
         <div className="relative">
-          <img src={data.artwork.image_url} alt={data.artwork.title} className="w-full h-36 object-cover rounded-xl" />
-          <CountdownTimer targetTime={data.end_time} />
-        </div>
-        <div className="px-6 py-5 flex flex-col gap-2">
-          <div className="flex justify-between">
-            <h2 className="text-sm font-semibold">{data.artwork.title}</h2>
-            <div className="relative text-gray-500" style={{ height: "24px" }} onClick={(e) => e.stopPropagation()}>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMenuOpen((prev) => !prev);
-                }}
-                className="p-1 rounded-full text-black"
-              >
-                <MoreHorizontal size={14} />
-              </button>
-              <BidMenu isOpen={menuOpen} onHide={handleHide} onReport={handleReport} isReported={isReported} />
-            </div>
+          <img 
+            src={data.artwork.image_url} 
+            alt={data.artwork.title} 
+            className="w-full h-56 object-cover" 
+          />
+          
+          {/* Countdown Timer */}
+          <div className="absolute top-1 left-28 whitespace-nowrap">
+            <CountdownTimer targetTime={data.end_time} />
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="text-gray-500 text-[10px]">
-              {hasWon ? "Your Bid" : "Current Bid"}
-              <span className="text-sm font-bold text-black ml-2">
-                {data.highest_bid?.amount
-                  ? data.highest_bid.amount >= 1000
-                    ? `${(data.highest_bid.amount / 1000).toFixed(data.highest_bid.amount % 1000 === 0 ? 0 : 1)}k`
-                    : data.highest_bid.amount
-                  : "0"}
-              </span>
-            </div>
-
+          {/* Three dots menu */}
+          <div className="absolute top-4 right-3" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                if (hasWon) {
-                  navigate(`/bid-winner/${data.id}`);
-                } else {
-                  setShowBidPopup(true);
-                }
+                setMenuOpen((prev) => !prev);
               }}
-              className="bg-red-800 hover:bg-red-700 text-white text-[9px] px-6 py-2 rounded-full whitespace-nowrap"
+              className="relative top-1.5 right-1 p-1 rounded-full text-black bg-white bg-opacity-60 hover:bg-opacity-40"
             >
-              {hasWon ? "Complete Purchase" : "Place A Bid"}
+              <MoreHorizontal size={13} />
             </button>
+            <BidMenu isOpen={menuOpen} onHide={handleHide} onReport={handleReport} isReported={isReported} />
+          </div>
+
+          {/* Bottom overlay with title, current bid and button */}
+          <div className="absolute bottom-3 left-3 right-3">
+            <div className="bg-white bg-opacity-60 backdrop-blur-[3px] h-[69px] px-6 flex items-center justify-between rounded-lg">
+              <div className="flex flex-col justify-center">
+                <h2 className="text-sm font-semibold mb-1">{data.artwork.title}</h2>
+                  <div className="text-gray-700 text-[9px]">
+                    {hasWon ? "Your Bid" : "Current Bid"}{" "}
+                    <span className="text-black text-sm font-bold ml-2">
+                      {data.highest_bid?.amount
+                        ? data.highest_bid.amount >= 1000
+                          ? `${(data.highest_bid.amount / 1000).toFixed(data.highest_bid.amount % 1000 === 0 ? 0 : 1)}k`
+                          : data.highest_bid.amount
+                        : "0"}
+                    </span>
+                  </div>
+              </div>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (hasWon) {
+                    navigate(`/bid-winner/${data.id}`);
+                  } else {
+                    setShowBidPopup(true);
+                  }
+                }}
+                className="bg-red-800 hover:bg-red-700 text-white text-[9px] px-5 py-1.5 rounded-full font-normal transition-colors"
+              >
+                {hasWon ? "Claim" : "Place A Bid"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
+      
       <BidPopup
         isOpen={showBidPopup}
         onClose={() => setShowBidPopup(false)}
