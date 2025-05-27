@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
@@ -13,6 +13,8 @@ import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { useSearchParams } from "react-router-dom";
 import TrendingFollowingSection from "@/components/user_dashboard/Explore/navigation/trend_following/TrendingSection";
 import FollowingSection from "@/components/user_dashboard/Explore/navigation/trend_following/FollowingSection";
+import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
+import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 const Explore = () => {
   const navigate = useNavigate();
   const categories = ["All", "Trending", "Following"];
@@ -23,10 +25,23 @@ const Explore = () => {
   const [currentPage] = useState(1);
   const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all", "public");
   const { data: popularArtworks } = useFetchPopularArtworks(5);
+  const artworkIds = artworks?.map((a) => a.id) || [];
+  const { data: bulkStatus } = useBulkArtworkStatus(artworkIds);
+  const { data: reportStatus } = useBulkReportStatus(artworkIds);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
+
+  const bulkStatusLookup = React.useMemo(() => {
+    if (!bulkStatus) return {};
+    return bulkStatus.reduce((acc, item) => {
+      acc[String(item.artwork_id)] = item;
+      return acc;
+    }, {} as Record<string, (typeof bulkStatus)[0]>);
+  }, [bulkStatus]);
+
+  const reportStatusLookup = reportStatus || {};
 
   const filteredArtworksMemo = useMemo(() => {
     return artworks?.filter((artwork) => {
@@ -105,20 +120,21 @@ const Explore = () => {
                     <p className="text-sm text-gray-500">No artworks found.</p>
                   </div>
                 ) : (
-                  filteredArtworksMemo.map((card) => (
-                    <ArtCard
-                      key={card.id}
-                      id={card.id}
-                      artistName={card.artistName}
-                      artistId={card.artistId}
-                      artistImage={card.artistImage}
-                      artworkImage={card.artworkImage}
-                      title={card.title}
-                      onButtonClick={handleTipJar}
-                      isExplore={true}
-                      likesCount={card.likesCount}
-                    />
-                  ))
+                  filteredArtworksMemo?.map((card) => {
+                    const status = bulkStatusLookup[String(card.id)];
+                    const report = reportStatusLookup[String(card.id)];
+
+                    return (
+                      <ArtCard
+                        key={card.id}
+                        artwork={card}
+                        status={status}
+                        report={report}
+                        onButtonClick={handleTipJar}
+                        isExplore={true}
+                      />
+                    );
+                  })
                 )}
               </div>
             </div>

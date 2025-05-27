@@ -15,6 +15,7 @@ interface BidPopupProps {
   username?: string;
   fullName?: string;
   start_bid_amount: number;
+  onBidSuccess?: () => void;
 }
 
 const BidPopup: React.FC<BidPopupProps> = ({
@@ -25,6 +26,7 @@ const BidPopup: React.FC<BidPopupProps> = ({
   username = "@AnonymousArtFan",
   fullName = "Anonymous User",
   start_bid_amount,
+  onBidSuccess,
 }) => {
   const [bidAmount, setBidAmount] = useState<string>("");
   const [showIdentityPopup, setShowIdentityPopup] = useState(false);
@@ -71,6 +73,7 @@ const BidPopup: React.FC<BidPopupProps> = ({
             setShowIdentityPopup(false);
             setBidAmount("");
             onClose();
+            if (onBidSuccess) onBidSuccess();
           },
         }
       );

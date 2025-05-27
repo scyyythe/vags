@@ -4,6 +4,9 @@ import { toast } from "sonner";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 
 const updateArtwork = async ({ id, formData }: { id: string; formData: FormData }): Promise<Artwork> => {
+  for (const pair of formData.entries()) {
+    console.log(`${pair[0]}:`, pair[1]);
+  }
   const response = await apiClient.patch(`/art/${id}/update/`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
