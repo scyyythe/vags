@@ -15,7 +15,7 @@ const CountdownTimer = ({ targetTime }: { targetTime: string | Date }) => {
   }, [timeRemaining.finished, targetTime]);
 
   return (
-    <div className="absolute top-4 right-4 font-semibold bg-white bg-opacity-60 text-black text-[9px] px-3 py-1 rounded-[3px]">
+    <div className="absolute top-4 right-4 font-semibold bg-white bg-opacity-60 text-black text-[9px] px-3 py-1 rounded-[5px]">
       {timeRemaining.finished ? (
         "Time’s up"
       ) : (
