@@ -83,7 +83,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
     <>
       <div
         onClick={onClick}
-        className="w-full rounded-xl border bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
+        className="w-full rounded-xl border hover:shadow-lg transition-all duration-300 cursor-pointer"
       >
         <div className="relative">
           <img src={data.artwork.image_url} alt={data.artwork.title} className="w-full h-36 object-cover rounded-xl" />
@@ -98,7 +98,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
                   e.stopPropagation();
                   setMenuOpen((prev) => !prev);
                 }}
-                className="p-1 rounded-full text-black bg-white bg-opacity-60"
+                className="p-1 rounded-full text-black"
               >
                 <MoreHorizontal size={14} />
               </button>
