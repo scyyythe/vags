@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getLoggedInUserId } from "@/auth/decode";
+import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFollowUser } from "@/hooks/follow/useFollowUser";
 import { useUnfollowUser } from "@/hooks/follow/useUnfollowUser";
@@ -34,6 +35,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
   const unfollowMutation = useUnfollowUser();
   const { id } = useParams<{ id: string }>();
   const { data: followCounts, error } = useFollowCounts(id || "");
+  const [showReportOptions, setShowReportOptions] = useState(false);
 
   if (error) {
     console.error("Error fetching follow counts:", error.message);
@@ -89,6 +91,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
       </button>
     );
   }
+
+  const handleReportSubmit = async (category: string, reason?: string) => {
+    console.log("Reporting user ID:", profileUserId);
+    console.log("Category:", category);
+    console.log("Reason:", reason);
+    setShowReportOptions(false);
+  };
 
   return (
     <div className="w-full px-4">
@@ -159,10 +168,15 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
                 forceMount
               >
                 <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
-                  Report
+                  Block User
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
-                  Block
+                <DropdownMenuItem  
+                onClick={() => {
+                  setShowReportOptions(true);
+                  setOptionsOpen(false);
+                }} 
+                className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
+                  Report
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -171,6 +185,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
           <EditProfile />
         )}
       </div>
+      <ReportOptionsPopup
+        isOpen={showReportOptions}
+        onClose={() => setShowReportOptions(false)}
+        onSubmit={handleReportSubmit}
+      />
     </div>
   );
 };
