@@ -144,14 +144,28 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
   };
   const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString);
-    return date.toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMinutes = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / (3600000 * 24));
+
+    if (diffDays >= 1) {
+      return date.toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+    } else if (diffHours >= 1) {
+      return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+    } else if (diffMinutes >= 1) {
+      return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
+    } else {
+      return "Just now";
+    }
   };
 
   return (
@@ -179,9 +193,20 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
       <ScrollArea className="h-[480px] px-4 py-2">
         <div className="space-y-4 pr-2">
           {displayedNotifications.map((n) => (
-            <div key={n.id} className="flex items-start gap-3">
-              {n.avatar ? (
-                <img src={n.user.profile_picture} alt={n.name} className="w-6 h-6 rounded-full object-cover" />
+            <div
+              key={n.id}
+              className={cn("flex items-start gap-3 cursor-pointer", {
+                "hover:bg-gray-100 p-2 rounded-md transition": n.link,
+              })}
+              onClick={() => {
+                if (n.link) {
+                  navigate(n.link);
+                  onClose();
+                }
+              }}
+            >
+              {n.actor && n.actor.profile_picture ? (
+                <img src={n.actor.profile_picture} alt={n.name} className="w-6 h-6 rounded-full object-cover" />
               ) : n.icon === "crypto" ? (
                 <div className="w-6 h-6 bg-muted rounded-full flex items-center justify-center text-sm font-medium">
                   ⬤
@@ -223,7 +248,7 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
                     <span className="font-medium text-green-600"> {n.donation} </span>
                   </>
                 )}
-                <div className="text-[10px] text-muted-foreground mt-1">{formatDateTime(n.date)}</div>
+                <div className="text-[10px] text-muted-foreground mt-1">{formatDateTime(n.created_at)}</div>
               </div>
             </div>
           ))}
