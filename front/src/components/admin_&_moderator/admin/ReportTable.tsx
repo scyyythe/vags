@@ -136,7 +136,7 @@ export function ReportTable({
           </SelectContent>
         </Select>
         
-        <Select
+        <Select 
           value={typeFilter}
           onValueChange={(value) => setTypeFilter(value as Report["reportType"] | "all")}
         >
