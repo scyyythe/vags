@@ -52,7 +52,7 @@ const BidDetails = () => {
   const [showBidPopup, setShowBidPopup] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const location = useLocation();
-  const { artwork } = location.state;
+  const artwork = location.state?.artwork || item?.artwork;
 
   const { artworks } = useArtworkContext();
   const [isExpanded, setIsExpanded] = useState(false);
