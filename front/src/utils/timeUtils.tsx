@@ -2,7 +2,7 @@ export const calculateTimeRemaining = (targetTime: string | Date) => {
   const now = new Date().getTime();
   const distance = new Date(targetTime).getTime() - now;
 
-  const hrs = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const hrs = Math.floor(distance / (1000 * 60 * 60));
   const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
   const secs = Math.floor((distance % (1000 * 60)) / 1000);
 
@@ -11,5 +11,6 @@ export const calculateTimeRemaining = (targetTime: string | Date) => {
     mins: mins >= 0 ? mins : 0,
     secs: secs >= 0 ? secs : 0,
     finished: distance <= 0,
+    totalMs: distance,
   };
 };

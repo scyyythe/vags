@@ -84,8 +84,13 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
 
     const durationMs = endDateTime.getTime() - startDateTime.getTime();
     const durationDays = durationMs / (1000 * 60 * 60 * 24);
+    const maxDurationMs = 3 * 24 * 60 * 60 * 1000;
+    if (durationMs > maxDurationMs) {
+      toast.error("Auction duration cannot exceed 3 days");
+      return;
+    }
 
-    if (durationDays > 3) {
+    if (durationDays > maxDurationMs) {
       toast.error("Auction duration cannot exceed 3 days");
       // toast({
       //   title: "Invalid auction duration",
