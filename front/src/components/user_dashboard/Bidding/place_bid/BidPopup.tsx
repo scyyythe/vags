@@ -130,7 +130,6 @@ const BidPopup: React.FC<BidPopupProps> = ({
         onClose={() => setShowIdentityPopup(false)}
         onConfirm={handleIdentityConfirm}
         username={username}
-        fullName={fullName}
       />
     </div>
   );
