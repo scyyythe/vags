@@ -88,9 +88,31 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
         <div className="relative">
           <img src={data.artwork.image_url} alt={data.artwork.title} className="w-full h-56 object-cover" />
 
-          {/* Countdown Timer */}
-          <div className="absolute top-1 left-28 whitespace-nowrap">
-            <CountdownTimer startTime={data.start_time} targetTime={data.end_time} />
+          {/* Auction Timer Display */}
+          <div className="absolute top-0.5 left-4">
+            {new Date() < new Date(data.start_time) ? (
+              <div className="absolute top-3.5 left-0 whitespace-nowrap">
+                {/* Incoming auction timer only */}
+                <div className="text-gray-600 text-left bg-white bg-opacity-60 text-[9px] px-3 py-1 rounded-[5px]">
+                  <p className="text-[9px]">Auction will start on</p>
+                  <p className="text-[10px] font-semibold text-black mt-0.5">
+                    {new Date(data.start_time).toLocaleString("en-PH", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="absolute top-1 left-24 whitespace-nowrap">
+                {/* Active auction countdown */}
+                <CountdownTimer startTime={data.start_time} targetTime={data.end_time} />
+              </div>
+            )}
           </div>
 
           {/* Three dots menu */}
@@ -111,7 +133,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
           <div className="absolute bottom-3 left-3 right-3">
             <div className="bg-white bg-opacity-60 backdrop-blur-[3px] h-[69px] px-6 flex items-center justify-between rounded-lg">
               <div className="flex flex-col justify-center">
-                <h2 className="text-sm font-semibold">{data.artwork.title}</h2>
+                <h2 className="text-xs font-semibold">{data.artwork.title}</h2>
                 <div className="text-gray-700 text-[9px]">
                   {hasWon ? "Your Bid" : "Current Bid"}{" "}
                   <span className="text-black text-sm font-bold ml-2">
