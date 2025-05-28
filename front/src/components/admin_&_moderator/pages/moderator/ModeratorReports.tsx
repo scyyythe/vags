@@ -264,8 +264,8 @@ const ModeratorReports = () => {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle className="text-sm">Investigate Report</DialogTitle>
-            <DialogDescription className="text-xs">
+            <DialogTitle className="text-xs">Investigate Report</DialogTitle>
+            <DialogDescription className="text-[11px]">
               Review the report details and begin investigation
             </DialogDescription>
           </DialogHeader>
@@ -274,51 +274,51 @@ const ModeratorReports = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <h3 className="text-xs font-medium">Report Type</h3>
-                  <p className="text-2xs">
+                  <h3 className="text-[10px] font-medium">Report Type</h3>
+                  <p className="text-xs">
                     {selectedReport.reportType.charAt(0).toUpperCase() + selectedReport.reportType.slice(1)}
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-xs font-medium">Date Reported</h3>
-                  <p className="text-2xs">{selectedReport.dateReported}</p>
+                  <h3 className="text-[10px] font-medium">Date Reported</h3>
+                  <p className="text-xs">{selectedReport.dateReported}</p>
                 </div>
                 <div>
-                  <h3 className="text-xs font-medium">Reported Content</h3>
-                  <p className="text-2xs capitalize">{selectedReport.reportedType}</p>
-                  <p className="text-2xs text-muted-foreground">
+                  <h3 className="text-[10px] font-medium">Reported Content</h3>
+                  <p className="text-xs capitalize">{selectedReport.reportedType}</p>
+                  <p className="text-xs text-muted-foreground">
                     ID: {selectedReport.reportedId}
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-xs font-medium">Reported By</h3>
-                  <p className="text-2xs">{selectedReport.reportedBy}</p>
+                  <h3 className="text-[10px] font-medium">Reported By</h3>
+                  <p className="text-xs">{selectedReport.reportedBy}</p>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-xs font-medium">Description</h3>
-                <p className="text-2xs border p-2 rounded-md mt-1 bg-gray-50">
+                <h3 className="text-[10px] font-medium">Description</h3>
+                <p className="text-xs border p-2 rounded-md mt-1 bg-gray-50">
                   {selectedReport.description}
                 </p>
               </div>
 
               <div className="flex justify-between items-center">
-                <p className="text-2xs text-muted-foreground">
+                <p className="text-[10px] text-muted-foreground">
                   Taking this action will change the report status to "Investigating"
                 </p>
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
                     size="sm"
-                    className="text-xs"
+                    className="text-[10px] rounded-full h-8"
                     onClick={() => setDialogOpen(false)}
                   >
                     Cancel
                   </Button>
                   <Button
                     size="sm"
-                    className="text-xs"
+                    className="text-[10px] rounded-full h-8"
                     onClick={confirmInvestigation}
                   >
                     Begin Investigation
