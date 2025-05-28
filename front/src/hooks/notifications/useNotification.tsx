@@ -42,7 +42,7 @@ interface Notification {
   donation?: string;
   date: string;
   artworkTitle?: string;
-  artworkMessage?: string;
+  message?: string;
 }
 
 const useNotifications = () => {

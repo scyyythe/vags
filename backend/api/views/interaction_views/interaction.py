@@ -79,7 +79,7 @@ class LikeCreateView(APIView):
         like = Like.objects.filter(user=user, art=art).first()
 
         if like:
-            like.delete()  # Unlike
+            like.delete()  
             like_count = Like.objects.filter(art=art).count()
             return Response({
                 "is_liked": False,
@@ -98,7 +98,7 @@ class LikeCreateView(APIView):
             Notification.objects.create(
                 user=art.artist, 
                 actor=user,      
-                message=f"{user.first_name} liked your artwork '{art.title}'",
+                message=f" liked your artwork '{art.title}'",
                 art=art,
                 name=f"{user.first_name} {user.last_name}",
                 action="liked your artwork",
