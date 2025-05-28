@@ -409,7 +409,7 @@ const BidDetails = () => {
                       ref={descriptionRef}
                       className={`
                       text-[9px] text-gray-700 transition-all duration-300 ease-in-out mb-2
-                      ${showFullDescription ? "max-h-9 overflow-y-auto pr-1" : "max-h-9 overflow-hidden"}
+                      ${showFullDescription ? "max-h-9 overflow-y-auto pr-1" : "max-h-9 overflow-y-auto pr-1 overflow-hidden"}
                     `}
                       style={{ lineHeight: "1.25rem" }}
                     >
@@ -449,10 +449,10 @@ const BidDetails = () => {
                   </div>
 
                   {/* Bids Section */}
-                  <div className="mt-5 h-32 overflow-y-auto">
+                  <div className="mt-5 h-[123px] overflow-y-auto">
                     <h2 className="font-semibold text-[10px]">Bids</h2>
                     <div className="w-6 h-[2px] bg-black mb-3 rounded" />
-                    <div className="max-h-20 overflow-y-auto pr-2 flex flex-col gap-1">
+                    <div className="max-h-28 overflow-y-auto pr-2 flex flex-col gap-1">
                       {bids.length > 0 ? (
                         bids.map((bid: any) => {
                           const isAnonymous = bid.identity_type === "anonymous";
