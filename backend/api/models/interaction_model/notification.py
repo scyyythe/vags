@@ -7,6 +7,8 @@ from api.models.artwork_model.bid import Auction
 class Notification(Document):
     # Existing fields
     user = ReferenceField(User, required=True)
+    actor = ReferenceField(User) 
+
     message = StringField(required=False)
     art = ReferenceField(Art, required=False)
     auction = ReferenceField(Auction, required=False)

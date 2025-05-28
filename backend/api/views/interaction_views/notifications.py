@@ -6,13 +6,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+
+
 class NotificationListView(generics.ListCreateAPIView):
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        return Notification.objects.filter(user=user).order_by('-created_at')
+        user_id = str(self.request.user.id)  # Convert ObjectId to string if necessary
+        return Notification.objects.filter(user=user_id).order_by('-created_at')
+
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
