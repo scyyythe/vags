@@ -9,6 +9,7 @@ import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork
 interface ArtCardMenuProps {
   isOpen: boolean;
   artworkId: string;
+  artworkTitle?: string;
   onRequestBid: (id: string) => void;
   onSell: () => void;
   onEdit: (id: string) => void;
@@ -25,6 +26,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   onEdit,
   onToggleVisibility,
   onArchive,
+  artworkTitle,
   isPublic = true,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -200,7 +202,12 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         onConfirm={handleConfirmDelete}
       />
       {/* Auction Popup */}
-      <AuctionPopup open={showAuctionPopup} onOpenChange={setShowAuctionPopup} artworkId={artworkId} />
+      <AuctionPopup
+        open={showAuctionPopup}
+        onOpenChange={setShowAuctionPopup}
+        artworkId={artworkId}
+        artworkTitle={artworkTitle}
+      />
     </>
   );
 };

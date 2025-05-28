@@ -14,9 +14,10 @@ interface AuctionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   artworkId: string;
+  artworkTitle: string;
 }
 
-const RequestBid = ({ open, artworkId, onOpenChange }: AuctionDialogProps) => {
+const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDialogProps) => {
   const today = new Date();
   const createAuction = useCreateAuction();
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const RequestBid = ({ open, artworkId, onOpenChange }: AuctionDialogProps) => {
 
   const handlePublish = () => {
     if (!startDate) {
-      toast.error("Please select a start date for the auction");
+      // toast.error("Please select a start date for the auction");
       // toast({
       //   title: "Missing start date",
       //   description: "Please select a start date for the auction",
@@ -83,8 +84,13 @@ const RequestBid = ({ open, artworkId, onOpenChange }: AuctionDialogProps) => {
 
     const durationMs = endDateTime.getTime() - startDateTime.getTime();
     const durationDays = durationMs / (1000 * 60 * 60 * 24);
+    const maxDurationMs = 3 * 24 * 60 * 60 * 1000;
+    if (durationMs > maxDurationMs) {
+      toast.error("Auction duration cannot exceed 3 days");
+      return;
+    }
 
-    if (durationDays > 3) {
+    if (durationDays > maxDurationMs) {
       toast.error("Auction duration cannot exceed 3 days");
       // toast({
       //   title: "Invalid auction duration",
@@ -147,7 +153,7 @@ const RequestBid = ({ open, artworkId, onOpenChange }: AuctionDialogProps) => {
             <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
               <X className="h-4 w-4" />
             </DialogClose>
-            <DialogTitle className="text-lg font-bold text-left">“The Distorted Face”</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-left">{artworkTitle}</DialogTitle>
           </DialogHeader>
 
           {/* <div className="flex justify-center mb-4 text-xs">
