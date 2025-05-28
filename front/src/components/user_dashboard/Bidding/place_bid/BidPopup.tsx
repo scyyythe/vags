@@ -22,6 +22,7 @@ const BidPopup: React.FC<BidPopupProps> = ({
   isOpen,
   onClose,
   artworkId,
+  data,
   artworkTitle,
   username = "@AnonymousArtFan",
   fullName = "Anonymous User",
@@ -42,6 +43,22 @@ const BidPopup: React.FC<BidPopupProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const start = new Date(data.start_time);
+    const now = new Date();
+
+    if (now < start) {
+      const formattedStart = start.toLocaleString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+      toast.error(`Auction hasn't started yet. It will start on ${formattedStart}`);
+      return;
+    }
+
     const bid = parseInt(bidAmount);
 
     if (isNaN(bid)) {
