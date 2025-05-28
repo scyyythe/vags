@@ -23,6 +23,7 @@ class AuctionStatus(Enum):
     CLOSED = "closed"
     NO_BIDDER = "no_bidder"
     RE_AUCTIONED="reauctioned"
+    
 class Auction(Document):
     artwork = ReferenceField(Art, required=True)
     start_bid_amount = FloatField(required=True, min_value=0.1)
