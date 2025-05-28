@@ -54,7 +54,7 @@ export function ReportTable({
   onDismissReport,
   onEscalateReport,
 }: ReportTableProps) {
-  const [reports, setReports] = useState<Report[]>(initialReports);
+  const reports = initialReports;
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<Report["status"] | "all">("all");
   const [typeFilter, setTypeFilter] = useState<Report["reportType"] | "all">("all");
@@ -165,6 +165,10 @@ export function ReportTable({
               <TableHead className="text-xs text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
+        </Table>
+
+        <div className="max-h-[400px] overflow-y-auto">
+        <Table>
           <TableBody>
             {filteredReports.length > 0 ? (
               filteredReports.map((report) => (
@@ -234,21 +238,10 @@ export function ReportTable({
             )}
           </TableBody>
         </Table>
+        </div>
       </div>
       
       <div className="flex justify-between">
-        {/* <Button 
-          variant="outline" 
-          size="sm" 
-          className="text-xs"
-          onClick={() => {
-            setSearchQuery("");
-            setStatusFilter("all");
-            setTypeFilter("all");
-          }}
-        >
-          Clear Filters
-        </Button> */}
         <Button 
           variant="outline" 
           size="sm" 
