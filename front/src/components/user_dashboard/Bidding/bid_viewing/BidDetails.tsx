@@ -344,12 +344,14 @@ const BidDetails = () => {
               {/* Right side - Title, artist, description*/}
               <div
                 className={`${isMobile ? "w-full mt-2 px-4" : "w-full max-w-[390px] -mt-2"}`}
-                style={{
-                  transition: "transform 0.5s cubic-bezier(.4,0,.2,1)",
-                  transform: !isMobile && isDetailOpen ? "translateX(30px)" : "translateX(0)",
-                }}
               >
-                <div className={`${isMobile ? "" : "relative left-10"}`}>
+                <div
+                  className={`transition-all duration-500 ease-in-out ${isMobile ? "" : isDetailOpen ? "relative" : "relative"}`}
+                  style={{
+                    left: !isMobile && isDetailOpen ? "68px" : "40px", 
+                    transition: "left 0.5s cubic-bezier(.4,0,.2,1)",
+                  }}
+                >
                   <div className="flex justify-between items-start">
                     <div className="flex items-center space-x-4">
                       <button
@@ -424,8 +426,6 @@ const BidDetails = () => {
                     )}
                   </div>
 
-                  {/* <Separator className="my-2" /> */}
-
                   <div className="w-full border px-10 py-4 rounded-xl flex justify-between items-center text-center mt-4">
                     {/* Highest Bid */}
                     <div className="flex-1">
@@ -449,7 +449,7 @@ const BidDetails = () => {
                   </div>
 
                   {/* Bids Section */}
-                  <div className="mt-5">
+                  <div className="mt-5 h-32 overflow-y-auto">
                     <h2 className="font-semibold text-[10px]">Bids</h2>
                     <div className="w-6 h-[2px] bg-black mb-3 rounded" />
                     <div className="max-h-20 overflow-y-auto pr-2 flex flex-col gap-1">
@@ -539,15 +539,6 @@ const BidDetails = () => {
               artworkId={item.artwork.id}
               artworkTitle={item.artwork.title || "Artwork"}
               start_bid_amount={item.start_bid_amount}
-            />
-          )}
-
-          {/* Report Options Popup */}
-          {showReportOptions && (
-            <ReportOptionsPopup
-              isOpen={showReportOptions}
-              onClose={() => setShowReportOptions(false)}
-              onSubmit={handleReportSubmit}
             />
           )}
 
