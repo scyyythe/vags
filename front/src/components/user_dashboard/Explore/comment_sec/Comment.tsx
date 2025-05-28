@@ -7,6 +7,7 @@ import data from '@emoji-mart/data';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 
 interface Comment {
   id: string;
@@ -34,6 +35,14 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   const [commentMenus, setCommentMenus] = useState<{ [commentId: string]: boolean }>({});
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({});
   const [showAllComments, setShowAllComments] = useState(false);
+  const [showReportOptions, setShowReportOptions] = useState(false);
+  const [optionsOpen, setOptionsOpen] = useState(false);
+  
+  const handleReportSubmit = async (category: string, reason?: string) => {
+    console.log("Category:", category);
+    console.log("Reason:", reason);
+    setShowReportOptions(false);
+  };
 
   useEffect(() => {
     setComments([]);
@@ -236,9 +245,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                         isMobile ? "text-[8px]" : "text-[8px] "
                       } hover:bg-gray-100 hover:text-black`}
                       onClick={() => {
+                        setShowReportOptions(true);
+                        setOptionsOpen(false);
                         toast.success("Content reported");
                         toggleCommentMenu(comment.id);
-                      }}
+                      }} 
                     >
                       Report
                     </button>
@@ -380,6 +391,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
           </div>
         </div>
       </form>
+      <ReportOptionsPopup
+        isOpen={showReportOptions}
+        onClose={() => setShowReportOptions(false)}
+        onSubmit={handleReportSubmit}
+      />
     </div>
   );
 };

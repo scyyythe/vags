@@ -19,6 +19,7 @@ import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { useLocation } from "react-router-dom";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
+
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -176,35 +177,12 @@ const ArtworkDetails = () => {
     setShowEmojiPicker(false);
   };
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="min-h-screen bg-white">
-  //       <Header />
-  //       <div className="container mx-auto pt-24 px-4">
-  //         <div className="animate-pulse">
-  //           <div className="h-8 w-40 bg-gray-200 rounded mb-8"></div>
-  //           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-  //             <div className="lg:col-span-7">
-  //               <div className="h-96 bg-gray-200 rounded"></div>
-  //             </div>
-  //             <div className="lg:col-span-5">
-  //               <div className="h-12 bg-gray-200 rounded mb-4"></div>
-  //               <div className="h-4 bg-gray-200 rounded mb-6 w-1/3"></div>
-  //               <div className="h-24 bg-gray-200 rounded mb-8"></div>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   if (!id) {
     return (
       <div className="min-h-screen bg-white">
         <Header />
         <div className="container mx-auto pt-24 px-4 text-center">
-          <h2 className="text-lg font-bold mb-4">Artwork Not Found</h2>
+          <h2 className="text-sm font-bold mb-4">Artwork Not Found</h2>
           <p className="mb-8 text-xs">The artwork you're looking for doesn't exist or has been removed.</p>
           <Link to="/explore" className="text-red-600 text-xs hover:underline">
             Return to Home
