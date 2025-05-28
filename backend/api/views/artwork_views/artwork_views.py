@@ -47,7 +47,7 @@ class ArtBulkListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        valid_statuses = ["Active", "onBid"]
+        valid_statuses = ["Active"]
         return Art.objects.filter(
             visibility__iexact="public",
             art_status__in=valid_statuses
