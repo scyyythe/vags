@@ -88,20 +88,27 @@ class LikeCreateView(APIView):
             }, status=status.HTTP_200_OK)
 
         else:
-            now = datetime.now()
-            time_elapsed = timesince(now) 
+            
             Like.objects.create(user=user, art=art)
+            
+            host = request.get_host()  
+            protocol = 'http' if 'localhost' in host else 'https'
+            link = f"/artwork/{str(art.id)}"
+
             Notification.objects.create(
-                user=art.artist,  
+                user=art.artist, 
+                actor=user,      
                 message=f"{user.first_name} liked your artwork '{art.title}'",
                 art=art,
-                name=f"{user.first_name} {user.last_name}", 
+                name=f"{user.first_name} {user.last_name}",
                 action="liked your artwork",
-                target=art.title,  
-                icon="like", 
-                time=time_elapsed,  #
-                date=datetime.now(), 
+                target=art.title,
+                icon="like",
+                created_at=datetime.now(),
+                link=link
             )
+
+            
             like_count = Like.objects.filter(art=art).count()
             return Response({
                 "is_liked": True,
@@ -174,17 +181,6 @@ class SavedCreateView(APIView):
             saved = Saved.objects.create(user=user, art=art) 
             artist = art.artist
             message = f"{user.first_name} saved your artwork '{art.title}'"
-            # Notification.objects.create(
-            #     user=art.artist,  
-            #     message=f"{user.first_name} saved your artwork '{art.title}'",
-            #     art=art, 
-            #     name=f"{user.first_name} {user.last_name}", 
-            #     action="saved your artwork", 
-            #     target=art.title,  
-            #     icon="save",  
-            #     time=time_elapsed,  
-            #     date=datetime.now(),  
-            # )
             return Response(SavedSerializer(saved).data, status=status.HTTP_201_CREATED)
 class SavedArtworksListView(APIView):
     permission_classes = [IsAuthenticated]
