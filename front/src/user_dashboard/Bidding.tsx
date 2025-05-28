@@ -36,6 +36,8 @@ const Bidding = () => {
   const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
 
+  const [showIncoming, setShowIncoming] = useState(false);
+
   const currentPage = 1;
 
   const handleCategorySelect = (category) => {
@@ -102,14 +104,19 @@ const Bidding = () => {
   }, []);
 
   const { data: biddingArtworks = [], isLoading, isError } = useFetchBiddingArtworks();
+
   const filteredArtworks = useMemo(() => {
-    if (!searchQuery) return biddingArtworks;
+    const now = new Date();
+    if (!searchQuery) return biddingArtworks.filter((a) => new Date(a.start_time) <= now);
+
     return biddingArtworks.filter(
       (artwork) =>
-        artwork.artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        artwork.artwork.artist.toLowerCase().includes(searchQuery.toLowerCase())
+        new Date(artwork.start_time) <= now &&
+        (artwork.artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          artwork.artwork.artist.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   }, [biddingArtworks, searchQuery]);
+
   const handlePlaceBid = (id: string) => {
     console.log(`Placing bid for artwork ID: ${id}`);
   };
@@ -120,6 +127,12 @@ const Bidding = () => {
       state: { artwork },
     });
   };
+
+  const upcomingArtworks = useMemo(() => {
+    const now = new Date();
+    return biddingArtworks.filter((artwork) => new Date(artwork.start_time) > now);
+  }, [biddingArtworks]);
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -132,6 +145,15 @@ const Bidding = () => {
           <div className="flex items-center justify-between -ml-7 mb-6 w-[114%] md:w-[105%] lg:w-[105%] pl-2 sm:pl-0">
             <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
             <div className="flex space-x-2 text-xs">
+              {/* Incoming Auctions */}
+              <button
+                onClick={() => setShowIncoming((prev) => !prev)}
+                className={`px-3 rounded-full border border-gray-300 transition-all text-[10px] 
+                  ${showIncoming ? "shadow-md font-medium" : "bg-white"}`}
+              >
+                Upcoming
+              </button>
+
               <div className="relative">
                 <ArtCategorySelect
                   selectedCategory={selectedCategory}
@@ -149,13 +171,35 @@ const Bidding = () => {
             </div>
           )}
           {isError && <p className="text-center text-red-500 py-10">Failed to fetch bidding artworks.</p>}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredArtworks.map((artwork) => (
-              <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
-                <BidCard data={artwork} onPlaceBid={handlePlaceBid} />
-              </div>
-            ))}
-          </div>
+
+          {/* ACTIVE AUCTIONS */}
+          {!showIncoming && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {filteredArtworks.map((artwork) => (
+                <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
+                  <BidCard data={artwork} onPlaceBid={handlePlaceBid} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* UPCOMING AUCTIONS SECTION */}
+          {showIncoming && (
+            <div>
+              {upcomingArtworks.length === 0 ? (
+                <p className="text-gray-500 text-sm px-2">No upcoming auctions found.</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {upcomingArtworks.map((artwork) => (
+                    <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
+                      <BidCard data={artwork} onPlaceBid={handlePlaceBid} />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
       </div>
       <Footer />
