@@ -83,7 +83,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
     <>
       <div
         onClick={onClick}
-        className="w-full rounded-2xl overflow-hidden shadow-lg bg-white hover:shadow-xl transition-all duration-300 cursor-pointer"
+        className="w-full rounded-xl overflow-hidden bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
       >
         <div className="relative">
           <img src={data.artwork.image_url} alt={data.artwork.title} className="w-full h-56 object-cover" />
