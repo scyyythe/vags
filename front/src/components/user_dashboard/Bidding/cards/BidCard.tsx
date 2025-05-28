@@ -52,7 +52,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
         </div>
       </div>
     );
-  };
+  }
 
   const handleHide = () => {
     setIsHidden(true);
@@ -86,15 +86,11 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
         className="w-full rounded-2xl overflow-hidden shadow-lg bg-white hover:shadow-xl transition-all duration-300 cursor-pointer"
       >
         <div className="relative">
-          <img 
-            src={data.artwork.image_url} 
-            alt={data.artwork.title} 
-            className="w-full h-56 object-cover" 
-          />
-          
+          <img src={data.artwork.image_url} alt={data.artwork.title} className="w-full h-56 object-cover" />
+
           {/* Countdown Timer */}
           <div className="absolute top-1 left-28 whitespace-nowrap">
-            <CountdownTimer targetTime={data.end_time} />
+            <CountdownTimer startTime={data.start_time} targetTime={data.end_time} />
           </div>
 
           {/* Three dots menu */}
@@ -116,16 +112,16 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
             <div className="bg-white bg-opacity-60 backdrop-blur-[3px] h-[69px] px-6 flex items-center justify-between rounded-lg">
               <div className="flex flex-col justify-center">
                 <h2 className="text-sm font-semibold">{data.artwork.title}</h2>
-                  <div className="text-gray-700 text-[9px]">
-                    {hasWon ? "Your Bid" : "Current Bid"}{" "}
-                    <span className="text-black text-sm font-bold ml-2">
-                      {data.highest_bid?.amount
-                        ? data.highest_bid.amount >= 1000
-                          ? `${(data.highest_bid.amount / 1000).toFixed(data.highest_bid.amount % 1000 === 0 ? 0 : 1)}k`
-                          : data.highest_bid.amount
-                        : "0"}
-                    </span>
-                  </div>
+                <div className="text-gray-700 text-[9px]">
+                  {hasWon ? "Your Bid" : "Current Bid"}{" "}
+                  <span className="text-black text-sm font-bold ml-2">
+                    {data.highest_bid?.amount
+                      ? data.highest_bid.amount >= 1000
+                        ? `${(data.highest_bid.amount / 1000).toFixed(data.highest_bid.amount % 1000 === 0 ? 0 : 1)}k`
+                        : data.highest_bid.amount
+                      : "0"}
+                  </span>
+                </div>
               </div>
 
               <button
@@ -145,7 +141,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
           </div>
         </div>
       </div>
-      
+
       <BidPopup
         isOpen={showBidPopup}
         onClose={() => setShowBidPopup(false)}

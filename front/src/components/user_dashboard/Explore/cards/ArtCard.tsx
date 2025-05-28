@@ -190,6 +190,7 @@ const ArtCard = ({
             <OwnerMenu
               isOpen={menuOpen}
               artworkId={id}
+              artworkTitle={artwork.title}
               onRequestBid={() => console.log("Request to bid", id)}
               onSell={() => console.log("Sell artwork", id)}
               onEdit={() => console.log("Edit artwork", id)}
