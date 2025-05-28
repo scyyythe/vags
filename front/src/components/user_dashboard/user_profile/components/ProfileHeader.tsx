@@ -96,7 +96,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
     console.log("Reporting user ID:", profileUserId);
     console.log("Category:", category);
     console.log("Reason:", reason);
-    // TODO: Replace with your report submission API
     setShowReportOptions(false);
   };
 
@@ -171,10 +170,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
                 <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
                   Block User
                 </DropdownMenuItem>
-                <DropdownMenuItem  onClick={() => {
+                <DropdownMenuItem  
+                onClick={() => {
                   setShowReportOptions(true);
                   setOptionsOpen(false);
-                }} className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
+                }} 
+                className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
                   Report
                 </DropdownMenuItem>
               </DropdownMenuContent>
