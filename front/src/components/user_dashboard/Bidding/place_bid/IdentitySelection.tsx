@@ -5,7 +5,9 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import UsernameSetupPopup from "./UsernameSetup";
 import UsernameEditPopup from "./UsernameEdit";
-
+import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
+import { getLoggedInUserId } from "@/auth/decode";
+import useUserQuery from "@/hooks/users/useUserQuery";
 type Identity = "anonymous" | "username" | "fullName";
 
 interface IdentitySelectionPopupProps {
@@ -24,26 +26,32 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
   const [selectedIdentity, setSelectedIdentity] = useState<Identity | null>(null);
   const [showUsernameSetup, setShowUsernameSetup] = useState(false);
   const [showUsernameEdit, setShowUsernameEdit] = useState(false);
-  const [currentUsername, setCurrentUsername] = useState(username);
+  const { mutate: updateUser } = useUpdateUserDetails();
+  const id = getLoggedInUserId();
+  const { data: user, refetch } = useUserQuery(id);
+
+  const currentUsername = user?.username ? `@${user.username}` : "";
+  const hasUsername = !!user?.username;
+
   const navigate = useNavigate();
 
   if (!isOpen) return null;
 
+  const handleEditProfile = () => {
+    navigate("/settings/edit-profile");
+    onClose();
+  };
+
   const handleConfirm = () => {
-    if (selectedIdentity === "username" && !currentUsername) {
+    if (selectedIdentity === "username" && !hasUsername) {
       setShowUsernameSetup(true);
       return;
     }
-    
+
     if (selectedIdentity) {
       onConfirm(selectedIdentity);
-      toast.success(`Bid placed with ${selectedIdentity} identity`);
+      // toast.success(`Bid placed with ${selectedIdentity} identity`);
     }
-  };
-
-   const handleEditProfile = () => {
-    navigate("/settings/edit-profile");
-    onClose();
   };
 
   const handleEditUsername = (e: React.MouseEvent) => {
@@ -52,21 +60,39 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
   };
 
   const handleUsernameSet = (newUsername: string) => {
-    setCurrentUsername(`@${newUsername}`);
-    setShowUsernameSetup(false);
-    setSelectedIdentity("username");
+    const formData = new FormData();
+    formData.append("username", newUsername);
+
+    updateUser([id, formData], {
+      onSuccess: () => {
+        refetch();
+        setShowUsernameSetup(false);
+        setSelectedIdentity("username");
+      },
+      onError: () => {
+        toast.error("Could not set username.");
+      },
+    });
   };
 
   const handleUsernameUpdate = (newUsername: string) => {
-    setCurrentUsername(`@${newUsername}`);
-    setShowUsernameEdit(false);
+    const formData = new FormData();
+    formData.append("username", newUsername);
+
+    updateUser([id, formData], {
+      onSuccess: () => {
+        refetch();
+        setShowUsernameEdit(false);
+      },
+      onError: () => {
+        toast.error("Could not update username.");
+      },
+    });
   };
 
   const handleSetUsernameNow = () => {
     setShowUsernameSetup(true);
   };
-
-  const hasUsername = currentUsername !== "";
 
   return (
     <>
@@ -81,20 +107,16 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
             </div>
 
             <p className="text-gray-500 text-[10px] mb-6">
-              {hasUsername
-                ? "Use your username for this bid."
-                : "Set a username to bid."}
+              {hasUsername ? "Use your username for this bid." : "Set a username to bid."}
             </p>
 
-
             <div className="space-y-6 my-11">
-
               {/* Username Option */}
               <div
                 className={`px-4 py-2 border rounded-full cursor-pointer transition-all ${
                   selectedIdentity === "username" ? "border-red-800 bg-red-50" : "border-gray-200 hover:border-red-800"
                 }`}
-                onClick={() => hasUsername ? setSelectedIdentity("username") : setShowUsernameSetup(true)}
+                onClick={() => (hasUsername ? setSelectedIdentity("username") : setShowUsernameSetup(true))}
               >
                 <div className="flex items-start gap-3">
                   <i className="bx bx-user"></i>
@@ -122,20 +144,19 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                   </div>
                 </div>
               </div>
-
             </div>
 
             <div className="text-[8px] text-center -mt-8">
-                <a
-                  href="#"
-                  className="text-red-800 hover:underline"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    toast.info("Privacy information displayed");
-                  }}
-                >
-                  Learn more about bid privacy and security
-                </a>
+              <a
+                href="#"
+                className="text-red-800 hover:underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  toast.info("Privacy information displayed");
+                }}
+              >
+                Learn more about bid privacy and security
+              </a>
             </div>
 
             <div className="flex gap-3 mt-11">
@@ -155,7 +176,6 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                 {selectedIdentity === "username" && !hasUsername ? "Set Username" : "Confirm & Place Bid"}
               </button>
             </div>
-
           </div>
         </div>
       </div>
