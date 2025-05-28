@@ -26,6 +26,8 @@ interface Notification {
   id: number;
   user: User;
   avatar?: string;
+  actor: User;
+  created_at?: string;
   name?: string;
   action: string;
   target?: string;
