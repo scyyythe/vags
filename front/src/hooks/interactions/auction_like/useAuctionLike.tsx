@@ -20,7 +20,7 @@ export const useAuctionLike = (auctionId: string, initialIsLiked: boolean, initi
       setLikeCount(like_count);
       toast(detail || (is_liked ? "You liked this auction." : "You unliked this auction."));
 
-      queryClient.invalidateQueries({ queryKey: ["auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
 
       queryClient.invalidateQueries({ queryKey: ["auction", auctionId] });
     },

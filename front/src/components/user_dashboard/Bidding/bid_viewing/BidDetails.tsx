@@ -22,6 +22,7 @@ import { useBidHistory } from "@/hooks/bid/useBidHistory";
 import { getLoggedInUserId } from "@/auth/decode";
 import useAuctions from "@/hooks/auction/useAuction";
 import { useAuctionLike } from "@/hooks/interactions/auction_like/useAuctionLike";
+import { ItemText } from "@radix-ui/react-select";
 export interface BidCardData {
   id: string;
   title: string;
@@ -45,11 +46,7 @@ const BidDetails = () => {
       console.log("Fetched auction item:", item);
     }
   }, [item]);
-  const { isLiked, likeCount, toggleLike } = useAuctionLike(
-    id!,
-    item?.user_has_liked_auction ?? false,
-    item?.auction_likes_count ?? 0
-  );
+  const { toggleLike } = useAuctionLike(id!, item?.user_has_liked_auction ?? false, item?.auction_likes_count ?? 0);
 
   const [views, setViews] = useState<number>(0);
   const [showBidPopup, setShowBidPopup] = useState(false);
@@ -364,10 +361,12 @@ const BidDetails = () => {
                       >
                         <Heart
                           size={isMobile ? 13 : 13}
-                          className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
-                          fill={isLiked ? "currentColor" : "none"}
+                          className={item.user_has_liked_auction ? "text-red-600 fill-red-600" : "text-gray-800"}
+                          fill={item.user_has_liked_auction ? "currentColor" : "none"}
                         />
-                        {likeCount > 0 && <span className={`${isMobile ? "text-xs" : "text-[9px]"}`}>{likeCount}</span>}
+                        {item.auction_likes_count > 0 && (
+                          <span className={`${isMobile ? "text-xs" : "text-[9px]"}`}>{item.auction_likes_count}</span>
+                        )}
                       </button>
 
                       <div className="flex items-center space-x-2 text-xs">
