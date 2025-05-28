@@ -86,6 +86,18 @@ export const reportCategories: ReportCategory[] = [
     ],
   },
   {
+    id: "Spam",
+    title: "Spam",
+    description: "Report irrelevant or repetitive content",
+    options: [
+      {
+        id: "SpamContent",
+        text: "Spam or misleading promotion",
+        additionalInfo: "Content that appears irrelevant, repetitive, or promotional",
+      },
+    ],
+  },
+  {
     id: "Other",
     title: "Something Else",
     description: "Report any other issues not covered by the categories above",
@@ -126,9 +138,10 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
       Plagiarism: "plagiarism",
       Fake: "fraud",
       Scam: "fraud",
+      SpamContent: "spam",
+      SomethingElse: "other",
     };
 
-    // If user typed a custom reason under 'Something Else'
     if (categoryId === "Other") return "other";
 
     return optionId ? (map[optionId] || "other") : categoryId.toLowerCase();
@@ -152,7 +165,6 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
     }
   };
 
-
   const openConfirmation = () => {
     setShowConfirmation(true);
   };
@@ -163,7 +175,13 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
 
   const handleBack = () => {
     if (showDetails) {
-      setShowDetails(false);
+      if (selectedCategory?.id === "Other") {
+        setShowDetails(false);
+        setSelectedCategory(null); 
+        setCustomReason(""); 
+      } else {
+        setShowDetails(false); 
+      }
     } else if (selectedCategory) {
       setSelectedCategory(null);
     } else {
