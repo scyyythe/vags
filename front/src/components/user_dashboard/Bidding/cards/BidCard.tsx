@@ -83,10 +83,10 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
     <>
       <div
         onClick={onClick}
-        className="w-full rounded-xl overflow-hidden bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
+        className="w-full rounded-xl bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
       >
         <div className="relative">
-          <img src={data.artwork.image_url} alt={data.artwork.title} className="w-full h-56 object-cover" />
+          <img src={data.artwork.image_url} alt={data.artwork.title} className="w-full h-56 object-cover rounded-xl" />
 
           {/* Auction Timer Display */}
           <div className="absolute top-0.5 left-4">
