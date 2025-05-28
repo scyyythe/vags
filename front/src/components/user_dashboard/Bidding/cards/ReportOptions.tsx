@@ -65,6 +65,11 @@ export const reportCategories: ReportCategory[] = [
         text: "Trademark violation",
         additionalInfo: "Content that misuses your registered trademark",
       },
+      {
+        id: "Plagiarism",
+        text: "Plagiarism",
+        additionalInfo: "Content that copies or closely imitates another's work or ideas without proper attribution",
+      },
     ],
   },
   {
@@ -92,6 +97,8 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
   const [selectedOption, setSelectedOption] = useState<ReportOption | null>(null);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+  const [customReason, setCustomReason] = useState<string>("");
+
 
   if (!isOpen) return null;
 
@@ -99,8 +106,7 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
     setSelectedCategory(category);
     setSelectedOption(null);
     if (!category.options || category.options.length === 0) {
-      // Instead of submitting directly, show confirmation
-      setShowConfirmation(true);
+      setShowDetails(true);
     }
   };
 
@@ -109,18 +115,43 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
     setShowDetails(true);
   };
 
+  const normalizeReportType = (optionId: string | undefined, categoryId: string): string => {
+    const map: Record<string, string> = {
+      Nudity: "offensive",
+      Hate: "offensive",
+      Violence: "offensive",
+      Harassment: "offensive",
+      Copyright: "plagiarism",
+      Trademark: "plagiarism",
+      Plagiarism: "plagiarism",
+      Fake: "fraud",
+      Scam: "fraud",
+    };
+
+    // If user typed a custom reason under 'Something Else'
+    if (categoryId === "Other") return "other";
+
+    return optionId ? (map[optionId] || "other") : categoryId.toLowerCase();
+  };
+
   const handleSubmit = async (categoryId: string, optionId?: string) => {
     try {
-      await onSubmit(categoryId, optionId);
+      const finalOptionId =
+        categoryId === "Other" && customReason.trim() ? customReason.trim() : optionId;
+
+      const normalizedType = normalizeReportType(optionId, categoryId);
+      await onSubmit(normalizedType, finalOptionId);
 
       toast.success("Report submitted successfully. Thank you for your feedback.");
       onClose();
+      setCustomReason("");
     } catch (error) {
       toast.error("Failed to submit report. Please try again.");
     } finally {
       setShowConfirmation(false);
     }
   };
+
 
   const openConfirmation = () => {
     setShowConfirmation(true);
@@ -196,12 +227,22 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
                   </button>
                 ))}
                 {!selectedCategory.options && (
-                  <button
-                    onClick={openConfirmation}
-                    className="w-full bg-red-800 hover:bg-red-700 text-white text-[10px] py-2 px-4 rounded-full transition-colors"
-                  >
-                    Submit Report
-                  </button>
+                  <div className="space-y-2">
+                    <textarea
+                      value={customReason}
+                      onChange={(e) => setCustomReason(e.target.value)}
+                      placeholder="Describe the issue..."
+                      className="w-full p-2 text-[10px] border rounded bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-300"
+                      rows={3}
+                    />
+                    <button
+                      onClick={openConfirmation}
+                      disabled={!customReason.trim()}
+                      className="w-full bg-red-800 hover:bg-red-700 text-white text-[10px] py-2 px-4 rounded-full transition-colors disabled:opacity-50"
+                    >
+                      Submit Report
+                    </button>
+                  </div>
                 )}
               </>
             ) : (

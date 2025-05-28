@@ -9,7 +9,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
+  DialogTitle, 
 } from "@/components/ui/dialog";
 
 const mockReports: Report[] = [
