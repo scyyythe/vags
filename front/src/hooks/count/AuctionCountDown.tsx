@@ -39,9 +39,9 @@ const AuctionCountdown = ({ startTime, endTime }: { startTime: string | Date; en
 
   if (hasNotStarted) {
     return (
-      <div className="text-sm text-gray-600">
-        <p>Auction will start on</p>
-        <p className="font-semibold text-black">
+      <div className=" text-gray-600">
+        <p className="text-[10px] relative bottom-2">Auction will start on</p>
+        <p className="text-xs font-semibold text-black mt-1">
           {new Date(startTime).toLocaleString("en-PH", {
             year: "numeric",
             month: "long",
