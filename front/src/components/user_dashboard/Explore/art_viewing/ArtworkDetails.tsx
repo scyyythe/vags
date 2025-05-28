@@ -304,57 +304,58 @@ const ArtworkDetails = () => {
           <div className={` ${isMobile ? "flex flex-col" : "flex justify-center items-start space-x-2 mt-2"}`}>
             {/* Artwork, Right-side Sliding */}
             <div
-              className={`${
-                isMobile ? "w-full" : "flex justify-center items-start transition-transform duration-500 ease-in-out"
+              className={`transition-all duration-500 ease-in-out ${
+                isMobile
+                  ? "w-full"
+                  : `flex justify-center items-start ${isDetailOpen ? "ml-[150px]" : "ml-0"}`
               }`}
-              style={{
-                transform: !isMobile && isDetailOpen ? "translateX(70px)" : "translateX(0)",
-              }}
             >
               {/* Artwork container */}
-              <div className={`relative mr-8 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
+              <div className={`mr-8 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
                 {/* Collapsible Sidebar */}
-                {!isMobile && (
-                  <div
-                    className={`absolute right-100 -top-8 w-[32%] h-[140%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
-                      isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-1"
-                    }`}
-                    style={{ right: "calc(100% + 16px)", marginRight: "40px" }}
-                  >
-                    <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
-                      <div className="mb-6">
-                        <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
-                        <p className="text-[9px] text-gray-700">
-                          {artwork.style
-                            ? artwork.style
-                                .split(" ")
-                                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                                .join(" ")
-                            : "Painting"}
-                        </p>
-                      </div>
-                      <div className="mb-6">
-                        <h3 className="text-[9px] font-medium mb-1">Medium</h3>
-                        <p className="text-[9px] text-gray-700">{artwork.medium || "Acrylic Paint"}</p>
-                      </div>
-                      <div className="mb-6">
-                        <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
-                        <p className="text-[9px] text-gray-700">{artwork.datePosted || "March 25, 2023"}</p>
-                      </div>
-                      <div className="mb-1">
-                        <h3 className="text-[9px] font-medium mb-1">Artwork Size</h3>
-                        <p className="text-[9px] text-gray-700">
-                          {artwork.size
-                            ? artwork.size
-                                .split(" x ")
-                                .map((dim) => `${dim}″`)
-                                .join(" x ")
-                            : "20 x 20″"}
-                        </p>
+                <div className="relative mr-8 w-full max-w-[500px] min-w-[380px]">
+                  {!isMobile && (
+                    <div
+                      className={`absolute top-28 w-[27%] h-[140%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
+                        isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-50"
+                      }`}
+                      style={{ right: 'calc(100% + 50px)' }}
+                    >
+                      <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
+                        <div className="mb-6">
+                          <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
+                          <p className="text-[9px] text-gray-700">
+                            {artwork.style
+                              ? artwork.style
+                                  .split(" ")
+                                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                  .join(" ")
+                              : "Painting"}
+                          </p>
+                        </div>
+                        <div className="mb-6">
+                          <h3 className="text-[9px] font-medium mb-1">Medium</h3>
+                          <p className="text-[9px] text-gray-700">{artwork.medium || "Acrylic Paint"}</p>
+                        </div>
+                        <div className="mb-6">
+                          <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
+                          <p className="text-[9px] text-gray-700">{artwork.datePosted || "March 25, 2023"}</p>
+                        </div>
+                        <div className="mb-1">
+                          <h3 className="text-[9px] font-medium mb-1">Artwork Size</h3>
+                          <p className="text-[9px] text-gray-700">
+                            {artwork.size
+                              ? artwork.size
+                                  .split(" x ")
+                                  .map((dim) => `${dim}″`)
+                                  .join(" x ")
+                              : "20 x 20″"}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
 
                 {/* Mobile Information Panel (Collapsible) */}
                 {isMobile && (
@@ -447,8 +448,8 @@ const ArtworkDetails = () => {
               </div>
 
               {/* Right side - Title, artist, description, comments */}
-              <div className={`${isMobile ? "w-full mt-6 px-4" : "w-[500px] -ml-[70px]"}`}>
-                <div className={`${isMobile ? "" : "relative top-5"}`}>
+              <div className={`${isMobile ? "w-full mt-6 px-4" : "w-[500px] -ml-[80px]"}`}>
+                <div className={`${isMobile ? "" : "relative top-3.5"}`}>
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center space-x-4">
                       <button
@@ -468,8 +469,8 @@ const ArtworkDetails = () => {
                       </button>
                     </div>
 
-                    <div className="relative">
-                      <button className="py-3 pr- text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
+                    <div>
+                      <button className="py-3 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
                         <MoreHorizontal size={isMobile ? 14 : 14} />
                       </button>
 
