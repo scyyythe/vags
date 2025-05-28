@@ -36,6 +36,8 @@ const Bidding = () => {
   const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
 
+  const [showIncoming, setShowIncoming] = useState(false);
+
   const currentPage = 1;
 
   const handleCategorySelect = (category) => {
@@ -132,6 +134,15 @@ const Bidding = () => {
           <div className="flex items-center justify-between -ml-7 mb-6 w-[114%] md:w-[105%] lg:w-[105%] pl-2 sm:pl-0">
             <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
             <div className="flex space-x-2 text-xs">
+              {/* Incoming Auctions */}
+              <button
+                onClick={() => setShowIncoming((prev) => !prev)}
+                className={`px-3 rounded-full border border-gray-300 transition-all text-[10px] 
+                  ${showIncoming ? "shadow-md font-medium" : "bg-white"}`}
+              >
+                Incoming Auctions
+              </button>
+
               <div className="relative">
                 <ArtCategorySelect
                   selectedCategory={selectedCategory}
