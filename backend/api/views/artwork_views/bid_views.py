@@ -382,33 +382,32 @@ class FollowedAuctionsView(APIView):
         page_size = 10
         skip = (page - 1) * page_size
 
-        # Get IDs of users the current user is following
-        followed_users = Follower.objects.filter(follower=user).only('following')
+        followed_users = Follower.objects.filter(follower=user)
         followed_ids = [f.following.id for f in followed_users]
+       
 
         if not followed_ids:
             return Response([], status=status.HTTP_200_OK)
 
-        # Get artworks by followed users
-        artworks = Art.objects(artist__in=followed_ids).only('id')
+        artworks = Art.objects(artist__in=followed_ids)
         artwork_ids = [art.id for art in artworks]
+       
 
-        # Handle expired auctions
         now_utc = datetime.now(timezone.utc)
+
         expired_auctions = Auction.objects(
             artwork__in=artwork_ids,
             status=AuctionStatus.ON_GOING.value,
             end_time__lt=now_utc
         )
-
         for auction in expired_auctions:
             auction.close_auction()
 
-        # Get active auctions
         auctions = Auction.objects(
             artwork__in=artwork_ids,
             status=AuctionStatus.ON_GOING.value
         ).order_by('-created_at')[skip:skip + page_size]
+        print("Ongoing Auction Count:", auctions.count())
 
         serialized = AuctionSerializer(auctions, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
