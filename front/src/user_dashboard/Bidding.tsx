@@ -14,6 +14,7 @@ import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { useSearchParams } from "react-router-dom";
 import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks";
 import useFollowedAuctions from "@/hooks/auction/followed_users/useFollowedBiddings";
+import useBulkBidReportStatus from "@/hooks/mutate/report/useBulkAuctionReport";
 interface StaticArtwork {
   id: string;
   title: string;
@@ -105,6 +106,7 @@ const Bidding = () => {
   }, []);
 
   const { data: biddingArtworks = [], isLoading, isError } = useFetchBiddingArtworks();
+
   const [page, setPage] = useState(1);
   const {
     data: followedAuctions = [],
@@ -144,6 +146,8 @@ const Bidding = () => {
 
     return activeArtworks;
   }, [biddingArtworks, followedAuctions, searchQuery, selectedCategory]);
+  const auctionIds = useMemo(() => filteredArtworks.map((artwork) => artwork.id), [filteredArtworks]);
+  const { data: reportStatusData, isLoading: isReportLoading } = useBulkBidReportStatus(auctionIds);
 
   const handlePlaceBid = (id: string) => {
     console.log(`Placing bid for artwork ID: ${id}`);
@@ -202,11 +206,14 @@ const Bidding = () => {
           {/* ACTIVE AUCTIONS */}
           {!showIncoming && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {filteredArtworks.map((artwork) => (
-                <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
-                  <BidCard data={artwork} onPlaceBid={handlePlaceBid} />
-                </div>
-              ))}
+              {filteredArtworks.map((artwork) => {
+                const reportInfo = reportStatusData?.[artwork.id];
+                return (
+                  <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
+                    <BidCard data={artwork} reportInfo={reportInfo} onPlaceBid={handlePlaceBid} />
+                  </div>
+                );
+              })}
             </div>
           )}
 
@@ -217,11 +224,14 @@ const Bidding = () => {
                 <p className="text-gray-500 text-sm px-2">No upcoming auctions found.</p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {upcomingArtworks.map((artwork) => (
-                    <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
-                      <BidCard data={artwork} onPlaceBid={handlePlaceBid} />
-                    </div>
-                  ))}
+                  {upcomingArtworks.map((artwork) => {
+                    const reportInfo = reportStatusData?.[artwork.id];
+                    return (
+                      <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
+                        <BidCard data={artwork} reportInfo={reportInfo} onPlaceBid={handlePlaceBid} />
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
