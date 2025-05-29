@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from api.models.artwork_model.artwork import Art
+from api.models.artwork_model.bid import Auction
 from api.models.interaction_model.interaction import Comment, Like, CartItem, Saved
 from api.serializers.interaction_s.interaction import CommentSerializer, LikeSerializer, CartItemSerializer,SavedSerializer
 from api.models.interaction_model.notification import Notification
@@ -66,55 +67,97 @@ class LikeCreateView(APIView):
 
     def post(self, request, *args, **kwargs):
         user = request.user
-        art_id = kwargs.get('art_id')
+        art_id = kwargs.get("art_id")
+        auction_id = kwargs.get("auction_id")
 
-        if not art_id:
-            return Response({"detail": "Art ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+        if art_id:
+            try:
+                art = Art.objects.get(id=art_id)
+            except Art.DoesNotExist:
+                return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        try:
-            art = Art.objects.get(id=art_id)
-        except Art.DoesNotExist:
-            return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
+            like = Like.objects.filter(user=user, art=art).first()
+            if like:
+                like.delete()
+                like_count = Like.objects.filter(art=art).count()
+                return Response({
+                    "is_liked": False,
+                    "like_count": like_count,
+                    "detail": "You have unliked this artwork."
+                }, status=status.HTTP_200_OK)
 
-        like = Like.objects.filter(user=user, art=art).first()
+            else:
+                Like.objects.create(user=user, art=art)
+                
+                host = request.get_host()
+                protocol = "http" if "localhost" in host else "https"
+                link = f"/artwork/{str(art.id)}"
 
-        if like:
-            like.delete()  # Unlike
-            like_count = Like.objects.filter(art=art).count()
-            return Response({
-                "is_liked": False,
-                "like_count": like_count,
-                "detail": "You have unliked this artwork."
-            }, status=status.HTTP_200_OK)
+                Notification.objects.create(
+                    user=art.artist,
+                    actor=user,
+                    message=f" liked your artwork '{art.title}'",
+                    art=art,
+                    name=f"{user.first_name} {user.last_name}",
+                    action="liked your artwork",
+                    target=art.title,
+                    icon="like",
+                    created_at=datetime.now(),
+                    link=link,
+                )
+
+                like_count = Like.objects.filter(art=art).count()
+                return Response({
+                    "is_liked": True,
+                    "like_count": like_count,
+                    "detail": "You liked this artwork."
+                }, status=status.HTTP_201_CREATED)
+
+        elif auction_id:
+            try:
+                auction = Auction.objects.get(id=auction_id)
+            except Auction.DoesNotExist:
+                return Response({"detail": "Auction not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            like = Like.objects.filter(user=user, auction=auction).first()
+            if like:
+                like.delete()
+                like_count = Like.objects.filter(auction=auction).count()
+                return Response({
+                    "is_liked": False,
+                    "like_count": like_count,
+                    "detail": "You unliked this auction."
+                }, status=status.HTTP_200_OK)
+
+            else:
+                Like.objects.create(user=user, auction=auction)
+
+                host = request.get_host()
+                protocol = "http" if "localhost" in host else "https"
+                link = f"/bid/{str(auction.id)}/"
+
+                Notification.objects.create(
+                    user=auction.artwork.artist,
+                    actor=user,
+                    message=f" liked your auction '{auction.artwork.title}'",
+                    auction=auction,
+                    name=f"{user.first_name} {user.last_name}",
+                    action="liked your auction",
+                    target=auction.artwork.title,
+                    icon="like",
+                    created_at=datetime.now(),
+                    link=link,
+                )
+
+                like_count = Like.objects.filter(auction=auction).count()
+                return Response({
+                    "is_liked": True,
+                    "like_count": like_count,
+                    "detail": "You liked this auction."
+                }, status=status.HTTP_201_CREATED)
 
         else:
-            
-            Like.objects.create(user=user, art=art)
-            
-            host = request.get_host()  
-            protocol = 'http' if 'localhost' in host else 'https'
-            link = f"/artwork/{str(art.id)}"
-
-            Notification.objects.create(
-                user=art.artist, 
-                actor=user,      
-                message=f"{user.first_name} liked your artwork '{art.title}'",
-                art=art,
-                name=f"{user.first_name} {user.last_name}",
-                action="liked your artwork",
-                target=art.title,
-                icon="like",
-                created_at=datetime.now(),
-                link=link
-            )
-
-            
-            like_count = Like.objects.filter(art=art).count()
-            return Response({
-                "is_liked": True,
-                "like_count": like_count,
-                "detail": "You liked this artwork."
-            }, status=status.HTTP_201_CREATED)
+            return Response({"detail": "No valid target specified."}, status=status.HTTP_400_BAD_REQUEST)
 
 
         
@@ -235,18 +278,18 @@ class ArtworkStatusView(generics.GenericAPIView):
 
     def get(self, request, art_id, *args, **kwargs):
         try:
-            # Fetch the artwork
+          
             art = Art.objects.get(id=art_id)
         except Art.DoesNotExist:
             return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Check if the artwork is saved by the current user
+       
         is_saved = Saved.objects.filter(art=art, user=request.user).count() > 0
         
-        # Check if the artwork is liked by the current user
+      
         is_liked = Like.objects.filter(art=art, user=request.user).first() is not None
 
-        # Return both statuses in a single response
+       
         return Response({
             "isSaved": is_saved,
             "isLiked": is_liked,

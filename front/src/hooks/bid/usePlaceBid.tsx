@@ -51,7 +51,7 @@ export const usePlaceBid = () => {
       });
 
       queryClient.invalidateQueries({ queryKey: ["biddingArtworks", variables.artwork_id] });
-
+      queryClient.invalidateQueries({ queryKey: ["popular-auctions"] });
       queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
     },
     onError: (error) => {

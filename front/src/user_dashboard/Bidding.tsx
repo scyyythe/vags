@@ -2,7 +2,7 @@ import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
 import ArtsContainer from "@/components/user_dashboard/Bidding/featured/ArtsContainer";
 import Components from "@/components/user_dashboard/Bidding/navbar/Components";
-import CategoryFilter from "@/components/user_dashboard/Explore/navigation/CategoryFilter";
+import CategoryFilter from "@/components/user_dashboard/Bidding/navigation/CategoryFilter";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,8 @@ import "react-loading-skeleton/dist/skeleton.css";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { useSearchParams } from "react-router-dom";
 import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks";
+import useFollowedAuctions from "@/hooks/auction/followed_users/useFollowedBiddings";
+import useBulkBidReportStatus from "@/hooks/mutate/report/useBulkAuctionReport";
 interface StaticArtwork {
   id: string;
   title: string;
@@ -105,17 +107,47 @@ const Bidding = () => {
 
   const { data: biddingArtworks = [], isLoading, isError } = useFetchBiddingArtworks();
 
+  const [page, setPage] = useState(1);
+  const {
+    data: followedAuctions = [],
+    isLoading: isLoadingFollowed,
+    isError: isErrorFollowed,
+  } = useFollowedAuctions(page);
+
   const filteredArtworks = useMemo(() => {
     const now = new Date();
-    if (!searchQuery) return biddingArtworks.filter((a) => new Date(a.start_time) <= now);
 
-    return biddingArtworks.filter(
-      (artwork) =>
-        new Date(artwork.start_time) <= now &&
-        (artwork.artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          artwork.artwork.artist.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
-  }, [biddingArtworks, searchQuery]);
+    if (selectedCategory === "Following") {
+      return followedAuctions;
+    }
+
+    let activeArtworks = biddingArtworks.filter((a) => new Date(a.start_time) <= now);
+
+    if (
+      selectedCategory &&
+      selectedCategory !== "All" &&
+      selectedCategory !== "Following" &&
+      selectedCategory !== "Trending"
+    ) {
+      activeArtworks = activeArtworks.filter((artwork) => artwork.artwork.category === selectedCategory);
+    }
+
+    if (selectedCategory === "Trending") {
+      activeArtworks = [...activeArtworks].sort((a, b) => b.auction_likes_count - a.auction_likes_count);
+    }
+
+    if (searchQuery) {
+      activeArtworks = activeArtworks.filter(
+        (artwork) =>
+          artwork.artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          artwork.artwork.artist.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    return activeArtworks;
+  }, [biddingArtworks, followedAuctions, searchQuery, selectedCategory]);
+  const auctionIds = useMemo(() => filteredArtworks.map((artwork) => artwork.id), [filteredArtworks]);
+  const { data: reportStatusData, isLoading: isReportLoading } = useBulkBidReportStatus(auctionIds);
 
   const handlePlaceBid = (id: string) => {
     console.log(`Placing bid for artwork ID: ${id}`);
@@ -132,7 +164,6 @@ const Bidding = () => {
     const now = new Date();
     return biddingArtworks.filter((artwork) => new Date(artwork.start_time) > now);
   }, [biddingArtworks]);
-
 
   return (
     <div className="min-h-screen bg-background">
@@ -175,11 +206,14 @@ const Bidding = () => {
           {/* ACTIVE AUCTIONS */}
           {!showIncoming && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {filteredArtworks.map((artwork) => (
-                <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
-                  <BidCard data={artwork} onPlaceBid={handlePlaceBid} />
-                </div>
-              ))}
+              {filteredArtworks.map((artwork) => {
+                const reportInfo = reportStatusData?.[artwork.id];
+                return (
+                  <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
+                    <BidCard data={artwork} reportInfo={reportInfo} onPlaceBid={handlePlaceBid} />
+                  </div>
+                );
+              })}
             </div>
           )}
 
@@ -190,16 +224,18 @@ const Bidding = () => {
                 <p className="text-gray-500 text-sm px-2">No upcoming auctions found.</p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {upcomingArtworks.map((artwork) => (
-                    <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
-                      <BidCard data={artwork} onPlaceBid={handlePlaceBid} />
-                    </div>
-                  ))}
+                  {upcomingArtworks.map((artwork) => {
+                    const reportInfo = reportStatusData?.[artwork.id];
+                    return (
+                      <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
+                        <BidCard data={artwork} reportInfo={reportInfo} onPlaceBid={handlePlaceBid} />
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
           )}
-
         </div>
       </div>
       <Footer />

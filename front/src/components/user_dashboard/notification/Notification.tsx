@@ -220,8 +220,23 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
               <div className="text-[10px] leading-snug">
                 {n.name && (
                   <>
-                    <span className="font-medium">{n.name}</span> {n.action}
-                    {n.target && <span className="font-medium"> {n.target}</span>}
+                    <span className="font-medium">{n.name}</span>
+                    {n.message &&
+                      (() => {
+                        const regex = /(.*tipped you )(\$\d+(?:\.\d+)?)( for your artwork.*)/;
+                        const match = n.message.match(regex);
+                        if (match) {
+                          return (
+                            <span className="font-medium">
+                              {match[1]}
+                              <span className="text-green-600">{match[2]}</span>
+                              {match[3]}
+                            </span>
+                          );
+                        } else {
+                          return <span className="font-medium">{n.message}</span>;
+                        }
+                      })()}
                   </>
                 )}
                 {!n.name && n.icon === "crypto" && (
@@ -243,11 +258,7 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
                     </div>
                   </>
                 )}
-                {n.donation && (
-                  <>
-                    <span className="font-medium text-green-600"> {n.donation} </span>
-                  </>
-                )}
+                {n.donation && <>{/* <span className="font-medium text-green-600"> {n.donation} </span> */}</>}
                 <div className="text-[10px] text-muted-foreground mt-1">{formatDateTime(n.created_at)}</div>
               </div>
             </div>

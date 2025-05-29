@@ -1,13 +1,13 @@
 import ArtSlideshow from "./ArtsSlideshow";
 
 interface Artwork {
-    id: string;
-    title: string;
-    artist: string;
-    artistAvatar: string;
-    description: string;
-    image: string;
-    endTime: string; 
+  id: string;
+  title: string;
+  artist: string;
+  artistAvatar: string;
+  description: string;
+  image: string;
+  endTime: string;
 }
 
 interface ArtGalleryContainerProps {
@@ -26,7 +26,7 @@ const ArtsContainer = ({ artworks }: ArtGalleryContainerProps) => {
 
       {/* Slideshow container with reduced height */}
       <div className="w-full h-[340px] rounded-xl overflow-hidden">
-        <ArtSlideshow artworks={artworks} />
+        <ArtSlideshow />
       </div>
     </div>
   );

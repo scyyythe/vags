@@ -55,10 +55,10 @@ const ArtworkDetails = () => {
   const [currentPage] = useState(1);
 
   const { data: related, error } = useArtworks(currentPage, undefined, true, "all", "public");
-
+  const { data: artwork } = useFetchArtworkById(id);
   const { data: bulkStatus, isLoading: statusLoading } = useBulkArtworkStatus([id]);
   const { data: report_status } = useBulkReportStatus([id]);
-  const { artwork, isLikedFromBulk, isSavedFromBulk, isReportedFromBulk, reportStatusFromBulk } = location.state || {};
+  const { isLikedFromBulk, isSavedFromBulk, isReportedFromBulk, reportStatusFromBulk } = location.state || {};
 
   const isLiked = typeof isLikedFromBulk === "boolean" ? isLikedFromBulk : likedArtworks[id] ?? false;
   const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id, isSavedFromBulk ?? false);
@@ -305,9 +305,7 @@ const ArtworkDetails = () => {
             {/* Artwork, Right-side Sliding */}
             <div
               className={`transition-all duration-500 ease-in-out ${
-                isMobile
-                  ? "w-full"
-                  : `flex justify-center items-start ${isDetailOpen ? "ml-[150px]" : "ml-0"}`
+                isMobile ? "w-full" : `flex justify-center items-start ${isDetailOpen ? "ml-[150px]" : "ml-0"}`
               }`}
             >
               {/* Artwork container */}
@@ -319,7 +317,7 @@ const ArtworkDetails = () => {
                       className={`absolute top-28 w-[27%] h-[140%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
                         isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-50"
                       }`}
-                      style={{ right: 'calc(100% + 50px)' }}
+                      style={{ right: "calc(100% + 50px)" }}
                     >
                       <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
                         <div className="mb-6">
@@ -411,7 +409,7 @@ const ArtworkDetails = () => {
                   <div className="inline-block transform scale-[1.10] -mb-6 relative">
                     <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                       <img
-                        src={artwork.artworkImage}
+                        src={artwork.image_url}
                         alt={artwork.title}
                         className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                       />
@@ -461,9 +459,9 @@ const ArtworkDetails = () => {
                           className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
                           fill={isLiked ? "currentColor" : "none"}
                         />
-                        {(likeCounts[id || ""] ?? artwork.likesCount ?? 0) > 0 && (
+                        {(likeCounts[id || ""] ?? artwork.likes_count ?? 0) > 0 && (
                           <span className={`${isMobile ? "text-[10px]" : "text-xs"}`}>
-                            {likeCounts[id || ""] ?? artwork.likesCount}
+                            {likeCounts[id || ""] ?? artwork.likes_count}
                           </span>
                         )}
                       </button>
@@ -580,7 +578,7 @@ const ArtworkDetails = () => {
 
             <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
               <img
-                src={artwork.artworkImage}
+                src={artwork.image_url}
                 alt="Expanded artwork"
                 className="max-h-[80vh] max-w-[90vw] object-contain"
               />

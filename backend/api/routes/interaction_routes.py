@@ -5,6 +5,8 @@ from api.views.interaction_views.notifications import NotificationDeleteView,Not
 interaction_urlpatterns = [
     path('comments/', CommentCreateView.as_view(), name='comment-create'),
     path('likes/<str:art_id>/', LikeCreateView.as_view(), name='like-create'),
+    path('auction-likes/<str:auction_id>/', LikeCreateView.as_view(), name='like-create-auction'),
+    
     path('saved/<str:art_id>/status/', SavedStatusView.as_view()),
     path('saved/<str:art_id>/', SavedCreateView.as_view(), name='saved-art'),
     path('saved/', SavedArtworksListView.as_view(), name='saved-artwork'),

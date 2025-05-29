@@ -42,6 +42,7 @@ const useAuctionSubmitReport = () => {
       submitAuctionReport({ id, issue_details }),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["auctionReportStatus", id] });
+      queryClient.invalidateQueries({ queryKey: ["auctionReportStatusBulk"] });
       queryClient.invalidateQueries({ queryKey: ["auctions"] });
     },
     onError: (error: unknown) => {

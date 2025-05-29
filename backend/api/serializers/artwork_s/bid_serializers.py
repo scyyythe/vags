@@ -4,6 +4,7 @@ from api.models.artwork_model.bid import AuctionStatus
 from datetime import datetime, timezone
 from api.models.artwork_model.artwork import Art
 from mongoengine.errors import DoesNotExist
+from api.models.interaction_model.interaction import Like
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from api.serializers.user_s.users_serializers import UserSerializer
 
@@ -72,7 +73,7 @@ class BidSerializer(serializers.Serializer):
                         {"error": "Bid must be higher than the current highest bid."}
                     )
 
-        # Create the bid
+        
         bid = Bid.objects.create(
             bidder=bidder,
             artwork=auction.artwork,
@@ -97,9 +98,22 @@ class AuctionSerializer(serializers.Serializer):
     bid_history = BidSerializer(read_only=True, many=True)
     status = serializers.CharField(read_only=True)
     viewers = serializers.SerializerMethodField()
+    auction_likes_count = serializers.SerializerMethodField()
+    user_has_liked_auction = serializers.SerializerMethodField()
+    
     def get_viewers(self, obj):
         return [user.username for user in obj.viewed_by]
     
+    def get_auction_likes_count(self, obj):
+        return Like.objects(auction=obj).count() 
+    
+    def get_user_has_liked_auction(self, obj):
+    
+        request = self.context.get("request", None)
+        user = getattr(request, "user", None)
+        if user and not user.is_anonymous:
+            return Like.objects(user=user, auction=obj).first() is not None
+        return False
     def to_representation(self, instance):
         data = super().to_representation(instance)
         request = self.context.get("request", None)
