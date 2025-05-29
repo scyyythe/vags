@@ -6,9 +6,7 @@ const fetchPopularAuctions = async (): Promise<ArtworkAuction[]> => {
   const params = { page: 1, limit: 100 };
   const response = await apiClient.get("auction/", { params });
 
-  const ongoingAuctions = response.data.filter(
-    (auction: ArtworkAuction) => auction.status === "on_going" || auction.status === "reauctioned"
-  );
+  const ongoingAuctions = response.data.filter((auction: ArtworkAuction) => auction.status === "on_going");
   const sorted = ongoingAuctions.sort(
     (a: ArtworkAuction, b: ArtworkAuction) => b.auction_likes_count - a.auction_likes_count
   );
