@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 from mongoengine import DoesNotExist
 from mongoengine.errors import NotUniqueError
 from mongoengine.queryset.visitor import Q
+
 class AuctionCreateView(APIView):
     def post(self, request, *args, **kwargs):
         try:
@@ -202,7 +203,7 @@ class AuctionListViewParticipated(generics.ListAPIView):
 
         now_utc = datetime.now(timezone.utc)
 
-        # Close expired auctions before querying
+
         expired_auctions = Auction.objects(
             status=AuctionStatus.ON_GOING.value,
             end_time__lt=now_utc
@@ -211,12 +212,6 @@ class AuctionListViewParticipated(generics.ListAPIView):
             auction.close_auction()
             auction.reload()
 
-        # Filter auctions where the user has participated (in bid_history or viewed_by)
-        # Assuming bid_history is a list of Bid objects with bidder user reference or username
-
-        # We'll filter all auctions where any bid in bid_history has a bidder matching user_id
-
-        # MongoEngine doesn't support deep filtering in arrays easily, so we do it manually here:
         participated_auctions = []
         all_auctions = Auction.objects()
 
