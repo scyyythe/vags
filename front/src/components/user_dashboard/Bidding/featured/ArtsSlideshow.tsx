@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -16,7 +16,7 @@ interface ArtSlideshowProps {
   interval?: number;
   user?: User;
 }
-const ArtSlideshow = ({ artworks, user, autoPlay = true, interval = 4000 }: ArtSlideshowProps) => {
+const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }: ArtSlideshowProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const isMobile = useIsMobile();
   const [showBidPopup, setShowBidPopup] = useState(false);
@@ -214,6 +214,6 @@ const ArtSlideshow = ({ artworks, user, autoPlay = true, interval = 4000 }: ArtS
       </div>
     </div>
   );
-};
+});
 
 export default ArtSlideshow;
