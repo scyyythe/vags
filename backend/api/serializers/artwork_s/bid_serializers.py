@@ -73,7 +73,7 @@ class BidSerializer(serializers.Serializer):
                         {"error": "Bid must be higher than the current highest bid."}
                     )
 
-        # Create the bid
+        
         bid = Bid.objects.create(
             bidder=bidder,
             artwork=auction.artwork,
