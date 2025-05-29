@@ -133,7 +133,7 @@ const ArtCard = ({
 
   if (detailsLoading) return <ArtCardSkeleton />;
   return (
-    <div className="art-card h-[100%] text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 p-4">
+    <div className="art-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 px-4 py-3">
       <div className="py-1 px-1 flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <Link to={`/userprofile/${artistId}`}>
