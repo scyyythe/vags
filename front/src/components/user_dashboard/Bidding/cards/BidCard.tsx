@@ -7,7 +7,6 @@ import BidPopup from "../place_bid/BidPopup";
 import CountdownTimer from "@/hooks/count/useCountdown";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
-import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
 
 interface ExtendedArtworkAuction extends ArtworkAuction {
   isPaid?: boolean;
@@ -17,6 +16,10 @@ interface ExtendedArtworkAuction extends ArtworkAuction {
 
 interface BidCardProps {
   data: ExtendedArtworkAuction;
+  reportInfo?: {
+    reported: boolean;
+    status: "Pending" | "In Progress" | "Resolved" | null;
+  };
   onClick?: () => void;
   isLoading?: boolean;
   onPlaceBid?: (id: string, amount: number) => void;
@@ -27,12 +30,10 @@ interface BidCardProps {
   };
 }
 
-const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, onClick, user }) => {
+const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, onPlaceBid, onClick, user }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
-  const { data: reportStatusData } = useBidReportStatus(data.id);
-  const isReported = reportStatusData?.reported === true;
 
   const navigate = useNavigate();
   const { mutate: submitAuctionReport } = useAuctionSubmitReport();
@@ -61,7 +62,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
   };
 
   const handleReport = (issueDetails: string) => {
-    if (reportStatusData?.reported) {
+    if (reportInfo?.reported) {
       toast.error("You have already reported this artwork.");
       setMenuOpen(false);
       return;
@@ -69,6 +70,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, isLoading = false, onPlaceBid, 
     submitAuctionReport({ id: data.id, issue_details: issueDetails });
     setMenuOpen(false);
   };
+  const isReported = reportInfo?.reported || false;
 
   const handleBidSubmit = (amount: number) => {
     onPlaceBid?.(data.id, amount);

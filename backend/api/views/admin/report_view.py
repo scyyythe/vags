@@ -182,18 +182,62 @@ class AuctionReportStatus(APIView):
             return Response({"reported": reported}, status=status.HTTP_200_OK)
 
         except InvalidId:
-            # This will catch invalid ObjectId format
+           
             return Response(
                 {"error": "Invalid auction ID."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
-            # Log the actual error for debugging
+       
             logger.error(f"Error fetching report status: {e}")
             return Response(
                 {"error": "Failed to fetch report status."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+class BulkAuctionReportStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        ids_param = request.query_params.get("ids", "")
+        if not ids_param:
+            return Response({"error": "No auction IDs provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        id_list = [id.strip() for id in ids_param.split(",") if id.strip()]
+        if not id_list:
+            return Response({"error": "No valid auction IDs provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+          
+            object_ids = [ObjectId(id) for id in id_list]
+        except InvalidId:
+            return Response({"error": "One or more invalid auction IDs"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_obj_id = ObjectId(request.user.id)
+
+      
+        reports = AuctionReport.objects.filter(user=user_obj_id, auction__in=object_ids)
+
+       
+        result = {}
+      
+        reports_by_auction = {str(r.auction.id): r for r in reports}
+
+        for auction_id in id_list:
+            report = reports_by_auction.get(auction_id)
+            if report:
+                result[auction_id] = {
+                    "reported": True,
+                    "status": getattr(report, "status", None)  
+                }
+            else:
+                result[auction_id] = {
+                    "reported": False,
+                    "status": None
+                }
+
+        return Response(result, status=status.HTTP_200_OK)
+    
 class UserReportsView(generics.ListAPIView):
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]

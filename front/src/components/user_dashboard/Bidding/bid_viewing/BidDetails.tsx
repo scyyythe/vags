@@ -15,14 +15,16 @@ import "react-loading-skeleton/dist/skeleton.css";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 import AuctionCountdown from "@/hooks/count/AuctionCountDown";
-import { ArtworkAuction } from "@/hooks/auction/useAuction";
+
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import { useBidHistory } from "@/hooks/bid/useBidHistory";
 import { getLoggedInUserId } from "@/auth/decode";
 import useAuctions from "@/hooks/auction/useAuction";
 import { useAuctionLike } from "@/hooks/interactions/auction_like/useAuctionLike";
-import { ItemText } from "@radix-ui/react-select";
+import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
+import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
+import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 export interface BidCardData {
   id: string;
   title: string;
@@ -40,6 +42,14 @@ const BidDetails = () => {
 
   const { data: item, isLoading } = useFetchBiddingArtworkById(id!);
   const { data: allAuctions = [] } = useAuctions(1);
+  const { data: reportInfo, isError } = useBidReportStatus(id);
+  const [isReported, setIsReported] = useState(reportInfo?.reported ?? false);
+
+  useEffect(() => {
+    if (reportInfo?.reported !== undefined) {
+      setIsReported(reportInfo.reported);
+    }
+  }, [reportInfo]);
 
   useEffect(() => {
     if (item) {
@@ -65,10 +75,10 @@ const BidDetails = () => {
   const descriptionRef = useRef<HTMLDivElement | null>(null);
 
   const [showReportOptions, setShowReportOptions] = useState(false);
-
+  const { mutate: submitReport } = useAuctionSubmitReport();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const [isReported, setIsReported] = useState(false);
+
   const artworkId = item?.artwork?.id ?? null;
   const artworkIds = artworks?.map((a) => a.id) || [];
   const { data } = useArtworkStatus(artworkIds);
@@ -86,14 +96,26 @@ const BidDetails = () => {
     return `${day} ${month} ${year}, ${hour}:${minute}`;
   };
 
-  const onReport = () => {
+  const onReport = (issueDetails: string) => {
     setIsReported(true);
-    toast("Report submitted!");
+    toast(`Report submitted: ${issueDetails}`);
   };
 
-  const handleReportSubmit = (category: string, option?: string) => {
-    console.log("Report submitted:", { category, option });
-    onReport();
+  const handleReportSubmit = (categoryId: string, optionId?: string) => {
+    const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
+    const selectedOption = selectedCategory?.options?.find((opt) => opt.id === optionId);
+
+    const issueDetails = selectedOption
+      ? `Category: ${selectedCategory?.title} | Option: ${selectedOption.text} | Info: ${selectedOption.additionalInfo}`
+      : selectedCategory
+      ? `Category: ${selectedCategory.title}`
+      : "Artwork contains inappropriate or offensive content.";
+
+    console.log("Report submitted:", issueDetails);
+
+    onReport(issueDetails);
+
+    setShowReportOptions(false);
   };
 
   const currentUserId = getLoggedInUserId();
