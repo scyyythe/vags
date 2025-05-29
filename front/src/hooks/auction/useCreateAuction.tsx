@@ -37,11 +37,10 @@ export const useCreateAuction = () => {
 
     onSuccess: () => {
       toast.success("Auction created successfully!");
-      queryClient.invalidateQueries({ queryKey: ["artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["auctions"] });
-      queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
+      queryClient.refetchQueries({ queryKey: ["auctions"] });
+      queryClient.refetchQueries({ queryKey: ["artworks"] });
+      queryClient.refetchQueries({ queryKey: ["biddingArtworks"] });
     },
-
     onError: (error: AxiosError<ErrorResponse>) => {
       const message = error.response?.data?.error || "Failed to create auction.";
       console.error("Auction creation failed:", message);

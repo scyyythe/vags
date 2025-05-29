@@ -6,27 +6,32 @@ import BidPopup from "../place_bid/BidPopup";
 import { Link } from "react-router-dom";
 import usePopularAuctions from "@/hooks/auction/featured/usePopularAuctions";
 import CountdownDisplay from "./CountdownDisplay";
-interface Artwork {
-  id: string;
-  title: string;
-  artist: string;
-  artistAvatar: string;
-  description: string;
-  image: string;
-  endTime: string; // example: "2d : 15h : 20m"
-}
-
+import { Artwork } from "@/hooks/artworks/owner/useMyArtworks";
+import { User } from "@/hooks/users/useUserQuery";
+import FeaturedAuctionSkeleton from "@/components/skeletons/FeaturedAuction";
+import { useNavigate } from "react-router-dom";
 interface ArtSlideshowProps {
   artworks: Artwork[];
   autoPlay?: boolean;
   interval?: number;
+  user?: User;
 }
-const ArtSlideshow = ({ autoPlay = true, interval = 4000 }: Omit<ArtSlideshowProps, "artworks">) => {
+const ArtSlideshow = ({ artworks, user, autoPlay = true, interval = 4000 }: ArtSlideshowProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const isMobile = useIsMobile();
   const [showBidPopup, setShowBidPopup] = useState(false);
   const [bidArtworkIndex, setBidArtworkIndex] = useState<number | null>(null);
   const { data, isLoading, isError } = usePopularAuctions();
+
+  const handleBidSubmit = (amount: number) => {
+    setShowBidPopup(false);
+  };
+  const navigate = useNavigate();
+
+  const fadeIn = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+  };
   const auctions = data ?? [];
 
   useEffect(() => {
@@ -40,9 +45,9 @@ const ArtSlideshow = ({ autoPlay = true, interval = 4000 }: Omit<ArtSlideshowPro
     return () => clearInterval(timer);
   }, [autoPlay, interval, auctions.length]);
 
-  const selectedArtwork = bidArtworkIndex !== null ? auctions[bidArtworkIndex] : null;
-
-  if (auctions.length === 0) {
+  if (isLoading) return <FeaturedAuctionSkeleton />;
+  if (isError) return <p>Failed to load auctions.</p>;
+  if (!data || data.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
         <p className="text-muted-foreground">No auctions to display</p>
@@ -50,17 +55,8 @@ const ArtSlideshow = ({ autoPlay = true, interval = 4000 }: Omit<ArtSlideshowPro
     );
   }
 
-  const handleBidSubmit = (amount: number) => {
-    setShowBidPopup(false);
-  };
+  const selectedArtwork = bidArtworkIndex !== null ? auctions[bidArtworkIndex] : null;
 
-  const fadeIn = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
-  };
-  if (isLoading) return <p>Loading popular auctions...</p>;
-  if (isError) return <p>Failed to load auctions.</p>;
-  if (!auctions || auctions.length === 0) return <p>No auctions available.</p>;
   return (
     <div className={cn("", "flex items-center", isMobile ? "px-16 gap-1" : "px-8 py-8 gap-12")}>
       {auctions.map((artwork, index) => (
@@ -162,6 +158,7 @@ const ArtSlideshow = ({ autoPlay = true, interval = 4000 }: Omit<ArtSlideshowPro
                 Bid Now
               </button>
               <button
+                onClick={() => navigate(`/bid/${artwork.id}/`)}
                 className={cn(
                   "border border-gray-400 text-gray-500 rounded-full font-medium transition w-[38%]",
                   isMobile ? "px-3 py-1 text-[10px] " : "px-8 py-2 text-sm"
@@ -174,14 +171,18 @@ const ArtSlideshow = ({ autoPlay = true, interval = 4000 }: Omit<ArtSlideshowPro
         </div>
       ))}
 
-      {/* {showBidPopup && selectedArtwork && (
-        // <BidPopup
-        //   isOpen={showBidPopup}
-        //   onClose={() => setShowBidPopup(false)}
-        //   artworkTitle={selectedArtwork.artwork.title}
-        //   artworkId={selectedArtwork.artwork.id}
-        // />
-      )} */}
+      {showBidPopup && selectedArtwork && (
+        <BidPopup
+          isOpen={showBidPopup}
+          onClose={() => setShowBidPopup(false)}
+          data={selectedArtwork}
+          artworkId={selectedArtwork.artwork.id}
+          artworkTitle={selectedArtwork.artwork.title}
+          username={user?.username || "Unknown"}
+          fullName={`${user?.first_name || "Unknown"} ${user?.last_name || ""}`}
+          start_bid_amount={selectedArtwork.start_bid_amount}
+        />
+      )}
 
       {/* Dots indicator */}
       <div
