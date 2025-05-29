@@ -1,5 +1,5 @@
 from django.urls import path
-from api.views.artwork_views.bid_views import AuctionListViewParticipated,AuctionListViewOwner,AuctionListViewSpecificUser,AuctionCreateView,AuctionListView, ActiveAuctionsView, CloseAuctionView,AuctionDetailView,MyAuctionListView
+from api.views.artwork_views.bid_views import FollowedAuctionsView,AuctionListViewParticipated,AuctionListViewOwner,AuctionListViewSpecificUser,AuctionCreateView,AuctionListView, ActiveAuctionsView, CloseAuctionView,AuctionDetailView,MyAuctionListView
 
 
 auction_urlpatterns = [
@@ -14,4 +14,5 @@ auction_urlpatterns = [
     path('auction/list/specific-user/', AuctionListViewSpecificUser.as_view(), name='specific-user'),
     path('auction/list/participated/', AuctionListViewParticipated.as_view(), name='list_participated'),
 
+    path("auctions/following", FollowedAuctionsView.as_view(), name="followed-auctions"),
 ]

@@ -6,6 +6,7 @@ from api.models.artwork_model.bid import Bid, Auction
 from api.models.artwork_model.bid import AuctionStatus
 from api.models.artwork_model.artwork import Art
 from api.serializers.artwork_s.bid_serializers import BidSerializer, AuctionSerializer
+from api.models.interaction_model.follows import Follower
 from datetime import datetime
 from api.models.interaction_model.notification import Notification
 from rest_framework.views import APIView
@@ -371,3 +372,43 @@ class MyBidsAuctionListView(generics.ListAPIView):
         
         return base_qs
 
+
+class FollowedAuctionsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        page = int(request.query_params.get('page', 1))
+        page_size = 10
+        skip = (page - 1) * page_size
+
+        # Get IDs of users the current user is following
+        followed_users = Follower.objects.filter(follower=user).only('following')
+        followed_ids = [f.following.id for f in followed_users]
+
+        if not followed_ids:
+            return Response([], status=status.HTTP_200_OK)
+
+        # Get artworks by followed users
+        artworks = Art.objects(artist__in=followed_ids).only('id')
+        artwork_ids = [art.id for art in artworks]
+
+        # Handle expired auctions
+        now_utc = datetime.now(timezone.utc)
+        expired_auctions = Auction.objects(
+            artwork__in=artwork_ids,
+            status=AuctionStatus.ON_GOING.value,
+            end_time__lt=now_utc
+        )
+
+        for auction in expired_auctions:
+            auction.close_auction()
+
+        # Get active auctions
+        auctions = Auction.objects(
+            artwork__in=artwork_ids,
+            status=AuctionStatus.ON_GOING.value
+        ).order_by('-created_at')[skip:skip + page_size]
+
+        serialized = AuctionSerializer(auctions, many=True)
+        return Response(serialized.data, status=status.HTTP_200_OK)
