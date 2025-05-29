@@ -49,6 +49,7 @@ export interface AuctionArtwork {
 
 export interface ArtworkAuction {
   id: string;
+  auction_likes_count: number;
   artwork: AuctionArtwork;
   highest_bid: Bid | null;
   bid_history: Bid[];
@@ -67,6 +68,7 @@ export interface ArtworkAuction {
   joinedByCurrentUser?: boolean;
   isHighestBidder?: boolean | null;
   isLost?: boolean;
+  user_has_liked_auction?: boolean;
 }
 
 const fetchAuctions = async (

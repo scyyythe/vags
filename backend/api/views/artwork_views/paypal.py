@@ -9,6 +9,7 @@ from api.models.artwork_model.artwork import Art
 from api.serializers.artwork_s.tip_serializers import PayPalVerifySerializer
 from datetime import datetime
 from django.utils.timesince import timesince
+from django.utils import timezone
 from api.models.interaction_model.notification import Notification
 PAYPAL_CLIENT_ID = "ATdS3EPVWsnSLLq78MSvmBABGBnoaBfk61SOAl3VD8HjqCbC7rrPGMRtd1Z3wwrADmqdgKAOjvRVoJYw"
 PAYPAL_SECRET = "EFS831oKh3OoRdzABo85_HTp-kKjsB9LP0thCdAyKyc8ayRqHTj2izUwfQoK9Bes2PQqZspRpcvh024s"
@@ -92,21 +93,27 @@ class PayPalVerifyPaymentView(APIView):
             payment_status="Completed",
             transaction_id=order_id
         )
+        tip.timestamp = timezone.now()
         tip.save()
 
-        now = datetime.utcnow()
-        time_elapsed = timesince(tip.timestamp or now) + " ago"  
+        host = request.get_host()  
+        protocol = 'http' if 'localhost' in host else 'https'
+        link = f"/artwork/{str(art.id)}"
 
         Notification.objects.create(
-            user=receiver,
-            action=f"{sender.first_name} tipped you ${paypal_amount} for your artwork '{art.title}'",
+            user=receiver,  
+            actor=sender,
+            message=f" tipped you ₱{paypal_amount} for your artwork '{art.title}'",
             art=art,
             name=f"{sender.first_name} {sender.last_name}",
+            action="tipped you",
+            target=art.title,
             icon="💰",
-            date=now,
             amount=str(paypal_amount),
             donation="Tip",
-            money=True
+            money=True,
+            link=link,
+            created_at=datetime.now(),
         )
 
         return Response({"message": "Payment verified and tip recorded successfully"}, status=status.HTTP_201_CREATED)

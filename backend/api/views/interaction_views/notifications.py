@@ -13,9 +13,8 @@ class NotificationListView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user_id = str(self.request.user.id)  # Convert ObjectId to string if necessary
+        user_id = str(self.request.user.id) 
         return Notification.objects.filter(user=user_id).order_by('-created_at')
-
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

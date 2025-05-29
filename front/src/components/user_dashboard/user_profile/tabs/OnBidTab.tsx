@@ -75,27 +75,6 @@ const OnBidTab = () => {
     return a.status === activeTab;
   });
 
-  // // Inject mock bid if won tab is selected and no data
-  // if (activeTab === "my_bids" && myBidFilter === "won" && !isLoading && filteredAuctions.length === 0) {
-  //   filteredAuctions.push({
-  //     id: "mock-bid-1",
-  //     isPaid: true,
-  //     isHighestBidder: true,
-  //     joinedByCurrentUser: true,
-  //     start_bid_amount: 5000,
-  //     end_time: new Date(Date.now() - 3600 * 1000).toISOString(),
-  //     artwork: {
-  //       id: "mock-artwork-1",
-  //       title: "Abstract Dreams in Blue",
-  //       image_url: "https://i.pinimg.com/736x/5f/f4/d2/5ff4d298d53b6fcdf20bd865668c0ea5.jpg",
-  //     },
-  //     highest_bid: {
-  //       amount: 5000,
-  //     },
-  //     status: "sold",
-  //   } as ExtendedAuction);
-  // }
-
   const tabEmptyMessages = {
     on_going: "No artworks are currently on bid.",
     sold: "No artworks have been sold yet.",

@@ -23,6 +23,7 @@ class AuctionStatus(Enum):
     CLOSED = "closed"
     NO_BIDDER = "no_bidder"
     RE_AUCTIONED="reauctioned"
+    
 class Auction(Document):
     artwork = ReferenceField(Art, required=True)
     start_bid_amount = FloatField(required=True, min_value=0.1)
@@ -41,15 +42,17 @@ class Auction(Document):
 
     def close_auction(self):
         from api.models.interaction_model.notification import Notification
+        from django.utils.timezone import now as dj_now
+
         if self.status in [AuctionStatus.SOLD.value, AuctionStatus.CLOSED.value, AuctionStatus.NO_BIDDER.value]:
-            return  
+            return
 
         now = datetime.utcnow()
 
         try:
-            artwork = self.artwork  
+            artwork = self.artwork
         except DoesNotExist:
-            return  
+            return
 
         if self.bid_history:
             highest = max(self.bid_history, key=lambda bid: bid.amount)
@@ -57,41 +60,55 @@ class Auction(Document):
             self.status = AuctionStatus.SOLD.value
             self.save()
 
-          
             artwork.art_status = "Sold"
             artwork.save()
 
-            now = datetime.utcnow()
-            time_elapsed = timesince(highest.timestamp or now) + " ago"
+           
+            host = request.get_host()
+            protocol = "http" if "localhost" in host else "https"
+            link = f"/bid/{str(auction.id)}/"
 
+           
             Notification.objects.create(
-                user=highest.bidder,
-                action=f" Congratulations! You won the auction for '{artwork.title}' with a bid of ${highest.amount:.2f}.",
+                user=highest.bidder, 
+                actor=artwork.artist,
+                message=f" Congratulations! You won the auction for '{artwork.title}' with a bid of ${highest.amount:.2f}.",
                 art=artwork,
-                name="Bidding Successful!",
-                target=artwork.title,  
+                name=f"{artwork.artist.first_name} {artwork.artist.last_name}",
+                action="won the auction",
+                target=artwork.title,
                 icon="🏆",
-                date=now,
-                money=True,
                 amount=str(highest.amount),
+                money=True,
+                donation="Auction",
+                link=link,
+                created_at=dj_now(),
             )
 
+           
             Notification.objects.create(
-                user=artwork.artist,
-                action=f"Your artwork '{artwork.title}' was sold to {highest.bidder.username} for ${highest.amount:.2f}.",
+                user=artwork.artist,  
+                actor=highest.bidder,
+                message=f"Your artwork '{artwork.title}' was sold to {highest.bidder.username} for ${highest.amount:.2f}.",
                 art=artwork,
-                name = "You sold your artwork!",
-                target=artwork.title,  
-                date=now,
-                money=True,
+                name=f"{highest.bidder.first_name} {highest.bidder.last_name}",
+                action="bought your artwork",
+                target=artwork.title,
+                icon="🖼️",
                 amount=str(highest.amount),
+                money=True,
+                donation="Auction",
+                link=link,
+                created_at=dj_now(),
             )
+
         else:
             self.status = AuctionStatus.CLOSED.value
             self.save()
-           
+
             artwork.art_status = "Active"
             artwork.save()
+
 
 
 

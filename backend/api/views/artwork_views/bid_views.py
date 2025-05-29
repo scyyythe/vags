@@ -6,6 +6,7 @@ from api.models.artwork_model.bid import Bid, Auction
 from api.models.artwork_model.bid import AuctionStatus
 from api.models.artwork_model.artwork import Art
 from api.serializers.artwork_s.bid_serializers import BidSerializer, AuctionSerializer
+from api.models.interaction_model.follows import Follower
 from datetime import datetime
 from api.models.interaction_model.notification import Notification
 from rest_framework.views import APIView
@@ -16,6 +17,7 @@ from datetime import datetime, timezone
 from mongoengine import DoesNotExist
 from mongoengine.errors import NotUniqueError
 from mongoengine.queryset.visitor import Q
+
 class AuctionCreateView(APIView):
     def post(self, request, *args, **kwargs):
         try:
@@ -201,7 +203,7 @@ class AuctionListViewParticipated(generics.ListAPIView):
 
         now_utc = datetime.now(timezone.utc)
 
-        # Close expired auctions before querying
+
         expired_auctions = Auction.objects(
             status=AuctionStatus.ON_GOING.value,
             end_time__lt=now_utc
@@ -210,12 +212,6 @@ class AuctionListViewParticipated(generics.ListAPIView):
             auction.close_auction()
             auction.reload()
 
-        # Filter auctions where the user has participated (in bid_history or viewed_by)
-        # Assuming bid_history is a list of Bid objects with bidder user reference or username
-
-        # We'll filter all auctions where any bid in bid_history has a bidder matching user_id
-
-        # MongoEngine doesn't support deep filtering in arrays easily, so we do it manually here:
         participated_auctions = []
         all_auctions = Auction.objects()
 
@@ -371,3 +367,42 @@ class MyBidsAuctionListView(generics.ListAPIView):
         
         return base_qs
 
+
+class FollowedAuctionsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        page = int(request.query_params.get('page', 1))
+        page_size = 10
+        skip = (page - 1) * page_size
+
+        followed_users = Follower.objects.filter(follower=user)
+        followed_ids = [f.following.id for f in followed_users]
+       
+
+        if not followed_ids:
+            return Response([], status=status.HTTP_200_OK)
+
+        artworks = Art.objects(artist__in=followed_ids)
+        artwork_ids = [art.id for art in artworks]
+       
+
+        now_utc = datetime.now(timezone.utc)
+
+        expired_auctions = Auction.objects(
+            artwork__in=artwork_ids,
+            status=AuctionStatus.ON_GOING.value,
+            end_time__lt=now_utc
+        )
+        for auction in expired_auctions:
+            auction.close_auction()
+
+        auctions = Auction.objects(
+            artwork__in=artwork_ids,
+            status=AuctionStatus.ON_GOING.value
+        ).order_by('-created_at')[skip:skip + page_size]
+        print("Ongoing Auction Count:", auctions.count())
+
+        serialized = AuctionSerializer(auctions, many=True)
+        return Response(serialized.data, status=status.HTTP_200_OK)

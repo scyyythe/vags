@@ -15,12 +15,16 @@ import "react-loading-skeleton/dist/skeleton.css";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 import AuctionCountdown from "@/hooks/count/AuctionCountDown";
-import { ArtworkAuction } from "@/hooks/auction/useAuction";
+
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import useArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import { useBidHistory } from "@/hooks/bid/useBidHistory";
 import { getLoggedInUserId } from "@/auth/decode";
 import useAuctions from "@/hooks/auction/useAuction";
+import { useAuctionLike } from "@/hooks/interactions/auction_like/useAuctionLike";
+import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
+import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
+import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 export interface BidCardData {
   id: string;
   title: string;
@@ -29,6 +33,8 @@ export interface BidCardData {
   imageUrl: string;
   highestBid: number;
   viewers: string[];
+  user_has_liked_auction: boolean;
+  auction_likes_count: number;
 }
 
 const BidDetails = () => {
@@ -36,20 +42,27 @@ const BidDetails = () => {
 
   const { data: item, isLoading } = useFetchBiddingArtworkById(id!);
   const { data: allAuctions = [] } = useAuctions(1);
+  const { data: reportInfo, isError } = useBidReportStatus(id);
+  const [isReported, setIsReported] = useState(reportInfo?.reported ?? false);
+
+  useEffect(() => {
+    if (reportInfo?.reported !== undefined) {
+      setIsReported(reportInfo.reported);
+    }
+  }, [reportInfo]);
 
   useEffect(() => {
     if (item) {
       console.log("Fetched auction item:", item);
     }
   }, [item]);
+  const { toggleLike } = useAuctionLike(id!, item?.user_has_liked_auction ?? false, item?.auction_likes_count ?? 0);
 
   const [views, setViews] = useState<number>(0);
   const [showBidPopup, setShowBidPopup] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const location = useLocation();
-  const { artwork } = location.state;
-
-  const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
+  const artwork = location.state?.artwork || item?.artwork;
 
   const { artworks } = useArtworkContext();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -62,14 +75,14 @@ const BidDetails = () => {
   const descriptionRef = useRef<HTMLDivElement | null>(null);
 
   const [showReportOptions, setShowReportOptions] = useState(false);
-
+  const { mutate: submitReport } = useAuctionSubmitReport();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const [isReported, setIsReported] = useState(false);
+
   const artworkId = item?.artwork?.id ?? null;
   const artworkIds = artworks?.map((a) => a.id) || [];
   const { data } = useArtworkStatus(artworkIds);
-  const isLiked = data?.isLiked;
+
   const { data: bids = [], error } = useBidHistory(artworkId);
 
   //LIST OF BIDS SECTION
@@ -83,14 +96,26 @@ const BidDetails = () => {
     return `${day} ${month} ${year}, ${hour}:${minute}`;
   };
 
-  const onReport = () => {
+  const onReport = (issueDetails: string) => {
     setIsReported(true);
-    toast("Report submitted!");
+    toast(`Report submitted: ${issueDetails}`);
   };
 
-  const handleReportSubmit = (category: string, option?: string) => {
-    console.log("Report submitted:", { category, option });
-    onReport();
+  const handleReportSubmit = (categoryId: string, optionId?: string) => {
+    const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
+    const selectedOption = selectedCategory?.options?.find((opt) => opt.id === optionId);
+
+    const issueDetails = selectedOption
+      ? `Category: ${selectedCategory?.title} | Option: ${selectedOption.text} | Info: ${selectedOption.additionalInfo}`
+      : selectedCategory
+      ? `Category: ${selectedCategory.title}`
+      : "Artwork contains inappropriate or offensive content.";
+
+    console.log("Report submitted:", issueDetails);
+
+    onReport(issueDetails);
+
+    setShowReportOptions(false);
   };
 
   const currentUserId = getLoggedInUserId();
@@ -161,9 +186,7 @@ const BidDetails = () => {
   };
 
   const handleLike = () => {
-    if (item.artwork.id) {
-      toggleLike(item.artwork.id);
-    }
+    toggleLike();
   };
 
   const handleHide = () => {
@@ -342,31 +365,29 @@ const BidDetails = () => {
               </div>
 
               {/* Right side - Title, artist, description*/}
-              <div
-                className={`${isMobile ? "w-full mt-2 px-4" : "w-full max-w-[390px] -mt-2"}`}
-              >
+              <div className={`${isMobile ? "w-full mt-2 px-4" : "w-full max-w-[390px] -mt-2"}`}>
                 <div
-                  className={`transition-all duration-500 ease-in-out ${isMobile ? "" : isDetailOpen ? "relative" : "relative"}`}
+                  className={`transition-all duration-500 ease-in-out ${
+                    isMobile ? "" : isDetailOpen ? "relative" : "relative"
+                  }`}
                   style={{
-                    left: !isMobile && isDetailOpen ? "68px" : "40px", 
+                    left: !isMobile && isDetailOpen ? "68px" : "40px",
                     transition: "left 0.5s cubic-bezier(.4,0,.2,1)",
                   }}
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex items-center space-x-4">
                       <button
-                        onClick={() => handleLike()}
+                        onClick={() => toggleLike()}
                         className="flex items-center space-x-1 text-gray-800 rounded-3xl py-1.5 px-2 border border-gray-200"
                       >
                         <Heart
                           size={isMobile ? 13 : 13}
-                          className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
-                          fill={isLiked ? "currentColor" : "none"}
+                          className={item.user_has_liked_auction ? "text-red-600 fill-red-600" : "text-gray-800"}
+                          fill={item.user_has_liked_auction ? "currentColor" : "none"}
                         />
-                        {(item.artwork.likes_count[id || ""] ?? 0) > 0 && (
-                          <span className={`${isMobile ? "text-xs" : "text-[9px]"}`}>
-                            {item.artwork.likes_count[id || ""]}
-                          </span>
+                        {item.auction_likes_count > 0 && (
+                          <span className={`${isMobile ? "text-xs" : "text-[9px]"}`}>{item.auction_likes_count}</span>
                         )}
                       </button>
 
@@ -409,7 +430,11 @@ const BidDetails = () => {
                       ref={descriptionRef}
                       className={`
                       text-[9px] text-gray-700 transition-all duration-300 ease-in-out mb-2
-                      ${showFullDescription ? "max-h-9 overflow-y-auto pr-1" : "max-h-9 overflow-y-auto pr-1 overflow-hidden"}
+                      ${
+                        showFullDescription
+                          ? "max-h-9 overflow-y-auto pr-1"
+                          : "max-h-9 overflow-y-auto pr-1 overflow-hidden"
+                      }
                     `}
                       style={{ lineHeight: "1.25rem" }}
                     >
