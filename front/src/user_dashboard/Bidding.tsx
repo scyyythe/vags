@@ -121,6 +121,15 @@ const Bidding = () => {
 
     let activeArtworks = biddingArtworks.filter((a) => new Date(a.start_time) <= now);
 
+    if (
+      selectedCategory &&
+      selectedCategory !== "All" &&
+      selectedCategory !== "Following" &&
+      selectedCategory !== "Trending"
+    ) {
+      activeArtworks = activeArtworks.filter((artwork) => artwork.artwork.category === selectedCategory);
+    }
+
     if (selectedCategory === "Trending") {
       activeArtworks = [...activeArtworks].sort((a, b) => b.auction_likes_count - a.auction_likes_count);
     }
