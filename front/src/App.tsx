@@ -31,6 +31,7 @@ import SecuritySettings from "./components/user_dashboard/Settings/pages/Securit
 import NotificationsSettings from "./components/user_dashboard/Settings/pages/Notifications";
 import BillingSettings from "./components/user_dashboard/Settings/pages/BillingSettings";
 import HelpCenter from "./components/user_dashboard/Settings/pages/HelpCenter";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import AllNotifications from "./components/user_dashboard/notification/AllNotifications";
 import FollowDemo from "./components/user_dashboard/own_profile/following_&_followers/owners/mock_data/FollowDemo";
@@ -71,7 +72,6 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 //Exhibit
 import Gallery3D from "./components/gallery/Gallery3D";
 
-
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
 
@@ -96,173 +96,151 @@ const queryClient = new QueryClient();
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-        <LikedArtworksProvider>
-          <TooltipProvider>
-            <DonationProvider>
-              <DonationWrapper>
-                <Toaster position="bottom-right" richColors />
-                <ModalProvider>
-                  <ArtworkProvider>
-                    <BrowserRouter>
-                      <Routes>
-                        {/* Public & User Dashboard Routes (NO SidebarProvider) */}
-                        <Route path="/" element={<Index />} />
-                        <Route path="/bid/:id" element={<BidDetails />} />
-                        <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
-                        <Route path="/fingerprint-register" element={<FingerprintRegister />} />
-                        <Route path="/hero" element={<Hero />} />
+      <LikedArtworksProvider>
+        <TooltipProvider>
+          <DonationProvider>
+            <DonationWrapper>
+              <Toaster position="bottom-right" richColors />
+              <ModalProvider>
+                <ArtworkProvider>
+                  <BrowserRouter>
+                    <Routes>
+                      {/* Public & User Dashboard Routes (NO SidebarProvider) */}
+                      <Route path="/" element={<Index />} />
+                      <Route path="/bid/:id" element={<BidDetails />} />
+                      <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
+                      <Route path="/fingerprint-register" element={<FingerprintRegister />} />
+                      <Route path="/hero" element={<Hero />} />
 
-                        {/* Gallery */}
-                        <Route path="/gallery-3d" element={<Gallery3D />} />
+                      {/* Gallery */}
+                      <Route path="/gallery-3d" element={<Gallery3D />} />
 
-                        {/* Bid */}
-                        <Route path="/bid-winner/:id" element={<BidWinnerPage />} />
-                        <Route path="/payment" element={<PaymentPage />} />
+                      {/* Bid */}
+                      <Route path="/bid-winner/:id" element={<BidWinnerPage />} />
+                      <Route path="/payment" element={<PaymentPage />} />
 
-                        {/* Exhibit */}
-                        <Route path="/add-exhibit" element={<AddExhibit />} />
-                        <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />
-                        <Route path="/collaborator/exhibit/:exhibitId" element={<CollaboratorView />} />
-                        <Route path="/exhibitreview" element={<ExhibitReview />} />
+                      {/* Exhibit */}
+                      <Route path="/add-exhibit" element={<AddExhibit />} />
+                      <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />
+                      <Route path="/collaborator/exhibit/:exhibitId" element={<CollaboratorView />} />
+                      <Route path="/exhibitreview" element={<ExhibitReview />} />
 
-                        <Route path="/follow-demo" element={<FollowDemo />} />
+                      <Route path="/follow-demo" element={<FollowDemo />} />
 
-                        <Route path="/explore" element={<ProtectedRoute children={<Explore />} />} />
-                        <Route path="/create" element={<ProtectedRoute children={<Create />} />} />
-                        <Route path="/update/:id" element={<ProtectedRoute children={<UpdatePost />} />} />
-                        <Route path="/userprofile/:id" element={<ProtectedRoute children={<UserProfile />} />} />
-                        <Route path="/artwork/:id" element={<ProtectedRoute children={<ArtworkDetails />} />} />
-                        <Route path="/bidding" element={<ProtectedRoute children={<Bidding />} />} />
-                        <Route path="/marketplace" element={<ProtectedRoute children={<Marketplace />} />} />
-                        <Route path="/exhibits" element={<ProtectedRoute children={<Exhibits />} />} />
-                        <Route path="/all-notifications" element={<AllNotifications />} />
+                      <Route path="/explore" element={<ProtectedRoute children={<Explore />} />} />
+                      <Route path="/create" element={<ProtectedRoute children={<Create />} />} />
+                      <Route path="/update/:id" element={<ProtectedRoute children={<UpdatePost />} />} />
+                      <Route path="/userprofile/:id" element={<ProtectedRoute children={<UserProfile />} />} />
+                      <Route path="/artwork/:id" element={<ProtectedRoute children={<ArtworkDetails />} />} />
+                      <Route path="/bidding" element={<ProtectedRoute children={<Bidding />} />} />
+                      <Route path="/marketplace" element={<ProtectedRoute children={<Marketplace />} />} />
+                      <Route path="/exhibits" element={<ProtectedRoute children={<Exhibits />} />} />
+                      <Route path="/all-notifications" element={<AllNotifications />} />
 
-                        <Route path="/settings" element={<ProtectedRoute children={<Settings />} />}>
-                          <Route path="edit-profile" element={<ProtectedRoute children={<EditProfile />} />} />
-                          <Route path="account-details" element={<ProtectedRoute children={<AccountDetails />} />} />
-                          <Route path="security" element={<ProtectedRoute children={<SecuritySettings />} />} />
-                          <Route
-                            path="notifications"
-                            element={<ProtectedRoute children={<NotificationsSettings />} />}
-                          />
-                          <Route path="billing" element={<ProtectedRoute children={<BillingSettings />} />} />
-                          <Route path="help-center" element={<ProtectedRoute children={<HelpCenter />} />} />
-                        </Route>
+                      <Route path="/settings" element={<ProtectedRoute children={<Settings />} />}>
+                        <Route path="edit-profile" element={<ProtectedRoute children={<EditProfile />} />} />
+                        <Route path="account-details" element={<ProtectedRoute children={<AccountDetails />} />} />
+                        <Route path="security" element={<ProtectedRoute children={<SecuritySettings />} />} />
+                        <Route path="notifications" element={<ProtectedRoute children={<NotificationsSettings />} />} />
+                        <Route path="billing" element={<ProtectedRoute children={<BillingSettings />} />} />
+                        <Route path="help-center" element={<ProtectedRoute children={<HelpCenter />} />} />
+                      </Route>
 
-                        {/* Admin Routes */}
-                        <Route 
-                          path="/admin" 
-                          element={
-                            
-                              <AdminLayout role="admin">
-                                <AdminDashboard />
-                              </AdminLayout>
-                            
-                          } 
-                        />
-                        <Route 
-                          path="/admin/users" 
-                          element={
-                            
-                              <AdminLayout role="admin">
-                                <AdminUsers />
-                              </AdminLayout>
-                            
-                          } 
-                        />
-                        <Route 
-                          path="/admin/config" 
-                          element={
-                            
-                              <AdminLayout role="admin">
-                                <AdminConfig />
-                              </AdminLayout>
-                            
-                          } 
-                        />
-                        <Route 
-                          path="/admin/security" 
-                          element={
-                            
-                              <AdminLayout role="admin">
-                                <AdminSecurity />
-                              </AdminLayout>
-                            
-                          } 
-                        />
-                        <Route 
-                          path="/admin/analytics" 
-                          element={
-                            
-                              <AdminLayout role="admin">
-                                <AdminAnalytics />
-                              </AdminLayout>
-                            
-                          } 
-                        />
+                      {/* Admin Routes */}
+                      <Route
+                        path="/admin"
+                        element={
+                          <AdminLayout role="admin">
+                            <AdminDashboard />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="/admin/users"
+                        element={
+                          <AdminLayout role="admin">
+                            <AdminUsers />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="/admin/config"
+                        element={
+                          <AdminLayout role="admin">
+                            <AdminConfig />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="/admin/security"
+                        element={
+                          <AdminLayout role="admin">
+                            <AdminSecurity />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="/admin/analytics"
+                        element={
+                          <AdminLayout role="admin">
+                            <AdminAnalytics />
+                          </AdminLayout>
+                        }
+                      />
 
-                        {/* Moderator Routes */}
-                        <Route 
-                          path="/moderator" 
-                          element={
-                            
-                              <AdminLayout role="moderator">
-                                <ModeratorDashboard />
-                              </AdminLayout>
-                            
-                          } 
-                        />
-                        <Route 
-                          path="/moderator/reports" 
-                          element={
-                            
-                              <AdminLayout role="moderator">
-                                <ModeratorReports />
-                              </AdminLayout>
-                            
-                          } 
-                        />
-                        <Route 
-                          path="/moderator/content" 
-                          element={
-                            
-                              <AdminLayout role="moderator">
-                                <ModeratorContent />
-                              </AdminLayout>
-                            
-                          } 
-                        />
-                        <Route 
-                          path="/moderator/users" 
-                          element={
-                            
-                              <AdminLayout role="moderator">
-                                <ModeratorUsers />
-                              </AdminLayout>
-                            
-                          } 
-                        />
-                        <Route 
-                          path="/moderator/notifications" 
-                          element={
-                            
-                              <AdminLayout role="moderator">
-                                <ModeratorNotifications />
-                              </AdminLayout>
-                            
-                          } 
-                        />
-                        
-                        {/* Not Found */}
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </BrowserRouter>
-                  </ArtworkProvider>
-                </ModalProvider>
-              </DonationWrapper>
-            </DonationProvider>
-          </TooltipProvider>
-        </LikedArtworksProvider>
+                      {/* Moderator Routes */}
+                      <Route
+                        path="/moderator"
+                        element={
+                          <AdminLayout role="moderator">
+                            <ModeratorDashboard />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="/moderator/reports"
+                        element={
+                          <AdminLayout role="moderator">
+                            <ModeratorReports />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="/moderator/content"
+                        element={
+                          <AdminLayout role="moderator">
+                            <ModeratorContent />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="/moderator/users"
+                        element={
+                          <AdminLayout role="moderator">
+                            <ModeratorUsers />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="/moderator/notifications"
+                        element={
+                          <AdminLayout role="moderator">
+                            <ModeratorNotifications />
+                          </AdminLayout>
+                        }
+                      />
+
+                      {/* Not Found */}
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </BrowserRouter>
+                </ArtworkProvider>
+              </ModalProvider>
+            </DonationWrapper>
+          </DonationProvider>
+        </TooltipProvider>
+      </LikedArtworksProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };

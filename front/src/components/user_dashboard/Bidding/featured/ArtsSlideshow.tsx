@@ -54,6 +54,17 @@ const ArtSlideshow = ({ artworks, user, autoPlay = true, interval = 4000 }: ArtS
       </div>
     );
   }
+  const formatCurrency = (amount) => {
+    if (amount == null) return "No bids";
+
+    const num = parseFloat(amount);
+    if (isNaN(num)) return "Invalid";
+
+    if (num >= 1000000) return `₱${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `₱${(num / 1000).toFixed(1)}K`;
+
+    return `₱${num.toLocaleString()}`;
+  };
 
   const selectedArtwork = bidArtworkIndex !== null ? auctions[bidArtworkIndex] : null;
 
@@ -132,7 +143,7 @@ const ArtSlideshow = ({ artworks, user, autoPlay = true, interval = 4000 }: ArtS
                 <div className="flex-1 text-center">
                   <p className="text-[11px] text-black mb-3">Current Bid</p>
                   <p className="text-2xl text-black md:text-xl font-semibold whitespace-nowrap">
-                    {artwork.highest_bid?.amount ?? "No bids"}
+                    {formatCurrency(artwork.highest_bid?.amount)}
                   </p>
                 </div>
 
