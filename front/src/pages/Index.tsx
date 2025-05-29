@@ -50,7 +50,7 @@ const Index = () => {
   ) : null;
 
   return (
-    <>
+    <div className='overflow-x-hidden'>
       <Navbar />
       <Hero />
       <PopularArtists />
@@ -77,7 +77,7 @@ const Index = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
