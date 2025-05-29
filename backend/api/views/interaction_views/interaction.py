@@ -278,18 +278,18 @@ class ArtworkStatusView(generics.GenericAPIView):
 
     def get(self, request, art_id, *args, **kwargs):
         try:
-            # Fetch the artwork
+          
             art = Art.objects.get(id=art_id)
         except Art.DoesNotExist:
             return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Check if the artwork is saved by the current user
+       
         is_saved = Saved.objects.filter(art=art, user=request.user).count() > 0
         
-        # Check if the artwork is liked by the current user
+      
         is_liked = Like.objects.filter(art=art, user=request.user).first() is not None
 
-        # Return both statuses in a single response
+       
         return Response({
             "isSaved": is_saved,
             "isLiked": is_liked,
