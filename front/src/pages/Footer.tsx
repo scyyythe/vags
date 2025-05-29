@@ -63,7 +63,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-gray-800 mt-12 pt-8 px-5 text-xs text-gray-500 text-left">
-          <p>Copyright &copy;2023. Created with love by Stark.</p>
+          <p>Copyright &copy;2025. Created by Worxist.</p>
         </div>
       </div>
     </footer>

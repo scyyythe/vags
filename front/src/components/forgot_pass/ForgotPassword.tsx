@@ -211,39 +211,39 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
 
   const renderEmailForm = () => (
     <div className="flex flex-col items-center">
-      <div className="border border-gray-300 p-2 rounded-full mb-6">
+      {/* <div className="border border-gray-300 p-2 rounded-full mb-6">
         <i className="bx bx-fingerprint"></i>
-      </div>
+      </div> */}
 
-      <h1 className="text-2xl font-bold mb-2">Forgot Password</h1>
-      <p className="text-xs text-center text-gray-600 mb-8">
+      <h1 className="text-lg font-bold mb-2">Forgot Password</h1>
+      <p className="text-[11px] text-center text-gray-600 mb-8">
         Enter your email address and we will send a link to reset your password.
       </p>
 
       <form onSubmit={handleEmailSubmit} className="w-full">
         <div className="mb-6">
-          <label htmlFor="email" className="block text-sm font-medium mb-2">
+          <label htmlFor="email" className="block text-xs font-medium mb-2">
             Email Address
           </label>
           <div className="relative">
             <input
               type="email"
               id="email"
-              className="w-full px-10 py-2 text-[13px] border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-gray-300"
+              className="w-full px-10 py-2 text-[10px] border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-gray-300"
               placeholder="Email Address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <div className="absolute inset-y-0 left-3 flex items-center">
-              <i className="bx bx-at text-gray-500"></i>
+              <i className="bx bx-at text-gray-400 text-xs"></i>
             </div>
           </div>
-          {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
+          {error && <p className="text-red-600 text-[10px] mt-1">{error}</p>}
         </div>
 
         <button
           type="submit"
-          className="w-full bg-red-900 text-white text-sm font-medium py-3 rounded-full hover:bg-red-800 transition-colors mb-4"
+          className="w-full bg-red-900 text-white text-xs font-medium py-3 rounded-full hover:bg-red-800 transition-colors mb-4"
         >
           Reset password
         </button>
@@ -266,25 +266,25 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
         <i className="bx bx-envelope-open"></i>
       </div>
 
-      <h1 className="text-2xl font-bold mb-2">Password Reset</h1>
-      <p className="text-xs text-center text-gray-600 mb-8">
+      <h1 className="text-lg font-bold mb-2">Password Reset</h1>
+      <p className="text-[10px] text-center text-gray-600 mb-8">
         We sent a code to <span className="font-[600] text-gray-900">{email}</span>
       </p>
 
       <form onSubmit={handleVerifyOtp} className="w-full">
-        <div className="mb-6">
+        <div className="mb-6 text-xs">
           <OtpInput value={otp} onChange={setOtp} />
-          {error && <p className="text-red-600 text-xs mt-2 text-center">{error}</p>}
+          {error && <p className="text-red-600 text-[10px] mt-2 text-center">{error}</p>}
         </div>
 
         <button
           type="submit"
-          className="w-full bg-red-900 text-white text-sm font-medium py-3 rounded-full hover:bg-red-800 transition-colors mb-4"
+          className="w-full bg-red-900 text-white text-xs font-medium py-3 rounded-full hover:bg-red-800 transition-colors mb-4"
         >
           Confirm
         </button>
 
-        <p className="text-xs text-center mb-4">
+        <p className="text-[10px] text-center mb-4">
           Didn't receive the email?{" "}
           <button onClick={handleResendCode} className="text-red-900 underline font-medium">
             Click to resend
@@ -309,69 +309,69 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
         <KeyRound className="w-5 h-5 text-gray-600" />
       </div>
 
-      <h1 className="text-2xl font-bold mb-2">Set new password</h1>
-      <p className="text-xs text-center text-gray-600 mb-8">Must be at least 8 characters.</p>
+      <h1 className="text-lg font-bold mb-2">Set new password</h1>
+      <p className="text-[10px] text-center text-gray-600 mb-8">Must be at least 8 characters.</p>
 
       <form onSubmit={handlePasswordSubmit} className="w-full">
         <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium mb-2">
+          <label htmlFor="password" className="block text-xs font-medium mb-2">
             Password
           </label>
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               id="password"
-              className="w-full px-10 py-2 text-[13px] border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-gray-300"
+              className="w-full px-10 py-2 text-[10px] border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-gray-300"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
 
             <div className="absolute inset-y-0 left-3 flex items-center">
-              <i className="bx bx-lock-alt text-gray-500"></i>
+              <i className="bx bx-lock-alt text-gray-400"></i>
             </div>
 
             <button
               type="button"
-              className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+              className="absolute inset-y-0 right-3 flex items-center text-gray-400"
               onClick={() => setShowPassword(!showPassword)}
             >
-              <i className={showPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "18px" }}></i>
+              <i className={showPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "15px" }}></i>
             </button>
           </div>
         </div>
 
         <div className="mb-6">
-          <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
+          <label htmlFor="confirmPassword" className="block text-xs font-medium mb-2">
             Confirm Password
           </label>
           <div className="relative">
             <input
               type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
-              className="w-full px-10 py-2 text-[13px] border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-gray-300"
+              className="w-full px-10 py-2 text-[10px] border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-gray-300"
               placeholder="Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <div className="absolute inset-y-0 left-3 flex items-center">
-              <i className="bx bx-lock-alt text-gray-500"></i>
+              <i className="bx bx-lock-alt text-gray-400"></i>
             </div>
 
             <button
               type="button"
-              className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+              className="absolute inset-y-0 right-3 flex items-center text-gray-400"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
-              <i className={showConfirmPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "18px" }}></i>
+              <i className={showConfirmPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "15px" }}></i>
             </button>
           </div>
-          {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
+          {error && <p className="text-red-600 text-[10px] mt-1">{error}</p>}
         </div>
 
         <button
           type="submit"
-          className="w-full bg-red-900 text-white text-sm font-medium py-3 rounded-full hover:bg-red-800 transition-colors mb-4"
+          className="w-full bg-red-900 text-white text-xs font-medium py-3 rounded-full hover:bg-red-800 transition-colors mb-4"
         >
           Reset password
         </button>
@@ -394,8 +394,8 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
         <i className="bx bx-check-circle text-xl"></i>
       </div>
 
-      <h1 className="text-2xl font-bold mb-2 text-red-900">All done !</h1>
-      <p className="text-sm text-center mb-8">Your password has been reset.</p>
+      <h1 className="text-lg font-bold mb-2 text-red-900">All done !</h1>
+      <p className="text-xs text-center mb-8">Your password has been reset.</p>
 
       <button
         type="button"
