@@ -6,7 +6,7 @@ const Hero = () => {
   const { data: artworks, isLoading } = useFetchPopularArtworks(3);
 
   return (
-    <section className="relative pt-24 px-6 md:px-12" id="discover">
+    <section className="relative pt-24 px-6 pb-40 md:pb-0 md:px-12" id="discover">
       <div className="w-full max-w-[100%] md:max-w-[100%] lg:max-w-[100%] mx-auto pt-16">
         {/* Hero Title */}
         <motion.div
@@ -38,7 +38,7 @@ const Hero = () => {
             {isLoading ? (
               <PopularArtworksSkeleton />
             ) : (
-              <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-16 w-full md:w-[80%] top-10 md:-top-40">
+              <div className="relative grid grid-cols-1 md:grid-cols-3 md:gap-16 w-[65%] md:w-[80%] top-10 md:-top-40">
                 {artworks?.map((artwork, index) => {
                   let initialY, animateY;
                   if (index % 3 === 0) {

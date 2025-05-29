@@ -37,7 +37,7 @@ const Index = () => {
   useEffect(() => {
     toggleBodyScroll();
     return () => {
-      document.body.classList.remove('overflow-hidden', 'h-screen');
+      document.body.classList.remove('overflow-x-hidden', 'h-screen');
     };
   }, [showRegisterModal, showLoginModal, showForgotPasswordModal]);
 
@@ -50,7 +50,7 @@ const Index = () => {
   ) : null;
 
   return (
-    <div className='overflow-x-hidden'>
+    <>
       <Navbar />
       <Hero />
       <PopularArtists />
@@ -77,7 +77,7 @@ const Index = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

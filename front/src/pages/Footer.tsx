@@ -3,8 +3,8 @@ import { Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-white py-10 px-4 md:px-10">
-      <div className="max-w-screen-xl mx-auto">
+    <footer className="w-full max-w-7xl mx-auto bg-black text-white py-10 px-4 md:px-10">
+      <div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
           <div className="mb-8 lg:mb-0 md:col-span-1 px-5">
             <div className="flex items-center space-x-2 mb-4">
