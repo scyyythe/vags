@@ -169,8 +169,7 @@ class ArtUpdateView(generics.UpdateAPIView):
     serializer_class = ArtSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def perform_update(self, serializer):
-        art = serializer.save(updated_at=datetime.utcnow())
+    
 
 
 class ArtDeleteView(generics.DestroyAPIView):
@@ -214,7 +213,7 @@ class UnHideArtworkView(APIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
-        artwork.visibility = "Active"
+        artwork.visibility = "Public"
         artwork.updated_at = datetime.utcnow()
         artwork.save()
 

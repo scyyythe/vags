@@ -3,30 +3,34 @@ import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 
-const UnhideArtwork = async (id: string): Promise<{ message: string }> => {
+const unhideArtworkById = async (id: string): Promise<{ message: string }> => {
   const response = await apiClient.patch(`/art/${id}/unhide/`);
   return response.data;
 };
 
-const useUnhideArtwork = () => {
+const useUnhideAllMyArtworks = (myArtworks: Artwork[]) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => UnhideArtwork(id),
-    onSuccess: (_, id) => {
-      toast.success("Artwork unhidden successfully!");
+    mutationFn: async () => {
+      const hiddenArts = myArtworks.filter((art) => art.visibility?.toLowerCase() === "hidden");
 
-      queryClient.setQueryData<Artwork[]>(["artworks", 1, undefined, "all"], (oldData) => {
+      await Promise.all(hiddenArts.map((art) => unhideArtworkById(art.id)));
+
+      return hiddenArts.length;
+    },
+    onSuccess: (count) => {
+      queryClient.setQueryData<Artwork[]>(["artworks", 1, undefined, "created-by-me"], (oldData) => {
         if (!oldData) return [];
-        return oldData.filter((artwork) => artwork.id !== id);
+        return oldData.filter((artwork) => artwork.visibility?.toLowerCase() !== "hidden");
       });
 
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
     },
     onError: () => {
-      toast.error("Failed to unhide artwork.");
+      toast.error("Failed to unhide artworks.");
     },
   });
 };
 
-export default useUnhideArtwork;
+export default useUnhideAllMyArtworks;

@@ -71,7 +71,6 @@ const OnBidTab = () => {
       }
     }
 
-    // For other tabs, just filter by status (on_going, sold, closed)
     return a.status === activeTab;
   });
 

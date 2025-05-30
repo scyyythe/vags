@@ -4,50 +4,70 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 
 type AuctionReportInput = {
-  issue_details: string;
+  auction_id: string;
+  category: string;
+  option?: string;
+  description?: string;
+  additionalInfo?: string;
 };
 
-type AuctionReportResponse = {
+type ReportResponse = {
   id: string;
-  issue_details: string;
+  description?: string;
+  additionalInfo?: string;
   status: "Pending" | "In Progress" | "Resolved";
   created_at: string;
 };
 
 const submitAuctionReport = async ({
-  id,
-  issue_details,
-}: {
-  id: string;
-  issue_details: string;
-}): Promise<AuctionReportResponse> => {
-  console.log("Submitting auction report:", {
-    auction_id: id,
-    issue_details,
+  auction_id,
+  category,
+  option,
+  description,
+  additionalInfo,
+}: AuctionReportInput): Promise<ReportResponse> => {
+  const response = await apiClient.post("/reports/create/", {
+    auction_id,
+    category,
+    option,
+    description,
+    additionalInfo,
   });
-
-  const response = await apiClient.post("auction-reports/create/", {
-    auction_id: id,
-    issue_details,
-  });
-
   return response.data;
 };
 
-const useAuctionSubmitReport = () => {
+const useAuctionReport = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, issue_details }: { id: string; issue_details: string }) =>
-      submitAuctionReport({ id, issue_details }),
-    onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ["auctionReportStatus", id] });
-      queryClient.invalidateQueries({ queryKey: ["auctionReportStatusBulk"] });
+    mutationFn: ({ auction_id, category, option, description, additionalInfo }: AuctionReportInput) =>
+      submitAuctionReport({
+        auction_id,
+        category,
+        option,
+        description,
+        additionalInfo,
+      }),
+
+    onSuccess: (_, { auction_id }) => {
+      queryClient.invalidateQueries({ queryKey: ["auctionReportStatus", auction_id] });
       queryClient.invalidateQueries({ queryKey: ["auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["auctionReportStatusBulk"] });
     },
+
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.error || "Failed to submit auction report.");
+        console.error("Full error response:", error.response);
+        const serverMessage = error.response?.data?.detail || error.response?.data?.error || "";
+
+        if (
+          serverMessage.toLowerCase().includes("already reported") ||
+          serverMessage.toLowerCase().includes("still under review")
+        ) {
+          toast.error("You already reported this auction and it's under review.");
+        } else {
+          toast.error(serverMessage || "Failed to submit auction report.");
+        }
       } else {
         toast.error("Failed to submit auction report.");
       }
@@ -55,4 +75,4 @@ const useAuctionSubmitReport = () => {
   });
 };
 
-export default useAuctionSubmitReport;
+export default useAuctionReport;
