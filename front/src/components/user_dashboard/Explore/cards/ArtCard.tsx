@@ -177,7 +177,7 @@ const ArtCard = ({
               onHide={handleHide}
               onReport={handleReport}
               isFavorite={status.isSaved}
-              isReported={isReportedFromBulk}
+              isReported={report?.reported}
             />
           ) : isDeleted ? (
             <DeletedMenu
