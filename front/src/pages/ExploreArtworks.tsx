@@ -26,11 +26,11 @@ const ExploreArtworks = () => {
   if (isLoading) return <ArtCardSkeleton />;
 
   return (
-    <section className="py-20 px-6 md:px-12 bg-gray-50" id="artworks">
-      <div className="max-w-screen-xl mx-auto">
+    <section className="w-full max-w-7xl mx-auto py-20 px-6 md:px-12 bg-gray-50" id="artworks">
+      <div>
         <div className="flex justify-between items-center mb-12">
           <motion.h2
-            className="text-3xl md:text-4xl font-bold"
+            className="text-2xl md:text-2xl font-bold"
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -41,7 +41,7 @@ const ExploreArtworks = () => {
 
           <motion.a
             onClick={() => setShowRegisterModal(true)}
-            className="bg-black text-white text-sm font-small rounded-full px-4 py-2 hover:bg-gray-800 transition-colors"
+            className="bg-black text-white text-xs font-small rounded-full px-4 py-2 hover:bg-gray-800 transition-colors"
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -52,13 +52,13 @@ const ExploreArtworks = () => {
         </div>
 
         <motion.div
-          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
         >
-          {artworks.slice(0, 8).map((artwork) => (
+          {artworks.slice(0, 10).map((artwork) => (
             <motion.div key={artwork.id} variants={item} className="card-hover">
               <div className="bg-white px-5 py-3 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="relative group">

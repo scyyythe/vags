@@ -6,7 +6,7 @@ const Hero = () => {
   const { data: artworks, isLoading } = useFetchPopularArtworks(3);
 
   return (
-    <section className="relative pt-24 pb-16 px-6 md:px-12" id="discover">
+    <section className="relative pt-24 px-6 pb-40 md:pb-0 md:px-12" id="discover">
       <div className="w-full max-w-[100%] md:max-w-[100%] lg:max-w-[100%] mx-auto pt-16">
         {/* Hero Title */}
         <motion.div
@@ -20,7 +20,7 @@ const Hero = () => {
             <br />
             Artworks
           </h1>
-          <p className="text-2sm text-black max-w-2xl mx-auto">Step inside and let the art speak to you.</p>
+          <p className="text-black max-w-2xl mx-auto">Step inside and let the art speak to you.</p>
         </motion.div>
 
         {/* Background Gradient */}
@@ -30,15 +30,15 @@ const Hero = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <div className="absolute -top-14 left-1/2 transform -translate-x-1/2 bg-gradient-to-br from-red-300 via-red-200 to-red-400 rounded-full opacity-80 blur-2xl w-[63%] h-72"></div>
+          <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-gradient-to-br from-red-300 via-red-200 to-red-400 rounded-full opacity-80 blur-2xl w-[63%] h-72"></div>
 
           {/* Black Card Container */}
-          <div className="relative bg-black rounded-3xl p-10 md:p-16 flex flex-col items-center justify-center top-32 md:-ml-[125px] w-full md:w-[125%]">
+          <div className="relative bg-black rounded-3xl p-10 md:p-16 flex flex-col items-center justify-center top-32 md:-ml-[70px] w-full md:w-[115%] h-96">
             {/* Artwork Cards */}
             {isLoading ? (
               <PopularArtworksSkeleton />
             ) : (
-              <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 w-full md:w-[89%] -top-48">
+              <div className="relative grid grid-cols-1 md:grid-cols-3 md:gap-16 w-[65%] md:w-[80%] top-10 md:-top-40">
                 {artworks?.map((artwork, index) => {
                   let initialY, animateY;
                   if (index % 3 === 0) {
@@ -60,7 +60,7 @@ const Hero = () => {
                       animate={{ y: animateY }}
                       transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
                     >
-                      <div className="relative bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
+                      <div className="relative w-full bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
                         <img src={artwork.image_url} alt={artwork.title} className="h-40 rounded-2xl" />
                         <div className="p-2 flex justify-between items-center">
                           <div>
@@ -82,7 +82,7 @@ const Hero = () => {
               </div>
             )}
             {/* Stats */}
-            <div className="-mt-12 flex justify-center space-x-12 md:space-x-60">
+            <div className="relative bottom-72 md:bottom-14 flex justify-center space-x-12 md:space-x-48">
               <div className="text-center">
                 <p className="text-lg md:text-3xl font-semibold text-white">30k+</p>
                 <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>

@@ -37,7 +37,7 @@ const Index = () => {
   useEffect(() => {
     toggleBodyScroll();
     return () => {
-      document.body.classList.remove('overflow-hidden', 'h-screen');
+      document.body.classList.remove('overflow-x-hidden', 'h-screen');
     };
   }, [showRegisterModal, showLoginModal, showForgotPasswordModal]);
 
