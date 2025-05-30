@@ -192,77 +192,83 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
 
       <ScrollArea className="h-[480px] px-4 py-2">
         <div className="space-y-4 pr-2">
-          {displayedNotifications.map((n) => (
-            <div
-              key={n.id}
-              className={cn("flex items-start gap-3 cursor-pointer", {
-                "hover:bg-gray-100 p-2 rounded-md transition": n.link,
-              })}
-              onClick={() => {
-                if (n.link) {
-                  navigate(n.link);
-                  onClose();
-                }
-              }}
-            >
-              {n.actor && n.actor.profile_picture ? (
-                <img src={n.actor.profile_picture} alt={n.name} className="w-6 h-6 rounded-full object-cover" />
-              ) : n.icon === "crypto" ? (
-                <div className="w-6 h-6 bg-muted rounded-full flex items-center justify-center text-sm font-medium">
-                  ⬤
-                </div>
-              ) : (
-                <div className="w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center font-regular text-xs">
-                  {n.name ? n.name.charAt(0).toUpperCase() : "?"}
-                </div>
-              )}
-
-              <div className="text-[10px] leading-snug">
-                {n.name && (
-                  <>
-                    <span className="font-medium">{n.name}</span>
-                    {n.message &&
-                      (() => {
-                        const regex = /(.*tipped you )(\$\d+(?:\.\d+)?)( for your artwork.*)/;
-                        const match = n.message.match(regex);
-                        if (match) {
-                          return (
-                            <span className="font-medium">
-                              {match[1]}
-                              <span className="text-green-600">{match[2]}</span>
-                              {match[3]}
-                            </span>
-                          );
-                        } else {
-                          return <span className="font-medium">{n.message}</span>;
-                        }
-                      })()}
-                  </>
-                )}
-                {!n.name && n.icon === "crypto" && (
-                  <>
-                    {n.action} ...
-                    <span className="font-medium">{n.amount}</span> for{" "}
-                    <span className="font-medium text-red-500">
-                      {n.forAmount} {n.token}
-                    </span>
-                    <div>
-                      <a
-                        href={n.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[10px] text-blue-600 hover:underline"
-                      >
-                        View on explorer ↗
-                      </a>
-                    </div>
-                  </>
-                )}
-                {n.donation && <>{/* <span className="font-medium text-green-600"> {n.donation} </span> */}</>}
-                <div className="text-[10px] text-muted-foreground mt-1">{formatDateTime(n.created_at)}</div>
-              </div>
+          {displayedNotifications.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center text-xs text-muted-foreground mt-4">
+              No notifications for the moment.
             </div>
-          ))}
+          ) : (
+            displayedNotifications.map((n) => (
+              <div
+                key={n.id}
+                className={cn("flex items-start gap-3 cursor-pointer", {
+                  "hover:bg-gray-100 p-2 rounded-md transition": n.link,
+                })}
+                onClick={() => {
+                  if (n.link) {
+                    navigate(n.link);
+                    onClose();
+                  }
+                }}
+              >
+                {n.actor && n.actor.profile_picture ? (
+                  <img src={n.actor.profile_picture} alt={n.name} className="w-6 h-6 rounded-full object-cover" />
+                ) : n.icon === "crypto" ? (
+                  <div className="w-6 h-6 bg-muted rounded-full flex items-center justify-center text-sm font-medium">
+                    ⬤
+                  </div>
+                ) : (
+                  <div className="w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center font-regular text-xs">
+                    {n.name ? n.name.charAt(0).toUpperCase() : "?"}
+                  </div>
+                )}
+
+                <div className="text-[10px] leading-snug">
+                  {n.name && (
+                    <>
+                      <span className="font-medium">{n.name}</span>
+                      {n.message &&
+                        (() => {
+                          const regex = /(.*tipped you )(\$\d+(?:\.\d+)?)( for your artwork.*)/;
+                          const match = n.message.match(regex);
+                          if (match) {
+                            return (
+                              <span className="font-medium">
+                                {match[1]}
+                                <span className="text-green-600">{match[2]}</span>
+                                {match[3]}
+                              </span>
+                            );
+                          } else {
+                            return <span className="font-medium">{n.message}</span>;
+                          }
+                        })()}
+                    </>
+                  )}
+                  {!n.name && n.icon === "crypto" && (
+                    <>
+                      {n.action} ...
+                      <span className="font-medium">{n.amount}</span> for{" "}
+                      <span className="font-medium text-red-500">
+                        {n.forAmount} {n.token}
+                      </span>
+                      <div>
+                        <a
+                          href={n.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-blue-600 hover:underline"
+                        >
+                          View on explorer ↗
+                        </a>
+                      </div>
+                    </>
+                  )}
+                  {n.donation && <>{/* <span className="font-medium text-green-600"> {n.donation} </span> */}</>}
+                  <div className="text-[10px] text-muted-foreground mt-1">{formatDateTime(n.created_at)}</div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </ScrollArea>
     </div>
