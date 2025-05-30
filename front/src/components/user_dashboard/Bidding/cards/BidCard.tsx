@@ -61,15 +61,42 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
     setMenuOpen(false);
   };
 
-  const handleReport = (issueDetails: string) => {
+  const handleReport = ({
+    category,
+    option,
+    description,
+    additionalInfo,
+  }: {
+    category: string;
+    option?: string;
+    description?: string;
+    additionalInfo?: string;
+  }) => {
     if (reportInfo?.reported) {
-      toast.error("You have already reported this artwork.");
+      toast.error("You have already reported this auction.");
       setMenuOpen(false);
       return;
     }
-    submitAuctionReport({ id: data.id, issue_details: issueDetails });
+
+    console.log("Submitting auction report with data:", {
+      auction_id: data.id,
+      category,
+      option,
+      description,
+      additionalInfo,
+    });
+
+    submitAuctionReport({
+      auction_id: data.id,
+      category,
+      option,
+      description,
+      additionalInfo,
+    });
+
     setMenuOpen(false);
   };
+
   const isReported = reportInfo?.reported || false;
 
   const handleBidSubmit = (amount: number) => {
@@ -128,7 +155,13 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
             >
               <MoreHorizontal size={13} />
             </button>
-            <BidMenu isOpen={menuOpen} onHide={handleHide} onReport={handleReport} isReported={isReported} />
+            <BidMenu
+              isOpen={menuOpen}
+              onHide={handleHide}
+              onReport={handleReport}
+              isReported={isReported}
+              auctionId={data.id}
+            />
           </div>
 
           {/* Bottom overlay with title, current bid and button */}
