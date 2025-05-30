@@ -99,7 +99,6 @@ const ArtCard = ({
     restore(id);
     setMenuOpen(false);
   };
-
   const handleReport = (issueDetails: string) => {
     if (isReportedFromBulk) {
       toast.error("You have already reported this artwork.");
@@ -107,7 +106,10 @@ const ArtCard = ({
       return;
     }
 
-    submitReport({ id, issue_details: issueDetails });
+    console.log("Submitting report with data:", { id, issue_details: issueDetails });
+
+    submitReport({ art_id: id, issue_details: issueDetails });
+
     setMenuOpen(false);
   };
 

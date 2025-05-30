@@ -13,20 +13,29 @@ type ReportResponse = {
   created_at: string;
 };
 
-const submitReport = async ({ id, issue_details }: { id: string; issue_details: string }): Promise<ReportResponse> => {
+const submitReport = async ({
+  art_id,
+  issue_details,
+}: {
+  art_id: string;
+  issue_details: string;
+}): Promise<ReportResponse> => {
   const response = await apiClient.post("/reports/create/", {
     issue_details,
-    art_id: id,
+    art_id,
   });
   return response.data;
 };
+
 const useSubmitReport = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, issue_details }: { id: string; issue_details: string }) => submitReport({ id, issue_details }),
-    onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ["reportStatus", id] });
+    mutationFn: ({ art_id, issue_details }: { art_id: string; issue_details: string }) =>
+      submitReport({ art_id, issue_details }),
+
+    onSuccess: (_, { art_id }) => {
+      queryClient.invalidateQueries({ queryKey: ["reportStatus", art_id] });
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
     },
     onError: (error: unknown) => {
