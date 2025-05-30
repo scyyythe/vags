@@ -60,7 +60,7 @@ const TopSellers = () => {
   ];
 
   return (
-    <div className="mb-6 overflow-hidden pb-3">
+    <div className="mb-6 overflow-hidden pb-5">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xs font-semibold text-gray-900">Top Sellers</h2>
         <button className="text-[11px] text-gray-600 hover:text-gray-900">

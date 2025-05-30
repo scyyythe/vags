@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
@@ -8,11 +8,22 @@ import TopSellers from "@/components/user_dashboard/Marketplace/top_seller/TopSe
 import WishlistModal from "@/components/user_dashboard/Marketplace/wishlist/WishlistModal";
 import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
 import { toast } from "sonner";
+import { ChevronDown, Grid3X3 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 const Marketplace = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const categories = ["All", "Trending", "Following"];
   const navigate = useNavigate();
+
+  const sortOptions = ["Latest", "Price: Low to High", "Price: High to Low", "Most Popular"];
+  const editionOptions = ["Original (1 of 1)", "Limited Edition", "Open Edition"];
 
   const [likedItems, setLikedItems] = useState<Set<string>>(new Set());
   const [showWishlist, setShowWishlist] = useState(false);
@@ -67,6 +78,7 @@ const Marketplace = () => {
       price: 200,
       originalPrice: 250,
       title: "Mock Artwork 2",
+      rating: 4.5,
     },
     {
       id: "3",
@@ -80,6 +92,7 @@ const Marketplace = () => {
       price: 860,
       originalPrice: 1000,
       title: "Mock Artwork 4",
+      rating: 4.2,
     },
     {
       id: "5",
@@ -130,7 +143,7 @@ const Marketplace = () => {
               </div>
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex flex-col sm:flex-row justify-between gap-4">
               <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
 
               <div className="flex gap-3">
@@ -140,6 +153,30 @@ const Marketplace = () => {
                     onChange={(value) => setSelectedCategory(value)}
                   />
                 </div>
+
+                {/* Sort dropdown with editions */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex py-1 px-2.5 rounded-full border border-gray-300 gap-2">
+                      <Grid3X3 className="w-3 h-3 relative top-0.5" />
+                      <span className="text-[10px]">Sort</span>
+                      <ChevronDown className="w-3 h-3 relative top-0.5" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-white z-0">
+                    {sortOptions.map((option) => (
+                      <DropdownMenuItem key={option} className="text-[10px]">
+                        {option}
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                    {editionOptions.map((option) => (
+                      <DropdownMenuItem key={option} className="text-[10px]">
+                        {option}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
                 <button
                   className="py-1 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
@@ -154,7 +191,7 @@ const Marketplace = () => {
           </div>
           
           {/* Marketplace Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4 md:pb-0">
             {mockArtworks.map((artwork) => (
               <SellCard
                 key={artwork.id}
@@ -163,14 +200,16 @@ const Marketplace = () => {
                 price={artwork.price}
                 originalPrice={artwork.originalPrice ?? 0} 
                 title={artwork.title}
+                rating={artwork.rating}
                 isMarketplace={true} 
               />
             ))}
           </div>
         </div>
+        
       </div>
       
-      <div >
+      <div>
         <Footer />
       </div>
 
