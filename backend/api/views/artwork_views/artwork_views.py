@@ -213,7 +213,7 @@ class UnHideArtworkView(APIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
-        artwork.visibility = "Active"
+        artwork.visibility = "Public"
         artwork.updated_at = datetime.utcnow()
         artwork.save()
 

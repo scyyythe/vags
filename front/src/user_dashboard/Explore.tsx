@@ -125,7 +125,6 @@ const Explore = () => {
                   filteredArtworksMemo?.map((card) => {
                     const status = bulkStatusLookup[String(card.id)];
                     const report = reportStatusLookup[String(card.id)];
-                    console.log("reportStatus:", reportStatus);
 
                     return (
                       <ArtCard
