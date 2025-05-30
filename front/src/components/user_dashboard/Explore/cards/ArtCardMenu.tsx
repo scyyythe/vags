@@ -2,11 +2,14 @@ import React, { useRef, useState } from "react";
 import { Bookmark, EyeOff, Eye, Flag, Undo2 } from "lucide-react";
 import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
+import { normalizeReportType } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
+import { ReportOption } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 interface ArtCardMenuProps {
   isOpen: boolean;
   onFavorite: () => void;
   onHide: () => void;
-  onReport: (issue_details: string) => void;
+  onReport: (data: { category: string; option?: string; description: string; additionalInfo: string }) => void;
+
   onUndoReport?: () => void;
   isFavorite: boolean;
   isReported: boolean;
@@ -34,19 +37,28 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showReportOptions, setShowReportOptions] = useState(false);
-
-  const handleReportSubmit = (categoryId: string, optionId?: string) => {
+  const handleReportSubmit = (categoryId: string, optionData?: ReportOption | string) => {
     const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
-    const selectedOption = selectedCategory?.options?.find((opt) => opt.id === optionId);
+    if (!selectedCategory) {
+      console.error("Category not found for id:", categoryId);
+      return;
+    }
 
-    const issueDetails = selectedOption
-      ? `Category: ${selectedCategory?.title} | Option: ${selectedOption.text} | Info: ${selectedOption.additionalInfo}`
-      : selectedCategory
-      ? `Category: ${selectedCategory.title}`
-      : "Artwork contains inappropriate or offensive content.";
+    const isCustomReason = typeof optionData === "string";
+    const selectedOption = !isCustomReason ? (optionData as ReportOption) : null;
 
-    console.log("Report submitted:", issueDetails);
-    onReport(issueDetails);
+    const option = isCustomReason ? optionData : selectedOption?.id || "";
+    const additionalInfo = isCustomReason ? optionData : selectedOption?.additionalInfo || "";
+
+    const normalizedCategory = normalizeReportType(option, categoryId);
+
+    onReport({
+      category: normalizedCategory,
+      option,
+      description: selectedCategory.title,
+      additionalInfo,
+    });
+
     setShowReportOptions(false);
   };
 

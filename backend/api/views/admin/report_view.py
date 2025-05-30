@@ -15,9 +15,11 @@ from rest_framework import serializers
 from rest_framework.views import APIView
 import traceback
 import logging
-from api.models.admin.report  import AuctionReport
 from bson.errors import InvalidId
 logger = logging.getLogger(__name__)
+from mongoengine import (
+    Document, StringField, ReferenceField, DateTimeField, ValidationError
+)
 
 class ReportCreateView(generics.ListCreateAPIView):
     serializer_class = ReportSerializer
@@ -26,53 +28,84 @@ class ReportCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return Report.objects.filter(user=ObjectId(self.request.user.id))
 
-    def perform_create(self, serializer):   
-        try:
-            mongo_user = User.objects.get(id=ObjectId(self.request.user.id))         
-        except Exception as e:       
-            raise e
+    def perform_create(self, serializer):
+       
+        serializer.save()
 
-        art_id = self.request.data.get("art_id")
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, context={"request": request})
+        try:
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+        except ValidationError as e:
+          
+            detail = e.detail.get("detail") if isinstance(e.detail, dict) else str(e.detail)
+
+            if detail and ("already reported" in detail.lower() or "still under review" in detail.lower()):
+                return Response(e.detail, status=status.HTTP_409_CONFLICT) 
+          
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+
+        headers = self.get_success_headers(serializer.data)
+
      
+        user = request.user
+        mongo_user = User.objects.get(id=ObjectId(user.id))
 
-        if not art_id:     
-            raise serializers.ValidationError({"art_id": "This field is required."})
+        art = serializer.instance.art
+        auction = serializer.instance.auction
 
-        try:
-            art = Art.objects.get(id=ObjectId(art_id))        
-        except Art.DoesNotExist:         
-            raise serializers.ValidationError({"art_id": "Artwork not found."})
-
-        existing_report = Report.objects.filter(
-            user=mongo_user,
-            art=art,
-            status__in=["Pending", "In Progress"]
-        ).first()
-
-        if existing_report:
-         
-            raise serializers.ValidationError({
-                "detail": "You have already reported this artwork and it's still under review."
-            })
-
-        report = serializer.save(user=mongo_user, art=art)
-      
-        host = self.request.get_host()
+        host = request.get_host()
         protocol = "http" if "localhost" in host else "https"
-        link = f"/artwork/{str(art.id)}"
 
-        Notification.objects.create(
-            user=art.artist,
-            actor=mongo_user,
-            message=f"A report was submitted a report on your artwork '{art.title}'",
-            art=art,
-            name=f"{mongo_user.first_name} {mongo_user.last_name}",
-            action="reported your artwork",
-            target=art.title,
-            icon="report",
-            created_at=datetime.now(),
-            link=link,
-        )
+        if art:
+            link = f"/artwork/{str(art.id)}"
+            Notification.objects.create(
+                user=art.artist,
+                actor=mongo_user,
+                message=f"A report was submitted on your artwork '{art.title}'",
+                art=art,
+                name=f"{mongo_user.first_name} {mongo_user.last_name}",
+                action="reported your artwork",
+                target=art.title,
+                icon="report",
+                created_at=datetime.now(),
+                link=link,
+            )
+
+        if auction:
+            artist = auction.artwork.artist
+            link = f"/bid/{str(auction.id)}/"
+
+            Notification.objects.create(
+                user=mongo_user,
+                actor=mongo_user,
+                message=f"Submitted a report for the auction '{auction.artwork.title}'.",
+                auction=auction,
+                name=f"{mongo_user.first_name} {mongo_user.last_name}",
+                action="submitted a report",
+                target=auction.artwork.title,
+                icon="report",
+                created_at=datetime.now(),
+                link=link,
+            )
+
+            Notification.objects.create(
+                user=artist,
+                actor=mongo_user,
+                message=f"A report was submitted for your auction '{auction.artwork.title}', and it's under review.",
+                auction=auction,
+                name=f"{mongo_user.first_name} {mongo_user.last_name}",
+                action="reported your auction",
+                target=auction.artwork.title,
+                icon="alert",
+                created_at=datetime.now(),
+                link=link,
+            )
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
 
 class AuctionReportCreateView(generics.ListCreateAPIView):
     serializer_class = AuctionReportSerializer
