@@ -4,6 +4,8 @@ import { DollarSign, ShoppingCart, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import DeleteConfirmationPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/delete/DeletePopup";
 import AuctionPopup from "@/components/user_dashboard/own_profile/request_bid/RequestBid";
+import SellArtworkModal, { SellArtworkData } from "@/components/user_dashboard/own_profile/sell_artwork/SellArtModal";
+import SellConfirmationModal from "@/components/user_dashboard/own_profile/sell_artwork/SellConfirmationModal";
 import useDeleteArtwork from "@/hooks/mutate/visibility/trash/useDeleteArtwork";
 import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork";
 interface ArtCardMenuProps {
@@ -33,6 +35,9 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [publicStatus, setPublicStatus] = useState(isPublic);
   const [showAuctionPopup, setShowAuctionPopup] = useState(false);
+  const [showSellModal, setShowSellModal] = useState(false);
+  const [showSellConfirmation, setShowSellConfirmation] = useState(false);
+  const [sellArtworkData, setSellArtworkData] = useState<SellArtworkData | null>(null);
   const navigate = useNavigate();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
@@ -61,6 +66,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     setPublicStatus(newStatus);
     onToggleVisibility(newStatus, artworkId);
   };
+
   const handleConfirmDelete = () => {
     deleteArtwork.mutate(artworkId, {
       onSuccess: () => {
@@ -71,13 +77,38 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
       },
     });
   };
+
   const handleUpdateClick = () => {
     onEdit(artworkId);
     navigate(`/update/${artworkId}`);
   };
+
   const handleArchiveClick = () => {
     archiveArtwork(artworkId);
     setIsEditOpen(false);
+  };
+
+  const handleSellClick = () => {
+    setShowSellModal(true);
+  };
+
+  const handleSellArtwork = (data: SellArtworkData) => {
+    setSellArtworkData(data);
+    setShowSellModal(false);
+    setShowSellConfirmation(true);
+  };
+
+  const handleConfirmSell = () => {
+    console.log('Selling artwork with data:', sellArtworkData);
+    toast.success('Artwork successfully listed for sale!');
+    setShowSellConfirmation(false);
+    setSellArtworkData(null);
+    onSell(); 
+  };
+
+  const handleCancelSell = () => {
+    setShowSellConfirmation(false);
+    setSellArtworkData(null);
   };
 
   return (
@@ -108,7 +139,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
           {/* Sell */}
           <div className="flex items-center relative">
             <button
-              onClick={onSell}
+              onClick={handleSellClick}
               className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
               onMouseEnter={() => setHoveredItem("sell")}
               onMouseLeave={() => setHoveredItem(null)}
@@ -207,6 +238,19 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         onOpenChange={setShowAuctionPopup}
         artworkId={artworkId}
         artworkTitle={artworkTitle}
+      />
+      {/* Sell Artwork Modal */}
+      <SellArtworkModal
+        isOpen={showSellModal}
+        onClose={() => setShowSellModal(false)}
+        onSellArtwork={handleSellArtwork}
+        artworkTitle={artworkTitle}
+      />
+      {/* Sell Confirmation Modal */}
+      <SellConfirmationModal
+        isOpen={showSellConfirmation}
+        onConfirm={handleConfirmSell}
+        onCancel={handleCancelSell}
       />
     </>
   );
