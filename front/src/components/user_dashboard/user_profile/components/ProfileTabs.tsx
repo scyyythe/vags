@@ -15,6 +15,7 @@ import CollectionTab from "../tabs/CollectionTab";
 import OnBidTab from "../tabs/OnBidTab";
 import ExhibitTab from "@/components/user_dashboard/user_profile/tabs/ExhibitsTab";
 import useUnarchiveAllMyArtworks from "@/hooks/mutate/visibility/arc/useUnarchivedArtwork";
+import useUnhideAllMyArtworks from "@/hooks/mutate/visibility/private/useUnhideArtwork";
 const tabs = [
   { id: "created", label: "Created" },
   { id: "exhibits", label: "Exhibits" },
@@ -61,7 +62,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
   const { data: artworks, isLoading } = useArtworks(currentPage, userId, true, endpointType);
   const { mutate: unarchiveAllMyArtworks } = useUnarchiveAllMyArtworks(artworks ?? []);
-
+  const { mutate: unhideAllMyArtworks } = useUnhideAllMyArtworks(artworks ?? []);
   const handleMediumSelect = (option: string) => {
     setSelectedMedium(option);
     setShowMediumOptions(false);
@@ -85,8 +86,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
   // UNHIDE BUTTON
   const confirmUnhideAll = () => {
-    const updated = artworkList.map((art) => (art.status === "Hidden" ? { ...art, status: "Active" } : art));
-    setArtworkList(updated);
+    unhideAllMyArtworks();
     toast.success("All hidden artworks have been unhidden!");
     setShowUnhidePopup(false);
   };

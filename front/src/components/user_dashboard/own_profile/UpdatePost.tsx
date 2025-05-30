@@ -24,7 +24,7 @@ const UpdatePost = () => {
 
   const { data: artwork } = useFetchArtworkById(id);
   const { mutate: updateArtwork } = useUpdateArtwork(currentPage, isActive, category, visibility);
-  const [artworkStyle, setArtworkStyle] = useState(artwork.style || "");
+  const [artworkStyle, setArtworkStyle] = useState(artwork?.style || "");
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -33,14 +33,14 @@ const UpdatePost = () => {
 
   useEffect(() => {
     if (artwork && !loaded) {
-      setArtworkTitle(artwork.title || "");
-      setArtworkStyle(artwork.category || "");
-      setMedium(artwork.medium || "");
-      setDescription(artwork.description || "");
-      setVisibility(artwork.visibility || "Public");
-      setPreviewUrl(artwork.image_url || null);
+      setArtworkTitle(artwork?.title || "");
+      setArtworkStyle(artwork?.category || "");
+      setMedium(artwork?.medium || "");
+      setDescription(artwork?.description || "");
+      setVisibility(artwork?.visibility || "Public");
+      setPreviewUrl(artwork?.image_url || null);
 
-      if (artwork.visibility === "Hidden") {
+      if (artwork?.visibility === "Hidden") {
         setVisibility("Private");
       }
 
