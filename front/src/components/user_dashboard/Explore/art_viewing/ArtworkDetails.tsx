@@ -323,8 +323,8 @@ const ArtworkDetails = () => {
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
                           <p className="text-[9px] text-gray-700">
-                            {artwork.style
-                              ? artwork.style
+                            {artwork?.style
+                              ? artwork?.style
                                   .split(" ")
                                   .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                                   .join(" ")
@@ -333,17 +333,17 @@ const ArtworkDetails = () => {
                         </div>
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Medium</h3>
-                          <p className="text-[9px] text-gray-700">{artwork.medium || "Acrylic Paint"}</p>
+                          <p className="text-[9px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
                         </div>
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
-                          <p className="text-[9px] text-gray-700">{artwork.datePosted || "March 25, 2023"}</p>
+                          <p className="text-[9px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
                         </div>
                         <div className="mb-1">
                           <h3 className="text-[9px] font-medium mb-1">Artwork Size</h3>
                           <p className="text-[9px] text-gray-700">
-                            {artwork.size
-                              ? artwork.size
+                            {artwork?.size
+                              ? artwork?.size
                                   .split(" x ")
                                   .map((dim) => `${dim}″`)
                                   .join(" x ")
@@ -409,8 +409,8 @@ const ArtworkDetails = () => {
                   <div className="inline-block transform scale-[1.10] -mb-6 relative">
                     <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                       <img
-                        src={artwork.image_url}
-                        alt={artwork.title}
+                        src={artwork?.image_url}
+                        alt={artwork?.title}
                         className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                       />
 
@@ -459,9 +459,9 @@ const ArtworkDetails = () => {
                           className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
                           fill={isLiked ? "currentColor" : "none"}
                         />
-                        {(likeCounts[id || ""] ?? artwork.likes_count ?? 0) > 0 && (
+                        {(likeCounts[id || ""] ?? artwork?.likes_count ?? 0) > 0 && (
                           <span className={`${isMobile ? "text-[10px]" : "text-xs"}`}>
-                            {likeCounts[id || ""] ?? artwork.likes_count}
+                            {likeCounts[id || ""] ?? artwork?.likes_count}
                           </span>
                         )}
                       </button>
@@ -485,7 +485,7 @@ const ArtworkDetails = () => {
                   </div>
 
                   <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>
-                    {artwork.title || "The Distorted Face"}
+                    {artwork?.title || "The Distorted Face"}
                   </h1>
 
                   <p
@@ -493,7 +493,7 @@ const ArtworkDetails = () => {
                     onClick={() => navigate(`/userprofile/${artwork.artistId}`)}
                     className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
                   >
-                    by {artwork.artist || "Angel Ganev"}
+                    by {artwork?.artist || "Angel Ganev"}
                   </p>
 
                   <div className="relative mt-4">
@@ -505,7 +505,7 @@ const ArtworkDetails = () => {
                     `}
                       style={{ lineHeight: "1.1rem" }}
                     >
-                      {artwork.description || "No description available."}
+                      {artwork?.description || "No description available."}
                     </div>
 
                     {isOverflowing && (
@@ -578,7 +578,7 @@ const ArtworkDetails = () => {
 
             <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
               <img
-                src={artwork.image_url}
+                src={artwork?.image_url}
                 alt="Expanded artwork"
                 className="max-h-[80vh] max-w-[90vw] object-contain"
               />
