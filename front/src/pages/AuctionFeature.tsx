@@ -53,8 +53,8 @@ const AuctionFeature = (initialTime) => {
   }
 
   return (
-    <section className="py-20 px-6 md:px-12 bg-black text-white" id="auctions">
-      <div className="max-w-screen-xl mx-auto">
+    <section className="w-full max-w-7xl mx-auto py-20 px-6 md:px-12 bg-black text-white" id="auctions">
+      <div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
           <motion.div
             className="relative overflow-hidden rounded-xl"
