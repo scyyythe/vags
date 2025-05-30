@@ -31,7 +31,7 @@ import SecuritySettings from "./components/user_dashboard/Settings/pages/Securit
 import NotificationsSettings from "./components/user_dashboard/Settings/pages/Notifications";
 import BillingSettings from "./components/user_dashboard/Settings/pages/BillingSettings";
 import HelpCenter from "./components/user_dashboard/Settings/pages/HelpCenter";
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import AllNotifications from "./components/user_dashboard/notification/AllNotifications";
 import FollowDemo from "./components/user_dashboard/own_profile/following_&_followers/owners/mock_data/FollowDemo";
@@ -240,7 +240,7 @@ const App = () => {
           </DonationProvider>
         </TooltipProvider>
       </LikedArtworksProvider>
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };
