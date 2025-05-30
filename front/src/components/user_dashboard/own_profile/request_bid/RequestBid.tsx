@@ -101,6 +101,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
     }
 
     setIsConfirmationOpen(true);
+    onOpenChange(false);
   };
 
   const handleConfirm = () => {
@@ -148,7 +149,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
   return (
     <div>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[430px] px-10 py-6">
+        <DialogContent className="max-w-sm pr-10 pl-8 py-6 rounded-md">
           <DialogHeader className="text-center">
             <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
               <X className="h-4 w-4" />
@@ -156,20 +157,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
             <DialogTitle className="text-lg font-bold text-left">{artworkTitle}</DialogTitle>
           </DialogHeader>
 
-          {/* <div className="flex justify-center mb-4 text-xs">
-            <img 
-              src="https://ph.pinterest.com/pin/152981718587678591/" 
-              alt="Auction item" 
-              className="w-20 h-20 object-contain rounded-sm shadow-md"
-            />
-          </div> */}
-
           <p className="text-left text-[10px] -mt-3">Set your terms and schedule to start auctioning your artwork</p>
-
-          {/* 
-          <p className="text-sm  font-bold text-red-900 text-center mt-1">
-            “The Distorted Face”
-          </p> */}
 
           <div className="space-y-6 mt-3">
             <div className="grid grid-cols-2 gap-4">
