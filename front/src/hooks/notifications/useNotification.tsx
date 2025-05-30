@@ -44,14 +44,15 @@ interface Notification {
   artworkTitle?: string;
   message?: string;
 }
-
 const useNotifications = () => {
+  const [allNotifications, setAllNotifications] = useState<Notification[]>([]);
   const [displayedNotifications, setDisplayedNotifications] = useState<Notification[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const userId = getLoggedInUserId();
+
   useEffect(() => {
     if (!userId) {
       toast.error("User not authenticated");
@@ -62,8 +63,8 @@ const useNotifications = () => {
       try {
         const response = await apiClient.get("/notifications/");
         const notifications: Notification[] = response.data;
+        setAllNotifications(notifications);
         setDisplayedNotifications(notifications);
-        console.log(response.data);
       } catch (error) {
         console.error("Failed to fetch notifications", error);
         toast.error("Failed to fetch notifications");
@@ -74,7 +75,7 @@ const useNotifications = () => {
   }, [userId]);
 
   const filterNotifications = () => {
-    let filtered = [...displayedNotifications];
+    let filtered = [...allNotifications];
 
     if (searchQuery) {
       filtered = filtered.filter(
@@ -101,29 +102,15 @@ const useNotifications = () => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    filterNotifications();
   };
 
   const handleDateSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate);
     setIsFilterOpen(false);
-
-    if (selectedDate) {
-      const filtered = displayedNotifications.filter((n) => {
-        const notifDate = new Date(n.date);
-        return (
-          notifDate.getDate() === selectedDate.getDate() &&
-          notifDate.getMonth() === selectedDate.getMonth() &&
-          notifDate.getFullYear() === selectedDate.getFullYear()
-        );
-      });
-      setDisplayedNotifications(filtered);
-    } else {
-      setDisplayedNotifications(displayedNotifications);
-    }
   };
 
   const clearAllNotifications = () => {
+    setAllNotifications([]);
     setDisplayedNotifications([]);
     toast.success("All notifications cleared");
   };
@@ -131,8 +118,12 @@ const useNotifications = () => {
   const resetFilters = () => {
     setSearchQuery("");
     setDate(undefined);
-    setDisplayedNotifications(displayedNotifications);
+    setDisplayedNotifications(allNotifications);
   };
+
+  useEffect(() => {
+    filterNotifications();
+  }, [searchQuery, date, allNotifications]);
 
   return {
     displayedNotifications,
