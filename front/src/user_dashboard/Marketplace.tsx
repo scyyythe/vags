@@ -111,7 +111,7 @@ const Marketplace = () => {
 
   return (
     <>
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background">
         <Header />
         <div className="container mx-auto px-4 sm:px-6 pt-20">
           {/* Top Sellers Section */}
