@@ -144,7 +144,7 @@ const SellArtwork = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Back button and title */}
-        <div className="mb-8">
+        <div className="mt-12 mb-6">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
             Sell an Artwork
@@ -156,7 +156,7 @@ const SellArtwork = () => {
           <div className="space-y-6">
             {/* Main image upload */}
             <div
-              className="bg-gray-100 rounded-lg flex flex-col items-center justify-center p-8 h-[400px] border-2 border-dashed border-gray-300"
+              className="bg-gray-100 rounded-lg flex flex-col items-center justify-center p-8 h-[313px]"
               onDragOver={handleDragOver}
               onDrop={handleDrop}
             >
@@ -175,33 +175,34 @@ const SellArtwork = () => {
                 </div>
               ) : (
                 <div className="text-center">
-                  <div className="mb-4">
-                    <Upload className="w-12 h-12 text-gray-400 mx-auto" />
-                  </div>
-                  <p className="mb-4 text-sm font-medium text-gray-700">Choose a file or drag and drop it here</p>
-                  <label
-                    htmlFor="fileInput"
-                    className="cursor-pointer bg-white hover:bg-gray-50 inline-block border border-gray-300 rounded-md px-4 py-2 text-sm font-medium text-gray-700"
-                  >
-                    Choose File
-                    <input 
-                      type="file" 
-                      id="fileInput" 
-                      className="hidden" 
-                      accept="image/*" 
-                      onChange={handleFileChange} 
-                    />
-                  </label>
-                  <p className="mt-8 text-xs text-gray-500">
-                    We recommend using high quality .jpg files less than 20MB
-                  </p>
+                    <div>
+                        <div className="bg-white p-4 rounded-full inline-block">
+                            <img
+                            width="30"
+                            height="30"
+                            src="./pics/icons8-cloud-upload.gif"
+                            alt="external-upload-network-and-cloud-computing-flatart-icons-solid-flatarticons"
+                            />
+                        </div>
+                    </div>
+                    <p className="mb-2 text-xs font-medium">Choose a file or drag and drop it here</p>
+                    <label
+                        htmlFor="fileInput"
+                        className="cursor-pointer hover:bg-white inline-block mb-6 border border-gray-300 rounded-[6px] px-2 py-1 text-[11px]"
+                    >
+                        Choose File
+                        <input type="file" id="fileInput" className="hidden" accept="image/*" onChange={handleFileChange} />
+                    </label>
+                    <p className="relative top-10 text-[11px] text-gray-500">
+                        We recommend using high quality .jpg files less than 20MB
+                    </p>
                 </div>
               )}
             </div>
 
             {/* Additional images */}
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-3">Add more pictures (Optional)</h3>
+              <h3 className="text-[11px] font-medium text-gray-900 mb-3">Add more pictures (Optional)</h3>
               <div className="grid grid-cols-4 gap-4">
                 {additionalImages.map((image, index) => (
                   <div 
@@ -219,7 +220,7 @@ const SellArtwork = () => {
                           className="w-full h-full object-cover rounded-lg" 
                         />
                         <div
-                          className="absolute inset-0 bg-black bg-opacity-60 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute inset-0 bg-black bg-opacity-60 text-white text-[11px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleAdditionalImageChange(index, null);
@@ -253,96 +254,119 @@ const SellArtwork = () => {
           <div>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <h2 className="text-sm text-gray-600 mb-6">Provide artwork details.</h2>
+                <h2 className="text-xs text-gray-600 mb-6">Provide artwork details.</h2>
 
                 {/* Title and Year */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-2">
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">
                       Artwork Title
                     </label>
                     <Input
                       placeholder="Enter artwork title"
                       value={artworkTitle}
                       onChange={(e) => setArtworkTitle(e.target.value)}
-                      className="text-sm"
+                      className="h-9"
+                      style={{fontSize:"10px"}}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-2">
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">
                       Year Created
                     </label>
                     <Input
                       placeholder="Enter year"
                       value={yearCreated}
                       onChange={(e) => setYearCreated(e.target.value)}
-                      className="text-sm"
+                      className="h-9"
+                      style={{fontSize:"10px"}}
                     />
                   </div>
                 </div>
 
                 {/* Style, Medium, Size */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-2">
-                      Artwork Style
-                    </label>
-                    <select
-                      value={artworkStyle}
-                      onChange={(e) => setArtworkStyle(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                    >
-                      <option value="">Select artwork style</option>
-                      {artworkStyles.map((style) => (
-                        <option key={style} value={style}>
-                          {style}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-2">
-                      Medium
-                    </label>
-                    <Input
-                      placeholder="Enter medium used"
-                      value={medium}
-                      onChange={(e) => setMedium(e.target.value)}
-                      className="text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-2">
-                      Artwork Size
-                    </label>
-                    <div className="flex items-center space-x-2">
-                      <Input
-                        type="number"
-                        placeholder="0"
-                        value={height}
-                        onChange={(e) => setHeight(e.target.value)}
-                        className="text-sm"
-                      />
-                      <span className="text-sm font-medium">×</span>
-                      <Input
-                        type="number"
-                        placeholder="0"
-                        value={width}
-                        onChange={(e) => setWidth(e.target.value)}
-                        className="text-sm"
-                      />
+                    <div>
+                        <label htmlFor="style" className="block mb-2 text-[11px]">
+                        Artwork Style
+                        </label>
+                        <div className="relative">
+                        <select
+                            id="style"
+                            value={artworkStyle}
+                            onChange={(e) => setArtworkStyle(e.target.value)}
+                            className="w-full h-9 p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs cursor-pointer"
+                            style={{fontSize:"10px"}}
+                        >
+                            <option value="" disabled>
+                            Select artwork style
+                            </option>
+                            {ART_STYLES.map((style) => (
+                            <option key={style} value={style.toLowerCase()}>
+                                {style}
+                            </option>
+                            ))}
+                        </select>
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M4 6L8 10L12 6"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                            </svg>
+                        </div>
+                        </div>
                     </div>
-                    <div className="flex justify-between mt-1">
-                      <span className="text-xs text-gray-500">Height</span>
-                      <span className="text-xs text-gray-500">Width</span>
+
+                    <div>
+                        <label className="block text-[11px] font-medium text-gray-700 mb-2">
+                            Medium
+                        </label>
+                        <Input
+                            placeholder="Enter medium used"
+                            value={medium}
+                            onChange={(e) => setMedium(e.target.value)}
+                            className="h-9"
+                            style={{fontSize:"10px"}}
+                        />
                     </div>
-                  </div>
+                    <div>
+                        <label className="block text-[11px] font-medium text-gray-700 mb-2">
+                        Artwork Size
+                        </label>
+                        <div className="flex items-center space-x-2">
+                        <Input
+                            type="number"
+                            placeholder="0"
+                            value={height}
+                            onChange={(e) => setHeight(e.target.value)}
+                            className="h-9"
+                            style={{fontSize:"10px"}}
+                        />
+                        <span className="text-sm font-medium">×</span>
+                        <Input
+                            type="number"
+                            placeholder="0"
+                            value={width}
+                            onChange={(e) => setWidth(e.target.value)}
+                            className="h-9"
+                            style={{fontSize:"10px"}}
+                        />
+                        </div>
+                        <div className="flex justify-between px-6 pt-2">
+                            <span className="text-[10px] text-gray-500">Height</span>
+                            <span className="text-[10px] text-gray-500">Width</span>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Price, Edition, Quantity */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-2">
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">
                       Price
                     </label>
                     <Input
@@ -350,37 +374,39 @@ const SellArtwork = () => {
                       placeholder="Enter price for artwork"
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
-                      className="text-sm"
+                      className="h-9"
+                      style={{fontSize:"10px"}}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-2">
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">
                       Edition
                     </label>
                     <Select
                       value={edition}
                       onValueChange={handleEditionChange}
                     >
-                      <SelectTrigger className="w-full text-sm">
+                      <SelectTrigger className="w-full text-[10px] h-9">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Original (1 of 1)">Original (1 of 1)</SelectItem>
-                        <SelectItem value="Limited Edition">Limited Edition</SelectItem>
-                        <SelectItem value="Open Edition">Open Edition</SelectItem>
+                        <SelectItem value="Original (1 of 1)" className="text-[10px]">Original (1 of 1)</SelectItem>
+                        <SelectItem value="Limited Edition" className="text-[10px]">Limited Edition</SelectItem>
+                        <SelectItem value="Open Edition" className="text-[10px]">Open Edition</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   {isQuantityVisible && (
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-2">
+                      <label className="block text-[11px] font-medium text-gray-700 mb-2">
                         Quantity
                       </label>
                       <Input
                         type="number"
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
-                        className="text-sm"
+                        className="h-9"
+                        style={{fontSize:"10px"}}
                         min="1"
                       />
                     </div>
@@ -389,14 +415,15 @@ const SellArtwork = () => {
 
                 {/* Description */}
                 <div className="mb-8">
-                  <label className="block text-xs font-medium text-gray-700 mb-2">
+                  <label className="block text-[11px] font-medium text-gray-700 mb-2">
                     Description
                   </label>
                   <Textarea
                     placeholder="Add a description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="min-h-[120px] text-sm"
+                    className="min-h-[120px] h-9"
+                    style={{fontSize:"10px"}}
                   />
                 </div>
 
@@ -405,7 +432,7 @@ const SellArtwork = () => {
                   <Button
                     type="submit"
                     disabled={isUploading}
-                    className="bg-red-600 hover:bg-red-700 text-white px-8 py-2 rounded-full font-medium"
+                    className="bg-red-800 hover:bg-red-700 text-white text-xs px-8 h-8 rounded-full font-medium"
                   >
                     {isUploading ? (
                       <span className="flex items-center gap-2">

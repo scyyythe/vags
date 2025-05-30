@@ -8,6 +8,7 @@ import FingerprintAuth from "./pages/FingerprintAuth";
 import FingerprintRegister from "./pages/FingerprintRegister";
 import NotFound from "./components/NotFound";
 import Create from "./components/user_dashboard/Explore/create_post/CreatePost";
+import SellArt from "./components/user_dashboard/Marketplace/sell/SellArtwork";
 import UpdatePost from "./components/user_dashboard/own_profile/UpdatePost";
 import Hero from "./pages/Hero";
 import Explore from "./user_dashboard/Explore";
@@ -129,6 +130,7 @@ const App = () => {
 
                       <Route path="/explore" element={<ProtectedRoute children={<Explore />} />} />
                       <Route path="/create" element={<ProtectedRoute children={<Create />} />} />
+                      <Route path="/sell" element={<ProtectedRoute children={<SellArt />} />} />
                       <Route path="/update/:id" element={<ProtectedRoute children={<UpdatePost />} />} />
                       <Route path="/userprofile/:id" element={<ProtectedRoute children={<UserProfile />} />} />
                       <Route path="/artwork/:id" element={<ProtectedRoute children={<ArtworkDetails />} />} />
