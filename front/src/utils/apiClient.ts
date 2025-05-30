@@ -2,9 +2,9 @@ import axios from "axios";
 
 const createAPIClient = (
   baseURL = window.location.hostname === "localhost"
-    ? "http://127.0.0.1:8000/api/" // Local dev
+    ? "http://127.0.0.1:8000/api/"
     : window.location.hostname.includes("ngrok")
-    ? `https://${window.location.hostname}/api/` // Ngrok frontend
+    ? `https://${window.location.hostname}/api/`
     : window.location.hostname.includes("vercel")
     ? import.meta.env.VITE_API_URL
     : `https://${window.location.hostname}/api/`

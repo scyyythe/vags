@@ -14,7 +14,7 @@ import { getLoggedInUserId } from "@/auth/decode";
 import CollectionTab from "../tabs/CollectionTab";
 import OnBidTab from "../tabs/OnBidTab";
 import ExhibitTab from "@/components/user_dashboard/user_profile/tabs/ExhibitsTab";
-
+import useUnarchiveAllMyArtworks from "@/hooks/mutate/visibility/arc/useUnarchivedArtwork";
 const tabs = [
   { id: "created", label: "Created" },
   { id: "exhibits", label: "Exhibits" },
@@ -60,6 +60,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   const endpointType = isOwnProfile ? "created-by-me" : "specific-user";
 
   const { data: artworks, isLoading } = useArtworks(currentPage, userId, true, endpointType);
+  const { mutate: unarchiveAllMyArtworks } = useUnarchiveAllMyArtworks(artworks ?? []);
 
   const handleMediumSelect = (option: string) => {
     setSelectedMedium(option);
@@ -96,8 +97,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
   // UNARCHIVE BUTTON
   const confirmUnarchiveAll = () => {
-    const updated = artworkList.map((art) => (art.status === "Archived" ? { ...art, status: "Active" } : art));
-    setArtworkList(updated);
+    unarchiveAllMyArtworks();
     toast.success("All archived artworks have been unarchived!");
     setShowUnarchivePopup(false);
   };
@@ -121,7 +121,8 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
     const statusMap: Record<string, string> = {
       active: "public",
-      hidden: "private",
+      hidden: "hidden",
+      private: "hidden",
       archived: "archived",
       deleted: "deleted",
     };
@@ -131,7 +132,6 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
       return art.visibility?.toLowerCase() === mapped;
     });
 
-    console.log("Filtering artworks, status:", selectedStatus);
     artworks.forEach((art) => console.log(art.visibility));
 
     // Sort
