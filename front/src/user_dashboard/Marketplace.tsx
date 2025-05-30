@@ -5,6 +5,8 @@ import { Footer } from "@/components/user_dashboard/footer/Footer";
 import CategoryFilter from "@/components/user_dashboard/Marketplace/category_filter/CategoryFilter";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import TopSellers from "@/components/user_dashboard/Marketplace/top_seller/TopSellers";
+import WishlistModal from "@/components/user_dashboard/Marketplace/wishlist/WishlistModal";
+import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
 import { toast } from "sonner";
 
 const Marketplace = () => {
@@ -51,11 +53,54 @@ const Marketplace = () => {
     console.log("Wishlist opened");
   };
 
+  const mockArtworks = [
+    {
+      id: "1",
+      artworkImage: "https://i.pinimg.com/736x/a4/c9/8d/a4c98d5c9dcb90b3208b5abfe703d85d.jpg",
+      price: 100,
+      originalPrice: 120,
+      title: "Mock Artwork 1",
+    },
+    {
+      id: "2",
+      artworkImage: "https://i.pinimg.com/736x/2b/16/27/2b1627359c0fc9f6225b5afd0811ddf1.jpg",
+      price: 200,
+      originalPrice: 250,
+      title: "Mock Artwork 2",
+    },
+    {
+      id: "3",
+      artworkImage: "https://i.pinimg.com/736x/cf/f3/4b/cff34bcec60045f4187080e67608ead5.jpg",
+      price: 150,
+      title: "Mock Artwork 3", 
+    },
+    {
+      id: "4",
+      artworkImage: "https://i.pinimg.com/736x/21/bd/78/21bd78a21a5521f18fee9c99013b618f.jpg",
+      price: 860,
+      originalPrice: 1000,
+      title: "Mock Artwork 4",
+    },
+    {
+      id: "5",
+      artworkImage: "https://i.pinimg.com/736x/90/cf/6d/90cf6d8f2277af8c2791a95bd9f8dfe0.jpg",
+      price: 720,
+      title: "Mock Artwork 5", 
+    },
+  ];
+
+  const wishlistItems = mockArtworks
+    .filter(card => likedItems.has(card.id))
+    .map(card => ({
+      ...card,
+      image: card.artworkImage, 
+  }));;
+
   return (
     <>
       <div className="min-h-screen">
         <Header />
-        <div className="container mx-auto px-4 sm:px-6 pt-20 pb-12">
+        <div className="container mx-auto px-4 sm:px-6 pt-20">
           {/* Top Sellers Section */}
           <TopSellers />
           
@@ -109,20 +154,18 @@ const Marketplace = () => {
           </div>
           
           {/* Marketplace Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {/* {artCards.map((card) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {mockArtworks.map((artwork) => (
               <SellCard
-                key={card.id}
-                id={card.id}
-                image={card.image}
-                price={card.price}
-                originalPrice={card.originalPrice}
-                title={card.title}
-                isLiked={likedItems.has(card.id)}
-                onLike={() => handleLike(card.id)}
-                onBuy={() => handleBuy(card.id)}
+                key={artwork.id}
+                id={artwork.id}
+                artworkImage={artwork.artworkImage}
+                price={artwork.price}
+                originalPrice={artwork.originalPrice ?? 0} 
+                title={artwork.title}
+                isMarketplace={true} 
               />
-            ))} */}
+            ))}
           </div>
         </div>
       </div>
@@ -132,12 +175,12 @@ const Marketplace = () => {
       </div>
 
       {/* Wishlist Modal */}
-      {/* <WishlistModal
+      <WishlistModal
         isOpen={showWishlist}
         onClose={() => setShowWishlist(false)}
         wishlistItems={wishlistItems}
         onRemoveFromWishlist={handleRemoveFromWishlist}
-      /> */}
+      />
 
     </>
   );
