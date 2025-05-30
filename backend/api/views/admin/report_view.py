@@ -26,20 +26,21 @@ class ReportCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return Report.objects.filter(user=ObjectId(self.request.user.id))
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer):   
         try:
-            mongo_user = User.objects.get(id=ObjectId(self.request.user.id))
-        except Exception as e:
-            print("Error retrieving user:", e)
+            mongo_user = User.objects.get(id=ObjectId(self.request.user.id))         
+        except Exception as e:       
             raise e
 
         art_id = self.request.data.get("art_id")
-        if not art_id:
+     
+
+        if not art_id:     
             raise serializers.ValidationError({"art_id": "This field is required."})
 
         try:
-            art = Art.objects.get(id=ObjectId(art_id))
-        except Art.DoesNotExist:
+            art = Art.objects.get(id=ObjectId(art_id))        
+        except Art.DoesNotExist:         
             raise serializers.ValidationError({"art_id": "Artwork not found."})
 
         existing_report = Report.objects.filter(
@@ -49,22 +50,29 @@ class ReportCreateView(generics.ListCreateAPIView):
         ).first()
 
         if existing_report:
+         
             raise serializers.ValidationError({
                 "detail": "You have already reported this artwork and it's still under review."
             })
 
-        
         report = serializer.save(user=mongo_user, art=art)
+      
+        host = self.request.get_host()
+        protocol = "http" if "localhost" in host else "https"
+        link = f"/artwork/{str(art.id)}"
 
         Notification.objects.create(
             user=art.artist,
+            actor=mongo_user,
+            message=f"A report was submitted a report on your artwork '{art.title}'",
             art=art,
-            name="Report Successful",
-            action="Your report has been submitted.",
+            name=f"{mongo_user.first_name} {mongo_user.last_name}",
+            action="reported your artwork",
             target=art.title,
-            message="Your report about the artwork has been received and is under review.",
-            date=datetime.utcnow(),
-        ).save()
+            icon="report",
+            created_at=datetime.now(),
+            link=link,
+        )
 
 class AuctionReportCreateView(generics.ListCreateAPIView):
     serializer_class = AuctionReportSerializer
@@ -76,32 +84,44 @@ class AuctionReportCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
        
         report = serializer.save()
-
+        
         auction = report.auction
         reporter = report.user       
         artist = auction.artwork.artist  
 
         now = datetime.utcnow()
 
+        host = self.request.get_host()
+        protocol = "http" if "localhost" in host else "https"
+        link = f"/bid/{str(auction.id)}/"
         
+               
         Notification.objects.create(
             user=reporter,
+            actor=reporter,
+            message=f" submitted a report for the auction '{auction.artwork.title}'.",
             auction=auction,
-            name="Report Submitted",
-            action="You submitted a report.",
+            name=f"{reporter.first_name} {reporter.last_name}",
+            action="submitted a report",
             target=auction.artwork.title,
-            date=now,
-        ).save()
+            icon="report",
+            created_at=datetime.now(),
+            link=link,
+        )
 
        
         Notification.objects.create(
             user=artist,
+            actor=reporter,
+            message=f"A report was submitted for your auction '{auction.artwork.title}', and it's under review.",
             auction=auction,
-            name="Auction Reported",
+            name=f"{reporter.first_name} {reporter.last_name}",
+            action="reported your auction",
             target=auction.artwork.title,
-            action="A report about your auction has been submitted and is under review.",
-            date=now,
-        ).save()
+            icon="alert",
+            created_at=datetime.now(),
+            link=link,
+        )
         
 class ReportDeleteView(generics.DestroyAPIView):
     serializer_class = ReportSerializer
