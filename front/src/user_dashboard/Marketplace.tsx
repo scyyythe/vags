@@ -1,11 +1,25 @@
+import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
-import CategoryFilter from "@/components/user_dashboard/Explore/navigation/CategoryFilter";
+import CategoryFilter from "@/components/user_dashboard/Marketplace/category_filter/CategoryFilter";
+import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import { toast } from "sonner";
 
 const Marketplace = () => {
-  // const categories = ["All", "Trending", "Collections", "Lorem"];
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const categories = ["All", "Trending", "Following"];
+  const navigate = useNavigate();
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const handleSellClick = () => {
+    navigate("/sell");
+  };
+  
   
   // const artCards = [
   //   {
@@ -71,26 +85,46 @@ const Marketplace = () => {
   // };
 
   return (
+    <>
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="text-sm container mx-auto px-4 sm:px-6 pt-24 pb-12 no-scrollbar overflow-y-auto max-h-screen">
-        <div className="flex items-center justify-center h-[60vh]">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-2">Marketplace</h2>
-            <p className="text-muted-foreground">
-              This section is currently under development.
-              <br />
-              Check back soon for exciting sellers and artworks.
-            </p>
-          </div>
+      <div className="container mx-auto px-4 sm:px-6 pt-20">
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="lg:col-span-3">
+
+            <div className="flex items-center justify-between mb-6 lg:w-[133%] pl-2 sm:pl-0">
+              <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
+              <div className="flex space-x-2 text-xs mt-9">
+                <div className="relative">
+                  <ArtCategorySelect
+                    selectedCategory={selectedCategory}
+                    onChange={(value) => setSelectedCategory(value)}
+                  />
+                </div>
+
+                <button
+                  className="py-1.5 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
+                  onClick={handleSellClick}
+                >
+                  <i className="bx bx-plus text-xs"></i>
+                  Sell
+                </button>
+              </div>
+            </div>
+
+          </div> 
         </div>
       </div>
 
-      {/* <div >
-        <Footer />
-      </div> */}
+      
     </div>
-    
+
+      <div >
+        <Footer />
+      </div>
+
+    </>
   );
 };
 
