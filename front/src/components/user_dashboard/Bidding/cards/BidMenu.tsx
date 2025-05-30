@@ -2,14 +2,18 @@ import React, { useRef, useState } from "react";
 import { EyeOff, Flag, Undo2 } from "lucide-react";
 import ReportOptionsPopup from "./ReportOptions";
 import { reportCategories } from "./ReportOptions";
+import { normalizeReportType } from "./ReportOptions";
+import { ReportOption } from "./ReportOptions";
+import useUndoAuctionReport from "@/hooks/mutate/report/undo/useUndoReport";
 interface ArtCardMenuProps {
   isOpen: boolean;
   onHide: () => void;
-  onReport: (issue_details: string) => void;
+  onReport: (data: { category: string; option?: string; description: string; additionalInfo: string }) => void;
   onUndoReport?: () => void;
   isReported: boolean;
   isHidden?: boolean;
   className?: string;
+  auctionId: string;
 }
 
 const BLACK = "#000000";
@@ -21,10 +25,12 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
   onUndoReport,
   isReported = false,
   isHidden = false,
+  auctionId,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showReportOptions, setShowReportOptions] = useState(false);
+  const { handleUndoReport } = useUndoAuctionReport();
 
   if (!isOpen) return null;
 
@@ -32,28 +38,29 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
     e.stopPropagation();
     setShowReportOptions(true);
   };
-  const handleReportSubmit = (categoryId: string, optionId?: string) => {
+  const handleReportSubmit = (categoryId: string, optionData?: ReportOption | string) => {
     const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
-    const selectedOption = selectedCategory?.options?.find((opt) => opt.id === optionId);
+    if (!selectedCategory) {
+      console.error("Category not found for id:", categoryId);
+      return;
+    }
 
-    const issueDetails = selectedOption
-      ? `Category: ${selectedCategory?.title} | Option: ${selectedOption.text} | Info: ${selectedOption.additionalInfo}`
-      : selectedCategory
-      ? `Category: ${selectedCategory.title}`
-      : "Artwork contains inappropriate or offensive content.";
+    const isCustomReason = typeof optionData === "string";
+    const selectedOption = !isCustomReason ? (optionData as ReportOption) : null;
 
-    console.log("Report submitted:", issueDetails);
+    const option = isCustomReason ? optionData : selectedOption?.id || "";
+    const additionalInfo = isCustomReason ? optionData : selectedOption?.additionalInfo || "";
 
-    onReport(issueDetails);
+    const normalizedCategory = normalizeReportType(option, categoryId);
+
+    onReport({
+      category: normalizedCategory,
+      option,
+      description: selectedCategory.title,
+      additionalInfo,
+    });
 
     setShowReportOptions(false);
-  };
-
-  const handleUndoReport = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onUndoReport) {
-      onUndoReport();
-    }
   };
 
   return (
@@ -104,7 +111,7 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
           {isReported && (
             <div className="flex items-center relative">
               <button
-                onClick={handleUndoReport}
+                onClick={(e) => handleUndoReport(e, auctionId)}
                 className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
                 aria-label="Undo Report"
                 onMouseEnter={() => setHoveredItem("undoReport")}

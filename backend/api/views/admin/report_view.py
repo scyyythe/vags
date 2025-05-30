@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from api.models.admin.report import Report
 from api.models.user_model.users import User
 from api.models.interaction_model.notification import Notification
-from api.serializers.admin.report_serializers import ReportSerializer,AuctionReportSerializer
+from api.serializers.admin.report_serializers import ReportSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 from datetime import datetime
@@ -17,9 +17,6 @@ import traceback
 import logging
 from bson.errors import InvalidId
 logger = logging.getLogger(__name__)
-from mongoengine import (
-    Document, StringField, ReferenceField, DateTimeField, ValidationError
-)
 
 class ReportCreateView(generics.ListCreateAPIView):
     serializer_class = ReportSerializer
@@ -106,56 +103,6 @@ class ReportCreateView(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-
-class AuctionReportCreateView(generics.ListCreateAPIView):
-    serializer_class = AuctionReportSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return AuctionReport.objects.filter(user=ObjectId(self.request.user.id))
-
-    def perform_create(self, serializer):
-       
-        report = serializer.save()
-        
-        auction = report.auction
-        reporter = report.user       
-        artist = auction.artwork.artist  
-
-        now = datetime.utcnow()
-
-        host = self.request.get_host()
-        protocol = "http" if "localhost" in host else "https"
-        link = f"/bid/{str(auction.id)}/"
-        
-               
-        Notification.objects.create(
-            user=reporter,
-            actor=reporter,
-            message=f" submitted a report for the auction '{auction.artwork.title}'.",
-            auction=auction,
-            name=f"{reporter.first_name} {reporter.last_name}",
-            action="submitted a report",
-            target=auction.artwork.title,
-            icon="report",
-            created_at=datetime.now(),
-            link=link,
-        )
-
-       
-        Notification.objects.create(
-            user=artist,
-            actor=reporter,
-            message=f"A report was submitted for your auction '{auction.artwork.title}', and it's under review.",
-            auction=auction,
-            name=f"{reporter.first_name} {reporter.last_name}",
-            action="reported your auction",
-            target=auction.artwork.title,
-            icon="alert",
-            created_at=datetime.now(),
-            link=link,
-        )
-        
 class ReportDeleteView(generics.DestroyAPIView):
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]
@@ -165,6 +112,26 @@ class ReportDeleteView(generics.DestroyAPIView):
 
     def perform_destroy(self, instance):
         instance.delete()
+        
+class UndoReportView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        report_id = request.data.get("id")
+        report_type = request.data.get("type")
+
+        if not report_id or report_type != "auction":
+            return Response({"error": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            report = Report.objects.get(user=ObjectId(request.user.id), auction=ObjectId(report_id))
+            report.delete()
+            return Response({"detail": "Report undone"}, status=status.HTTP_204_NO_CONTENT)
+        except Report.DoesNotExist:
+            return Response({"error": "Report not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class ReportStatus(APIView):
     permission_classes = [IsAuthenticated]
@@ -222,11 +189,11 @@ class AuctionReportStatus(APIView):
     def get(self, request, pk):
         user_id = request.user.id
         try:
-            # Validate ObjectIds
+           
             auction_obj_id = ObjectId(pk)
             user_obj_id = ObjectId(user_id) if isinstance(user_id, str) else user_id
 
-            # Query the AuctionReport collection instead of Report
+          
             reported = AuctionReport.objects.filter(
                 user=user_obj_id,
                 auction=auction_obj_id
@@ -252,45 +219,38 @@ class BulkAuctionReportStatusView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        ids_param = request.query_params.get("ids", "")
-        if not ids_param:
-            return Response({"error": "No auction IDs provided"}, status=status.HTTP_400_BAD_REQUEST)
+        ids = request.query_params.get("ids", "")
+        id_list = [id.strip() for id in ids.split(",") if id.strip()]
 
-        id_list = [id.strip() for id in ids_param.split(",") if id.strip()]
         if not id_list:
-            return Response({"error": "No valid auction IDs provided"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "No auction IDs provided"}, status=400)
 
         try:
-          
             object_ids = [ObjectId(id) for id in id_list]
+            user_obj_id = ObjectId(request.user.id)
+
+
+            reports = Report.objects.filter(user=user_obj_id, auction__in=object_ids)
+
+           
+            reports_by_auction = {str(report.auction.id): report for report in reports if report.auction}
+
+           
+            result = {
+                auction_id: {
+                    "reported": auction_id in reports_by_auction,
+                    "status": getattr(reports_by_auction.get(auction_id), "status", None) if auction_id in reports_by_auction else None
+                }
+                for auction_id in id_list
+            }
+
+            return Response(result, status=200)
+
         except InvalidId:
-            return Response({"error": "One or more invalid auction IDs"}, status=status.HTTP_400_BAD_REQUEST)
-
-        user_obj_id = ObjectId(request.user.id)
-
-      
-        reports = AuctionReport.objects.filter(user=user_obj_id, auction__in=object_ids)
-
-       
-        result = {}
-      
-        reports_by_auction = {str(r.auction.id): r for r in reports}
-
-        for auction_id in id_list:
-            report = reports_by_auction.get(auction_id)
-            if report:
-                result[auction_id] = {
-                    "reported": True,
-                    "status": getattr(report, "status", None)  
-                }
-            else:
-                result[auction_id] = {
-                    "reported": False,
-                    "status": None
-                }
-
-        return Response(result, status=status.HTTP_200_OK)
-    
+            return Response({"error": "One or more invalid auction IDs"}, status=400)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+        
 class UserReportsView(generics.ListAPIView):
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]
