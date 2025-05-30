@@ -124,7 +124,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
             <div className="flex items-center gap-2 mb-3">
               <span className={cn("text-gray-600", isMobile ? "text-[9px]" : "text-xs")}>Owned By</span>
               <div className="flex items-center gap-2 whitespace-nowrap">
-                <Link to="/userprofile/" className="flex items-center gap-2">
+                <Link to={`/userprofile/${artwork.artwork.artist_id}`} className="flex items-center gap-2">
                   <img
                     src={artwork.artwork.profile_picture}
                     alt={artwork.artwork.artist}
