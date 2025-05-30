@@ -4,7 +4,7 @@ import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
 import CategoryFilter from "@/components/user_dashboard/Marketplace/category_filter/CategoryFilter";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
-import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
+import TopSellers from "@/components/user_dashboard/Marketplace/top_seller/TopSellers";
 import { toast } from "sonner";
 
 const Marketplace = () => {
@@ -89,7 +89,8 @@ const Marketplace = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 sm:px-6 pt-20">
-
+        {/* Top Sellers Section */}
+        <TopSellers />
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-3">
 
