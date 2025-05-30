@@ -73,7 +73,7 @@ class ArtSerializer(serializers.Serializer):
 
         if 'image_url' in validated_data:
             instance.image_url = validated_data['image_url']
-
+        instance.updated_at = datetime.utcnow() 
         instance.save()
         return instance
 

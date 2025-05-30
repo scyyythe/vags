@@ -19,6 +19,7 @@ import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { useLocation } from "react-router-dom";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
+import useHideArtwork from "@/hooks/mutate/visibility/private/useHideArtwork";
 
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -62,7 +63,7 @@ const ArtworkDetails = () => {
 
   const isLiked = typeof isLikedFromBulk === "boolean" ? isLikedFromBulk : likedArtworks[id] ?? false;
   const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id, isSavedFromBulk ?? false);
-
+  const { mutate: hideArtwork } = useHideArtwork();
   const bulkStatusLookup = React.useMemo(() => {
     if (!bulkStatus) return {};
     return bulkStatus.reduce((acc, item) => {
@@ -110,7 +111,7 @@ const ArtworkDetails = () => {
 
   const handleHide = () => {
     setIsHidden(true);
-    toast("Artwork hidden");
+    hideArtwork(id);
     setMenuOpen(false);
   };
 

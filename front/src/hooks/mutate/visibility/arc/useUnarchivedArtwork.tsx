@@ -3,30 +3,40 @@ import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 
-const UnArchivedArtwork = async (id: string): Promise<{ message: string }> => {
+const unarchiveArtwork = async (id: string): Promise<{ message: string }> => {
   const response = await apiClient.patch(`/art/${id}/unarchived/`);
   return response.data;
 };
 
-const useUnArchivedArtwork = () => {
+const useUnarchiveAllMyArtworks = (myArtworks: Artwork[]) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => UnArchivedArtwork(id),
-    onSuccess: (_, id) => {
-      toast.success("You've successfully unarchived the artwork");
+    mutationFn: async () => {
+      const archivedArtworks = myArtworks.filter((art) => art.visibility === "Archived");
 
+      await Promise.all(archivedArtworks.map((art) => unarchiveArtwork(art.id)));
+
+      return archivedArtworks.length;
+    },
+    onSuccess: (count) => {
+      if (count === 0) {
+        toast.info("No archived artworks to unarchive.");
+        return;
+      }
       queryClient.setQueryData<Artwork[]>(["artworks", 1, undefined, "created-by-me"], (oldData) => {
         if (!oldData) return [];
-        return oldData.filter((artwork) => artwork.id !== id);
+        return oldData.map((art) =>
+          art.visibility === "Archived" ? { ...art, art_status: "Active", visibility: "Public" } : art
+        );
       });
 
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
     },
     onError: () => {
-      toast.error("Failed to unarchived artwork.");
+      toast.error("Failed to unarchive artworks.");
     },
   });
 };
 
-export default useUnArchivedArtwork;
+export default useUnarchiveAllMyArtworks;

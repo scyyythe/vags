@@ -169,8 +169,7 @@ class ArtUpdateView(generics.UpdateAPIView):
     serializer_class = ArtSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def perform_update(self, serializer):
-        art = serializer.save(updated_at=datetime.utcnow())
+    
 
 
 class ArtDeleteView(generics.DestroyAPIView):
