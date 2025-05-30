@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface CategoryFilterProps {
   categories: string[];
@@ -17,9 +18,7 @@ const CategoryFilter = ({ categories, onSelectCategory }: CategoryFilterProps) =
 
   return (
     <div className="flex flex-col gap-4">
-    <div>
-      <span className="font-bold mr-3">Marketplace</span>
-    </div>
+
     <div className="flex flex-wrap gap-2">
       {categories.map((category) => (
         <button

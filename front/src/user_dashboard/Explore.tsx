@@ -93,7 +93,7 @@ const Explore = () => {
                 </div>
 
                 <button
-                  className="py-1.5 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
+                  className="py-1 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
                   onClick={handleCreateClick}
                 >
                   <i className="bx bx-plus text-xs"></i>

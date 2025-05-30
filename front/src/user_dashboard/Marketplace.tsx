@@ -12,6 +12,9 @@ const Marketplace = () => {
   const categories = ["All", "Trending", "Following"];
   const navigate = useNavigate();
 
+  const [likedItems, setLikedItems] = useState<Set<string>>(new Set());
+  const [showWishlist, setShowWishlist] = useState(false);
+
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
@@ -19,84 +22,73 @@ const Marketplace = () => {
   const handleSellClick = () => {
     navigate("/sell");
   };
-  
-  
-  // const artCards = [
-  //   {
-  //     id: "market1",
-  //     artistName: "Angel Ceraolo",
-  //     artistImage: "https://i.pravatar.cc/150?img=1",
-  //     artworkImage: "https://images.unsplash.com/photo-1555181126-cf46a03827c0?q=80&w=1470&auto=format&fit=crop",
-  //     price: "550",
-  //   },
-  //   {
-  //     id: "market2",
-  //     artistName: "Angel Ceraolo",
-  //     artistImage: "https://i.pravatar.cc/150?img=2",
-  //     artworkImage: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?q=80&w=1374&auto=format&fit=crop",
-  //     price: "650",
-  //   },
-  //   {
-  //     id: "market3",
-  //     artistName: "Angel Ceraolo",
-  //     artistImage: "https://i.pravatar.cc/150?img=3",
-  //     artworkImage: "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?q=80&w=1374&auto=format&fit=crop",
-  //     price: "450",
-  //   },
-  //   {
-  //     id: "market4",
-  //     artistName: "Angel Ceraolo",
-  //     artistImage: "https://i.pravatar.cc/150?img=4",
-  //     artworkImage: "https://images.unsplash.com/photo-1548484352-ea579e5233a8?q=80&w=1370&auto=format&fit=crop",
-  //     price: "450",
-  //   },
-  //   {
-  //     id: "market5",
-  //     artistName: "Angel Ceraolo",
-  //     artistImage: "https://i.pravatar.cc/150?img=5",
-  //     artworkImage: "https://images.unsplash.com/photo-1551913902-c92207136625?q=80&w=1470&auto=format&fit=crop",
-  //     price: "350",
-  //   },
-  //   {
-  //     id: "market6",
-  //     artistName: "Angel Ceraolo",
-  //     artistImage: "https://i.pravatar.cc/150?img=6",
-  //     artworkImage: "https://images.unsplash.com/photo-1604537529428-15bcbeecfe4d?q=80&w=1469&auto=format&fit=crop",
-  //     price: "550",
-  //   },
-  //   {
-  //     id: "market7",
-  //     artistName: "Angel Ceraolo",
-  //     artistImage: "https://i.pravatar.cc/150?img=7",
-  //     artworkImage: "https://images.unsplash.com/photo-1579783901586-d88db74b4fe4?q=80&w=1490&auto=format&fit=crop",
-  //     price: "650",
-  //   },
-  //   {
-  //     id: "market8",
-  //     artistName: "Angel Ceraolo",
-  //     artistImage: "https://i.pravatar.cc/150?img=8",
-  //     artworkImage: "https://images.unsplash.com/photo-1498842812179-c81beecf902c?q=80&w=1364&auto=format&fit=crop",
-  //     price: "450",
-  //   },
-  // ];
 
-  // const handleBuyArt = () => {
-  //   toast("Buy request submitted"); 
-  // };
+  const handleLike = (id: string) => {
+    setLikedItems(prev => {
+      const newLiked = new Set(prev);
+      if (newLiked.has(id)) {
+        newLiked.delete(id);
+        toast("Removed from wishlist");
+      } else {
+        newLiked.add(id);
+        toast("Added to wishlist");
+      }
+      return newLiked;
+    });
+  };
+
+  const handleRemoveFromWishlist = (id: string) => {
+    setLikedItems(prev => {
+      const newLiked = new Set(prev);
+      newLiked.delete(id);
+      return newLiked;
+    });
+    toast("Removed from wishlist");
+  };
+
+  const handleWishlistClick = () => {
+    setShowWishlist(true);
+    console.log("Wishlist opened");
+  };
 
   return (
     <>
-    <div className="min-h-screen bg-background">
-      <Header />
-      <div className="container mx-auto px-4 sm:px-6 pt-20">
-        {/* Top Sellers Section */}
-        <TopSellers />
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-3">
+      <div className="min-h-screen">
+        <Header />
+        <div className="container mx-auto px-4 sm:px-6 pt-20 pb-12">
+          {/* Top Sellers Section */}
+          <TopSellers />
+          
+          {/* Marketplace Filters */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-md font-bold text-gray-900">Marketplace</h1>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={handleWishlistClick}
+                  className="text-[11px] text-gray-600 hover:text-gray-900 relative"
+                >
+                  Wishlist
+                </button>
+                <div className="relative w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center">
+                  <img
+                    src="https://img.icons8.com/puffy-filled/32/BF0101/like.png"
+                    alt="Wishlist Icon"
+                    className="w-3.5 h-3.5"
+                  />
+                  {likedItems.size > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                      {likedItems.size}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
 
-            <div className="flex items-center justify-between mb-6 lg:w-[133%] pl-2 sm:pl-0">
+            <div className="flex justify-between">
               <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
-              <div className="flex space-x-2 text-xs mt-9">
+
+              <div className="flex gap-3">
                 <div className="relative">
                   <ArtCategorySelect
                     selectedCategory={selectedCategory}
@@ -105,25 +97,47 @@ const Marketplace = () => {
                 </div>
 
                 <button
-                  className="py-1.5 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
+                  className="py-1 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
                   onClick={handleSellClick}
                 >
                   <i className="bx bx-plus text-xs"></i>
-                  Sell
+                    Sell
                 </button>
               </div>
             </div>
 
-          </div> 
+          </div>
+          
+          {/* Marketplace Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {/* {artCards.map((card) => (
+              <SellCard
+                key={card.id}
+                id={card.id}
+                image={card.image}
+                price={card.price}
+                originalPrice={card.originalPrice}
+                title={card.title}
+                isLiked={likedItems.has(card.id)}
+                onLike={() => handleLike(card.id)}
+                onBuy={() => handleBuy(card.id)}
+              />
+            ))} */}
+          </div>
         </div>
       </div>
-
       
-    </div>
-
       <div >
         <Footer />
       </div>
+
+      {/* Wishlist Modal */}
+      {/* <WishlistModal
+        isOpen={showWishlist}
+        onClose={() => setShowWishlist(false)}
+        wishlistItems={wishlistItems}
+        onRemoveFromWishlist={handleRemoveFromWishlist}
+      /> */}
 
     </>
   );
