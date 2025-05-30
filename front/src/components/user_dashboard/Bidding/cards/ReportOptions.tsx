@@ -18,7 +18,7 @@ type ReportCategory = {
   options?: ReportOption[];
 };
 
-type ReportOption = {
+export type ReportOption = {
   id: string;
   text: string;
   additionalInfo?: string;
@@ -27,8 +27,28 @@ type ReportOption = {
 interface ReportOptionsPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (category: string, option?: string) => void;
+  onSubmit: (category: string, option?: ReportOption | string) => void;
 }
+
+export const normalizeReportType = (optionId: string | undefined, categoryId: string): string => {
+  const map: Record<string, string> = {
+    Nudity: "Inappropriate",
+    Hate: "Inappropriate",
+    Violence: "Inappropriate",
+    Harassment: "Inappropriate",
+    Copyright: "Intellectual",
+    Trademark: "Intellectual",
+    Plagiarism: "Intellectual",
+    Fake: "Fraud",
+    Scam: "Fraud",
+    SpamContent: "Spam",
+    SomethingElse: "Other",
+  };
+
+  if (categoryId === "Other") return "Other";
+
+  return optionId ? map[optionId] || "Other" : categoryId;
+};
 
 export const reportCategories: ReportCategory[] = [
   {
@@ -111,7 +131,6 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [customReason, setCustomReason] = useState<string>("");
 
-
   if (!isOpen) return null;
 
   const handleCategorySelect = (category: ReportCategory) => {
@@ -127,38 +146,29 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
     setShowDetails(true);
   };
 
-  const normalizeReportType = (optionId: string | undefined, categoryId: string): string => {
-    const map: Record<string, string> = {
-      Nudity: "offensive",
-      Hate: "offensive",
-      Violence: "offensive",
-      Harassment: "offensive",
-      Copyright: "plagiarism",
-      Trademark: "plagiarism",
-      Plagiarism: "plagiarism",
-      Fake: "fraud",
-      Scam: "fraud",
-      SpamContent: "spam",
-      SomethingElse: "other",
-    };
+  const handleSubmit = async () => {
+    if (!selectedCategory) {
+      toast.error("Please select a category.");
+      return;
+    }
 
-    if (categoryId === "Other") return "other";
+    if (selectedCategory.id === "Other" && !customReason.trim()) {
+      toast.error("Please provide a reason for reporting.");
+      return;
+    }
 
-    return optionId ? (map[optionId] || "other") : categoryId.toLowerCase();
-  };
+    const categoryId = selectedCategory.id;
+    const optionId = selectedOption?.id;
 
-  const handleSubmit = async (categoryId: string, optionId?: string) => {
+    const finalOptionId = categoryId === "Other" && customReason.trim() ? customReason.trim() : optionId;
+    const normalizedType = normalizeReportType(optionId, categoryId);
+
     try {
-      const finalOptionId =
-        categoryId === "Other" && customReason.trim() ? customReason.trim() : optionId;
-
-      const normalizedType = normalizeReportType(optionId, categoryId);
       await onSubmit(normalizedType, finalOptionId);
-
       toast.success("Report submitted successfully. Thank you for your feedback.");
       onClose();
       setCustomReason("");
-    } catch (error) {
+    } catch {
       toast.error("Failed to submit report. Please try again.");
     } finally {
       setShowConfirmation(false);
@@ -177,10 +187,10 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
     if (showDetails) {
       if (selectedCategory?.id === "Other") {
         setShowDetails(false);
-        setSelectedCategory(null); 
-        setCustomReason(""); 
+        setSelectedCategory(null);
+        setCustomReason("");
       } else {
-        setShowDetails(false); 
+        setShowDetails(false);
       }
     } else if (selectedCategory) {
       setSelectedCategory(null);
@@ -294,7 +304,7 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
               </button>
               <button
                 className="bg-red-800 hover:bg-red-700 rounded-full py-1.5 px-4 text-white text-[10px] whitespace-nowrap"
-                onClick={() => handleSubmit(selectedCategory?.id || "", selectedOption?.id)}
+                onClick={() => handleSubmit()}
               >
                 Report Content
               </button>
