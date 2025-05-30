@@ -94,9 +94,9 @@ const OnBidTab = () => {
 
   return (
     <div>
-      {/* Tabs */}
+      {/* Tabs */}{" "}
       <div className="relative flex space-x-8 text-[10px] pl-2 border-gray-300 mb-7">
-        {["on_going", "sold", "closed"].map((tab) => (
+        {["on_going", ...(isMyProfile ? ["sold", "closed"] : [])].map((tab) => (
           <button
             key={tab}
             className={`pb-2 font-medium ${
@@ -111,56 +111,57 @@ const OnBidTab = () => {
           </button>
         ))}
 
-        {/* MY BIDS Tab */}
-        <div className="relative flex items-center space-x-1">
-          <button
-            className={`pb-2 font-medium ${
-              activeTab === "my_bids" ? "border-b-2 border-red-800 text-red-800" : "text-gray-600"
-            }`}
-            onClick={() => {
-              setActiveTab("my_bids");
-              setShowDropdown(false);
-              setMyBidFilter("all");
-            }}
-          >
-            MY BIDS ({myBidFilter.toUpperCase()})
-          </button>
-
-          {activeTab === "my_bids" && (
-            <button className="pb-2" onClick={() => setShowDropdown((prev) => !prev)}>
-              <svg
-                className={`w-3 h-3 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path d="M19 9l-7 7-7-7" />
-              </svg>
+        {/* MY BIDS tab only for own profile */}
+        {isMyProfile && (
+          <div className="relative flex items-center space-x-1">
+            <button
+              className={`pb-2 font-medium ${
+                activeTab === "my_bids" ? "border-b-2 border-red-800 text-red-800" : "text-gray-600"
+              }`}
+              onClick={() => {
+                setActiveTab("my_bids");
+                setShowDropdown(false);
+                setMyBidFilter("all");
+              }}
+            >
+              MY BIDS ({myBidFilter.toUpperCase()})
             </button>
-          )}
 
-          {activeTab === "my_bids" && showDropdown && (
-            <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded shadow z-10 text-[10px]">
-              {(["all", "active", "won", "lost"] as MyBidFilter[]).map((option) => (
-                <button
-                  key={option}
-                  className={`block px-4 py-2 text-left w-full whitespace-nowrap ${
-                    myBidFilter === option ? "font-semibold text-black" : "text-gray-600"
-                  }`}
-                  onClick={() => {
-                    setMyBidFilter(option);
-                    setShowDropdown(false);
-                  }}
+            {activeTab === "my_bids" && (
+              <button className="pb-2" onClick={() => setShowDropdown((prev) => !prev)}>
+                <svg
+                  className={`w-3 h-3 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
                 >
-                  {option.toUpperCase()}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+                  <path d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            )}
 
+            {activeTab === "my_bids" && showDropdown && (
+              <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded shadow z-10 text-[10px]">
+                {(["all", "active", "won", "lost"] as MyBidFilter[]).map((option) => (
+                  <button
+                    key={option}
+                    className={`block px-4 py-2 text-left w-full whitespace-nowrap ${
+                      myBidFilter === option ? "font-semibold text-black" : "text-gray-600"
+                    }`}
+                    onClick={() => {
+                      setMyBidFilter(option);
+                      setShowDropdown(false);
+                    }}
+                  >
+                    {option.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
       {/* Content */}
       {isLoading ? (
         <ArtCardSkeleton />
