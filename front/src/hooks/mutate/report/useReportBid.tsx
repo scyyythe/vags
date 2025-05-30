@@ -57,6 +57,7 @@ const useAuctionReport = () => {
 
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {
+        console.error("Full error response:", error.response);
         const serverMessage = error.response?.data?.detail || error.response?.data?.error || "";
 
         if (

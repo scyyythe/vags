@@ -165,7 +165,7 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
 
     try {
       await onSubmit(normalizedType, finalOptionId);
-      toast.success("Report submitted successfully. Thank you for your feedback.");
+
       onClose();
       setCustomReason("");
     } catch {

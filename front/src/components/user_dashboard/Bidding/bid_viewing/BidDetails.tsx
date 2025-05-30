@@ -25,6 +25,7 @@ import { useAuctionLike } from "@/hooks/interactions/auction_like/useAuctionLike
 import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
 import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
 import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
+import { a } from "node_modules/framer-motion/dist/types.d-B50aGbjN";
 export interface BidCardData {
   id: string;
   title: string;
@@ -43,13 +44,17 @@ const BidDetails = () => {
   const { data: item, isLoading } = useFetchBiddingArtworkById(id!);
   const { data: allAuctions = [] } = useAuctions(1);
   const { data: reportInfo, isError } = useBidReportStatus(id);
-  const [isReported, setIsReported] = useState(reportInfo?.reported ?? false);
+  const [isReported, setIsReported] = useState(false);
 
   useEffect(() => {
     if (reportInfo?.reported !== undefined) {
       setIsReported(reportInfo.reported);
     }
   }, [reportInfo]);
+
+  useEffect(() => {
+    console.log("Is reported:", isReported);
+  }, [isReported]);
 
   useEffect(() => {
     if (item) {
@@ -75,13 +80,13 @@ const BidDetails = () => {
   const descriptionRef = useRef<HTMLDivElement | null>(null);
 
   const [showReportOptions, setShowReportOptions] = useState(false);
-  const { mutate: submitReport } = useAuctionSubmitReport();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
   const artworkId = item?.artwork?.id ?? null;
   const artworkIds = artworks?.map((a) => a.id) || [];
   const { data } = useArtworkStatus(artworkIds);
+  const { mutate: submitAuctionReport } = useAuctionSubmitReport();
 
   const { data: bids = [], error } = useBidHistory(artworkId);
 
@@ -111,10 +116,7 @@ const BidDetails = () => {
       ? `Category: ${selectedCategory.title}`
       : "Artwork contains inappropriate or offensive content.";
 
-    console.log("Report submitted:", issueDetails);
-
     onReport(issueDetails);
-
     setShowReportOptions(false);
   };
 
@@ -194,10 +196,36 @@ const BidDetails = () => {
     toast("Artwork hidden");
     setMenuOpen(false);
   };
+  const handleReport = async ({
+    category,
+    option,
+    description,
+    additionalInfo,
+  }: {
+    category: string;
+    option?: string;
+    description?: string;
+    additionalInfo?: string;
+  }) => {
+    if (reportInfo?.reported) {
+      toast.error("You have already reported this auction.");
+      setMenuOpen(false);
+      return;
+    }
 
-  const handleReport = () => {
-    setIsReported(!isReported);
-    toast(isReported ? "Artwork report removed" : "Artwork reported");
+    try {
+      await submitAuctionReport({
+        auction_id: item?.id,
+        category,
+        option,
+        description,
+        additionalInfo,
+      });
+      toast.success("Report submitted successfully. Thank you for your feedback.");
+    } catch (error) {
+      console.error("Auction report failed:", error);
+    }
+
     setMenuOpen(false);
   };
 
@@ -408,6 +436,7 @@ const BidDetails = () => {
                         onReport={handleReport}
                         isReported={isReported}
                         className={isMobile ? "mobile-menu-position" : ""}
+                        auctionId={item.id}
                       />
                     </div>
                   </div>
