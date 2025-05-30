@@ -99,16 +99,32 @@ const ArtCard = ({
     restore(id);
     setMenuOpen(false);
   };
-  const handleReport = (issueDetails: string) => {
+  const handleReport = ({
+    category,
+    option,
+    description,
+    additionalInfo,
+  }: {
+    category: string;
+    option?: string;
+    description?: string;
+    additionalInfo?: string;
+  }) => {
     if (isReportedFromBulk) {
       toast.error("You have already reported this artwork.");
       setMenuOpen(false);
       return;
     }
 
-    console.log("Submitting report with data:", { id, issue_details: issueDetails });
+    console.log("Submitting report with data:", { id, category, option, description, additionalInfo });
 
-    submitReport({ art_id: id, issue_details: issueDetails });
+    submitReport({
+      art_id: id,
+      category,
+      option,
+      description,
+      additionalInfo,
+    });
 
     setMenuOpen(false);
   };
@@ -161,7 +177,7 @@ const ArtCard = ({
               onHide={handleHide}
               onReport={handleReport}
               isFavorite={status.isSaved}
-              isReported={isReportedFromBulk}
+              isReported={report?.reported}
             />
           ) : isDeleted ? (
             <DeletedMenu

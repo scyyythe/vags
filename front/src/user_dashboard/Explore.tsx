@@ -41,7 +41,9 @@ const Explore = () => {
     }, {} as Record<string, (typeof bulkStatus)[0]>);
   }, [bulkStatus]);
 
-  const reportStatusLookup = reportStatus || {};
+  const reportStatusLookup = React.useMemo(() => {
+    return reportStatus || {};
+  }, [reportStatus]);
 
   const filteredArtworksMemo = useMemo(() => {
     return artworks?.filter((artwork) => {
