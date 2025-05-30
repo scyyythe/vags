@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import useNotifications from "@/hooks/notifications/useNotification";
-
+import useClearAllNotifications from "@/hooks/notifications/useClearAllNotifications.tsx";
 interface Notification {
   id: number;
   avatar?: string;
@@ -195,7 +195,7 @@ const AllNotifications = () => {
     resetFilters,
     setIsFilterOpen,
   } = useNotifications();
-
+  const { mutate: clearAll, isPending } = useClearAllNotifications(clearAllNotifications);
   const goBack = () => {
     navigate("/");
   };
@@ -214,7 +214,7 @@ const AllNotifications = () => {
           </div>
 
           <button
-            onClick={clearAllNotifications}
+            onClick={() => clearAll()}
             disabled={displayedNotifications.length === 0}
             className="h-9 flex flex-row text-xs text-red-700 hover:text-red-600 cursor-pointer"
           >
@@ -247,7 +247,8 @@ const AllNotifications = () => {
                       )}
                     >
                       <Calendar className="mr-2 h-3 w-3" />
-                      {date ? format(date, "MMM d, yyyy") : "Filter by date"}
+                      {date instanceof Date && !isNaN(date.getTime()) ? format(date, "MMM d, yyyy") : "Filter by date"}
+
                       <ChevronDown className="ml-auto h-3 w-3 opacity-50" />
                     </button>
                   </PopoverTrigger>
@@ -268,9 +269,12 @@ const AllNotifications = () => {
 
             {date && (
               <div className="px-4 py-2 bg-blue-50 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <span className="text-[10px] text-blue-700">
-                  Showing notifications from {format(date, "MMMM d, yyyy")}
-                </span>
+                {date instanceof Date && !isNaN(date.getTime()) && (
+                  <span className="text-[10px] text-blue-700">
+                    Showing notifications from {format(date, "MMMM d, yyyy")}
+                  </span>
+                )}
+
                 <Button variant="ghost" size="sm" className="text-blue-700 h-8 text-[10px]" onClick={resetFilters}>
                   Reset Filters
                 </Button>
@@ -282,12 +286,21 @@ const AllNotifications = () => {
                 <div className="space-y-3 pr-2">
                   {displayedNotifications.map((n) => (
                     <div
+                      onClick={() => {
+                        if (n.link) {
+                          navigate(n.link);
+                        }
+                      }}
                       key={n.id}
                       className="flex p-4 bg-white border rounded-sm shadow-sm hover:bg-gray-50 transition-colors"
                     >
                       <div className="flex-shrink-0 mr-4">
-                        {n.avatar ? (
-                          <img src={n.avatar} alt={n.name || ""} className="w-5 h-5 rounded-full object-cover" />
+                        {n.actor.profile_picture ? (
+                          <img
+                            src={n.actor.profile_picture}
+                            alt={n.name || ""}
+                            className="w-5 h-5 rounded-full object-cover"
+                          />
                         ) : n.name ? (
                           <div className="w-5 h-5 rounded-full border bg-gray-50 flex items-center justify-center text-xs text-black uppercase">
                             {n.name.split(" ")[0][0]}
@@ -338,7 +351,7 @@ const AllNotifications = () => {
                           </div>
                         )}
                         <div className="text-[10px] text-gray-400 mt-2">
-                          {n.time} · {format(n.date, "MMM d, yyyy")}
+                          {n.time} · {format(n.created_at, "MMM d, yyyy")}
                         </div>
                       </div>
 
