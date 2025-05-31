@@ -151,7 +151,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
                           )}
                         </div>
                         {title === "Following" && (
-                          <span className="text-[10px] text-gray-500">{artworksCounts[user.id] ?? 0} fixeditems</span>
+                          <span className="text-[10px] text-gray-500">{artworksCounts[user.id] ?? 0} items</span>
                         )}
                       </div>
                     </div>

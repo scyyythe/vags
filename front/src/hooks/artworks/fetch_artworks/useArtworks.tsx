@@ -31,12 +31,13 @@ const fetchArtworks = async (
   userId?: string,
   endpointType: "all" | "created-by-me" | "specific-user" = "all",
   filterVisibility?: "public" | "private" | "hidden" | "deleted" | "archived",
-  onlyActivePublic: boolean = false
+  onlyActivePublic: boolean = false,
+  limit: number = 30
 ): Promise<Artwork[]> => {
   try {
     const params: { page: number; limit: number; userId?: string; visibility?: string } = {
       page: currentPage,
-      limit: 100,
+      limit,
     };
 
     if (filterVisibility) {

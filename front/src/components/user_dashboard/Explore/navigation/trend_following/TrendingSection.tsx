@@ -58,7 +58,7 @@ const TrendingFollowingSection = ({ onTip }: Props) => {
                 artworkImage: artwork.artworkImage || artwork.image_url || "",
                 artistImage: artwork.artistImage || artwork.profile_picture || "",
                 artistName: artwork.artist || artwork.artistName,
-                likesCount: artwork.likes_count,
+                likesCount: artwork.likesCount,
               };
 
               return (
