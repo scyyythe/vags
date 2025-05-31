@@ -37,9 +37,14 @@ class ArtListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+        blocked_user_ids = []
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'blocked_users'):
+            blocked_user_ids = [user.id for user in self.request.user.blocked_users]
+
         return Art.objects(
             visibility__iexact="public",
-            art_status__iexact="active"
+            art_status__iexact="active",
+            artist__nin=blocked_user_ids
         ).order_by('-created_at')
 
 class ArtBulkListView(generics.ListAPIView):
@@ -48,10 +53,16 @@ class ArtBulkListView(generics.ListAPIView):
 
     def get_queryset(self):
         valid_statuses = ["Active"]
-        return Art.objects.filter(
+        blocked_user_ids = []
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'blocked_users'):
+            blocked_user_ids = [user.id for user in self.request.user.blocked_users]
+
+        return Art.objects(
             visibility__iexact="public",
-            art_status__in=valid_statuses
+            art_status__in=valid_statuses,
+            artist__nin=blocked_user_ids
         ).order_by('-created_at')
+
    
     
 class ArtListViewOwner(generics.ListAPIView):
@@ -170,8 +181,6 @@ class ArtUpdateView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     
-
-
 class ArtDeleteView(generics.DestroyAPIView):
     queryset = Art.objects.all()
     serializer_class = ArtSerializer

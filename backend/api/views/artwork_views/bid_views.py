@@ -113,6 +113,8 @@ class AuctionListView(generics.ListAPIView):
 
     def get_queryset(self):
         now_utc = datetime.now(timezone.utc)
+
+       
         expired_auctions = Auction.objects(
             status=AuctionStatus.ON_GOING.value,
             end_time__lt=now_utc
@@ -121,12 +123,21 @@ class AuctionListView(generics.ListAPIView):
             auction.close_auction()
             auction.reload()
 
-        auction_ids = self.request.query_params.get("auction_ids")
-        if auction_ids:
-            ids = auction_ids.split(",")
-            return Auction.objects(id__in=ids)
+       
+        blocked_user_ids = []
+        user = self.request.user
+        if user.is_authenticated and hasattr(user, "blocked_users"):
+            blocked_user_ids = [u.id for u in user.blocked_users]
 
+       
+        if blocked_user_ids:
+            valid_artworks = Art.objects(artist__nin=blocked_user_ids).only('id')
+            valid_artwork_ids = [art.id for art in valid_artworks]
+            return Auction.objects(artwork__in=valid_artwork_ids)
+
+      
         return Auction.objects()
+
 
 class AuctionListViewOwner(generics.ListAPIView):
     serializer_class = AuctionSerializer

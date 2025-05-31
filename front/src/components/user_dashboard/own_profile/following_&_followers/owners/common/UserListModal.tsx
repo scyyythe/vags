@@ -12,13 +12,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import useUserQuery from "@/hooks/users/useUserQuery";
 import { User } from "@/hooks/users/useUserQuery";
-import useFollowStatus from "@/hooks/follow/useFollowStatus";
-import useOwnedArtworksCount from "@/hooks/artworks/fetch_artworks/useOwnedArtworksCount ";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchOwnedArtworksCount } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import useMultipleFollowStatus from "@/hooks/follow/useMultipleFollowStatus";
+import useBlockUser from "@/hooks/users/block/useBlockUser";
+import useSubmitUserReport from "@/hooks/mutate/report/useSubmitUserReport";
+
 interface UserListModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -45,6 +45,16 @@ const UserListModal: React.FC<UserListModalProps> = ({
 
   const [artworksCounts, setArtworksCounts] = useState<Record<string, number>>({});
   const navigate = useNavigate();
+  const blockUser = useBlockUser();
+  const submitReport = useSubmitUserReport();
+
+  const handleReportUser = (userId: string) => {
+    submitReport.mutate({
+      reported_user_id: userId,
+      category: "Fraud",
+      description: "This user tried to scam me with a fake payment.",
+    });
+  };
 
   useEffect(() => {
     async function fetchAllCounts() {
@@ -130,6 +140,11 @@ const UserListModal: React.FC<UserListModalProps> = ({
               filteredUsers.map((user, index) => {
                 const followQuery = followQueries[index];
                 const isFollowing = followQuery.data;
+
+                const handleBlockUser = () => {
+                  blockUser.mutate(user.id);
+                };
+
                 return (
                   <div key={user.id} className="flex items-center justify-between py-2 border-gray-100 last:border-0">
                     <div className="flex items-center">
@@ -151,7 +166,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
                           )}
                         </div>
                         {title === "Following" && (
-                          <span className="text-[10px] text-gray-500">{artworksCounts[user.id] ?? 0} fixeditems</span>
+                          <span className="text-[10px] text-gray-500">{artworksCounts[user.id] ?? 0} items</span>
                         )}
                       </div>
                     </div>
@@ -232,9 +247,15 @@ const UserListModal: React.FC<UserListModalProps> = ({
                           >
                             View Profile
                           </DropdownMenuItem>
-
-                          <DropdownMenuItem className="text-[9px] cursor-pointer">Block User</DropdownMenuItem>
-                          <DropdownMenuItem className="text-[9px] cursor-pointer text-red-600">Report</DropdownMenuItem>
+                          <DropdownMenuItem className="text-[9px] cursor-pointer" onClick={handleBlockUser}>
+                            Block User
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-[9px] cursor-pointer text-red-600"
+                            onClick={() => handleReportUser(user.id)}
+                          >
+                            Report
+                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>

@@ -106,59 +106,80 @@ class FollowedArtworksView(APIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        page = int(request.query_params.get('page', 1))
-        page_size = 10
-        skip = (page - 1) * page_size
 
-        followed_users = Follower.objects.filter(follower=user).only('following')
-        followed_ids = [f.following.id for f in followed_users]
+        followed_ids = [f.following for f in Follower.objects(follower=user)]
 
         if not followed_ids:
-            return Response([], status=status.HTTP_200_OK)
+            return Response({
+                "total": 0,
+                "artworks": [],
+                "message": "You are not following any users yet."
+            }, status=status.HTTP_200_OK)
 
-        
-        artworks = Art.objects.filter(
+        artworks_queryset = Art.objects(
             artist__in=followed_ids,
-            visibility="Public"
-        ).order_by('-created_at')[skip:skip + page_size]
+            visibility="Public",
+            art_status="Active"
+        ).order_by('-created_at')
+
+        total = artworks_queryset.count()
+        artworks = artworks_queryset  
 
         serialized = ArtSerializer(artworks, many=True)
-        return Response(serialized.data, status=status.HTTP_200_OK)
-    
+        return Response({
+            "total": total,
+            "artworks": serialized.data,
+        }, status=status.HTTP_200_OK)
+
+
+
 class FollowerListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-       
         user_id = request.query_params.get('user_id')
+        current_user = request.user
+
+        blocked_user_ids = [user.id for user in current_user.blocked_users] if hasattr(current_user, 'blocked_users') else []
 
         if user_id:
-          
-            followers = Follower.objects.filter(following=user_id)
+           
+            followers = Follower.objects(following=user_id, follower__nin=blocked_user_ids)
         else:
-            followers = Follower.objects.filter(following=request.user)
+            followers = Follower.objects(following=current_user, follower__nin=blocked_user_ids)
 
         follower_users = [f.follower for f in followers]
         serializer = UserSerializer(follower_users, many=True)
         return Response(serializer.data)
+
+
 
 class FollowingListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         user_id = request.query_params.get('user_id')
+        current_user = request.user
+
+      
+        blocked_user_ids = [user.id for user in current_user.blocked_users] if hasattr(current_user, 'blocked_users') else []
 
         if user_id:
             following = Follower.objects.filter(follower=user_id)
         else:
-            following = Follower.objects.filter(follower=request.user)
+            following = Follower.objects.filter(follower=current_user)
 
-        following_users = [f.following for f in following]
+        filtered_following = [f for f in following if f.following.id not in blocked_user_ids]
+
+        following_users = [f.following for f in filtered_following]
         serializer = UserSerializer(following_users, many=True)
         return Response(serializer.data)
 
 
+
 class FollowCountsView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, pk, *args, **kwargs):
         if not ObjectId.is_valid(pk):
             return Response({"detail": "Invalid user ID format."}, status=status.HTTP_400_BAD_REQUEST)
@@ -168,13 +189,26 @@ class FollowCountsView(APIView):
         except User.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        followers_count = Follower.objects(following=user).count()
-        following_count = Follower.objects(follower=user).count()
+        current_user = request.user
+        blocked_user_ids = [u.id for u in current_user.blocked_users] if hasattr(current_user, 'blocked_users') else []
+
+        
+        followers_count = Follower.objects(
+            following=user,
+            follower__nin=blocked_user_ids
+        ).count()
+
+      
+        following_count = Follower.objects(
+            follower=user,
+            following__nin=blocked_user_ids
+        ).count()
 
         return Response({
             "followers": followers_count,
             "following": following_count
         }, status=status.HTTP_200_OK)
+
 
          
 class FollowStatsView(APIView):
