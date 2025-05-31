@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 import traceback
 import logging
 from bson.errors import InvalidId
+from rest_framework.exceptions import ValidationError
 logger = logging.getLogger(__name__)
 
 class ReportCreateView(generics.ListCreateAPIView):
@@ -51,7 +52,8 @@ class ReportCreateView(generics.ListCreateAPIView):
 
         art = serializer.instance.art
         auction = serializer.instance.auction
-
+        reported_user = serializer.instance.reported_user
+        
         host = request.get_host()
         protocol = "http" if "localhost" in host else "https"
 
@@ -99,7 +101,21 @@ class ReportCreateView(generics.ListCreateAPIView):
                 created_at=datetime.now(),
                 link=link,
             )
-
+            
+        if reported_user:
+            link = f"/userprofile/{str(reported_user.id)}"
+            notif = Notification.objects.create(
+                user=mongo_user, 
+                actor=mongo_user,
+                message=f"You reported the artist '{reported_user.first_name} {reported_user.last_name}'.",
+                name=f"{mongo_user.first_name} {mongo_user.last_name}",
+                action="reported user",
+                target=f"{reported_user.first_name} {reported_user.last_name}",
+                icon="report",
+                created_at=datetime.now(),
+                link=link,
+            )
+        
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 

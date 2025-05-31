@@ -3,15 +3,15 @@ import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
-type ReportInput = {
-  art_id: string;
+type UserReportInput = {
+  reported_user_id: string;
   category: string;
   option?: string;
   description?: string;
   additionalInfo?: string;
 };
 
-type ReportResponse = {
+type UserReportResponse = {
   id: string;
   description?: string;
   additionalInfo?: string;
@@ -19,15 +19,15 @@ type ReportResponse = {
   created_at: string;
 };
 
-const submitReport = async ({
-  art_id,
+const submitUserReport = async ({
+  reported_user_id,
   category,
   option,
   description,
   additionalInfo,
-}: ReportInput): Promise<ReportResponse> => {
+}: UserReportInput): Promise<UserReportResponse> => {
   const response = await apiClient.post("/reports/create/", {
-    art_id,
+    reported_user_id,
     category,
     option,
     description,
@@ -36,23 +36,22 @@ const submitReport = async ({
   return response.data;
 };
 
-const useSubmitReport = () => {
+const useSubmitUserReport = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ art_id, category, option, description, additionalInfo }: ReportInput) =>
-      submitReport({
-        art_id,
+    mutationFn: ({ reported_user_id, category, option, description, additionalInfo }: UserReportInput) =>
+      submitUserReport({
+        reported_user_id,
         category,
         option,
         description,
         additionalInfo,
       }),
 
-    onSuccess: (_, { art_id }) => {
-      toast.success("Auction reported successfully!");
-      queryClient.invalidateQueries({ queryKey: ["reportStatus", art_id] });
-      queryClient.invalidateQueries({ queryKey: ["artworks"] });
+    onSuccess: () => {
+      toast.success("User reported successfully!");
+      queryClient.invalidateQueries({ queryKey: ["reportStatus"] });
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {
@@ -62,7 +61,7 @@ const useSubmitReport = () => {
           serverMessage.toLowerCase().includes("already reported") ||
           serverMessage.toLowerCase().includes("still under review")
         ) {
-          toast.error("You already reported this");
+          toast.error("You already reported this user.");
         } else {
           toast.error(serverMessage || "Failed to submit report.");
         }
@@ -73,4 +72,4 @@ const useSubmitReport = () => {
   });
 };
 
-export default useSubmitReport;
+export default useSubmitUserReport;

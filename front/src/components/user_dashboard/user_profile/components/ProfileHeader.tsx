@@ -119,11 +119,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
 
         {/* Stats - Replaced with FollowModals component */}
         <div className="flex space-x-2">
-          <FollowModals
-            userId={profileUserId}
-            followersCount={followCounts?.followers ?? 0}
-            followingCount={followCounts?.following ?? 0}
-          />
+          <FollowModals followersCount={followCounts?.followers ?? 0} followingCount={followCounts?.following ?? 0} />
 
           {/* Items count - separate from FollowModals */}
           <div className="flex items-center space-x-2 mt-1.5 text-[10px] md:text-[11px]">
@@ -170,12 +166,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
                 <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
                   Block User
                 </DropdownMenuItem>
-                <DropdownMenuItem  
-                onClick={() => {
-                  setShowReportOptions(true);
-                  setOptionsOpen(false);
-                }} 
-                className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
+                <DropdownMenuItem
+                  onClick={() => {
+                    setShowReportOptions(true);
+                    setOptionsOpen(false);
+                  }}
+                  className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1"
+                >
                   Report
                 </DropdownMenuItem>
               </DropdownMenuContent>

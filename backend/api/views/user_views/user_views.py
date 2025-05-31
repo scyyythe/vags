@@ -88,7 +88,47 @@ class DeleteUserView(generics.DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
-  
+
+class BlockUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        current_user = request.user
+        user_to_block = User.objects(id=user_id).first()
+        if not user_to_block:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        if user_to_block == current_user:
+            return Response({"detail": "Cannot block yourself."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if user_to_block not in current_user.blocked_users:
+            current_user.blocked_users.append(user_to_block)
+            current_user.save()
+        
+        return Response(
+            {"detail": f"The user {user_to_block.first_name} {user_to_block.last_name} has been blocked successfully."},
+            status=status.HTTP_200_OK
+        )
+
+
+class UnblockUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        current_user = request.user
+        user_to_unblock = User.objects(id=user_id).first()
+        if not user_to_unblock:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        if user_to_unblock in current_user.blocked_users:
+            current_user.blocked_users.remove(user_to_unblock)
+            current_user.save()
+        
+        return Response(
+            {"detail": f"The user {user_to_unblock.first_name} {user_to_unblock.last_name} has been unblocked successfully."},
+            status=status.HTTP_200_OK
+        )
+
 
 class CustomTokenObtainPairView(APIView):
     """Handles JWT authentication for MongoEngine users"""

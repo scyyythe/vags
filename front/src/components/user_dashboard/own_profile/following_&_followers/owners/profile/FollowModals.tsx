@@ -26,7 +26,6 @@ const FollowModals: React.FC<FollowModalsProps> = ({ followersCount, followingCo
     profileUserId || ""
   );
 
-  // Log followers and following lists whenever they change
   useEffect(() => {
     console.log(`Visited user ID: ${profileUserId}`);
     console.log("Followers list:", followers);
