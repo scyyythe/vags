@@ -18,7 +18,7 @@ import useFollowStatus from "@/hooks/follow/useFollowStatus";
 import useOwnedArtworksCount from "@/hooks/artworks/fetch_artworks/useOwnedArtworksCount ";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchOwnedArtworksCount } from "@/hooks/artworks/fetch_artworks/useArtworks";
-
+import useMultipleFollowStatus from "@/hooks/follow/useMultipleFollowStatus";
 interface UserListModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -46,6 +46,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
   const { id } = useParams();
   const [artworksCounts, setArtworksCounts] = useState<Record<string, number>>({});
   const navigate = useNavigate();
+
   useEffect(() => {
     async function fetchAllCounts() {
       if (!users || users.length === 0) {
@@ -79,6 +80,8 @@ const UserListModal: React.FC<UserListModalProps> = ({
   });
 
   const filteredUsers = usersWithNames.filter((user) => user.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const profileUserIds = filteredUsers.map((user) => user.id);
+  const followQueries = useMultipleFollowStatus(profileUserIds);
 
   // Helper for button rendering (for non-owner POV)
   // const renderFollowButton = (user: User) => {
@@ -125,8 +128,9 @@ const UserListModal: React.FC<UserListModalProps> = ({
         <ScrollArea className="flex-1 h-[350px] mt-4 px-8 overflow-auto">
           <div className="pr-2">
             {filteredUsers.length > 0 ? (
-              filteredUsers.map((user) => {
-                const { data: isFollowing } = useFollowStatus({ profileUserId: user.id });
+              filteredUsers.map((user, index) => {
+                const followQuery = followQueries[index];
+                const isFollowing = followQuery.data;
                 return (
                   <div key={user.id} className="flex items-center justify-between py-2 border-gray-100 last:border-0">
                     <div className="flex items-center">
