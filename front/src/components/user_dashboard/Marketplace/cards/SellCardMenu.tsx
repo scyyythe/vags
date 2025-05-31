@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { Flag, Share2, Search } from "lucide-react";
 import { toast } from "sonner";
 
-import ShareModal from "../share/ShareModal";
+import ShareModal from "../../local_components/share/ShareModal";
 import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { normalizeReportType } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
