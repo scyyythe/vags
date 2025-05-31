@@ -130,20 +130,33 @@ class FollowerListView(APIView):
 
     def get(self, request, *args, **kwargs):
        
-        user = request.user
-        followers = Follower.objects.filter(following=user)
+        user_id = request.query_params.get('user_id')
+
+        if user_id:
+          
+            followers = Follower.objects.filter(following=user_id)
+        else:
+            followers = Follower.objects.filter(following=request.user)
+
         follower_users = [f.follower for f in followers]
         serializer = UserSerializer(follower_users, many=True)
         return Response(serializer.data)
+
 class FollowingListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        user = request.user
-        following = Follower.objects.filter(follower=user)
+        user_id = request.query_params.get('user_id')
+
+        if user_id:
+            following = Follower.objects.filter(follower=user_id)
+        else:
+            following = Follower.objects.filter(follower=request.user)
+
         following_users = [f.following for f in following]
         serializer = UserSerializer(following_users, many=True)
         return Response(serializer.data)
+
 
 class FollowCountsView(APIView):
     def get(self, request, pk, *args, **kwargs):
@@ -168,19 +181,21 @@ class FollowStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        user = request.user
+        user_id = request.query_params.get('user_id')
 
-       
+        if user_id:
+            user = User.objects.get(id=user_id)
+        else:
+            user = request.user
+
         followers = Follower.objects.filter(following=user)
         followers_list = [f.follower for f in followers]
         follower_count = followers.count()
 
-      
         following = Follower.objects.filter(follower=user)
         following_list = [f.following for f in following]
         following_count = following.count()
 
-       
         followers_serialized = UserSerializer(followers_list, many=True).data
         following_serialized = UserSerializer(following_list, many=True).data
 
@@ -190,3 +205,23 @@ class FollowStatsView(APIView):
             "following_count": following_count,
             "following": following_serialized
         }, status=200)
+
+class RemoveFollowerView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        follower_id = request.data.get('follower_id')
+        if not follower_id:
+            return Response({"detail": "follower_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = request.user
+
+        try:
+          
+            follow_instance = Follower.objects.get(follower=follower_id, following=user)
+            follow_instance.delete()
+            return Response({"detail": "Follower removed successfully."}, status=status.HTTP_200_OK)
+        except Follower.DoesNotExist:
+            return Response({"detail": "Follower relationship does not exist."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"detail": f"Error removing follower: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
