@@ -15,7 +15,7 @@ import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 import useLikeStatus from "@/hooks/interactions/useLikeStatus";
 import useHideArtwork from "@/hooks/mutate/visibility/private/useHideArtwork";
-import useUnArchivedArtwork from "@/hooks/mutate/visibility/arc/useUnarchivedArtwork";
+import useUnarchiveArtwork from "@/hooks/mutate/visibility/arc/useUnarchiveArtwork";
 import useRestoreArtwork from "@/hooks/mutate/visibility/trash/useRestoreArtwork";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import useReportStatus from "@/hooks/mutate/report/useReportStatus";
@@ -70,7 +70,8 @@ const ArtCard = ({
   const [isDeletedLocally, setIsDeletedLocally] = useState(false);
 
   const { mutate: hideArtwork } = useHideArtwork();
-  const { mutate: unarchiveArtwork } = useUnArchivedArtwork();
+  const { mutate: unarchiveArtwork } = useUnarchiveArtwork();
+
   const { mutate: restore } = useRestoreArtwork();
   const { mutate: submitReport } = useSubmitReport();
 

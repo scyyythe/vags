@@ -14,7 +14,7 @@ import { getLoggedInUserId } from "@/auth/decode";
 import CollectionTab from "../tabs/CollectionTab";
 import OnBidTab from "../tabs/OnBidTab";
 import ExhibitTab from "@/components/user_dashboard/user_profile/tabs/ExhibitsTab";
-import useUnarchiveAllMyArtworks from "@/hooks/mutate/visibility/arc/useUnarchivedArtwork";
+import useUnarchiveAllMyArtworks from "@/hooks/mutate/visibility/arc/useUnarchiveAllMyArtworks";
 import useUnhideAllMyArtworks from "@/hooks/mutate/visibility/private/useUnhideArtwork";
 const tabs = [
   { id: "created", label: "Created" },
