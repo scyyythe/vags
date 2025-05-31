@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
-import { EyeOff, Flag, Undo2 } from "lucide-react";
+import { EyeOff, Flag, Undo2, Share2 } from "lucide-react";
+import ShareModal from "../../local_components/share/ShareModal";
 import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 
 interface ExhibitMenuProps {
@@ -8,6 +9,7 @@ interface ExhibitMenuProps {
   onReport: () => void;
   onUndoReport?: () => void;
   isReported: boolean;
+  isShared: boolean;
   isHidden?: boolean; 
   className?: string;
 }
@@ -20,11 +22,14 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
   onReport,
   onUndoReport,
   isReported = false,
+  isShared = false,
   isHidden = false,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showReportOptions, setShowReportOptions] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
   if (!isOpen) return null;
 
@@ -53,6 +58,31 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
             onClick={(e) => e.stopPropagation()}
         >
             <div className="flex flex-col items-start">
+                {/* Share */}
+                <div className="flex items-center relative">
+                    <button
+                    onClick={() => setShowShareModal(true)}
+                    className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+                    aria-label="Share"
+                    onMouseEnter={() => setHoveredItem("share")}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    >
+                    <Share2 size={10} fill={isShared ? "#ea384c" : "none"} stroke={isShared ? "#ea384c" : "currentColor"} />
+                    </button>
+                    {hoveredItem === "share" && (
+                    <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+                        Share
+                    </span>
+                    )}
+                </div>
+        
+                {/* Share Modal */}
+                <ShareModal
+                    isOpen={showShareModal}
+                    onClose={() => setShowShareModal(false)}
+                    linkToShare={shareUrl}
+                />
+
                 {/* Hide */}
                 <div className="flex items-center relative">
                     <button
