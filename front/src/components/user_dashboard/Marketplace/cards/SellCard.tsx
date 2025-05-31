@@ -1,6 +1,7 @@
 import React, { useState, memo } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
+import SellCardMenu from "./SellCardMenu"; 
 
 export interface SellCardProps {
   id: string;
@@ -26,16 +27,28 @@ const SellCard = ({
   isMarketplace = false,
 }: SellCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  // const [liked, setLiked] = useState(isLiked);
 
   const toggleLike = () => {
     toast(!isLiked ? "Added to wishlist" : "Removed from wishlist");
     onLike?.();
   };
 
+  const handleContact = () => {
+    toast("Redirecting to contact the artist...");
+  };
+
+  const handleReport = (data: {
+    category: string;
+    option?: string;
+    description: string;
+    additionalInfo: string;
+  }) => {
+    console.log("Report submitted:", data);
+    toast("Report submitted. Thank you!");
+  };
 
   return (
-    <div className="art-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border border-gray-200 px-3 py-3">
+    <div className="art-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border border-gray-200 px-3 py-3 relative">
       <div className="relative">
         <img
           src={artworkImage}
@@ -81,6 +94,14 @@ const SellCard = ({
           >
             <MoreHorizontal size={14} />
           </button>
+
+          {/* Render Menu */}
+          <SellCardMenu
+            isOpen={menuOpen}
+            onContact={handleContact}
+            onReport={handleReport}
+            isReported={false}
+          />
         </div>
       </div>
 
