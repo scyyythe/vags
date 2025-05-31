@@ -17,6 +17,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchOwnedArtworksCount } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import useMultipleFollowStatus from "@/hooks/follow/useMultipleFollowStatus";
 import useBlockUser from "@/hooks/users/block/useBlockUser";
+import useSubmitUserReport from "@/hooks/mutate/report/useSubmitUserReport";
 
 interface UserListModalProps {
   isOpen: boolean;
@@ -45,6 +46,16 @@ const UserListModal: React.FC<UserListModalProps> = ({
   const [artworksCounts, setArtworksCounts] = useState<Record<string, number>>({});
   const navigate = useNavigate();
   const blockUser = useBlockUser();
+  const submitReport = useSubmitUserReport();
+
+  const handleReportUser = (userId: string) => {
+    submitReport.mutate({
+      reported_user_id: userId,
+      category: "Fraud",
+      description: "This user tried to scam me with a fake payment.",
+    });
+  };
+
   useEffect(() => {
     async function fetchAllCounts() {
       if (!users || users.length === 0) {
@@ -237,9 +248,14 @@ const UserListModal: React.FC<UserListModalProps> = ({
                             View Profile
                           </DropdownMenuItem>
                           <DropdownMenuItem className="text-[9px] cursor-pointer" onClick={handleBlockUser}>
-                            {"Block User"}
+                            Block User
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-[9px] cursor-pointer text-red-600">Report</DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-[9px] cursor-pointer text-red-600"
+                            onClick={() => handleReportUser(user.id)}
+                          >
+                            Report
+                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
