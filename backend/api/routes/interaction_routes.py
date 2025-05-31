@@ -1,6 +1,6 @@
 from django.urls import path
 from api.views.interaction_views.interaction import ArtworkBulkStatusView,SavedArtworksListView,CommentCreateView,LikeStatusView,ArtworkStatusView,LikeCreateView,SavedStatusView, CartItemCreateView, CartItemDeleteView, CartRetrieveView,SavedCreateView,LikeListView, SavedListView,CommentListView
-from api.views.interaction_views.follow import FollowedArtworksView,FollowingListView,FollowCreateView,UnfollowView,FollowerListView,FollowStatsView,CheckFollowStatusView,FollowCountsView
+from api.views.interaction_views.follow import RemoveFollowerView,FollowedArtworksView,FollowingListView,FollowCreateView,UnfollowView,FollowerListView,FollowStatsView,CheckFollowStatusView,FollowCountsView
 from api.views.interaction_views.notifications import NotificationDeleteView,NotificationListView, NotificationDetailView,NotificationDeleteAllView
 interaction_urlpatterns = [
     path('comments/', CommentCreateView.as_view(), name='comment-create'),
@@ -26,7 +26,8 @@ interaction_urlpatterns = [
     path('unfollow/', UnfollowView.as_view(), name='unfollow'),
     path('followers/', FollowerListView.as_view(), name='follower-list'),
     path('following/', FollowingListView.as_view(), name='following-list'),
-
+    path('followers/remove/', RemoveFollowerView.as_view(), name='remove-follower'),
+    
     path('follow/stats/', FollowStatsView.as_view(), name='follow-stats'),
     path('check-follow-status/', CheckFollowStatusView.as_view(), name='check-follow-status'),
     path('follow-counts/<str:pk>/', FollowCountsView.as_view(), name='follow-counts'),
