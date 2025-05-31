@@ -156,6 +156,7 @@ const SecuritySettings = () => {
                 <div className="relative">
                   <Input
                     type={showCurrentPassword ? "text" : "password"}
+                    autoComplete="current-password"
                     value={formData.currentPassword}
                     onChange={(e) => handleChange("currentPassword", e.target.value)}
                     className="w-full pr-10"

@@ -42,9 +42,6 @@ const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => 
 
   const handleChange = (newValue: string | Date) => {
     onChange(newValue);
-    if (type !== "gender" && type !== "country" && type !== "language" && type !== "date") {
-      setIsEditing(false);
-    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
