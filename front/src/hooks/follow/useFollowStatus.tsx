@@ -1,4 +1,4 @@
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 
 interface UseFollowStatusProps {
@@ -16,14 +16,12 @@ const useFollowStatus = ({ profileUserId }: UseFollowStatusProps) => {
     }
   };
 
-  const queryOptions: UseQueryOptions<boolean, Error> = {
+  return useQuery({
     queryKey: ["followStatus", profileUserId],
     queryFn,
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
-  };
-
-  return useQuery(queryOptions);
+  });
 };
 
 export default useFollowStatus;

@@ -90,7 +90,10 @@ const fetchArtworks = async (
     throw error;
   }
 };
-
+export async function fetchOwnedArtworksCount(userId: string): Promise<number> {
+  const artworks = await fetchArtworks(1, userId, "specific-user");
+  return artworks.length;
+}
 const useArtworks = (
   currentPage: number,
   userId?: string,
