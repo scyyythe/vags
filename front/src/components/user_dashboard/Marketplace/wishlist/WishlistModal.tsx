@@ -19,15 +19,20 @@ interface WishlistModalProps {
 const WishlistModal = ({ isOpen, onClose, wishlistItems, onRemoveFromWishlist }: WishlistModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+      <DialogContent
+        className="max-w-4xl max-h-[80vh] overflow-y-auto"
+        onInteractOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+      >
+
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">My Wishlist</DialogTitle>
+          <DialogTitle className="text-sm font-bold">My Wishlist</DialogTitle>
         </DialogHeader>
         
         {wishlistItems.length === 0 ? (
           <div className="text-center py-8">
-            <Heart className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500">Your wishlist is empty</p>
+            <Heart className="w-7 h-7 mx-auto text-gray-300 mb-4" />
+            <p className="text-gray-500 text-[10px]">Your wishlist is empty</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
