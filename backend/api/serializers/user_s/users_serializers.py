@@ -5,6 +5,12 @@ import cloudinary.uploader
 from django.core.exceptions import ValidationError
 
 
+from rest_framework import serializers
+from api.models.user_model.users import User
+from datetime import datetime
+import cloudinary.uploader
+from django.core.exceptions import ValidationError
+
 class UserSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     username = serializers.CharField(max_length=150)
@@ -23,6 +29,13 @@ class UserSerializer(serializers.Serializer):
     bio = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     contact_number = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     address = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+
+
+    blocked_users = serializers.ListField(
+        child=serializers.CharField(),
+        required=False,
+        default=[]
+    )
 
     def validate_username(self, value):
         if self.instance and self.instance.username == value:
@@ -57,6 +70,7 @@ class UserSerializer(serializers.Serializer):
             result = cloudinary.uploader.upload(cover_photo)
             validated_data['cover_photo'] = result.get('secure_url', '')
 
+        blocked_users = validated_data.pop('blocked_users', [])
 
         user = User(
             username=validated_data["username"],
@@ -73,8 +87,8 @@ class UserSerializer(serializers.Serializer):
             contact_number=validated_data.get("contact_number"),
             address=validated_data.get("address"),
             profile_picture=validated_data.get('profile_picture'),
-            cover_photo=validated_data.get('cover_photo')
-
+            cover_photo=validated_data.get('cover_photo'),
+            blocked_users=blocked_users
         )
         user.set_password(validated_data["password"])
         user.save()
@@ -109,6 +123,11 @@ class UserSerializer(serializers.Serializer):
             except cloudinary.exceptions.Error as e:
                 raise serializers.ValidationError(f"Cloudinary upload error: {str(e)}")
 
+        # Update blocked_users list if provided
+        blocked_users = validated_data.pop('blocked_users', None)
+        if blocked_users is not None:
+            instance.blocked_users = blocked_users
+
         instance.username = validated_data.get("username", instance.username)
         instance.email = validated_data.get("email", instance.email)
         instance.first_name = validated_data.get("first_name", instance.first_name)
@@ -127,7 +146,6 @@ class UserSerializer(serializers.Serializer):
         instance.save()
         return instance
 
-
     def to_representation(self, instance):
         return {
             "id": str(instance.id),
@@ -145,9 +163,9 @@ class UserSerializer(serializers.Serializer):
             "cover_photo": instance.cover_photo,
             "bio": instance.bio,
             "contact_number": instance.contact_number,
-            "address": instance.address
+            "address": instance.address,
+            "blocked_users": [str(user_id) for user_id in getattr(instance, 'blocked_users', [])]
         }
-
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True, required=True)
@@ -158,3 +176,4 @@ class ChangePasswordSerializer(serializers.Serializer):
         if data['new_password'] != data['confirm_password']:
             raise serializers.ValidationError({"confirm_password": "New passwords must match."})
         return data
+
