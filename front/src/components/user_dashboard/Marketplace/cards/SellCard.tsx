@@ -9,6 +9,8 @@ export interface SellCardProps {
   originalPrice?: number;
   title: string;
   rating?: number; // Optional
+  isLiked?: boolean;
+  onLike?: () => void;
   isMarketplace?: boolean;
 }
 
@@ -19,6 +21,8 @@ const SellCard = ({
   originalPrice = 0,
   title,
   rating,
+  isLiked = false, 
+  onLike, 
   isMarketplace = false,
 }: SellCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -41,7 +45,10 @@ const SellCard = ({
 
         {/* Heart Icon (Top-Right) */}
         <button
-          onClick={toggleLike}
+          onClick={() => {
+            onLike?.();
+             toggleLike();
+          }}
           className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm"
         >
         <img
