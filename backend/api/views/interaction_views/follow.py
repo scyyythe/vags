@@ -39,20 +39,21 @@ class FollowCreateView(APIView):
         
         follow = Follower.objects.create(follower=user, following=following)
 
-        now = datetime.utcnow()
-        time_elapsed = timesince(now).split(',')[0] + " ago"
+        host = request.get_host()
+        protocol = "http" if "localhost" in host else "https"
+        link = f"/userprofile/{str(user.id)}"  
 
-
-        # Create the follow notification
         Notification.objects.create(
-            user=following,
+            user=following, 
+            actor=user,     
             message=f"{user.first_name} is now following you.",
             name=f"{user.first_name} {user.last_name}",
             action="followed you",
             icon="👥",
-            time=time_elapsed,
-            date=now
+            created_at=datetime.now(),
+            link=link,
         )
+
 
         return Response(FollowSerializer(follow).data, status=status.HTTP_201_CREATED)
 

@@ -36,7 +36,7 @@ const useUpdateUserDetails = () => {
     mutationFn: updateUserDetails,
     onSuccess: (data) => {
       toast.success("User details updated successfully!");
-
+      queryClient.invalidateQueries({ queryKey: ["artworks"] });
       queryClient.refetchQueries({ queryKey: ["user", data.id] });
     },
     onError: (error) => {

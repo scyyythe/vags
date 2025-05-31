@@ -1,32 +1,41 @@
 import { useState } from "react";
-import { toast } from "@/components/ui/use-toast";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
+import apiClient from "@/utils/apiClient";
 import { useFollowUser } from "@/hooks/follow/useFollowUser";
 import { useUnfollowUser } from "@/hooks/follow/useUnfollowUser";
-import type { UserData } from "@/components/user_dashboard/own_profile/following_&_followers/owners/common/UserListModal";
-
-// This is a mock implementation - in a real app, you'd fetch this data from your API
-const mockFollowers: UserData[] = Array(10)
-  .fill(null)
-  .map((_, i) => ({
-    id: `follower-${i}`,
-    name: "Jai Anoba",
-    profileImage: "https://i.pravatar.cc/150?img=" + (i + 10),
-    isFollowing: i % 3 === 0 ? true : false, // Some users we follow back, some we don't
-  }));
-
-const mockFollowing: UserData[] = Array(10)
-  .fill(null)
-  .map((_, i) => ({
-    id: `following-${i}`,
-    name: "Jai Anoba",
-    profileImage: "https://i.pravatar.cc/150?img=" + (i + 20),
-    items: 64,
-  }));
-
+import { User } from "../users/useUserQuery";
 export function useUserLists(userId: string) {
-  const [followers, setFollowers] = useState<UserData[]>(mockFollowers);
-  const [following, setFollowing] = useState<UserData[]>(mockFollowing);
+  const queryClient = useQueryClient();
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    data: followers = [],
+    isLoading: loadingFollowers,
+    error: errorFollowers,
+  } = useQuery<User[]>({
+    queryKey: ["followers", userId],
+    queryFn: async () => {
+      const res = await apiClient.get(`followers/?user_id=${userId}`);
+      return res.data;
+    },
+    enabled: !!userId,
+  });
+
+  const {
+    data: following = [],
+    isLoading: loadingFollowing,
+    error: errorFollowing,
+  } = useQuery<User[]>({
+    queryKey: ["following", userId],
+    queryFn: async () => {
+      const res = await apiClient.get(`following/?user_id=${userId}`);
+      return res.data;
+    },
+    enabled: !!userId,
+  });
 
   const followMutation = useFollowUser();
   const unfollowMutation = useUnfollowUser();
@@ -36,19 +45,13 @@ export function useUserLists(userId: string) {
     try {
       await followMutation.mutateAsync({ following: targetUserId });
 
-      setFollowers((prev) => prev.map((user) => (user.id === targetUserId ? { ...user, isFollowing: true } : user)));
+      queryClient.invalidateQueries({ queryKey: ["followers", userId] });
+      queryClient.invalidateQueries({ queryKey: ["following", userId] });
+      queryClient.invalidateQueries({ queryKey: ["followCounts", targetUserId] });
 
-      toast({
-        title: "Success",
-        description: "You are now following this user",
-      });
+      toast.success("You are now following this user");
     } catch (error) {
-      console.error("Failed to follow user:", error);
-      toast({
-        title: "Error",
-        description: "Failed to follow user",
-        variant: "destructive",
-      });
+      toast.error("Failed to follow user");
     } finally {
       setIsLoading(false);
     }
@@ -59,23 +62,13 @@ export function useUserLists(userId: string) {
     try {
       await unfollowMutation.mutateAsync({ following: targetUserId });
 
-      // Remove from following list
-      setFollowing((prev) => prev.filter((user) => user.id !== targetUserId));
+      queryClient.invalidateQueries({ queryKey: ["followers", userId] });
+      queryClient.invalidateQueries({ queryKey: ["following", userId] });
+      queryClient.invalidateQueries({ queryKey: ["followCounts", targetUserId] });
 
-      // Update followers if they exist there
-      setFollowers((prev) => prev.map((user) => (user.id === targetUserId ? { ...user, isFollowing: false } : user)));
-
-      toast({
-        title: "Success",
-        description: "You have unfollowed this user",
-      });
+      toast.success("You have unfollowed this user");
     } catch (error) {
-      console.error("Failed to unfollow user:", error);
-      toast({
-        title: "Error",
-        description: "Failed to unfollow user",
-        variant: "destructive",
-      });
+      toast.error("Failed to unfollow user");
     } finally {
       setIsLoading(false);
     }
@@ -84,19 +77,14 @@ export function useUserLists(userId: string) {
   const handleRemoveFollower = async (targetUserId: string) => {
     setIsLoading(true);
     try {
-      setFollowers((prev) => prev.filter((user) => user.id !== targetUserId));
+      await apiClient.delete(`followers/remove/`, {
+        data: { follower_id: targetUserId },
+      });
 
-      toast({
-        title: "Success",
-        description: "Follower has been removed",
-      });
+      queryClient.invalidateQueries({ queryKey: ["followers", userId] });
+      toast.success("Removed follower successfully");
     } catch (error) {
-      console.error("Failed to remove follower:", error);
-      toast({
-        title: "Error",
-        description: "Failed to remove follower",
-        variant: "destructive",
-      });
+      toast.error("Failed to remove follower");
     } finally {
       setIsLoading(false);
     }
@@ -105,7 +93,8 @@ export function useUserLists(userId: string) {
   return {
     followers,
     following,
-    isLoading,
+    isLoading: isLoading || loadingFollowers || loadingFollowing,
+    error: errorFollowers || errorFollowing,
     handleFollow,
     handleUnfollow,
     handleRemoveFollower,
