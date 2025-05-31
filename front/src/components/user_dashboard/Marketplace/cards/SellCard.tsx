@@ -1,6 +1,7 @@
 import React, { useState, memo } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
+import SellCardMenu from "./SellCardMenu"; 
 
 export interface SellCardProps {
   id: string;
@@ -8,7 +9,7 @@ export interface SellCardProps {
   price: number;
   originalPrice?: number;
   title: string;
-  rating?: number; // Optional
+  rating?: number;
   isLiked?: boolean;
   onLike?: () => void;
   isMarketplace?: boolean;
@@ -21,21 +22,33 @@ const SellCard = ({
   originalPrice = 0,
   title,
   rating,
-  isLiked = false, 
-  onLike, 
+  isLiked = false,
+  onLike,
   isMarketplace = false,
 }: SellCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [liked, setLiked] = useState(false);
 
   const toggleLike = () => {
-    setLiked((prev) => !prev);
-    toast(!liked ? "Added to wishlist" : "Removed from wishlist");
+    toast(!isLiked ? "Added to wishlist" : "Removed from wishlist");
+    onLike?.();
+  };
+
+  const handleContact = () => {
+    toast("Redirecting to contact the artist...");
+  };
+
+  const handleReport = (data: {
+    category: string;
+    option?: string;
+    description: string;
+    additionalInfo: string;
+  }) => {
+    console.log("Report submitted:", data);
+    toast("Report submitted. Thank you!");
   };
 
   return (
-    <div className="art-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border border-gray-200 px-3 py-3">
-      {/* Artwork Image with Heart and Rating */}
+    <div className="art-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border border-gray-200 px-3 py-3 relative">
       <div className="relative">
         <img
           src={artworkImage}
@@ -43,35 +56,29 @@ const SellCard = ({
           className="rounded-md w-full h-44 object-cover"
         />
 
-        {/* Heart Icon (Top-Right) */}
         <button
-          onClick={() => {
-            onLike?.();
-             toggleLike();
-          }}
+          onClick={toggleLike}
           className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm"
         >
-        <img
+          <img
             src={
-                liked
+              isLiked
                 ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
                 : "https://img.icons8.com/puffy/32/like.png"
             }
             alt="Heart"
             className="w-3 h-3"
-        />
+          />
         </button>
 
-        {/* Rating Star (Bottom-Right) */}
         {rating !== undefined && (
-            <div className="absolute bottom-2 right-2 bg-white font-medium px-2 py-0.5 rounded-full flex items-center gap-1 shadow">
-                <i className="bx bxs-star text-[10px] text-yellow-500"></i>
-                <span className="text-red-800 text-[9px]">{rating.toFixed(1)}</span>
-            </div>
+          <div className="absolute bottom-2 right-2 bg-white font-medium px-2 py-0.5 rounded-full flex items-center gap-1 shadow">
+            <i className="bx bxs-star text-[10px] text-yellow-500"></i>
+            <span className="text-red-800 text-[9px]">{rating.toFixed(1)}</span>
+          </div>
         )}
       </div>
 
-      {/* Price and Menu */}
       <div className="flex justify-between mt-3 items-center">
         <div className="flex items-center gap-2">
           <p className="text-sm font-bold text-gray-900">₱{price}k</p>
@@ -87,10 +94,17 @@ const SellCard = ({
           >
             <MoreHorizontal size={14} />
           </button>
+
+          {/* Render Menu */}
+          <SellCardMenu
+            isOpen={menuOpen}
+            onContact={handleContact}
+            onReport={handleReport}
+            isReported={false}
+          />
         </div>
       </div>
 
-      {/* Title and Buy Now Button */}
       <div className="flex justify-between mt-1.5 items-center">
         <p className="text-[11px] font-medium mt-0.5 truncate" title={title}>
           {title}
@@ -99,13 +113,6 @@ const SellCard = ({
           Buy Now
         </button>
       </div>
-
-       {/* Optional badge for marketplace
-        {isMarketplace && (
-          <p className="mt-1 text-[9px] font-semibold text-red-700 uppercase">
-            Marketplace Item
-          </p>
-        )} */}
     </div>
   );
 };
