@@ -106,24 +106,33 @@ class FollowedArtworksView(APIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        page = int(request.query_params.get('page', 1))
-        page_size = 10
-        skip = (page - 1) * page_size
 
-        followed_users = Follower.objects.filter(follower=user).only('following')
-        followed_ids = [f.following.id for f in followed_users]
+        followed_ids = [f.following for f in Follower.objects(follower=user)]
 
         if not followed_ids:
-            return Response([], status=status.HTTP_200_OK)
+            return Response({
+                "total": 0,
+                "artworks": [],
+                "message": "You are not following any users yet."
+            }, status=status.HTTP_200_OK)
 
-        
-        artworks = Art.objects.filter(
+        artworks_queryset = Art.objects(
             artist__in=followed_ids,
-            visibility="Public"
-        ).order_by('-created_at')[skip:skip + page_size]
+            visibility="Public",
+            art_status="Active"
+        ).order_by('-created_at')
+
+        total = artworks_queryset.count()
+        artworks = artworks_queryset  
 
         serialized = ArtSerializer(artworks, many=True)
-        return Response(serialized.data, status=status.HTTP_200_OK)
+        return Response({
+            "total": total,
+            "artworks": serialized.data,
+        }, status=status.HTTP_200_OK)
+
+
+
     
 class FollowerListView(APIView):
     permission_classes = [IsAuthenticated]

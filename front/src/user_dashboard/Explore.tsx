@@ -45,10 +45,9 @@ const Explore = () => {
   const reportStatusLookup = React.useMemo(() => {
     return reportStatus || {};
   }, [reportStatus]);
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
 
   const { data: followedArtworksData } = useFollowedArtworks(page);
-  console.log("Followed Artworks Data:", followedArtworksData);
 
   const filteredArtworksMemo = useMemo(() => {
     if (!artworks) return [];
@@ -56,7 +55,7 @@ const Explore = () => {
     const category = selectedCategory.toLowerCase();
 
     if (category === "following") {
-      return followedArtworksData || [];
+      return Array.isArray(followedArtworksData) ? followedArtworksData : followedArtworksData?.artworks ?? [];
     }
 
     let filtered = artworks;
