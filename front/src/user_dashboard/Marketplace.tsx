@@ -110,7 +110,7 @@ const Marketplace = () => {
   }));;
 
   return (
-    <>
+    <div className="relative -bottom-[5px]">
       <div className="flex flex-col h-full bg-background">
         <Header />
           <div className="flex-1 container mx-auto px-4 sm:px-6 pt-20">
@@ -225,7 +225,7 @@ const Marketplace = () => {
         onRemoveFromWishlist={handleRemoveFromWishlist}
       />
 
-    </>
+    </div>
   );
 };
 
