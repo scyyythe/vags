@@ -61,13 +61,13 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
                 {/* Share */}
                 <div className="flex items-center relative">
                     <button
-                    onClick={() => setShowShareModal(true)}
-                    className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-                    aria-label="Share"
-                    onMouseEnter={() => setHoveredItem("share")}
-                    onMouseLeave={() => setHoveredItem(null)}
+                        onClick={() => setShowShareModal(true)}
+                        className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+                        aria-label="Share"
+                        onMouseEnter={() => setHoveredItem("share")}
+                        onMouseLeave={() => setHoveredItem(null)}
                     >
-                    <Share2 size={10} fill={isShared ? "#ea384c" : "none"} stroke={isShared ? "#ea384c" : "currentColor"} />
+                        <Share2 size={10} fill={isShared ? "#ea384c" : "none"} stroke={isShared ? "#ea384c" : "currentColor"} />
                     </button>
                     {hoveredItem === "share" && (
                     <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
