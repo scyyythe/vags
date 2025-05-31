@@ -335,8 +335,24 @@ body.no-scroll {
   overflow: hidden !important;
 }
 
-/* KEEP SCROLLBAR INTACT */
-html,
-body {
-  overflow-y: scroll !important;
+/* Custom Scrollbar for Wishlist */
+.wishlist-scrollbar::-webkit-scrollbar {
+  width: 8px;
 }
+
+.wishlist-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.wishlist-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(218, 218, 218, 0.4);
+  border-radius: 9999px;
+  height: 10px;
+}
+
+/* Firefox support */
+.wishlist-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(209, 209, 209, 0.4) transparent;
+}
+
