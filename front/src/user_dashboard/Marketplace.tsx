@@ -203,6 +203,8 @@ const Marketplace = () => {
                 originalPrice={artwork.originalPrice ?? 0} 
                 title={artwork.title}
                 rating={artwork.rating}
+                isLiked={likedItems.has(artwork.id)}
+                onLike={() => handleLike(artwork.id)}
                 isMarketplace={true} 
               />
             ))}
