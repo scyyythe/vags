@@ -1,28 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UserListModal from "../../owners/common/UserListModal";
 import { useUserLists } from "@/hooks/follow/useUserLists";
-import { UserPlus, UserMinus, Users } from "lucide-react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getLoggedInUserId } from "@/auth/decode";
+
 interface FollowModalsProps {
-  userId: string;
   followersCount: number;
   followingCount: number;
 }
 
-const FollowModals: React.FC<FollowModalsProps> = ({ userId, followersCount, followingCount }) => {
+const FollowModals: React.FC<FollowModalsProps> = ({ followersCount, followingCount }) => {
   const [followersModalOpen, setFollowersModalOpen] = useState(false);
   const [followingModalOpen, setFollowingModalOpen] = useState(false);
-  const { id: profileUserId } = useParams<{ id: string }>();
-  const myid = getLoggedInUserId();
 
-  const isOwner = profileUserId === myid;
+  const loggedInUserId = getLoggedInUserId();
+  const { id: profileUserId } = useParams();
 
-  const { followers, following, isLoading, handleFollow, handleUnfollow, handleRemoveFollower } = useUserLists(userId);
+  console.log("profileUserId:", profileUserId, typeof profileUserId);
+  console.log("loggedInUserId:", loggedInUserId, typeof loggedInUserId);
+
+  const isOwner = profileUserId === loggedInUserId;
+  console.log("isOwner:", isOwner);
+
+  const { followers, following, handleFollow, handleUnfollow, handleRemoveFollower } = useUserLists(
+    profileUserId || ""
+  );
+
+  // Log followers and following lists whenever they change
+  useEffect(() => {
+    console.log(`Visited user ID: ${profileUserId}`);
+    console.log("Followers list:", followers);
+    console.log("Following list:", following);
+  }, [profileUserId, followers, following]);
 
   return (
     <>
-      {/* Followers and Following counts with click handlers */}
       <div className="flex items-center space-x-2 mt-2 text-[10px] md:text-[11px]">
         <button
           onClick={() => setFollowersModalOpen(true)}

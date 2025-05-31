@@ -42,8 +42,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const { data: selectedUser, isLoading } = useUserQuery(selectedUserId || "");
-  const { id } = useParams();
+
   const [artworksCounts, setArtworksCounts] = useState<Record<string, number>>({});
   const navigate = useNavigate();
 
@@ -152,7 +151,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
                           )}
                         </div>
                         {title === "Following" && (
-                          <span className="text-[10px] text-gray-500">{artworksCounts[user.id] ?? 0}items</span>
+                          <span className="text-[10px] text-gray-500">{artworksCounts[user.id] ?? 0} fixeditems</span>
                         )}
                       </div>
                     </div>
@@ -227,6 +226,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
                           <DropdownMenuItem
                             className="text-[9px] cursor-pointer"
                             onClick={() => {
+                              onClose();
                               navigate(`/userprofile/${user.id}`);
                             }}
                           >

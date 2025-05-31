@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-
 import apiClient from "@/utils/apiClient";
 import { useFollowUser } from "@/hooks/follow/useFollowUser";
 import { useUnfollowUser } from "@/hooks/follow/useUnfollowUser";
@@ -80,7 +79,7 @@ export function useUserLists(userId: string) {
       await apiClient.delete(`followers/remove/`, {
         data: { follower_id: targetUserId },
       });
-
+      queryClient.invalidateQueries({ queryKey: ["followCounts", userId] });
       queryClient.invalidateQueries({ queryKey: ["followers", userId] });
       toast.success("Removed follower successfully");
     } catch (error) {
