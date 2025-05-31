@@ -56,6 +56,19 @@ const SellCard = ({
           className="rounded-md w-full h-44 object-cover"
         />
 
+        {/* Message Icon */}
+        <button
+          onClick={handleContact}
+          className="absolute top-2 right-9 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm"
+        >
+          <img
+            src="https://img.icons8.com/?size=100&id=8h51YOzhBJmT&format=png&color=000000"
+            alt="Message"
+            className="w-3 h-3"
+          />
+        </button>
+
+        {/* Wishlist Icon */}
         <button
           onClick={toggleLike}
           className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm"
@@ -98,7 +111,6 @@ const SellCard = ({
           {/* Render Menu */}
           <SellCardMenu
             isOpen={menuOpen}
-            onContact={handleContact}
             onReport={handleReport}
             isReported={false}
           />
