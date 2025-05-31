@@ -1,5 +1,8 @@
 import React, { useRef, useState } from "react";
-import { Flag, Mail, Share2, Search, FileText, Brush } from "lucide-react";
+import { Flag, Share2, Search } from "lucide-react";
+import { toast } from "sonner";
+
+import ShareModal from "../share/ShareModal";
 import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { normalizeReportType } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
@@ -7,7 +10,12 @@ import { ReportOption } from "@/components/user_dashboard/Bidding/cards/ReportOp
 
 interface SellCardMenuProps {
   isOpen: boolean;
-  onReport: (data: { category: string; option?: string; description: string; additionalInfo: string }) => void;
+  onReport: (data: {
+    category: string;
+    option?: string;
+    description: string;
+    additionalInfo: string;
+  }) => void;
   isReported: boolean;
   className?: string;
 }
@@ -20,19 +28,32 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showReportOptions, setShowReportOptions] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
-  const handleReportSubmit = (categoryId: string, optionData?: ReportOption | string) => {
-    const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
+  const handleReportSubmit = (
+    categoryId: string,
+    optionData?: ReportOption | string
+  ) => {
+    const selectedCategory = reportCategories.find(
+      (cat) => cat.id === categoryId
+    );
     if (!selectedCategory) {
       console.error("Category not found for id:", categoryId);
       return;
     }
 
     const isCustomReason = typeof optionData === "string";
-    const selectedOption = !isCustomReason ? (optionData as ReportOption) : null;
+    const selectedOption = !isCustomReason
+      ? (optionData as ReportOption)
+      : null;
 
-    const option = isCustomReason ? optionData : selectedOption?.id || "";
-    const additionalInfo = isCustomReason ? optionData : selectedOption?.additionalInfo || "";
+    const option = isCustomReason
+      ? optionData
+      : selectedOption?.id || "";
+    const additionalInfo = isCustomReason
+      ? optionData
+      : selectedOption?.additionalInfo || "";
 
     const normalizedCategory = normalizeReportType(option, categoryId);
 
@@ -56,7 +77,6 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start">
-
           {/* Share */}
           <MenuItem
             icon={<Share2 size={10} />}
@@ -64,7 +84,14 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
             onHover={setHoveredItem}
             hoveredItem={hoveredItem}
             itemId="share"
-            onClick={() => alert("Share functionality coming soon.")}
+            onClick={() => setShowShareModal(true)}
+          />
+
+          {/* Share Modal */}
+          <ShareModal
+            isOpen={showShareModal}
+            onClose={() => setShowShareModal(false)}
+            linkToShare={shareUrl}
           />
 
           {/* Find Similar */}
@@ -74,32 +101,18 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
             onHover={setHoveredItem}
             hoveredItem={hoveredItem}
             itemId="similar"
-            onClick={() => alert("Showing similar artworks...")}
+            onClick={() => toast.info("Showing similar artworks...")}
           />
-
-          {/* Certificate */}
-          {/* <MenuItem
-            icon={<FileText size={12} />}
-            label="Certificate"
-            onHover={setHoveredItem}
-            hoveredItem={hoveredItem}
-            itemId="certificate"
-            onClick={() => alert("Downloading certificate...")}
-          /> */}
-
-          {/* Request Custom Art */}
-          {/* <MenuItem
-            icon={<Brush size={12} />}
-            label="Custom Art"
-            onHover={setHoveredItem}
-            hoveredItem={hoveredItem}
-            itemId="custom"
-            onClick={() => alert("Redirecting to custom art request...")}
-          /> */}
 
           {/* Report */}
           <MenuItem
-            icon={<Flag size={10} fill={isReported ? "red" : "none"} stroke={isReported ? "red" : "currentColor"} />}
+            icon={
+              <Flag
+                size={10}
+                fill={isReported ? "red" : "none"}
+                stroke={isReported ? "red" : "currentColor"}
+              />
+            }
             label="Report"
             onHover={setHoveredItem}
             hoveredItem={hoveredItem}
@@ -109,7 +122,7 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
         </div>
       </div>
 
-      {/* Report Options Popup */}
+      {/* Report Options */}
       {showReportOptions && (
         <ReportOptionsPopup
           isOpen={showReportOptions}
@@ -130,7 +143,14 @@ interface MenuItemProps {
   itemId: string;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ icon, label, onClick, onHover, hoveredItem, itemId }) => (
+const MenuItem: React.FC<MenuItemProps> = ({
+  icon,
+  label,
+  onClick,
+  onHover,
+  hoveredItem,
+  itemId,
+}) => (
   <div className="flex items-center relative">
     <button
       onClick={onClick}
