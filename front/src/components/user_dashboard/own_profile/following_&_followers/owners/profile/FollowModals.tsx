@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import UserListModal from "../../owners/common/UserListModal";
 import { useUserLists } from "@/hooks/follow/useUserLists";
 import { UserPlus, UserMinus, Users } from "lucide-react";
-
+import { useParams, useNavigate } from "react-router-dom";
+import { getLoggedInUserId } from "@/auth/decode";
 interface FollowModalsProps {
   userId: string;
   followersCount: number;
@@ -12,15 +13,12 @@ interface FollowModalsProps {
 const FollowModals: React.FC<FollowModalsProps> = ({ userId, followersCount, followingCount }) => {
   const [followersModalOpen, setFollowersModalOpen] = useState(false);
   const [followingModalOpen, setFollowingModalOpen] = useState(false);
-  
-  const {
-    followers,
-    following,
-    isLoading,
-    handleFollow,
-    handleUnfollow,
-    handleRemoveFollower
-  } = useUserLists(userId);
+  const { id: profileUserId } = useParams<{ id: string }>();
+  const myid = getLoggedInUserId();
+
+  const isOwner = profileUserId === myid;
+
+  const { followers, following, isLoading, handleFollow, handleUnfollow, handleRemoveFollower } = useUserLists(userId);
 
   return (
     <>
@@ -41,7 +39,6 @@ const FollowModals: React.FC<FollowModalsProps> = ({ userId, followersCount, fol
         </button>
       </div>
 
-      {/* Modals */}
       <UserListModal
         isOpen={followersModalOpen}
         onClose={() => setFollowersModalOpen(false)}
@@ -49,6 +46,7 @@ const FollowModals: React.FC<FollowModalsProps> = ({ userId, followersCount, fol
         users={followers}
         onFollow={handleFollow}
         onRemove={handleRemoveFollower}
+        isOwner={isOwner}
       />
 
       <UserListModal
@@ -57,6 +55,7 @@ const FollowModals: React.FC<FollowModalsProps> = ({ userId, followersCount, fol
         title="Following"
         users={following}
         onUnfollow={handleUnfollow}
+        isOwner={isOwner}
       />
     </>
   );
