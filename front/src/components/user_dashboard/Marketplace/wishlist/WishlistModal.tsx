@@ -1,18 +1,11 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
-
-interface WishlistItem {
-  id: string;
-  image: string;
-  title: string;
-  price: number;
-}
+import SellCard, { SellCardProps } from "../cards/SellCard";
 
 interface WishlistModalProps {
   isOpen: boolean;
   onClose: () => void;
-  wishlistItems: WishlistItem[];
+  wishlistItems: SellCardProps[];
   onRemoveFromWishlist: (id: string) => void;
 }
 
@@ -20,45 +13,28 @@ const WishlistModal = ({ isOpen, onClose, wishlistItems, onRemoveFromWishlist }:
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="max-w-4xl max-h-[80vh] overflow-y-auto"
+        className="max-w-md md:max-w-5xl max-h-[80vh] rounded-md overflow-y-auto wishlist-scrollbar"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
-
         <DialogHeader>
           <DialogTitle className="text-sm font-bold">My Wishlist</DialogTitle>
         </DialogHeader>
-        
+
         {wishlistItems.length === 0 ? (
           <div className="text-center py-8">
             <Heart className="w-7 h-7 mx-auto text-gray-300 mb-4" />
             <p className="text-gray-500 text-[10px]">Your wishlist is empty</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4">
             {wishlistItems.map((item) => (
-              <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-                <div className="relative">
-                  <img 
-                    src={item.image} 
-                    alt={item.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <button 
-                    onClick={() => onRemoveFromWishlist(item.id)}
-                    className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors"
-                  >
-                    <Heart className="w-4 h-4 fill-red-500 text-red-500" />
-                  </button>
-                </div>
-                
-                <div className="p-4">
-                  <p className="text-lg font-semibold text-gray-900 mb-2">₱ {item.price}</p>
-                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white rounded-lg py-2 text-sm font-medium">
-                    Buy Now
-                  </Button>
-                </div>
-              </div>
+              <SellCard
+                key={item.id}
+                {...item}
+                isLiked={true}
+                onLike={() => onRemoveFromWishlist(item.id)}
+              />
             ))}
           </div>
         )}
