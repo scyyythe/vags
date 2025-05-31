@@ -111,9 +111,9 @@ const Marketplace = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-background">
+      <div className="flex flex-col h-full bg-background">
         <Header />
-        <div className="container mx-auto px-4 sm:px-6 pt-20">
+          <div className="flex-1 container mx-auto px-4 sm:px-6 pt-20">
           {/* Top Sellers Section */}
           <TopSellers />
           
@@ -124,11 +124,13 @@ const Marketplace = () => {
               <div className="flex items-center gap-2">
                 <button 
                   onClick={handleWishlistClick}
-                  className="text-[11px] text-gray-600 hover:text-gray-900 relative"
+                  className="text-[10px] text-gray-600 hover:text-gray-900 font-medium"
                 >
                   Wishlist
                 </button>
-                <div className="relative w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center">
+                <div 
+                onClick={handleWishlistClick}
+                className="relative w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center cursor-pointer">
                   <img
                     src="https://img.icons8.com/puffy-filled/32/BF0101/like.png"
                     alt="Wishlist Icon"
@@ -191,7 +193,7 @@ const Marketplace = () => {
           </div>
           
           {/* Marketplace Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4 md:pb-0">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4">
             {mockArtworks.map((artwork) => (
               <SellCard
                 key={artwork.id}
