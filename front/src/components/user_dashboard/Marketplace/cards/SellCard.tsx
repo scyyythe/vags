@@ -26,13 +26,13 @@ const SellCard = ({
   isMarketplace = false,
 }: SellCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [liked, setLiked] = useState(isLiked);
+  // const [liked, setLiked] = useState(isLiked);
 
   const toggleLike = () => {
-    setLiked((prev) => !prev);
-    toast(!liked ? "Added to wishlist" : "Removed from wishlist");
+    toast(!isLiked ? "Added to wishlist" : "Removed from wishlist");
     onLike?.();
   };
+
 
   return (
     <div className="art-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border border-gray-200 px-3 py-3">
@@ -49,7 +49,7 @@ const SellCard = ({
         >
           <img
             src={
-              liked
+              isLiked
                 ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
                 : "https://img.icons8.com/puffy/32/like.png"
             }
