@@ -94,14 +94,14 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
           />
 
           {/* Find Similar */}
-          <MenuItem
+          {/* <MenuItem
             icon={<Search size={10} />}
             label="Find Similar"
             onHover={setHoveredItem}
             hoveredItem={hoveredItem}
             itemId="similar"
             onClick={() => toast.info("Showing similar artworks...")}
-          />
+          /> */}
 
           {/* Report */}
           <MenuItem
