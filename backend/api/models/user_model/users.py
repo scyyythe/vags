@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, DateTimeField, EmailField, IntField, BooleanField,URLField
+from mongoengine import Document, StringField, DateTimeField, EmailField, IntField, BooleanField,URLField,ListField,ReferenceField
 from datetime import datetime
 import bcrypt
 
@@ -25,6 +25,8 @@ class User(Document):
     gender = StringField(choices=["Male", "Female", "Other"], required=False)  
     date_of_birth = DateTimeField(required=False)  
 
+    blocked_users = ListField(ReferenceField('User'))
+    
     def set_password(self, password):
          self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
