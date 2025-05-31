@@ -24,22 +24,23 @@ const Header = () => {
   const navigate = useNavigate();
 
   const handleSearchChange = (value: string) => {
+    if (!value.trim()) return;
+
     const params = new URLSearchParams();
-    if (value.trim()) {
-      params.set("q", value);
-    }
+    params.set("q", value);
 
     const isExplorePage = currentPath.includes("/explore");
     const isBiddingPage = currentPath.includes("/bidding");
     const isExhibitPage = currentPath.includes("/exhibits");
+    const isMarketplacePage = currentPath.includes("/exhibits");
     if (isExplorePage) {
       navigate(`/explore?${params.toString()}`);
     } else if (isBiddingPage) {
       navigate(`/bidding?${params.toString()}`);
     } else if (isExhibitPage) {
       navigate(`/exhibit?${params.toString()}`);
-    } else {
-      navigate(`/explore?${params.toString()}`);
+    } else if (isMarketplacePage) {
+      navigate(`/marketplace?${params.toString()}`);
     }
 
     setSearchQuery(value);
@@ -145,7 +146,7 @@ const Header = () => {
 
           {/* Top up */}
           <button className="text-[10px] pt-0.5 hover:scale-110 transition">
-            <i className='bx bx-wallet-alt text-[16px]'></i>
+            <i className="bx bx-wallet-alt text-[16px]"></i>
           </button>
 
           {/* Profile Avatar + Chevron */}
