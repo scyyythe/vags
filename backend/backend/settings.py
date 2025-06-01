@@ -10,20 +10,22 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 from django.http import JsonResponse
-# Cloudinary configuration
+
+load_dotenv() 
+
 cloudinary.config(
-  cloud_name="du5bwye4h",
-  api_key="198339479569966",
-  api_secret="4_W00AnLs0GAA-nyv1E0Q8AcTts"
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
 )
 
-load_dotenv()
-
 def test_mongo_connection():
+    load_dotenv() 
+
     try:
         connect(
-            db="virtual_art", 
-            host="mongodb+srv://canete:canete062723@cluster0.lngnj.mongodb.net/virtual_art?retryWrites=true&w=majority",
+            db=os.getenv("MONGO_DB_NAME"),
+            host=os.getenv("MONGO_DB_URI"),
             alias="default"
         )
         print("✅ MongoDB Connection Successful!")
