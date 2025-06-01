@@ -48,6 +48,9 @@ import ExhibitViewing from "./components/user_dashboard/Exhibit/exhibit_viewing/
 import CollaboratorView from "./components/user_dashboard/Exhibit/add_exhibit/components/CollaboratorViews";
 import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/ExhibitReview";
 
+//MARKETPLACE
+import ViewProduct from "@/components/user_dashboard/Marketplace/view_product/ViewProduct";
+
 //ADMIN & MODERATOR
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AdminLayout } from "@/components/admin_&_moderator/layout/AdminLayout";
@@ -118,6 +121,8 @@ const App = () => {
                       {/* Bid */}
                       <Route path="/bid-winner/:id" element={<BidWinnerPage />} />
                       <Route path="/payment" element={<PaymentPage />} />
+                      {/* Marketplace */}
+                      <Route path="/viewproduct/:id" element={<ViewProduct />} />
                       {/* Exhibit */}
                       <Route path="/add-exhibit" element={<AddExhibit />} />
                       <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />
