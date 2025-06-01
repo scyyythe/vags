@@ -10,7 +10,7 @@ const ErrorPage = () => {
   let errorMessage = errorState.message || "Not Found";
 
   if (errorCode === 401) {
-    errorMessage = "You are Unauthorized. Please login to access this page.";
+    errorMessage = "You are unauthorized. Please login to access this page.";
   }
 
   useEffect(() => {
