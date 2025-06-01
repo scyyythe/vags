@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/mockArtworks";
 
 const Marketplace = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -30,6 +31,11 @@ const Marketplace = () => {
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
+  };
+
+  const handleCardClick = (id: string) => {
+    if (!id) return;
+    navigate(`/viewproduct/${id}`);
   };
 
   const handleSellClick = () => {
@@ -64,50 +70,13 @@ const Marketplace = () => {
     console.log("Wishlist opened");
   };
 
-  const mockArtworks = [
-    {
-      id: "1",
-      artworkImage: "https://i.pinimg.com/736x/a4/c9/8d/a4c98d5c9dcb90b3208b5abfe703d85d.jpg",
-      price: 100,
-      originalPrice: 120,
-      title: "Mock Artwork 1",
-    },
-    {
-      id: "2",
-      artworkImage: "https://i.pinimg.com/736x/2b/16/27/2b1627359c0fc9f6225b5afd0811ddf1.jpg",
-      price: 200,
-      originalPrice: 250,
-      title: "Mock Artwork 2",
-      rating: 4.5,
-    },
-    {
-      id: "3",
-      artworkImage: "https://i.pinimg.com/736x/cf/f3/4b/cff34bcec60045f4187080e67608ead5.jpg",
-      price: 150,
-      title: "Mock Artwork 3", 
-    },
-    {
-      id: "4",
-      artworkImage: "https://i.pinimg.com/736x/21/bd/78/21bd78a21a5521f18fee9c99013b618f.jpg",
-      price: 860,
-      originalPrice: 1000,
-      title: "Mock Artwork 4",
-      rating: 4.2,
-    },
-    {
-      id: "5",
-      artworkImage: "https://i.pinimg.com/736x/90/cf/6d/90cf6d8f2277af8c2791a95bd9f8dfe0.jpg",
-      price: 720,
-      title: "Mock Artwork 5", 
-    },
-  ];
-
   const wishlistItems = mockArtworks
     .filter(card => likedItems.has(card.id))
     .map(card => ({
       ...card,
       image: card.artworkImage, 
   }));;
+
 
   return (
     <div className="relative -bottom-[5px]">
@@ -206,6 +175,7 @@ const Marketplace = () => {
                 isLiked={likedItems.has(artwork.id)}
                 onLike={() => handleLike(artwork.id)}
                 isMarketplace={true} 
+                onCardClick={() => handleCardClick(artwork.id)}
               />
             ))}
           </div>

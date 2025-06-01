@@ -13,6 +13,7 @@ export interface SellCardProps {
   isLiked?: boolean;
   onLike?: () => void;
   isMarketplace?: boolean;
+  onCardClick?: () => void;
 }
 
 const SellCard = ({
@@ -25,16 +26,28 @@ const SellCard = ({
   isLiked = false,
   onLike,
   isMarketplace = false,
+  onCardClick,
 }: SellCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const toggleLike = () => {
+  const toggleLike = (e: React.MouseEvent) => {
+    e.stopPropagation(); 
     toast(!isLiked ? "Added to wishlist" : "Removed from wishlist");
     onLike?.();
   };
 
-  const handleContact = () => {
+  const handleContact = (e: React.MouseEvent) => {
+    e.stopPropagation(); 
     toast("Redirecting to contact the artist...");
+  };
+
+  const handleMenuClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); 
+    setMenuOpen(!menuOpen);
+  };
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.stopPropagation();
   };
 
   const handleReport = (data: {
@@ -48,7 +61,10 @@ const SellCard = ({
   };
 
   return (
-    <div className="art-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border border-gray-200 px-3 py-3 relative">
+    <div 
+    onClick={onCardClick}
+    className="sell-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg 
+    transition-all duration-300 border border-gray-200 px-3 py-3 relative cursor-pointer">
       <div className="relative">
         <img
           src={artworkImage}
@@ -102,7 +118,10 @@ const SellCard = ({
 
         <div className="relative text-gray-500" style={{ height: "24px" }}>
           <button
-            onClick={() => setMenuOpen((prev) => !prev)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setMenuOpen((prev) => !prev);
+            }}
             className={`p-1 rounded-full ${menuOpen ? " text-black" : ""}`}
           >
             <MoreHorizontal size={14} />
@@ -121,7 +140,9 @@ const SellCard = ({
         <p className="text-[11px] font-medium mt-0.5 truncate" title={title}>
           {title}
         </p>
-        <button className="text-white text-[9px] bg-red-800 hover:bg-red-700 transition px-4 py-1.5 rounded-full">
+        <button 
+        onClick={handleBuyNow}
+        className="text-white text-[9px] bg-red-800 hover:bg-red-700 transition px-4 py-1.5 rounded-full">
           Buy Now
         </button>
       </div>
