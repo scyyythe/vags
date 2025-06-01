@@ -1,9 +1,10 @@
 import React, { useRef, useState } from "react";
-import { Bookmark, EyeOff, Eye, Flag, Undo2 } from "lucide-react";
+import { Bookmark, EyeOff, Eye, Flag, Share2 } from "lucide-react";
 import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { normalizeReportType } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { ReportOption } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
+import ShareModal from "../../local_components/share/ShareModal";
 interface ArtCardMenuProps {
   isOpen: boolean;
   onFavorite: () => void;
@@ -13,6 +14,7 @@ interface ArtCardMenuProps {
   onUndoReport?: () => void;
   isFavorite: boolean;
   isReported: boolean;
+  isShared: boolean;
   isHidden?: boolean;
   className?: string;
   isReportedFromBulk?: boolean;
@@ -30,12 +32,15 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   onUndoReport,
   isFavorite = false,
   isReported = false,
+  isShared = false,
   isHidden = false,
   isReportedFromBulk,
   reportStatusFromBulk,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const [showReportOptions, setShowReportOptions] = useState(false);
   const handleReportSubmit = (categoryId: string, optionData?: ReportOption | string) => {
     const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
@@ -96,6 +101,31 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
               </span>
             )}
           </div>
+
+          {/* Share */}
+          <div className="flex items-center relative">
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+              aria-label="Share"
+              onMouseEnter={() => setHoveredItem("share")}
+              onMouseLeave={() => setHoveredItem(null)}
+            >
+              <Share2 size={10} fill={isShared ? "#ea384c" : "none"} stroke={isShared ? "#ea384c" : "currentColor"} />
+            </button>
+              {hoveredItem === "share" && (
+              <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+                Share
+              </span>
+              )}
+          </div>
+        
+          {/* Share Modal */}
+          <ShareModal
+            isOpen={showShareModal}
+            onClose={() => setShowShareModal(false)}
+            linkToShare={shareUrl}
+          />
 
           {/* Hide / Unhide */}
           <div className="flex items-center relative">
