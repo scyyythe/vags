@@ -16,6 +16,7 @@ interface ExhibitProps {
     likes: number;
     views: number;
     isSolo: boolean;
+    isShared: boolean;
     collaborators?: {
       id: string;
       name: string;
@@ -29,7 +30,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const { mutate: submitReport } = useSubmitReport();
-  const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useReportStatus(exhibit.id);
+  const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useReportStatus([exhibit.id]);
 
   const formatNumber = (num: number) => {
     return num >= 1 ? `${num}k` : `${Math.round(num * 1000)}`;
@@ -106,7 +107,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
             <button 
               onClick={(e) => {
                 e.stopPropagation();
-                setMenuOpen((prev) => !prev);
+                setMenuOpen((prev) => !prev); 
               }}
               className="p-1 hover:bg-gray-100 rounded-full"
             >
@@ -119,6 +120,8 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
               onHide={handleHide}
               onReport={handleReport}
               isReported={!!reportStatusData?.reported}
+              isShared={exhibit.isShared} 
+              isHidden={isHidden}
             />
           </div>
         </div>

@@ -245,6 +245,7 @@ const ExhibitViewing = () => {
       likes: 125,
       views: 1.5,
       isSolo: true,
+      isShared: false,
     },
     {
       id: "2",
@@ -255,6 +256,7 @@ const ExhibitViewing = () => {
       likes: 118,
       views: 1.4,
       isSolo: false,
+      isShared: false,
       collaborators: [
         { id: '1', name: 'Mark Johnson', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
         { id: '2', name: 'Sara Williams', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
@@ -270,6 +272,7 @@ const ExhibitViewing = () => {
       likes: 94,
       views: 1.3,
       isSolo: true,
+      isShared: false,
     },
     {
       id: "4",
@@ -280,6 +283,7 @@ const ExhibitViewing = () => {
       likes: 85,
       views: 1.1,
       isSolo: false,
+      isShared: false,
       collaborators: [
         { id: '4', name: 'Emily Chen', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
         { id: '5', name: 'David Lee', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
@@ -295,6 +299,7 @@ const ExhibitViewing = () => {
       likes: 132,
       views: 1.7,
       isSolo: true,
+      isShared: false,
     },
     {
       id: "6",
@@ -305,6 +310,7 @@ const ExhibitViewing = () => {
       likes: 107,
       views: 1.2,
       isSolo: false,
+      isShared: false,
       collaborators: [
         { id: '7', name: 'Thomas White', avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
         { id: '8', name: 'Rebecca Smith', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
@@ -320,6 +326,7 @@ const ExhibitViewing = () => {
       likes: 99,
       views: 1.0,
       isSolo: true,
+      isShared: false,
     },
     {
       id: "8",
@@ -330,6 +337,7 @@ const ExhibitViewing = () => {
       likes: 114,
       views: 1.3,
       isSolo: false,
+      isShared: false,
       collaborators: [
         { id: '10', name: 'Jennifer Kim', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
         { id: '11', name: 'Robert Davis', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
@@ -451,6 +459,7 @@ const ExhibitViewing = () => {
                       onReport={handleReport}
                       onUndoReport={handleReport}
                       isReported={isReported}
+                      isShared = {exhibit.isShared}
                       isHidden={isHidden}
                     />
                   </div>
