@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import FingerprintAuth from "./pages/FingerprintAuth";
 import FingerprintRegister from "./pages/FingerprintRegister";
 import NotFound from "./components/NotFound";
+import ErrorPage from "./components/Unauthorized";
 import Create from "./components/user_dashboard/Explore/create_post/CreatePost";
 import SellArt from "./components/user_dashboard/Marketplace/sell/SellArtwork";
 import UpdatePost from "./components/user_dashboard/own_profile/UpdatePost";
@@ -112,22 +113,17 @@ const App = () => {
                       <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
                       <Route path="/fingerprint-register" element={<FingerprintRegister />} />
                       <Route path="/hero" element={<Hero />} />
-
                       {/* Gallery */}
                       <Route path="/gallery-3d" element={<Gallery3D />} />
-
                       {/* Bid */}
                       <Route path="/bid-winner/:id" element={<BidWinnerPage />} />
                       <Route path="/payment" element={<PaymentPage />} />
-
                       {/* Exhibit */}
                       <Route path="/add-exhibit" element={<AddExhibit />} />
                       <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />
                       <Route path="/collaborator/exhibit/:exhibitId" element={<CollaboratorView />} />
                       <Route path="/exhibitreview" element={<ExhibitReview />} />
-
                       <Route path="/follow-demo" element={<FollowDemo />} />
-
                       <Route path="/explore" element={<ProtectedRoute children={<Explore />} />} />
                       <Route path="/create" element={<ProtectedRoute children={<Create />} />} />
                       <Route path="/sell" element={<ProtectedRoute children={<SellArt />} />} />
@@ -138,7 +134,6 @@ const App = () => {
                       <Route path="/marketplace" element={<ProtectedRoute children={<Marketplace />} />} />
                       <Route path="/exhibits" element={<ProtectedRoute children={<Exhibits />} />} />
                       <Route path="/all-notifications" element={<AllNotifications />} />
-
                       <Route path="/settings" element={<ProtectedRoute children={<Settings />} />}>
                         <Route path="edit-profile" element={<ProtectedRoute children={<EditProfile />} />} />
                         <Route path="account-details" element={<ProtectedRoute children={<AccountDetails />} />} />
@@ -152,88 +147,113 @@ const App = () => {
                       <Route
                         path="/admin"
                         element={
-                          <AdminLayout role="admin">
-                            <AdminDashboard />
-                          </AdminLayout>
+                          <ProtectedRoute allowedRoles={["admin"]}>
+                            <AdminLayout role="admin">
+                              <AdminDashboard />
+                            </AdminLayout>
+                          </ProtectedRoute>
                         }
                       />
                       <Route
                         path="/admin/users"
                         element={
-                          <AdminLayout role="admin">
-                            <AdminUsers />
-                          </AdminLayout>
+                          <ProtectedRoute allowedRoles={["admin"]}>
+                            <AdminLayout role="admin">
+                              <AdminUsers />
+                            </AdminLayout>
+                          </ProtectedRoute>
                         }
                       />
                       <Route
                         path="/admin/config"
                         element={
-                          <AdminLayout role="admin">
-                            <AdminConfig />
-                          </AdminLayout>
+                          <ProtectedRoute allowedRoles={["admin"]}>
+                            <AdminLayout role="admin">
+                              <AdminConfig />
+                            </AdminLayout>
+                          </ProtectedRoute>
                         }
                       />
                       <Route
                         path="/admin/security"
                         element={
-                          <AdminLayout role="admin">
-                            <AdminSecurity />
-                          </AdminLayout>
+                          <ProtectedRoute allowedRoles={["admin"]}>
+                            <AdminLayout role="admin">
+                              <AdminSecurity />
+                            </AdminLayout>
+                          </ProtectedRoute>
                         }
                       />
                       <Route
                         path="/admin/analytics"
                         element={
-                          <AdminLayout role="admin">
-                            <AdminAnalytics />
-                          </AdminLayout>
+                          <ProtectedRoute allowedRoles={["admin"]}>
+                            <AdminLayout role="admin">
+                              <AdminAnalytics />
+                            </AdminLayout>
+                          </ProtectedRoute>
                         }
                       />
-
                       {/* Moderator Routes */}
                       <Route
                         path="/moderator"
                         element={
-                          <AdminLayout role="moderator">
-                            <ModeratorDashboard />
-                          </AdminLayout>
+                          <ProtectedRoute allowedRoles={["moderator"]}>
+                            <AdminLayout role="moderator">
+                              <ModeratorDashboard />
+                            </AdminLayout>
+                          </ProtectedRoute>
                         }
                       />
+
                       <Route
                         path="/moderator/reports"
                         element={
-                          <AdminLayout role="moderator">
-                            <ModeratorReports />
-                          </AdminLayout>
+                          <ProtectedRoute allowedRoles={["moderator"]}>
+                            <AdminLayout role="moderator">
+                              <ModeratorReports />
+                            </AdminLayout>
+                          </ProtectedRoute>
                         }
                       />
+
                       <Route
                         path="/moderator/content"
                         element={
-                          <AdminLayout role="moderator">
-                            <ModeratorContent />
-                          </AdminLayout>
+                          <ProtectedRoute allowedRoles={["moderator"]}>
+                            <AdminLayout role="moderator">
+                              <ModeratorContent />
+                            </AdminLayout>
+                          </ProtectedRoute>
                         }
                       />
+
                       <Route
                         path="/moderator/users"
                         element={
-                          <AdminLayout role="moderator">
-                            <ModeratorUsers />
-                          </AdminLayout>
+                          <ProtectedRoute allowedRoles={["moderator"]}>
+                            <AdminLayout role="moderator">
+                              <ModeratorUsers />
+                            </AdminLayout>
+                          </ProtectedRoute>
                         }
                       />
+
                       <Route
                         path="/moderator/notifications"
                         element={
-                          <AdminLayout role="moderator">
-                            <ModeratorNotifications />
-                          </AdminLayout>
+                          <ProtectedRoute allowedRoles={["moderator"]}>
+                            <AdminLayout role="moderator">
+                              <ModeratorNotifications />
+                            </AdminLayout>
+                          </ProtectedRoute>
                         }
                       />
 
                       {/* Not Found */}
                       <Route path="*" element={<NotFound />} />
+                      {/* Unauthorized */}
+                      <Route path="/unauthorized" element={<ErrorPage />} />
                     </Routes>
                   </BrowserRouter>
                 </ArtworkProvider>
