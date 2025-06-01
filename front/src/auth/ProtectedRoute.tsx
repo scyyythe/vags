@@ -18,7 +18,10 @@ const ProtectedRoute = ({ allowedRoles = ["user"], children }: ProtectedRoutePro
   useEffect(() => {
     if (!accessToken) {
       setShowLoginModal(true);
-      navigate("/", { replace: true });
+      navigate("/unauthorized", {
+        replace: true,
+        state: { code: 401, message: "You are unauthorized. Please login to access this page." },
+      });
       setIsAllowed(false);
       return;
     }
@@ -29,7 +32,7 @@ const ProtectedRoute = ({ allowedRoles = ["user"], children }: ProtectedRoutePro
     if (!normalizedAllowed.includes(normalizedRole)) {
       navigate("/unauthorized", {
         replace: true,
-        state: { code: 401, message: "You are Unauthorized. Please login to access this page." },
+        state: { code: 401, message: "You are unauthorized. Please login to access this page." },
       });
       setIsAllowed(false);
     } else {
