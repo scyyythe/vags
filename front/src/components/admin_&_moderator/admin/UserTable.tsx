@@ -17,7 +17,9 @@ import { User } from "@/hooks/users/useUserQuery";
 import usePromoteUserMutation from "@/hooks/admin/actions/promote/usePromoteUserMutation";
 import useDemoteUserMutation from "@/hooks/admin/actions/promote/useDemoteUserMutation";
 import useSuspendUserMutation from "@/hooks/admin/actions/suspend/useSuspendUserMutation";
-
+import useReinstateUserMutation from "@/hooks/admin/actions/suspend/useReinstateUserMutation";
+import useBanUserMutation from "@/hooks/admin/actions/ban/useBanUserMutation";
+import useUnbanUserMutation from "@/hooks/admin/actions/ban/useUnbanUserMutation";
 interface UserTableProps {
   initialUsers: User[];
   onPromoteUser?: (id: string) => void;
@@ -26,19 +28,15 @@ interface UserTableProps {
   onReinstateUser?: (id: string) => void;
   onDeleteUser?: (id: string) => void;
 }
-export function UserTable({
-  initialUsers,
-  onPromoteUser,
-  onSuspendUser,
-  onBanUser,
-  onReinstateUser,
-  onDeleteUser,
-}: UserTableProps) {
+export function UserTable({ initialUsers, onPromoteUser, onSuspendUser, onBanUser, onDeleteUser }: UserTableProps) {
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [searchQuery, setSearchQuery] = useState("");
   const promoteUserMutation = usePromoteUserMutation();
   const demoteUserMutation = useDemoteUserMutation();
   const suspendUserMutation = useSuspendUserMutation();
+  const banUserMutation = useBanUserMutation();
+  const unbanUserMutation = useUnbanUserMutation();
+  const reinstateUserMutation = useReinstateUserMutation();
 
   const promoteUser = (userId: string) => {
     promoteUserMutation.mutate(userId, {
@@ -69,13 +67,53 @@ export function UserTable({
   const suspendUser = (userId: string) => {
     const today = new Date();
     const end = new Date();
-    end.setDate(today.getDate() + 7); // 7-day suspension
+    end.setDate(today.getDate() + 3); // 7-day suspension
 
     suspendUserMutation.mutate({
       userId,
       start_date: today.toISOString(),
       end_date: end.toISOString(),
       reason: "Violation of community guidelines",
+    });
+  };
+  const ReinstateUser = (userId: string) => {
+    reinstateUserMutation.mutate(userId, {
+      onSuccess: (updatedUser) => {
+        setUsers((prevUsers) =>
+          prevUsers.map((user) => (user.id === updatedUser.id ? { ...user, user_status: "Active" } : user))
+        );
+      },
+      onError: (error) => {
+        console.error("Failed to reinstate user:", error);
+      },
+    });
+  };
+  const banUser = (userId: string) => {
+    banUserMutation.mutate(
+      { userId, reason: "Violation", is_permanent: true },
+      {
+        onSuccess: (updatedUser) => {
+          setUsers((prevUsers) =>
+            prevUsers.map((user) =>
+              user.id === updatedUser.id ? { ...user, status: updatedUser.user_status || "Banned" } : user
+            )
+          );
+
+          onBanUser && onBanUser(updatedUser.id);
+        },
+      }
+    );
+  };
+
+  const unbanUser = (userId: string) => {
+    unbanUserMutation.mutate(userId, {
+      onSuccess: (updatedUser) => {
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === updatedUser.id ? { ...user, status: updatedUser.user_status || "Active" } : user
+          )
+        );
+      },
     });
   };
 
@@ -199,25 +237,16 @@ export function UserTable({
                             Suspend User
                           </DropdownMenuItem>
                         ) : (
-                          <DropdownMenuItem
-                            className="text-[10px]"
-                            onClick={() => onReinstateUser && onReinstateUser(user.id)}
-                          >
+                          <DropdownMenuItem className="text-[10px]" onClick={() => ReinstateUser(user.id)}>
                             Reinstate User
                           </DropdownMenuItem>
                         )}
                         {user.user_status !== "Banned" ? (
-                          <DropdownMenuItem
-                            className="text-[10px] text-red-500"
-                            onClick={() => onBanUser && onBanUser(user.id)}
-                          >
+                          <DropdownMenuItem className="text-[10px] text-red-500" onClick={() => banUser(user.id)}>
                             Ban User
                           </DropdownMenuItem>
                         ) : (
-                          <DropdownMenuItem
-                            className="text-[10px]"
-                            onClick={() => onReinstateUser && onReinstateUser(user.id)}
-                          >
+                          <DropdownMenuItem className="text-[10px]" onClick={() => unbanUser(user.id)}>
                             Unban User
                           </DropdownMenuItem>
                         )}

@@ -1,5 +1,5 @@
 from mongoengine import Document, StringField, DateTimeField, EmailField, IntField, BooleanField,URLField,ListField,ReferenceField
-from datetime import datetime
+from datetime import datetime,timedelta
 import bcrypt
 from mongoengine.queryset import Q
 
@@ -60,6 +60,8 @@ class User(Document):
 
     @property
     def is_banned(self):
+        from api.models.admin.ban.ban_model import Ban
+
         now = datetime.utcnow()
         active_ban = Ban.objects(
             user=self,
@@ -70,3 +72,5 @@ class User(Document):
             ]}
         ).first()
         return active_ban is not None
+
+
