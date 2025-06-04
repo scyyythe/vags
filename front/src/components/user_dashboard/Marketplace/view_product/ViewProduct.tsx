@@ -62,19 +62,19 @@ const ProductViewingContent = () => {
     ];
 
     useEffect(() => {
-  if (id) {
-    const found = mockArtworks.find((artwork) => String(artwork.id) === String(id));
-    if (found) {
-      const productWithImages = {
-        ...found,
-        images: Array.isArray(found.images) ? found.images : [found.artworkImage],
-      };
-      setProduct(productWithImages);
-    } else {
-      setProduct(null);
+    if (id) {
+        const found = mockArtworks.find((artwork) => String(artwork.id) === String(id));
+        if (found) {
+        const productWithImages = {
+            ...found,
+            images: Array.isArray(found.images) ? found.images : [found.artworkImage],
+        };
+        setProduct(productWithImages);
+        } else {
+        setProduct(null);
+        }
     }
-  }
-}, [id]);
+    }, [id]);
 
     if (!product) {
         return <div>Product not found.</div>;
@@ -90,6 +90,10 @@ const ProductViewingContent = () => {
         if (product?.images?.length > 1) {
         setCurrentImageIndex((prev) => (prev === product.images.length - 1 ? 0 : prev + 1));
         }
+    };
+
+    const closeExpandedView = () => {
+        setIsExpanded(false);
     };
 
     const handleQuantityChange = (change: number) => {
@@ -425,23 +429,20 @@ const ProductViewingContent = () => {
         </div>
 
         {/* Expanded artwork view */}
-        {isExpanded && (
-            <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
-                <button
-                    onClick={() => setIsExpanded(false)}
-                    className="absolute top-4 right-4 text-white text-3xl font-bold z-60 hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center"
-                >
-                    ✕
-                </button>
-                <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
-                    <img 
-                    src={product.images[currentImageIndex]} 
-                    alt="Expanded artwork" 
-                    className="max-h-[80vh] max-w-[90vw] object-contain" 
-                    />
-                </div>
-            </div>
-        )}
+      {isExpanded && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
+          <button
+            onClick={closeExpandedView}
+            className="absolute top-[14px] right-[35px] text-white text-3xl font-bold z-[60]"
+          >
+            <i className="bx bx-x text-2xl"></i>
+          </button>
+
+          <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
+            <img src={product.image} alt="Expanded artwork" className="max-h-[80vh] max-w-[90vw] object-contain" />
+          </div>
+        </div>
+      )}
 
         {/* Review Modal */}
         <ReviewModal 
