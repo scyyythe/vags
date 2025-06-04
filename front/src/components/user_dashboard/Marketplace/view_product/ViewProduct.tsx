@@ -2,14 +2,11 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Heart, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { LikedArtworksContext, LikedArtworksProvider } from "@/context/LikedArtworksProvider";
 import { useDonation, DonationProvider } from "@/context/DonationContext";
 import Header from "@/components/user_dashboard/navbar/Header";
+import SellCardMenu from "@/components/user_dashboard/Marketplace/cards/SellCardMenu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ReviewModal from "@/components/user_dashboard/Marketplace/reviews/ReviewModal";
@@ -27,6 +24,8 @@ const ProductViewingContent = () => {
     const [isHovered, setIsHovered] = useState(false);
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("description");
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [isReported, setIsReported] = useState(false);
     const isMobile = useIsMobile();
     const navigate = useNavigate();
 
@@ -227,19 +226,40 @@ const ProductViewingContent = () => {
                 
             {/* Title and Actions */}
             <div className="flex justify-between items-start">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
-                <div className="flex items-center space-x-2">
-                  <Avatar className="w-3 h-3 border">
-                    <AvatarImage src="" alt={product.artist} />
-                    <AvatarFallback className="text-[10px]">{product.artist?.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <span className="text-black text-[9px] cursor-pointer">{product.artist}</span>
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
+                    <div className="flex items-center space-x-2">
+                    <Avatar className="w-3 h-3 border">
+                        <AvatarImage src="" alt={product.artist} />
+                        <AvatarFallback className="text-[10px]">{product.artist?.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <span className="text-black text-[9px] cursor-pointer">{product.artist}</span>
+                    </div>
                 </div>
-              </div>
-              <button className="p-2 hover:border-gray-100 rounded-full">
-                <MoreHorizontal size={15} className="text-gray-500" />
-              </button>
+                <div className="relative">
+                    
+                {/* MENU */}
+                <button
+                    onClick={(e) => {
+                    e.stopPropagation();
+                    setMenuOpen((prev) => !prev);
+                    }}
+                    className="p-2 rounded-full"
+                >
+                    <MoreHorizontal size={15} className="text-gray-500 hover:text-black" />
+                </button>
+
+                <SellCardMenu
+                    isOpen={menuOpen}
+                    isReported={isReported}
+                    onReport={(data) => {
+                    console.log("Report submitted:", data);
+                    toast("Report submitted. Thank you!");
+                    setIsReported(true);
+                    setMenuOpen(false);
+                    }}
+                />
+                </div>
             </div>
 
             {/* Price */}
