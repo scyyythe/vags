@@ -4,6 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status
 from api.models.artwork_model.bid import Bid, Auction
 from api.models.artwork_model.bid import AuctionStatus
+from api.models.interaction_model.interaction import Like
 from api.models.artwork_model.artwork import Art
 from api.serializers.artwork_s.bid_serializers import BidSerializer, AuctionSerializer
 from api.models.interaction_model.follows import Follower
@@ -417,3 +418,31 @@ class FollowedAuctionsView(APIView):
 
         serialized = AuctionSerializer(auctions, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
+    
+class PopularAuctionListView(generics.ListAPIView):
+    serializer_class = AuctionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        now_utc = datetime.now(timezone.utc)
+       
+        queryset = Auction.objects(
+            status=AuctionStatus.ON_GOING.value,
+            end_time__gt=now_utc
+        )
+
+        user = self.request.user
+        if user.is_authenticated and hasattr(user, "blocked_users"):
+            blocked_user_ids = [u.id for u in user.blocked_users]
+            valid_artworks = Art.objects(artist__nin=blocked_user_ids).only('id')
+            valid_artwork_ids = [art.id for art in valid_artworks]
+            queryset = queryset.filter(artwork__in=valid_artwork_ids)
+
+      
+        sorted_queryset = sorted(
+            queryset,
+            key=lambda auction: Like.objects(auction=auction).count(),
+            reverse=True
+        )
+
+        return sorted_queryset[:4]

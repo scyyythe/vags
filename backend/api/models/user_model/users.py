@@ -1,6 +1,7 @@
 from mongoengine import Document, StringField, DateTimeField, EmailField, IntField, BooleanField,URLField,ListField,ReferenceField
 from datetime import datetime
 import bcrypt
+from mongoengine.queryset import Q
 
 class User(Document):
     username = StringField(max_length=150, unique=True, required=True)
@@ -42,3 +43,28 @@ class User(Document):
     @property
     def is_anonymous(self):
         return False
+
+    @property
+    def is_staff(self):
+        return self.role == "Admin"
+    
+    def get_active_suspension(self):
+        now = datetime.utcnow()
+        return Suspension.objects(user=self, start_date__lte=now, end_date__gte=now).first()
+
+    @property
+    def is_suspended(self):
+        return self.get_active_suspension() is not None
+
+    @property
+    def is_banned(self):
+        now = datetime.utcnow()
+        active_ban = Ban.objects(
+            user=self,
+            start_date__lte=now,
+            __raw__={"$or": [
+                {"is_permanent": True},
+                {"end_date": {"$gte": now}}
+            ]}
+        ).first()
+        return active_ban is not None
