@@ -480,7 +480,7 @@ const ArtworkDetails = () => {
                         onReport={handleReport}
                         isFavorite={isFavorite}
                         isReported={isReportedFromBulk}
-                        isShared = {artwork.isShared}
+                        isShared = {artwork?.isShared}
                         className={isMobile ? "mobile-menu-position" : ""}
                       />
                     </div>
