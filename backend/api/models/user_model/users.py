@@ -55,3 +55,16 @@ class User(Document):
     @property
     def is_suspended(self):
         return self.get_active_suspension() is not None
+
+    @property
+    def is_banned(self):
+        now = datetime.utcnow()
+        active_ban = Ban.objects(
+            user=self,
+            start_date__lte=now,
+            __raw__={"$or": [
+                {"is_permanent": True},
+                {"end_date": {"$gte": now}}
+            ]}
+        ).first()
+        return active_ban is not None
