@@ -42,74 +42,71 @@ const ReviewModal = ({ isOpen, onClose, reviews, totalReviews }: ReviewModalProp
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl h-[600px] bg-white flex flex-col">
-        <DialogHeader className="pb-4 border-b border-gray-100 flex-shrink-0">
+      <DialogContent className="max-w-md rounded-lg h-[500px] bg-white flex flex-col" onInteractOutside={(e) => e.preventDefault()}>
+        <DialogHeader className="pb-4 border-gray-100 flex-shrink-0">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-lg font-semibold">Review List</DialogTitle>
-            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-              <X size={20} />
-            </button>
+            <DialogTitle className="text-sm font-semibold">Review List</DialogTitle>
           </div>
           <div className="flex items-center justify-between mt-4">
-            <p className="text-sm text-gray-600">
+            <p className="text-[10px] text-gray-600">
               Showing 1-3 out of {totalReviews} results
             </p>
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">Sort by :</span>
+              <span className="text-[10px] text-gray-600">Sort by :</span>
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-24 h-8 text-xs border-gray-300">
+                <SelectTrigger className="w-24 h-7 text-[10px] border-gray-300">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                  <SelectItem value="newest">Newest</SelectItem>
-                  <SelectItem value="oldest">Oldest</SelectItem>
-                  <SelectItem value="highest">Highest Rated</SelectItem>
-                  <SelectItem value="lowest">Lowest Rated</SelectItem>
+                  <SelectItem value="newest" className="text-[10px]">Newest</SelectItem>
+                  <SelectItem value="oldest" className="text-[10px]">Oldest</SelectItem>
+                  <SelectItem value="highest" className="text-[10px]">Highest Rated</SelectItem>
+                  <SelectItem value="lowest" className="text-[10px]">Lowest Rated</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
         </DialogHeader>
         
-        <ScrollArea className="flex-1 px-1">
-          <div className="space-y-6 py-4">
+        <div className="-mb-4 bg-white h-[420px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-hide">
+          <div className="space-y-6 py-2">
             {sortedReviews.map((review) => (
               <div key={review.id} className="border-b border-gray-100 pb-6 last:border-b-0">
                 <div className="flex items-start space-x-3">
-                  <Avatar className="w-10 h-10">
+                  <Avatar className="w-5 h-5">
                     <AvatarImage src={review.userImage} alt={review.user} />
-                    <AvatarFallback className="bg-gray-300 text-gray-600 text-sm">
+                    <AvatarFallback className="bg-gray-300 text-gray-600 text-xs">
                       {review.user.substring(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   
                   <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center space-x-2">
-                        <h4 className="font-medium text-sm">{review.user}</h4>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="items-center space-x-2 grid grid-row">
+                        <h4 className="font-medium text-[10px]">{review.user}</h4>
                         {review.verified && (
-                          <span className="text-xs text-gray-500">(Verified)</span>
+                          <span className="text-[9px] text-gray-500">(Verified)</span>
                         )}
                       </div>
-                      <span className="text-xs text-gray-400">1 month ago</span>
+                      <span className="text-[10px] text-gray-400">1 month ago</span>
                     </div>
                     
-                    <h5 className="font-medium text-sm mb-2">"Even More Stunning in Person!"</h5>
+                    <p className="font-medium text-[11px] my-2">"Even More Stunning in Person!"</p>
                     
-                    <p className="text-xs text-gray-600 mb-3 leading-relaxed">
+                    <p className="text-[10px] text-gray-600 mb-3 leading-relaxed">
                       {review.comment}
                     </p>
                     
                     <div className="flex items-center space-x-1">
                       {renderStars(review.rating)}
-                      <span className="text-xs font-medium ml-1">{review.rating}.0</span>
+                      <span className="text-[11px] font-medium ml-1">{review.rating}.0</span>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );

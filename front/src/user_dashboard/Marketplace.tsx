@@ -174,6 +174,7 @@ const Marketplace = () => {
                 rating={artwork.rating}
                 isLiked={likedItems.has(artwork.id)}
                 onLike={() => handleLike(artwork.id)}
+                edition={artwork.edition}
                 isMarketplace={true} 
                 onCardClick={() => handleCardClick(artwork.id)}
               />

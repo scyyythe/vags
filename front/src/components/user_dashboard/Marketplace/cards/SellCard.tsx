@@ -9,6 +9,7 @@ export interface SellCardProps {
   price: number;
   originalPrice?: number;
   title: string;
+  edition?: string;
   rating?: number;
   isLiked?: boolean;
   onLike?: () => void;
@@ -22,6 +23,7 @@ const SellCard = ({
   price,
   originalPrice = 0,
   title,
+  edition,
   rating,
   isLiked = false,
   onLike,
@@ -100,7 +102,7 @@ const SellCard = ({
           />
         </button>
 
-        {rating !== undefined && (
+        {edition !== "Original (1 of 1)" && rating !== undefined && (
           <div className="absolute bottom-2 right-2 bg-white font-medium px-2 py-0.5 rounded-full flex items-center gap-1 shadow">
             <i className="bx bxs-star text-[10px] text-yellow-500"></i>
             <span className="text-red-800 text-[9px]">{rating.toFixed(1)}</span>

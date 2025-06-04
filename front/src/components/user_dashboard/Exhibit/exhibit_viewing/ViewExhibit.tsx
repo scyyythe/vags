@@ -1,14 +1,12 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Heart, MoreHorizontal, GripVertical, Reply } from "lucide-react";
+import { Heart, MoreHorizontal, Reply } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { LikedArtworksContext } from "@/context/LikedArtworksProvider";
 import ExhibitMenu from "@/components/user_dashboard/Exhibit/menu/ExhibitMenu";
-import { useDonation } from "@/context/DonationContext";
 import Header from "@/components/user_dashboard/navbar/Header";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
@@ -544,9 +542,9 @@ const ExhibitViewing = () => {
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
           <button
             onClick={closeExpandedView}
-            className="absolute top-[14px] right-[35px] text-white text-3xl font-bold z-[60]"
-          >
-            <i className="bx bx-x text-2xl"></i>
+            className="absolute top-4 right-6 z-[60] bg-white rounded-full px-1 shadow-md transition-colors duration-200"
+            >
+            <i className="bx bx-x text-xl text-black"></i>
           </button>
 
           <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
