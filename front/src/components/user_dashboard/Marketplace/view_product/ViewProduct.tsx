@@ -167,67 +167,64 @@ const ProductViewingContent = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Artwork container */}
-            <div className={`relative ${isMobile ? "w-full " : "w-full max-w-[580px] min-w-[400px] ml-14"}`}>
-
-              {/* Center - Artwork Image */}
-              <div className={`relative z-0 ${isMobile ? "px-4 mt-4" : " mt-8"}`}>
-
+            {/* Artwork container */}
+            <div className={`relative ${isMobile ? "w-full" : "w-full max-w-[580px] min-w-[400px] ml-14"}`}>
+            {/* Artwork Image Hover Group */}
+            <div className={`relative z-0 ${isMobile ? "px-4 mt-4" : "mt-8"} group/artwork`}>
                 <div className={`relative ${isMobile ? "w-full" : "inline-block -mb-6"}`}>
-                  <div className={`${isMobile ? "h-[475px]" : "w-[530px] h-[475px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"}`}>
+                <div className={`${isMobile ? "h-[475px]" : "w-[530px] h-[475px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"}`}>
+                    
+                    {/* Artwork image */}
                     <img
-                      src={product.artworkImage}
-                      alt={product.title}
-                      className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
+                    src={product.images[currentImageIndex]}
+                    alt={product.title}
+                    className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                     />
 
-                    {/* Expand Button Container */}
-                    <div
-                      className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}
-                    >
-                      {/* Expand Icon */}
-                      <div
-                        className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
-                        onClick={() => setIsExpanded(true)}
-                      >
-                        <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
-                        <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
-                          Expand
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Navigation arrows - show when multiple images and hovered */}
-                    {product.images.length > 1 && isHovered && (
+                    {/* Chevron Buttons (on hover of artwork only) */}
+                    {product.images.length > 1 && (
                     <>
                         <button
                         onClick={goToPrevious}
-                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all duration-200 z-10"
+                        className="absolute left-4 top-1/2 transform -translate-y-1/2 
+                            bg-white/70 backdrop-blur-md rounded-full p-2 shadow-md hover:bg-white 
+                            opacity-0 group-hover/artwork:opacity-100 transition-opacity duration-300"
                         >
-                            <ChevronLeft size={20} className="text-gray-700" />
+                        <ChevronLeft size={15} className="text-black" />
                         </button>
+
                         <button
                         onClick={goToNext}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all duration-200 z-10"
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 
+                            bg-white/70 backdrop-blur-md rounded-full p-2 shadow-md hover:bg-white 
+                            opacity-0 group-hover/artwork:opacity-100 transition-opacity duration-300"
                         >
-                            <ChevronRight size={20} className="text-gray-700" />
+                        <ChevronRight size={15} className="text-black" />
                         </button>
                     </>
                     )}
 
-                    {/* Image counter */}
-                    {product.images.length > 1 && (
-                        <div className="absolute bottom-4 right-4 bg-black/60 text-white px-2 py-1 rounded-full text-xs">
-                            {currentImageIndex + 1}/{product.images.length}
-                        </div>
-                    )}
-                  </div>
+                    {/* ✅ Expand Button (always visible, not affected by hover) */}
+                    <div className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}>
+                    <div
+                        className="group/expand flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
+                        onClick={() => setIsExpanded(true)}
+                    >
+                        <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
+                        <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover/expand:translate-x-0 group-hover/expand:opacity-100 transition-all ease-in-out duration-700">
+                        Expand
+                        </span>
+                    </div>
+                    </div>
                 </div>
-              </div>
+                </div>
+            </div>
             </div>
 
-          {/* Right side - Product Info */}
-          <div className={`relative space-y-[30px] ${isMobile ? "w-full " : "w-full max-w-[550px] min-w-[400px] mt-4"}`}>
+
+            {/* Right side - Product Info */}
+            <div className={`relative space-y-[30px] ${isMobile ? "w-full " : "w-full max-w-[550px] min-w-[400px] mt-4"}`}>
+                
             {/* Title and Actions */}
             <div className="flex justify-between items-start">
               <div>
@@ -237,7 +234,7 @@ const ProductViewingContent = () => {
                     <AvatarImage src="" alt={product.artist} />
                     <AvatarFallback className="text-[10px]">{product.artist?.charAt(0)}</AvatarFallback>
                   </Avatar>
-                  <span className="text-gray-600 text-[9px] cursor-pointer">{product.artist}</span>
+                  <span className="text-black text-[9px] cursor-pointer">{product.artist}</span>
                 </div>
               </div>
               <button className="p-2 hover:border-gray-100 rounded-full">
@@ -294,16 +291,19 @@ const ProductViewingContent = () => {
                     >
                     Description
                 </button>
+
+                {product.edition !== "Original (1 of 1)" && (
                 <button
                     className={`px-4 py-2 ml-4 ${
-                        activeTab === "review"
+                    activeTab === "review"
                         ? "border-b-2 border-black text-black"
                         : "text-gray-400"
                     }`}
                     onClick={() => setActiveTab("review")}
-                    >
+                >
                     Review
                 </button>
+                )}
             </div>
 
             {/* Tab Content Container */}
@@ -316,8 +316,9 @@ const ProductViewingContent = () => {
                 )}
 
                 {/* Reviews Content */}
-                {activeTab === "review" && (
-                    <div className="relative flex flex-col md:h-[110px] sm:flex-row gap-4 pr-4">
+                {activeTab === "review" && product.edition !== "Original (1 of 1)" && (
+                <div className="relative flex flex-col md:h-[110px] sm:flex-row gap-4 pr-4">
+
                     {/* View All Reviews Button - Top Right Corner */}
                     <div className="absolute right-0 top-0">
                         <button
@@ -429,20 +430,42 @@ const ProductViewingContent = () => {
         </div>
 
         {/* Expanded artwork view */}
-      {isExpanded && (
+        {isExpanded && (
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
-          <button
+            <button
             onClick={closeExpandedView}
             className="absolute top-[14px] right-[35px] text-white text-3xl font-bold z-[60]"
-          >
+            >
             <i className="bx bx-x text-2xl"></i>
-          </button>
+            </button>
 
-          <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
-            <img src={product.image} alt="Expanded artwork" className="max-h-[80vh] max-w-[90vw] object-contain" />
-          </div>
+            <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
+            <img
+                src={product.images[currentImageIndex]}
+                alt="Expanded artwork"
+                className="max-h-[80vh] max-w-[90vw] object-contain"
+            />
+
+            {/* Chevron navigation */}
+            {product.images.length > 1 && (
+                <>
+                <button
+                    onClick={goToPrevious}
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 z-50"
+                >
+                    <ChevronLeft size={15} className="text-black" />
+                </button>
+                <button
+                    onClick={goToNext}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 z-50"
+                >
+                    <ChevronRight size={15} className="text-black" />
+                </button>
+                </>
+            )}
+            </div>
         </div>
-      )}
+        )}
 
         {/* Review Modal */}
         <ReviewModal 
