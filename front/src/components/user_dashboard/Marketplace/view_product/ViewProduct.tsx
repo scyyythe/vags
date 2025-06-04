@@ -171,10 +171,10 @@ const ProductViewingContent = () => {
             <div className={`relative ${isMobile ? "w-full " : "w-full max-w-[580px] min-w-[400px] ml-14"}`}>
 
               {/* Center - Artwork Image */}
-              <div className={`relative z-0 mt-8 ${isMobile ? "px-4" : ""}`}>
+              <div className={`relative z-0 ${isMobile ? "px-4 mt-4" : " mt-8"}`}>
 
                 <div className={`relative ${isMobile ? "w-full" : "inline-block -mb-6"}`}>
-                  <div className={`${isMobile ? "" : "w-[530px] h-[475px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"}`}>
+                  <div className={`${isMobile ? "h-[475px]" : "w-[530px] h-[475px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"}`}>
                     <img
                       src={product.artworkImage}
                       alt={product.title}
@@ -227,7 +227,7 @@ const ProductViewingContent = () => {
             </div>
 
           {/* Right side - Product Info */}
-          <div className={`relative space-y-[30px] mt-4 ${isMobile ? "w-full " : "w-full max-w-[550px] min-w-[400px]"}`}>
+          <div className={`relative space-y-[30px] ${isMobile ? "w-full " : "w-full max-w-[550px] min-w-[400px] mt-4"}`}>
             {/* Title and Actions */}
             <div className="flex justify-between items-start">
               <div>
