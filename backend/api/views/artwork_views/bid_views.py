@@ -18,10 +18,24 @@ from datetime import datetime, timezone
 from mongoengine import DoesNotExist
 from mongoengine.errors import NotUniqueError
 from mongoengine.queryset.visitor import Q
+from rest_framework.exceptions import PermissionDenied
+from api.models.user_model.users import User
+from bson import ObjectId
+
 
 class AuctionCreateView(APIView):
     def post(self, request, *args, **kwargs):
         try:
+           
+            mongo_user = User.objects.get(id=ObjectId(request.user.id))
+            
+      
+            if mongo_user.is_suspended:
+                suspension = mongo_user.get_active_suspension()
+                raise PermissionDenied(
+                    detail=f"Your account is suspended until {suspension.end_date.strftime('%B %d, %Y at %I:%M %p')}. Reason: {suspension.reason}"
+                )
+            
             artwork_id = request.data["artwork_id"]
             start_time = datetime.fromisoformat(request.data["start_time"])
             end_time = datetime.fromisoformat(request.data["end_time"])
@@ -40,7 +54,6 @@ class AuctionCreateView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-           
             if (end_time - start_time).days > 3:
                 return Response(
                     {"error": "Auction duration cannot exceed 3 days."},
@@ -58,7 +71,6 @@ class AuctionCreateView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            
             sold_auction = Auction.objects(
                 artwork=artwork_id,
                 status=AuctionStatus.SOLD.value
@@ -102,11 +114,18 @@ class AuctionCreateView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
+        except PermissionDenied as e:
+            return Response(
+                {"error": str(e.detail)},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         except Exception as e:
             return Response(
                 {"error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
 
 class AuctionListView(generics.ListAPIView):
     serializer_class = AuctionSerializer
