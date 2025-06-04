@@ -26,6 +26,7 @@ const ProductViewingContent = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState("description");
     const isMobile = useIsMobile();
     const navigate = useNavigate();
 
@@ -149,217 +150,276 @@ const ProductViewingContent = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen">
         <Header />
 
-        <div className="container mx-auto px-4 py-6 max-w-7xl">
+        <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
         {/* Back button */}
-        <div className="mb-6">
-          <button 
-            onClick={() => navigate(-1)} 
-            className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
-          >
-            <ChevronLeft size={20} className="mr-1" />
-            <span className="text-sm font-medium">Product Detail</span>
+        <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
+          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+            <i className="bx bx-chevron-left text-lg mr-2"></i>
+            Product Details
           </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left side - Image */}
-          <div className="relative">
-            <Card className="overflow-hidden">
-              <div 
-                className="relative aspect-square bg-white"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                <img
-                    src={product.artworkImage}
-                    alt={product.title}
-                    className="w-full h-auto object-cover rounded-lg cursor-pointer"
-                    onClick={() => setIsExpanded(true)}
-                />
+          {/* Artwork container */}
+            <div className={`relative ${isMobile ? "w-full " : "w-full max-w-[580px] min-w-[400px] ml-14"}`}>
 
-                {/* Expand Button Container */}
-                <div
-                    className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}
-                >
-                    {/* Expand Icon */}
+              {/* Center - Artwork Image */}
+              <div className={`relative z-0 mt-8 ${isMobile ? "px-4" : ""}`}>
+
+                <div className={`relative ${isMobile ? "w-full" : "inline-block -mb-6"}`}>
+                  <div className={`${isMobile ? "" : "w-[530px] h-[475px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"}`}>
+                    <img
+                      src={product.artworkImage}
+                      alt={product.title}
+                      className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
+                    />
+
+                    {/* Expand Button Container */}
                     <div
+                      className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}
+                    >
+                      {/* Expand Icon */}
+                      <div
                         className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
                         onClick={() => setIsExpanded(true)}
-                    >
+                      >
                         <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
                         <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
-                            Expand
+                          Expand
                         </span>
+                      </div>
                     </div>
-                </div>
 
-                {/* Navigation arrows - show when multiple images and hovered */}
-                {product.images.length > 1 && isHovered && (
-                  <>
-                    <button
-                      onClick={goToPrevious}
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all duration-200 z-10"
-                    >
-                      <ChevronLeft size={20} className="text-gray-700" />
-                    </button>
-                    <button
-                      onClick={goToNext}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all duration-200 z-10"
-                    >
-                      <ChevronRight size={20} className="text-gray-700" />
-                    </button>
-                  </>
-                )}
+                    {/* Navigation arrows - show when multiple images and hovered */}
+                    {product.images.length > 1 && isHovered && (
+                    <>
+                        <button
+                        onClick={goToPrevious}
+                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all duration-200 z-10"
+                        >
+                            <ChevronLeft size={20} className="text-gray-700" />
+                        </button>
+                        <button
+                        onClick={goToNext}
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all duration-200 z-10"
+                        >
+                            <ChevronRight size={20} className="text-gray-700" />
+                        </button>
+                    </>
+                    )}
 
-                {/* Image counter */}
-                {product.images.length > 1 && (
-                  <div className="absolute bottom-4 right-4 bg-black/60 text-white px-2 py-1 rounded-full text-xs">
-                    {currentImageIndex + 1}/{product.images.length}
+                    {/* Image counter */}
+                    {product.images.length > 1 && (
+                        <div className="absolute bottom-4 right-4 bg-black/60 text-white px-2 py-1 rounded-full text-xs">
+                            {currentImageIndex + 1}/{product.images.length}
+                        </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
-            </Card>
-          </div>
+            </div>
 
           {/* Right side - Product Info */}
-          <div className="space-y-6">
+          <div className={`relative space-y-[30px] mt-4 ${isMobile ? "w-full " : "w-full max-w-[550px] min-w-[400px]"}`}>
             {/* Title and Actions */}
             <div className="flex justify-between items-start">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.title}</h1>
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
                 <div className="flex items-center space-x-2">
-                  <Avatar className="w-6 h-6">
+                  <Avatar className="w-3 h-3 border">
                     <AvatarImage src="" alt={product.artist} />
-                    <AvatarFallback className="text-xs">{product.artist?.charAt(0)}</AvatarFallback>
+                    <AvatarFallback className="text-[10px]">{product.artist?.charAt(0)}</AvatarFallback>
                   </Avatar>
-                  <span className="text-gray-600 text-sm">{product.artist}</span>
+                  <span className="text-gray-600 text-[9px] cursor-pointer">{product.artist}</span>
                 </div>
               </div>
-              <button className="p-2 hover:bg-gray-100 rounded-full">
-                <MoreHorizontal size={20} className="text-gray-500" />
+              <button className="p-2 hover:border-gray-100 rounded-full">
+                <MoreHorizontal size={15} className="text-gray-500" />
               </button>
             </div>
 
             {/* Price */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-4">
               <div className="text-3xl font-bold text-gray-900">
-                {product.currency}{product.price?.toLocaleString()}
+                ₱ {product.currency}{product.price?.toLocaleString()}k
               </div>
               {product.originalPrice && (
                 <div className="text-lg text-gray-400 line-through">
-                  {product.currency}{product.originalPrice?.toLocaleString()}
+                  ₱ {product.currency}{product.originalPrice?.toLocaleString()}k
                 </div>
               )}
             </div>
 
             {/* Product Details Grid */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-4 gap-4 text-center border py-[18px] rounded-md">
                 <div>
-                    <h3 className="text-sm font-medium text-gray-500 mb-1">Artwork Style</h3>
-                    <p className="text-sm text-gray-900">{product.artworkStyle}</p>
+                    <h3 className="text-[10px] font-medium text-gray-500 mb-1">Artwork Style</h3>
+                    <p className="text-[10px] text-gray-900">{product.artworkStyle}</p>
                 </div>
-                <div>
-                    <h3 className="text-sm font-medium text-gray-500 mb-1">Medium</h3>
-                    <p className="text-sm text-gray-900">{product.medium}</p>
+                
+                <div className="border-l border-gray-300 pl-4">
+                    <h3 className="text-[10px] font-medium text-gray-500 mb-1">Medium</h3>
+                    <p className="text-[10px] text-gray-900">{product.medium}</p>
                 </div>
-                <div>
-                    <h3 className="text-sm font-medium text-gray-500 mb-1">Size</h3>
-                    <p className="text-sm text-gray-900">{product.size}</p>
+                
+                <div className="border-l border-gray-300 pl-4">
+                    <h3 className="text-[10px] font-medium text-gray-500 mb-1">Size</h3>
+                    <p className="text-[10px] text-gray-900">{product.size}</p>
                 </div>
-                <div>
-                    <h3 className="text-sm font-medium text-gray-500 mb-1">Edition</h3>
-                    <p className="text-sm text-gray-900">{product.edition}</p>
+                
+                <div className="border-l border-gray-300 mr-2">
+                    <h3 className="text-[10px] font-medium text-gray-500 mb-1">Edition</h3>
+                    <p className="text-[10px] text-gray-900">{product.edition}</p>
                 </div>
             </div>
 
-            {/* Tabs for Description/Review */}
-            <Tabs defaultValue="description" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="description">Description</TabsTrigger>
-                    <TabsTrigger value="review">Review</TabsTrigger>
-                </TabsList>
-                <TabsContent value="description" className="mt-4">
-                    <div className="bg-white p-4 rounded-lg border h-48 overflow-y-auto">
-                    <p className="text-sm text-gray-700 leading-relaxed">
-                        {product.description}
+            <div className="w-full">
+
+            {/* Custom Tab Headers */}
+            <div className="flex text-[10px] font-medium">
+                <button
+                    className={`px-4 py-2 ${
+                        activeTab === "description"
+                        ? "border-b-2 border-black text-black"
+                        : "text-gray-400"
+                    }`}
+                    onClick={() => setActiveTab("description")}
+                    >
+                    Description
+                </button>
+                <button
+                    className={`px-4 py-2 ml-4 ${
+                        activeTab === "review"
+                        ? "border-b-2 border-black text-black"
+                        : "text-gray-400"
+                    }`}
+                    onClick={() => setActiveTab("review")}
+                    >
+                    Review
+                </button>
+            </div>
+
+            {/* Tab Content Container */}
+            <div className="mt-5 -mb-4 bg-white px-2 h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-hide">
+                {/* Description Content */}
+                {activeTab === "description" && (
+                    <p className="text-[10px] text-gray-700 leading-relaxed pt-2">
+                    {product.description}
                     </p>
-                    </div>
-                </TabsContent>
-                <TabsContent value="review" className="mt-4">
-                    <div className="bg-white p-4 rounded-lg border h-48 overflow-y-auto">
-                    {/* Rating Overview */}
-                    <div className="flex items-start justify-between">
-                        <div>
-                        <div className="flex items-center space-x-2 mb-2">
-                            <span className="text-2xl font-bold">{product.rating}</span>
-                            <span className="text-sm text-gray-500">out of 5</span>
-                        </div>
-                        <div className="flex items-center space-x-1 mb-1">
-                            {renderStars(Math.floor(product.rating))}
-                        </div>
-                        <p className="text-xs text-gray-500">({product.totalReviews} reviews)</p>
-                        </div>
-                        
-                        {/* Rating Breakdown */}
-                        <div className="space-y-1 flex-1 max-w-32 ml-8">
-                        {[5, 4, 3, 2, 1].map((star) => 
-                            renderRatingBar(star, product.reviewBreakdown[star] || 0, product.totalReviews)
-                        )}
-                        </div>
-                        
-                        {/* View All Reviews Link */}
-                        <button 
+                )}
+
+                {/* Reviews Content */}
+                {activeTab === "review" && (
+                    <div className="relative flex flex-col md:h-[110px] sm:flex-row gap-4 pr-4">
+                    {/* View All Reviews Button - Top Right Corner */}
+                    <div className="absolute right-0 top-0">
+                        <button
                         onClick={() => setIsReviewModalOpen(true)}
-                        className="text-sm text-blue-600 hover:underline flex items-center"
+                        className="text-[9px] text-gray-600 hover:underline flex items-center"
                         >
                         View all reviews
-                        <ChevronRight size={14} className="ml-1" />
+                        <ChevronRight size={10} className="ml-1" />
                         </button>
                     </div>
-                    </div>
-                </TabsContent>
-            </Tabs>
 
-            {/* Quantity and Buy Section */}
-            <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                    <button 
-                        onClick={() => handleQuantityChange(-1)}
-                        className="w-8 h-8 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50"
-                    >
-                        -
-                    </button>
-                    <span className="w-8 text-center font-medium">{quantity}</span>
-                    <button 
-                        onClick={() => handleQuantityChange(1)}
-                        className="w-8 h-8 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50"
-                    >
-                        +
-                    </button>
+                    {/* Rating Summary */}
+                    <div className="min-w-[120px] mt-6 sm:mt-6">
+                        <div className="flex items-end space-x-1 mb-1">
+                        <span className="text-[24px] font-semibold">{product.rating}</span>
+                        <span className="text-[10px] text-gray-500 mb-1">out of 5</span>
+                        </div>
+                        <div className="flex items-center space-x-0.5 mb-1">
+                        {renderStars(Math.floor(product.rating))}
+                        </div>
+                        <p className="text-[10px] text-gray-500">({product.totalReviews} reviews)</p>
                     </div>
+
+                    {/* Rating Breakdown */}
+                    <div className="flex-1 pt-1 sm:mt-6">
+                        <div className="space-y-0.5 text-[9px]">
+                        {[5, 4, 3, 2, 1].map((star) => {
+                            const count = product.reviewBreakdown[star] || 0;
+                            const percent = product.totalReviews
+                            ? (count / product.totalReviews) * 100
+                            : 0;
+                            return (
+                            <div key={star} className="flex items-center space-x-2">
+                                <span className="w-2">{star}</span>
+                                <div className="flex-1 h-[6px] bg-gray-200 rounded-full overflow-hidden">
+                                <div
+                                    className="bg-yellow-400 h-full"
+                                    style={{ width: `${percent}%` }}
+                                />
+                                </div>
+                            </div>
+                            );
+                        })}
+                        </div>
+                    </div>
+                </div>
+            )}
+            </div>
+
+            </div>
+
+            {/* Quantity, Buy Now, Wishlist */}
+            <div className="space-y-2">
+                <div className="flex items-center justify-between space-x-3">
+                    <div className="flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs">
+                        <button
+                            onClick={() => handleQuantityChange(-1)}
+                            className="w-8 h-8 pl-1.5 flex items-center justify-center text-black"
+                        >
+                            −
+                        </button>
+
+                        <div className="w-px h-3 bg-gray-300" />
+
+                        <span className="w-8 text-center font-medium text-black">
+                            {quantity}
+                        </span>
+
+                        <div className="w-px h-3 bg-gray-300" />
+
+                        <button
+                            onClick={() => handleQuantityChange(1)}
+                            className="w-8 h-8 pr-1.5 flex items-center justify-center text-black"
+                        >
+                            +
+                        </button>
+                    </div>
+
+
+                    <button 
+                        className="w-full bg-red-800 hover:bg-red-700 text-white py-2 text-xs font-medium rounded-full"
+                        onClick={() => toast("Added to cart!")}
+                    >
+                        <i className='bx bx-cart text-[15px] relative top-0.5 mr-3'></i>
+                        Buy Now
+                    </button>
                     
                     <button
                     onClick={handleLike}
-                    className="p-2 border border-gray-300 rounded hover:bg-gray-50"
+                    className="py-1.5 px-2.5 border border-gray-300 rounded-full"
                     >
-                    <Heart 
-                        size={20} 
-                        className={isLiked ? "text-red-500 fill-red-500" : "text-gray-600"}
-                    />
+                        <img
+                            src={
+                            isLiked
+                                ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
+                                : "https://img.icons8.com/puffy/32/like.png"
+                            }
+                            alt="Heart"
+                            className="w-5 h-5 object-contain"
+                        />
                     </button>
-                </div>
 
-                <Button 
-                    className="w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg font-medium"
-                    onClick={() => toast("Added to cart!")}
-                >
-                    Buy Now
-                </Button>
                 </div>
+                
+            </div>
+
             </div>
             </div>
         </div>
