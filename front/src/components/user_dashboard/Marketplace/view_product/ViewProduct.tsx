@@ -8,12 +8,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { LikedArtworksContext, LikedArtworksProvider } from "@/context/LikedArtworksProvider";
-import ExhibitMenu from "@/components/user_dashboard/Exhibit/menu/ExhibitMenu";
 import { useDonation, DonationProvider } from "@/context/DonationContext";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useFavorite from "@/hooks/interactions/useFavorite";
-import ArtworkImageCarousel from "@/components/user_dashboard/Marketplace/artwork_carousel/ArtworkCarousel";
 import ReviewModal from "@/components/user_dashboard/Marketplace/reviews/ReviewModal";
 import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/mockArtworks";
 
@@ -63,15 +61,19 @@ const ProductViewingContent = () => {
     ];
 
     useEffect(() => {
-        if (id) {
-        const found = mockArtworks.find((artwork) => artwork.id === id);
-        if (found) {
-            setProduct(found);
-        } else {
-            setProduct(null);
-        }
-        }
-    }, [id]);
+  if (id) {
+    const found = mockArtworks.find((artwork) => String(artwork.id) === String(id));
+    if (found) {
+      const productWithImages = {
+        ...found,
+        images: Array.isArray(found.images) ? found.images : [found.artworkImage],
+      };
+      setProduct(productWithImages);
+    } else {
+      setProduct(null);
+    }
+  }
+}, [id]);
 
     if (!product) {
         return <div>Product not found.</div>;
