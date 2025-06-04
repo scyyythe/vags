@@ -47,8 +47,8 @@ export const mockArtworks: Artwork[] = [
     artworkStyle: "Painting",
     medium: "Canvas",
     size: "11 x 8.5 inches",
-    edition: "Limited Edition",
-    // rating: 4.8,
+    edition: "Original (1 of 1)",
+    rating: 3.8,
     totalReviews: 20,
     reviewBreakdown: { 5: 15, 4: 3, 3: 1, 2: 1, 1: 0 }
   },
@@ -78,8 +78,8 @@ export const mockArtworks: Artwork[] = [
     artworkStyle: "Painting",
     medium: "Canvas",
     size: "11 x 8.5 inches",
-    edition: "Limited Edition",
-    // rating: 4.8,
+    edition: "Original (1 of 1)",
+    rating: 4.8,
     totalReviews: 20,
     reviewBreakdown: { 5: 15, 4: 3, 3: 1, 2: 1, 1: 0 }
   },
@@ -98,5 +98,22 @@ export const mockArtworks: Artwork[] = [
     rating: 5.0,
     totalReviews: 20,
     reviewBreakdown: { 5: 15, 4: 3, 3: 1, 2: 1, 1: 0 }
+  },
+  {
+    id: "6",
+    artworkImage: "https://i.pinimg.com/736x/4f/18/10/4f181049600c27fccb435a2072ddb8a0.jpg",
+    images: [
+      "https://i.pinimg.com/736x/c1/4a/d6/c14ad67792941d70bf960888745405d9.jpg",
+      "https://i.pinimg.com/736x/53/db/82/53db829215c258eea9939fa45a69f15a.jpg",
+      "https://i.pinimg.com/736x/93/3f/05/933f05767430e9e44376f9449f6682a4.jpg"
+    ],
+    price: 150,
+    title: "Seethrough Skeleton",
+    description: "This is a unique piece of art.",
+    artist: "Luna Dela Cruz",
+    artworkStyle: "AI Modified",
+    medium: "Oil on Canvas",
+    size: "16 x 20 inches",
+    edition: "Original (1 of 1)" 
   },
 ];
