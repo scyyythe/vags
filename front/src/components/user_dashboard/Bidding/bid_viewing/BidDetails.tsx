@@ -435,6 +435,7 @@ const BidDetails = () => {
                         onHide={handleHide}
                         onReport={handleReport}
                         isReported={isReported}
+                        isShared = {item.isShared}
                         className={isMobile ? "mobile-menu-position" : ""}
                         auctionId={item.id}
                       />
@@ -599,10 +600,10 @@ const BidDetails = () => {
           {isExpanded && (
             <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
               <button
-                onClick={() => setIsExpanded(false)}
-                className="absolute top-4 right-6 text-white text-3xl font-bold z-[60]"
+              onClick={closeExpandedView}
+              className="absolute top-4 right-6 z-[60] bg-white rounded-full px-1 shadow-md transition-colors duration-200"
               >
-                <i className="bx bx-x text-2xl"></i>
+              <i className="bx bx-x text-xl text-black"></i>
               </button>
 
               <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
