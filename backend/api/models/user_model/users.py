@@ -1,6 +1,7 @@
 from mongoengine import Document, StringField, DateTimeField, EmailField, IntField, BooleanField,URLField,ListField,ReferenceField
 from datetime import datetime
 import bcrypt
+from mongoengine.queryset import Q
 
 class User(Document):
     username = StringField(max_length=150, unique=True, required=True)
@@ -46,3 +47,11 @@ class User(Document):
     @property
     def is_staff(self):
         return self.role == "Admin"
+    
+    def get_active_suspension(self):
+        now = datetime.utcnow()
+        return Suspension.objects(user=self, start_date__lte=now, end_date__gte=now).first()
+
+    @property
+    def is_suspended(self):
+        return self.get_active_suspension() is not None
