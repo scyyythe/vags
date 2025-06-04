@@ -141,7 +141,7 @@ const Explore = () => {
                       artworkImage: card.artworkImage || card.image_url || "",
                       artistImage: card.artistImage || card.profile_picture || "",
                       artistName: card.artistName || card.artist || "Unknown Artist",
-                      likesCount: card.likesCount || 0,
+                      likesCount: card.likesCount || card.likes_count || 0,
                     };
 
                     const status = bulkStatusLookup[String(card.id)];
