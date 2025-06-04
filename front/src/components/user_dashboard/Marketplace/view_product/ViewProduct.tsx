@@ -11,11 +11,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ReviewModal from "@/components/user_dashboard/Marketplace/reviews/ReviewModal";
 import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/mockArtworks";
+import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 
 const ProductViewingContent = () => {
     const { id } = useParams<{ id: string }>();
-    const { likedArtworks, toggleLike } = useContext(LikedArtworksContext);
-    const isLiked = likedArtworks[id || ""] || false;
     const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
     const [product, setProduct] = useState<any>(null);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -28,6 +27,14 @@ const ProductViewingContent = () => {
     const [isReported, setIsReported] = useState(false);
     const isMobile = useIsMobile();
     const navigate = useNavigate();
+
+    const { likedItems, toggleWishlist } = useWishlist();
+
+    const handleWishlistToggle = () => {
+        if (!id) return;
+        toggleWishlist(id);
+        toast(likedItems.has(id) ? "Removed from wishlist" : "Added to wishlist");
+    };
 
     // Mock reviews data
     const mockReviews = [
@@ -97,12 +104,6 @@ const ProductViewingContent = () => {
 
     const handleQuantityChange = (change: number) => {
         setQuantity(prev => Math.max(1, prev + change));
-    };
-
-    const handleLike = () => {
-        if (id) {
-        toggleLike(id);
-        }
     };
 
     const renderStars = (rating: number, size: string = "text-sm") => {
@@ -427,16 +428,15 @@ const ProductViewingContent = () => {
                     </button>
                     
                     <button
-                    onClick={handleLike}
+                    onClick={handleWishlistToggle}
                     className="py-1.5 px-2.5 border border-gray-300 rounded-full"
                     >
                         <img
                             src={
-                            isLiked
+                                likedItems.has(id)
                                 ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
                                 : "https://img.icons8.com/puffy/32/like.png"
                             }
-                            alt="Heart"
                             className="w-5 h-5 object-contain"
                         />
                     </button>

@@ -7,6 +7,7 @@ import ArtCategorySelect from "@/components/user_dashboard/local_components/cate
 import TopSellers from "@/components/user_dashboard/Marketplace/top_seller/TopSellers";
 import WishlistModal from "@/components/user_dashboard/Marketplace/wishlist/WishlistModal";
 import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
+import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { toast } from "sonner";
 import { ChevronDown, Grid3X3 } from "lucide-react";
 import {
@@ -26,7 +27,7 @@ const Marketplace = () => {
   const sortOptions = ["Latest", "Price: Low to High", "Price: High to Low", "Most Popular"];
   const editionOptions = ["Original (1 of 1)", "Limited Edition", "Open Edition"];
 
-  const [likedItems, setLikedItems] = useState<Set<string>>(new Set());
+  const { likedItems, toggleWishlist, removeFromWishlist } = useWishlist();
   const [showWishlist, setShowWishlist] = useState(false);
 
   const handleCategorySelect = (category) => {
@@ -43,25 +44,12 @@ const Marketplace = () => {
   };
 
   const handleLike = (id: string) => {
-    setLikedItems(prev => {
-      const newLiked = new Set(prev);
-      if (newLiked.has(id)) {
-        newLiked.delete(id);
-        toast("Removed from wishlist");
-      } else {
-        newLiked.add(id);
-        toast("Added to wishlist");
-      }
-      return newLiked;
-    });
+    toggleWishlist(id);
+    toast(likedItems.has(id) ? "Removed from wishlist" : "Added to wishlist");
   };
 
   const handleRemoveFromWishlist = (id: string) => {
-    setLikedItems(prev => {
-      const newLiked = new Set(prev);
-      newLiked.delete(id);
-      return newLiked;
-    });
+    removeFromWishlist(id);
     toast("Removed from wishlist");
   };
 
@@ -72,11 +60,8 @@ const Marketplace = () => {
 
   const wishlistItems = mockArtworks
     .filter(card => likedItems.has(card.id))
-    .map(card => ({
-      ...card,
-      image: card.artworkImage, 
-  }));;
-
+    .map(card => ({ ...card, image: card.artworkImage 
+  }));
 
   return (
     <div className="relative -bottom-[5px]">
