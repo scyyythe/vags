@@ -49,6 +49,8 @@ class User(Document):
         return self.role == "Admin"
     
     def get_active_suspension(self):
+        from api.models.admin.suspension.suspension_model import Suspension
+
         now = datetime.utcnow()
         return Suspension.objects(user=self, start_date__lte=now, end_date__gte=now).first()
 

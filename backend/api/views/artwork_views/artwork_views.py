@@ -13,6 +13,7 @@ from rest_framework import status
 from django.utils.timesince import timesince
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from rest_framework.exceptions import PermissionDenied
 
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
@@ -25,6 +26,12 @@ class ArtCreateView(generics.ListCreateAPIView):
         except Exception as e:
             print("Error retrieving MongoEngine user:", e)
             raise e
+        
+        if mongo_user.is_suspended:
+            suspension = mongo_user.get_active_suspension()
+            raise PermissionDenied(
+                detail=f"Your account is suspended until {suspension.end_date.strftime('%B %d, %Y at %I:%M %p')}. Reason: {suspension.reason}"
+            )
 
         art = serializer.save(artist=mongo_user)
         art = Art.objects.get(id=art.id)

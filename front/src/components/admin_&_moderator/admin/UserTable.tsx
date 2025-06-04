@@ -16,6 +16,8 @@ import { Input } from "@/components/ui/input";
 import { User } from "@/hooks/users/useUserQuery";
 import usePromoteUserMutation from "@/hooks/admin/actions/promote/usePromoteUserMutation";
 import useDemoteUserMutation from "@/hooks/admin/actions/promote/useDemoteUserMutation";
+import useSuspendUserMutation from "@/hooks/admin/actions/suspend/useSuspendUserMutation";
+
 interface UserTableProps {
   initialUsers: User[];
   onPromoteUser?: (id: string) => void;
@@ -36,6 +38,7 @@ export function UserTable({
   const [searchQuery, setSearchQuery] = useState("");
   const promoteUserMutation = usePromoteUserMutation();
   const demoteUserMutation = useDemoteUserMutation();
+  const suspendUserMutation = useSuspendUserMutation();
 
   const promoteUser = (userId: string) => {
     promoteUserMutation.mutate(userId, {
@@ -61,6 +64,18 @@ export function UserTable({
       onError: (error) => {
         console.error("Failed to demote user:", error);
       },
+    });
+  };
+  const suspendUser = (userId: string) => {
+    const today = new Date();
+    const end = new Date();
+    end.setDate(today.getDate() + 7); // 7-day suspension
+
+    suspendUserMutation.mutate({
+      userId,
+      start_date: today.toISOString(),
+      end_date: end.toISOString(),
+      reason: "Violation of community guidelines",
     });
   };
 
@@ -180,10 +195,7 @@ export function UserTable({
                           </DropdownMenuItem>
                         )}
                         {user.user_status === "Active" ? (
-                          <DropdownMenuItem
-                            className="text-[10px]"
-                            onClick={() => onSuspendUser && onSuspendUser(user.id)}
-                          >
+                          <DropdownMenuItem className="text-[10px]" onClick={() => suspendUser(user.id)}>
                             Suspend User
                           </DropdownMenuItem>
                         ) : (
