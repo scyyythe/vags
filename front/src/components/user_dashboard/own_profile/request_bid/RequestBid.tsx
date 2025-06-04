@@ -131,13 +131,9 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
           setIsConfirmationOpen(false);
           onOpenChange(false);
         },
-        onError: () => {
-          toast.success("Failed to create auction");
-          // toast({
-          //   title: "Error",
-          //   description: "Failed to create auction",
-          //   variant: "destructive",
-          // });
+        onError: (error) => {
+          const message = error.response?.data?.error || error.message || "Failed to create auction";
+          toast.error(message);
         },
       }
     );

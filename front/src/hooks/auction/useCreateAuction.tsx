@@ -41,10 +41,22 @@ export const useCreateAuction = () => {
       queryClient.refetchQueries({ queryKey: ["artworks"] });
       queryClient.refetchQueries({ queryKey: ["biddingArtworks"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      const message = error.response?.data?.error || "Failed to create auction.";
-      console.error("Auction creation failed:", message);
-      toast.error(message);
+    onError: (error: any) => {
+      console.error("Error caught in mutation:", error);
+      let message = "Failed to create auction.";
+
+      if (error.response?.data) {
+        console.log("Error response data:", error.response.data);
+        if (typeof error.response.data === "string") {
+          message = error.response.data;
+        } else if (error.response.data.error) {
+          message = error.response.data.error;
+        } else if (error.response.data.detail) {
+          message = error.response.data.detail;
+        }
+      } else if (error.message) {
+        message = error.message;
+      }
     },
   });
 };
