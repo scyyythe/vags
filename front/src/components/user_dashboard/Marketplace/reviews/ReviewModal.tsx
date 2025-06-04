@@ -42,7 +42,7 @@ const ReviewModal = ({ isOpen, onClose, reviews, totalReviews }: ReviewModalProp
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md h-[500px] bg-white flex flex-col" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-md rounded-lg h-[500px] bg-white flex flex-col" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader className="pb-4 border-gray-100 flex-shrink-0">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-sm font-semibold">Review List</DialogTitle>
