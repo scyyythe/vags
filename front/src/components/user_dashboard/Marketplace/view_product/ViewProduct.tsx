@@ -247,7 +247,7 @@ const ProductViewingContent = () => {
 
             {/* Price */}
             <div className="flex items-center space-x-4">
-              <div className="text-3xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-gray-900">
                 ₱ {product.currency}{product.price?.toLocaleString()}k
               </div>
               {product.originalPrice && (
