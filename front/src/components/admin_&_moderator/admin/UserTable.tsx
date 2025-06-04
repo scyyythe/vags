@@ -14,7 +14,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, MoreHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { User } from "@/hooks/users/useUserQuery";
-
+import usePromoteUserMutation from "@/hooks/admin/actions/promote/usePromoteUserMutation";
+import useDemoteUserMutation from "@/hooks/admin/actions/promote/useDemoteUserMutation";
 interface UserTableProps {
   initialUsers: User[];
   onPromoteUser?: (id: string) => void;
@@ -33,6 +34,36 @@ export function UserTable({
 }: UserTableProps) {
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [searchQuery, setSearchQuery] = useState("");
+  const promoteUserMutation = usePromoteUserMutation();
+  const demoteUserMutation = useDemoteUserMutation();
+
+  const promoteUser = (userId: string) => {
+    promoteUserMutation.mutate(userId, {
+      onSuccess: (updatedUser) => {
+        setUsers((prevUsers) =>
+          prevUsers.map((user) => (user.id === updatedUser.id ? { ...user, role: updatedUser.role } : user))
+        );
+
+        onPromoteUser && onPromoteUser(updatedUser.id);
+      },
+      onError: (error) => {
+        console.error("Failed to promote user:", error);
+      },
+    });
+  };
+  const demoteUser = (userId: string) => {
+    demoteUserMutation.mutate(userId, {
+      onSuccess: (updatedUser) => {
+        setUsers((prevUsers) =>
+          prevUsers.map((user) => (user.id === updatedUser.id ? { ...user, role: updatedUser.role } : user))
+        );
+      },
+      onError: (error) => {
+        console.error("Failed to demote user:", error);
+      },
+    });
+  };
+
   const filteredUsers = users.filter((user) => {
     const firstName = user.first_name || "";
     const email = user.email || "";
@@ -137,7 +168,13 @@ export function UserTable({
                         {user.role !== "Admin" && (
                           <DropdownMenuItem
                             className="text-[10px]"
-                            onClick={() => onPromoteUser && onPromoteUser(user.id)}
+                            onClick={() => {
+                              if (user.role === "Moderator") {
+                                demoteUser(user.id);
+                              } else {
+                                promoteUser(user.id);
+                              }
+                            }}
                           >
                             {user.role === "Moderator" ? "Demote to User" : "Promote to Moderator"}
                           </DropdownMenuItem>

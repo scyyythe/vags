@@ -42,3 +42,7 @@ class User(Document):
     @property
     def is_anonymous(self):
         return False
+
+    @property
+    def is_staff(self):
+        return self.role == "Admin"
