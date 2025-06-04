@@ -1,6 +1,7 @@
 export interface Artwork {
   id: string;
   artworkImage: string;
+  images?: string[];
   price: number;
   originalPrice?: number;
   title: string;
