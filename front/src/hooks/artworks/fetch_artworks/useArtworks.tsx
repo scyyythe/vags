@@ -13,7 +13,7 @@ export interface Artwork {
   category: string;
   medium: string;
   size: string;
-  status: string;
+  status: string; 
   art_status: string;
   price: number;
   visibility: string;
@@ -25,6 +25,7 @@ export interface Artwork {
   datePosted: string;
   artworkImage: string;
   likesCount: number;
+  isShared: boolean;
 }
 const fetchArtworks = async (
   currentPage: number,
