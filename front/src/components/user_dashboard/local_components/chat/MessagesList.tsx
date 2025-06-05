@@ -88,24 +88,24 @@ export const MessagesList = ({
                       <div className="flex items-center space-x-2 mb-2">
                         <Avatar className="h-6 w-6">
                           <AvatarImage src={conversation.participantAvatar} />
-                          <AvatarFallback className="text-xs">
+                          <AvatarFallback className="text-[11px]">
                             {message.senderName.split(" ").map(n => n[0]).join("")}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-xs font-medium text-gray-700">{message.senderName}</span>
+                        <span className="text-[11px] font-medium text-gray-700">{message.senderName}</span>
                       </div>
                     )}
                     
                     <div
                       className={`rounded-lg px-4 py-3 ${
                         message.senderId === "currentUser"
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-100 text-gray-900"
+                          ? "bg-blue-600 text-white text-[10px]"
+                          : "bg-gray-100 text-gray-900 text-[10px]"
                       } ${selectedMessage === message.id ? "ring-2 ring-blue-300" : ""}`}
                       onClick={() => onSelectMessage(selectedMessage === message.id ? null : message.id)}
                     >
                       {repliedMessage && (
-                        <div className={`text-xs mb-2 border-l-2 pl-2 ${
+                        <div className={`text-[10px] mb-2 border-l-2 pl-2 ${
                           message.senderId === "currentUser" 
                             ? "border-blue-300 bg-blue-500 bg-opacity-20" 
                             : "border-gray-300 bg-gray-200"
@@ -114,10 +114,10 @@ export const MessagesList = ({
                             <Reply size={10} />
                             <span className="font-medium">{repliedMessage.senderName}</span>
                           </div>
-                          <div className="opacity-80 truncate max-w-[200px]">
-                            {repliedMessage.type === 'image' && '📷 Image'}
-                            {repliedMessage.type === 'file' && `📎 ${repliedMessage.fileName}`}
-                            {repliedMessage.type === 'voice' && '🎤 Voice message'}
+                          <div className="opacity-80 truncate max-w-[200px] text-[10px]">
+                            {repliedMessage.type === 'image' && 'Image'}
+                            {repliedMessage.type === 'file' && `${repliedMessage.fileName}`}
+                            {repliedMessage.type === 'voice' && 'Voice message'}
                             {repliedMessage.type === 'text' && repliedMessage.content}
                           </div>
                         </div>
@@ -139,7 +139,7 @@ export const MessagesList = ({
                       
                       {message.type === 'file' && (
                         <div className="flex items-center space-x-2 mb-1">
-                          <Paperclip size={16} />
+                          <Paperclip size={13} />
                           <span className="text-sm">{message.fileName}</span>
                         </div>
                       )}
@@ -147,8 +147,8 @@ export const MessagesList = ({
                       {message.type === 'voice' && (
                         <div className="flex items-center space-x-2 mb-1">
                           <div className="flex items-center space-x-2 bg-white bg-opacity-20 rounded-full px-3 py-1">
-                            <Mic size={16} />
-                            <span className="text-sm">{message.voiceDuration}s</span>
+                            <Mic size={13} />
+                            <span className="text-[11px]">{message.voiceDuration}s</span>
                             <div className="w-20 h-1 bg-white bg-opacity-30 rounded-full">
                               <div className="w-1/3 h-full bg-white rounded-full"></div>
                             </div>
@@ -156,10 +156,10 @@ export const MessagesList = ({
                         </div>
                       )}
                       
-                      <p className="text-sm">{message.content}</p>
+                      <p className="text-[11px]">{message.content}</p>
                       
                       <div className="flex items-center justify-between mt-2">
-                        <p className={`text-xs ${
+                        <p className={`text-[9px] ${
                           message.senderId === "currentUser" 
                             ? "text-blue-100" 
                             : "text-gray-500"
@@ -179,7 +179,7 @@ export const MessagesList = ({
                             <Badge
                               key={idx}
                               variant="outline"
-                              className="text-xs px-2 py-1 bg-white hover:bg-gray-50 cursor-pointer border-gray-200"
+                              className="text-[10px] px-2 py-1 bg-white hover:bg-gray-50 cursor-pointer border-gray-200"
                             //   onClick={() => onAddReaction(message.id, reaction.emoji)}
                             >
                               <span className="mr-1">{reaction.emoji}</span>
@@ -196,15 +196,15 @@ export const MessagesList = ({
                           variant="ghost" 
                           size="sm" 
                           onClick={() => onReplyToMessage(message)}
-                          className="h-6 w-6 p-0 bg-white shadow-sm border"
+                          className="h-5 w-5 p-0 bg-white"
                         >
                           <Reply size={12} />
                         </Button>
                         
                         <Popover open={showReactionPicker === message.id} onOpenChange={(open) => onSetReactionPicker(open ? message.id : null)}>
                           <PopoverTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0 bg-white shadow-sm border">
-                              <Plus size={12} />
+                            <Button variant="ghost" size="sm" className="h-5 w-5 p-0 bg-white">
+                              <Smile size={12} />
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-2" align="center">
@@ -227,35 +227,35 @@ export const MessagesList = ({
                 </div>
               </ContextMenuTrigger>
               <ContextMenuContent>
-                <ContextMenuItem onClick={() => onReplyToMessage(message)}>
-                  <Reply className="mr-2 h-4 w-4" />
+                {/* <ContextMenuItem onClick={() => onReplyToMessage(message)} className="text-[10px]">
+                  <Reply className="mr-2 h-3 w-3" />
                   Reply
                 </ContextMenuItem>
-                <ContextMenuItem onClick={() => onSetReactionPicker(message.id)}>
-                  <Smile className="mr-2 h-4 w-4" />
+                <ContextMenuItem onClick={() => onSetReactionPicker(message.id)} className="text-[10px]">
+                  <Smile className="mr-2 h-3 w-3" />
                   React
-                </ContextMenuItem>
-                <ContextMenuItem onClick={() => onStarMessage(message.id)}>
-                  <Star className="mr-2 h-4 w-4" />
+                </ContextMenuItem> */}
+                <ContextMenuItem onClick={() => onStarMessage(message.id)} className="text-[10px]">
+                  <Star className="mr-2 h-3 w-3" />
                   {message.isStarred ? 'Unstar' : 'Star'}
                 </ContextMenuItem>
-                <ContextMenuItem onClick={() => navigator.clipboard.writeText(message.content)}>
-                  <Copy className="mr-2 h-4 w-4" />
+                <ContextMenuItem onClick={() => navigator.clipboard.writeText(message.content)} className="text-[10px]">
+                  <Copy className="mr-2 h-3 w-3" />
                   Copy
                 </ContextMenuItem>
-                <ContextMenuItem>
-                  <Forward className="mr-2 h-4 w-4" />
+                <ContextMenuItem className="text-[10px]">
+                  <Forward className="mr-2 h-3 w-3" />
                   Forward
                 </ContextMenuItem>
                 {message.senderId === "currentUser" && (
                   <>
                     <ContextMenuSeparator />
-                    <ContextMenuItem>
-                      <Edit className="mr-2 h-4 w-4" />
+                    <ContextMenuItem className="text-[10px]">
+                      <Edit className="mr-2 h-3 w-3" />
                       Edit
                     </ContextMenuItem>
-                    <ContextMenuItem onClick={() => onDeleteMessage(message.id)} className="text-red-600">
-                      <Trash2 className="mr-2 h-4 w-4" />
+                    <ContextMenuItem onClick={() => onDeleteMessage(message.id)} className="text-red-600 text-[10px]">
+                      <Trash2 className="mr-2 h-3 w-3" />
                       Delete
                     </ContextMenuItem>
                   </>
