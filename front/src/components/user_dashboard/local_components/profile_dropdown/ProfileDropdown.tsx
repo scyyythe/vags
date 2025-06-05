@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { LogOut, Settings, User, Plus, Activity, Headphones } from "lucide-react";
-import { useModal } from "../../../context/ModalContext";
+import { useModal } from "@/context/ModalContext";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
