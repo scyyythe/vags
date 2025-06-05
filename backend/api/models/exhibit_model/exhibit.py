@@ -1,6 +1,6 @@
 from mongoengine import (
     Document, StringField, ReferenceField, ListField,
-    DateTimeField, BooleanField, FileField, ValidationError,CASCADE,URLField
+    DateTimeField, BooleanField, FileField, ValidationError,CASCADE,URLField,IntField
 )
 from datetime import datetime
 from api.models.user_model.users import User
@@ -19,7 +19,7 @@ class Exhibit(Document):
     visibility = StringField(choices=['Public', 'Private', 'Pending'], default='Pending')
     start_time = DateTimeField(required=True)
     end_time = DateTimeField(required=True)
-    chosen_env=StringField(choices=['4 Slots', '6 Slots', '9 Slots'])
+    chosen_env = IntField(required=False, null=True)
     created_at = DateTimeField(default=datetime.utcnow)
     updated_at = DateTimeField(default=datetime.utcnow)
     viewed_by = ListField(ReferenceField(User, reverse_delete_rule=CASCADE), default=[])

@@ -12,7 +12,7 @@ interface ArtCardMenuProps {
   onReport: (data: { category: string; option?: string; description: string; additionalInfo: string }) => void;
   onUndoReport?: () => void;
   isReported: boolean;
-  isShared: boolean;
+  isShared?: boolean;
   isHidden?: boolean;
   className?: string;
   auctionId: string;
@@ -95,11 +95,7 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
           </div>
 
           {/* Share Modal */}
-          <ShareModal
-            isOpen={showShareModal}
-            onClose={() => setShowShareModal(false)}
-            linkToShare={shareUrl}
-          />
+          <ShareModal isOpen={showShareModal} onClose={() => setShowShareModal(false)} linkToShare={shareUrl} />
 
           {/* Hide */}
           <div className="flex items-center relative">
