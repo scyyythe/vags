@@ -67,36 +67,36 @@ export const ConversationList = ({
               >
                 <div className="flex items-start space-x-3">
                   <div className="relative">
-                    <Avatar className="h-10 w-10">
+                    <Avatar className="h-6 w-6">
                       <AvatarImage src={conversation.participantAvatar} />
-                      <AvatarFallback className="text-sm">
+                      <AvatarFallback className="text-xs">
                         {conversation.participantName.split(" ").map(n => n[0]).join("")}
                       </AvatarFallback>
                     </Avatar>
                     {conversation.isOnline && (
-                      <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                      <div className="absolute -bottom-0.5 -right-1 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
                     )}
                   </div>
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-1">
-                        {conversation.isPinned && <Pin size={12} className="text-blue-600" />}
-                        {conversation.isMuted && <VolumeX size={12} className="text-gray-500" />}
-                        <p className="text-sm font-medium text-gray-900 truncate">
+                        {conversation.isPinned && <Pin size={10} className="text-blue-600" />}
+                        {conversation.isMuted && <VolumeX size={10} className="text-gray-500" />}
+                        <p className="text-xs font-medium text-gray-900 truncate">
                           {conversation.participantName}
                         </p>
                       </div>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-[10px] text-gray-500">
                         {formatTime(conversation.lastMessageTime)}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <p className="text-sm text-gray-600 truncate pr-2">
+                      <p className="text-[10px] text-gray-600 truncate pr-2">
                         {conversation.lastMessage}
                       </p>
                       {conversation.unreadCount > 0 && (
-                        <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-blue-600 rounded-full">
+                        <span className="inline-flex items-center justify-center px-2 py-1 text-[10px] font-semibold leading-none text-white bg-blue-600 rounded-full">
                           {conversation.unreadCount}
                         </span>
                       )}
