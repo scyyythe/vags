@@ -10,7 +10,7 @@ class ExhibitSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=100)
     description = serializers.CharField(required=False, allow_blank=True)
     tags = serializers.ListField(child=serializers.CharField(), required=False, default=[])
-    banner = serializers.ImageField(required=False, allow_null=True)  # Accept image file here
+    banner = serializers.ImageField(required=False, allow_null=True)  
     owner = serializers.CharField()
     exhibit_type = serializers.ChoiceField(choices=['Solo', 'Collaborative'], required=False, allow_null=True)
     collaborators = serializers.ListField(child=serializers.CharField(), required=False, default=[])
@@ -19,7 +19,7 @@ class ExhibitSerializer(serializers.Serializer):
     visibility = serializers.ChoiceField(choices=['Public', 'Private', 'Pending'], default='Pending')
     start_time = serializers.DateTimeField()
     end_time = serializers.DateTimeField()
-    chosen_env = serializers.ChoiceField(choices=['4 Slots', '6 Slots', '9 Slots'], required=False, allow_null=True)
+    chosen_env = serializers.IntegerField(required=False, allow_null=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     viewed_by = serializers.ListField(child=serializers.CharField(), required=False, default=[])
