@@ -4,7 +4,7 @@ import Logo from "./Logo";
 import { Bell, MessageCircle, Search, X, Menu } from "lucide-react";
 import SearchBar from "@/components/user_dashboard/local_components/SearchBar";
 import { useState, useRef, useMemo } from "react";
-import ProfileDropdown from "../local_components/ProfileDropdown";
+import ProfileDropdown from "../local_components/profile_dropdown/ProfileDropdown";
 import Notifications from "../notification/Notification";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUserDetails from "@/hooks/users/useUserDetails";
