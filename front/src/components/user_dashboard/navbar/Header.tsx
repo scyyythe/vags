@@ -5,6 +5,7 @@ import { Bell, MessageCircle, Search, X, Menu } from "lucide-react";
 import SearchBar from "@/components/user_dashboard/local_components/SearchBar";
 import { useState, useRef, useMemo } from "react";
 import ProfileDropdown from "../local_components/profile_dropdown/ProfileDropdown";
+import ChatDropdown from "../local_components/chat/ChatDropdown";
 import Notifications from "../notification/Notification";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUserDetails from "@/hooks/users/useUserDetails";
@@ -18,6 +19,8 @@ const Header = () => {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const notificationRef = useRef(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const chatRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage] = useState(1);
   const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all", "public");
@@ -117,13 +120,41 @@ const Header = () => {
             </AnimatePresence>
           </div>
 
-          <button className="button-icon hover:scale-110 transition pb-0.5" title="Messages">
-            <MessageCircle size={15} />
-          </button>
+          <div className="relative top-0.5" ref={chatRef}>
+            <button
+              onClick={() => {
+                setIsChatOpen(!isChatOpen);
+                setIsNotificationOpen(false);
+                setIsProfileDropdownOpen(false);
+              }}
+              className="button-icon hover:scale-110 transition"
+              title="ChatDropdown"
+            >
+              <MessageCircle size={15} />
+            </button>
 
+            <AnimatePresence>
+              {isChatOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute -right-[90px] mt-4 z-50"
+                >
+                  <ChatDropdown isOpen={true} onClose={() => setIsChatOpen(false)} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Chat Dropdown */}
           <div className="relative top-0.5" ref={notificationRef}>
             <button
-              onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+              onClick={() => {
+                setIsNotificationOpen(!isNotificationOpen);
+                setIsChatOpen(false);
+                setIsProfileDropdownOpen(false);
+              }}
               className="button-icon hover:scale-110 transition"
               title="Notifications"
             >
@@ -161,7 +192,11 @@ const Header = () => {
               </div>
             </Link>
             <button
-              onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+              onClick={() => {
+                setIsProfileDropdownOpen(!isProfileDropdownOpen);
+                setIsChatOpen(false);
+                setIsNotificationOpen(false);
+              }}
               className="ml-1 z-10"
               aria-label="Profile menu"
             >
