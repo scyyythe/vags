@@ -36,22 +36,22 @@ export const InviteFriends = () => {
       <DialogTrigger asChild>
         <Button 
           variant="outline" 
-          className="w-full m-4 mb-2 flex items-center space-x-2 bg-gray-50 hover:bg-gray-100"
+          className="w-[300px] m-4 mb-2 flex items-center space-x-2 bg-gray-50 hover:bg-gray-100"
         >
-          <UserPlus size={16} />
-          <span>Invite your friends</span>
-          <span className="text-sm text-gray-500">Connect to start chatting</span>
+          <UserPlus size={11} />
+          <span className="text-[11px]">Invite your friends</span>
+          {/* <span className="text-sm text-gray-500">Connect to start chatting</span> */}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="rounded-xl max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2">
-            <UserPlus size={20} />
-            <span>Invite Friends</span>
+            {/* <UserPlus size={15} /> */}
+            <span className="text-sm">Invite Friends</span>
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div className="text-sm text-gray-600">
+          <div className="text-xs text-gray-600">
             Share this link with your friends to invite them to chat
           </div>
           
@@ -60,16 +60,17 @@ export const InviteFriends = () => {
               value={inviteLink}
               readOnly
               className="bg-gray-50"
+              style={{fontSize: "11px"}}
             />
             <Button onClick={handleCopyLink} size="sm">
-              <Copy size={16} className="mr-1" />
-              {copied ? "Copied!" : "Copy"}
+              <i className='bx bx-copy' ></i>
+              <span className="text-[10px]">{copied ? "Copied!" : "Copy"}</span>
             </Button>
           </div>
 
           <div className="space-y-2">
-            <div className="text-sm font-medium text-gray-700">Share on social platforms:</div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="text-xs font-medium text-gray-700">Share on social platforms:</div>
+            <div className="grid grid-cols-4 gap-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -77,7 +78,7 @@ export const InviteFriends = () => {
                 className="flex items-center space-x-2"
               >
                 <div className="w-4 h-4 bg-blue-600 rounded"></div>
-                <span>Facebook</span>
+                <span className="text-[9px]">Facebook</span>
               </Button>
               
               <Button
@@ -87,7 +88,7 @@ export const InviteFriends = () => {
                 className="flex items-center space-x-2"
               >
                 <div className="w-4 h-4 bg-blue-400 rounded"></div>
-                <span>Twitter</span>
+                <span className="text-[9px]">Twitter</span>
               </Button>
               
               <Button
@@ -97,7 +98,7 @@ export const InviteFriends = () => {
                 className="flex items-center space-x-2"
               >
                 <div className="w-4 h-4 bg-green-500 rounded"></div>
-                <span>WhatsApp</span>
+                <span className="text-[9px]">WhatsApp</span>
               </Button>
               
               <Button
@@ -107,7 +108,7 @@ export const InviteFriends = () => {
                 className="flex items-center space-x-2"
               >
                 <div className="w-4 h-4 bg-blue-500 rounded"></div>
-                <span>Telegram</span>
+                <span className="text-[9px]">Telegram</span>
               </Button>
             </div>
           </div>

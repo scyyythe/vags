@@ -43,7 +43,7 @@ export const ChatHeader = ({
               <ArrowLeft size={16} />
             </Button>
           )}
-          <h3 className="font-semibold text-gray-900">
+          <h3 className="font-semibold text-gray-900 text-sm">
             {selectedConversation 
               ? selectedConv?.participantName 
               : showArchived 
@@ -72,42 +72,40 @@ export const ChatHeader = ({
             <Menubar>
               <MenubarMenu>
                 <MenubarTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <MoreVertical size={16} />
-                  </Button>
+                  <button >
+                    <MoreVertical size={11} />
+                  </button>
                 </MenubarTrigger>
                 <MenubarContent>
-                  <MenubarItem onClick={onToggleArchived}>
-                    <Archive className="mr-2 h-4 w-4" />
+                  <MenubarItem onClick={onToggleArchived} className="text-[10px]">
+                    <Archive className="mr-2 h-3 w-3" />
                     {showArchived ? 'Show Active' : 'Show Archived'}
                   </MenubarItem>
                   <MenubarSeparator />
-                  <MenubarItem onClick={onMarkAllAsRead}>
-                    <CheckCheck className="mr-2 h-4 w-4" />
+                  <MenubarItem onClick={onMarkAllAsRead} className="text-[10px]">
+                    <CheckCheck className="mr-2 h-3 w-3" />
                     Mark All as Read
                   </MenubarItem>
-                  <MenubarItem onClick={onMarkAllAsUnread}>
-                    <Check className="mr-2 h-4 w-4" />
+                  <MenubarItem onClick={onMarkAllAsUnread} className="text-[10px]">
+                    <Check className="mr-2 h-3 w-3" />
                     Mark All as Unread
                   </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>
             </Menubar>
           )}
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X size={18} />
-          </button>
         </div>
       </div>
       
       {!selectedConversation && (
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={11} />
           <Input
             placeholder="Search conversations..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 h-9 text-sm"
+            className="pl-10 h-9 rounded-full"
+            style={{fontSize: "11px"}}
           />
         </div>
       )}
@@ -115,9 +113,9 @@ export const ChatHeader = ({
       {selectedConversation && selectedConv && (
         <div className="flex items-center space-x-3 mt-2">
           <div className="relative">
-            <Avatar className="h-10 w-10">
+            <Avatar className="h-8 w-8">
               <AvatarImage src={selectedConv.participantAvatar} />
-              <AvatarFallback className="text-sm">
+              <AvatarFallback className="text-xs">
                 {selectedConv.participantName.split(" ").map(n => n[0]).join("")}
               </AvatarFallback>
             </Avatar>
@@ -126,8 +124,8 @@ export const ChatHeader = ({
             )}
           </div>
           <div>
-            <p className="font-medium text-gray-900">{selectedConv.participantName}</p>
-            <p className="text-xs text-gray-500">
+            <p className="font-medium text-gray-900 text-xs">{selectedConv.participantName}</p>
+            <p className="text-[10px] text-gray-500">
               {selectedConv.isOnline ? "Online" : "Offline"}
             </p>
           </div>
