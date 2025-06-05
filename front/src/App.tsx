@@ -35,7 +35,7 @@ import BillingSettings from "./components/user_dashboard/Settings/pages/BillingS
 import HelpCenter from "./components/user_dashboard/Settings/pages/HelpCenter";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-import AllNotifications from "./components/user_dashboard/notification/AllNotifications";
+import AllNotifications from "./components/user_dashboard/local_components/notification/AllNotifications";
 import FollowDemo from "./components/user_dashboard/own_profile/following_&_followers/owners/mock_data/FollowDemo";
 
 //HIGHEST BID
