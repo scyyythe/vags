@@ -106,29 +106,29 @@ export const ConversationList = ({
               </div>
             </ContextMenuTrigger>
             <ContextMenuContent>
-              <ContextMenuItem onClick={() => onMarkAsRead(conversation.id)}>
-                <CheckCheck className="mr-2 h-4 w-4" />
+              <ContextMenuItem onClick={() => onMarkAsRead(conversation.id)} className="text-[10px]">
+                <CheckCheck className="mr-2 h-3 w-3" />
                 Mark as Read
               </ContextMenuItem>
-              <ContextMenuItem onClick={() => onMarkAsUnread(conversation.id)}>
-                <Check className="mr-2 h-4 w-4" />
+              <ContextMenuItem onClick={() => onMarkAsUnread(conversation.id)} className="text-[10px]">
+                <Check className="mr-2 h-3 w-3" />
                 Mark as Unread
               </ContextMenuItem>
-              <ContextMenuItem onClick={() => onTogglePin(conversation.id)}>
-                <Pin className="mr-2 h-4 w-4" />
+              <ContextMenuItem onClick={() => onTogglePin(conversation.id)} className="text-[10px]">
+                <Pin className="mr-2 h-3 w-3" />
                 {conversation.isPinned ? 'Unpin' : 'Pin'}
               </ContextMenuItem>
-              <ContextMenuItem onClick={() => onToggleMute(conversation.id)}>
-                <VolumeX className="mr-2 h-4 w-4" />
+              <ContextMenuItem onClick={() => onToggleMute(conversation.id)} className="text-[10px]">
+                <VolumeX className="mr-2 h-3 w-3" />
                 {conversation.isMuted ? 'Unmute' : 'Mute'}
               </ContextMenuItem>
-              <ContextMenuItem onClick={() => onToggleArchive(conversation.id)}>
-                <Archive className="mr-2 h-4 w-4" />
+              <ContextMenuItem onClick={() => onToggleArchive(conversation.id)} className="text-[10px]">
+                <Archive className="mr-2 h-3 w-3" />
                 {conversation.isArchived ? 'Unarchive' : 'Archive'}
               </ContextMenuItem>
               <ContextMenuSeparator />
-              <ContextMenuItem onClick={() => onDeleteConversation(conversation.id)} className="text-red-600">
-                <Trash2 className="mr-2 h-4 w-4" />
+              <ContextMenuItem onClick={() => onDeleteConversation(conversation.id)} className="text-red-600 text-[10px]">
+                <Trash2 className="mr-2 h-3 w-3" />
                 Delete
               </ContextMenuItem>
             </ContextMenuContent>
