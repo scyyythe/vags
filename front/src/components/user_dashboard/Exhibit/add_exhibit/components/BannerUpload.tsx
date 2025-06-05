@@ -4,34 +4,32 @@ import { Button } from "@/components/ui/button";
 interface BannerUploadProps {
   bannerImage: string | null;
   setBannerImage: (image: string | null) => void;
+  setBannerFile: (file: File | null) => void;
   isReadOnly: boolean;
-  viewMode: 'owner' | 'collaborator' | 'review' | 'monitoring' | 'preview';
+  viewMode: "owner" | "collaborator" | "review" | "monitoring" | "preview";
 }
 
-const BannerUpload: React.FC<BannerUploadProps> = ({ 
-  bannerImage, 
-  setBannerImage, 
+const BannerUpload: React.FC<BannerUploadProps> = ({
+  bannerImage,
+  setBannerFile,
+  setBannerImage,
   isReadOnly,
-  viewMode
+  viewMode,
 }) => {
   const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setBannerImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      setBannerFile(file);
+      setBannerImage(URL.createObjectURL(file));
     }
   };
-
   return (
-    <div 
+    <div
       className="w-full bg-gray-100 rounded-lg flex flex-col items-center justify-center h-64 mb-8 relative overflow-hidden"
       style={{
-        backgroundImage: bannerImage ? `url(${bannerImage})` : 'none',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
+        backgroundImage: bannerImage ? `url(${bannerImage})` : "none",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       {!bannerImage ? (
@@ -48,8 +46,8 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
         </>
       ) : (
         <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             className="bg-white text-black border-white hover:bg-gray-100"
             onClick={() => !isReadOnly && setBannerImage(null)}
@@ -61,17 +59,17 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
       )}
 
       {/* Hidden file input for banner upload */}
-      <input 
-        type="file" 
-        id="banner-upload" 
-        className="hidden" 
+      <input
+        type="file"
+        id="banner-upload"
+        className="hidden"
         accept="image/*"
         onChange={handleBannerUpload}
-        disabled={viewMode === 'collaborator' || isReadOnly}
+        disabled={viewMode === "collaborator" || isReadOnly}
       />
-      <label 
-        htmlFor="banner-upload" 
-        className={`absolute inset-0 ${viewMode === 'collaborator' || isReadOnly ? '' : 'cursor-pointer'}`}
+      <label
+        htmlFor="banner-upload"
+        className={`absolute inset-0 ${viewMode === "collaborator" || isReadOnly ? "" : "cursor-pointer"}`}
         aria-label="Upload banner"
       ></label>
     </div>

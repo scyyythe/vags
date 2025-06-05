@@ -22,6 +22,10 @@ import { getLoggedInUserId } from "@/auth/decode";
 import { Artist, ViewMode, Environment, Artwork, SubmissionStatus } from "./components/types";
 import useUserQuery from "@/hooks/users/useUserQuery";
 import { User } from "@/hooks/users/useUserQuery";
+
+import { useCreateExhibit } from "@/hooks/mutate/exhibit/AddExhibit";
+import { ExhibitPayload } from "@/hooks/mutate/exhibit/exhibit";
+import { ToastT } from "sonner";
 // Color schemes for slots by user
 const slotColorSchemes = [
   "border-primary bg-primary/10", // Owner (primary color)
@@ -248,6 +252,8 @@ const AddExhibit = () => {
   const [slotOwnerMap, setSlotOwnerMap] = useState<Record<number, string>>({});
 
   const [bannerImage, setBannerImage] = useState<string | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+
   const [isRemoveCollaboratorDialogOpen, setIsRemoveCollaboratorDialogOpen] = useState(false);
   const [collaboratorToRemove, setCollaboratorToRemove] = useState<User | null>(null);
   const [artworkStyle, setArtworkStyle] = useState("");
@@ -355,15 +361,19 @@ const AddExhibit = () => {
       }
     }
   }, [exhibitId, mode, collaborators]);
+  useEffect(() => {
+    if (selectedEnvironment) {
+      distributeSlots();
+    }
+  }, [selectedEnvironment, exhibitType, collaborators]);
 
   // Function to distribute slots among participants
   const distributeSlots = () => {
     if (!selectedEnvironment) return;
 
     const currentEnvironment = environments.find((env) => env.id === selectedEnvironment);
-    if (!currentEnvironment) return;
+    if (!currentEnvironment || !currentUser?.id) return;
 
-    const totalParticipants = 1 + collaborators.length; // Owner + collaborators
     const totalSlots = currentEnvironment.slots;
 
     // Reset slot assignments
@@ -373,32 +383,39 @@ const AddExhibit = () => {
 
     const newSlotOwnerMap: Record<number, string> = {};
 
-    // Calculate how many slots each participant gets
-    const baseSlots = Math.floor(totalSlots / totalParticipants);
-    let remainingSlots = totalSlots % totalParticipants;
+    if (exhibitType === "solo") {
+      // Solo: all slots go to the current user
+      for (let i = 1; i <= totalSlots; i++) {
+        newSlotOwnerMap[i] = currentUser.id.toString();
+      }
+    } else {
+      // Collaborative
+      const maxCollaborators = 2;
+      const selectedCollaborators = collaborators.slice(0, maxCollaborators);
+      const participants = [currentUser, ...selectedCollaborators];
+      const totalParticipants = participants.length;
 
-    // Create an array of user IDs (owner first, then collaborators)
-    const participantIds = [currentUser.id, ...collaborators.map((c) => c.id)];
+      const baseSlots = Math.floor(totalSlots / totalParticipants);
+      let remainingSlots = totalSlots % totalParticipants;
 
-    // Assign slots in sequential blocks for better visual grouping
-    let slotIndex = 1;
+      let slotIndex = 1;
 
-    participantIds.forEach((userId) => {
-      // Each participant gets baseSlots + 1 extra if there are remainingSlots
-      const slotsForUser = baseSlots + (remainingSlots > 0 ? 1 : 0);
+      // Assign base slots to all participants
+      for (const user of participants) {
+        let slotsToAssign = baseSlots;
+        if (remainingSlots > 0) {
+          slotsToAssign += 1;
+          remainingSlots--;
+        }
 
-      // Assign a block of slots to this user
-      for (let i = 0; i < slotsForUser; i++) {
-        if (slotIndex <= totalSlots) {
-          newSlotOwnerMap[slotIndex] = userId.toString();
-
-          slotIndex++;
+        for (let i = 0; i < slotsToAssign; i++) {
+          if (slotIndex <= totalSlots) {
+            newSlotOwnerMap[slotIndex] = user.id.toString();
+            slotIndex++;
+          }
         }
       }
-
-      // Decrement remainingSlots if we allocated an extra slot
-      if (remainingSlots > 0) remainingSlots--;
-    });
+    }
 
     setSlotOwnerMap(newSlotOwnerMap);
   };
@@ -430,30 +447,37 @@ const AddExhibit = () => {
       navigate("/exhibits");
     }
   };
-
-  // Function to complete the exhibit submission
+  const createExhibitMutation = useCreateExhibit();
   const completeExhibitSubmission = () => {
-    console.log({
+    const payload: ExhibitPayload = {
       title,
-      category,
-      exhibitType,
-      startDate,
-      endDate,
+      category: artworkStyle,
       description,
-      selectedEnvironment,
-      selectedArtworks,
-      selectedSlots,
-      slotArtworkMap,
-      collaborators,
-      bannerImage,
-    });
+      owner: currentUserId?.toString() ?? "",
+      exhibit_type: exhibitType.charAt(0).toUpperCase() + exhibitType.slice(1),
+      start_time: startDate,
+      end_time: endDate,
+      chosen_env: selectedEnvironment?.toString() ?? "",
+      artworks: selectedArtworks,
+      collaborators: collaborators.map((user) => user.id),
+      banner: bannerFile,
+    };
 
-    toast({
-      title: "Exhibit Created",
-      description: "Your exhibit has been successfully created!",
-    });
+    console.log("Submitting payload:", payload);
+    console.log("Is bannerImage a File?", payload.banner instanceof File);
 
-    navigate("/exhibits");
+    createExhibitMutation.mutate(payload, {
+      onSuccess: () => {
+        toast({
+          title: "Exhibit Created",
+          description: "Your exhibit has been successfully created!",
+        });
+        navigate("/exhibits");
+      },
+      onError: (error) => {
+        toast.error(`Failed to create exhibit: ${error?.message || "Unknown error"}`);
+      },
+    });
   };
 
   // Function to send notifications to collaborators
@@ -476,16 +500,25 @@ const AddExhibit = () => {
 
   const handleArtworkSelect = (artworkId: string) => {
     const currentUserId = getLoggedInUserId() ?? (viewMode === "owner" ? currentUser.id : currentCollaborator?.id);
-
     if (!currentUserId) return;
 
     const currentUserIdStr = currentUserId.toString();
 
+    // Filter slots owned by current user that don't have artwork assigned yet
     const availableUserSlots = Object.entries(slotOwnerMap)
       .filter(([slotId, userId]) => userId.toString() === currentUserIdStr && !slotArtworkMap[Number(slotId)])
       .map(([slotId]) => Number(slotId));
 
-    // Find the first available slot for the current user
+    // Don't allow selecting same artwork twice
+    if (selectedArtworks.includes(artworkId)) {
+      toast({
+        title: "Artwork already selected",
+        description: "This artwork has already been assigned to a slot.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const availableSlot = availableUserSlots[0];
 
     if (!availableSlot) {
@@ -523,6 +556,7 @@ const AddExhibit = () => {
         description: "This slot is assigned to another participant.",
         variant: "destructive",
       });
+
       return;
     }
 
@@ -723,6 +757,7 @@ const AddExhibit = () => {
               <BannerUpload
                 bannerImage={bannerImage}
                 setBannerImage={setBannerImage}
+                setBannerFile={setBannerFile}
                 isReadOnly={isReadOnly}
                 viewMode={viewMode}
               />
