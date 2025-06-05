@@ -6,7 +6,7 @@ import SearchBar from "@/components/user_dashboard/local_components/SearchBar";
 import { useState, useRef, useMemo } from "react";
 import ProfileDropdown from "../local_components/profile_dropdown/ProfileDropdown";
 import ChatDropdown from "../local_components/chat/ChatDropdown";
-import Notifications from "../notification/Notification";
+import Notifications from "../local_components/notification/Notification";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
@@ -139,7 +139,7 @@ const Header = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute -right-[120px] mt-4 z-50"
+                  className="absolute -right-[119px] mt-4 z-50"
                 >
                   <ChatDropdown isOpen={true} onClose={() => setIsChatOpen(false)} />
                 </motion.div>
