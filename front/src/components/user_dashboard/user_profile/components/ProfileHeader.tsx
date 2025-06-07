@@ -99,11 +99,62 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
     setShowReportOptions(false);
   };
 
+  const socials = [
+    {
+      name: "Website",
+      icon: "https://img.icons8.com/fluency-systems-regular/48/globe--v1.png",
+      username: "mywebsite.com",
+      link: "https://mywebsite.com",
+    },
+    {
+      name: "Twitter",
+      icon: "https://img.icons8.com/color/48/twitter--v1.png",
+      username: "@jam_anuba",
+      link: "https://twitter.com/jam_anuba",
+    },
+    {
+      name: "Facebook",
+      icon: "https://img.icons8.com/color/48/facebook-new.png",
+      username: "Jamaica Anuba",
+      link: "https://facebook.com/jamaica.anuba",
+    },
+    {
+      name: "Instagram",
+      icon: "https://img.icons8.com/fluency/48/instagram-new.png",
+      username: "@jam_art",
+      link: "https://instagram.com/jam_art",
+    },
+  ];
+
+
   return (
     <div className="w-full px-4">
       {/* Cover Photo */}
       <div className="relative w-full h-52 md:h-72 rounded-lg overflow-hidden bg-blue-100 object-cover">
         <img src={cover} className="w-full h-full object-cover" />
+        {/* Social Links */}
+        <div className="absolute top-4 right-5 flex space-x-2 z-30">
+          {socials.map((social, index) => (
+            <a
+              key={index}
+              href={social.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative flex items-center justify-start"
+            >
+              <div className="flex items-center opacity-90 bg-white  rounded-full px-[10px] py-[7px] w-9 group-hover:w-36 overflow-hidden transition-all duration-300 ease-in-out shadow-md">
+                <img
+                  src={social.icon}
+                  alt={social.name}
+                  className="w-4 h-4 object-contain"
+                />
+                <span className="ml-2 text-[10px] text-gray-800 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                  {social.username}
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
 
       {/* Profile Info */}
