@@ -23,9 +23,10 @@ interface ProfileHeaderProps {
   items: number;
   profileUserId: string;
   cover: string;
+  email?: string;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items, profileUserId, cover }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items, profileUserId, cover, email }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [optionsOpen, setOptionsOpen] = useState(false);
   const loggedInUserId = getLoggedInUserId();
@@ -36,6 +37,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
   const { id } = useParams<{ id: string }>();
   const { data: followCounts, error } = useFollowCounts(id || "");
   const [showReportOptions, setShowReportOptions] = useState(false);
+
+  const [contactOpen, setContactOpen] = useState(false);
 
   if (error) {
     console.error("Error fetching follow counts:", error.message);
@@ -197,10 +200,30 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
               {isLoading ? "Loading..." : isFollowing ? "Unfollow" : "Follow"}
             </button>
 
-            <Button variant="outline" className="rounded-full border border-gray-300 p-2 w-8 h-8">
-              <i className="bx bx-envelope text-xs"></i>
-            </Button>
+            {/* CONTACT USER */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="rounded-full border border-gray-300 p-2 w-8 h-8">
+                  <i className="bx bx-envelope text-xs"></i>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="right"
+                align="start"
+                sideOffset={4}
+                className="z-50 bg-white p-2 shadow-lg rounded-md min-w-[140px] animate-fade-in"
+                forceMount
+              >
+                <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
+                  Message
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
+                  {email || "user@email.com"}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
+            {/* MENU OPTIONS */}
             <DropdownMenu open={optionsOpen} onOpenChange={setOptionsOpen}>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="rounded-full border border-gray-300 p-2 w-8 h-8">
