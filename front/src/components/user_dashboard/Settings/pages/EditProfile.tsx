@@ -18,11 +18,13 @@ const EditProfile = () => {
   const [formData, setFormData] = useState<{
     fullName: string;
     username: string;
+    email: string;
     profile_picture: File | null;
     cover_photo: File | null;
   }>({
     fullName: "",
     username: "",
+    email: "",
     profile_picture: null,
     cover_photo: null,
   });
@@ -41,6 +43,7 @@ const EditProfile = () => {
       const updatedForm = {
         fullName,
         username,
+        email: "",
         profile_picture: null,
         cover_photo: null,
       };
@@ -203,7 +206,33 @@ const EditProfile = () => {
     }
 
     setSocials((prev) => ({ ...prev, [platform]: socialInput }));
-    setSocialInput(""); // Clear input
+    setSocialInput("");
+  };
+
+  const isValidEmail = (email: string) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
+  const handleSaveEmail = () => {
+    if (!isValidEmail(formData.email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    const loadingToast = toast("Updating your details...", {
+      description: "Please wait while we process your update.",
+    });
+
+    const [firstName, ...rest] = formData.fullName.trim().split(" ");
+    const lastName = rest.join(" ");
+
+    const updatedUser = new FormData();
+    updatedUser.append("first_name", firstName);
+    updatedUser.append("last_name", lastName);
+    updatedUser.append("username", formData.username);
+    updatedUser.append("email", formData.email); 
+
+    //... rest of the existing logic
   };
 
   return (
@@ -304,36 +333,9 @@ const EditProfile = () => {
         </div>
       </div>
 
-      {/* Social Media Links */}
-      <div className="mb-6">
-        <p className="text-[11px] text-gray-500 mb-2">Social Media</p>
-        <div className="flex gap-2 items-center">
-          <Input
-            type="url"
-            placeholder="Enter your social media link"
-            value={socialInput}
-            onChange={(e) => setSocialInput(e.target.value)}
-            className="w-full h-8 max-w-md rounded-full ring-0 focus:outline-none focus:ring-0"
-            style={{ fontSize: "11px", }}
-          />
-          <Button onClick={handleAddSocial} className="h-8 text-[11px] rounded-full">Add</Button>
-        </div>
-
-        {Object.keys(socials).length > 0 && (
-          <ul className="text-[11px] mt-3">
-            {Object.entries(socials).map(([platform, link]) => (
-              <li key={platform} className="flex space-x-2 w-full max-w-xs">
-                <span className="text-gray-600 font-medium capitalize">{platform}:</span>
-                <a href={link} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline truncate max-w-[200px]">{link}</a>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Rest of your form (Full name, Username, etc.) remains unchanged */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white border border-gray-200 rounded-md px-4 py-4">
+      {/* Rest of your form (Full name, Username, etc.) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white border border-gray-200 rounded-md px-4 py-4 mb-2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-[10px] text-gray-500 pl-3">Full name</label>
@@ -359,7 +361,7 @@ const EditProfile = () => {
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md px-4 py-4">
+        <div className="bg-white border border-gray-200 rounded-md px-4 py-4 mb-2">
           <div>
             <label className="block text-[10px] text-gray-500 pl-3">Username</label>
             <div className="relative">
@@ -377,6 +379,50 @@ const EditProfile = () => {
               <button className="absolute right-2 top-2 text-gray-400 hover:text-gray-600" onClick={() => {}}></button>
             </div>
           </div>
+        </div>
+
+        {/* Social Media Links */}
+        <div className="mb-6">
+          <p className="text-[11px] text-gray-500 mb-2">Social Media</p>
+          <div className="flex gap-2 items-center">
+            <Input
+              type="url"
+              placeholder="Enter your social media link"
+              value={socialInput}
+              onChange={(e) => setSocialInput(e.target.value)}
+              className="w-full h-8 rounded-full ring-0 focus:outline-none focus:ring-0"
+              style={{ fontSize: "11px", }}
+            />
+            <Button onClick={handleAddSocial} className="h-8 text-[11px] rounded-full">Add</Button>
+          </div>
+
+          {Object.keys(socials).length > 0 && (
+            <ul className="text-[11px] mt-3">
+              {Object.entries(socials).map(([platform, link]) => (
+                <li key={platform} className="flex space-x-2 w-full max-w-xs">
+                  <span className="text-gray-600 font-medium capitalize">{platform}:</span>
+                  <a href={link} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline truncate max-w-[200px]">{link}</a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Contact Email Input */}
+        <div className="mb-4">
+          <label className="block text-[11px] text-gray-500 mb-2" htmlFor="email">Contact Email (for inquiries)</label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="Enter your contact email"
+            value={formData.email}
+            onChange={(e) => handleChange("email", e.target.value)}
+            className="w-full h-8 rounded-full ring-0 focus:outline-none focus:ring-0"
+            style={{ fontSize: "11px", }}
+          />
+          <p className="text-[8px] text-gray-400 mt-1">
+            This email will be shown publicly for inquiries or contact purposes.
+          </p>
         </div>
       </div>
 
