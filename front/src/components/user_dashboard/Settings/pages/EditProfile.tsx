@@ -172,7 +172,39 @@ const EditProfile = () => {
     setRemoveCoverPhoto(true);
   };
 
+  // SOCIAL MEDIA PLATFORMS
+  const [socialInput, setSocialInput] = useState("");
+  const [socials, setSocials] = useState<{ [platform: string]: string }>({});
 
+  const extractPlatform = (url: string) => {
+    try {
+      const domain = new URL(url).hostname;
+      if (domain.includes("facebook")) return "facebook";
+      if (domain.includes("twitter")) return "twitter";
+      if (domain.includes("instagram")) return "instagram";
+      if (domain.includes("linkedin")) return "linkedin";
+      if (domain.includes("tiktok")) return "tiktok";
+      return "other";
+    } catch {
+      return null;
+    }
+  };
+
+  const handleAddSocial = () => {
+    const platform = extractPlatform(socialInput);
+    if (!platform) {
+      toast.error("Invalid URL");
+      return;
+    }
+
+    if (socials[platform]) {
+      toast.error(`You already added your ${platform} account.`);
+      return;
+    }
+
+    setSocials((prev) => ({ ...prev, [platform]: socialInput }));
+    setSocialInput(""); // Clear input
+  };
 
   return (
     <div>
@@ -180,7 +212,7 @@ const EditProfile = () => {
 
       {/* Cover Photo Upload Container */}
       <div className="mb-8">
-        <p className="text-xs pl-12 text-gray-500 mb-4">Cover Photo</p>
+        <p className="text-xs text-gray-500 mb-4">Cover Photo</p>
           <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
             {coverPreviewUrl || cover_photo ? (
             <div className="relative w-full max-w-4xl">
@@ -219,7 +251,7 @@ const EditProfile = () => {
             {(coverPreviewUrl || cover_photo) && (
               <button
                 onClick={handleRemoveCoverPhoto}
-                className="text-[10px] font-medium py-2 px-3 rounded-sm bg-red-500 hover:bg-red-600 text-white"
+                className="text-[10px] font-medium py-2 px-3 rounded-full bg-red-600 hover:bg-red-500 text-white"
               >
                 Remove
               </button>
@@ -230,7 +262,7 @@ const EditProfile = () => {
 
       {/* Profile Picture Container */}
       <div className="mb-8">
-        <p className="text-xs pl-12 text-gray-500 mb-4">Photo</p>
+        <p className="text-xs text-gray-500 mb-4">Profile Picture</p>
         <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
           {formData.profile_picture || profilePicture ? (
           <div className="relative w-32 h-32">
@@ -263,13 +295,40 @@ const EditProfile = () => {
             {(formData.profile_picture || profilePicture) && (
               <button
                 onClick={handleRemoveProfilePicture}
-                className="text-[10px] font-medium py-2 px-3 rounded-sm bg-red-500 hover:bg-red-600 text-white"
+                className="text-[10px] font-medium py-2 px-3 rounded-full bg-red-600 hover:bg-red-500 text-white"
               >
                 Remove
               </button>
             )}
 
         </div>
+      </div>
+
+      {/* Social Media Links */}
+      <div className="mb-6">
+        <p className="text-[11px] text-gray-500 mb-2">Social Media</p>
+        <div className="flex gap-2 items-center">
+          <Input
+            type="url"
+            placeholder="Enter your social media link"
+            value={socialInput}
+            onChange={(e) => setSocialInput(e.target.value)}
+            className="w-full h-8 max-w-md rounded-full ring-0 focus:outline-none focus:ring-0"
+            style={{ fontSize: "11px", }}
+          />
+          <Button onClick={handleAddSocial} className="h-8 text-[11px] rounded-full">Add</Button>
+        </div>
+
+        {Object.keys(socials).length > 0 && (
+          <ul className="text-[11px] mt-3">
+            {Object.entries(socials).map(([platform, link]) => (
+              <li key={platform} className="flex space-x-2 w-full max-w-xs">
+                <span className="text-gray-600 font-medium capitalize">{platform}:</span>
+                <a href={link} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline truncate max-w-[200px]">{link}</a>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {/* Rest of your form (Full name, Username, etc.) remains unchanged */}
