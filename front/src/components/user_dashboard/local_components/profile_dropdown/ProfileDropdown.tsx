@@ -60,7 +60,7 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
         </button>
 
         <button className="flex items-center gap-3 hover:text-black">
-          <Activity size={14} /> Activity
+          <Activity size={14} /> Stats
         </button>
 
         <button onClick={handleSettings} className="flex items-center gap-3 hover:text-black">
