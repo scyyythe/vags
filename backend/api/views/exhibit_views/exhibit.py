@@ -26,3 +26,14 @@ class ExhibitCardListView(APIView):
         exhibits = Exhibit.objects.filter(visibility='Pending')
         serializer = ExhibitCardSerializer(exhibits, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ExhibitCardDetailView(APIView):
+    def get(self,request,exhibit_id):
+        try:
+            exhibit=Exhibit.objects.get(id=exhibit_id)
+        except:
+            return Response({"detail":"Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer=ExhibitCardSerializer(exhibit)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        

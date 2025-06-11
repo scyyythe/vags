@@ -12,13 +12,16 @@ import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
-
+import { useExhibitCardDetail } from "@/hooks/exhibit/useCardDetail";
 const ExhibitViewing = () => {
   const { id } = useParams<{ id: string }>();
+
+  const {data:exhibit, isLoading}=useExhibitCardDetail(id);
+
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
   const isLiked = likedArtworks[id] || false;
   const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
-  const [exhibit, setExhibit] = useState<any>(null);
+  
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobile = useIsMobile();
 
@@ -344,12 +347,12 @@ const ExhibitViewing = () => {
     }
   ];
 
-  useEffect(() => {
-    const found = mockExhibits.find((exhibit) => exhibit.id === id);
-    if (found) {
-      setExhibit(found);
-    }
-  }, [id]);
+  // useEffect(() => {
+  //   const found = mockExhibits.find((exhibit) => exhibit.id === id);
+  //   if (found) {
+  //     setExhibit(found);
+  //   }
+  // }, [id]);
 
   if (!exhibit) {
     return (
