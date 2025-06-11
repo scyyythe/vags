@@ -17,13 +17,13 @@ class ExhibitCardSerializer(serializers.Serializer):
     isSolo = serializers.SerializerMethodField()
     isShared = serializers.SerializerMethodField()
     collaborators = serializers.SerializerMethodField()
+    owner = serializers.SerializerMethodField()  # ✅ Added owner field
 
     def get_image(self, obj):
         return obj.banner or ""
 
     def get_likes(self, obj):
-       
-        return 1  
+        return 1  # You can update this to return real like count later
 
     def get_views(self, obj):
         return len(obj.viewed_by)
@@ -44,3 +44,10 @@ class ExhibitCardSerializer(serializers.Serializer):
             for user in obj.collaborators
         ]
 
+    def get_owner(self, obj): 
+        owner = obj.owner
+        return {
+            "id": str(owner.id),
+            "name": owner.full_name,
+            "avatar": owner.avatar if hasattr(owner, 'avatar') else ""
+        } if owner else None
