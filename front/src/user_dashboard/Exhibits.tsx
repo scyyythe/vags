@@ -9,7 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import { useExhibitCards } from "@/hooks/exhibit/useCardExihibit";
+import ExhibitCardSkeleton from "@/components/skeletons/ExhibitCardSkeleton";
 // Mock data for exhibits
 const mockExhibits = [
   {
@@ -124,15 +125,17 @@ const Exhibits = () => {
   const categories = ["All", "Trending", "Most Viewed"];
   const [selectedCategory, setSelectedCategory] = useState<string>(categories[0]);
 
+  const {data:exhibits=[],isLoading,isError}=useExhibitCards();
   // Filter exhibits based on current filter
-  const filteredExhibits = mockExhibits.filter(exhibit => {
-    if (filter === "all") return true;
-    if (filter === "solo") return exhibit.isSolo;
-    if (filter === "collab") return !exhibit.isSolo;
-    if (filter === "trending") return exhibit.likes > 100;
-    if (filter === "most-viewed") return exhibit.views > 1.3;
-    return true;
-  });
+const filteredExhibits = exhibits.filter((exhibit: any) => {
+  if (filter === "all") return true;
+  if (filter === "solo") return exhibit.isSolo;
+  if (filter === "collab") return !exhibit.isSolo;
+  if (filter === "trending") return exhibit.likes > 100;
+  if (filter === "most-viewed") return exhibit.views > 1.3;
+  return true;
+});
+
 
   // Sort exhibits based on current sort option
   const sortedExhibits = [...filteredExhibits].sort((a, b) => {
@@ -214,15 +217,23 @@ const Exhibits = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {sortedExhibits.map((exhibit) => (
-            <ExhibitCard 
-              key={exhibit.id} 
-              exhibit={exhibit} 
-              onClick={() => navigate(`/view-exhibit/${exhibit.id}`)} // 👈 Navigate to the exhibit viewing page
-            />
-          ))}
-        </div>
+         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {isLoading
+  ? Array.from({ length: 8 }).map((_, i) => <ExhibitCardSkeleton key={i} />)
+  : sortedExhibits.map((exhibit) => (
+     <ExhibitCard 
+  key={exhibit.id} 
+  exhibit={{
+    ...exhibit,
+    category: exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1)
+  }}
+  onClick={() => navigate(`/view-exhibit/${exhibit.id}`)} 
+/>
+
+    ))
+}
+
+          </div>
       </div>
       
     </div>
