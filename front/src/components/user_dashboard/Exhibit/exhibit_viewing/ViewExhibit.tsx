@@ -13,6 +13,7 @@ import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comm
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import { useExhibitCardDetail } from "@/hooks/exhibit/useCardDetail";
+import ExhibitCardDetailSkeleton from "@/components/skeletons/ExhibitCardDetail";
 const ExhibitViewing = () => {
   const { id } = useParams<{ id: string }>();
 
@@ -354,13 +355,9 @@ const ExhibitViewing = () => {
   //   }
   // }, [id]);
 
-  if (!exhibit) {
-    return (
-      <div className="min-h-screen flex justify-center items-center">
-        <p className="text-gray-500 text-sm">Loading exhibit...</p>
-      </div>
-    );
-  }
+if (!exhibit) {
+  return <ExhibitCardDetailSkeleton />;
+}
 
   const closeExpandedView = () => {
     setIsExpanded(false);
@@ -475,7 +472,7 @@ const ExhibitViewing = () => {
                   onClick={() => navigate(`/userprofile/${exhibit.artistId}`)}
                   className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
                 >
-                  by {exhibit.artist || "Angel Ganev"}
+                  by {exhibit.owner.name || "Angel Ganev"}
                 </p>
 
                 <div className="relative mt-4">
