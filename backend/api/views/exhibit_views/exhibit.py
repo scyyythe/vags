@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status,parsers
 from api.serializers.exhibit_s.exhibit_seriliazers import ExhibitSerializer
 from api.models.exhibit_model.exhibit import Exhibit
+from api.serializers.exhibit_s.exhibit_card import ExhibitCardSerializer
 
 class ExhibitCreateView(APIView):
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
@@ -18,4 +19,10 @@ class ExhibitListView(APIView):
     def get(self, request):
         exhibits = Exhibit.objects.all()
         serializer = ExhibitSerializer(exhibits, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ExhibitCardListView(APIView):
+    def get(self, request):
+        exhibits = Exhibit.objects.filter(visibility='Pending')
+        serializer = ExhibitCardSerializer(exhibits, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,0 +1,46 @@
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+from api.models.user_model.users import User
+from api.models.exhibit_model.exhibit import Exhibit
+from datetime import datetime
+
+
+class ExhibitCardSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    title = serializers.CharField()
+    description = serializers.CharField()
+    image = serializers.SerializerMethodField()
+    category = serializers.CharField()
+    likes = serializers.SerializerMethodField()
+    views = serializers.SerializerMethodField()
+    isSolo = serializers.SerializerMethodField()
+    isShared = serializers.SerializerMethodField()
+    collaborators = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        return obj.banner or ""
+
+    def get_likes(self, obj):
+       
+        return 1  
+
+    def get_views(self, obj):
+        return len(obj.viewed_by)
+
+    def get_isSolo(self, obj):
+        return obj.exhibit_type == 'Solo'
+
+    def get_isShared(self, obj):
+        return obj.exhibit_type == 'Collaborative'
+
+    def get_collaborators(self, obj):
+        return [
+            {
+                "id": str(user.id),
+                "name": user.full_name,
+                "avatar": user.avatar if hasattr(user, 'avatar') else ""
+            }
+            for user in obj.collaborators
+        ]
+
