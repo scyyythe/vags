@@ -5,7 +5,6 @@ from api.models.user_model.users import User
 from api.models.exhibit_model.exhibit import Exhibit
 from datetime import datetime
 
-
 class ExhibitCardSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField()
@@ -17,16 +16,16 @@ class ExhibitCardSerializer(serializers.Serializer):
     isSolo = serializers.SerializerMethodField()
     isShared = serializers.SerializerMethodField()
     collaborators = serializers.SerializerMethodField()
-    owner = serializers.SerializerMethodField()  # ✅ Added owner field
+    owner = serializers.SerializerMethodField() 
 
     def get_image(self, obj):
         return obj.banner or ""
 
     def get_likes(self, obj):
-        return 1  # You can update this to return real like count later
+        return 1  
 
     def get_views(self, obj):
-        return len(obj.viewed_by)
+        return len(obj.viewed_by or [])
 
     def get_isSolo(self, obj):
         return obj.exhibit_type == 'Solo'
@@ -44,10 +43,11 @@ class ExhibitCardSerializer(serializers.Serializer):
             for user in obj.collaborators
         ]
 
-    def get_owner(self, obj): 
+    def get_owner(self, obj):
         owner = obj.owner
         return {
             "id": str(owner.id),
-            "name": owner.full_name,
+            "name": f"{owner.first_name} {owner.last_name}".strip(),
             "avatar": owner.avatar if hasattr(owner, 'avatar') else ""
         } if owner else None
+
