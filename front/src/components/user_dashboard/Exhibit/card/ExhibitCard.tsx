@@ -119,7 +119,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
               isOpen={menuOpen}
               onHide={handleHide}
               onReport={handleReport}
-              isReported={!!reportStatusData?.reported}
+              // isReported={!!reportStatusData?.reported}
               isShared={exhibit.isShared} 
               isHidden={isHidden}
             />
