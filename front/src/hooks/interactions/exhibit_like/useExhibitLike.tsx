@@ -18,29 +18,39 @@ export const useExhibitLike = (
       return response.data;
     },
     onSuccess: (data) => {
-      const { is_Liked, like_count, detail } = data;
-      setIsLiked(is_Liked);
-      setLikeCount(like_count);
-      toast.success(detail || (is_Liked ? "You liked this exhibit." : "You unliked this exhibit."));
+  
+      toast.success(
+        data.detail || (data.is_Liked ? "You liked this exhibit." : "You unliked this exhibit.")
+      );
+
+    queryClient.invalidateQueries({
+  queryKey: ["exhibit-card", exhibitId],
+});
+
     },
     onError: (error: any) => {
-      console.error("Like API Error:", error);
+
+      setIsLiked((prev) => !prev);
+      setLikeCount((prev) => (isLiked ? prev + 1 : prev - 1)); 
 
       if (error.response) {
-        console.error("Status:", error.response.status);
-        console.error("Data:", error.response.data);
         toast.error(error.response.data.detail || "Failed to update the like status");
       } else if (error.request) {
-        console.error("No response received:", error.request);
         toast.error("No response from server.");
       } else {
-        console.error("Error setting up request:", error.message);
         toast.error("An unexpected error occurred.");
       }
     },
   });
 
   const toggleLike = () => {
+    // ✅ Optimistic UI update
+    setIsLiked((prevLiked) => {
+      const newLiked = !prevLiked;
+      setLikeCount((prevCount) => (newLiked ? prevCount + 1 : prevCount - 1));
+      return newLiked;
+    });
+
     mutation.mutate();
   };
 
