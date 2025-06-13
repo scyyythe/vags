@@ -48,5 +48,6 @@ export const useExhibitLike = (
     isLiked,
     likeCount,
     toggleLike,
+    mutation,
   };
 };

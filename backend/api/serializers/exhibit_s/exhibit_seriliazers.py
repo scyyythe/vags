@@ -4,7 +4,7 @@ from api.models.user_model.users import User
 from api.models.artwork_model.artwork import Art
 import cloudinary.uploader
 from datetime import datetime
-
+from api.models.interaction_model.interaction import Like
 class ExhibitSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField(max_length=100)
@@ -23,6 +23,19 @@ class ExhibitSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     viewed_by = serializers.ListField(child=serializers.CharField(), required=False, default=[])
+
+    exhibit_likes_count = serializers.SerializerMethodField()
+    user_has_liked_exhibit = serializers.SerializerMethodField()
+
+    def get_exhibit_likes_count(self, obj):
+        return Like.objects(exhibit=obj).count()
+
+    def get_user_has_liked_exhibit(self, obj):
+        request = self.context.get("request", None)
+        user = getattr(request, "user", None)
+        if user and not user.is_anonymous:
+            return Like.objects(user=user, exhibit=obj).first() is not None
+        return False
 
     def upload_banner(self, banner_file):
         if banner_file:
@@ -97,4 +110,7 @@ class ExhibitSerializer(serializers.Serializer):
             "created_at": instance.created_at,
             "updated_at": instance.updated_at,
             "viewed_by": [str(u.id) for u in instance.viewed_by],
+            "exhibit_likes_count": self.get_exhibit_likes_count(instance),
+            "user_has_liked_exhibit": self.get_user_has_liked_exhibit(instance),
+
         }
