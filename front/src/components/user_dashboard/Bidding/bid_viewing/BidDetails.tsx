@@ -25,7 +25,7 @@ import { useAuctionLike } from "@/hooks/interactions/auction_like/useAuctionLike
 import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
 import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
 import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
-import { a } from "node_modules/framer-motion/dist/types.d-B50aGbjN";
+
 export interface BidCardData {
   id: string;
   title: string;
