@@ -25,9 +25,9 @@ const {
   likeCount,
   toggleLike,
 } = useExhibitLike(
-  id ?? "",                          
-  exhibit?.is_liked ?? false,       
-  exhibit?.likes ?? 0                
+  id ?? "",
+  exhibit?.user_has_liked_exhibit ?? false,
+  exhibit?.exhibit_likes_count ?? 0
 );
 
   // const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
@@ -434,7 +434,7 @@ if (!exhibit) {
               <div className={`${isMobile ? "" : "relative top-5"}`}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center space-x-4">
- <button
+<button
   onClick={toggleLike}
   className="flex items-center space-x-1 text-gray-800 rounded-3xl py-1.5 px-3 border border-gray-200"
 >
@@ -449,6 +449,7 @@ if (!exhibit) {
     </span>
   )}
 </button>
+
 
 
 

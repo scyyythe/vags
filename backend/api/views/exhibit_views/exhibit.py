@@ -43,6 +43,6 @@ class ExhibitCardDetailView(APIView):
             exhibit.viewed_by.append(user)
             exhibit.save()
 
-        serializer = ExhibitCardSerializer(exhibit)
+        serializer = ExhibitCardSerializer(exhibit, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
