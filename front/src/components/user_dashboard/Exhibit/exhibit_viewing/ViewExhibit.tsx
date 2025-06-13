@@ -14,13 +14,24 @@ import useFavorite from "@/hooks/interactions/useFavorite";
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import { useExhibitCardDetail } from "@/hooks/exhibit/useCardDetail";
 import ExhibitCardDetailSkeleton from "@/components/skeletons/ExhibitCardDetail";
+
+import { useExhibitLike } from "@/hooks/interactions/exhibit_like/useExhibitLike";
 const ExhibitViewing = () => {
   const { id } = useParams<{ id: string }>();
 
   const {data:exhibit, isLoading}=useExhibitCardDetail(id);
+const {
+  isLiked,
+  likeCount,
+  toggleLike,
+} = useExhibitLike(
+  id ?? "",                           // exhibitId
+  exhibit?.is_liked ?? false,        // initialIsLiked
+  exhibit?.likes ?? 0                // initialLikeCount
+);
 
-  const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
-  const isLiked = likedArtworks[id] || false;
+  // const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
+  // const isLiked = likedArtworks[id] || false;
   const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
   
   const [isExpanded, setIsExpanded] = useState(false);
@@ -77,11 +88,11 @@ const ExhibitViewing = () => {
     setMenuOpen(false);
   };
 
-  const handleLike = () => {
-    if (id) {
-      toggleLike(id);
-    }
-  };
+  // const handleLike = () => {
+  //   if (id) {
+  //     toggleLike(id);
+  //   }
+  // };
 
   const handleReport = () => {
     setIsReported(!isReported);
@@ -423,21 +434,22 @@ if (!exhibit) {
               <div className={`${isMobile ? "" : "relative top-5"}`}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center space-x-4">
-                    <button
-                      onClick={handleLike}
-                      className="flex items-center space-x-1 text-gray-800 rounded-3xl py-1.5 px-3 border border-gray-200"
-                    >
-                      <Heart
-                        size={isMobile ? 13 : 13}
-                        className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
-                        fill={isLiked ? "currentColor" : "none"}
-                      />
-                      {(likeCounts[id || ""] ?? exhibit.likes ?? 0) > 0 && (
-                        <span className={`${isMobile ? "text-[10px]" : "text-[10px]"}`}>
-                          {likeCounts[id || ""] ?? exhibit.likes}
-                        </span>
-                      )}
-                    </button>
+                  <button
+  onClick={toggleLike}
+  className="flex items-center space-x-1 text-gray-800 rounded-3xl py-1.5 px-3 border border-gray-200"
+>
+  <Heart
+    size={13}
+    className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
+    fill={isLiked ? "currentColor" : "none"}
+  />
+  {likeCount > 0 && (
+    <span className="text-[10px]">
+      {likeCount}
+    </span>
+  )}
+</button>
+
 
                     {/* Views */}
                     <div className="flex items-center space-x-1 rounded-3xl py-1.5 px-3 border border-gray-200">

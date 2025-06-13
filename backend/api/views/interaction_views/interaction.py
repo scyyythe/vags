@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from api.models.exhibit_model.exhibit import Exhibit
+from api.serializers.exhibit_s.exhibit_seriliazers import ExhibitSerializer
 from api.models.artwork_model.artwork import Art
 from api.models.artwork_model.bid import Auction
 from api.models.interaction_model.interaction import Comment, Like, CartItem, Saved
@@ -11,6 +13,7 @@ from rest_framework import generics, permissions
 from datetime import datetime
 from django.utils.timesince import timesince
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
+
 class CommentCreateView(APIView):
     permission_classes = [IsAuthenticated]  
 
@@ -69,7 +72,9 @@ class LikeCreateView(APIView):
         user = request.user
         art_id = kwargs.get("art_id")
         auction_id = kwargs.get("auction_id")
+        exhibit_id = kwargs.get("exhibit_id")
 
+ 
         if art_id:
             try:
                 art = Art.objects.get(id=art_id)
@@ -85,14 +90,8 @@ class LikeCreateView(APIView):
                     "like_count": like_count,
                     "detail": "You have unliked this artwork."
                 }, status=status.HTTP_200_OK)
-
             else:
                 Like.objects.create(user=user, art=art)
-                
-                host = request.get_host()
-                protocol = "http" if "localhost" in host else "https"
-                link = f"/artwork/{str(art.id)}"
-
                 Notification.objects.create(
                     user=art.artist,
                     actor=user,
@@ -103,15 +102,15 @@ class LikeCreateView(APIView):
                     target=art.title,
                     icon="like",
                     created_at=datetime.now(),
-                    link=link,
+                    link=f"/artwork/{art.id}",
                 )
-
                 like_count = Like.objects.filter(art=art).count()
                 return Response({
                     "is_liked": True,
                     "like_count": like_count,
                     "detail": "You liked this artwork."
                 }, status=status.HTTP_201_CREATED)
+
 
         elif auction_id:
             try:
@@ -128,14 +127,8 @@ class LikeCreateView(APIView):
                     "like_count": like_count,
                     "detail": "You unliked this auction."
                 }, status=status.HTTP_200_OK)
-
             else:
                 Like.objects.create(user=user, auction=auction)
-
-                host = request.get_host()
-                protocol = "http" if "localhost" in host else "https"
-                link = f"/bid/{str(auction.id)}/"
-
                 Notification.objects.create(
                     user=auction.artwork.artist,
                     actor=user,
@@ -146,9 +139,8 @@ class LikeCreateView(APIView):
                     target=auction.artwork.title,
                     icon="like",
                     created_at=datetime.now(),
-                    link=link,
+                    link=f"/bid/{auction.id}/",
                 )
-
                 like_count = Like.objects.filter(auction=auction).count()
                 return Response({
                     "is_liked": True,
@@ -156,9 +148,46 @@ class LikeCreateView(APIView):
                     "detail": "You liked this auction."
                 }, status=status.HTTP_201_CREATED)
 
+
+        elif exhibit_id:
+            try:
+                exhibit = Exhibit.objects.get(id=exhibit_id)
+            except Exhibit.DoesNotExist:
+                return Response({"detail": "Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            like = Like.objects.filter(user=user, exhibit=exhibit).first()
+            if like:
+                like.delete()
+                like_count = Like.objects.filter(exhibit=exhibit).count()
+                return Response({
+                    "is_liked": False,
+                    "like_count": like_count,
+                    "detail": "You unliked this exhibit."
+                }, status=status.HTTP_200_OK)
+            else:
+                Like.objects.create(user=user, exhibit=exhibit)
+                Notification.objects.create(
+                    user=exhibit.owner,
+                    actor=user,
+                    message=f" liked your exhibit '{exhibit.title}'",
+                    exhibit=exhibit,
+                    name=f"{user.first_name} {user.last_name}",
+                    action="liked your exhibit",
+                    target=exhibit.title,
+                    icon="like",
+                    created_at=datetime.now(),
+                    link=f"/exhibit/{exhibit.id}/",
+                )
+                like_count = Like.objects.filter(exhibit=exhibit).count()
+                return Response({
+                    "is_liked": True,
+                    "like_count": like_count,
+                    "detail": "You liked this exhibit."
+                }, status=status.HTTP_201_CREATED)
+
+   
         else:
             return Response({"detail": "No valid target specified."}, status=status.HTTP_400_BAD_REQUEST)
-
 
         
 class LikeListView(generics.ListAPIView):
