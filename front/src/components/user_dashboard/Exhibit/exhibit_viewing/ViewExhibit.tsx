@@ -12,13 +12,28 @@ import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
+import { useExhibitCardDetail } from "@/hooks/exhibit/useCardDetail";
+import ExhibitCardDetailSkeleton from "@/components/skeletons/ExhibitCardDetail";
 
+import { useExhibitLike } from "@/hooks/interactions/exhibit_like/useExhibitLike";
 const ExhibitViewing = () => {
   const { id } = useParams<{ id: string }>();
-  const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
-  const isLiked = likedArtworks[id] || false;
+
+  const {data:exhibit, isLoading}=useExhibitCardDetail(id);
+const {
+  isLiked,
+  likeCount,
+  toggleLike,
+} = useExhibitLike(
+  id ?? "",
+  exhibit?.user_has_liked_exhibit ?? false,
+  exhibit?.exhibit_likes_count ?? 0
+);
+
+  // const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
+  // const isLiked = likedArtworks[id] || false;
   const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
-  const [exhibit, setExhibit] = useState<any>(null);
+  
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobile = useIsMobile();
 
@@ -73,11 +88,11 @@ const ExhibitViewing = () => {
     setMenuOpen(false);
   };
 
-  const handleLike = () => {
-    if (id) {
-      toggleLike(id);
-    }
-  };
+  // const handleLike = () => {
+  //   if (id) {
+  //     toggleLike(id);
+  //   }
+  // };
 
   const handleReport = () => {
     setIsReported(!isReported);
@@ -344,20 +359,16 @@ const ExhibitViewing = () => {
     }
   ];
 
-  useEffect(() => {
-    const found = mockExhibits.find((exhibit) => exhibit.id === id);
-    if (found) {
-      setExhibit(found);
-    }
-  }, [id]);
+  // useEffect(() => {
+  //   const found = mockExhibits.find((exhibit) => exhibit.id === id);
+  //   if (found) {
+  //     setExhibit(found);
+  //   }
+  // }, [id]);
 
-  if (!exhibit) {
-    return (
-      <div className="min-h-screen flex justify-center items-center">
-        <p className="text-gray-500 text-sm">Loading exhibit...</p>
-      </div>
-    );
-  }
+if (!exhibit) {
+  return <ExhibitCardDetailSkeleton />;
+}
 
   const closeExpandedView = () => {
     setIsExpanded(false);
@@ -423,21 +434,24 @@ const ExhibitViewing = () => {
               <div className={`${isMobile ? "" : "relative top-5"}`}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center space-x-4">
-                    <button
-                      onClick={handleLike}
-                      className="flex items-center space-x-1 text-gray-800 rounded-3xl py-1.5 px-3 border border-gray-200"
-                    >
-                      <Heart
-                        size={isMobile ? 13 : 13}
-                        className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
-                        fill={isLiked ? "currentColor" : "none"}
-                      />
-                      {(likeCounts[id || ""] ?? exhibit.likes ?? 0) > 0 && (
-                        <span className={`${isMobile ? "text-[10px]" : "text-[10px]"}`}>
-                          {likeCounts[id || ""] ?? exhibit.likes}
-                        </span>
-                      )}
-                    </button>
+<button
+  onClick={toggleLike}
+  className="flex items-center space-x-1 text-gray-800 rounded-3xl py-1.5 px-3 border border-gray-200"
+>
+  <Heart
+    size={13}
+    className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
+    fill={isLiked ? "currentColor" : "none"}
+  />
+  {likeCount > 0 && (
+    <span className="text-[10px] text-gray-800">
+      {likeCount}
+    </span>
+  )}
+</button>
+
+
+
 
                     {/* Views */}
                     <div className="flex items-center space-x-1 rounded-3xl py-1.5 px-3 border border-gray-200">
@@ -472,7 +486,7 @@ const ExhibitViewing = () => {
                   onClick={() => navigate(`/userprofile/${exhibit.artistId}`)}
                   className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
                 >
-                  by {exhibit.artist || "Angel Ganev"}
+                  by {exhibit.owner.name || "Angel Ganev"}
                 </p>
 
                 <div className="relative mt-4">

@@ -2,9 +2,11 @@
 from rest_framework import serializers
 from api.models.artwork_model.artwork import Art
 from api.models.user_model.users import User 
+from api.models.exhibit_model.exhibit import Exhibit
 from api.models.interaction_model.interaction import Comment,Like,CartItem,Saved 
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from api.serializers.artwork_s.bid_serializers import AuctionSerializer
+from api.serializers.exhibit_s.exhibit_seriliazers import ExhibitSerializer
 from api.serializers.user_s.users_serializers import UserSerializer
 
 class CommentSerializer(serializers.Serializer):
@@ -35,24 +37,24 @@ class CommentSerializer(serializers.Serializer):
 class LikeSerializer(serializers.Serializer):
     user = UserSerializer(read_only=True)
     art = serializers.CharField(write_only=True, required=False, allow_null=True)
-    auction = serializers.CharField(write_only=True, required=False, allow_null=True) 
+    auction = serializers.CharField(write_only=True, required=False, allow_null=True)
+    exhibit = serializers.CharField(write_only=True, required=False, allow_null=True)
     created_at = serializers.DateTimeField(read_only=True)
 
     def create(self, validated_data):
         user = self.context['request'].user  
         art_id = validated_data.get('art')
-        auction_id = validated_data.get('auction', None) 
+        auction_id = validated_data.get('auction')
+        exhibit_id = validated_data.get('exhibit')
 
-        art = Art.objects.get(id=art_id)
+        art = Art.objects.get(id=art_id) if art_id else None
+        auction = Auction.objects.get(id=auction_id) if auction_id else None
+        exhibit = Exhibit.objects.get(id=exhibit_id) if exhibit_id else None
 
-        if auction_id:
-            auction = Auction.objects.get(id=auction_id)
-            like = Like(user=user, art=art, auction=auction)
-        else:
-            like = Like(user=user, art=art)
-
+        like = Like(user=user, art=art, auction=auction, exhibit=exhibit)
         like.save()
         return like
+
     
 class SavedSerializer(serializers.Serializer):
     user = UserSerializer(read_only=True) 
