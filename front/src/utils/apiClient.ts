@@ -1,14 +1,11 @@
 import axios from "axios";
 
-const createAPIClient = (
-  baseURL = window.location.hostname === "localhost"
+const API_BASE_URL =
+  window.location.hostname === "localhost"
     ? "http://127.0.0.1:8000/api/"
-    : window.location.hostname.includes("ngrok")
-    ? `https://${window.location.hostname}/api/`
-    : window.location.hostname.includes("vercel")
-    ? import.meta.env.VITE_API_URL
-    : `https://${window.location.hostname}/api/`
-) => {
+    : import.meta.env.VITE_API_URL || "https://vags.onrender.com/api/";
+
+const createAPIClient = (baseURL = API_BASE_URL) => {
   const apiClient = axios.create({
     baseURL,
     headers: { "Content-Type": "application/json" },
@@ -20,7 +17,8 @@ const createAPIClient = (
       return Promise.reject(new Error("Invalid request configuration"));
     }
 
-    const isLoginOrRefresh = config.url.includes("token") && !config.url.includes("refresh");
+    const isLoginOrRefresh =
+      config.url.includes("token") && !config.url.includes("refresh");
 
     if (!isLoginOrRefresh) {
       const accessToken = localStorage.getItem("access_token");
@@ -37,13 +35,19 @@ const createAPIClient = (
     async (error) => {
       const originalRequest = error.config;
 
-      const isLoginOrRefresh = originalRequest.url?.includes("token") && !originalRequest.url?.includes("refresh");
+      const isLoginOrRefresh =
+        originalRequest.url?.includes("token") &&
+        !originalRequest.url?.includes("refresh");
 
       if (isLoginOrRefresh) {
         return Promise.reject(error);
       }
 
-      if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      if (
+        error.response &&
+        error.response.status === 401 &&
+        !originalRequest._retry
+      ) {
         originalRequest._retry = true;
 
         try {

@@ -19,23 +19,21 @@ cloudinary.config(
     api_secret=os.getenv("CLOUDINARY_API_SECRET"),
 )
 
-def test_mongo_connection():
-    load_dotenv() 
 
-    try:
-        connect(
-            db=os.getenv("MONGO_DB_NAME"),
-            host=os.getenv("MONGO_DB_URI"),
-            alias="default"
-        )
-        print("✅ MongoDB Connection Successful!")
-    except Exception as e:
-        print(f"❌ MongoDB Connection Failed: {e}")
-        
-# Run test only when Django starts
+
+# MongoDB connection (always run this)
+connect(
+    db=os.getenv("MONGO_DB_NAME"),
+    host=os.getenv("MONGO_DB_URI"),
+    alias="default"
+)
+
+# Optional: test the connection in dev only
 if "runserver" in sys.argv or "shell" in sys.argv:
-    test_mongo_connection()
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+    print("✅ MongoDB Connected in Dev Mode")
+
+        
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -52,7 +50,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-gtf0y@$4m-u=t$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*","https://vags.onrender.com"]
 
 AUTHENTICATION_BACKENDS = (
     'mongoengine.django.auth.MongoEngineBackend',
@@ -190,7 +188,6 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080", 
     "http://192.168.100.31:8080",
-    "https://8fa2-61-245-19-236.ngrok-free.app",
     "https://vags.vercel.app",
 ]
 
