@@ -18,9 +18,6 @@ cloudinary.config(
     api_key=os.getenv("CLOUDINARY_API_KEY"),
     api_secret=os.getenv("CLOUDINARY_API_SECRET"),
 )
-
-
-
 # MongoDB connection (always run this)
 connect(
     db=os.getenv("MONGO_DB_NAME"),
@@ -48,7 +45,6 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-gtf0y@$4m-u=t$
 # SECRET_KEY = 'django-insecure-gtf0y@$4m-u=t$b-&z8woymqzjq47-x=s5k)^#d=-v!+yqo(%^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
 
 ALLOWED_HOSTS = ["vags.onrender.com", "localhost", "127.0.0.1"]
 
@@ -73,10 +69,10 @@ SIMPLE_JWT = {
      "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
  }
 
-# Application definition
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# # Application definition
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 INSTALLED_APPS = [ 
     'corsheaders', 
     'anymail',

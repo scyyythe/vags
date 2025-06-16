@@ -1,9 +1,10 @@
 import axios from "axios";
-// temporary deoployment
-const API_BASE_URL =
-  window.location.hostname === "localhost"
-    ? "http://127.0.0.1:8000/api/"
-    : import.meta.env.VITE_API_URL || "https://vags.onrender.com/api/";
+
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+const API_BASE_URL = isLocal ? import.meta.env.VITE_API_LOCAL : import.meta.env.VITE_API_PROD;
+
+console.log("🌐 API_BASE_URL:", API_BASE_URL);
 
 const createAPIClient = (baseURL = API_BASE_URL) => {
   const apiClient = axios.create({
@@ -12,13 +13,12 @@ const createAPIClient = (baseURL = API_BASE_URL) => {
   });
 
   apiClient.interceptors.request.use((config) => {
-    if (!config || !config.url) {
-      console.error("Request config is invalid:", config);
+    if (!config?.url) {
+      console.error("🚫 Invalid Axios request config:", config);
       return Promise.reject(new Error("Invalid request configuration"));
     }
 
-    const isLoginOrRefresh =
-      config.url.includes("token") && !config.url.includes("refresh");
+    const isLoginOrRefresh = config.url.includes("token") && !config.url.includes("refresh");
 
     if (!isLoginOrRefresh) {
       const accessToken = localStorage.getItem("access_token");
@@ -35,24 +35,17 @@ const createAPIClient = (baseURL = API_BASE_URL) => {
     async (error) => {
       const originalRequest = error.config;
 
-      const isLoginOrRefresh =
-        originalRequest.url?.includes("token") &&
-        !originalRequest.url?.includes("refresh");
+      const isLoginOrRefresh = originalRequest?.url?.includes("token") && !originalRequest.url.includes("refresh");
 
       if (isLoginOrRefresh) {
         return Promise.reject(error);
       }
 
-      if (
-        error.response &&
-        error.response.status === 401 &&
-        !originalRequest._retry
-      ) {
+      if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
 
         try {
           const refreshToken = localStorage.getItem("refresh_token");
-
           const response = await axios.post(
             `${baseURL}token/refresh/`,
             { refresh: refreshToken },
@@ -65,7 +58,7 @@ const createAPIClient = (baseURL = API_BASE_URL) => {
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return apiClient(originalRequest);
         } catch (refreshError) {
-          console.error("Refresh token invalid or expired");
+          console.error("🔒 Refresh token invalid or expired");
           localStorage.clear();
           window.location.href = "/";
         }
