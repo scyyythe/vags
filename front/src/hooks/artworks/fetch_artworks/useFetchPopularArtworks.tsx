@@ -61,6 +61,7 @@ const useFetchPopularArtworks = (limit = 5) => {
   return useQuery({
     queryKey: ["popular-artworks", limit],
     queryFn: () => fetchPopularArtworks(limit),
+    gcTime: 1000 * 60 * 10,
     staleTime: 1000 * 60 * 5,
   });
 };

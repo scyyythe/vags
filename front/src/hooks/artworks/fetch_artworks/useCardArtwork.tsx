@@ -18,6 +18,7 @@ const useArtworkQuery = (id: string) => {
     refetchOnReconnect: false,
     refetchOnMount: false,
     staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 5
   });
 };
 
