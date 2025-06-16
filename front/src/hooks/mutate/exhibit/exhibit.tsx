@@ -1,4 +1,5 @@
 import apiClient from "@/utils/apiClient";
+import { toast } from "sonner";
 
 export interface ExhibitPayload {
   title: string;
@@ -15,6 +16,11 @@ export interface ExhibitPayload {
 }
 
 export const createExhibit = async (data: ExhibitPayload) => {
+  if (!data.banner) {
+    toast.error("Banner is required.");
+    throw new Error("Banner is required");
+  }
+
   const formData = new FormData();
 
   formData.append("title", data.title);
@@ -28,10 +34,7 @@ export const createExhibit = async (data: ExhibitPayload) => {
 
   data.collaborators.forEach((id) => formData.append("collaborators", id));
   data.artworks.forEach((id) => formData.append("artworks", id));
-
-  if (data.banner) {
-    formData.append("banner", data.banner);
-  }
+  formData.append("banner", data.banner);
 
   try {
     const response = await apiClient.post("/exhibits/create/", formData, {
@@ -39,13 +42,11 @@ export const createExhibit = async (data: ExhibitPayload) => {
     });
     return response.data;
   } catch (error: any) {
-    // axios error object
     if (error.response) {
       console.error("Backend validation errors:", error.response.data);
     } else {
       console.error("Request error:", error.message);
     }
-    // Optionally re-throw or return a specific error object
     throw error;
   }
 };

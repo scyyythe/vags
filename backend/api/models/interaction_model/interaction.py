@@ -19,6 +19,7 @@ class Like(Document):
     user = ReferenceField(User)  
     art = ReferenceField(Art, required=False, null=True) 
     auction = ReferenceField(Auction, required=False, null=True)
+    exhibit=ReferenceField(Exhibit, required=False, null=True)
     created_at = DateTimeField(default=datetime.utcnow)
 
     meta = {'collection': 'likes'}

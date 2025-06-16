@@ -32,9 +32,12 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
   const { mutate: submitReport } = useSubmitReport();
   const { data: reportStatusData, isLoading: reportLoading, error: reportError } = useReportStatus([exhibit.id]);
 
-  const formatNumber = (num: number) => {
-    return num >= 1 ? `${num}k` : `${Math.round(num * 1000)}`;
-  };
+const formatNumber = (num: number) => {
+  if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+  return num.toString();
+};
+
 
   const handleReport = () => {
     if (reportStatusData?.reported) {
@@ -119,7 +122,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
               isOpen={menuOpen}
               onHide={handleHide}
               onReport={handleReport}
-              isReported={!!reportStatusData?.reported}
+              // isReported={!!reportStatusData?.reported}
               isShared={exhibit.isShared} 
               isHidden={isHidden}
             />

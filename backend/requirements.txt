@@ -22,3 +22,4 @@ channels_redis
 cryptography
 django-redis
 python-dotenv
+locust

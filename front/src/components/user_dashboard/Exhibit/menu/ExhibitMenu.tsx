@@ -8,7 +8,7 @@ interface ExhibitMenuProps {
   onHide: () => void;
   onReport: () => void;
   onUndoReport?: () => void;
-  isReported: boolean;
+  isReported?: boolean;
   isShared: boolean;
   isHidden?: boolean; 
   className?: string;
