@@ -221,14 +221,27 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
     }
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-       "LOCATION": "redis://redis:6379/1",  
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#        "LOCATION": "redis://redis:6379/1",  
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     }
+# }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
 }
 
 
