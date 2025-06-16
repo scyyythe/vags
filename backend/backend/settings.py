@@ -180,14 +180,14 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_ALLOW_ALL = False
-
 CORS_ALLOWED_ORIGINS = [
+    "https://vags.vercel.app",
     "http://localhost:8080", 
     "http://192.168.100.31:8080",
-    "https://vags.vercel.app",
 ]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = False  
 
 
 # python manage.py runserver 0.0.0.0:8000
