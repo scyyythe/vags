@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks";
+import { useFetchHotBids } from "@/hooks/auction/featured/useFetchHotBids";
 import HotBidsCarouselSkeleton from "@/components/skeletons/HotBidsCarouselSkeleton";
 
 const HotBidsCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { data: hotBids, isLoading, isError } = useFetchBiddingArtworks();
+const { data: hotBids, isLoading, isError } = useFetchHotBids();
 
   useEffect(() => {
     const interval = setInterval(() => {

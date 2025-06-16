@@ -116,8 +116,7 @@ const useAuctions = (
     queryKey: ["auctions", currentPage, userId, endpointType],
     queryFn: () => fetchAuctions(currentPage, userId, endpointType),
     staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
-    enabled,
+   gcTime: 1000 * 60 * 15, 
   });
 };
 
