@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
@@ -13,6 +12,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from "@/components/ui/alert-dialog";
+import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
+import { useExhibitCards } from "@/hooks/exhibit/useCardExihibit";
 
 type ExhibitRequest = {
   id: number;
@@ -33,6 +34,16 @@ const ExhibitsTab = () => {
   const [showPending, setShowPending] = useState(false);
   const [showPublishDialog, setShowPublishDialog] = useState(false);
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitRequest | null>(null);
+
+  const { data: exhibits = [], isLoading } = useExhibitCards();
+
+  const filteredExhibits = exhibits.filter((exhibit: any) => {
+    const isCorrectType = typeTab === "solo" ? exhibit.isSolo : !exhibit.isSolo;
+    const isCorrectStatus = statusFilter === "on_going"
+      ? exhibit.status !== "ended"
+      : exhibit.status === "ended";
+    return isCorrectType && isCorrectStatus;
+  });
 
   const tabEmptyMessages = {
     on_going: "No ongoing exhibits found.",
@@ -162,32 +173,32 @@ const ExhibitsTab = () => {
 
                     {/* Conditional Button */}
                     {req.isOwner ? (
-  req.type === "ready" ? (
-    <button
-      onClick={() => {
-        setSelectedExhibit(req);
-        setShowPublishDialog(true);
-      }}
-      className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-green-600 hover:bg-green-700 flex items-center justify-center"
-    >
-      Publish
-    </button>
-  ) : (
-    <Link
-      to={`/exhibitreview?id=${req.exhibitId}`}
-      className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-amber-600 hover:bg-amber-700 flex items-center justify-center"
-    >
-      Review
-    </Link>
-  )
-) : (
-  <button
-    onClick={() => handleRequestClick(req)}
-    className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-[#9b87f5] hover:bg-[#7E69AB]"
-  >
-    View
-  </button>
-)}
+                      req.type === "ready" ? (
+                        <button
+                          onClick={() => {
+                            setSelectedExhibit(req);
+                            setShowPublishDialog(true);
+                          }}
+                          className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-green-600 hover:bg-green-700 flex items-center justify-center"
+                        >
+                          Publish
+                        </button>
+                      ) : (
+                        <Link
+                          to={`/exhibitreview?id=${req.exhibitId}`}
+                          className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-amber-600 hover:bg-amber-700 flex items-center justify-center"
+                        >
+                          Review
+                        </Link>
+                      )
+                    ) : (
+                      <button
+                        onClick={() => handleRequestClick(req)}
+                        className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-[#9b87f5] hover:bg-[#7E69AB]"
+                      >
+                        View
+                      </button>
+                    )}
 
                   </div>
                 </li>
@@ -199,12 +210,27 @@ const ExhibitsTab = () => {
         </div>
       )}
 
-      {/* Empty State */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+      {/* Exhibit Cards Grid */}
+      {isLoading ? (
+        <div className="text-center text-xs text-gray-500">Loading exhibits...</div>
+      ) : filteredExhibits.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          {filteredExhibits.map((exhibit: any) => (
+            <ExhibitCard
+              key={exhibit.id}
+              exhibit={{
+                ...exhibit,
+                category: exhibit.category?.charAt(0).toUpperCase() + exhibit.category?.slice(1),
+              }}
+              onClick={() => navigate(`/view-exhibit/${exhibit.id}`)}
+            />
+          ))}
+        </div>
+      ) : (
         <div className="col-span-full text-center p-4 text-xs text-gray-500">
           {tabEmptyMessages[statusFilter]}
         </div>
-      </div>
+      )}
 
       {/* Publish Confirmation Dialog */}
       <AlertDialog open={showPublishDialog} onOpenChange={setShowPublishDialog}>
