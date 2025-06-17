@@ -21,7 +21,8 @@ from mongoengine.queryset.visitor import Q
 from rest_framework.exceptions import PermissionDenied
 from api.models.user_model.users import User
 from bson import ObjectId
-
+from rest_framework.exceptions import ValidationError
+from django.utils.timezone import now
 
 class AuctionCreateView(APIView):
     def post(self, request, *args, **kwargs):
@@ -132,9 +133,9 @@ class AuctionListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        now_utc = datetime.now(timezone.utc)
+        now_utc = now()
 
-       
+        # 1. Auto-close expired auctions
         expired_auctions = Auction.objects(
             status=AuctionStatus.ON_GOING.value,
             end_time__lt=now_utc
@@ -143,20 +144,31 @@ class AuctionListView(generics.ListAPIView):
             auction.close_auction()
             auction.reload()
 
-       
+        # 2. Blocked users filter
         blocked_user_ids = []
         user = self.request.user
         if user.is_authenticated and hasattr(user, "blocked_users"):
             blocked_user_ids = [u.id for u in user.blocked_users]
 
-       
+        valid_artwork_ids = None
         if blocked_user_ids:
             valid_artworks = Art.objects(artist__nin=blocked_user_ids).only('id')
             valid_artwork_ids = [art.id for art in valid_artworks]
-            return Auction.objects(artwork__in=valid_artwork_ids)
 
-      
-        return Auction.objects()
+        # 3. Optional status filter from query param
+        status_param = self.request.query_params.get("status")
+        allowed_statuses = [choice.value for choice in AuctionStatus]
+
+        query = {}
+        if status_param:
+            if status_param not in allowed_statuses:
+                raise ValidationError(f"Invalid status filter: {status_param}")
+            query["status"] = status_param
+
+        if valid_artwork_ids is not None:
+            query["artwork__in"] = valid_artwork_ids
+
+        return Auction.objects(**query)
 
 
 class AuctionListViewOwner(generics.ListAPIView):

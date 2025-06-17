@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useMemo,useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
@@ -23,20 +23,23 @@ const OnBidTab = () => {
   const { id: visitedUserId } = useParams();
   const loggedInUserId = getLoggedInUserId();
   const isMyProfile = !visitedUserId || visitedUserId === loggedInUserId;
-  const { data: participatedAuctions = [], isLoading: isLoadingParticipated } = useAuctions(
-    1,
-    loggedInUserId,
-    true,
-    "participated"
-  );
-  const { data: auctions = [], isLoading } = useAuctions(
-    1,
-    isMyProfile ? loggedInUserId : visitedUserId,
-    true,
-    isMyProfile ? "created-by-me" : "specific-user"
-  );
+const {
+  data: participatedAuctions = [],
+  isLoading: isLoadingParticipated,
+} = useAuctions(1, loggedInUserId, true, "participated");
 
-  const participatedAuctionsWithFlags = participatedAuctions.map((auction) => {
+const {
+  data: auctions = [],
+  isLoading: isLoadingAuctions,
+} = useAuctions(
+  1,
+  isMyProfile ? loggedInUserId : visitedUserId,
+  true,
+  isMyProfile ? "created-by-me" : "specific-user"
+);
+
+const participatedAuctionsWithFlags = useMemo(() => {
+  return participatedAuctions.map((auction) => {
     const isHighestBidder = auction.highest_bid?.user?.id === loggedInUserId;
     const joinedByCurrentUser = auction.bid_history?.some((bid) => bid.user?.id === loggedInUserId) ?? false;
     const isPaid = auction.status === "sold" && isHighestBidder;
@@ -50,6 +53,8 @@ const OnBidTab = () => {
       isLost,
     };
   });
+}, [participatedAuctions, loggedInUserId]);
+
 
   const auctionsToDisplay: ExtendedAuction[] =
     activeTab === "my_bids" ? participatedAuctionsWithFlags : (auctions as ExtendedAuction[]);
@@ -86,10 +91,11 @@ const OnBidTab = () => {
     },
   };
 
-  const handleBidClick = (artwork: ArtworkAuction) => {
-    localStorage.setItem("selectedBid", JSON.stringify(artwork));
-    navigate(`/bid/${artwork.id}/`, { state: { artwork } });
-  };
+const handleBidClick = useCallback((artwork: ArtworkAuction) => {
+  localStorage.setItem("selectedBid", JSON.stringify(artwork));
+  navigate(`/bid/${artwork.id}/`, { state: { artwork } });
+}, [navigate]);
+
 
   return (
     <div>
@@ -162,7 +168,7 @@ const OnBidTab = () => {
         )}
       </div>
       {/* Content */}
-      {isLoading ? (
+   {(activeTab === "my_bids" ? isLoadingParticipated : isLoadingAuctions) ? (
         <ArtCardSkeleton />
       ) : filteredAuctions.length === 0 ? (
         <div className="flex flex-col items-center justify-center col-span-full text-center p-4">

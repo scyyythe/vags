@@ -51,39 +51,48 @@ const Bidding = () => {
 
   const [page, setPage] = useState(1);
   const { data: followedAuctions = [] } = useFollowedAuctions(page);
+const filteredArtworks = useMemo(() => {
+  const now = new Date();
 
-  const filteredArtworks = useMemo(() => {
-    const now = new Date();
+ 
+  if (selectedCategory === "Following") {
+    return followedAuctions || [];
+  }
 
-    if (selectedCategory === "Following") {
-      return followedAuctions;
-    }
 
-    let activeArtworks = biddingArtworks.filter((a) => new Date(a.start_time) <= now);
+  let activeArtworks = biddingArtworks?.filter(
+    (a) => new Date(a.start_time) <= now
+  ) || [];
 
-    if (
-      selectedCategory &&
-      selectedCategory !== "All" &&
-      selectedCategory !== "Following" &&
-      selectedCategory !== "Trending"
-    ) {
-      activeArtworks = activeArtworks.filter((artwork) => artwork.artwork.category === selectedCategory);
-    }
+  if (
+    selectedCategory &&
+    !["All", "Following", "Trending"].includes(selectedCategory)
+  ) {
+    activeArtworks = activeArtworks.filter(
+      (artwork) => artwork.artwork.category === selectedCategory
+    );
+  }
 
-    if (selectedCategory === "Trending") {
-      activeArtworks = [...activeArtworks].sort((a, b) => b.auction_likes_count - a.auction_likes_count);
-    }
 
-    if (searchQuery) {
-      activeArtworks = activeArtworks.filter(
-        (artwork) =>
-          artwork.artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          artwork.artwork.artist.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
+  if (selectedCategory === "Trending") {
+    activeArtworks = [...activeArtworks].sort(
+      (a, b) => b.auction_likes_count - a.auction_likes_count
+    );
+  }
 
-    return activeArtworks;
-  }, [biddingArtworks, followedAuctions, searchQuery, selectedCategory]);
+
+  if (searchQuery?.trim()) {
+    const query = searchQuery.toLowerCase();
+    activeArtworks = activeArtworks.filter(
+      (artwork) =>
+        artwork.artwork.title.toLowerCase().includes(query) ||
+        artwork.artwork.artist.toLowerCase().includes(query)
+    );
+  }
+
+  return activeArtworks;
+}, [biddingArtworks, followedAuctions, searchQuery, selectedCategory]);
+
   const auctionIds = useMemo(() => filteredArtworks.map((artwork) => artwork.id), [filteredArtworks]);
   const { data: reportStatusData, isLoading: isReportLoading } = useBulkBidReportStatus(auctionIds);
 

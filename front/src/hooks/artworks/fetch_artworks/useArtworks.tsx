@@ -109,6 +109,8 @@ const useArtworks = (
     queryFn: () => fetchArtworks(currentPage, userId, endpointType, filterVisibility, onlyActivePublic),
     staleTime: 1000 * 60 * 5,
     enabled: enabled,
+    gcTime: 1000 * 60 * 5 
+
   });
 };
 
