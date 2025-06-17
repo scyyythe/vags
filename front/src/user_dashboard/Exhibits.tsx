@@ -116,7 +116,19 @@ const mockExhibits = [
 ];
 
 type SortOption = "popularity" | "newest" | "oldest";
-type FilterOption = "all" | "solo" | "collab" | "trending" | "most-viewed";
+type FilterOption = 
+  | "all"
+  | "solo"
+  | "collab"
+  | "trending"
+  | "most-viewed"
+  | "solo-ongoing"
+  | "solo-ended"
+  | "solo-upcoming"
+  | "collab-ongoing"
+  | "collab-ended"
+  | "collab-upcoming";
+
 
 const Exhibits = () => {
   const navigate = useNavigate();
@@ -126,16 +138,34 @@ const Exhibits = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>(categories[0]);
 
   const {data:exhibits=[],isLoading,isError}=useExhibitCards();
-  // Filter exhibits based on current filter
-const filteredExhibits = exhibits.filter((exhibit: any) => {
-  if (filter === "all") return true;
-  if (filter === "solo") return exhibit.isSolo;
-  if (filter === "collab") return !exhibit.isSolo;
-  if (filter === "trending") return exhibit.likes > 100;
-  if (filter === "most-viewed") return exhibit.views > 1.3;
-  return true;
-});
 
+  const now = new Date();
+
+  const isOngoing = (exhibit: any) =>
+    exhibit.startDate && exhibit.endDate &&
+    new Date(exhibit.startDate) <= now && new Date(exhibit.endDate) >= now;
+
+  const isUpcoming = (exhibit: any) =>
+    exhibit.startDate && new Date(exhibit.startDate) > now;
+
+  const isEnded = (exhibit: any) =>
+    exhibit.endDate && new Date(exhibit.endDate) < now;
+
+  // Filter exhibits based on current filter
+  const filteredExhibits = exhibits.filter((exhibit: any) => {
+    if (filter === "all") return true;
+    if (filter === "solo") return exhibit.isSolo;
+    if (filter === "collab") return !exhibit.isSolo;
+    if (filter === "trending") return exhibit.likes > 100;
+    if (filter === "most-viewed") return exhibit.views > 1.3;
+    if (filter === "solo-ongoing") return exhibit.isSolo && isOngoing(exhibit);
+    if (filter === "solo-ended") return exhibit.isSolo && isEnded(exhibit);
+    if (filter === "solo-upcoming") return exhibit.isSolo && isUpcoming(exhibit);
+    if (filter === "collab-ongoing") return !exhibit.isSolo && isOngoing(exhibit);
+    if (filter === "collab-ended") return !exhibit.isSolo && isEnded(exhibit);
+    if (filter === "collab-upcoming") return !exhibit.isSolo && isUpcoming(exhibit);
+    return true;
+  });
 
   // Sort exhibits based on current sort option
   const sortedExhibits = [...filteredExhibits].sort((a, b) => {
@@ -193,15 +223,42 @@ const filteredExhibits = exhibits.filter((exhibit: any) => {
                 <DropdownMenuTrigger asChild>
                   <button className="py-1 px-4 rounded-full text-[10px] border border-gray-300">
                     <i className='bx bx-filter text-xs mr-2'></i>
-                    {filter === "solo" ? "Solo" : filter === "collab" ? "Collab" : "Filter"}
+                    {{
+                      solo: "Solo",
+                      collab: "Collab",
+                      "solo-ongoing": "Solo - Ongoing",
+                      "solo-ended": "Solo - Ended",
+                      "solo-upcoming": "Solo - Upcoming",
+                      "collab-ongoing": "Collab - Ongoing",
+                      "collab-ended": "Collab - Ended",
+                      "collab-upcoming": "Collab - Upcoming",
+                    }[filter] || "Filter"}
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setFilter("solo")}  className="text-[10px]">
+                  <DropdownMenuItem onClick={() => setFilter("solo")} className="text-[10px]">
                     Solo Exhibits
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setFilter("collab")}  className="text-[10px]">
+                  <DropdownMenuItem onClick={() => setFilter("collab")} className="text-[10px]">
                     Collab Exhibits
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilter("solo-ongoing")} className="text-[10px]">
+                    Solo - Ongoing
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilter("solo-ended")} className="text-[10px]">
+                    Solo - Ended
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilter("solo-upcoming")} className="text-[10px]">
+                    Solo - Upcoming
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilter("collab-ongoing")} className="text-[10px]">
+                    Collab - Ongoing
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilter("collab-ended")} className="text-[10px]">
+                    Collab - Ended
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilter("collab-upcoming")} className="text-[10px]">
+                    Collab - Upcoming
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -219,21 +276,20 @@ const filteredExhibits = exhibits.filter((exhibit: any) => {
         
          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {isLoading
-  ? Array.from({ length: 8 }).map((_, i) => <ExhibitCardSkeleton key={i} />)
-  : sortedExhibits.map((exhibit) => (
-     <ExhibitCard 
-  key={exhibit.id} 
-  exhibit={{
-    ...exhibit,
-    category: exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1)
-  }}
-  onClick={() => navigate(`/view-exhibit/${exhibit.id}`)} 
-/>
+            ? Array.from({ length: 8 }).map((_, i) => <ExhibitCardSkeleton key={i} />)
+            : sortedExhibits.map((exhibit) => (
+              <ExhibitCard 
+            key={exhibit.id} 
+            exhibit={{
+              ...exhibit,
+              category: exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1)
+            }}
+            onClick={() => navigate(`/view-exhibit/${exhibit.id}`)} 
+          />
 
-    ))
-}
-
-          </div>
+              ))
+          }
+        </div>
       </div>
       
     </div>
