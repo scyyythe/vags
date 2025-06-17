@@ -10,6 +10,7 @@ export const useFetchArtworkById = (id: string) => {
     },
     enabled: Boolean(id && id.trim() !== ""),
     staleTime: 5 * 60 * 1000,
+    
     refetchOnWindowFocus: false,
   });
 };

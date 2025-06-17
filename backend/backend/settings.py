@@ -18,24 +18,19 @@ cloudinary.config(
     api_key=os.getenv("CLOUDINARY_API_KEY"),
     api_secret=os.getenv("CLOUDINARY_API_SECRET"),
 )
+# MongoDB connection (always run this)
+connect(
+    db=os.getenv("MONGO_DB_NAME"),
+    host=os.getenv("MONGO_DB_URI"),
+    alias="default"
+)
 
-def test_mongo_connection():
-    load_dotenv() 
-
-    try:
-        connect(
-            db=os.getenv("MONGO_DB_NAME"),
-            host=os.getenv("MONGO_DB_URI"),
-            alias="default"
-        )
-        print("✅ MongoDB Connection Successful!")
-    except Exception as e:
-        print(f"❌ MongoDB Connection Failed: {e}")
-        
-# Run test only when Django starts
+# Optional: test the connection in dev only
 if "runserver" in sys.argv or "shell" in sys.argv:
-    test_mongo_connection()
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+    print("✅ MongoDB Connected in Dev Mode")
+
+        
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -50,9 +45,8 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-gtf0y@$4m-u=t$
 # SECRET_KEY = 'django-insecure-gtf0y@$4m-u=t$b-&z8woymqzjq47-x=s5k)^#d=-v!+yqo(%^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["vags.onrender.com", "localhost", "127.0.0.1"]
 
 AUTHENTICATION_BACKENDS = (
     'mongoengine.django.auth.MongoEngineBackend',
@@ -75,8 +69,10 @@ SIMPLE_JWT = {
      "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
  }
 
-# Application definition
-
+# # Application definition
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 INSTALLED_APPS = [ 
     'corsheaders', 
     'anymail',
@@ -100,6 +96,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -108,9 +105,10 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',  
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-   
 ]
-
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
@@ -176,23 +174,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
-
-
 CORS_ALLOWED_ORIGINS = [
+    "https://vags.vercel.app",
     "http://localhost:8080", 
     "http://192.168.100.31:8080",
-    "https://8fa2-61-245-19-236.ngrok-free.app",
-    "https://vags.vercel.app",
 ]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = False  
 
 
 # python manage.py runserver 0.0.0.0:8000
@@ -221,14 +216,27 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
     }
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-       "LOCATION": "redis://redis:6379/1",  
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#        "LOCATION": "redis://redis:6379/1",  
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     }
+# }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
 }
 
 
