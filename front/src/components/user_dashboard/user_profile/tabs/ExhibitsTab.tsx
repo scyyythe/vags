@@ -30,22 +30,38 @@ const ExhibitsTab = () => {
   const navigate = useNavigate();
   const params = useParams();
   const [typeTab, setTypeTab] = useState<"solo" | "collab">("solo");
-  const [statusFilter, setStatusFilter] = useState<"on_going" | "closed">("on_going");
+  const [statusFilter, setStatusFilter] = useState<"on_going" | "closed" | "upcoming">("on_going");
   const [showPending, setShowPending] = useState(false);
   const [showPublishDialog, setShowPublishDialog] = useState(false);
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitRequest | null>(null);
 
   const { data: exhibits = [], isLoading } = useExhibitCards();
 
+  const now = new Date();
+
+  const isOngoing = (exhibit: any) =>
+    exhibit.startDate && exhibit.endDate &&
+    new Date(exhibit.startDate) <= now && new Date(exhibit.endDate) >= now;
+
+  const isUpcoming = (exhibit: any) =>
+    exhibit.startDate && new Date(exhibit.startDate) > now;
+
+  const isEnded = (exhibit: any) =>
+    exhibit.endDate && new Date(exhibit.endDate) < now;
+
   const filteredExhibits = exhibits.filter((exhibit: any) => {
     const isCorrectType = typeTab === "solo" ? exhibit.isSolo : !exhibit.isSolo;
-    const isCorrectStatus = statusFilter === "on_going"
-      ? exhibit.status !== "ended"
-      : exhibit.status === "ended";
-    return isCorrectType && isCorrectStatus;
+
+    const statusMatch =
+      statusFilter === "on_going" ? isOngoing(exhibit) :
+      statusFilter === "closed" ? isEnded(exhibit) :
+      statusFilter === "upcoming" ? isUpcoming(exhibit) : true;
+
+    return isCorrectType && statusMatch;
   });
 
   const tabEmptyMessages = {
+    upcoming: "No upcoming exhibits found.",
     on_going: "No ongoing exhibits found.",
     closed: "No past exhibits found.",
   };
@@ -135,6 +151,7 @@ const ExhibitsTab = () => {
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
             >
+              <option value="upcoming">Upcoming</option>
               <option value="on_going">Ongoing</option>
               <option value="closed">Ended</option>
             </select>
