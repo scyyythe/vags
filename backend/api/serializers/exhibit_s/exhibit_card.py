@@ -17,7 +17,8 @@ class ExhibitCardSerializer(serializers.Serializer):
     isShared = serializers.SerializerMethodField()
     collaborators = serializers.SerializerMethodField()
     owner = serializers.SerializerMethodField()
-    
+    startDate = serializers.SerializerMethodField()
+    endDate = serializers.SerializerMethodField()
     exhibit_likes_count = serializers.SerializerMethodField()
     user_has_liked_exhibit = serializers.SerializerMethodField()
 
@@ -39,6 +40,12 @@ class ExhibitCardSerializer(serializers.Serializer):
 
     def get_views(self, obj):
         return len(obj.viewed_by or [])
+
+    def get_startDate(self, obj):
+        return obj.start_time.isoformat() if obj.start_time else None
+
+    def get_endDate(self, obj):
+        return obj.end_time.isoformat() if obj.end_time else None
 
     def get_isSolo(self, obj):
         return obj.exhibit_type == 'Solo'
