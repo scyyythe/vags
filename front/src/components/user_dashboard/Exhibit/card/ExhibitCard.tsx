@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from "sonner";
-import { Eye, Heart, MoreHorizontal, Calendar } from 'lucide-react';
+import { Eye, Heart, MoreHorizontal } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import ExhibitMenu from "@/components/user_dashboard/Exhibit/menu/ExhibitMenu";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
@@ -89,17 +89,17 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
     }
 
     if (end && now > end) {
-      return "Ended";
+      return "ENDED";
     }
 
     if (start && end && now >= start && now <= end) {
       const timeDiff = end.getTime() - now.getTime();
       const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
       if (daysLeft <= 5) return `${daysLeft} day${daysLeft > 1 ? "s" : ""} left`;
-      return "Ongoing";
+      return "ONGOING";
     }
 
-    return "Ongoing";
+    return "ONGOING";
   };
 
   return (
@@ -155,7 +155,6 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
 
         {/* Duration / Status label */}
         <div className="absolute bottom-3 left-3 bg-white bg-opacity-90 rounded-full px-2 py-1 flex items-center gap-1">
-          <Calendar size={8} className="text-gray-700" />
           <span className="text-[9px] font-semibold text-red-600">
             {getDurationLabel()}
           </span>
