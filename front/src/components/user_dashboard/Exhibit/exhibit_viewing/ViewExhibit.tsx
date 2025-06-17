@@ -20,15 +20,17 @@ const ExhibitViewing = () => {
   const { id } = useParams<{ id: string }>();
 
   const {data:exhibit, isLoading}=useExhibitCardDetail(id);
-const {
-  isLiked,
-  likeCount,
-  toggleLike,
-} = useExhibitLike(
-  id ?? "",
-  exhibit?.user_has_liked_exhibit ?? false,
-  exhibit?.exhibit_likes_count ?? 0
-);
+  const isExhibitEnded = exhibit?.endDate ? new Date() > new Date(exhibit.endDate) : false;
+
+  const {
+    isLiked,
+    likeCount,
+    toggleLike,
+  } = useExhibitLike(
+    id ?? "",
+    exhibit?.user_has_liked_exhibit ?? false,
+    exhibit?.exhibit_likes_count ?? 0
+  );
 
   // const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
   // const isLiked = likedArtworks[id] || false;
@@ -434,21 +436,27 @@ if (!exhibit) {
               <div className={`${isMobile ? "" : "relative top-5"}`}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center space-x-4">
-<button
-  onClick={toggleLike}
-  className="flex items-center space-x-1 text-gray-800 rounded-3xl py-1.5 px-3 border border-gray-200"
->
-  <Heart
-    size={13}
-    className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
-    fill={isLiked ? "currentColor" : "none"}
-  />
-  {likeCount > 0 && (
-    <span className="text-[10px] text-gray-800">
-      {likeCount}
-    </span>
-  )}
-</button>
+
+                    <button
+                      onClick={() => {
+                        if (!isExhibitEnded) toggleLike();
+                      }}
+                      disabled={isExhibitEnded}
+                      className={`flex items-center space-x-1 rounded-3xl py-1.5 px-3 border ${
+                        isExhibitEnded ? "cursor-not-allowed opacity-60 bg-gray-100" : "text-gray-800 border-gray-200"
+                      }`}
+                    >
+                      <Heart
+                        size={13}
+                        className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
+                        fill={isLiked ? "currentColor" : "none"}
+                      />
+                      {likeCount > 0 && (
+                        <span className="text-[10px] text-gray-800">
+                          {likeCount}
+                        </span>
+                      )}
+                    </button>
 
 
 
@@ -514,7 +522,11 @@ if (!exhibit) {
                 <Separator className="my-6" />
 
                 {/* Comment Section */}
-                <CommentSection artworkId={id} />
+                {isExhibitEnded ? (
+                  <div className="text-[10px] text-gray-500 italic">This exhibit has ended. Commenting is disabled.</div>
+                ) : (
+                  <CommentSection artworkId={id} />
+                )}
               </div>
             </div>
           </div>
