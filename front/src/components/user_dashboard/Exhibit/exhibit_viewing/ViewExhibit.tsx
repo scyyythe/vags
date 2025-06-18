@@ -473,16 +473,19 @@ if (!exhibit) {
                       <MoreHorizontal size={isMobile ? 14 : 14} />
                     </button>
 
-                    <ExhibitMenu
-                      isOpen={menuOpen}
-                      onHide={handleHide}
-                      onReport={handleReport}
-                      onUndoReport={handleReport}
-                      isReported={isReported}
-                      isShared = {exhibit.isShared}
-                      isHidden={isHidden}
-                    />
+                    <div className="pt-2"> 
+                      <ExhibitMenu
+                        isOpen={menuOpen}
+                        onHide={handleHide}
+                        onReport={handleReport}
+                        onUndoReport={handleReport}
+                        isReported={isReported}
+                        isShared={exhibit.isShared}
+                        isHidden={isHidden}
+                      />
+                    </div>
                   </div>
+
                 </div>
 
                 <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>

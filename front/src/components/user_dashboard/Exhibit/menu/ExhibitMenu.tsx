@@ -54,7 +54,7 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
         <>
         <div
             ref={menuRef}
-            className="absolute -left-2.5 top-7 z-10 bg-gray-100 rounded-full py-1 px-1 shadow-md"
+            className="absolute -left-2.5 top-6 z-10 bg-gray-100 rounded-full py-1 px-1 shadow-md"
             onClick={(e) => e.stopPropagation()}
         >
             <div className="flex flex-col items-start">
