@@ -13,6 +13,8 @@ export interface ExhibitPayload {
   artworks: string[];
   banner: File | null;
   owner: string;
+  slot_artwork_map: Record<number, string>; 
+  slot_owner_map: Record<number, string>; 
 }
 
 export const createExhibit = async (data: ExhibitPayload) => {
@@ -31,6 +33,10 @@ export const createExhibit = async (data: ExhibitPayload) => {
   formData.append("start_time", data.start_time);
   formData.append("end_time", data.end_time);
   formData.append("chosen_env", data.chosen_env);
+  
+  formData.append("slot_artwork_map", JSON.stringify(data.slot_artwork_map)); 
+  formData.append("slot_owner_map", JSON.stringify(data.slot_owner_map));    
+
 
   data.collaborators.forEach((id) => formData.append("collaborators", id));
   data.artworks.forEach((id) => formData.append("artworks", id));

@@ -5,6 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 import AddArtistDialog from "@/components/user_dashboard/Exhibit/add_exhibit/components/AddArtistDialog";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
+import Gallery3D from "@/components/gallery/Gallery3D";
 import { sendCollaboratorNotifications, showCollaboratorNotification } from "@/utils/notificationUtils";
 
 // Import new components
@@ -26,6 +27,8 @@ import { User } from "@/hooks/users/useUserQuery";
 import { useCreateExhibit } from "@/hooks/mutate/exhibit/AddExhibit";
 import { ExhibitPayload } from "@/hooks/mutate/exhibit/exhibit";
 import { ToastT } from "sonner";
+import tenSlotsImg from "../../../../../public/pics/slots-10.png";
+
 // Color schemes for slots by user
 const slotColorSchemes = [
   "border-primary bg-primary/10",
@@ -277,14 +280,6 @@ const AddExhibit = () => {
     console.log("Fetched artworks:", artworks);
   }, [artworks]);
 
-  // // Mock current user data
-  // const currentUser: User = {
-  //   id: 100,
-  //   name: "You",
-  //   avatar:
-  //     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80",
-  // };
-
   // Mock environments data with different slot capacities
   const environments: Environment[] = [
     {
@@ -302,8 +297,8 @@ const AddExhibit = () => {
     {
       id: 3,
       image:
-        "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      slots: 9,
+        tenSlotsImg,
+      slots: 10,
     },
   ];
 
@@ -460,6 +455,8 @@ const AddExhibit = () => {
       artworks: selectedArtworks,
       collaborators: collaborators.map((user) => user.id),
       banner: bannerFile,
+      slot_artwork_map: slotArtworkMap,
+      slot_owner_map: slotOwnerMap
     };
 
     console.log("Submitting payload:", payload);
@@ -773,6 +770,46 @@ const AddExhibit = () => {
                   viewMode={viewMode}
                   isReadOnly={isReadOnly}
                 />
+
+                {selectedEnvironment === 3 ? (
+                  <div className="mt-6">
+                    <p className="text-xs font-semibold mb-4">Interactive Virtual Gallery</p>
+                    <div className="w-full h-[600px] relative rounded-lg overflow-hidden border">
+                      <Gallery3D
+                        slotArtworkMap={slotArtworkMap}
+                        artworks={artworks.map((a) => ({
+                          id: a.id.toString(),
+                          image_url: a.image_url || a.image_url || "", 
+                          title: a.title || "Untitled",
+                          artist: a.artist || "Unknown"
+                        }))}
+                      />
+
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-2">
+                      This 3D environment contains <strong>10 slots</strong>. Click to enter, use <code>WASD</code> + mouse to move.
+                    </p>
+                  </div>
+                ) : selectedEnvironment && (
+                  <ExhibitSlots
+                    selectedEnvironment={selectedEnvironment}
+                    environments={environments}
+                    slotOwnerMap={slotOwnerMap}
+                    slotArtworkMap={slotArtworkMap}
+                    artworks={artworks}
+                    exhibitType={exhibitType}
+                    selectedSlots={selectedSlots}
+                    handleSlotSelect={handleSlotSelect}
+                    handleClearSlot={handleClearSlot}
+                    canInteractWithSlot={canInteractWithSlot}
+                    getUserName={getUserName}
+                    getSlotColor={getSlotColor}
+                    collaborators={collaborators}
+                    currentUser={currentUser}
+                    colorNames={colorNames}
+                    slotColorSchemes={slotColorSchemes}
+                  />
+                )}
 
                 {/* Display available slots only if an environment is selected */}
                 {selectedEnvironment && (
