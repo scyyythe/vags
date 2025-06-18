@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { toast } from "sonner";
-import { Eye, Heart, MoreHorizontal } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Eye, Heart, MoreHorizontal } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ExhibitMenu from "@/components/user_dashboard/Exhibit/menu/ExhibitMenu";
+import Menu from "@/components/user_dashboard/own_profile/menu/exhibit_card/Menu";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import useReportStatus from "@/hooks/mutate/report/useReportStatus";
 
@@ -26,9 +27,10 @@ interface ExhibitProps {
     }[];
   };
   onClick?: () => void;
+  isOwnProfile?: boolean; // <-- ADD THIS PROP
 }
 
-const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
+const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = false }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -37,30 +39,15 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
   const { data: reportStatusData } = useReportStatus([exhibit.id]);
 
   const formatNumber = (num: number) => {
-    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+    if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
     return num.toString();
-  };
-
-  const handleReport = () => {
-    if (reportStatusData?.reported) {
-      toast.error("You have already reported this artwork.");
-      setMenuOpen(false);
-      return;
-    }
-    setMenuOpen(false);
-  };
-
-  const handleHide = () => {
-    setIsHidden(true);
-    toast("Artwork hidden");
-    setMenuOpen(false);
   };
 
   const collaborators = exhibit.collaborators || [];
 
   const getInitials = (name: string) => {
-    return name.split(' ').map(part => part.charAt(0)).join('').toUpperCase();
+    return name.split(" ").map((part) => part.charAt(0)).join("").toUpperCase();
   };
 
   const isNotStartedYet = () => {
@@ -75,28 +62,17 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
     const end = exhibit.endDate ? new Date(exhibit.endDate) : null;
 
     if (start && now < start) {
-      const startFormatted = start.toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
-        year: "2-digit",
-      });
-      const endFormatted = end?.toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
-        year: "2-digit",
-      });
+      const startFormatted = start.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "2-digit" });
+      const endFormatted = end?.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "2-digit" });
       return `${startFormatted} - ${endFormatted}`;
     }
 
-    if (end && now > end) {
-      return "ENDED";
-    }
+    if (end && now > end) return "ENDED";
 
     if (start && end && now >= start && now <= end) {
       const timeDiff = end.getTime() - now.getTime();
       const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-      if (daysLeft <= 5) return `${daysLeft} day${daysLeft > 1 ? "s" : ""} left`;
-      return "ONGOING";
+      return daysLeft <= 5 ? `${daysLeft} day${daysLeft > 1 ? "s" : ""} left` : "ONGOING";
     }
 
     return "ONGOING";
@@ -105,35 +81,22 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
   return (
     <div
       className={`relative w-full rounded-xl bg-white border transition-all duration-300 ${
-        isNotStartedYet()
-          ? 'cursor-not-allowed opacity-70'
-          : 'cursor-pointer hover:shadow-lg'
+        isNotStartedYet() ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:shadow-lg"
       }`}
       onClick={() => {
-        if (!isNotStartedYet() && onClick) {
-          onClick();
-        }
+        if (!isNotStartedYet() && onClick) onClick();
       }}
-      onMouseEnter={() => {
-        if (isNotStartedYet()) setShowTooltip(true);
-      }}
+      onMouseEnter={() => isNotStartedYet() && setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
-      {/* Tooltip with animation */}
       {showTooltip && (
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 bg-gray-800 text-white text-[10px] px-2 py-1 rounded-md shadow-md whitespace-nowrap
-          transition-all duration-200 ease-out opacity-100 translate-y-0"
-        >
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 bg-gray-800 text-white text-[10px] px-2 py-1 rounded-md shadow-md whitespace-nowrap">
           Exhibit not available yet
         </div>
       )}
 
       <div className="relative">
-        <img
-          src={exhibit.image}
-          alt={exhibit.title}
-          className="w-full h-40 object-cover rounded-lg"
-        />
+        <img src={exhibit.image} alt={exhibit.title} className="w-full h-40 object-cover rounded-lg" />
 
         <div className="absolute top-3 right-3 bg-white bg-opacity-90 rounded-full px-2 pb-0.5">
           <span className="text-[10px] font-medium">{exhibit.category}</span>
@@ -142,10 +105,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
         {!exhibit.isSolo && (
           <div className="absolute top-3 left-3 flex -space-x-2">
             {collaborators.slice(0, 3).map((collaborator) => (
-              <Avatar
-                key={collaborator.id}
-                className="border border-white h-5 w-5"
-              >
+              <Avatar key={collaborator.id} className="border border-white h-5 w-5">
                 <AvatarImage src={collaborator.avatar} alt={collaborator.name} />
                 <AvatarFallback>{getInitials(collaborator.name)}</AvatarFallback>
               </Avatar>
@@ -153,14 +113,10 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
           </div>
         )}
 
-        {/* Duration / Status label */}
         <div className="absolute bottom-3 left-3 bg-white bg-opacity-90 rounded-full px-2 py-1 flex items-center gap-1">
-          <span className="text-[9px] font-semibold text-red-600">
-            {getDurationLabel()}
-          </span>
+          <span className="text-[9px] font-semibold text-red-600">{getDurationLabel()}</span>
         </div>
 
-        {/* Views and Likes */}
         <div className="absolute bottom-3 right-3 flex gap-2">
           <div className="flex items-center bg-white bg-opacity-90 rounded-full px-2 py-1">
             <Eye size={11} className="text-gray-700 mr-1" />
@@ -177,7 +133,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
         <div className="flex justify-between items-start relative">
           <h2 className="font-semibold text-xs">"{exhibit.title}"</h2>
 
-          <div className="relative">
+          <div className="relative bottom-1">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -185,16 +141,37 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick }) => {
               }}
               className="p-1 hover:bg-gray-100 rounded-full"
             >
-              <MoreHorizontal size={13} className="text-gray-500" />
+              <MoreHorizontal size={13} className="text-gray-600 hover:text-black" />
             </button>
 
-            <ExhibitMenu
-              isOpen={menuOpen}
-              onHide={handleHide}
-              onReport={handleReport}
-              isShared={exhibit.isShared}
-              isHidden={isHidden}
-            />
+            {menuOpen && isOwnProfile ? (
+              <Menu
+                isOpen={menuOpen}
+                artworkId={exhibit.id}
+                artworkTitle={exhibit.title}
+                isShared = {false}
+                isPublic={true}
+                onEdit={(id) => console.log("Edit exhibit:", id)}
+                onToggleVisibility={(newVisibility, id) => console.log("Toggle visibility:", newVisibility, id)}
+                onViewInsights={(id) => console.log("View insights for:", id)}
+              />
+            ) : (
+              <ExhibitMenu
+                isOpen={menuOpen}
+                onHide={() => {
+                  setIsHidden(true);
+                  setMenuOpen(false);
+                }}
+                onReport={() => {
+                  if (reportStatusData?.reported) {
+                    toast.error("You have already reported this exhibit.");
+                  }
+                  setMenuOpen(false);
+                }}
+                isShared={exhibit.isShared}
+                isHidden={isHidden}
+              />
+            )}
           </div>
         </div>
 
