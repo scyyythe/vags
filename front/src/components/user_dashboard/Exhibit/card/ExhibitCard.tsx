@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { Eye, Heart, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ExhibitMenu from "@/components/user_dashboard/Exhibit/menu/ExhibitMenu";
@@ -27,13 +28,15 @@ interface ExhibitProps {
     }[];
   };
   onClick?: () => void;
-  isOwnProfile?: boolean; // <-- ADD THIS PROP
+  isOwnProfile?: boolean; 
 }
 
 const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = false }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+
+  const navigate = useNavigate();
 
   const { mutate: submitReport } = useSubmitReport();
   const { data: reportStatusData } = useReportStatus([exhibit.id]);
@@ -144,18 +147,21 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
               <MoreHorizontal size={13} className="text-gray-600 hover:text-black" />
             </button>
 
-            {menuOpen && isOwnProfile ? (
+            {/* {menuOpen && isOwnProfile ? ( */}
               <Menu
                 isOpen={menuOpen}
                 artworkId={exhibit.id}
                 artworkTitle={exhibit.title}
                 isShared = {false}
                 isPublic={true}
-                onEdit={(id) => console.log("Edit exhibit:", id)}
+                onEdit={(id) => {
+                  const searchParams = new URLSearchParams({ mode: "edit" });
+                  navigate(`/add-exhibit/${id}?${searchParams.toString()}`);
+                }}
                 onToggleVisibility={(newVisibility, id) => console.log("Toggle visibility:", newVisibility, id)}
                 onViewInsights={(id) => console.log("View insights for:", id)}
               />
-            ) : (
+            {/* ) : (
               <ExhibitMenu
                 isOpen={menuOpen}
                 onHide={() => {
@@ -171,7 +177,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                 isShared={exhibit.isShared}
                 isHidden={isHidden}
               />
-            )}
+            )} */}
           </div>
         </div>
 
