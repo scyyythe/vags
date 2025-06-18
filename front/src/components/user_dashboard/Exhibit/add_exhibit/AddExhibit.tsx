@@ -18,7 +18,7 @@ import CollaboratorNotice from "./components/CollaboratorNotice";
 import ExhibitDialogs from "./components/ExhibitDialogs";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { getLoggedInUserId } from "@/auth/decode";
-// Import types
+
 import { Artist, ViewMode, Environment, Artwork, SubmissionStatus } from "./components/types";
 import useUserQuery from "@/hooks/users/useUserQuery";
 import { User } from "@/hooks/users/useUserQuery";
@@ -28,16 +28,16 @@ import { ExhibitPayload } from "@/hooks/mutate/exhibit/exhibit";
 import { ToastT } from "sonner";
 // Color schemes for slots by user
 const slotColorSchemes = [
-  "border-primary bg-primary/10", // Owner (primary color)
-  "border-[#9b87f5] bg-[#9b87f5]/10", // First collaborator (purple)
-  "border-[#7E69AB] bg-[#7E69AB]/10", // Second collaborator (darker purple)
+  "border-primary bg-primary/10",
+  "border-[#9b87f5] bg-[#9b87f5]/10", 
+  "border-[#7E69AB] bg-[#7E69AB]/10",
 ];
 
 // Color names for clearer visual distinction
 const colorNames = [
-  "Dark Blue (Your slots)", // Owner color name
-  "Purple (First collaborator's slots)", // First collaborator color name
-  "Dark Purple (Second collaborator's slots)", // Second collaborator color name
+  "Dark Blue (Your slots)", 
+  "Purple (First collaborator's slots)",
+  "Dark Purple (Second collaborator's slots)",
 ];
 
 // Mock data for demo populated exhibits
@@ -308,7 +308,6 @@ const AddExhibit = () => {
   ];
 
   // Load exhibit data based on exhibitId and mode
-
   useEffect(() => {
     if (exhibitId && mockExhibitData[Number(exhibitId)]) {
       const exhibitData = mockExhibitData[Number(exhibitId)];
@@ -475,7 +474,11 @@ const AddExhibit = () => {
         navigate("/exhibits");
       },
       onError: (error) => {
-        toast.error(`Failed to create exhibit: ${error?.message || "Unknown error"}`);
+        toast({
+          title: "Failed to create exhibit",
+          description: error?.message || "Unknown error",
+          variant: "destructive",
+        });
       },
     });
   };

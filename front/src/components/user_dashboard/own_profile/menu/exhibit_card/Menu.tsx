@@ -64,8 +64,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
     };
 
     const handleEditClick = () => {
-        onEdit(artworkId);
-        navigate(`/update/${artworkId}`);
+        navigate(`/add-exhibit`);
     };
 
     return (
