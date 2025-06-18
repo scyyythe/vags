@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import TipJarIcon from "../tip_jar/TipJarIcon";
 import { useDonation } from "../../../../context/DonationContext";
 import ArtCardMenu from "./ArtCardMenu";
-import OwnerMenu from "@/components/user_dashboard/own_profile/Menu";
+import OwnerMenu from "@/components/user_dashboard/own_profile/menu/art_card/Menu";
 import ArchivedMenu from "@/components/user_dashboard/user_profile/components/status_options/Archived";
 import DeletedMenu from "@/components/user_dashboard/user_profile/components/status_options/Deleted";
 import { Link } from "react-router-dom";
@@ -179,6 +179,7 @@ const ArtCard = ({
               onReport={handleReport}
               isFavorite={status.isSaved}
               isReported={report?.reported}
+              isShared={false}
             />
           ) : isDeleted ? (
             <DeletedMenu
