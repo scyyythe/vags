@@ -14,6 +14,7 @@ import useFavorite from "@/hooks/interactions/useFavorite";
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import { useExhibitCardDetail } from "@/hooks/exhibit/useCardDetail";
 import ExhibitCardDetailSkeleton from "@/components/skeletons/ExhibitCardDetail";
+import Gallery3D from "@/components/gallery/Gallery3D"; 
 
 import { useExhibitLike } from "@/hooks/interactions/exhibit_like/useExhibitLike";
 const ExhibitViewing = () => {
@@ -405,11 +406,13 @@ if (!exhibit) {
 
                 <div className={`relative ${isMobile ? "w-full" : "inline-block -mb-6"}`}>
                   <div className={`${isMobile ? "" : "w-[580px] h-[420px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"}`}>
-                    <img
-                      src={exhibit.image}
-                      alt={exhibit.title}
-                      className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
-                    />
+                    <div className="w-full h-[420px] relative rounded-xl overflow-hidden bg-black">
+                      <Gallery3D
+                        slotArtworkMap={exhibit.slotArtworkMap || {}} 
+                        artworks={exhibit.artworks || []} 
+                      />
+                    </div>
+
 
                     {/* Expand Button Container */}
                     <div
@@ -568,19 +571,24 @@ if (!exhibit) {
 
       {/* Expanded artwork view */}
       {isExpanded && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
-          <button
-            onClick={closeExpandedView}
-            className="absolute top-4 right-6 z-[60] bg-white rounded-full px-1 shadow-md transition-colors duration-200"
-            >
-            <i className="bx bx-x text-xl text-black"></i>
-          </button>
-
-          <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
-            <img src={exhibit.image} alt="Expanded artwork" className="max-h-[80vh] max-w-[90vw] object-contain" />
+        <div
+          className="fixed inset-0 bg-black z-[100] flex justify-center items-center"
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setIsExpanded(false);
+            }
+          }}
+          tabIndex={0}
+        >
+          <div className="absolute inset-0 z-[100]">
+            <Gallery3D
+              slotArtworkMap={exhibit.slotArtworkMap || {}}
+              artworks={exhibit.artworks || []}
+            />
           </div>
         </div>
       )}
+
     </div>
     
     </>
