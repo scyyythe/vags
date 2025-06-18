@@ -363,49 +363,44 @@ const AddExhibit = () => {
 
   // Function to distribute slots among participants
   const distributeSlots = () => {
-    if (!selectedEnvironment) return;
+    if (!selectedEnvironment || !currentUser?.id) return;
 
     const currentEnvironment = environments.find((env) => env.id === selectedEnvironment);
-    if (!currentEnvironment || !currentUser?.id) return;
+    if (!currentEnvironment) return;
 
     const totalSlots = currentEnvironment.slots;
 
-    // Reset slot assignments
+    // Reset all related slot selections
     setSelectedSlots([]);
-    setSlotArtworkMap({});
     setSelectedArtworks([]);
+    setSlotArtworkMap({});
 
     const newSlotOwnerMap: Record<number, string> = {};
 
     if (exhibitType === "solo") {
-      // Solo: all slots go to the current user
       for (let i = 1; i <= totalSlots; i++) {
         newSlotOwnerMap[i] = currentUser.id.toString();
       }
     } else {
-      // Collaborative
-      const maxCollaborators = 2;
-      const selectedCollaborators = collaborators.slice(0, maxCollaborators);
-      const participants = [currentUser, ...selectedCollaborators];
+      // 🚨 FIX: Include all collaborators, no slicing
+      const participants = [currentUser, ...collaborators];
       const totalParticipants = participants.length;
 
       const baseSlots = Math.floor(totalSlots / totalParticipants);
-      let remainingSlots = totalSlots % totalParticipants;
+      let remaining = totalSlots % totalParticipants;
 
-      let slotIndex = 1;
-
-      // Assign base slots to all participants
-      for (const user of participants) {
-        let slotsToAssign = baseSlots;
-        if (remainingSlots > 0) {
-          slotsToAssign += 1;
-          remainingSlots--;
+      let slotId = 1;
+      for (const participant of participants) {
+        let slotsForThisUser = baseSlots;
+        if (remaining > 0) {
+          slotsForThisUser += 1;
+          remaining--;
         }
 
-        for (let i = 0; i < slotsToAssign; i++) {
-          if (slotIndex <= totalSlots) {
-            newSlotOwnerMap[slotIndex] = user.id.toString();
-            slotIndex++;
+        for (let j = 0; j < slotsForThisUser; j++) {
+          if (slotId <= totalSlots) {
+            newSlotOwnerMap[slotId] = participant.id.toString();
+            slotId++;
           }
         }
       }
@@ -641,24 +636,21 @@ const AddExhibit = () => {
 
   // Handle environment change
   const handleEnvironmentChange = (envId: number) => {
-    setSelectedEnvironment(envId);
+    const selectedEnv = environments.find(env => env.id === envId);
+    const totalParticipants = collaborators.length + 1;
 
-    // Update the banner to show the selected environment image
-    // Only change the banner if the user hasn't uploaded a custom one
-    if (!bannerImage || bannerImage === environments.find((env) => env.id === selectedEnvironment)?.image) {
-      const env = environments.find((e) => e.id === envId);
-      if (env) {
-        setBannerImage(env.image);
-      }
+    if (selectedEnv && selectedEnv.slots < totalParticipants) {
+      toast({
+        title: "Not enough slots to assign for all collaborators and the owner.",
+        description: "Please select a virtual environment with more available slots.",
+        className: "text-red-600",
+        duration: 4000,
+      });
+      return;
     }
 
-    // Reset selections
-    setSelectedSlots([]);
-    setSlotArtworkMap({});
-    setSelectedArtworks([]);
-
-    // Distribute slots
-    setTimeout(() => distributeSlots(), 0);
+    setSelectedEnvironment(envId);
+    distributeSlots();
   };
 
   // Handle exhibit type change
@@ -769,6 +761,7 @@ const AddExhibit = () => {
                   handleEnvironmentChange={handleEnvironmentChange}
                   viewMode={viewMode}
                   isReadOnly={isReadOnly}
+                  collaboratorCount={collaborators.length}
                 />
 
                 {selectedEnvironment === 3 ? (
