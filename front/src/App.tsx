@@ -118,31 +118,6 @@ const App = () => {
                           <Route path="/fingerprint-register" element={<FingerprintRegister />} />
                           <Route path="/hero" element={<Hero />} />
                           {/* Gallery */}
-                          <Route
-  path="/gallery-3d"
-  element={
-    <Gallery3D
-      slotArtworkMap={{
-        1: "1",
-        2: "2"
-      }}
-      artworks={[
-        {
-          id: "1",
-          image_url: "https://example.com/art1.png",
-          title: "Test Art 1",
-          artist: "Artist A"
-        },
-        {
-          id: "2",
-          image_url: "https://example.com/art2.png",
-          title: "Test Art 2",
-          artist: "Artist B"
-        }
-      ]}
-    />
-  }
-/>
 
                           {/* Bid */}
                           <Route path="/bid-winner/:id" element={<BidWinnerPage />} />
