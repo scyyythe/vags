@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Share2, BarChart2, MoreHorizontal } from "lucide-react";
-import DeleteConfirmationPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/delete/DeletePopup";
+import DeleteConfirmation from "./DeleteConfirmation";
 import useDeleteArtwork from "@/hooks/mutate/visibility/trash/useDeleteArtwork";
 import ShareModal from "../../../local_components/share/ShareModal";
 
@@ -171,7 +171,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
         </div>
 
         {/* Delete Confirmation Popup */}
-        <DeleteConfirmationPopup
+        <DeleteConfirmation
             isOpen={showDeletePopup}
             onCancel={() => setShowDeletePopup(false)}
             onConfirm={handleConfirmDelete}
