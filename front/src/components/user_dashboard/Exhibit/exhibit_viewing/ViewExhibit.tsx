@@ -164,7 +164,7 @@ const ExhibitViewing = () => {
       </div>
     );
   }
-
+       
   const renderComment = (commentItem: any, isReply = false) => (
     <div key={commentItem.id} className={`mb-6 relative ${isReply ? "ml-8 pl-4 border-l border-gray-200" : ""}`}>
       <div className="flex items-start justify-between">
@@ -378,8 +378,10 @@ if (!exhibit) {
   const closeExpandedView = () => {
     setIsExpanded(false);
   };
-
+               console.log("exhibit.artworks", exhibit.artworks);
+console.log("exhibit.slotArtworkMap", exhibit.slotArtworkMap);
   return (
+    
     <>
     <div className="min-h-screen">
       <Header />
@@ -409,10 +411,10 @@ if (!exhibit) {
                 <div className={`relative ${isMobile ? "w-full" : "inline-block -mb-6"}`}>
                   <div className={`${isMobile ? "" : "w-[580px] h-[420px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"}`}>
                     <div className="w-full h-[420px] relative rounded-xl overflow-hidden bg-black">
-                      <Gallery3D
-                        slotArtworkMap={exhibit.slotArtworkMap || {}} 
-                        artworks={exhibit.artworks || []} 
-                      />
+<Gallery3D
+  slotArtworkMap={exhibit?.slotArtworkMap || {}}
+  artworks={exhibit?.artworks || []}              
+/>
                     </div>
 
 

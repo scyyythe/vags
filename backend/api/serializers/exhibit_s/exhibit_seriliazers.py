@@ -5,6 +5,7 @@ from api.models.artwork_model.artwork import Art
 import cloudinary.uploader
 from datetime import datetime
 from api.models.interaction_model.interaction import Like
+
 class ExhibitSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField(max_length=100)
@@ -101,7 +102,8 @@ class ExhibitSerializer(serializers.Serializer):
             "owner": str(instance.owner.id) if instance.owner else None,
             "exhibit_type": instance.exhibit_type,
             "collaborators": [str(u.id) for u in instance.collaborators],
-            "artworks": [str(a.id) for a in instance.artworks],
+            "artworks": ArtSerializer(instance.artworks, many=True, context=self.context).data,
+
             "category": instance.category,
             "visibility": instance.visibility,
             "start_time": instance.start_time,
