@@ -10,6 +10,7 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 from django.http import JsonResponse
+from corsheaders.defaults import default_headers
 
 load_dotenv() 
 
@@ -47,6 +48,9 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-gtf0y@$4m-u=t$
 # SECURITY WARNING: don't run with debug turned on in production!
 
 ALLOWED_HOSTS = ["vags.onrender.com", "localhost", "127.0.0.1"]
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "authorization",
+]
 
 AUTHENTICATION_BACKENDS = (
     'mongoengine.django.auth.MongoEngineBackend',
@@ -199,30 +203,30 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        },
-        'APP': {
-            'client_id': os.getenv('GOOGLE_OAUTH_CLIENT_ID'),
-            'secret': os.getenv('GOOGLE_OAUTH_CLIENT_SECRET'),
-            'key': ''
-        }
-    }
-    }
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#        "LOCATION": "redis://redis:6379/1",  
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'SCOPE': [
+#             'profile',
+#             'email',
+#         ],
+#         'AUTH_PARAMS': {
+#             'access_type': 'online',
+#         },
+#         'APP': {
+#             'client_id': os.getenv('GOOGLE_OAUTH_CLIENT_ID'),
+#             'secret': os.getenv('GOOGLE_OAUTH_CLIENT_SECRET'),
+#             'key': ''
 #         }
 #     }
+#     }
+# # CACHES = {
+# #     "default": {
+# #         "BACKEND": "django_redis.cache.RedisCache",
+# #        "LOCATION": "redis://redis:6379/1",  
+# #         "OPTIONS": {
+# #             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+# #         }
+# #     }
 # }
 LOGGING = {
     'version': 1,
