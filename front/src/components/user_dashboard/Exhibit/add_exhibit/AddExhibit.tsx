@@ -27,7 +27,6 @@ import { User } from "@/hooks/users/useUserQuery";
 import { useCreateExhibit } from "@/hooks/mutate/exhibit/AddExhibit";
 import { ExhibitPayload } from "@/hooks/mutate/exhibit/exhibit";
 import { ToastT } from "sonner";
-import tenSlotsImg from "../../../../../public/pics/slots-10.png";
 
 // Color schemes for slots by user
 const slotColorSchemes = [
@@ -297,7 +296,7 @@ const AddExhibit = () => {
     {
       id: 3,
       image:
-        tenSlotsImg,
+        '../../pics/slots-10.PNG',
       slots: 10,
     },
   ];
@@ -382,7 +381,7 @@ const AddExhibit = () => {
         newSlotOwnerMap[i] = currentUser.id.toString();
       }
     } else {
-      // 🚨 FIX: Include all collaborators, no slicing
+      // FIX: Include all collaborators, no slicing
       const participants = [currentUser, ...collaborators];
       const totalParticipants = participants.length;
 
@@ -764,7 +763,7 @@ const AddExhibit = () => {
                   collaboratorCount={collaborators.length}
                 />
 
-                {selectedEnvironment === 3 ? (
+                {selectedEnvironment === 3 && (
                   <div className="mt-6">
                     <p className="text-xs font-semibold mb-4">Interactive Virtual Gallery</p>
                     <div className="w-full h-[600px] relative rounded-lg overflow-hidden border">
@@ -783,25 +782,6 @@ const AddExhibit = () => {
                       This 3D environment contains <strong>10 slots</strong>. Click to enter, use <code>WASD</code> + mouse to move.
                     </p>
                   </div>
-                ) : selectedEnvironment && (
-                  <ExhibitSlots
-                    selectedEnvironment={selectedEnvironment}
-                    environments={environments}
-                    slotOwnerMap={slotOwnerMap}
-                    slotArtworkMap={slotArtworkMap}
-                    artworks={artworks}
-                    exhibitType={exhibitType}
-                    selectedSlots={selectedSlots}
-                    handleSlotSelect={handleSlotSelect}
-                    handleClearSlot={handleClearSlot}
-                    canInteractWithSlot={canInteractWithSlot}
-                    getUserName={getUserName}
-                    getSlotColor={getSlotColor}
-                    collaborators={collaborators}
-                    currentUser={currentUser}
-                    colorNames={colorNames}
-                    slotColorSchemes={slotColorSchemes}
-                  />
                 )}
 
                 {/* Display available slots only if an environment is selected */}
