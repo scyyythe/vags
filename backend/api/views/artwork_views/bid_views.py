@@ -127,9 +127,6 @@ class AuctionCreateView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-from rest_framework.exceptions import ValidationError
-from django.utils.timezone import now
-from api.models import Auction, Art, AuctionStatus  # Make sure your imports are correct
 
 class AuctionListView(generics.ListAPIView):
     serializer_class = AuctionSerializer

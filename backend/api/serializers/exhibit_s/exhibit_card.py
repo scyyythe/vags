@@ -5,6 +5,8 @@ from api.models.user_model.users import User
 from api.models.exhibit_model.exhibit import Exhibit
 from datetime import datetime
 from api.models.interaction_model.interaction import Like
+from api.serializers.artwork_s.artwork_serializers import ArtSerializer
+
 class ExhibitCardSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField()
@@ -21,6 +23,25 @@ class ExhibitCardSerializer(serializers.Serializer):
     endDate = serializers.SerializerMethodField()
     exhibit_likes_count = serializers.SerializerMethodField()
     user_has_liked_exhibit = serializers.SerializerMethodField()
+    artworks = serializers.SerializerMethodField()  
+    slotArtworkMap = serializers.SerializerMethodField()
+
+    def get_artworks(self, obj):
+        from api.models.artwork_model.artwork import Art
+        from api.serializers.artwork_s.artwork_serializers import ArtSerializer
+
+        artworks = []
+        for art in obj.artworks:
+            try:
+                # If it's a string ID, convert to object
+                if isinstance(art, str):
+                    art = Art.objects.get(id=art)
+                artworks.append(art)
+            except Exception as e:
+                print(f"⚠️ Error retrieving artwork: {e}")
+                continue
+
+        return ArtSerializer(artworks, many=True, context=self.context).data
 
     def get_exhibit_likes_count(self, obj):
         return Like.objects(exhibit=obj).count()
@@ -31,12 +52,12 @@ class ExhibitCardSerializer(serializers.Serializer):
         if user and not user.is_anonymous:
             return Like.objects(user=user, exhibit=obj).first() is not None
         return False
-        
+
     def get_image(self, obj):
         return obj.banner or ""
 
     def get_likes(self, obj):
-        return 1  
+        return 1
 
     def get_views(self, obj):
         return len(obj.viewed_by or [])
@@ -58,7 +79,7 @@ class ExhibitCardSerializer(serializers.Serializer):
             {
                 "id": str(user.id),
                 "name": user.full_name,
-                "avatar": user.avatar if hasattr(user, 'avatar') else ""
+                "avatar": getattr(user, 'avatar', "")
             }
             for user in obj.collaborators
         ]
@@ -68,6 +89,8 @@ class ExhibitCardSerializer(serializers.Serializer):
         return {
             "id": str(owner.id),
             "name": f"{owner.first_name} {owner.last_name}".strip(),
-            "avatar": owner.avatar if hasattr(owner, 'avatar') else ""
+            "avatar": getattr(owner, 'avatar', "")
         } if owner else None
-
+    def get_slotArtworkMap(self, obj):
+        # Map first 10 artworks to slots 1–10
+        return {str(i + 1): str(art.id) for i, art in enumerate(obj.artworks[:10])}
