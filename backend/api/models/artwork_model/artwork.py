@@ -4,17 +4,31 @@ from ..user_model.users import User
 
 class Art(Document):
     title = StringField(max_length=100)
-    artist = ReferenceField(User) 
+    artist = ReferenceField(User, required=True)
     category = StringField(max_length=100)
     medium = StringField(max_length=100)
     art_status = StringField(max_length=100)
-    price = IntField()
-    size = StringField(max_length=100, required=False)
-    description = StringField(required=False)
-    visibility = StringField(choices=['Public', 'Private', 'Hidden','Unlisted','Deleted','Archived'], default='Public') 
+    
+    # New fields for selling
+    price = IntField(required=True)
+    edition = StringField(max_length=50)  # e.g., "1 of 10", "Original"
+    year_created = StringField(max_length=10)  # Optional: can be "2023", "2021", etc.
+    
+    # Optional fields
+    size = StringField(max_length=100)
+    description = StringField()
+    
+    # Now allow multiple images
+    image_url = ListField(URLField(), required=False)
+    
+    # Visibility control
+    visibility = StringField(
+        choices=['Public', 'Private', 'Hidden', 'Unlisted', 'Deleted', 'Archived'],
+        default='Public'
+    )
+
     created_at = DateTimeField(default=datetime.utcnow)
     updated_at = DateTimeField(default=datetime.utcnow)
-    image_url = URLField(required=False)  
 
     meta = {'collection': 'art'}
 

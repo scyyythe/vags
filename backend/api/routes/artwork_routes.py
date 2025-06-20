@@ -27,5 +27,6 @@ artwork_urlpatterns = [
     path('art/<str:pk>/archived/',ArchivedArtwork.as_view(), name='archived_art'),
     path('art/<str:pk>/unarchived/',UnArchivedArtwork.as_view(), name='archived_art'),
     
-    
+    # sell
+    path("art/sell/", ArtCreateView.as_view(), name="art-sell"),
 ]
