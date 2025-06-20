@@ -23,7 +23,7 @@ platformdirs==4.3.6
 psycopg2-binary==2.9.10
 pycparser==2.22
 PyJWT==2.9.0
-pymongo==3.11.4
+pymongo>=4.3.0
 pyserial==3.5
 python-dotenv==1.0.1
 pytz==2025.1
