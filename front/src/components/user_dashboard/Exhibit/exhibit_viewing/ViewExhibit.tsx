@@ -15,12 +15,14 @@ import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import { useExhibitCardDetail } from "@/hooks/exhibit/useCardDetail";
 import ExhibitCardDetailSkeleton from "@/components/skeletons/ExhibitCardDetail";
 import Gallery3D from "@/components/gallery/Gallery3D"; 
-
 import { useExhibitLike } from "@/hooks/interactions/exhibit_like/useExhibitLike";
+import { useExhibitCards } from "@/hooks/exhibit/useCardExihibit";
 const ExhibitViewing = () => {
   const { id } = useParams<{ id: string }>();
 
   const {data:exhibit, isLoading}=useExhibitCardDetail(id);
+    const { data: exhibits = [] } = useExhibitCards();
+  
   const isExhibitEnded = exhibit?.endDate ? new Date() > new Date(exhibit.endDate) : false;
 
   const {
@@ -540,34 +542,44 @@ if (!exhibit) {
       </div>
 
       {/* Related Artworks Section */}
-      {(() => {
-        const related = mockExhibits.filter((e) => e.id !== id); // or use your own logic
+{exhibit && exhibit.category && exhibits && exhibits.length > 0 && (
+  <div className="container md:px-6 mt-4 mb-6">
+    <h2 className={`font-semibold ${isMobile ? "text-sm ml-1" : "text-md mb-4"}`}>Related Exhibits</h2>
 
-        const filteredRelated = related.filter(
-          (card) =>
-            card.id !== id &&
-            card.category?.trim().toLowerCase() === exhibit.category?.trim().toLowerCase()
-        );
+    {(() => {
+      const normalizedCategory = exhibit.category.trim().toLowerCase();
 
-        return (
-          related.length > 0 && (
-            <div className="container md:px-6 mt-2 mb-2">
-              <h2 className={`font-medium ${isMobile ? "text-xs ml-1" : "text-xs mb-4"}`}>Related Exhibits</h2>
-              {filteredRelated && filteredRelated.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                  {filteredRelated.map((card) => (
-                    <ExhibitCard key={card.id} exhibit={card} onClick={() => navigate(`/view-exhibit/${card.id}`)} />
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col justify-center items-center h-32 w-full">
-                  <p className="text-gray-500 text-xs mb-2">No related exhibits found.</p>
-                </div>
-              )}
-            </div>
-          )
-        );
-      })()}
+      const relatedExhibits = exhibits.filter((e) => {
+        const eCategory = e.category?.trim().toLowerCase();
+        return e.id !== exhibit.id && eCategory === normalizedCategory;
+      });
+
+      console.log("Exhibit category:", normalizedCategory);
+      console.log("Related Exhibits:", relatedExhibits);
+
+      return relatedExhibits.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          {relatedExhibits.map((card) => (
+            <ExhibitCard
+              key={card.id}
+              exhibit={{
+                ...card,
+                category: card.category.charAt(0).toUpperCase() + card.category.slice(1),
+              }}
+              onClick={() => navigate(`/view-exhibit/${card.id}`)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col justify-center items-center h-32 w-full">
+          <p className="text-gray-500 text-xs mb-2">No related exhibits found.</p>
+        </div>
+      );
+    })()}
+  </div>
+)}
+
+
 
       {/* Expanded artwork view */}
       {isExpanded && (
