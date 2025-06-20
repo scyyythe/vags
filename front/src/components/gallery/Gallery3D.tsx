@@ -17,6 +17,7 @@ const Gallery3D: React.FC<Gallery3DProps> = ({ slotArtworkMap, artworks }) => {
   const imageMeshesRef = useRef<Record<string, THREE.Mesh>>({});
   const titleMeshesRef = useRef<Record<string, THREE.Mesh>>({});
   const sceneRef = useRef<THREE.Scene | null>(null);
+const [meshesReady, setMeshesReady] = useState(false);
 
   useEffect(() => {
     const mount = mountRef.current!;
@@ -52,17 +53,19 @@ const Gallery3D: React.FC<Gallery3DProps> = ({ slotArtworkMap, artworks }) => {
     document.addEventListener("keyup", onKeyUp);
 
     const loader = new GLTFLoader();
-    loader.load("/gallery_scenes/10art_scene_apart.glb", (gltf) => {
-      scene.add(gltf.scene);
+loader.load("/gallery_scenes/10art_scene_apart.glb", (gltf) => {
+  scene.add(gltf.scene);
 
-      // Store mesh refs for reactivity
-      for (let i = 1; i <= 10; i++) {
-        const artMesh = gltf.scene.getObjectByName(`art_template${i}`) as THREE.Mesh;
-        const titleMesh = gltf.scene.getObjectByName(`title_template${i}`) as THREE.Mesh;
-        if (artMesh) imageMeshesRef.current[`art_template${i}`] = artMesh;
-        if (titleMesh) titleMeshesRef.current[`title_template${i}`] = titleMesh;
-      }
-    });
+  for (let i = 1; i <= 10; i++) {
+    const artMesh = gltf.scene.getObjectByName(`art_template${i}`) as THREE.Mesh;
+    const titleMesh = gltf.scene.getObjectByName(`title_template${i}`) as THREE.Mesh;
+    if (artMesh) imageMeshesRef.current[`art_template${i}`] = artMesh;
+    if (titleMesh) titleMeshesRef.current[`title_template${i}`] = titleMesh;
+  }
+
+  setMeshesReady(true); 
+});
+
 
     const clock = new THREE.Clock();
     new RGBELoader().load('/gallery_scenes/autumn_field_puresky_4k.hdr', (texture) => {
@@ -107,72 +110,67 @@ const Gallery3D: React.FC<Gallery3DProps> = ({ slotArtworkMap, artworks }) => {
     };
   }, []);
 
-  // 🔁 Reactively update textures and titles
-  useEffect(() => {
-    const textureLoader = new THREE.TextureLoader();
 
-    for (let i = 1; i <= 10; i++) {
-      const slotId = i;
-      const artworkId = slotArtworkMap[slotId];
-      const meshName = `art_template${slotId}`;
-      const titleName = `title_template${slotId}`;
-      const mesh = imageMeshesRef.current[meshName];
-      const titleMesh = titleMeshesRef.current[titleName];
+useEffect(() => {
+  if (!meshesReady) return; 
 
-      if (!mesh) continue;
+  const textureLoader = new THREE.TextureLoader();
 
-      if (!artworkId) {
-        // Clear slot
-        mesh.material = new THREE.MeshBasicMaterial({ color: 0xeeeeee, side: THREE.DoubleSide });
-        if (titleMesh) {
-          titleMesh.material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-        }
-        continue;
-      }
+  for (let i = 1; i <= 10; i++) {
+    const slotId = i;
+    const artworkId = slotArtworkMap[slotId];
+    const meshName = `art_template${slotId}`;
+    const titleName = `title_template${slotId}`;
+    const mesh = imageMeshesRef.current[meshName];
+    const titleMesh = titleMeshesRef.current[titleName];
 
-      const artwork = artworks.find((a) => a.id === artworkId);
-      if (!artwork) continue;
-
-      // Load texture for artwork image
-      textureLoader.load(artwork.image_url, (texture) => {
-        texture.wrapS = THREE.ClampToEdgeWrapping;
-        texture.wrapT = THREE.ClampToEdgeWrapping;
-        texture.center.set(0.5, 0.5);
-
-        const frameAspect = mesh.scale.x / mesh.scale.y;
-        const imageAspect = texture.image.width / texture.image.height;
-
-        if (imageAspect > frameAspect) {
-          const scale = frameAspect / imageAspect;
-          texture.repeat.set(1, scale);
-          texture.offset.set(0, (1 - scale) / 2);
-        } else {
-          const scale = imageAspect / frameAspect;
-          texture.repeat.set(scale, 1);
-          texture.offset.set((1 - scale) / 2, 0);
-        }
-
-        mesh.material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
-      });
-
-      if (titleMesh) {
-        const canvas = document.createElement("canvas");
-        canvas.width = 512;
-        canvas.height = 128;
-        const ctx = canvas.getContext("2d")!;
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#000000";
-        ctx.font = "bold 32px Arial";
-        ctx.fillText(artwork.title || "Untitled", 20, 50);
-        ctx.font = "24px Arial";
-        ctx.fillText("by " + (artwork.artist || "Unknown"), 20, 100);
-
-        const titleTexture = new THREE.CanvasTexture(canvas);
-        titleMesh.material = new THREE.MeshBasicMaterial({ map: titleTexture, side: THREE.DoubleSide });
-      }
+    if (!mesh) {
+    
+      continue;
     }
-  }, [slotArtworkMap, artworks]);
+
+    if (!artworkId) {
+      mesh.material = new THREE.MeshBasicMaterial({ color: 0xeeeeee, side: THREE.DoubleSide });
+      if (titleMesh) {
+        titleMesh.material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      }
+      continue;
+    }
+
+    const artwork = artworks.find((a) => a.id === artworkId);
+    if (!artwork) continue;
+
+    textureLoader.load(
+      artwork.image_url,
+      (texture) => {
+        mesh.material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+      },
+      undefined,
+      (err) => {
+      
+        mesh.material = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
+      }
+    );
+
+    if (titleMesh) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 512;
+      canvas.height = 128;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#000000";
+      ctx.font = "bold 32px Arial";
+      ctx.fillText(artwork.title || "Untitled", 20, 50);
+      ctx.font = "24px Arial";
+      ctx.fillText("by " + (artwork.artist || "Unknown"), 20, 100);
+
+      const titleTexture = new THREE.CanvasTexture(canvas);
+      titleMesh.material = new THREE.MeshBasicMaterial({ map: titleTexture, side: THREE.DoubleSide });
+    }
+  }
+}, [slotArtworkMap, artworks, meshesReady]);
+
 
   return (
     <>
