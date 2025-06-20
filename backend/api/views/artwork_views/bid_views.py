@@ -127,6 +127,9 @@ class AuctionCreateView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+from rest_framework.exceptions import ValidationError
+from django.utils.timezone import now
+from api.models import Auction, Art, AuctionStatus  # Make sure your imports are correct
 
 class AuctionListView(generics.ListAPIView):
     serializer_class = AuctionSerializer
@@ -135,31 +138,44 @@ class AuctionListView(generics.ListAPIView):
     def get_queryset(self):
         now_utc = now()
 
-        # 1. Auto-close expired auctions
-        expired_auctions = Auction.objects(
-            status=AuctionStatus.ON_GOING.value,
-            end_time__lt=now_utc
-        )
-        for auction in expired_auctions:
-            auction.close_auction()
-            auction.reload()
+        # ✅ 1. Auto-close expired auctions safely
+        try:
+            expired_auctions = Auction.objects(
+                status=AuctionStatus.ON_GOING.value,
+                end_time__lt=now_utc
+            )
+            for auction in expired_auctions:
+                try:
+                    auction.close_auction()
+                    auction.reload()
+                except Exception as e:
+                    print(f"Error closing auction {auction.id}: {e}")
+        except Exception as e:
+            print(f"Error fetching expired auctions: {e}")
 
-        # 2. Blocked users filter
+        # ✅ 2. Handle blocked users
         blocked_user_ids = []
         user = self.request.user
         if user.is_authenticated and hasattr(user, "blocked_users"):
-            blocked_user_ids = [u.id for u in user.blocked_users]
+            try:
+                blocked_user_ids = [u.id for u in user.blocked_users]
+            except Exception as e:
+                print(f"Error reading blocked users: {e}")
+                blocked_user_ids = []
 
         valid_artwork_ids = None
         if blocked_user_ids:
-            valid_artworks = Art.objects(artist__nin=blocked_user_ids).only('id')
-            valid_artwork_ids = [art.id for art in valid_artworks]
+            try:
+                valid_artworks = Art.objects(artist__nin=blocked_user_ids).only("id")
+                valid_artwork_ids = [art.id for art in valid_artworks]
+            except Exception as e:
+                print(f"Error filtering artworks: {e}")
 
-        # 3. Optional status filter from query param
+        # ✅ 3. Handle status param safely
+        query = {}
         status_param = self.request.query_params.get("status")
         allowed_statuses = [choice.value for choice in AuctionStatus]
 
-        query = {}
         if status_param:
             if status_param not in allowed_statuses:
                 raise ValidationError(f"Invalid status filter: {status_param}")
@@ -169,6 +185,7 @@ class AuctionListView(generics.ListAPIView):
             query["artwork__in"] = valid_artwork_ids
 
         return Auction.objects(**query)
+
 
 
 class AuctionListViewOwner(generics.ListAPIView):
