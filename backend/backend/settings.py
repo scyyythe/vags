@@ -47,7 +47,8 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-gtf0y@$4m-u=t$
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ["vags.onrender.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["vags.onrender.com", "vags.vercel.app", "localhost", "127.0.0.1"]
+
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "authorization",
 ]
@@ -183,7 +184,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "https://vags.vercel.app",
     "http://localhost:8080", 
@@ -203,22 +204,22 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 
-# SOCIALACCOUNT_PROVIDERS = {
-#     'google': {
-#         'SCOPE': [
-#             'profile',
-#             'email',
-#         ],
-#         'AUTH_PARAMS': {
-#             'access_type': 'online',
-#         },
-#         'APP': {
-#             'client_id': os.getenv('GOOGLE_OAUTH_CLIENT_ID'),
-#             'secret': os.getenv('GOOGLE_OAUTH_CLIENT_SECRET'),
-#             'key': ''
-#         }
-#     }
-#     }
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'APP': {
+            'client_id': os.getenv('GOOGLE_OAUTH_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_OAUTH_CLIENT_SECRET'),
+            'key': ''
+        }
+    }
+    }
 # # CACHES = {
 # #     "default": {
 # #         "BACKEND": "django_redis.cache.RedisCache",
@@ -228,21 +229,21 @@ LOGOUT_REDIRECT_URL = '/'
 # #         }
 # #     }
 # }
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'root': {
+#         'handlers': ['console'],
+#         'level': 'DEBUG',
+#     },
+# }
 
-
+DEBUT=False
 
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
