@@ -49,9 +49,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-gtf0y@$4m-u=t$
 
 ALLOWED_HOSTS = ["vags.onrender.com", "vags.vercel.app", "localhost", "127.0.0.1"]
 
-CORS_ALLOW_HEADERS = list(default_headers) + [
-    "authorization",
-]
+
 
 AUTHENTICATION_BACKENDS = (
     'mongoengine.django.auth.MongoEngineBackend',
@@ -192,6 +190,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "authorization",
+]
 
 
 # python manage.py runserver 0.0.0.0:8000
