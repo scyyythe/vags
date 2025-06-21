@@ -5,7 +5,7 @@ from api.models.artwork_model.artwork import Art
 import cloudinary.uploader
 from datetime import datetime
 from api.models.interaction_model.interaction import Like
-
+from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 class ExhibitSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField(max_length=100)
