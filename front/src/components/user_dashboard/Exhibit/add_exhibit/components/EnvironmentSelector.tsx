@@ -26,7 +26,7 @@ const EnvironmentSelector: React.FC<EnvironmentSelectorProps> = ({
           const totalParticipants = collaboratorCount + 1;
           const isDisabled = env.slots < totalParticipants;
 
-          return (
+          return ( 
             <div
               key={env.id}
               onClick={() => {
