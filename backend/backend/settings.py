@@ -10,6 +10,7 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 from django.http import JsonResponse
+from corsheaders.defaults import default_headers
 
 load_dotenv() 
 
@@ -46,7 +47,9 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-gtf0y@$4m-u=t$
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ["vags.onrender.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["vags.onrender.com", "vags.vercel.app", "localhost", "127.0.0.1"]
+
+
 
 AUTHENTICATION_BACKENDS = (
     'mongoengine.django.auth.MongoEngineBackend',
@@ -96,10 +99,10 @@ INSTALLED_APPS = [
 SITE_ID = 1
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'allauth.account.middleware.AccountMiddleware',  
@@ -180,6 +183,8 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CORS_ALLOW_ALL_ORIGINS = False
+
 CORS_ALLOWED_ORIGINS = [
     "https://vags.vercel.app",
     "http://localhost:8080", 
@@ -187,7 +192,26 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_ALLOW_ALL = False  
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "authorization",
+    "content-type",
+]
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "OPTIONS",
+    "PUT",
+    "PATCH",
+    "DELETE",
+]
+
+CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken", "Authorization"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://vags.vercel.app",
+]
 
 
 # python manage.py runserver 0.0.0.0:8000
@@ -216,30 +240,30 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
     }
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#        "LOCATION": "redis://redis:6379/1",  
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         }
-#     }
+# # CACHES = {
+# #     "default": {
+# #         "BACKEND": "django_redis.cache.RedisCache",
+# #        "LOCATION": "redis://redis:6379/1",  
+# #         "OPTIONS": {
+# #             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+# #         }
+# #     }
 # }
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'root': {
+#         'handlers': ['console'],
+#         'level': 'DEBUG',
+#     },
+# }
 
-
+DEBUT=False
 
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

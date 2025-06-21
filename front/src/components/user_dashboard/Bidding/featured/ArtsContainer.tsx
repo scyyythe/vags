@@ -19,7 +19,7 @@ const ArtsContainer = ({ artworks }: ArtGalleryContainerProps) => {
     <div className="w-full mx-auto rounded-lg overflow-hidden py-12 relative">
       {/* Background image using <img> */}
       <img
-        src="/public/pics/bg2.jpg"
+        src="/pics/bg2.jpg"
         alt="Background"
         className="absolute top-0 left-0 w-full h-full object-cover z-0"
       />

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Upload } from "lucide-react";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/ArtworkStyles";
-
+import useSellArtwork from "@/hooks/artworks/sell/useSellArtwork";
 const SellArtwork = () => {
   const navigate = useNavigate();
   const [artworkTitle, setArtworkTitle] = useState("");
@@ -26,6 +26,7 @@ const SellArtwork = () => {
   const [quantity, setQuantity] = useState("1");
   const [height, setHeight] = useState("");
   const [width, setWidth] = useState("");
+  const { sellArtwork } = useSellArtwork();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -113,7 +114,20 @@ const SellArtwork = () => {
 
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+     await sellArtwork({
+    title: artworkTitle,
+    year_created: yearCreated,
+    style: artworkStyle,
+    medium,
+    height,
+    width,
+    description,
+    price,
+    edition,
+    quantity,
+    mainImage: selectedFile,
+    additionalImages,
+  });
       toast.success("Artwork listed successfully!", { id: "upload" });
       navigate("/marketplace");
     } catch (error) {
