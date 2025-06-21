@@ -31,7 +31,7 @@ const EnvironmentSelector: React.FC<EnvironmentSelectorProps> = ({
               key={env.id}
               onClick={() => {
                 if (viewMode === 'owner' && !isReadOnly) {
-                  handleEnvironmentChange(env.id);
+                  handleEnvironmentChange(env.id); 
                 }
               }}
               className={`rounded-lg overflow-hidden 
