@@ -54,7 +54,7 @@ const Navbar = () => {
     >
       <div className="max-w-screen-xl mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
-          <img src="/pics/logo.png" alt="logo" className=" w-11 h-11 " />
+          <img src="/pics/wx.png" alt="logo" className=" w-10 h-7 " />
         </Link>
 
         {/* Desktop Navigation */}
