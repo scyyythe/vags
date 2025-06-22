@@ -176,9 +176,9 @@ const Header = () => {
           </div>
 
           {/* Top up */}
-          <button className="text-[10px] pt-0.5 hover:scale-110 transition">
+          {/* <button className="text-[10px] pt-0.5 hover:scale-110 transition">
             <i className="bx bx-wallet-alt text-[16px]"></i>
-          </button>
+          </button> */}
 
           {/* Profile Avatar + Chevron */}
           <div className="relative flex items-center" ref={avatarRef}>
