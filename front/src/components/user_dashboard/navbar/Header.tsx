@@ -139,7 +139,7 @@ const Header = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute -right-[119px] mt-4 z-50"
+                  className="absolute -right-[100px] mt-4 z-50"
                 >
                   <ChatDropdown isOpen={true} onClose={() => setIsChatOpen(false)} />
                 </motion.div>
@@ -167,7 +167,7 @@ const Header = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute -right-[90px] mt-4 z-50"
+                  className="absolute -right-[70px] mt-4 z-50"
                 >
                   <Notifications isOpen={true} onClose={() => setIsNotificationOpen(false)} />
                 </motion.div>

@@ -462,7 +462,7 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
 
   return (
     <div
-        className="absolute right-1.5 md:right-0.5 bg-white rounded-2xl shadow-xl z-50 w-[330px] md:w-[330px] h-[534px]"
+        className="absolute right-4 md:right-0.5 bg-white rounded-2xl shadow-xl z-50 w-[330px] md:w-[330px] h-[534px]"
       >
         <div className="flex h-full">
           <div className="w-full flex flex-col">
