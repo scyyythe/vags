@@ -7,7 +7,7 @@ import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
 import Gallery3D from "@/components/gallery/Gallery3D";
 import { sendCollaboratorNotifications, showCollaboratorNotification } from "@/utils/notificationUtils";
-
+import { toast } from "sonner"; 
 // Import new components
 import BannerUpload from "./components/BannerUpload";
 import EnvironmentSelector from "./components/EnvironmentSelector";
@@ -275,9 +275,10 @@ const AddExhibit = () => {
     true
   );
   const { data: currentUser, isLoading } = useUserQuery(currentUserId ?? "");
-  useEffect(() => {
-    console.log("Fetched artworks:", artworks);
-  }, [artworks]);
+  
+  // useEffect(() => {
+  //   console.log("Fetched artworks:", artworks);
+  // }, [artworks]);
 
   // Mock environments 
   const environments: Environment[] = [
@@ -415,6 +416,7 @@ const AddExhibit = () => {
 
     // For regular solo exhibits or owner submitting collab exhibit
     if (viewMode === "owner") {
+      // Check if this is a collaborative exhibit that needs to notify collaborators
       if (exhibitType === "collab" && collaborators.length > 0) {
         setShowNotificationDialog(true);
         return;
@@ -431,43 +433,54 @@ const AddExhibit = () => {
     }
   };
   const createExhibitMutation = useCreateExhibit();
-  const completeExhibitSubmission = () => {
-    const payload: ExhibitPayload = {
-      title,
-      category: artworkStyle,
-      description,
-      owner: currentUserId?.toString() ?? "",
-      exhibit_type: exhibitType.charAt(0).toUpperCase() + exhibitType.slice(1),
-      start_time: startDate,
-      end_time: endDate,
-      chosen_env: selectedEnvironment?.toString() ?? "",
-      artworks: selectedArtworks,
-      collaborators: collaborators.map((user) => user.id),
-      banner: bannerFile,
-      slot_artwork_map: slotArtworkMap,
-      slot_owner_map: slotOwnerMap
-    };
-
-    console.log("Submitting payload:", payload);
-    console.log("Is bannerImage a File?", payload.banner instanceof File);
-
-    createExhibitMutation.mutate(payload, {
-      onSuccess: () => {
-        toast({
-          title: "Exhibit Created",
-          description: "Your exhibit has been successfully created!",
-        });
-        navigate("/exhibits");
-      },
-      onError: (error) => {
-        toast({
-          title: "Failed to create exhibit",
-          description: error?.message || "Unknown error",
-          variant: "destructive",
-        });
-      },
-    });
+const completeExhibitSubmission = () => {
+    const formattedExhibitType =
+    exhibitType.toLowerCase() === "solo" ? "Solo" : "Collaborative";
+  const payload: ExhibitPayload = {
+    title,
+    category: artworkStyle,
+    description,
+    owner: currentUserId?.toString() ?? "",
+    exhibit_type: formattedExhibitType,
+    start_time: startDate,
+    end_time: endDate,
+    chosen_env: selectedEnvironment?.toString() ?? "",
+    artworks: selectedArtworks,
+    collaborators: collaborators.map((user) => user.id),
+    banner: bannerFile,
+    slot_artwork_map: slotArtworkMap,
+    slot_owner_map: slotOwnerMap,
   };
+
+  console.log("Submitting payload:", payload);
+  console.log("Is bannerImage a File?", payload.banner instanceof File);
+
+  const loading = toast({
+    title: "Publishing exhibit...",
+    description: "Please wait while we create your exhibit.",
+    duration: Infinity,
+  });
+
+  createExhibitMutation.mutate(payload, {
+    onSuccess: () => {
+      loading.dismiss(); 
+      toast({
+        title: "Exhibit Created",
+        description: "Your exhibit has been successfully created!",
+      });
+      navigate("/exhibits");
+    },
+    onError: (error) => {
+      loading.dismiss(); 
+      toast({
+        title: "Failed to create exhibit",
+        description: error?.message || "Unknown error",
+        variant: "destructive",
+      });
+    },
+  });
+};
+
 
   // Function to send notifications to collaborators
   const sendNotificationsToCollaborators = () => {
