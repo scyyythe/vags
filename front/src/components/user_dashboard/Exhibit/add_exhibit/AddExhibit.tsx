@@ -598,10 +598,10 @@ const AddExhibit = () => {
 
   // Handle adding a collaborator
   const handleAddCollaborator = (artist: User) => {
-    if (collaborators.length >= 2) {
+    if (collaborators.length >= 5) {
       toast({
         title: "Maximum collaborators reached",
-        description: "You can only add up to 2 collaborators.",
+        description: "You can only add up to 5 collaborators.",
         variant: "destructive",
       });
       return;
