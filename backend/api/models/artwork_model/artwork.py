@@ -11,8 +11,8 @@ class Art(Document):
     
     # New fields for selling
     price = IntField(required=True)
-    edition = StringField(max_length=50)  # e.g., "1 of 10", "Original"
-    year_created = StringField(max_length=10)  # Optional: can be "2023", "2021", etc.
+    edition = StringField(max_length=50,required=False)  # e.g., "1 of 10", "Original"
+    year_created = StringField(max_length=10, required=False)  # Optional: can be "2023", "2021", etc.
     
     # Optional fields
     size = StringField(max_length=100)
@@ -20,7 +20,7 @@ class Art(Document):
     
     # Now allow multiple images
     image_url = ListField(URLField(), required=False)
-    
+    quantity=IntField(required=False)
     # Visibility control
     visibility = StringField(
         choices=['Public', 'Private', 'Hidden', 'Unlisted', 'Deleted', 'Archived'],
