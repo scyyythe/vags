@@ -1,7 +1,10 @@
 from django.urls import path
-from api.views.artwork_views.artwork_views import BulkArtDetailView,PopularLightweightArtView,ArtBulkListView,DeletePermanentArtwork,UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,UnHideArtworkView,HideArtworkView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, ArtListByArtistView,ArtDeleteView,ArtListViewOwner
+from api.views.artwork_views.artwork_views import  SellArtworkView,BulkArtDetailView,PopularLightweightArtView,ArtBulkListView,DeletePermanentArtwork,UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,UnHideArtworkView,HideArtworkView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, ArtListByArtistView,ArtDeleteView,ArtListViewOwner
 
 artwork_urlpatterns = [
+     # sell
+    path("art/sell/",  SellArtworkView.as_view(), name="art-sell"),
+    
     path("art/create/", ArtCreateView.as_view(), name="art-create"),
     path('art/list/', ArtListView.as_view(), name='list_art'),
     path("art/popular/light/", PopularLightweightArtView.as_view(), name="popular_art_light"),
@@ -28,6 +31,5 @@ artwork_urlpatterns = [
     path('art/<str:pk>/archived/',ArchivedArtwork.as_view(), name='archived_art'),
     path('art/<str:pk>/unarchived/',UnArchivedArtwork.as_view(), name='archived_art'),
     
-    # sell
-    path("art/sell/", ArtCreateView.as_view(), name="art-sell"),
+   
 ]
