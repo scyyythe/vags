@@ -1,10 +1,13 @@
 from django.urls import path
-from api.views.artwork_views.artwork_views import  SellArtworkView,BulkArtDetailView,PopularLightweightArtView,ArtBulkListView,DeletePermanentArtwork,UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,UnHideArtworkView,HideArtworkView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, ArtListByArtistView,ArtDeleteView,ArtListViewOwner
+from api.views.artwork_views.artwork_views import  ArtCardListView,SellArtworkView,BulkArtDetailView,PopularLightweightArtView,ArtBulkListView,DeletePermanentArtwork,UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,UnHideArtworkView,HideArtworkView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, ArtListByArtistView,ArtDeleteView,ArtListViewOwner
+from api.views.artwork_views.artwork_detail_view import MarketplaceArtDetailView
 
 artwork_urlpatterns = [
      # sell
     path("art/sell/",  SellArtworkView.as_view(), name="art-sell"),
-    
+    path("art/cards/", ArtCardListView.as_view(), name="art-card-list"),
+    path("art/marketplace/<str:pk>/", MarketplaceArtDetailView.as_view(), name="marketplace-art-detail"),
+
     path("art/create/", ArtCreateView.as_view(), name="art-create"),
     path('art/list/', ArtListView.as_view(), name='list_art'),
     path("art/popular/light/", PopularLightweightArtView.as_view(), name="popular_art_light"),
