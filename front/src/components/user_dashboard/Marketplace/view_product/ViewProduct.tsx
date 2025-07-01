@@ -12,11 +12,13 @@ import useFavorite from "@/hooks/interactions/useFavorite";
 import ReviewModal from "@/components/user_dashboard/Marketplace/reviews/ReviewModal";
 import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/mockArtworks";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
-
+import { useSellArtworkDetail } from "@/hooks/artworks/sell/useSellArtworkDetail";
 const ProductViewingContent = () => {
     const { id } = useParams<{ id: string }>();
+     const { data: product, isLoading, error } = useSellArtworkDetail(id);
+
     const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
-    const [product, setProduct] = useState<any>(null);
+
     const [isExpanded, setIsExpanded] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -67,34 +69,38 @@ const ProductViewingContent = () => {
         }
     ];
 
-    useEffect(() => {
-    if (id) {
-        const found = mockArtworks.find((artwork) => String(artwork.id) === String(id));
-        if (found) {
-        const productWithImages = {
-            ...found,
-            images: Array.isArray(found.images) ? found.images : [found.artworkImage],
-        };
-        setProduct(productWithImages);
-        } else {
-        setProduct(null);
-        }
-    }
-    }, [id]);
+    // useEffect(() => {
+    // if (id) {
+    //     const found = mockArtworks.find((artwork) => String(artwork.id) === String(id));
+    //     if (found) {
+    //     const productWithImages = {
+    //         ...found,
+    //         images: Array.isArray(found.images) ? found.images : [found.artworkImage],
+    //     };
+    //     setProduct(productWithImages);
+    //     } else {
+    //     setProduct(null);
+    //     }
+    // }
+    // }, [id]);
 
-    if (!product) {
-        return <div>Product not found.</div>;
-    }
+  if (isLoading) {
+  return <div>Loading artwork...</div>;
+}
+
+if (error || !product) {
+  return <div>Product not found.</div>;
+}
 
     const goToPrevious = () => {
-        if (product?.images?.length > 1) {
-        setCurrentImageIndex((prev) => (prev === 0 ? product.images.length - 1 : prev - 1));
+        if (product?.image_urls?.length > 1) {
+        setCurrentImageIndex((prev) => (prev === 0 ? product.image_urls.length - 1 : prev - 1));
         }
     };
 
     const goToNext = () => {
-        if (product?.images?.length > 1) {
-        setCurrentImageIndex((prev) => (prev === product.images.length - 1 ? 0 : prev + 1));
+        if (product?.image_urls?.length > 1) {
+        setCurrentImageIndex((prev) => (prev === product.image_urls.length - 1 ? 0 : prev + 1));
         }
     };
 
@@ -176,13 +182,13 @@ const ProductViewingContent = () => {
                     
                     {/* Artwork image */}
                     <img
-                    src={product.images[currentImageIndex]}
+                    src={product.image_urls[currentImageIndex]}
                     alt={product.title}
                     className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                     />
 
                     {/* Chevron Buttons (on hover of artwork only) */}
-                    {product.images.length > 1 && (
+                    {product.image_urls.length > 1 && (
                     <>
                         <button
                         onClick={goToPrevious}
@@ -231,10 +237,10 @@ const ProductViewingContent = () => {
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
                     <div className="flex items-center space-x-2">
                     <Avatar className="w-3 h-3 border">
-                        <AvatarImage src="" alt={product.artist} />
-                        <AvatarFallback className="text-[10px]">{product.artist?.charAt(0)}</AvatarFallback>
+                        <AvatarImage src="" alt={product.artist.name} />
+                        <AvatarFallback className="text-[10px]">{product.artist.name?.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    <span className="text-black text-[9px] cursor-pointer">{product.artist}</span>
+                    <span className="text-black text-[9px] cursor-pointer">{product.artist.name}</span>
                     </div>
                 </div>
                 <div className="relative">
@@ -266,11 +272,11 @@ const ProductViewingContent = () => {
             {/* Price */}
             <div className="flex items-center space-x-4">
               <div className="text-2xl font-bold text-gray-900">
-                ₱ {product.currency}{product.price?.toLocaleString()}k
+                ₱ {product.price}{product.price?.toLocaleString()}k
               </div>
-              {product.originalPrice && (
+              {product.discounted_price && (
                 <div className="text-lg text-gray-400 line-through">
-                  ₱ {product.currency}{product.originalPrice?.toLocaleString()}k
+                  ₱ {product.price}{product.discounted_price?.toLocaleString()}k
                 </div>
               )}
             </div>
@@ -279,7 +285,7 @@ const ProductViewingContent = () => {
             <div className="grid grid-cols-4 gap-4 text-center border py-[18px] rounded-md">
                 <div>
                     <h3 className="text-[10px] font-medium text-gray-500 mb-1">Artwork Style</h3>
-                    <p className="text-[10px] text-gray-900">{product.artworkStyle}</p>
+                    <p className="text-[10px] text-gray-900">{product.artwork_style}</p>
                 </div>
                 
                 <div className="border-l border-gray-300 pl-4">
@@ -360,11 +366,11 @@ const ProductViewingContent = () => {
                         <div className="flex items-center space-x-0.5 mb-1">
                         {renderStars(Math.floor(product.rating))}
                         </div>
-                        <p className="text-[10px] text-gray-500">({product.totalReviews} reviews)</p>
+                        <p className="text-[10px] text-gray-500">({product.total_reviews} reviews)</p>
                     </div>
 
                     {/* Rating Breakdown */}
-                    <div className="flex-1 pt-1 sm:mt-6">
+                    {/* <div className="flex-1 pt-1 sm:mt-6">
                         <div className="space-y-0.5 text-[9px]">
                         {[5, 4, 3, 2, 1].map((star) => {
                             const count = product.reviewBreakdown[star] || 0;
@@ -384,7 +390,7 @@ const ProductViewingContent = () => {
                             );
                         })}
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             )}
             </div>
@@ -461,13 +467,13 @@ const ProductViewingContent = () => {
 
             <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
             <img
-                src={product.images[currentImageIndex]}
+                src={product.image_urls[currentImageIndex]}
                 alt="Expanded artwork"
                 className="max-h-[80vh] max-w-[90vw] object-contain"
             />
 
             {/* Chevron navigation */}
-            {product.images.length > 1 && (
+            {product.image_urls.length > 1 && (
                 <>
                 <button
                     onClick={goToPrevious}
@@ -492,7 +498,7 @@ const ProductViewingContent = () => {
             isOpen={isReviewModalOpen}
             onClose={() => setIsReviewModalOpen(false)}
             reviews={mockReviews}
-            totalReviews={product.totalReviews}
+            totalReviews={product.total_reviews}
         />
     </div>
     );

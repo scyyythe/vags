@@ -9,6 +9,7 @@ import WishlistModal from "@/components/user_dashboard/Marketplace/wishlist/Wish
 import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { toast } from "sonner";
+import SellCardSkeleton from "@/components/skeletons/SellCardSkeleton";
 import { ChevronDown, Grid3X3 } from "lucide-react";
 import {
   DropdownMenu,
@@ -18,7 +19,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/mockArtworks";
-
+import useFetchArtCards from "@/hooks/artworks/sell/useFetchArtCards";
 const Marketplace = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const categories = ["All", "Trending", "Following"];
@@ -33,10 +34,11 @@ const Marketplace = () => {
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
+const { artCards, isLoading, error } = useFetchArtCards();
 
   const handleCardClick = (id: string) => {
     if (!id) return;
-    navigate(`/viewproduct/${id}`);
+    navigate(`/viewproduct/${id}/`);
   };
 
   const handleSellClick = () => {
@@ -148,22 +150,34 @@ const Marketplace = () => {
           
           {/* Marketplace Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4">
-            {mockArtworks.map((artwork) => (
-              <SellCard
-                key={artwork.id}
-                id={artwork.id}
-                artworkImage={artwork.artworkImage}
-                price={artwork.price}
-                originalPrice={artwork.originalPrice ?? 0} 
-                title={artwork.title}
-                rating={artwork.rating}
-                isLiked={likedItems.has(artwork.id)}
-                onLike={() => handleLike(artwork.id)}
-                edition={artwork.edition}
-                isMarketplace={true} 
-                onCardClick={() => handleCardClick(artwork.id)}
-              />
-            ))}
+{isLoading ? (
+  <>
+    {Array.from({ length: 10 }).map((_, idx) => (
+      <SellCardSkeleton key={idx} />
+    ))}
+  </>
+) : error ? (
+  <p className="text-sm text-red-500 col-span-full">{error}</p>
+) : (
+  artCards.map((artwork) => (
+    <SellCard
+      key={artwork.id}
+      id={artwork.id}
+      artworkImage={artwork.image_url?.[0] || "/images/placeholder.jpg"}
+      price={artwork.discounted_price ?? artwork.price}
+      originalPrice={artwork.discounted_price ? artwork.price : undefined}
+      title={artwork.title}
+      rating={artwork.total_ratings}
+      isLiked={likedItems.has(artwork.id)}
+      onLike={() => handleLike(artwork.id)}
+      edition={""}
+      isMarketplace={true}
+      onCardClick={() => handleCardClick(artwork.id)}
+    />
+  ))
+)}
+
+
           </div>
         </div>
         
@@ -173,7 +187,6 @@ const Marketplace = () => {
         <Footer />
       </div>
 
-      {/* Wishlist Modal */}
       <WishlistModal
         isOpen={showWishlist}
         onClose={() => setShowWishlist(false)}
