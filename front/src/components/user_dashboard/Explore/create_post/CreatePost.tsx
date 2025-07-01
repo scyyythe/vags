@@ -70,83 +70,76 @@ const CreatePost = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const size = `${artworkHeight} x ${artworkWidth}`;
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  const size = `${artworkHeight} x ${artworkWidth}`;
 
-    // Early validations
-    if (!artworkTitle.trim()) {
-      toast.error("Please enter an artwork title");
-      return;
-    }
+  if (!artworkTitle.trim()) {
+    toast.error("Please enter an artwork title");
+    return;
+  }
 
-    if (!selectedFile) {
-      toast.error("Please upload an artwork image");
-      return;
-    }
-    if (!artworkHeight || !artworkWidth) {
-      toast.error("Please enter both height and width of the artwork");
-      return;
-    }
-    const formData = new FormData();
-    formData.append("title", artworkTitle.trim());
-    formData.append("category", artworkStyle);
-    formData.append("medium", medium.trim());
-    formData.append("art_status", artStatus);
-    formData.append("size", size);
-    formData.append("price", price.toString());
-    formData.append("description", description.trim());
-    formData.append("visibility", visibility);
-    formData.append("image", selectedFile);
+  if (!selectedFile) {
+    toast.error("Please upload at least one artwork image");
+    return;
+  }
 
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      toast.error("You must be logged in to post artwork.");
-      return;
-    }
-    toast.loading("Uploading artwork...", { id: "upload" });
+  const formData = new FormData();
+  formData.append("title", artworkTitle.trim());
+  formData.append("category", artworkStyle);
+  formData.append("medium", medium.trim());
+  formData.append("art_status", artStatus);
+  formData.append("size", size);
+  formData.append("price", price.toString());
+  formData.append("description", description.trim());
+  formData.append("visibility", visibility);
 
-    try {
-      const response = await apiClient.post("art/create/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  // ✅ Use "images" to match DRF field
+  formData.append("images", selectedFile); // Single image
+  // If you want multiple images:
+  // selectedFiles.forEach(file => formData.append("images", file));
 
-      toast.success("Artwork posted successfully!", { id: "upload" });
-      setSelectedFile(null);
-      setPreviewUrl(null);
-      queryClient.invalidateQueries({ queryKey: ["artworks"] });
-      navigate("/explore");
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        console.error("Upload error:", error.response?.data);
-        const errors = error.response?.data;
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    toast.error("You must be logged in to post artwork.");
+    return;
+  }
 
-        if (Array.isArray(errors) && errors.length > 0) {
-          toast.error(errors[0], { id: "upload" });
-        } else if (errors) {
-          if (typeof errors.detail === "string") {
-            toast.error(errors.detail, { id: "upload" });
-          } else if (errors.image?.length) {
-            toast.error(errors.image[0], { id: "upload" });
-          } else if (typeof errors.error === "string") {
-            toast.error(errors.error, { id: "upload" });
-          } else if (typeof errors === "string") {
-            toast.error(errors, { id: "upload" });
-          } else {
-            toast.error("Upload failed", { id: "upload" });
-          }
-        } else {
-          toast.error("Upload failed", { id: "upload" });
-        }
+  toast.loading("Uploading artwork...", { id: "upload" });
+
+  try {
+    const response = await apiClient.post("art/create/", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    toast.success("Artwork posted successfully!", { id: "upload" });
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    queryClient.invalidateQueries({ queryKey: ["artworks"] });
+    navigate("/explore");
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const errors = error.response?.data;
+      console.error("Upload error:", errors);
+
+      if (Array.isArray(errors) && errors.length > 0) {
+        toast.error(errors[0], { id: "upload" });
+      } else if (errors?.detail) {
+        toast.error(errors.detail, { id: "upload" });
+      } else if (errors?.images?.length) {
+        toast.error(errors.images[0], { id: "upload" });
       } else {
-        console.error("Unexpected error:", error);
-        toast.error("An unexpected error occurred", { id: "upload" });
+        toast.error("Upload failed", { id: "upload" });
       }
+    } else {
+      toast.error("Unexpected error occurred", { id: "upload" });
     }
-  };
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-background">

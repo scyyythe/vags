@@ -5,6 +5,7 @@ from api.models.interaction_model.interaction import Like
 import cloudinary.uploader
 from api.utils.content_moderation import moderate_image
 from rest_framework.exceptions import ValidationError
+from rest_framework import serializers
 
 class ArtSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
@@ -23,18 +24,18 @@ class ArtSerializer(serializers.Serializer):
     year_created = serializers.CharField(max_length=10, required=False)
 
 
-    # ✅ Handle multiple file uploads
     images = serializers.ListField(
         child=serializers.ImageField(),
         required=False,
         write_only=True
     )
 
-    # ✅ Your original field (now as list of URLs)
     image_url = serializers.ListField(
         child=serializers.URLField(),
         read_only=True
     )
+
+ 
 
     likes_count = serializers.SerializerMethodField()
 
@@ -43,26 +44,30 @@ class ArtSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         images = validated_data.pop("images", [])
-        uploaded_urls = []
 
+      
+        if not isinstance(images, list):
+            images = [images]
+
+        uploaded_urls = []
         for img in images:
             result = cloudinary.uploader.upload(img)
-            image_url = result.get("secure_url", "")
-            if not moderate_image(image_url):
-                raise ValidationError("One of the images was rejected due to inappropriate content.")
-            uploaded_urls.append(image_url)
+            url = result.get("secure_url")
+            if not moderate_image(url):
+                raise ValidationError("Inappropriate image content.")
+            uploaded_urls.append(url)
 
         validated_data["image_url"] = uploaded_urls
         validated_data.setdefault("visibility", "Public")
-
         art = Art(**validated_data)
         art.save()
         return art
 
+
     def update(self, instance, validated_data):
         images = validated_data.pop("images", [])
 
-        # Append new uploaded images if present
+      
         if images:
             for img in images:
                 result = cloudinary.uploader.upload(img)
@@ -113,3 +118,35 @@ class ArtSerializer(serializers.Serializer):
             "year_created": instance.year_created,
 
         }
+
+class LightweightArtSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    title = serializers.CharField()
+    artist = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
+    likes_count = serializers.SerializerMethodField()
+
+    def get_artist(self, obj):
+        if obj.artist:
+            return f"{obj.artist.first_name} {obj.artist.last_name}"
+        return ""
+
+    def get_image_url(self, obj):
+        if not hasattr(obj, "image_url"):
+            return []
+
+        urls = obj.image_url
+
+      
+        if isinstance(urls, str):
+            return [urls]
+
+      
+        if isinstance(urls, list):
+            return urls
+
+        return []
+
+
+    def get_likes_count(self, obj):
+        return Like.objects.filter(art=obj).count()
