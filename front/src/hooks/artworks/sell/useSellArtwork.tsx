@@ -47,7 +47,7 @@ const useSellArtwork = () => {
 
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("year_created", year_created);
+  formData.append("year_created", year_created.slice(0, 10));  
     formData.append("category", style);
     formData.append("medium", medium);
     formData.append("size", `${height}x${width}`);
@@ -56,6 +56,9 @@ const useSellArtwork = () => {
     formData.append("edition", edition);
     formData.append("quantity", quantity);
     formData.append("images", mainImage);
+    formData.append("visibility", "Public");
+  formData.append("art_status", "onSale"); 
+
 
     additionalImages.forEach((img) => {
       if (img) formData.append("images", img);
@@ -63,7 +66,7 @@ const useSellArtwork = () => {
 
     try {
       // Correctly call the API
-      await apiClient.post("/artworks/create/", formData, {
+      await apiClient.post("/art/sell/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -73,7 +76,7 @@ const useSellArtwork = () => {
       navigate("/marketplace");
     } catch (err) {
       toast.error("Failed to list artwork", { id: "upload" });
-      console.error("Submit error:", err);
+     console.error("Submit error:", err.response?.data || err.message);
     } finally {
       setIsUploading(false);
     }

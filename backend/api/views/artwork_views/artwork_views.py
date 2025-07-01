@@ -17,7 +17,8 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
-
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticated
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
     serializer_class = ArtSerializer
@@ -41,6 +42,28 @@ class ArtCreateView(generics.ListCreateAPIView):
         now = datetime.now()
         time_elapsed = timesince(art.created_at, now)
 
+class SellArtworkView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]  
+
+    def post(self, request):
+        try:
+            mongo_user = User.objects.get(id=ObjectId(request.user.id))
+        except Exception as e:
+            print("Error retrieving MongoEngine user:", e)
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if mongo_user.is_suspended:
+            suspension = mongo_user.get_active_suspension()
+            return Response({
+                "error": f"Account suspended until {suspension.end_date.strftime('%B %d, %Y at %I:%M %p')}. Reason: {suspension.reason}"
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = ArtSerializer(data=request.data)
+        if serializer.is_valid():
+            art = serializer.save(artist=mongo_user)
+            return Response(ArtSerializer(art).data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ArtListView(generics.ListAPIView):
     serializer_class = ArtSerializer
