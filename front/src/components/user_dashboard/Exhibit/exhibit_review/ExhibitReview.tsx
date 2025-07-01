@@ -89,7 +89,6 @@ const ExhibitReview = () => {
   };
 
   const handleEdit = () => {
-    // Navigate to the add exhibit page with the current exhibit ID
     navigate(`/addexhibit/${exhibitId}?mode=edit`);
   };
 
@@ -115,16 +114,16 @@ const ExhibitReview = () => {
       <div className="mb-20"><Header /></div> 
         {/* Back button */}
         <div className="ml-8">
-          <button onClick={() => navigate(-1)} className="flex items-center text-[11px] font-semibold">
-            <i className="bx bx-chevron-left text-lg mr-2"></i>Go back
+          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+            <i className="bx bx-chevron-left text-xl mr-2"></i>Go back
           </button>
         </div>
 
       <div className="mx-auto px-10 py-6">
           {/* Exhibit Review Header */}
           <div className="mb-6">
-              <h1 className="text-[11px] font-semibold">Exhibit Review</h1>
-              <p className="text-[10px] text-gray-600">
+              <h1 className="text-[13px] font-semibold mb-1">Exhibit Review</h1>
+              <p className="text-[11px] text-gray-600">
               Review all details before publishing your exhibit. Make sure collaborators have filled their slots.
               </p>
           </div>
