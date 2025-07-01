@@ -45,7 +45,7 @@ import PaymentPage from "@/components/user_dashboard/Bidding/highest_bid/pages/P
 //EXHIBITS
 import AddExhibit from "./components/user_dashboard/Exhibit/add_exhibit/AddExhibit";
 import ExhibitViewing from "./components/user_dashboard/Exhibit/exhibit_viewing/ViewExhibit";
-import CollaboratorView from "./components/user_dashboard/Exhibit/add_exhibit/components/CollaboratorViews";
+import CollaboratorView from "./components/user_dashboard/Exhibit/collaborator_view/CollaboratorView";
 import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/ExhibitReview";
 
 //MARKETPLACE
