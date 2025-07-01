@@ -306,7 +306,6 @@ const AddExhibit = () => {
     if (exhibitId && mockExhibitData[Number(exhibitId)]) {
       const exhibitData = mockExhibitData[Number(exhibitId)];
 
-      // Set view mode based on URL parameter
       if (mode === "review") {
         setViewMode("review");
         setIsReadOnly(true);
@@ -381,7 +380,6 @@ const AddExhibit = () => {
         newSlotOwnerMap[i] = currentUser.id.toString();
       }
     } else {
-      // FIX: Include all collaborators, no slicing
       const participants = [currentUser, ...collaborators];
       const totalParticipants = participants.length;
 
@@ -412,14 +410,11 @@ const AddExhibit = () => {
     e.preventDefault();
 
     if (viewMode === "review" || viewMode === "monitoring" || viewMode === "preview") {
-      // For review, monitoring, or preview mode - just return to exhibits page
       navigate("/exhibits");
       return;
     }
 
-    // For regular solo exhibits or owner submitting collab exhibit
     if (viewMode === "owner") {
-      // Check if this is a collaborative exhibit that needs to notify collaborators
       if (exhibitType === "collab" && collaborators.length > 0) {
         setShowNotificationDialog(true);
         return;
@@ -479,15 +474,13 @@ const AddExhibit = () => {
 
   // Function to send notifications to collaborators
   const sendNotificationsToCollaborators = () => {
-    // Prepare notifications for all collaborators
     const notificationsToSend = collaborators.map((collab) => ({
       collaboratorId: collab.id,
       collaboratorName: collab.first_name,
-      exhibitId: Math.floor(Math.random() * 1000) + 1, // In a real app, this would be the actual exhibit ID
+      exhibitId: Math.floor(Math.random() * 1000) + 1, 
       exhibitTitle: title || "Untitled Exhibit",
     }));
 
-    // Send notifications using our utility function
     const count = sendCollaboratorNotifications(notificationsToSend);
     showCollaboratorNotification(count);
 
@@ -506,7 +499,6 @@ const AddExhibit = () => {
       .filter(([slotId, userId]) => userId.toString() === currentUserIdStr && !slotArtworkMap[Number(slotId)])
       .map(([slotId]) => Number(slotId));
 
-    // Don't allow selecting same artwork twice
     if (selectedArtworks.includes(artworkId)) {
       toast({
         title: "Artwork already selected",
@@ -527,23 +519,19 @@ const AddExhibit = () => {
       return;
     }
 
-    // Assign artwork to the slot
     setSlotArtworkMap((prev) => ({
       ...prev,
       [availableSlot]: artworkId,
     }));
 
-    // Add the slot to selected slots if it's not already
     if (!selectedSlots.includes(availableSlot)) {
       setSelectedSlots((prev) => [...prev, availableSlot]);
     }
 
-    // Mark this artwork as selected
     setSelectedArtworks((prev) => [...prev, artworkId]);
   };
 
   const handleSlotSelect = (slotId: number) => {
-    // Determine which user is currently making selections
     const currentUserId = getLoggedInUserId() ?? (viewMode === "owner" ? currentUser.id : currentCollaborator?.id);
     if (!currentUserId) return;
 
@@ -559,11 +547,9 @@ const AddExhibit = () => {
 
     // If slot is already selected, toggle it off
     if (selectedSlots.includes(slotId)) {
-      // Remove the artwork assignment for this slot
       const newSlotArtworkMap = { ...slotArtworkMap };
       const artworkId = newSlotArtworkMap[slotId];
 
-      // Remove the artwork from selected artworks if it was in this slot
       if (artworkId) {
         setSelectedArtworks((prev) => prev.filter((id) => id !== artworkId));
         delete newSlotArtworkMap[slotId];
@@ -578,21 +564,17 @@ const AddExhibit = () => {
 
   // Handle clearing a slot
   const handleClearSlot = (slotId: number) => {
-    // Determine which user is currently making selections
     const currentUserId = getLoggedInUserId() ?? (viewMode === "owner" ? currentUser.id : currentCollaborator?.id);
     if (!currentUserId) return;
 
-    // Ensure the user owns this slot
     if (slotOwnerMap[slotId] !== currentUserId) {
       return;
     }
 
     const artworkId = slotArtworkMap[slotId];
     if (artworkId) {
-      // Remove the artwork from selected artworks
       setSelectedArtworks((prev) => prev.filter((id) => id !== artworkId));
 
-      // Remove the slot-artwork mapping
       const newSlotArtworkMap = { ...slotArtworkMap };
       delete newSlotArtworkMap[slotId];
       setSlotArtworkMap(newSlotArtworkMap);
@@ -601,10 +583,10 @@ const AddExhibit = () => {
 
   // Handle adding a collaborator
   const handleAddCollaborator = (artist: User) => {
-    if (collaborators.length >= 2) {
+    if (collaborators.length >= 5) {
       toast({
         title: "Maximum collaborators reached",
-        description: "You can only add up to 2 collaborators.",
+        description: "You can only add up to 5 collaborators.",
         variant: "destructive",
       });
       return;
@@ -623,14 +605,11 @@ const AddExhibit = () => {
   const confirmRemoveCollaborator = () => {
     if (!collaboratorToRemove) return;
 
-    // Remove collaborator
     setCollaborators((prev) => prev.filter((c) => c.id !== collaboratorToRemove.id));
 
-    // Clear slot assignments and redistribute
     setIsRemoveCollaboratorDialogOpen(false);
     setCollaboratorToRemove(null);
 
-    // Redistribute slots
     setTimeout(() => {
       distributeSlots();
     }, 0);
@@ -641,7 +620,9 @@ const AddExhibit = () => {
     const selectedEnv = environments.find(env => env.id === envId);
     const totalParticipants = collaborators.length + 1;
 
-    if (selectedEnv && selectedEnv.slots < totalParticipants) {
+    if (!selectedEnv) return;
+
+    if (selectedEnv.slots < totalParticipants) {
       toast({
         title: "Not enough slots to assign for all collaborators and the owner.",
         description: "Please select a virtual environment with more available slots.",
@@ -652,6 +633,10 @@ const AddExhibit = () => {
     }
 
     setSelectedEnvironment(envId);
+
+    setBannerImage(selectedEnv.image);
+    setBannerFile(null);
+
     distributeSlots();
   };
 
@@ -660,7 +645,6 @@ const AddExhibit = () => {
     if (value) {
       setExhibitType(value);
 
-      // If changing to solo, remove all collaborators
       if (value === "solo") {
         setCollaborators([]);
         distributeSlots();
@@ -676,7 +660,7 @@ const AddExhibit = () => {
     if (!ownerId) return slotColorSchemes[0];
 
     const getColorSchemeIndex = (userId: string) => {
-      if (userId === String(currentUser.id)) return 0; // convert currentUser.id to string here
+      if (userId === String(currentUser.id)) return 0;
 
       const collaboratorIndex = collaborators.findIndex((c) => String(c.id) === userId);
 
@@ -694,7 +678,6 @@ const AddExhibit = () => {
     return collaborator ? `${collaborator.first_name}'s slot` : "";
   };
 
-  // Determine if the current user can interact with a slot
   const canInteractWithSlot = (slotId: number): boolean => {
     if (isReadOnly) return false;
 
@@ -708,12 +691,10 @@ const AddExhibit = () => {
 
   // Function to get collaborator submission status
   const getCollaboratorSubmissionStatus = (collaboratorId: string): SubmissionStatus => {
-    // Get slots assigned to this collaborator
     const collaboratorSlots = Object.entries(slotOwnerMap)
-      .filter(([_, userId]) => userId === collaboratorId) // Compare as strings
-      .map(([slotId]) => Number(slotId)); // Convert slotId to number if needed
+      .filter(([_, userId]) => userId === collaboratorId) 
+      .map(([slotId]) => Number(slotId)); 
 
-    // Count filled slots
     const filledSlots = collaboratorSlots.filter((slotId) => slotArtworkMap[slotId]);
 
     return {
@@ -766,27 +747,6 @@ const AddExhibit = () => {
                   collaboratorCount={collaborators.length}
                 />
 
-                {selectedEnvironment === 3 && (
-                  <div className="mt-6">
-                    <p className="text-xs font-semibold mb-4">Interactive Virtual Gallery</p>
-                    <div className="w-full h-[600px] relative rounded-lg overflow-hidden border">
-                      <Gallery3D
-                        slotArtworkMap={slotArtworkMap}
-                        artworks={artworks.map((a) => ({
-                          id: a.id.toString(),
-                          image_url: a.image_url || a.image_url || "", 
-                          title: a.title || "Untitled",
-                          artist: a.artist || "Unknown"
-                        }))}
-                      />
-
-                    </div>
-                    <p className="text-[10px] text-muted-foreground mt-2">
-                      This 3D environment contains <strong>10 slots</strong>. Click to enter, use <code>WASD</code> + mouse to move.
-                    </p>
-                  </div>
-                )}
-
                 {/* Display available slots only if an environment is selected */}
                 {selectedEnvironment && (
                   <ExhibitSlots
@@ -808,6 +768,39 @@ const AddExhibit = () => {
                     slotColorSchemes={slotColorSchemes}
                   />
                 )}
+                
+                {/* PREVIEW BUTTON */}
+                {selectedEnvironment === 3 && !isReadOnly && (
+                  <div className="mt-4">
+                    <Button
+                      type="button"
+                      className="bg-gray-900 text-white text-xs px-4 py-1.5 rounded-full hover:bg-gray-800"
+                      onClick={() => {
+                        const encodedSlotMap = encodeURIComponent(JSON.stringify(slotArtworkMap));
+                        const encodedArtworks = encodeURIComponent(
+                          JSON.stringify(
+                            artworks
+                              .filter((a) => selectedArtworks.includes(a.id.toString()))
+                              .map((a) => ({
+                                id: a.id.toString(),
+                                image_url: a.image_url,
+                                title: a.title || "Untitled",
+                                artist: a.artist || "Unknown",
+                              }))
+                          )
+                        );
+
+                        navigate(`/gallery3d-preview?slotMap=${encodedSlotMap}&artworks=${encodedArtworks}`);
+                      }}
+                    >
+                      Preview in 3D View
+                    </Button>
+                    <p className="text-[10px] text-muted-foreground mt-2">
+                      Opens your current selections in an interactive virtual gallery.
+                    </p>
+                  </div>
+                )}
+
               </div>
             </div>
 

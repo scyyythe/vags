@@ -17,7 +17,7 @@ const Gallery3D: React.FC<Gallery3DProps> = ({ slotArtworkMap, artworks }) => {
   const imageMeshesRef = useRef<Record<string, THREE.Mesh>>({});
   const titleMeshesRef = useRef<Record<string, THREE.Mesh>>({});
   const sceneRef = useRef<THREE.Scene | null>(null);
-const [meshesReady, setMeshesReady] = useState(false);
+  const [meshesReady, setMeshesReady] = useState(false);
 
   useEffect(() => {
     const mount = mountRef.current!;
