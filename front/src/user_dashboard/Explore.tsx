@@ -28,6 +28,7 @@ const Explore = () => {
   const { data: popularArtworksRaw } = useFetchPopularArtworks();
 
 const popularArtworks = popularArtworksRaw?.slice(0, 5) ?? [];
+
   const artworkIds = artworks?.map((a) => a.id) || [];
   const { data: bulkStatus } = useBulkArtworkStatus(artworkIds);
   const { data: reportStatus } = useBulkReportStatus(artworkIds);
