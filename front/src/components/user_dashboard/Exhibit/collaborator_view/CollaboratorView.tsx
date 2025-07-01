@@ -66,14 +66,14 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     { id: 8, image: "https://i.pinimg.com/736x/0e/3f/e7/0e3fe7f3e1da1ac7baeab1947dfd08c3.jpg" },
   ];
 
-  // Mock current user (collaborator) data - in a real app this would come from auth context
+  // Mock current user (collaborator) data 
   const mockCollaborator: Artist = {
     id: 201,
     name: "Jai Anoba",
     avatar: "https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
   };
 
-  // Mock exhibit data - in a real app this would be fetched from API
+  // Mock exhibit data 
   const mockExhibitData = {
     id: parseInt(exhibitId || "1"),
     title: "Urban Dreamscape",
@@ -85,7 +85,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     slotOwnerMap: {
       1: 100, 2: 100, 3: 201, 4: 201, 5: 202, 6: 202
     },
-    slotArtworkMap: { 1: 1, 2: 2 }, // Owner has already placed some artwork
+    slotArtworkMap: { 1: 1, 2: 2 }, 
     owner: {
       id: 100,
       name: "Jera Anderson",
@@ -185,7 +185,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     if (userId === exhibit.owner.id) return 0; // Owner
     
     const collaboratorIndex = exhibit.collaborators.findIndex(c => c.id === userId);
-    return collaboratorIndex + 1; // +1 because owner is index 0
+    return collaboratorIndex + 1;
   };
 
   const getSlotColor = (slotId: number) => {
@@ -229,16 +229,16 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
       <div className="container mx-auto pt-20 max-w-6xl pb-4">
         <div className="mb-3">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
-            <i className="bx bx-chevron-left text-lg mr-2"></i>Go back
+            <i className="bx bx-chevron-left text-xl mr-2"></i>Go back
           </button>
         </div>
         
         {/* Collaborator View Notice */}
         <div className=" mb-6">
-          <h2 className="text-[11px] font-medium mb-1">
+          <h2 className="text-[13px] font-medium mb-1">
             Exhibit Collaboration
           </h2>
-          <p className="text-[9px]">
+          <p className="text-[11px]">
             You are invited to contribute to "{exhibit.title}". 
             Please select your artwork for the slots assigned to you below.
           </p>
