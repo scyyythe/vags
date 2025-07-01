@@ -4,7 +4,7 @@ import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
 import CategoryFilter from "@/components/user_dashboard/Marketplace/category_filter/CategoryFilter";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
-import TopSellers from "@/components/user_dashboard/Marketplace/top_seller/TopSellers";
+import TopSellers from "@/components/user_dashboard/Marketplace/top_seller/TopSellersPreview";
 import WishlistModal from "@/components/user_dashboard/Marketplace/wishlist/WishlistModal";
 import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";

@@ -50,9 +50,9 @@ import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/Ex
 
 //MARKETPLACE
 import ViewProduct from "@/components/user_dashboard/Marketplace/view_product/ViewProduct";
+import TopSellers from "@/components/user_dashboard/Marketplace/top_seller/TopSellers"
 
 //ADMIN & MODERATOR
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { AdminLayout } from "@/components/admin_&_moderator/layout/AdminLayout";
 
 // Admin routes
@@ -124,6 +124,7 @@ const App = () => {
                           <Route path="/payment" element={<PaymentPage />} />
                           {/* Marketplace */}
                           <Route path="/viewproduct/:id" element={<ViewProduct />} />
+                          <Route path="/topsellers" element={<TopSellers />} />
                           {/* Exhibit */}
                           <Route path="/add-exhibit" element={<AddExhibit />} />
                           <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />
