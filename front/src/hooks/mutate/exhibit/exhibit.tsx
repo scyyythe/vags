@@ -30,7 +30,7 @@ export const createExhibit = async (data: ExhibitPayload) => {
   formData.append("category", data.category);
   formData.append("owner", data.owner);
 
-  // ✅ Fix exhibit_type to match backend choices exactly
+
   const formattedType =
     data.exhibit_type.toLowerCase() === "solo" ? "Solo" : "Collaborative";
   formData.append("exhibit_type", formattedType);

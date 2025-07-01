@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
 import PopularArtworksSkeleton from "@/components/skeletons/PopularArtworksSkeleton";
 const Hero = () => {
-  const { data: artworks, isLoading } = useFetchPopularArtworks(3);
+const { data: artworksRaw, isLoading } = useFetchPopularArtworks();
+const artworks = artworksRaw?.slice(0, 3) ?? [];
 
   return (
     <section className="relative pt-24 px-6 pb-40 md:pb-0 md:px-12" id="discover">
@@ -61,20 +62,26 @@ const Hero = () => {
                       transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
                     >
                       <div className="relative w-full bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
-                        <img src={artwork.image_url} alt={artwork.title} className="h-40 rounded-2xl" />
-                        <div className="p-2 flex justify-between items-center">
-                          <div>
-                            <p className="text-sm font-medium">{artwork.title}</p>
-                            <p className="text-xs text-gray-500">{artwork.artistName}</p>
-                          </div>
-                          <div className="w-6 h-6 rounded-full overflow-hidden">
-                            <img
-                              src={artwork.artistImage}
-                              alt="Artist"
-                              className="w-full h-full object-cover rounded-full"
-                            />
-                          </div>
-                        </div>
+                      <img
+  src={Array.isArray(artwork.image_url) ? artwork.image_url[0] : artwork.image_url}
+  alt={artwork.title}
+  className="h-40 rounded-2xl"
+/>
+
+                  <div className="p-2 flex justify-between items-center">
+  <div>
+    <p className="text-sm font-medium">{artwork.title}</p>
+    <p className="text-xs text-gray-500">{artwork.artist.name}</p> 
+  </div>
+  <div className="w-6 h-6 rounded-full overflow-hidden">
+    <img
+      src={artwork.artist.profile_picture} 
+      alt={artwork.artist.name}
+      className="w-full h-full object-cover rounded-full"
+    />
+  </div>
+</div>
+
                       </div>
                     </motion.div>
                   );
