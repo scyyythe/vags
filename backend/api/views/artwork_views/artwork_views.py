@@ -4,7 +4,9 @@ from api.models.artwork_model.artwork import Art
 from api.models.user_model.users import User
 from api.models.interaction_model.notification import Notification
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
+from api.serializers.artwork_s.artwork_serializers import LightweightArtSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from api.models.interaction_model.interaction import Like
 from datetime import datetime
 from rest_framework.response import Response
 from django.http import Http404
@@ -13,6 +15,7 @@ from rest_framework import status
 from django.utils.timesince import timesince
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 
 class ArtCreateView(generics.ListCreateAPIView):
@@ -53,6 +56,42 @@ class ArtListView(generics.ListAPIView):
             art_status__iexact="active",
             artist__nin=blocked_user_ids
         ).order_by('-created_at')
+
+
+class PopularLightweightArtView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        try:
+            blocked_user_ids = []
+            if request.user.is_authenticated and hasattr(request.user, 'blocked_users'):
+                blocked_user_ids = [user.id for user in request.user.blocked_users]
+
+ 
+            artworks = Art.objects(
+                visibility__iexact="public",
+                art_status__iexact="active",
+                artist__nin=blocked_user_ids
+            )
+ 
+            artworks = [art for art in artworks if art.image_url and len(art.image_url) > 0]
+     
+            artworks_sorted = sorted(
+                artworks,
+                key=lambda art: Like.objects.filter(art=art).count(),
+                reverse=True
+            )
+
+            top_artworks = artworks_sorted[:5] if artworks_sorted else artworks[:5]
+
+            serializer = LightweightArtSerializer(top_artworks, many=True)
+            return Response(serializer.data)
+
+        except Exception as e:
+        
+            return Response({"error": str(e)}, status=500)
+
+
 
 class ArtBulkListView(generics.ListAPIView):
     serializer_class = ArtSerializer
