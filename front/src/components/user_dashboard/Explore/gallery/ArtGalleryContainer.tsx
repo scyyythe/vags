@@ -101,7 +101,7 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
             return (
               <div
                 key={art.id}
-                onClick={() => handleArtworkClick(art.id, art.image_url, art.artistName)}
+                onClick={() => handleArtworkClick(art.id, art.image_url?.[0] , art.artist)}
                 className={
                   "absolute transition-all duration-1000 ease-in-out cursor-pointer" +
                   (spread ? " hover:rotate-[1.5deg] hover:-translate-y-1" : "")
@@ -124,13 +124,13 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
                     animationDelay: spread ? `${delay}s` : undefined,
                   }}
                 >
-                  {/* Full card image */}
-                  <img src={art.image_url} alt={art.title} className="w-full h-full object-cover" />
+                  {/* Full card image_url */}
+                  <img src={art.image_url?.[0] } alt={art.title} className="w-full h-full object-cover" />
                   {/* Info container at the bottom */}
                   <div className="absolute left-0 bottom-0 w-full px-4 pt-2 pb-1 bg-white/70 rounded-b-lg">
                     <div className="font-semibold text-[11px] leading-tight text-black -mb-1">{art.title}</div>
                     <div className="flex items-center justify-between">
-                      <div className="text-[8px] text-gray-700">by {art.artistName}</div>
+                      <div className="text-[8px] text-gray-700">by {art.artist}</div>
                       <div className="flex items-center gap-1">
                         <span className="text-red-600 text-base">♥</span>
                         <span className="text-[11px] font-medium text-black">{art.likes_count}</span>

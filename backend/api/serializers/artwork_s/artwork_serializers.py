@@ -5,6 +5,7 @@ from api.models.interaction_model.interaction import Like
 import cloudinary.uploader
 from api.utils.content_moderation import moderate_image
 from rest_framework.exceptions import ValidationError
+from rest_framework import serializers
 
 class ArtSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
@@ -117,3 +118,35 @@ class ArtSerializer(serializers.Serializer):
             "year_created": instance.year_created,
 
         }
+
+class LightweightArtSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    title = serializers.CharField()
+    artist = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
+    likes_count = serializers.SerializerMethodField()
+
+    def get_artist(self, obj):
+        if obj.artist:
+            return f"{obj.artist.first_name} {obj.artist.last_name}"
+        return ""
+
+    def get_image_url(self, obj):
+        if not hasattr(obj, "image_url"):
+            return []
+
+        urls = obj.image_url
+
+      
+        if isinstance(urls, str):
+            return [urls]
+
+      
+        if isinstance(urls, list):
+            return urls
+
+        return []
+
+
+    def get_likes_count(self, obj):
+        return Like.objects.filter(art=obj).count()
