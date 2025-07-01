@@ -4,7 +4,10 @@ import apiClient from "@/utils/apiClient";
 export interface Artwork {
   id: string;
   title: string;
-  artist: string;
+  artist: {
+    name: string;
+    profile_picture: string;
+  };
   image_url: string[];
   likes_count: number;
 }
@@ -14,7 +17,10 @@ const fetchPopularArtworks = async (): Promise<Artwork[]> => {
   return response.data.map((artwork: any) => ({
     id: artwork.id,
     title: artwork.title,
-    artist: artwork.artist,
+    artist: {
+      name: artwork.artist?.name || "",
+      profile_picture: artwork.artist?.profile_picture || "",
+    },
     image_url: artwork.image_url,
     likes_count: artwork.likes_count,
   }));
