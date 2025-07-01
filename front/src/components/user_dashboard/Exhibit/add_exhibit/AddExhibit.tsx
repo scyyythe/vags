@@ -280,7 +280,7 @@ const AddExhibit = () => {
   //   console.log("Fetched artworks:", artworks);
   // }, [artworks]);
 
-  // Mock environments data with different slot capacities
+  // Mock environments 
   const environments: Environment[] = [
     {
       id: 1,
@@ -302,7 +302,6 @@ const AddExhibit = () => {
     },
   ];
 
-  // Load exhibit data based on exhibitId and mode
   useEffect(() => {
     if (exhibitId && mockExhibitData[Number(exhibitId)]) {
       const exhibitData = mockExhibitData[Number(exhibitId)];
@@ -370,7 +369,6 @@ const AddExhibit = () => {
 
     const totalSlots = currentEnvironment.slots;
 
-    // Reset all related slot selections
     setSelectedSlots([]);
     setSelectedArtworks([]);
     setSlotArtworkMap({});
@@ -382,7 +380,6 @@ const AddExhibit = () => {
         newSlotOwnerMap[i] = currentUser.id.toString();
       }
     } else {
-      // FIX: Include all collaborators, no slicing
       const participants = [currentUser, ...collaborators];
       const totalParticipants = participants.length;
 
@@ -413,7 +410,6 @@ const AddExhibit = () => {
     e.preventDefault();
 
     if (viewMode === "review" || viewMode === "monitoring" || viewMode === "preview") {
-      // For review, monitoring, or preview mode - just return to exhibits page
       navigate("/exhibits");
       return;
     }
@@ -421,7 +417,7 @@ const AddExhibit = () => {
     // For regular solo exhibits or owner submitting collab exhibit
     if (viewMode === "owner") {
       // Check if this is a collaborative exhibit that needs to notify collaborators
-      if (exhibitType === "collaborative" && collaborators.length > 0) {
+      if (exhibitType === "collab" && collaborators.length > 0) {
         setShowNotificationDialog(true);
         return;
       }
@@ -610,10 +606,10 @@ const completeExhibitSubmission = () => {
 
   // Handle adding a collaborator
   const handleAddCollaborator = (artist: User) => {
-    if (collaborators.length >= 2) {
+    if (collaborators.length >= 5) {
       toast({
         title: "Maximum collaborators reached",
-        description: "You can only add up to 2 collaborators.",
+        description: "You can only add up to 5 collaborators.",
         variant: "destructive",
       });
       return;
@@ -632,14 +628,11 @@ const completeExhibitSubmission = () => {
   const confirmRemoveCollaborator = () => {
     if (!collaboratorToRemove) return;
 
-    // Remove collaborator
     setCollaborators((prev) => prev.filter((c) => c.id !== collaboratorToRemove.id));
 
-    // Clear slot assignments and redistribute
     setIsRemoveCollaboratorDialogOpen(false);
     setCollaboratorToRemove(null);
 
-    // Redistribute slots
     setTimeout(() => {
       distributeSlots();
     }, 0);
@@ -669,7 +662,6 @@ const completeExhibitSubmission = () => {
     if (value) {
       setExhibitType(value);
 
-      // If changing to solo, remove all collaborators
       if (value === "solo") {
         setCollaborators([]);
         distributeSlots();
@@ -685,7 +677,7 @@ const completeExhibitSubmission = () => {
     if (!ownerId) return slotColorSchemes[0];
 
     const getColorSchemeIndex = (userId: string) => {
-      if (userId === String(currentUser.id)) return 0; // convert currentUser.id to string here
+      if (userId === String(currentUser.id)) return 0; 
 
       const collaboratorIndex = collaborators.findIndex((c) => String(c.id) === userId);
 
@@ -719,10 +711,9 @@ const completeExhibitSubmission = () => {
   const getCollaboratorSubmissionStatus = (collaboratorId: string): SubmissionStatus => {
     // Get slots assigned to this collaborator
     const collaboratorSlots = Object.entries(slotOwnerMap)
-      .filter(([_, userId]) => userId === collaboratorId) // Compare as strings
-      .map(([slotId]) => Number(slotId)); // Convert slotId to number if needed
+      .filter(([_, userId]) => userId === collaboratorId)
+      .map(([slotId]) => Number(slotId));
 
-    // Count filled slots
     const filledSlots = collaboratorSlots.filter((slotId) => slotArtworkMap[slotId]);
 
     return {
