@@ -128,8 +128,14 @@ class LightweightArtSerializer(serializers.Serializer):
 
     def get_artist(self, obj):
         if obj.artist:
-            return f"{obj.artist.first_name} {obj.artist.last_name}"
-        return ""
+            return {
+                "name": f"{obj.artist.first_name} {obj.artist.last_name}",
+                "profile_picture": str(obj.artist.profile_picture or "")
+            }
+        return {
+            "name": "",
+            "profile_picture": ""
+        }
 
     def get_image_url(self, obj):
         if not hasattr(obj, "image_url"):
@@ -137,16 +143,11 @@ class LightweightArtSerializer(serializers.Serializer):
 
         urls = obj.image_url
 
-      
         if isinstance(urls, str):
             return [urls]
-
-      
         if isinstance(urls, list):
             return urls
-
         return []
-
 
     def get_likes_count(self, obj):
         return Like.objects.filter(art=obj).count()
