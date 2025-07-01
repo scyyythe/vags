@@ -101,7 +101,7 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
             return (
               <div
                 key={art.id}
-                onClick={() => handleArtworkClick(art.id, art.image_url?.[0] , art.artist)}
+                onClick={() => handleArtworkClick(art.id, art.image_url?.[0] , art.artist.name)}
                 className={
                   "absolute transition-all duration-1000 ease-in-out cursor-pointer" +
                   (spread ? " hover:rotate-[1.5deg] hover:-translate-y-1" : "")
@@ -130,7 +130,7 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
                   <div className="absolute left-0 bottom-0 w-full px-4 pt-2 pb-1 bg-white/70 rounded-b-lg">
                     <div className="font-semibold text-[11px] leading-tight text-black -mb-1">{art.title}</div>
                     <div className="flex items-center justify-between">
-                      <div className="text-[8px] text-gray-700">by {art.artist}</div>
+                      <div className="text-[8px] text-gray-700">by {art.artist.name}</div>
                       <div className="flex items-center gap-1">
                         <span className="text-red-600 text-base">♥</span>
                         <span className="text-[11px] font-medium text-black">{art.likes_count}</span>
