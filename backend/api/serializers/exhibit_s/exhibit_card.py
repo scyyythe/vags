@@ -75,14 +75,28 @@ class ExhibitCardSerializer(serializers.Serializer):
         return obj.exhibit_type == 'Collaborative'
 
     def get_collaborators(self, obj):
-        return [
-            {
-                "id": str(user.id),
-                "name": user.full_name,
-                "avatar": getattr(user, 'avatar', "")
-            }
-            for user in obj.collaborators
-        ]
+        collaborators = []
+
+        for user in obj.collaborators:
+            try:
+                if isinstance(user, str):
+                    user = User.objects.get(id=user)
+
+              
+                full_name = f"{user.first_name} {user.last_name}".strip()
+
+                collaborators.append({
+                    "id": str(user.id),
+                    "name": full_name,
+                    "avatar": getattr(user, 'avatar', "")
+                })
+            except Exception as e:
+                print(f"⚠️ Error retrieving collaborator user: {e}")
+                continue
+
+        return collaborators
+
+
 
     def get_owner(self, obj):
         owner = obj.owner
@@ -92,5 +106,5 @@ class ExhibitCardSerializer(serializers.Serializer):
             "avatar": getattr(owner, 'avatar', "")
         } if owner else None
     def get_slotArtworkMap(self, obj):
-        # Map first 10 artworks to slots 1–10
+      
         return {str(i + 1): str(art.id) for i, art in enumerate(obj.artworks[:10])}
