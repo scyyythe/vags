@@ -23,6 +23,12 @@ export interface Bid {
 
 export type PaymentMethod = "creditCard" | "gcash" | "paypal" | "stripe";
 
+export type SubmissionStatus = {
+  total: number;
+  filled: number;
+  percentage: number;
+}
+
 export interface ShippingInfo {
   fullName: string;
   address: string;
@@ -37,4 +43,18 @@ export interface PaymentState {
   selectedPaymentMethod: PaymentMethod | null;
   shippingInfo: ShippingInfo;
   isEditingShipping: boolean;
+}
+
+export type ViewMode = 
+  | "owner"
+  | "review"
+  | "monitoring"
+  | "preview"
+  | "collaborator";
+
+export interface Environment {
+  id: number;
+  name?: string; 
+  slots: number;
+  image: string;
 }
