@@ -1,6 +1,6 @@
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route,useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Index from "./pages/Index";
@@ -98,6 +98,21 @@ const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
 
 const queryClient = new QueryClient();
 
+const Gallery3DWrapper = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const slotMapRaw = queryParams.get("slotMap");
+  const artworksRaw = queryParams.get("artworks");
+
+  const slotArtworkMap: Record<number, string> = slotMapRaw ? JSON.parse(decodeURIComponent(slotMapRaw)) : {};
+  const artworks = artworksRaw ? JSON.parse(decodeURIComponent(artworksRaw)) : [];
+
+  return (
+    <Gallery3D slotArtworkMap={slotArtworkMap} artworks={artworks} />
+  );
+};
+
+
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -118,7 +133,7 @@ const App = () => {
                           <Route path="/fingerprint-register" element={<FingerprintRegister />} />
                           <Route path="/hero" element={<Hero />} />
                           {/* Gallery */}
-
+                          <Route path="/gallery3d-preview" element={<Gallery3DWrapper />} />
                           {/* Bid */}
                           <Route path="/bid-winner/:id" element={<BidWinnerPage />} />
                           <Route path="/payment" element={<PaymentPage />} />
