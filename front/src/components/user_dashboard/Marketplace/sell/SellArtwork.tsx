@@ -349,7 +349,7 @@ const SellArtwork = () => {
                     </div>
                     <div>
                         <label className="block text-[11px] font-medium text-gray-700 mb-2">
-                        Artwork Size
+                        Dimensions (cm)
                         </label>
                         <div className="flex items-center space-x-2">
                         <Input
