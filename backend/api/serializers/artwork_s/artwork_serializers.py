@@ -181,7 +181,8 @@ class ArtCardSerializer(serializers.Serializer):
     discounted_price = serializers.IntegerField(required=False, allow_null=True)
     total_ratings = serializers.IntegerField(default=0)
     image_url = serializers.SerializerMethodField()
-
+    category=serializers.CharField()
+    
     def get_image_url(self, obj):
         if hasattr(obj, "image_url"):
             if isinstance(obj.image_url, str):
