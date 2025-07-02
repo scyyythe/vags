@@ -24,6 +24,7 @@ class ExhibitSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     viewed_by = serializers.ListField(child=serializers.CharField(), required=False, default=[])
+    
 
     exhibit_likes_count = serializers.SerializerMethodField()
     user_has_liked_exhibit = serializers.SerializerMethodField()

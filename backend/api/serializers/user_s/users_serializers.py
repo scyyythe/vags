@@ -3,8 +3,6 @@ from api.models.user_model.users import User
 from datetime import datetime
 import cloudinary.uploader
 from django.core.exceptions import ValidationError
-
-
 from rest_framework import serializers
 from api.models.user_model.users import User
 from datetime import datetime
@@ -62,13 +60,14 @@ class UserSerializer(serializers.Serializer):
 
         profile_picture = validated_data.pop('profile_picture', None)
         if profile_picture:
-            result = cloudinary.uploader.upload(profile_picture)
+            result = cloudinary.uploader.unsigned_upload(profile_picture, upload_preset="user_profile_uploads")
             validated_data['profile_picture'] = result.get('secure_url', '')
-            
+
         cover_photo = validated_data.pop('cover_photo', None)
         if cover_photo:
-            result = cloudinary.uploader.upload(cover_photo)
+            result = cloudinary.uploader.unsigned_upload(cover_photo, upload_preset="user_profile_uploads")
             validated_data['cover_photo'] = result.get('secure_url', '')
+
 
         blocked_users = validated_data.pop('blocked_users', [])
 
@@ -98,53 +97,53 @@ class UserSerializer(serializers.Serializer):
         current_password = self.context['request'].data.get("current_password")
         new_password = self.context['request'].data.get("new_password")
 
+       
         if new_password:
             if not current_password:
                 raise serializers.ValidationError({"current_password": "Current password is required."})
-            
             if not instance.check_password(current_password):
                 raise serializers.ValidationError({"current_password": "Current password is incorrect."})
-            
             instance.set_password(new_password)
 
+       
         profile_picture = validated_data.pop('profile_picture', None)
         if profile_picture:
             try:
-                result = cloudinary.uploader.upload(profile_picture)
-                validated_data['profile_picture'] = result.get('secure_url', '')
+                result = cloudinary.uploader.unsigned_upload(profile_picture, upload_preset="user_profile_uploads")
+                instance.profile_picture = result.get('secure_url', '')
             except cloudinary.exceptions.Error as e:
                 raise serializers.ValidationError(f"Cloudinary upload error: {str(e)}")
-            
+
+       
         cover_photo = validated_data.pop('cover_photo', None)
         if cover_photo:
             try:
-                result = cloudinary.uploader.upload(cover_photo)
-                validated_data['cover_photo'] = result.get('secure_url', '')
+                result = cloudinary.uploader.unsigned_upload(cover_photo, upload_preset="user_profile_uploads")
+                instance.cover_photo = result.get('secure_url', '')
             except cloudinary.exceptions.Error as e:
                 raise serializers.ValidationError(f"Cloudinary upload error: {str(e)}")
 
-        # Update blocked_users list if provided
-        blocked_users = validated_data.pop('blocked_users', None)
-        if blocked_users is not None:
-            instance.blocked_users = blocked_users
+    
+        if self.context['request'].data.get("remove_profile_picture") == "true":
+            instance.profile_picture = ""
 
-        instance.username = validated_data.get("username", instance.username)
-        instance.email = validated_data.get("email", instance.email)
-        instance.first_name = validated_data.get("first_name", instance.first_name)
-        instance.last_name = validated_data.get("last_name", instance.last_name)
-        instance.role = validated_data.get("role", instance.role)
-        instance.user_status = validated_data.get("user_status", instance.user_status)
-        instance.gender = validated_data.get("gender", instance.gender)
-        instance.date_of_birth = validated_data.get("date_of_birth", instance.date_of_birth)
-        instance.profile_picture = validated_data.get("profile_picture", instance.profile_picture)
-        instance.cover_photo = validated_data.get("cover_photo", instance.cover_photo)
-        instance.bio = validated_data.get("bio", instance.bio)
-        instance.contact_number = validated_data.get("contact_number", instance.contact_number)
-        instance.address = validated_data.get("address", instance.address)
+     
+        if self.context['request'].data.get("remove_cover_photo") == "true":
+            instance.cover_photo = ""
+
+      
+        for field in [
+            "username", "email", "first_name", "last_name", "role", "user_status",
+            "gender", "date_of_birth", "bio", "contact_number", "address"
+        ]:
+            if field in validated_data:
+                setattr(instance, field, validated_data[field])
+
         instance.updated_at = datetime.utcnow()
-
         instance.save()
         return instance
+
+
 
     def to_representation(self, instance):
         return {

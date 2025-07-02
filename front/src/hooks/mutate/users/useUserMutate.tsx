@@ -39,10 +39,15 @@ const useUpdateUserDetails = () => {
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
       queryClient.refetchQueries({ queryKey: ["user", data.id] });
     },
-    onError: (error) => {
-      toast.error("Failed to update user details.");
-      console.error(error);
-    },
+   onError: (error: any) => {
+  if (error.response?.data) {
+    console.error("❌ API error:", error.response.data);
+    toast.error("Update failed: " + JSON.stringify(error.response.data));
+  } else {
+    toast.error("Update failed");
+  }
+}
+
   });
 };
 
