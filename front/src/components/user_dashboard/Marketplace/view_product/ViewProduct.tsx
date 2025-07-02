@@ -149,6 +149,20 @@ if (error || !product) {
         </div>
         );
     }
+if (error) {
+  return (
+    <div className="min-h-screen bg-white">
+      <Header />
+      <div className="container mx-auto pt-24 px-4 text-center">
+        <h2 className="text-lg font-bold mb-4">Artwork Not Found</h2>
+        <p className="mb-8 text-xs text-red-500">{error}</p>
+        <Link to="/" className="text-red-600 text-xs hover:underline">
+          Return to Home
+        </Link>
+      </div>
+    </div>
+  );
+}
 
     if (!product) {
         return (
@@ -272,7 +286,7 @@ if (error || !product) {
             {/* Price */}
             <div className="flex items-center space-x-4">
               <div className="text-2xl font-bold text-gray-900">
-                ₱ {product.price}{product.price?.toLocaleString()}k
+                ₱ {product.price?.toLocaleString()}k
               </div>
               {product.discounted_price && (
                 <div className="text-lg text-gray-400 line-through">
