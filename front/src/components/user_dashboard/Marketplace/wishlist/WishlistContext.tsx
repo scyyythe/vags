@@ -36,7 +36,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
       const res = await apiClient.post(`/wishlist/toggle/${id}/`);
       const isAdded = res?.data?.message?.includes("Added");
 
-      setLikedItems(prev => {
+      setLikedItems((prev) => {
         const updated = new Set(prev);
         if (updated.has(id)) {
           updated.delete(id);
@@ -53,7 +53,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const removeFromWishlist = (id: string) => {
-    setLikedItems(prev => {
+    setLikedItems((prev) => {
       const updated = new Set(prev);
       updated.delete(id);
       return updated;
