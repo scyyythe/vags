@@ -16,9 +16,9 @@ interface ExhibitDialogsProps {
   setIsRemoveCollaboratorDialogOpen: (open: boolean) => void;
   collaboratorToRemove: User | null;
   confirmRemoveCollaborator: () => void;
-  showNotificationDialog: boolean;
-  setShowNotificationDialog: (open: boolean) => void;
-  sendNotificationsToCollaborators: () => void;
+  // showNotificationDialog: boolean;
+  // setShowNotificationDialog: (open: boolean) => void;
+  // sendNotificationsToCollaborators: () => void;
   collaborators: User[];
 }
 
@@ -27,9 +27,9 @@ const ExhibitDialogs: React.FC<ExhibitDialogsProps> = ({
   setIsRemoveCollaboratorDialogOpen,
   collaboratorToRemove,
   confirmRemoveCollaborator,
-  showNotificationDialog,
-  setShowNotificationDialog,
-  sendNotificationsToCollaborators,
+  // showNotificationDialog,
+  // setShowNotificationDialog,
+  // sendNotificationsToCollaborators,
   collaborators,
 }) => {
   return (
@@ -62,7 +62,7 @@ const ExhibitDialogs: React.FC<ExhibitDialogsProps> = ({
       </AlertDialog>
 
       {/* Send Notifications Dialog */}
-      <AlertDialog open={showNotificationDialog} onOpenChange={setShowNotificationDialog}>
+      {/* <AlertDialog open={showNotificationDialog} onOpenChange={setShowNotificationDialog}>
         <AlertDialogContent className="w-full max-w-sm rounded-lg">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-sm text-center">Send Invitations</AlertDialogTitle>
@@ -83,7 +83,7 @@ const ExhibitDialogs: React.FC<ExhibitDialogsProps> = ({
             </div>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog> */}
     </>
   );
 };

@@ -175,11 +175,6 @@ const Header = () => {
             </AnimatePresence>
           </div>
 
-          {/* Top up */}
-          {/* <button className="text-[10px] pt-0.5 hover:scale-110 transition">
-            <i className="bx bx-wallet-alt text-[16px]"></i>
-          </button> */}
-
           {/* Profile Avatar + Chevron */}
           <div className="relative flex items-center" ref={avatarRef}>
             <Link to={`/userprofile/${userId}`}>
