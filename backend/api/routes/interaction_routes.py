@@ -2,6 +2,7 @@ from django.urls import path
 from api.views.interaction_views.interaction import ArtworkBulkStatusView,SavedArtworksListView,CommentCreateView,LikeStatusView,ArtworkStatusView,LikeCreateView,SavedStatusView, CartItemCreateView, CartItemDeleteView, CartRetrieveView,SavedCreateView,LikeListView, SavedListView,CommentListView
 from api.views.interaction_views.follow import RemoveFollowerView,FollowedArtworksView,FollowingListView,FollowCreateView,UnfollowView,FollowerListView,FollowStatsView,CheckFollowStatusView,FollowCountsView
 from api.views.interaction_views.notifications import NotificationDeleteView,NotificationListView, NotificationDetailView,NotificationDeleteAllView
+from api.views.interaction_views.comment_views import CommentListCreateView,CommentRepliesView
 interaction_urlpatterns = [
     path('comments/', CommentCreateView.as_view(), name='comment-create'),
     path('likes/<str:art_id>/', LikeCreateView.as_view(), name='like-create'),
@@ -18,6 +19,10 @@ interaction_urlpatterns = [
     path("artworks/statuses/", ArtworkBulkStatusView.as_view(), name="artwork-bulk-status"),
 
     path('comments/<str:art_id>/', CommentListView.as_view(), name='comment-list-for-art'),
+    path('artworks/<str:artwork_id>/comments/', CommentListCreateView.as_view(), name='artwork-comments'),
+    path('comments/<str:comment_id>/replies/', CommentRepliesView.as_view(), name='comment-replies'),
+
+
     path('saved/<str:art_id>/view/', SavedListView.as_view(), name='like-list'),
     path('artworks/cart/', CartItemCreateView.as_view(), name='cart_item_create'),
     path('artworks/cart/remove/', CartItemDeleteView.as_view(), name='cart_item_remove'),

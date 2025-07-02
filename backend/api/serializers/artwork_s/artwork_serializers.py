@@ -15,6 +15,8 @@ class ArtSerializer(serializers.Serializer):
     medium = serializers.CharField(max_length=100)
     art_status = serializers.CharField(max_length=100)
     price = serializers.IntegerField()
+    discounted_price = serializers.IntegerField(required=False, allow_null=True)  # ✅ added here
+
     size = serializers.CharField(max_length=100, required=False)
     description = serializers.CharField(required=False)
     visibility = serializers.CharField(max_length=100, required=False, default="public")
@@ -22,7 +24,6 @@ class ArtSerializer(serializers.Serializer):
     updated_at = serializers.DateTimeField(read_only=True)
     edition = serializers.CharField(max_length=50, required=False)
     year_created = serializers.CharField(max_length=10, required=False)
-
 
     images = serializers.ListField(
         child=serializers.ImageField(),
@@ -35,30 +36,42 @@ class ArtSerializer(serializers.Serializer):
         read_only=True
     )
 
- 
-
     likes_count = serializers.SerializerMethodField()
 
     def get_likes_count(self, obj):
         return Like.objects.filter(art=obj).count()
 
+    def validate(self, data):
+        price = data.get("price")
+        discounted_price = data.get("discounted_price")
+
+        if discounted_price is not None and discounted_price >= price:
+            raise ValidationError("Discounted price must be less than the original price.")
+        return data
+
     def create(self, validated_data):
         images = validated_data.pop("images", [])
-
-      
         if not isinstance(images, list):
             images = [images]
 
         uploaded_urls = []
         for img in images:
-            result = cloudinary.uploader.upload(img)
-            url = result.get("secure_url")
-            if not moderate_image(url):
-                raise ValidationError("Inappropriate image content.")
-            uploaded_urls.append(url)
+            try:
+                result = cloudinary.uploader.unsigned_upload(
+                    img,
+                    upload_preset="user_artwork_uploads",
+                    folder="artworks"
+                )
+                url = result.get("secure_url")
+                if not moderate_image(url):
+                    raise ValidationError("Inappropriate image content.")
+                uploaded_urls.append(url)
+            except Exception as e:
+                raise ValidationError({"cloudinary": f"Upload failed: {str(e)}"})
 
         validated_data["image_url"] = uploaded_urls
         validated_data.setdefault("visibility", "Public")
+
         art = Art(**validated_data)
         art.save()
         return art
@@ -66,24 +79,32 @@ class ArtSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         images = validated_data.pop("images", [])
-
-      
         if images:
             for img in images:
-                result = cloudinary.uploader.upload(img)
-                image_url = result.get("secure_url", "")
-                if not moderate_image(image_url):
-                    raise ValidationError("One of the images was rejected.")
-                instance.image_url.append(image_url)
+                try:
+                    result = cloudinary.uploader.unsigned_upload(
+                        img,
+                        upload_preset="user_artwork_uploads",
+                        folder="artworks"
+                    )
+                    image_url = result.get("secure_url", "")
+                    if not moderate_image(image_url):
+                        raise ValidationError("One of the images was rejected.")
+                    instance.image_url.append(image_url)
+                except Exception as e:
+                    raise ValidationError({"cloudinary": f"Upload failed: {str(e)}"})
 
-        # Update other fields
-        for field in ["title", "category", "medium", "art_status", "price", "size", "description", "visibility"]:
+        for field in [
+            "title", "category", "medium", "art_status", "price", "discounted_price",
+            "size", "description", "visibility", "edition", "year_created"
+        ]:
             if field in validated_data:
                 setattr(instance, field, validated_data[field])
 
         instance.updated_at = datetime.utcnow()
         instance.save()
         return instance
+
 
     def get_artist(self, obj):
         if obj.artist:
@@ -107,6 +128,7 @@ class ArtSerializer(serializers.Serializer):
             "medium": instance.medium,
             "art_status": instance.art_status,
             "price": instance.price,
+            "discounted_price": instance.discounted_price,  
             "size": instance.size,
             "description": instance.description,
             "visibility": instance.visibility,
@@ -116,7 +138,6 @@ class ArtSerializer(serializers.Serializer):
             "likes_count": self.get_likes_count(instance),
             "edition": instance.edition,
             "year_created": instance.year_created,
-
         }
 
 class LightweightArtSerializer(serializers.Serializer):
@@ -151,3 +172,22 @@ class LightweightArtSerializer(serializers.Serializer):
 
     def get_likes_count(self, obj):
         return Like.objects.filter(art=obj).count()
+
+
+class ArtCardSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    title = serializers.CharField()
+    price = serializers.IntegerField()
+    discounted_price = serializers.IntegerField(required=False, allow_null=True)
+    total_ratings = serializers.IntegerField(default=0)
+    image_url = serializers.SerializerMethodField()
+
+    def get_image_url(self, obj):
+        if hasattr(obj, "image_url"):
+            if isinstance(obj.image_url, str):
+                return [obj.image_url]
+            if isinstance(obj.image_url, list):
+                return obj.image_url
+        return []
+
+

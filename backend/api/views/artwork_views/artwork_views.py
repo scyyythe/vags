@@ -4,7 +4,9 @@ from api.models.artwork_model.artwork import Art
 from api.models.user_model.users import User
 from api.models.interaction_model.notification import Notification
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
+from api.serializers.artwork_s.artwork_serializers import ArtCardSerializer
 from api.serializers.artwork_s.artwork_serializers import LightweightArtSerializer
+from api.serializers.artwork_s.artwork_detail_serializer import ArtDetailSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from api.models.interaction_model.interaction import Like
 from datetime import datetime
@@ -19,6 +21,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
+
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
     serializer_class = ArtSerializer
@@ -28,19 +31,22 @@ class ArtCreateView(generics.ListCreateAPIView):
         try:
             mongo_user = User.objects.get(id=ObjectId(self.request.user.id))
         except Exception as e:
-            print("Error retrieving MongoEngine user:", e)
-            raise e
-        
+            print("❌ Error retrieving MongoEngine user:", e)
+            raise PermissionDenied("Invalid user.")
+
         if mongo_user.is_suspended:
             suspension = mongo_user.get_active_suspension()
             raise PermissionDenied(
                 detail=f"Your account is suspended until {suspension.end_date.strftime('%B %d, %Y at %I:%M %p')}. Reason: {suspension.reason}"
             )
 
-        art = serializer.save(artist=mongo_user)
-        art = Art.objects.get(id=art.id)
-        now = datetime.now()
-        time_elapsed = timesince(art.created_at, now)
+        try:
+            art = serializer.save(artist=mongo_user)
+            print("✅ Art saved:", art.id)
+        except Exception as e:
+            print("❌ Error during serializer.save():", e)
+            raise ValidationError({"error": str(e)})
+
 
 class SellArtworkView(APIView):
     permission_classes = [IsAuthenticated]
@@ -114,6 +120,26 @@ class PopularLightweightArtView(APIView):
         
             return Response({"error": str(e)}, status=500)
 
+
+class ArtCardListView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        try:
+            blocked_user_ids = []
+            if request.user.is_authenticated and hasattr(request.user, 'blocked_users'):
+                blocked_user_ids = [user.id for user in request.user.blocked_users]
+
+            artworks = Art.objects(
+                visibility__iexact="public",
+                art_status__iexact="onSale", 
+                artist__nin=blocked_user_ids
+            ).only("title", "price", "discounted_price", "total_ratings", "image_url").order_by("-created_at")
+
+            serializer = ArtCardSerializer(artworks, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
 
 
 class ArtBulkListView(generics.ListAPIView):
@@ -208,6 +234,19 @@ class ArtDetailView(generics.RetrieveAPIView):
             return Art.objects.get(id=art_id)
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
+
+
+class MarketplaceArtDetailView(generics.RetrieveAPIView):
+    serializer_class = ArtDetailSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self):
+        art_id = self.kwargs.get('pk')
+        try:
+            return Art.objects.get(id=art_id, art_status="For Sale", visibility="Public")
+        except Art.DoesNotExist:
+            raise NotFound("Artwork not found or not available for sale.")
+
 
 class BulkArtDetailView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]

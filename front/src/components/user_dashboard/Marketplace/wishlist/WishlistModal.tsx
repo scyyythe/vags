@@ -7,9 +7,10 @@ interface WishlistModalProps {
   onClose: () => void;
   wishlistItems: SellCardProps[];
   onRemoveFromWishlist: (id: string) => void;
+    removeLocalItem: (id: string) => void; 
 }
 
-const WishlistModal = ({ isOpen, onClose, wishlistItems, onRemoveFromWishlist }: WishlistModalProps) => {
+const WishlistModal = ({ isOpen, onClose, wishlistItems, onRemoveFromWishlist, removeLocalItem, }: WishlistModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogOverlay className="bg-black bg-opacity-0 fixed inset-0 z-50" />
@@ -33,8 +34,11 @@ const WishlistModal = ({ isOpen, onClose, wishlistItems, onRemoveFromWishlist }:
                 <SellCard
                   key={item.id}
                   {...item}
-                  isLiked={true}
-                  onLike={() => onRemoveFromWishlist(item.id)}
+               onLike={() => {
+  onRemoveFromWishlist(item.id);  
+  removeLocalItem(item.id);     
+}}
+
                 />
               ))}
             </div>
