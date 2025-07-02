@@ -268,7 +268,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
                   <div className="relative">
                     <label htmlFor="medium" className="block mb-4 text-xs">
-                      Artwork Size (inches)
+                      Dimensions (cm)
                     </label>
                     <div className="grid grid-cols-3">
                       <div className="flex flex-col">
@@ -300,7 +300,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
                 <div className="mb-6">
                   <label htmlFor="description" className="block mb-4 text-xs">
-                    Description
+                    About this Artwork
                   </label>
                   <Textarea
                     id="description"

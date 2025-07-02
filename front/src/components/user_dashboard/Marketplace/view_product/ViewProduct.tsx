@@ -309,7 +309,7 @@ if (error) {
                 
                 <div className="border-l border-gray-300 pl-4">
                     <h3 className="text-[10px] font-medium text-gray-500 mb-1">Dimensions</h3>
-                    <p className="text-[10px] text-gray-900">{product.size} inches</p>
+                    <p className="text-[10px] text-gray-900">{product.size} cm</p>
                 </div>
                 
                 <div className="border-l border-gray-300 mr-2">
