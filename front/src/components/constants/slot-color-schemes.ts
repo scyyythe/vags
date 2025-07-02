@@ -11,3 +11,4 @@ export const colorNames = [
   "Purple (First collaborator's slots)",
   "Dark Purple (Second collaborator's slots)",
 ]
+ 
