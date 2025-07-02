@@ -10,6 +10,8 @@ import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { toast } from "sonner";
 import SellCardSkeleton from "@/components/skeletons/SellCardSkeleton";
+import usePersistentWishlist from "@/hooks/artworks/wishlist/usePersistentWishlist";
+import useWishlistArtCards from "@/hooks/artworks/wishlist/useWishlistArtCards";
 import { ChevronDown, Grid3X3 } from "lucide-react";
 import {
   DropdownMenu,
@@ -24,6 +26,8 @@ const Marketplace = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const categories = ["All", "Trending", "Following"];
   const navigate = useNavigate();
+const { wishlistIds, refetch } = usePersistentWishlist();
+const { wishlistItems, isLoading: wishlistLoading, removeLocalItem, addLocalItem } = useWishlistArtCards(wishlistIds);
 
   const sortOptions = ["Latest", "Price: Low to High", "Price: High to Low", "Most Popular"];
   const editionOptions = ["Original (1 of 1)", "Limited Edition", "Open Edition"];
@@ -45,10 +49,17 @@ const { artCards, isLoading, error } = useFetchArtCards();
     navigate("/sell");
   };
 
-  const handleLike = (id: string) => {
-    toggleWishlist(id);
-    toast(likedItems.has(id) ? "Removed from wishlist" : "Added to wishlist");
-  };
+const handleLike = async (id: string) => {
+  const wasLiked = likedItems.has(id);
+  await toggleWishlist(id); // updates likedItems in context
+  toast(wasLiked ? "Removed from wishlist" : "Added to wishlist");
+
+  if (!wasLiked) {
+    await addLocalItem(id);
+  } else {
+    removeLocalItem(id);
+  }
+};
 
   const handleRemoveFromWishlist = (id: string) => {
     removeFromWishlist(id);
@@ -60,10 +71,8 @@ const { artCards, isLoading, error } = useFetchArtCards();
     console.log("Wishlist opened");
   };
 
-  const wishlistItems = mockArtworks
-    .filter(card => likedItems.has(card.id))
-    .map(card => ({ ...card, image: card.artworkImage 
-  }));
+
+
 
   return (
     <div className="relative -bottom-[5px]">
@@ -187,12 +196,18 @@ const { artCards, isLoading, error } = useFetchArtCards();
         <Footer />
       </div>
 
-      <WishlistModal
-        isOpen={showWishlist}
-        onClose={() => setShowWishlist(false)}
-        wishlistItems={wishlistItems}
-        onRemoveFromWishlist={handleRemoveFromWishlist}
-      />
+<WishlistModal
+  isOpen={showWishlist}
+  onClose={() => setShowWishlist(false)}
+  wishlistItems={wishlistItems}
+  onRemoveFromWishlist={(id) => {
+    removeFromWishlist(id);       
+    removeLocalItem(id);         
+  }}
+  removeLocalItem={removeLocalItem} 
+/>
+
+
 
     </div>
   );
