@@ -56,11 +56,18 @@ class ArtSerializer(serializers.Serializer):
 
         uploaded_urls = []
         for img in images:
-            result = cloudinary.uploader.upload(img)
-            url = result.get("secure_url")
-            if not moderate_image(url):
-                raise ValidationError("Inappropriate image content.")
-            uploaded_urls.append(url)
+            try:
+                result = cloudinary.uploader.unsigned_upload(
+                    img,
+                    upload_preset="user_artwork_uploads",
+                    folder="artworks"
+                )
+                url = result.get("secure_url")
+                if not moderate_image(url):
+                    raise ValidationError("Inappropriate image content.")
+                uploaded_urls.append(url)
+            except Exception as e:
+                raise ValidationError({"cloudinary": f"Upload failed: {str(e)}"})
 
         validated_data["image_url"] = uploaded_urls
         validated_data.setdefault("visibility", "Public")
@@ -69,17 +76,24 @@ class ArtSerializer(serializers.Serializer):
         art.save()
         return art
 
+
     def update(self, instance, validated_data):
         images = validated_data.pop("images", [])
         if images:
             for img in images:
-                result = cloudinary.uploader.upload(img)
-                image_url = result.get("secure_url", "")
-                if not moderate_image(image_url):
-                    raise ValidationError("One of the images was rejected.")
-                instance.image_url.append(image_url)
+                try:
+                    result = cloudinary.uploader.unsigned_upload(
+                        img,
+                        upload_preset="user_artwork_uploads",
+                        folder="artworks"
+                    )
+                    image_url = result.get("secure_url", "")
+                    if not moderate_image(image_url):
+                        raise ValidationError("One of the images was rejected.")
+                    instance.image_url.append(image_url)
+                except Exception as e:
+                    raise ValidationError({"cloudinary": f"Upload failed: {str(e)}"})
 
-        # Update all relevant fields
         for field in [
             "title", "category", "medium", "art_status", "price", "discounted_price",
             "size", "description", "visibility", "edition", "year_created"
@@ -90,6 +104,7 @@ class ArtSerializer(serializers.Serializer):
         instance.updated_at = datetime.utcnow()
         instance.save()
         return instance
+
 
     def get_artist(self, obj):
         if obj.artist:

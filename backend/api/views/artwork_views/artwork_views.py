@@ -31,19 +31,22 @@ class ArtCreateView(generics.ListCreateAPIView):
         try:
             mongo_user = User.objects.get(id=ObjectId(self.request.user.id))
         except Exception as e:
-            print("Error retrieving MongoEngine user:", e)
-            raise e
-        
+            print("❌ Error retrieving MongoEngine user:", e)
+            raise PermissionDenied("Invalid user.")
+
         if mongo_user.is_suspended:
             suspension = mongo_user.get_active_suspension()
             raise PermissionDenied(
                 detail=f"Your account is suspended until {suspension.end_date.strftime('%B %d, %Y at %I:%M %p')}. Reason: {suspension.reason}"
             )
 
-        art = serializer.save(artist=mongo_user)
-        art = Art.objects.get(id=art.id)
-        now = datetime.now()
-        time_elapsed = timesince(art.created_at, now)
+        try:
+            art = serializer.save(artist=mongo_user)
+            print("✅ Art saved:", art.id)
+        except Exception as e:
+            print("❌ Error during serializer.save():", e)
+            raise ValidationError({"error": str(e)})
+
 
 class SellArtworkView(APIView):
     permission_classes = [IsAuthenticated]
