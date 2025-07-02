@@ -1,16 +1,35 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
-import apiClient from "@/utils/apiClient"; 
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import apiClient from "@/utils/apiClient";
 
 interface WishlistContextType {
   likedItems: Set<string>;
   toggleWishlist: (id: string) => Promise<void>;
   removeFromWishlist: (id: string) => void;
+  isLoading: boolean;
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const [likedItems, setLikedItems] = useState<Set<string>>(new Set());
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      try {
+        const res = await apiClient.get("/wishlist/my-ids/");
+        if (res?.data?.ids) {
+          setLikedItems(new Set(res.data.ids));
+        }
+      } catch (error) {
+        console.error("❌ Failed to load wishlist:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWishlist();
+  }, []);
 
   const toggleWishlist = async (id: string) => {
     try {
@@ -42,7 +61,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <WishlistContext.Provider value={{ likedItems, toggleWishlist, removeFromWishlist }}>
+    <WishlistContext.Provider value={{ likedItems, toggleWishlist, removeFromWishlist, isLoading }}>
       {children}
     </WishlistContext.Provider>
   );

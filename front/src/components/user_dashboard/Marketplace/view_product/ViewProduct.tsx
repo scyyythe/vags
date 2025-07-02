@@ -250,10 +250,16 @@ if (error) {
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
                     <div className="flex items-center space-x-2">
-                    <Avatar className="w-3 h-3 border">
-                        <AvatarImage src="" alt={product.artist.name} />
-                        <AvatarFallback className="text-[10px]">{product.artist.name?.charAt(0)}</AvatarFallback>
-                    </Avatar>
+               <Avatar className="w-3 h-3 border">
+  <AvatarImage 
+    src={product.artist.profile_picture || undefined} 
+    alt={product.artist.name} 
+  />
+  <AvatarFallback className="text-[10px]">
+    {product.artist.name?.charAt(0)}
+  </AvatarFallback>
+</Avatar>
+
                     <span className="text-black text-[9px] cursor-pointer">{product.artist.name}</span>
                     </div>
                 </div>
