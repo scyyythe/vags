@@ -8,6 +8,7 @@ export interface ArtCard {
   discounted_price?: number | null;
   total_ratings: number;
   image_url: string[];
+  category: string;
 }
 
 const useFetchArtCards = () => {

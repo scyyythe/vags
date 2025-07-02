@@ -15,12 +15,6 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      setIsLoading(false);
-      return;
-    }
-
     const fetchWishlist = async () => {
       try {
         const res = await apiClient.get("/wishlist/my-ids/");
