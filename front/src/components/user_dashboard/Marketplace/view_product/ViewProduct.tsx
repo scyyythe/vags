@@ -250,17 +250,16 @@ if (error) {
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
                     <div className="flex items-center space-x-2">
-               <Avatar className="w-3 h-3 border">
-  <AvatarImage 
-    src={product.artist.profile_picture || undefined} 
-    alt={product.artist.name} 
-  />
-  <AvatarFallback className="text-[10px]">
-    {product.artist.name?.charAt(0)}
-  </AvatarFallback>
-</Avatar>
-
-                    <span className="text-black text-[9px] cursor-pointer">{product.artist.name}</span>
+                        <Avatar className="w-4 h-4 border">
+                            <AvatarImage 
+                                src={product.artist.profile_picture || undefined} 
+                                alt={product.artist.name} 
+                            />
+                            <AvatarFallback className="text-[10px]">
+                                {product.artist.name?.charAt(0)}
+                            </AvatarFallback>
+                        </Avatar>
+                        <span className="text-black text-[10px] cursor-pointer">{product.artist.name}</span>
                     </div>
                 </div>
                 <div className="relative">
@@ -309,18 +308,18 @@ if (error) {
                 </div>
                 
                 <div className="border-l border-gray-300 pl-4">
-                    <h3 className="text-[10px] font-medium text-gray-500 mb-1">Medium</h3>
-                    <p className="text-[10px] text-gray-900">{product.medium}</p>
-                </div>
-                
-                <div className="border-l border-gray-300 pl-4">
-                    <h3 className="text-[10px] font-medium text-gray-500 mb-1">Size</h3>
-                    <p className="text-[10px] text-gray-900">{product.size}</p>
+                    <h3 className="text-[10px] font-medium text-gray-500 mb-1">Dimensions</h3>
+                    <p className="text-[10px] text-gray-900">{product.size} inches</p>
                 </div>
                 
                 <div className="border-l border-gray-300 mr-2">
                     <h3 className="text-[10px] font-medium text-gray-500 mb-1">Edition</h3>
                     <p className="text-[10px] text-gray-900">{product.edition}</p>
+                </div>
+
+                <div className="border-l border-gray-300 mr-2">
+                    <h3 className="text-[10px] font-medium text-gray-500 mb-1">Year Created</h3>
+                    <p className="text-[10px] text-gray-900">{product.year_created}</p>
                 </div>
             </div>
 
@@ -336,7 +335,7 @@ if (error) {
                     }`}
                     onClick={() => setActiveTab("description")}
                     >
-                    Description
+                    About this Artwork
                 </button>
 
                 {product.edition !== "Original (1 of 1)" && (
@@ -357,10 +356,20 @@ if (error) {
             <div className="mt-5 -mb-4 bg-white px-2 h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-hide">
                 {/* Description Content */}
                 {activeTab === "description" && (
-                    <p className="text-[10px] text-gray-700 leading-relaxed pt-2">
+                <div className="pt-2 space-y-2">
+                    {/* Medium Info Block */}
+                    <div className=" flex gap-2">
+                        <h3 className="text-[10px] font-medium text-gray-500 mb-1">Medium :</h3>
+                        <p className="text-[10px] text-gray-900">{product.medium}</p>
+                    </div>
+
+                    {/* Description Text */}
+                    <p className="text-[10px] text-gray-700 leading-relaxed">
                     {product.description}
                     </p>
+                </div>
                 )}
+
 
                 {/* Reviews Content */}
                 {activeTab === "review" && product.edition !== "Original (1 of 1)" && (
