@@ -430,7 +430,7 @@ const SellArtwork = () => {
                 {/* Description */}
                 <div className="mb-8">
                   <label className="block text-[11px] font-medium text-gray-700 mb-2">
-                    Description
+                    About this Artwork
                   </label>
                   <Textarea
                     placeholder="Add a description"
