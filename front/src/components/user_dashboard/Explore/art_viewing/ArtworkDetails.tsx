@@ -492,7 +492,7 @@ const ArtworkDetails = () => {
 
                   <p
                     style={{ cursor: "pointer" }}
-                    onClick={() => navigate(`/userprofile/${artwork.artistId}`)}
+                    onClick={() => navigate(`/userprofile/${artwork.artist_id}`)}
                     className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
                   >
                     by {artwork?.artist || "Angel Ganev"}
