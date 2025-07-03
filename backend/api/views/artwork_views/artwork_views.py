@@ -141,6 +141,25 @@ class ArtCardListView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=500)
 
+class MyArtCardListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            user = request.user
+            artworks = Art.objects(
+                artist=user.id,
+                art_status__iexact="onSale",
+                visibility__iexact="public"
+            ).only(
+                "title", "price", "discounted_price", "total_ratings", "image_url", "category", "visibility", "art_status"
+            ).order_by("-created_at")
+
+            serializer = ArtCardSerializer(artworks, many=True)
+            return Response(serializer.data, status=200)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
 
 class ArtBulkListView(generics.ListAPIView):
     serializer_class = ArtSerializer
