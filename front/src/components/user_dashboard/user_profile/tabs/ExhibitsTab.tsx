@@ -170,7 +170,11 @@ const ExhibitsTab = () => {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{req.exhibitTitle}</span>
-                        {req.isOwner && <Badge variant="outline" className="text-[8px] px-1 py-0">Owner</Badge>}
+                        {req.isOwner ? (
+                          <Badge variant="outline" className="text-[8px] px-1 py-0 text-blue-600 border-blue-500">Owner</Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-[8px] px-1 py-0 text-red-600 border-red-500">Collaborator</Badge>
+                        )}
                         {req.type === "ready" && <Badge className="bg-green-500 text-white text-[8px] px-1 py-0">Ready</Badge>}
                       </div>
                       <p className="text-gray-500 mt-0.5">{req.status}</p>

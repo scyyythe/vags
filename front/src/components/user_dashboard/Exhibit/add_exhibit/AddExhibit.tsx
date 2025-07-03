@@ -254,7 +254,7 @@ const AddExhibit = () => {
     }
 
     setSelectedEnvironment(envId)
-    setBannerImage(selectedEnv.image)
+    // setBannerImage(selectedEnv.image)
     setBannerFile(null)
 
     // Call distributeSlots after state is set
