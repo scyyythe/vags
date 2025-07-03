@@ -16,21 +16,20 @@ interface WishlistContextType {
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
-  const { data: wishlist = [], isLoading } = useMyWishlist();
+ const { data: wishlist = [], isLoading } = useMyWishlist();
+
   const queryClient = useQueryClient();
 
   const likedItems = useMemo(() => new Set(wishlist.map((item) => item.id)), [wishlist]);
 
   // Toggle wishlist mutation
-  const mutation = useMutation({
-    mutationFn: (id: string) => apiClient.post(`/wishlist/toggle/${id}/`),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["myWishlist"] });
-    },
-    onError: (error) => {
-      console.error("❌ Error toggling wishlist:", error);
-    },
-  });
+const mutation = useMutation({
+  mutationFn: (id: string) => apiClient.post(`/wishlist/toggle/${id}/`),
+  onSuccess: async () => {
+    await queryClient.invalidateQueries({ queryKey: ["myWishlist"] });
+  },
+});
+
 
   const toggleWishlist = async (id: string) => {
     await mutation.mutateAsync(id);

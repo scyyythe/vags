@@ -16,6 +16,7 @@ import OnBidTab from "../tabs/OnBidTab";
 import ExhibitTab from "@/components/user_dashboard/user_profile/tabs/ExhibitsTab";
 import useUnarchiveAllMyArtworks from "@/hooks/mutate/visibility/arc/useUnarchiveAllMyArtworks";
 import useUnhideAllMyArtworks from "@/hooks/mutate/visibility/private/useUnhideArtwork";
+import SellTab from "../tabs/OnSaleTab";
 const tabs = [
   { id: "created", label: "Created" },
   { id: "exhibits", label: "Exhibits" },
@@ -360,15 +361,8 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
       {activeTab === "exhibits" && <ExhibitTab />}
 
-      {activeTab === "onSale" && (
-        <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
-          <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
-          <p className="text-xs text-gray-500">
-            This section is currently under development. <br />
-            Check back soon for exciting sellers and artworks.
-          </p>
-        </div>
-      )}
+      {activeTab === "onSale" && 
+      <SellTab/>}
       <UnarchivePopup isOpen={showUnarchivePopup} onCancel={cancelUnarchive} onConfirm={confirmUnarchiveAll} />
       <EmptyTrashPopup isOpen={showEmptyTrashPopup} onCancel={cancelEmptyTrash} onConfirm={confirmEmptyTrash} />
       <UnhidePopup isOpen={showUnhidePopup} onCancel={cancelUnhide} onConfirm={confirmUnhideAll} />

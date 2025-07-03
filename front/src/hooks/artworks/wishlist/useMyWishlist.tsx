@@ -1,8 +1,12 @@
+
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { SellCardProps } from "@/components/user_dashboard/Marketplace/cards/SellCard";
 
 const fetchWishlist = async (): Promise<SellCardProps[]> => {
+  const token = localStorage.getItem("access_token");
+  if (!token) return [];
+
   const response = await apiClient.get("/wishlist/my/");
   return response.data.map((item: any) => ({
     id: item.id,
@@ -16,13 +20,9 @@ const fetchWishlist = async (): Promise<SellCardProps[]> => {
 };
 
 const useMyWishlist = () => {
-  const token = localStorage.getItem("access_token");
-
-  return useQuery({
+  return useQuery<SellCardProps[]>({
     queryKey: ["myWishlist"],
     queryFn: fetchWishlist,
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 10,
   });
 };
 
