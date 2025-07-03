@@ -1,38 +1,39 @@
 import { useEffect, useState } from "react";
 import apiClient from "@/utils/apiClient";
-import { SellCardProps } from "@/components/user_dashboard/Marketplace/cards/SellCard";
 
-const useMyWishlist = () => {
-  const [wishlist, setWishlist] = useState<SellCardProps[]>([]);
+export interface ArtCard {
+  id: string;
+  title: string;
+  price: number;
+  discounted_price?: number | null;
+  total_ratings: number;
+  image_url: string[];
+  category: string;
+  art_status: string;      
+  visibility: string;    
+}
+
+const useMySellArtCards = () => {
+  const [myArtCards, setMyArtCards] = useState<ArtCard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchWishlist = async () => {
+  const fetchMyArtCards = async () => {
     try {
-      const response = await apiClient.get("/wishlist/my/");
-      const data = response.data.map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        price: item.discounted_price ?? item.price,
-        originalPrice: item.discounted_price ? item.price : undefined,
-        artworkImage: item.image_url?.[0] || "/images/placeholder.jpg",
-        rating: item.total_ratings ?? item.likes_count ?? 0,
-        isLiked: true,
-      }));
-      setWishlist(data);
+      const response = await apiClient.get("/art/cards/my/");
+      setMyArtCards(response.data);
     } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to load wishlist");
-      console.error("❌ Wishlist fetch error:", err);
+      setError(err.response?.data?.error || "Failed to load your artworks");
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchWishlist();
+    fetchMyArtCards();
   }, []);
 
-  return { wishlist, isLoading, error, refetch: fetchWishlist };
+  return { myArtCards, isLoading, error, refetch: fetchMyArtCards };
 };
 
-export default useMyWishlist;
+export default useMySellArtCards;
