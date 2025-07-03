@@ -186,6 +186,7 @@ class ArtCardSerializer(serializers.Serializer):
     category = serializers.SerializerMethodField()
     visibility=serializers.SerializerMethodField()
     art_status=serializers.SerializerMethodField()
+    edition=serializers.SerializerMethodField()
 
     def get_total_ratings(self, obj):
         return Like.objects.filter(art=obj).count()
@@ -208,15 +209,21 @@ class ArtCardSerializer(serializers.Serializer):
         try:
             return str(obj.category) if obj.category is not None else ""
         except Exception as e:
-            print(f"❌ Error in get_category for art {obj.id}: {e}")
+            print(f" Error in get_category for art {obj.id}: {e}")
             return ""
 
+    def get_edition(self, obj):
+        try:
+            return str(obj.edition) if hasattr(obj, "edition") and obj.edition else ""
+        except Exception as e:
+            print(f" Error in get_edition for art {obj.id}: {e}")
+            return ""
 
     def to_representation(self, instance):
         try:
             rep = super().to_representation(instance)
             return rep
         except Exception as e:
-            print("❌ Error serializing art:", instance.id)
-            print("💥 Reason:", e)
+            print(" Error serializing art:", instance.id)
+            print("Reason:", e)
             raise e

@@ -134,7 +134,7 @@ class ArtCardListView(APIView):
                 visibility__iexact="public",
                 art_status__iexact="onSale", 
                 artist__nin=blocked_user_ids
-            ).only("title", "price", "discounted_price", "total_ratings", "image_url", "category").order_by("-created_at")
+            ).only("title", "price", "discounted_price", "total_ratings", "image_url", "category","edition").order_by("-created_at")
 
             serializer = ArtCardSerializer(artworks, many=True)
             return Response(serializer.data)
