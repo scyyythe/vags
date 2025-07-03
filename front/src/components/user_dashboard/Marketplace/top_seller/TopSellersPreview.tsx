@@ -1,7 +1,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-
+import useTopSellers from "@/hooks/users/top_seller/useTopSellers";
 interface Seller {
   id: string;
   name: string;
@@ -10,56 +10,57 @@ interface Seller {
 }
 
 const TopSellers = () => {
-  const sellers: Seller[] = [
-    {
-      id: "1",
-      name: "Angel Canete",
-      avatar: "https://i.pinimg.com/736x/b7/0c/8b/b70c8b258dfa7e7818f81cb844104802.jpg",
-      rating: 5.0
-    },
-    {
-      id: "2", 
-      name: "Jera Bartolome",
-      avatar: "https://i.pinimg.com/736x/6f/64/66/6f64669d94c9bcb69991370d0c61e7bf.jpg",
-      rating: 5.0
-    },
-    {
-      id: "3",
-      name: "Jim Boy", 
-      avatar: "https://i.pinimg.com/736x/bd/ef/91/bdef91c15730797da13c828fea7c6740.jpg",
-      rating: 5.0
-    },
-    {
-      id: "4",
-      name: "James Reid",
-      avatar: "https://i.pinimg.com/736x/05/c7/09/05c7095e4c413c8124c5ae472c5fac3c.jpg", 
-      rating: 5.0
-    },
-    {
-      id: "5",
-      name: "Gen Rosa",
-      avatar: "https://i.pinimg.com/736x/45/d6/52/45d652161607a6a6ef21fbdf1630eba7.jpg",
-      rating: 5.0
-    },
-    {
-      id: "6",
-      name: "Jandeb Lap",
-      avatar: "https://i.pinimg.com/736x/1a/4c/9b/1a4c9bb74952253e2542aaa434ad6df9.jpg",
-      rating: 5.0
-    },
-    {
-      id: "7",
-      name: "Glendon Tar",
-      avatar: "https://i.pinimg.com/736x/64/7e/ca/647ecaf678c17c2a2ed27b3e8d233692.jpg", 
-      rating: 5.0
-    },
-    {
-      id: "8",
-      name: "Jam Bot",
-      avatar: "https://i.pinimg.com/736x/31/a1/5a/31a15aeee5ad89b29c869d3e5a10be3f.jpg", 
-      rating: 5.0
-    },
-  ];
+  // const sellers: Seller[] = [
+  //   {
+  //     id: "1",
+  //     name: "Angel Canete",
+  //     avatar: "https://i.pinimg.com/736x/b7/0c/8b/b70c8b258dfa7e7818f81cb844104802.jpg",
+  //     rating: 5.0
+  //   },
+  //   {
+  //     id: "2", 
+  //     name: "Jera Bartolome",
+  //     avatar: "https://i.pinimg.com/736x/6f/64/66/6f64669d94c9bcb69991370d0c61e7bf.jpg",
+  //     rating: 5.0
+  //   },
+  //   {
+  //     id: "3",
+  //     name: "Jim Boy", 
+  //     avatar: "https://i.pinimg.com/736x/bd/ef/91/bdef91c15730797da13c828fea7c6740.jpg",
+  //     rating: 5.0
+  //   },
+  //   {
+  //     id: "4",
+  //     name: "James Reid",
+  //     avatar: "https://i.pinimg.com/736x/05/c7/09/05c7095e4c413c8124c5ae472c5fac3c.jpg", 
+  //     rating: 5.0
+  //   },
+  //   {
+  //     id: "5",
+  //     name: "Gen Rosa",
+  //     avatar: "https://i.pinimg.com/736x/45/d6/52/45d652161607a6a6ef21fbdf1630eba7.jpg",
+  //     rating: 5.0
+  //   },
+  //   {
+  //     id: "6",
+  //     name: "Jandeb Lap",
+  //     avatar: "https://i.pinimg.com/736x/1a/4c/9b/1a4c9bb74952253e2542aaa434ad6df9.jpg",
+  //     rating: 5.0
+  //   },
+  //   {
+  //     id: "7",
+  //     name: "Glendon Tar",
+  //     avatar: "https://i.pinimg.com/736x/64/7e/ca/647ecaf678c17c2a2ed27b3e8d233692.jpg", 
+  //     rating: 5.0
+  //   },
+  //   {
+  //     id: "8",
+  //     name: "Jam Bot",
+  //     avatar: "https://i.pinimg.com/736x/31/a1/5a/31a15aeee5ad89b29c869d3e5a10be3f.jpg", 
+  //     rating: 5.0
+  //   },
+  // ];
+ const { data: sellers = [], isLoading } = useTopSellers();
 
   const navigate = useNavigate();
   const scrollingSellers = useMemo(() => [...sellers, ...sellers], []);
