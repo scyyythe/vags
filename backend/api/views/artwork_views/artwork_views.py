@@ -147,18 +147,46 @@ class MyArtCardListView(APIView):
     def get(self, request):
         try:
             user = request.user
+
             artworks = Art.objects(
                 artist=user.id,
-                art_status__iexact="onSale",
-                visibility__iexact="public"
+                visibility__iexact="public",
+                art_status__in=["onSale", "on Sale"]  
             ).only(
-                "title", "price", "discounted_price", "total_ratings", "image_url", "category", "visibility", "art_status"
+                "title", "price", "discounted_price", "total_ratings",
+                "image_url", "category", "visibility", "art_status"
             ).order_by("-created_at")
 
             serializer = ArtCardSerializer(artworks, many=True)
             return Response(serializer.data, status=200)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
+        
+class UserArtCardListView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request, user_id):
+        try:
+            if request.user.is_authenticated and hasattr(request.user, 'blocked_users'):
+                blocked_user_ids = [user.id for user in request.user.blocked_users]
+                if str(user_id) in [str(uid) for uid in blocked_user_ids]:
+                    return Response([], status=200)
+
+            artworks = Art.objects(
+                artist=user_id,
+                visibility__iexact="public",
+                art_status__in=["onSale", "on Sale"] 
+            ).only(
+                "title", "price", "discounted_price", "total_ratings",
+                "image_url", "category", "visibility", "art_status"
+            ).order_by("-created_at")
+
+            serializer = ArtCardSerializer(artworks, many=True)
+            return Response(serializer.data, status=200)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
 
 
 class ArtBulkListView(generics.ListAPIView):

@@ -31,38 +31,38 @@ const Marketplace = () => {
 
   const categories = ["All", "Trending", "Following"];
   const navigate = useNavigate();
-  
+
   const sortOptions = ["Latest", "Price: Low to High", "Price: High to Low", "Most Popular"];
   const editionOptions = ["Original (1 of 1)", "Limited Edition", "Open Edition"];
 
   const [showWishlist, setShowWishlist] = useState(false);
-  const { artCards, isLoading, error } = useFetchArtCards();
-const { wishlist, likedItems,removeFromWishlist, toggleWishlist, isLoading: wishlistApiLoading } = useWishlist();
+  const { data: artCards = [], isLoading, error, refetch } = useFetchArtCards();
+
+  const { wishlist, likedItems, removeFromWishlist, toggleWishlist, isLoading: wishlistApiLoading } = useWishlist();
 
   const handleCategorySelect = (category) => setSelectedCategoryFilter(category);
   const handleArtCategoryChange = (category) => setSelectedArtCategory(category);
   const handleSortChange = (option) => setSelectedSort(option);
 
-const filteredArtCards = artCards
-  .filter((artwork) => {
-    if (selectedCategoryFilter === "Trending" && !(artwork.total_ratings >= 4)) return false;
-    if (selectedCategoryFilter === "Following") return false;
-    if (selectedArtCategory !== "All" && artwork.category !== selectedArtCategory) return false;
-    if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
-    return true;
-  })
-  .sort((a, b) => {
-    if (selectedSort === "Price: Low to High") {
-      return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
-    } else if (selectedSort === "Price: High to Low") {
-      return (b.discounted_price ?? b.price) - (a.discounted_price ?? a.price);
-    } else if (selectedSort === "Most Popular") {
-      return (b.total_ratings ?? 0) - (a.total_ratings ?? 0);
-    } else {
-      return 0;
-    }
-  });
-
+  const filteredArtCards = artCards
+    .filter((artwork) => {
+      if (selectedCategoryFilter === "Trending" && !(artwork.total_ratings >= 4)) return false;
+      if (selectedCategoryFilter === "Following") return false;
+      if (selectedArtCategory !== "All" && artwork.category !== selectedArtCategory) return false;
+      if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (selectedSort === "Price: Low to High") {
+        return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
+      } else if (selectedSort === "Price: High to Low") {
+        return (b.discounted_price ?? b.price) - (a.discounted_price ?? a.price);
+      } else if (selectedSort === "Most Popular") {
+        return (b.total_ratings ?? 0) - (a.total_ratings ?? 0);
+      } else {
+        return 0;
+      }
+    });
 
   const handleCardClick = (id: string) => {
     if (!id) return;
@@ -71,17 +71,15 @@ const filteredArtCards = artCards
 
   const handleSellClick = () => navigate("/sell");
 
-const handleLike = async (id: string) => {
-  const wasLiked = likedItems.has(id);
-  await toggleWishlist(id);
- 
-};
+  const handleLike = async (id: string) => {
+    const wasLiked = likedItems.has(id);
+    await toggleWishlist(id);
+  };
 
-const handleRemoveFromWishlistModal = (id: string) => {
-  removeFromWishlist(id);
-  toast("Removed from wishlist");
-};
-
+  const handleRemoveFromWishlistModal = (id: string) => {
+    removeFromWishlist(id);
+    toast("Removed from wishlist");
+  };
 
   const handleWishlistClick = () => setShowWishlist(true);
 
@@ -144,16 +142,11 @@ const handleRemoveFromWishlistModal = (id: string) => {
                       </DropdownMenuItem>
                     ))}
                     <DropdownMenuSeparator />
-                   {editionOptions.map((option) => (
-                    <DropdownMenuItem
-                      key={option}
-                      className="text-[10px]"
-                      onClick={() => setSelectedEdition(option)}
-                    >
-                      {option}
-                    </DropdownMenuItem>
-                  ))}
-
+                    {editionOptions.map((option) => (
+                      <DropdownMenuItem key={option} className="text-[10px]" onClick={() => setSelectedEdition(option)}>
+                        {option}
+                      </DropdownMenuItem>
+                    ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
 
@@ -171,12 +164,10 @@ const handleRemoveFromWishlistModal = (id: string) => {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {isLoading ? (
               <>
-                {Array.from({ length: 10 }).map((_, idx) => (
+                {Array.from({ length: 5 }).map((_, idx) => (
                   <SellCardSkeleton key={idx} />
                 ))}
               </>
-            ) : error ? (
-              <p className="text-sm text-red-500 col-span-full">{error}</p>
             ) : (
               <>
                 {selectedCategoryFilter === "Following" && filteredArtCards.length === 0 && (
@@ -212,18 +203,16 @@ const handleRemoveFromWishlistModal = (id: string) => {
       <Footer />
 
       {wishlistApiLoading ? (
-        <SellCardSkeleton /> 
+        <SellCardSkeleton />
       ) : (
-      <WishlistModal
-        isOpen={showWishlist}
-        onClose={() => setShowWishlist(false)}
-        wishlistItems={wishlist}
-        onRemoveFromWishlist={handleRemoveFromWishlistModal}
-        removeLocalItem={() => {}}
-      />
-
+        <WishlistModal
+          isOpen={showWishlist}
+          onClose={() => setShowWishlist(false)}
+          wishlistItems={wishlist}
+          onRemoveFromWishlist={handleRemoveFromWishlistModal}
+          removeLocalItem={() => {}}
+        />
       )}
-
     </div>
   );
 };
