@@ -349,6 +349,21 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                   </div>
                 </div>
               </div>
+              {/* Preview Button */}
+              <div className="mt-7">
+                <button
+                  type="button"
+                  className="bg-gray-900 text-white text-[10px] px-5 py-2 rounded-full hover:bg-gray-800"
+                  onClick={() => {
+                    navigate("/gallery3d-preview");
+                  }}
+                >
+                  Preview in 3D View
+                </button>
+                <p className="text-[10px] text-muted-foreground mt-2">
+                  Opens your current selections in an interactive virtual gallery.
+                </p>
+              </div>
             </div>
             
             {/* Right Column - Artworks */}

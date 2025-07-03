@@ -15,7 +15,7 @@ interface HeroProps {
           <div className="absolute inset-0 gradient-hero" />
           <div className="absolute bottom-0 left-0 p-8 text-white">
             <h1 className="text-4xl font-bold mb-2">{title}</h1>
-            {subtitle && <p className="text-lg text-white/90">{subtitle}</p>}
+            {subtitle && <p className="text-lg text-white/90">{subtitle}</p>} 
           </div>
         </div>
       );
