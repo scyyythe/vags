@@ -14,22 +14,22 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const [likedItems, setLikedItems] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchWishlist = async () => {
-      try {
-        const res = await apiClient.get("/wishlist/my-ids/");
-        if (res?.data?.ids) {
-          setLikedItems(new Set(res.data.ids));
-        }
-      } catch (error) {
-        console.error("❌ Failed to load wishlist:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchWishlist = async () => {
+  //     try {
+  //       const res = await apiClient.get("/wishlist/my-ids/");
+  //       if (res?.data?.ids) {
+  //         setLikedItems(new Set(res.data.ids));
+  //       }
+  //     } catch (error) {
+  //       console.error("❌ Failed to load wishlist:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    fetchWishlist();
-  }, []);
+  //   fetchWishlist();
+  // }, []);
 
   const toggleWishlist = async (id: string) => {
     try {
