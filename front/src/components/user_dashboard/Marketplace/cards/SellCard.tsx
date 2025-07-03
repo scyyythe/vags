@@ -106,9 +106,15 @@ const SellCard = ({
 
       <div className="flex justify-between mt-3 items-center">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-bold text-gray-900">₱{price}k</p>
+          {price > 0 && (
+            <p className="text-sm font-bold text-gray-900">
+              ₱{price >= 10000 ? `${(price / 10000).toFixed(1)}k` : price}
+            </p>
+          )}
           {originalPrice > 0 && originalPrice !== price && (
-            <p className="text-xs line-through text-gray-400">₱{originalPrice}k</p>
+            <p className="text-xs line-through text-gray-400">
+              ₱{originalPrice >= 10000 ? `${(originalPrice / 10000).toFixed(1)}k` : originalPrice}
+            </p>
           )}
         </div>
 
