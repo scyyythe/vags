@@ -86,8 +86,8 @@ const handleRemoveFromWishlistModal = (id: string) => {
   const handleWishlistClick = () => setShowWishlist(true);
 
   return (
-    <div className="relative -bottom-[5px]">
-      <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col flex-1 bg-background">
         <Header />
         <div className="flex-1 container mx-auto px-4 sm:px-6 pt-20">
           <TopSellers />
@@ -145,14 +145,14 @@ const handleRemoveFromWishlistModal = (id: string) => {
                     ))}
                     <DropdownMenuSeparator />
                    {editionOptions.map((option) => (
-  <DropdownMenuItem
-    key={option}
-    className="text-[10px]"
-    onClick={() => setSelectedEdition(option)}
-  >
-    {option}
-  </DropdownMenuItem>
-))}
+                    <DropdownMenuItem
+                      key={option}
+                      className="text-[10px]"
+                      onClick={() => setSelectedEdition(option)}
+                    >
+                      {option}
+                    </DropdownMenuItem>
+                  ))}
 
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -168,7 +168,7 @@ const handleRemoveFromWishlistModal = (id: string) => {
           </div>
 
           {/* Marketplace Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {isLoading ? (
               <>
                 {Array.from({ length: 10 }).map((_, idx) => (
@@ -211,19 +211,18 @@ const handleRemoveFromWishlistModal = (id: string) => {
 
       <Footer />
 
-{wishlistApiLoading ? (
-  <SellCardSkeleton /> 
-) : (
-<WishlistModal
-  isOpen={showWishlist}
-  onClose={() => setShowWishlist(false)}
-  wishlistItems={wishlist}
-  onRemoveFromWishlist={handleRemoveFromWishlistModal}
-  removeLocalItem={() => {}}
-/>
+      {wishlistApiLoading ? (
+        <SellCardSkeleton /> 
+      ) : (
+      <WishlistModal
+        isOpen={showWishlist}
+        onClose={() => setShowWishlist(false)}
+        wishlistItems={wishlist}
+        onRemoveFromWishlist={handleRemoveFromWishlistModal}
+        removeLocalItem={() => {}}
+      />
 
-)}
-
+      )}
 
     </div>
   );
