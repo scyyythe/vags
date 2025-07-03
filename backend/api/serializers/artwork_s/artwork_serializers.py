@@ -15,7 +15,8 @@ class ArtSerializer(serializers.Serializer):
     medium = serializers.CharField(max_length=100)
     art_status = serializers.CharField(max_length=100)
     price = serializers.IntegerField()
-    discounted_price = serializers.IntegerField(required=False, allow_null=True)  # ✅ added here
+    discounted_price = serializers.IntegerField(required=False, allow_null=True)  
+    edition_type = serializers.CharField(source="edition", required=False)
 
     size = serializers.CharField(max_length=100, required=False)
     description = serializers.CharField(required=False)
@@ -116,19 +117,19 @@ class ArtSerializer(serializers.Serializer):
         return None
 
     def to_representation(self, instance):
-        artist_data = self.get_artist(instance)
+        artist_data = self.get_artist(instance) or {}
 
         return {
             "id": str(instance.id),
             "title": instance.title,
-            "artist_id": artist_data["id"] if artist_data else None,
-            "profile_picture": artist_data["profile_picture"] if artist_data else None,
-            "artist": artist_data["name"] if artist_data else None,
+            "artist_id": str(artist_data.get("id", "")),
+            "profile_picture": str(artist_data.get("profile_picture", "")),  
+            "artist": str(artist_data.get("name", "")),
             "category": instance.category,
             "medium": instance.medium,
             "art_status": instance.art_status,
             "price": instance.price,
-            "discounted_price": instance.discounted_price,  
+            "discounted_price": instance.discounted_price,
             "size": instance.size,
             "description": instance.description,
             "visibility": instance.visibility,
@@ -139,6 +140,8 @@ class ArtSerializer(serializers.Serializer):
             "edition": instance.edition,
             "year_created": instance.year_created,
         }
+
+
 
 class LightweightArtSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
@@ -173,16 +176,18 @@ class LightweightArtSerializer(serializers.Serializer):
     def get_likes_count(self, obj):
         return Like.objects.filter(art=obj).count()
 
-
 class ArtCardSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField()
     price = serializers.IntegerField()
     discounted_price = serializers.IntegerField(required=False, allow_null=True)
-    total_ratings = serializers.IntegerField(default=0)
+    total_ratings = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
-    category=serializers.CharField()
-    
+    category = serializers.SerializerMethodField()
+
+    def get_total_ratings(self, obj):
+        return Like.objects.filter(art=obj).count()
+
     def get_image_url(self, obj):
         if hasattr(obj, "image_url"):
             if isinstance(obj.image_url, str):
@@ -191,4 +196,19 @@ class ArtCardSerializer(serializers.Serializer):
                 return obj.image_url
         return []
 
+    def get_category(self, obj):
+        try:
+            return str(obj.category) if obj.category is not None else ""
+        except Exception as e:
+            print(f"❌ Error in get_category for art {obj.id}: {e}")
+            return ""
 
+
+    def to_representation(self, instance):
+        try:
+            rep = super().to_representation(instance)
+            return rep
+        except Exception as e:
+            print("❌ Error serializing art:", instance.id)
+            print("💥 Reason:", e)
+            raise e
