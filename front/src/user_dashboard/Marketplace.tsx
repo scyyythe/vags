@@ -22,9 +22,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/mockArtworks";
 import useFetchArtCards from "@/hooks/artworks/sell/useFetchArtCards";
-import { useLocation } from "react-router-dom";
-import useMyWishlist from "@/hooks/artworks/wishlist/useMyWishlist";
-import apiClient from "@/utils/apiClient";
 
 const Marketplace = () => {
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");

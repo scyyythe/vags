@@ -184,9 +184,17 @@ class ArtCardSerializer(serializers.Serializer):
     total_ratings = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
+    visibility=serializers.SerializerMethodField()
+    art_status=serializers.SerializerMethodField()
 
     def get_total_ratings(self, obj):
         return Like.objects.filter(art=obj).count()
+
+    def get_visibility(self, obj):
+        return str(obj.visibility).lower() if hasattr(obj, "visibility") and obj.visibility else ""
+
+    def get_art_status(self, obj):
+        return str(obj.art_status).lower() if hasattr(obj, "art_status") and obj.art_status else ""
 
     def get_image_url(self, obj):
         if hasattr(obj, "image_url"):
