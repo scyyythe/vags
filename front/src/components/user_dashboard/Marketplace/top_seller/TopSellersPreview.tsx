@@ -18,21 +18,21 @@ const TopSellers = () => {
   //     rating: 5.0
   //   },
   //   {
-  //     id: "2", 
+  //     id: "2",
   //     name: "Jera Bartolome",
   //     avatar: "https://i.pinimg.com/736x/6f/64/66/6f64669d94c9bcb69991370d0c61e7bf.jpg",
   //     rating: 5.0
   //   },
   //   {
   //     id: "3",
-  //     name: "Jim Boy", 
+  //     name: "Jim Boy",
   //     avatar: "https://i.pinimg.com/736x/bd/ef/91/bdef91c15730797da13c828fea7c6740.jpg",
   //     rating: 5.0
   //   },
   //   {
   //     id: "4",
   //     name: "James Reid",
-  //     avatar: "https://i.pinimg.com/736x/05/c7/09/05c7095e4c413c8124c5ae472c5fac3c.jpg", 
+  //     avatar: "https://i.pinimg.com/736x/05/c7/09/05c7095e4c413c8124c5ae472c5fac3c.jpg",
   //     rating: 5.0
   //   },
   //   {
@@ -50,33 +50,32 @@ const TopSellers = () => {
   //   {
   //     id: "7",
   //     name: "Glendon Tar",
-  //     avatar: "https://i.pinimg.com/736x/64/7e/ca/647ecaf678c17c2a2ed27b3e8d233692.jpg", 
+  //     avatar: "https://i.pinimg.com/736x/64/7e/ca/647ecaf678c17c2a2ed27b3e8d233692.jpg",
   //     rating: 5.0
   //   },
   //   {
   //     id: "8",
   //     name: "Jam Bot",
-  //     avatar: "https://i.pinimg.com/736x/31/a1/5a/31a15aeee5ad89b29c869d3e5a10be3f.jpg", 
+  //     avatar: "https://i.pinimg.com/736x/31/a1/5a/31a15aeee5ad89b29c869d3e5a10be3f.jpg",
   //     rating: 5.0
   //   },
   // ];
- const { data: sellers = [], isLoading } = useTopSellers();
+  const { data: sellers = [], isLoading } = useTopSellers();
 
   const navigate = useNavigate();
-  const scrollingSellers = useMemo(() => [...sellers, ...sellers], []);
+  const scrollingSellers = useMemo(() => {
+    return Array(4).fill(sellers).flat();
+  }, [sellers]);
 
-   const handleViewAll = () => {
-    navigate("/topsellers"); 
+  const handleViewAll = () => {
+    navigate("/topsellers");
   };
 
   return (
     <div className="mb-6 overflow-hidden">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xs font-semibold text-gray-900">Top Sellers</h2>
-        <button 
-        className="text-[11px] text-gray-600 hover:text-gray-900"  
-        onClick={handleViewAll}>
-          
+        <button className="text-[11px] text-gray-600 hover:text-gray-900" onClick={handleViewAll}>
           View all
         </button>
       </div>
@@ -94,7 +93,7 @@ const TopSellers = () => {
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-[10px] text-gray-900 truncate">{seller.name}</h3>
                     <div className="flex items-center gap-1">
-                      <i className='bx bxs-star text-yellow-400 text-xs'></i>
+                      <i className="bx bxs-star text-yellow-400 text-xs"></i>
                       <span className="relative top-[1px] text-[10px] text-red-600 font-medium">{seller.rating}</span>
                     </div>
                   </div>
