@@ -288,7 +288,6 @@ const ProductViewingContent = () => {
             </div>
 
             {/* Price */}
-            {/* Price */}
             <div className="flex items-center space-x-4">
               {product.price > 0 && (
                 <div className="text-2xl font-bold text-gray-900">
