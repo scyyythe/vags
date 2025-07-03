@@ -1,7 +1,7 @@
 from django.urls import path
 from api.views.artwork_views.artwork_views import  ArtCardListView,SellArtworkView,BulkArtDetailView,PopularLightweightArtView,ArtBulkListView,DeletePermanentArtwork,UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,UnHideArtworkView,HideArtworkView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, ArtListByArtistView,ArtDeleteView,ArtListViewOwner
 from api.views.artwork_views.artwork_detail_view import MarketplaceArtDetailView
-from api.views.artwork_views.wishlist_view import ToggleWishlistView,WishlistArtView,WishlistIDListView
+from api.views.artwork_views.wishlist_view import ToggleWishlistView,WishlistArtView,WishlistIDListView,MyWishlistView
 
 artwork_urlpatterns = [
      # sell
@@ -12,6 +12,7 @@ artwork_urlpatterns = [
     path("wishlist/toggle/<str:art_id>/", ToggleWishlistView.as_view(), name="toggle-wishlist"),
     path("wishlist/my-ids/", WishlistIDListView.as_view(), name="wishlist-my-ids"),
     path("art/wishlist/", WishlistArtView.as_view(), name="wishlist-art"),
+    path('wishlist/my/', MyWishlistView.as_view(), name='my-wishlist-artworks'),
 
     path("art/create/", ArtCreateView.as_view(), name="art-create"),
     path('art/list/', ArtListView.as_view(), name='list_art'),

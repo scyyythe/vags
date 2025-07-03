@@ -10,7 +10,7 @@ import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { toast } from "sonner";
 import SellCardSkeleton from "@/components/skeletons/SellCardSkeleton";
-import usePersistentWishlist from "@/hooks/artworks/wishlist/usePersistentWishlist";
+
 import useWishlistArtCards from "@/hooks/artworks/wishlist/useWishlistArtCards";
 import { ChevronDown, Grid3X3 } from "lucide-react";
 import {
@@ -23,30 +23,27 @@ import {
 import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/mockArtworks";
 import useFetchArtCards from "@/hooks/artworks/sell/useFetchArtCards";
 import { useLocation } from "react-router-dom";
+import useMyWishlist from "@/hooks/artworks/wishlist/useMyWishlist";
+import apiClient from "@/utils/apiClient";
+
 const Marketplace = () => {
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
   const [selectedArtCategory, setSelectedArtCategory] = useState("All");
-  const [selectedSort, setSelectedSort] = useState("Latest"); // ✅ New
+  const [selectedSort, setSelectedSort] = useState("Latest");
   const categories = ["All", "Trending", "Following"];
   const navigate = useNavigate();
-  const { wishlistIds } = usePersistentWishlist();
-  const { wishlistItems, isLoading: wishlistLoading, removeLocalItem, addLocalItem } = useWishlistArtCards(wishlistIds);
+  
   const sortOptions = ["Latest", "Price: Low to High", "Price: High to Low", "Most Popular"];
   const editionOptions = ["Original (1 of 1)", "Limited Edition", "Open Edition"];
-  const { likedItems, toggleWishlist, removeFromWishlist } = useWishlist();
+
   const [showWishlist, setShowWishlist] = useState(false);
   const { artCards, isLoading, error } = useFetchArtCards();
+const { wishlist, likedItems,removeFromWishlist, toggleWishlist, isLoading: wishlistApiLoading } = useWishlist();
 
   const handleCategorySelect = (category) => setSelectedCategoryFilter(category);
   const handleArtCategoryChange = (category) => setSelectedArtCategory(category);
   const handleSortChange = (option) => setSelectedSort(option);
-  const { refetch } = usePersistentWishlist();
-  const location = useLocation();
-  useEffect(() => {
-    if (location.pathname === "/marketplace") {
-      refetch();
-    }
-  }, [location.pathname]);
+
   const filteredArtCards = artCards
     .filter((artwork) => {
       if (selectedCategoryFilter === "Trending" && !(artwork.total_ratings >= 4)) return false;
@@ -73,17 +70,17 @@ const Marketplace = () => {
 
   const handleSellClick = () => navigate("/sell");
 
-  const handleLike = async (id: string) => {
-    const wasLiked = likedItems.has(id);
-    await toggleWishlist(id);
-    toast(wasLiked ? "Removed from wishlist" : "Added to wishlist");
-    wasLiked ? removeLocalItem(id) : await addLocalItem(id);
-  };
+const handleLike = async (id: string) => {
+  const wasLiked = likedItems.has(id);
+  await toggleWishlist(id);
+  toast(wasLiked ? "Removed from wishlist" : "Added to wishlist");
+};
 
-  const handleRemoveFromWishlist = (id: string) => {
-    removeFromWishlist(id);
-    toast("Removed from wishlist");
-  };
+const handleRemoveFromWishlistModal = (id: string) => {
+  removeFromWishlist(id);
+  toast("Removed from wishlist");
+};
+
 
   const handleWishlistClick = () => setShowWishlist(true);
 
@@ -208,16 +205,20 @@ const Marketplace = () => {
 
       <Footer />
 
-      <WishlistModal
-        isOpen={showWishlist}
-        onClose={() => setShowWishlist(false)}
-        wishlistItems={wishlistItems}
-        onRemoveFromWishlist={(id) => {
-          removeFromWishlist(id);
-          removeLocalItem(id);
-        }}
-        removeLocalItem={removeLocalItem}
-      />
+{wishlistApiLoading ? (
+  <SellCardSkeleton /> 
+) : (
+<WishlistModal
+  isOpen={showWishlist}
+  onClose={() => setShowWishlist(false)}
+  wishlistItems={wishlist}
+  onRemoveFromWishlist={handleRemoveFromWishlistModal}
+  removeLocalItem={() => {}}
+/>
+
+)}
+
+
     </div>
   );
 };

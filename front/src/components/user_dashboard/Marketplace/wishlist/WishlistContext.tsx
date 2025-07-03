@@ -1,67 +1,67 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, ReactNode, useMemo } from "react";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import useMyWishlist from "@/hooks/artworks/wishlist/useMyWishlist";
 import apiClient from "@/utils/apiClient";
+import { SellCardProps } from "@/components/user_dashboard/Marketplace/cards/SellCard";
 
 interface WishlistContextType {
   likedItems: Set<string>;
+  wishlist: SellCardProps[];
   toggleWishlist: (id: string) => Promise<void>;
   removeFromWishlist: (id: string) => void;
+  addToWishlist: (item: SellCardProps) => void;
   isLoading: boolean;
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
-  const [likedItems, setLikedItems] = useState<Set<string>>(new Set());
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: wishlist = [], isLoading } = useMyWishlist();
+  const queryClient = useQueryClient();
 
-  // useEffect(() => {
-  //   const fetchWishlist = async () => {
-  //     try {
-  //       const res = await apiClient.get("/wishlist/my-ids/");
-  //       if (res?.data?.ids) {
-  //         setLikedItems(new Set(res.data.ids));
-  //       }
-  //     } catch (error) {
-  //       console.error("❌ Failed to load wishlist:", error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
+  const likedItems = useMemo(() => new Set(wishlist.map((item) => item.id)), [wishlist]);
 
-  //   fetchWishlist();
-  // }, []);
+  // Toggle wishlist mutation
+  const mutation = useMutation({
+    mutationFn: (id: string) => apiClient.post(`/wishlist/toggle/${id}/`),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["myWishlist"] });
+    },
+    onError: (error) => {
+      console.error("❌ Error toggling wishlist:", error);
+    },
+  });
 
   const toggleWishlist = async (id: string) => {
-    try {
-      const res = await apiClient.post(`/wishlist/toggle/${id}/`);
-      const isAdded = res?.data?.message?.includes("Added");
-
-      setLikedItems((prev) => {
-        const updated = new Set(prev);
-        if (updated.has(id)) {
-          updated.delete(id);
-        } else {
-          updated.add(id);
-        }
-        return updated;
-      });
-
-      console.log(`🔁 Wishlist ${isAdded ? "added" : "removed"}:`, id);
-    } catch (error) {
-      console.error("❌ Failed to toggle wishlist:", error);
-    }
+    await mutation.mutateAsync(id);
   };
 
-  const removeFromWishlist = (id: string) => {
-    setLikedItems((prev) => {
-      const updated = new Set(prev);
-      updated.delete(id);
-      return updated;
+  // Manual add: update the query cache
+  const addToWishlist = (item: SellCardProps) => {
+    queryClient.setQueryData<SellCardProps[]>(["myWishlist"], (prev = []) => {
+      const exists = prev.some((i) => i.id === item.id);
+      return exists ? prev : [item, ...prev];
     });
   };
 
+  // Manual remove: update the query cache
+  const removeFromWishlist = (id: string) => {
+    queryClient.setQueryData<SellCardProps[]>(["myWishlist"], (prev = []) =>
+      prev.filter((item) => item.id !== id)
+    );
+  };
+
   return (
-    <WishlistContext.Provider value={{ likedItems, toggleWishlist, removeFromWishlist, isLoading }}>
+    <WishlistContext.Provider
+      value={{
+        likedItems,
+        wishlist,
+        toggleWishlist,
+        removeFromWishlist,
+        addToWishlist,
+        isLoading,
+      }}
+    >
       {children}
     </WishlistContext.Provider>
   );

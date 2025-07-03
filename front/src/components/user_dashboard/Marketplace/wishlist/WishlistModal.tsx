@@ -1,7 +1,8 @@
 import { Dialog, DialogOverlay, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Heart } from "lucide-react";
 import SellCard, { SellCardProps } from "../cards/SellCard";
-
+import { useWishlist } from "./WishlistContext";
+import { useIsAuthenticated } from "@/auth/useIsAuthenticated";
 interface WishlistModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -11,6 +12,10 @@ interface WishlistModalProps {
 }
 
 const WishlistModal = ({ isOpen, onClose, wishlistItems, onRemoveFromWishlist, removeLocalItem, }: WishlistModalProps) => {
+  const { toggleWishlist } = useWishlist();
+  const isAuthenticated = useIsAuthenticated();
+    if (!isAuthenticated) return null;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogOverlay className="bg-black bg-opacity-0 fixed inset-0 z-50" />
@@ -32,13 +37,11 @@ const WishlistModal = ({ isOpen, onClose, wishlistItems, onRemoveFromWishlist, r
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4">
               {wishlistItems.map((item) => (
                 <SellCard
+                
                   key={item.id}
                   {...item}
-               onLike={() => {
-  onRemoveFromWishlist(item.id);  
-  removeLocalItem(item.id);     
-}}
-
+                  
+               onLike={() => toggleWishlist(item.id)}
                 />
               ))}
             </div>

@@ -49,6 +49,30 @@ class WishlistIDListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        wishlist_items = Wishlist.objects.filter(user=request.user)
-        ids = [str(item.art.id) for item in wishlist_items if item.art.visibility == "Public"]
-        return Response({"ids": ids})
+      
+        wishlist_items = Wishlist.objects.filter(user=request.user, art__visibility="Public").select_related("art")
+        artworks = [item.art for item in wishlist_items]
+        serializer = ArtSerializer(artworks, many=True)
+
+        return Response(serializer.data)
+
+
+class MyWishlistView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        wishlist_items = Wishlist.objects(user=user)
+        art_ids = [item.art.id for item in wishlist_items if item.art is not None]
+        arts = Art.objects(id__in=art_ids)
+        serializer = ArtCardSerializer(arts, many=True)
+        return Response(serializer.data)
+
+    def delete(self, request):
+        user = request.user
+        art_id = request.data.get("art_id")
+        if not art_id:
+            return Response({"detail": "art_id is required"}, status=400)
+
+        Wishlist.objects(user=user, art=art_id).delete()
+        return Response({"detail": "Removed from wishlist"})
