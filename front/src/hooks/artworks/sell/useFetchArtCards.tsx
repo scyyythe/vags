@@ -9,6 +9,7 @@ export interface ArtCard {
   total_ratings: number;
   image_url: string[];
   category: string;
+  edition?:string;
 }
 
 const useFetchArtCards = () => {
