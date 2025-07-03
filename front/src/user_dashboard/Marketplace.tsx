@@ -73,7 +73,7 @@ const { wishlist, likedItems,removeFromWishlist, toggleWishlist, isLoading: wish
 const handleLike = async (id: string) => {
   const wasLiked = likedItems.has(id);
   await toggleWishlist(id);
-  toast(wasLiked ? "Removed from wishlist" : "Added to wishlist");
+ 
 };
 
 const handleRemoveFromWishlistModal = (id: string) => {
