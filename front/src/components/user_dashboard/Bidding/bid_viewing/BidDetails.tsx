@@ -302,15 +302,16 @@ const BidDetails = () => {
                           <p className="text-[9px] text-gray-700">{item.artwork.medium || "Acrylic Paint"}</p>
                         </div>
                         <div className="mb-6">
+                          <h3 className="text-[9px] font-medium mb-1">Dimensions</h3>
+                          <p className="text-[9px] text-gray-700">{item.artwork.size || "No Size"} cm</p>
+                        </div>
+                        <div className="mb-1">
                           <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
                           <p className="text-[9px] text-gray-700">
                             {item.artwork.created_at ? formatDate(item.artwork.created_at) : "March 25, 2023"}
                           </p>
                         </div>
-                        <div className="mb-1">
-                          <h3 className="text-[9px] font-medium mb-1">Artwork Size</h3>
-                          <p className="text-[9px] text-gray-700">{item.artwork.size || "No Size"}</p>
-                        </div>
+
                       </div>
                     </div>
                   )}
