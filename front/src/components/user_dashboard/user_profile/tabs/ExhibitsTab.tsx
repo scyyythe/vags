@@ -20,7 +20,7 @@ type ExhibitRequest = {
   status: string;
   exhibitId: number;
   isOwner?: boolean;
-  type: "pending" | "review" | "ready";
+  type: "pending" | "review" | "ready" | "published";
   collaboratorsSubmitted?: number;
   totalCollaborators?: number;
 };
@@ -87,10 +87,10 @@ const ExhibitsTab = () => {
     {
       id: 3,
       exhibitTitle: "Abstract Visions",
-      status: "All submissions received, ready for review",
+      status: "All submissions received.",
       exhibitId: 3,
       isOwner: true,
-      type: "ready",
+      type: "published",
       collaboratorsSubmitted: 2,
       totalCollaborators: 2
     },
@@ -170,12 +170,35 @@ const ExhibitsTab = () => {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{req.exhibitTitle}</span>
+
+                        {/* Role Badge */}
                         {req.isOwner ? (
                           <Badge variant="outline" className="text-[8px] px-1 py-0 text-blue-600 border-blue-500">Owner</Badge>
                         ) : (
-                          <Badge variant="outline" className="text-[8px] px-1 py-0 text-red-600 border-red-500">Collaborator</Badge>
+                          <Badge variant="outline" className="text-[8px] px-1 py-0 text-purple-700 border-purple-400">Collaborator</Badge>
                         )}
-                        {req.type === "ready" && <Badge className="bg-green-500 text-white text-[8px] px-1 py-0">Ready</Badge>}
+
+                        {/* Status Tracker */}
+                        {req.type === "pending" && (
+                          <Badge className="bg-yellow-500 text-white text-[8px] px-1 py-0">Pending</Badge>
+                        )}
+                        {req.type === "published" && (
+                          <Badge className="bg-red-700 text-white text-[8px] px-1 py-0">Published</Badge>
+                        )}
+                        {/* {req.type === "review" && (
+                          <Badge className="bg-blue-500 text-white text-[8px] px-1 py-0">In Review</Badge>
+                        )} */}
+                        {/* Extra mocked statuses */}
+                        {req.status.toLowerCase().includes("draft") && (
+                          <Badge className="bg-black text-white text-[8px] px-1 py-0">Draft</Badge>
+                        )}
+                        {req.status.toLowerCase().includes("cancelled") && (
+                          <Badge className="bg-gray-400 text-white text-[8px] px-1 py-0">Cancelled</Badge>
+                        )}
+                        {req.type === "ready" && (
+                          <Badge className="bg-green-600 text-white text-[8px] px-1 py-0">Ready</Badge>
+                        )}
+
                       </div>
                       <p className="text-gray-500 mt-0.5">{req.status}</p>
                       {req.isOwner && req.collaboratorsSubmitted !== undefined && (
@@ -184,9 +207,19 @@ const ExhibitsTab = () => {
                             Progress: {req.collaboratorsSubmitted}/{req.totalCollaborators} submissions
                           </span>
                           <div className="w-24 h-1 bg-gray-200 rounded-full">
-                            <div className={`h-full ${req.type === "ready" ? "bg-green-500" : "bg-yellow-500"}`}
-                                 style={{width: `${(req.collaboratorsSubmitted / req.totalCollaborators) * 100}%`}}></div>
+                            <div
+                              className={`h-full ${
+                                req.type === "ready" ? "bg-green-500"
+                                : req.type === "pending" ? "bg-yellow-500"
+                                : req.type === "published" ? "bg-red-700"
+                                : req.status.toLowerCase().includes("draft") ? "bg-black"
+                                : req.status.toLowerCase().includes("cancelled") ? "bg-gray-400"
+                                : "bg-gray-300"
+                              }`}
+                              style={{ width: `${(req.collaboratorsSubmitted / req.totalCollaborators) * 100}%` }}
+                            ></div>
                           </div>
+
                         </div>
                       )}
                     </div>
