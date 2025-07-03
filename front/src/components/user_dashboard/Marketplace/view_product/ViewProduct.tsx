@@ -14,170 +14,170 @@ import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { useSellArtworkDetail } from "@/hooks/artworks/sell/useSellArtworkDetail";
 const ProductViewingContent = () => {
-    const { id } = useParams<{ id: string }>();
-     const { data: product, isLoading, error } = useSellArtworkDetail(id);
+  const { id } = useParams<{ id: string }>();
+  const { data: product, isLoading, error } = useSellArtworkDetail(id);
 
-    const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
+  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
 
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [quantity, setQuantity] = useState(1);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [isHovered, setIsHovered] = useState(false);
-    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState("description");
-    const [menuOpen, setMenuOpen] = useState(false);
-    const [isReported, setIsReported] = useState(false);
-    const isMobile = useIsMobile();
-    const navigate = useNavigate();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("description");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isReported, setIsReported] = useState(false);
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
-    const { likedItems, toggleWishlist } = useWishlist();
+  const { likedItems, toggleWishlist } = useWishlist();
 
-    const handleWishlistToggle = () => {
-        if (!id) return;
-        toggleWishlist(id);
-        toast(likedItems.has(id) ? "Removed from wishlist" : "Added to wishlist");
-    };
+  const handleWishlistToggle = () => {
+    if (!id) return;
+    toggleWishlist(id);
+    toast(likedItems.has(id) ? "Removed from wishlist" : "Added to wishlist");
+  };
 
-    // Mock reviews data
-    const mockReviews = [
-        {
-        id: "1",
-        user: "Jimuel Clamonte",
-        userImage: "",
-        rating: 5,
-        comment: "The colors are incredibly vibrant and the texture is amazing. The print quality exceeded my expectations. It's now the centerpiece of my living room!",
-        timestamp: "2024-05-01T10:00:00Z",
-        verified: true
-        },
-        {
-        id: "2",
-        user: "Jimuel Clamonte",
-        userImage: "",
-        rating: 5,
-        comment: "The colors are incredibly vibrant and the texture is amazing. The print quality exceeded my expectations. It's now the centerpiece of my living room!",
-        timestamp: "2024-05-01T10:00:00Z",
-        verified: true
-        },
-        {
-        id: "3",
-        user: "Jimuel Clamonte",
-        userImage: "",
-        rating: 5,
-        comment: "The colors are incredibly vibrant and the texture is amazing. The print quality exceeded my expectations. It's now the centerpiece of my living room!",
-        timestamp: "2024-05-01T10:00:00Z",
-        verified: true
-        }
-    ];
+  // Mock reviews data
+  const mockReviews = [
+    {
+      id: "1",
+      user: "Jimuel Clamonte",
+      userImage: "",
+      rating: 5,
+      comment:
+        "The colors are incredibly vibrant and the texture is amazing. The print quality exceeded my expectations. It's now the centerpiece of my living room!",
+      timestamp: "2024-05-01T10:00:00Z",
+      verified: true,
+    },
+    {
+      id: "2",
+      user: "Jimuel Clamonte",
+      userImage: "",
+      rating: 5,
+      comment:
+        "The colors are incredibly vibrant and the texture is amazing. The print quality exceeded my expectations. It's now the centerpiece of my living room!",
+      timestamp: "2024-05-01T10:00:00Z",
+      verified: true,
+    },
+    {
+      id: "3",
+      user: "Jimuel Clamonte",
+      userImage: "",
+      rating: 5,
+      comment:
+        "The colors are incredibly vibrant and the texture is amazing. The print quality exceeded my expectations. It's now the centerpiece of my living room!",
+      timestamp: "2024-05-01T10:00:00Z",
+      verified: true,
+    },
+  ];
 
-    // useEffect(() => {
-    // if (id) {
-    //     const found = mockArtworks.find((artwork) => String(artwork.id) === String(id));
-    //     if (found) {
-    //     const productWithImages = {
-    //         ...found,
-    //         images: Array.isArray(found.images) ? found.images : [found.artworkImage],
-    //     };
-    //     setProduct(productWithImages);
-    //     } else {
-    //     setProduct(null);
-    //     }
-    // }
-    // }, [id]);
+  // useEffect(() => {
+  // if (id) {
+  //     const found = mockArtworks.find((artwork) => String(artwork.id) === String(id));
+  //     if (found) {
+  //     const productWithImages = {
+  //         ...found,
+  //         images: Array.isArray(found.images) ? found.images : [found.artworkImage],
+  //     };
+  //     setProduct(productWithImages);
+  //     } else {
+  //     setProduct(null);
+  //     }
+  // }
+  // }, [id]);
 
   if (isLoading) {
-  return <div>Loading artwork...</div>;
-}
+    return <div>Loading artwork...</div>;
+  }
 
-if (error || !product) {
-  return <div>Product not found.</div>;
-}
+  if (error || !product) {
+    return <div>Product not found.</div>;
+  }
 
-    const goToPrevious = () => {
-        if (product?.image_urls?.length > 1) {
-        setCurrentImageIndex((prev) => (prev === 0 ? product.image_urls.length - 1 : prev - 1));
-        }
-    };
-
-    const goToNext = () => {
-        if (product?.image_urls?.length > 1) {
-        setCurrentImageIndex((prev) => (prev === product.image_urls.length - 1 ? 0 : prev + 1));
-        }
-    };
-
-    const closeExpandedView = () => {
-        setIsExpanded(false);
-    };
-
-    const handleQuantityChange = (change: number) => {
-        setQuantity(prev => Math.max(1, prev + change));
-    };
-
-    const renderStars = (rating: number, size: string = "text-sm") => {
-        return Array.from({ length: 5 }).map((_, index) => (
-        <span key={index} className={`text-yellow-400 ${size}`}>
-            {index < rating ? "★" : "☆"}
-        </span>
-        ));
-    };
-
-    const renderRatingBar = (star: number, count: number, total: number) => {
-        const percentage = total > 0 ? (count / total) * 100 : 0;
-        return (
-        <div className="flex items-center space-x-2 text-xs">
-            <span className="w-2">{star}</span>
-            <div className="flex-1 bg-gray-200 rounded-full h-2">
-            <div 
-                className="bg-yellow-400 h-2 rounded-full" 
-                style={{ width: `${percentage}%` }}
-            />
-            </div>
-        </div>
-        );
-    };
-
-    if (!id) {
-        return (
-        <div className="min-h-screen bg-white">
-            <Header />
-            <div className="container mx-auto pt-24 px-4 text-center">
-            <h2 className="text-lg font-bold mb-4">Artwork Not Found</h2>
-            <p className="mb-8 text-xs">The artwork you're looking for doesn't exist or has been removed.</p>
-            <Link to="/" className="text-red-600 text-xs hover:underline">
-                Return to Home
-            </Link>
-            </div>
-        </div>
-        );
+  const goToPrevious = () => {
+    if (product?.image_urls?.length > 1) {
+      setCurrentImageIndex((prev) => (prev === 0 ? product.image_urls.length - 1 : prev - 1));
     }
-if (error) {
-  return (
-    <div className="min-h-screen bg-white">
-      <Header />
-      <div className="container mx-auto pt-24 px-4 text-center">
-        <h2 className="text-lg font-bold mb-4">Artwork Not Found</h2>
-        <p className="mb-8 text-xs text-red-500">{error}</p>
-        <Link to="/" className="text-red-600 text-xs hover:underline">
-          Return to Home
-        </Link>
-      </div>
-    </div>
-  );
-}
+  };
 
-    if (!product) {
-        return (
-        <div className="min-h-screen flex justify-center items-center">
-            <Header />
-            <p className="text-gray-500 text-sm">Loading exhibit...</p>
-        </div>
-        );
+  const goToNext = () => {
+    if (product?.image_urls?.length > 1) {
+      setCurrentImageIndex((prev) => (prev === product.image_urls.length - 1 ? 0 : prev + 1));
     }
+  };
 
+  const closeExpandedView = () => {
+    setIsExpanded(false);
+  };
+
+  const handleQuantityChange = (change: number) => {
+    setQuantity((prev) => Math.max(1, prev + change));
+  };
+
+  const renderStars = (rating: number, size: string = "text-sm") => {
+    return Array.from({ length: 5 }).map((_, index) => (
+      <span key={index} className={`text-yellow-400 ${size}`}>
+        {index < rating ? "★" : "☆"}
+      </span>
+    ));
+  };
+
+  const renderRatingBar = (star: number, count: number, total: number) => {
+    const percentage = total > 0 ? (count / total) * 100 : 0;
     return (
-        <div className="min-h-screen">
-        <Header />
+      <div className="flex items-center space-x-2 text-xs">
+        <span className="w-2">{star}</span>
+        <div className="flex-1 bg-gray-200 rounded-full h-2">
+          <div className="bg-yellow-400 h-2 rounded-full" style={{ width: `${percentage}%` }} />
+        </div>
+      </div>
+    );
+  };
 
-        <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
+  if (!id) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="container mx-auto pt-24 px-4 text-center">
+          <h2 className="text-lg font-bold mb-4">Artwork Not Found</h2>
+          <p className="mb-8 text-xs">The artwork you're looking for doesn't exist or has been removed.</p>
+          <Link to="/" className="text-red-600 text-xs hover:underline">
+            Return to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="container mx-auto pt-24 px-4 text-center">
+          <h2 className="text-lg font-bold mb-4">Artwork Not Found</h2>
+          <p className="mb-8 text-xs text-red-500">{error}</p>
+          <Link to="/" className="text-red-600 text-xs hover:underline">
+            Return to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <Header />
+        <p className="text-gray-500 text-sm">Loading exhibit...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen">
+      <Header />
+
+      <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
         {/* Back button */}
         <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
@@ -187,215 +187,211 @@ if (error) {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Artwork container */}
-            <div className={`relative ${isMobile ? "w-full" : "w-full max-w-[580px] min-w-[400px] ml-14"}`}>
+          {/* Artwork container */}
+          <div className={`relative ${isMobile ? "w-full" : "w-full max-w-[580px] min-w-[400px] ml-14"}`}>
             {/* Artwork Image Hover Group */}
             <div className={`relative z-0 ${isMobile ? "px-4 mt-4" : "mt-8"} group/artwork`}>
-                <div className={`relative ${isMobile ? "w-full" : "inline-block -mb-6"}`}>
-                <div className={`${isMobile ? "h-[475px]" : "w-[530px] h-[475px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"}`}>
-                    
-                    {/* Artwork image */}
-                    <img
+              <div className={`relative ${isMobile ? "w-full" : "inline-block -mb-6"}`}>
+                <div
+                  className={`${
+                    isMobile
+                      ? "h-[475px]"
+                      : "w-[530px] h-[475px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"
+                  }`}
+                >
+                  {/* Artwork image */}
+                  <img
                     src={product.image_urls[currentImageIndex]}
                     alt={product.title}
                     className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
-                    />
+                  />
 
-                    {/* Chevron Buttons (on hover of artwork only) */}
-                    {product.image_urls.length > 1 && (
+                  {/* Chevron Buttons (on hover of artwork only) */}
+                  {product.image_urls.length > 1 && (
                     <>
-                        <button
+                      <button
                         onClick={goToPrevious}
                         className="absolute left-4 top-1/2 transform -translate-y-1/2 
                             bg-white/70 backdrop-blur-md rounded-full p-2 shadow-md hover:bg-white 
                             opacity-0 group-hover/artwork:opacity-100 transition-opacity duration-300"
-                        >
+                      >
                         <ChevronLeft size={15} className="text-black" />
-                        </button>
+                      </button>
 
-                        <button
+                      <button
                         onClick={goToNext}
                         className="absolute right-4 top-1/2 transform -translate-y-1/2 
                             bg-white/70 backdrop-blur-md rounded-full p-2 shadow-md hover:bg-white 
                             opacity-0 group-hover/artwork:opacity-100 transition-opacity duration-300"
-                        >
+                      >
                         <ChevronRight size={15} className="text-black" />
-                        </button>
+                      </button>
                     </>
-                    )}
+                  )}
 
-                    {/* ✅ Expand Button (always visible, not affected by hover) */}
-                    <div className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}>
+                  {/* ✅ Expand Button (always visible, not affected by hover) */}
+                  <div className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}>
                     <div
-                        className="group/expand flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
-                        onClick={() => setIsExpanded(true)}
+                      className="group/expand flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
+                      onClick={() => setIsExpanded(true)}
                     >
-                        <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
-                        <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover/expand:translate-x-0 group-hover/expand:opacity-100 transition-all ease-in-out duration-700">
+                      <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
+                      <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover/expand:translate-x-0 group-hover/expand:opacity-100 transition-all ease-in-out duration-700">
                         Expand
-                        </span>
+                      </span>
                     </div>
-                    </div>
+                  </div>
                 </div>
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
 
-
-            {/* Right side - Product Info */}
-            <div className={`relative space-y-[30px] ${isMobile ? "w-full " : "w-full max-w-[550px] min-w-[400px] mt-4"}`}>
-                
+          {/* Right side - Product Info */}
+          <div
+            className={`relative space-y-[30px] ${isMobile ? "w-full " : "w-full max-w-[550px] min-w-[400px] mt-4"}`}
+          >
             {/* Title and Actions */}
             <div className="flex justify-between items-start">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
-                    <div className="flex items-center space-x-2">
-                        <Avatar className="w-4 h-4 border">
-                            <AvatarImage 
-                                src={product.artist.profile_picture || undefined} 
-                                alt={product.artist.name} 
-                            />
-                            <AvatarFallback className="text-[10px]">
-                                {product.artist.name?.charAt(0)}
-                            </AvatarFallback>
-                        </Avatar>
-                        <span className="text-black text-[10px] cursor-pointer">{product.artist.name}</span>
-                    </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
+                <div className="flex items-center space-x-2">
+                  <Avatar className="w-4 h-4 border">
+                    <AvatarImage src={product.artist.profile_picture || undefined} alt={product.artist.name} />
+                    <AvatarFallback className="text-[10px]">{product.artist.name?.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <span className="text-black text-[10px] cursor-pointer">{product.artist.name}</span>
                 </div>
-                <div className="relative">
-                    
+              </div>
+              <div className="relative">
                 {/* MENU */}
                 <button
-                    onClick={(e) => {
+                  onClick={(e) => {
                     e.stopPropagation();
                     setMenuOpen((prev) => !prev);
-                    }}
-                    className="p-2 rounded-full"
+                  }}
+                  className="p-2 rounded-full"
                 >
-                    <MoreHorizontal size={15} className="text-gray-500 hover:text-black" />
+                  <MoreHorizontal size={15} className="text-gray-500 hover:text-black" />
                 </button>
 
                 <SellCardMenu
-                    isOpen={menuOpen}
-                    isReported={isReported}
-                    onReport={(data) => {
+                  isOpen={menuOpen}
+                  isReported={isReported}
+                  onReport={(data) => {
                     console.log("Report submitted:", data);
                     toast("Report submitted. Thank you!");
                     setIsReported(true);
                     setMenuOpen(false);
-                    }}
+                  }}
                 />
-                </div>
+              </div>
             </div>
 
             {/* Price */}
+            {/* Price */}
             <div className="flex items-center space-x-4">
-              <div className="text-2xl font-bold text-gray-900">
-                ₱ {product.price?.toLocaleString()}k
-              </div>
-              {product.discounted_price && (
+              {product.price > 0 && (
+                <div className="text-2xl font-bold text-gray-900">
+                  ₱ {product.price >= 10000 ? `${(product.price / 1000).toFixed(1)}k` : product.price.toLocaleString()}
+                </div>
+              )}
+              {product.discounted_price > 0 && product.discounted_price !== product.price && (
                 <div className="text-lg text-gray-400 line-through">
-                  ₱ {product.price}{product.discounted_price?.toLocaleString()}k
+                  ₱{" "}
+                  {product.discounted_price >= 10000
+                    ? `${(product.discounted_price / 1000).toFixed(1)}k`
+                    : product.discounted_price.toLocaleString()}
                 </div>
               )}
             </div>
 
             {/* Product Details Grid */}
             <div className="grid grid-cols-4 gap-4 text-center border py-[18px] rounded-md">
-                <div>
-                    <h3 className="text-[10px] font-medium text-gray-500 mb-1">Artwork Style</h3>
-                    <p className="text-[10px] text-gray-900">{product.artwork_style}</p>
-                </div>
-                
-                <div className="border-l border-gray-300 pl-4">
-                    <h3 className="text-[10px] font-medium text-gray-500 mb-1">Dimensions</h3>
-                    <p className="text-[10px] text-gray-900">{product.size} cm</p>
-                </div>
-                
-                <div className="border-l border-gray-300 mr-2">
-                    <h3 className="text-[10px] font-medium text-gray-500 mb-1">Edition</h3>
-                    <p className="text-[10px] text-gray-900">{product.edition}</p>
-                </div>
+              <div>
+                <h3 className="text-[10px] font-medium text-gray-500 mb-1">Artwork Style</h3>
+                <p className="text-[10px] text-gray-900">{product.artwork_style}</p>
+              </div>
 
-                <div className="border-l border-gray-300 mr-2">
-                    <h3 className="text-[10px] font-medium text-gray-500 mb-1">Year Created</h3>
-                    <p className="text-[10px] text-gray-900">{product.year_created}</p>
-                </div>
+              <div className="border-l border-gray-300 pl-4">
+                <h3 className="text-[10px] font-medium text-gray-500 mb-1">Dimensions</h3>
+                <p className="text-[10px] text-gray-900">{product.size} cm</p>
+              </div>
+
+              <div className="border-l border-gray-300 mr-2">
+                <h3 className="text-[10px] font-medium text-gray-500 mb-1">Edition</h3>
+                <p className="text-[10px] text-gray-900">{product.edition}</p>
+              </div>
+
+              <div className="border-l border-gray-300 mr-2">
+                <h3 className="text-[10px] font-medium text-gray-500 mb-1">Year Created</h3>
+                <p className="text-[10px] text-gray-900">{product.year_created}</p>
+              </div>
             </div>
 
             <div className="w-full">
-
-            {/* Custom Tab Headers */}
-            <div className="flex text-[10px] font-medium">
+              {/* Custom Tab Headers */}
+              <div className="flex text-[10px] font-medium">
                 <button
-                    className={`px-4 py-2 ${
-                        activeTab === "description"
-                        ? "border-b-2 border-black text-black"
-                        : "text-gray-400"
-                    }`}
-                    onClick={() => setActiveTab("description")}
-                    >
-                    About this Artwork
+                  className={`px-4 py-2 ${
+                    activeTab === "description" ? "border-b-2 border-black text-black" : "text-gray-400"
+                  }`}
+                  onClick={() => setActiveTab("description")}
+                >
+                  About this Artwork
                 </button>
 
                 {product.edition !== "Original (1 of 1)" && (
-                <button
+                  <button
                     className={`px-4 py-2 ml-4 ${
-                    activeTab === "review"
-                        ? "border-b-2 border-black text-black"
-                        : "text-gray-400"
+                      activeTab === "review" ? "border-b-2 border-black text-black" : "text-gray-400"
                     }`}
                     onClick={() => setActiveTab("review")}
-                >
+                  >
                     Review
-                </button>
+                  </button>
                 )}
-            </div>
+              </div>
 
-            {/* Tab Content Container */}
-            <div className="mt-5 -mb-4 bg-white px-2 h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-hide">
+              {/* Tab Content Container */}
+              <div className="mt-5 -mb-4 bg-white px-2 h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-hide">
                 {/* Description Content */}
                 {activeTab === "description" && (
-                <div className="pt-2 space-y-2">
+                  <div className="pt-2 space-y-2">
                     {/* Medium Info Block */}
                     <div className=" flex gap-2">
-                        <h3 className="text-[10px] font-medium text-gray-500 mb-1">Medium :</h3>
-                        <p className="text-[10px] text-gray-900">{product.medium}</p>
+                      <h3 className="text-[10px] font-medium text-gray-500 mb-1">Medium :</h3>
+                      <p className="text-[10px] text-gray-900">{product.medium}</p>
                     </div>
 
                     {/* Description Text */}
-                    <p className="text-[10px] text-gray-700 leading-relaxed">
-                    {product.description}
-                    </p>
-                </div>
+                    <p className="text-[10px] text-gray-700 leading-relaxed">{product.description}</p>
+                  </div>
                 )}
-
 
                 {/* Reviews Content */}
                 {activeTab === "review" && product.edition !== "Original (1 of 1)" && (
-                <div className="relative flex flex-col md:h-[110px] sm:flex-row gap-4 pr-4">
-
+                  <div className="relative flex flex-col md:h-[110px] sm:flex-row gap-4 pr-4">
                     {/* View All Reviews Button - Top Right Corner */}
                     <div className="absolute right-0 top-0">
-                        <button
+                      <button
                         onClick={() => setIsReviewModalOpen(true)}
                         className="text-[9px] text-gray-600 hover:underline flex items-center"
-                        >
+                      >
                         View all reviews
                         <ChevronRight size={10} className="ml-1" />
-                        </button>
+                      </button>
                     </div>
 
                     {/* Rating Summary */}
                     <div className="min-w-[120px] mt-6 sm:mt-6">
-                        <div className="flex items-end space-x-1 mb-1">
+                      <div className="flex items-end space-x-1 mb-1">
                         <span className="text-[24px] font-semibold">{product.rating}</span>
                         <span className="text-[10px] text-gray-500 mb-1">out of 5</span>
-                        </div>
-                        <div className="flex items-center space-x-0.5 mb-1">
+                      </div>
+                      <div className="flex items-center space-x-0.5 mb-1">
                         {renderStars(Math.floor(product.rating))}
-                        </div>
-                        <p className="text-[10px] text-gray-500">({product.total_reviews} reviews)</p>
+                      </div>
+                      <p className="text-[10px] text-gray-500">({product.total_reviews} reviews)</p>
                     </div>
 
                     {/* Rating Breakdown */}
@@ -420,127 +416,117 @@ if (error) {
                         })}
                         </div>
                     </div> */}
-                </div>
-            )}
-            </div>
-
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Quantity, Buy Now, Wishlist */}
             <div className="space-y-2">
-                <div className="flex items-center justify-between space-x-3">
-                    <div className="flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs">
-                        <button
-                            onClick={() => handleQuantityChange(-1)}
-                            className="w-8 h-8 pl-1.5 flex items-center justify-center text-black"
-                        >
-                            −
-                        </button>
+              <div className="flex items-center justify-between space-x-3">
+                <div className="flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs">
+                  <button
+                    onClick={() => handleQuantityChange(-1)}
+                    className="w-8 h-8 pl-1.5 flex items-center justify-center text-black"
+                  >
+                    −
+                  </button>
 
-                        <div className="w-px h-3 bg-gray-300" />
+                  <div className="w-px h-3 bg-gray-300" />
 
-                        <span className="w-8 text-center font-medium text-black">
-                            {quantity}
-                        </span>
+                  <span className="w-8 text-center font-medium text-black">{quantity}</span>
 
-                        <div className="w-px h-3 bg-gray-300" />
+                  <div className="w-px h-3 bg-gray-300" />
 
-                        <button
-                            onClick={() => handleQuantityChange(1)}
-                            className="w-8 h-8 pr-1.5 flex items-center justify-center text-black"
-                        >
-                            +
-                        </button>
-                    </div>
-
-
-                    <button 
-                        className="w-full bg-red-800 hover:bg-red-700 text-white py-2 text-xs font-medium rounded-full"
-                        onClick={() => toast("Added to cart!")}
-                    >
-                        <i className='bx bx-cart text-[15px] relative top-0.5 mr-3'></i>
-                        Buy Now
-                    </button>
-                    
-                    <button
-                    onClick={handleWishlistToggle}
-                    className="py-1.5 px-2.5 border border-gray-300 rounded-full"
-                    >
-                        <img
-                            src={
-                                likedItems.has(id)
-                                ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
-                                : "https://img.icons8.com/puffy/32/like.png"
-                            }
-                            className="w-5 h-5 object-contain"
-                        />
-                    </button>
-
+                  <button
+                    onClick={() => handleQuantityChange(1)}
+                    className="w-8 h-8 pr-1.5 flex items-center justify-center text-black"
+                  >
+                    +
+                  </button>
                 </div>
-                
-            </div>
 
+                <button
+                  className="w-full bg-red-800 hover:bg-red-700 text-white py-2 text-xs font-medium rounded-full"
+                  onClick={() => toast("Added to cart!")}
+                >
+                  <i className="bx bx-cart text-[15px] relative top-0.5 mr-3"></i>
+                  Buy Now
+                </button>
+
+                <button onClick={handleWishlistToggle} className="py-1.5 px-2.5 border border-gray-300 rounded-full">
+                  <img
+                    src={
+                      likedItems.has(id)
+                        ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
+                        : "https://img.icons8.com/puffy/32/like.png"
+                    }
+                    className="w-5 h-5 object-contain"
+                  />
+                </button>
+              </div>
             </div>
-            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Expanded artwork view */}
-        {isExpanded && (
+      {/* Expanded artwork view */}
+      {isExpanded && (
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
-            <button
+          <button
             onClick={closeExpandedView}
             className="absolute top-4 right-6 z-[60] bg-white rounded-full px-1 shadow-md transition-colors duration-200"
-            >
+          >
             <i className="bx bx-x text-xl text-black"></i>
-            </button>
+          </button>
 
-            <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
+          <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
             <img
-                src={product.image_urls[currentImageIndex]}
-                alt="Expanded artwork"
-                className="max-h-[80vh] max-w-[90vw] object-contain"
+              src={product.image_urls[currentImageIndex]}
+              alt="Expanded artwork"
+              className="max-h-[80vh] max-w-[90vw] object-contain"
             />
 
             {/* Chevron navigation */}
             {product.image_urls.length > 1 && (
-                <>
+              <>
                 <button
-                    onClick={goToPrevious}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 z-50"
+                  onClick={goToPrevious}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 z-50"
                 >
-                    <ChevronLeft size={15} className="text-black" />
+                  <ChevronLeft size={15} className="text-black" />
                 </button>
                 <button
-                    onClick={goToNext}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 z-50"
+                  onClick={goToNext}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 z-50"
                 >
-                    <ChevronRight size={15} className="text-black" />
+                  <ChevronRight size={15} className="text-black" />
                 </button>
-                </>
+              </>
             )}
-            </div>
+          </div>
         </div>
-        )}
+      )}
 
-        {/* Review Modal */}
-        <ReviewModal 
-            isOpen={isReviewModalOpen}
-            onClose={() => setIsReviewModalOpen(false)}
-            reviews={mockReviews}
-            totalReviews={product.total_reviews}
-        />
+      {/* Review Modal */}
+      <ReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        reviews={mockReviews}
+        totalReviews={product.total_reviews}
+      />
     </div>
-    );
+  );
 };
 
 const ProductViewing = () => {
-    return (
-        <LikedArtworksProvider>
-        <DonationProvider>
-            <ProductViewingContent />
-        </DonationProvider>
-        </LikedArtworksProvider>
-    );
+  return (
+    <LikedArtworksProvider>
+      <DonationProvider>
+        <ProductViewingContent />
+      </DonationProvider>
+    </LikedArtworksProvider>
+  );
 };
 
 export default ProductViewing;
