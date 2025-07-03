@@ -21,7 +21,6 @@ const useMyWishlist = () => {
   return useQuery({
     queryKey: ["myWishlist"],
     queryFn: fetchWishlist,
-    enabled: !!token,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10,
   });
