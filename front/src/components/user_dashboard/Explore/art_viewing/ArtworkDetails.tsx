@@ -337,19 +337,20 @@ const ArtworkDetails = () => {
                           <p className="text-[9px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
                         </div>
                         <div className="mb-6">
-                          <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
-                          <p className="text-[9px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
-                        </div>
-                        <div className="mb-1">
-                          <h3 className="text-[9px] font-medium mb-1">Artwork Size</h3>
+                          <h3 className="text-[9px] font-medium mb-1">Dimensions</h3>
                           <p className="text-[9px] text-gray-700">
                             {artwork?.size
                               ? artwork?.size
                                   .split(" x ")
                                   .map((dim) => `${dim}″`)
                                   .join(" x ")
-                              : "20 x 20″"}
+                              : "20 x 20"}
+                              cm
                           </p>
+                        </div>
+                        <div className="mb-1">
+                          <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
+                          <p className="text-[9px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
                         </div>
                       </div>
                     </div>
