@@ -174,7 +174,7 @@ const handleRemoveFromWishlistModal = (id: string) => {
             ) : (
               <>
                 {selectedCategoryFilter === "Following" && filteredArtCards.length === 0 && (
-                  <p className="col-span-full text-sm text-gray-500 text-center">
+                  <p className="col-span-full text-xs text-gray-500 text-center">
                     No artworks from your followings yet.
                   </p>
                 )}

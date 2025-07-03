@@ -13,8 +13,7 @@ import {
   AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
-import { useExhibitCards } from "@/hooks/exhibit/useCardExihibit";
-
+import { useMyExhibitCards } from "@/hooks/exhibit/useMyCardExhibit";
 type ExhibitRequest = {
   id: number;
   exhibitTitle: string;
@@ -35,7 +34,7 @@ const ExhibitsTab = () => {
   const [showPublishDialog, setShowPublishDialog] = useState(false);
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitRequest | null>(null);
 
-  const { data: exhibits = [], isLoading } = useExhibitCards();
+  const { data: exhibits = [], isLoading } = useMyExhibitCards();
 
   const now = new Date();
 
