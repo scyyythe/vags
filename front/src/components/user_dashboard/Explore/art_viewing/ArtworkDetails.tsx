@@ -136,7 +136,7 @@ const ArtworkDetails = () => {
       id,
       title: artwork.title || "Untitled Artwork",
       artistName: artwork.artist || "Unknown Artist",
-      artworkImage: artwork.artworkImage || "",
+      artworkImage: artwork.image_url || "",
       artistId: artwork.artistId,
     });
   };
