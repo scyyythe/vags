@@ -13,6 +13,7 @@ import ReviewModal from "@/components/user_dashboard/Marketplace/reviews/ReviewM
 import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/mockArtworks";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { useSellArtworkDetail } from "@/hooks/artworks/sell/useSellArtworkDetail";
+
 const ProductViewingContent = () => {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, error } = useSellArtworkDetail(id);
@@ -254,12 +255,15 @@ const ProductViewingContent = () => {
             <div className="flex justify-between items-start">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
-                <div className="flex items-center space-x-2">
+                <div
+                  className="flex items-center space-x-2 cursor-pointer"
+                  onClick={() => navigate(`/userprofile/${product.artist.id}`)}
+                >
                   <Avatar className="w-4 h-4 border">
                     <AvatarImage src={product.artist.profile_picture || undefined} alt={product.artist.name} />
                     <AvatarFallback className="text-[10px]">{product.artist.name?.charAt(0)}</AvatarFallback>
                   </Avatar>
-                  <span className="text-black text-[10px] cursor-pointer">{product.artist.name}</span>
+                  <span className="text-black text-[10px]">{product.artist.name}</span>
                 </div>
               </div>
               <div className="relative">
