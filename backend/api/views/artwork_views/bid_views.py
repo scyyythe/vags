@@ -135,7 +135,6 @@ class AuctionListView(generics.ListAPIView):
     def get_queryset(self):
         now_utc = now()
 
-        # ✅ 1. Auto-close expired auctions safely
         try:
             expired_auctions = Auction.objects(
                 status=AuctionStatus.ON_GOING.value,
