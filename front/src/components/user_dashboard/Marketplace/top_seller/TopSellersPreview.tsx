@@ -83,7 +83,11 @@ const TopSellers = () => {
       <div className="relative overflow-hidden pb-4">
         <div className="flex animate-scroll gap-[13px] whitespace-nowrap w-max">
           {scrollingSellers.map((seller, index) => (
-            <div key={`${seller.id}-${index}`} className="flex-shrink-0">
+            <div
+              key={`${seller.id}-${index}`}
+              className="flex-shrink-0"
+              onClick={() => navigate(`/userprofile/${seller.id}`)}
+            >
               <div className="bg-white rounded-full px-4 py-2.5 shadow-md min-w-[140px] hover:shadow-lg transition-shadow cursor-pointer">
                 <div className="flex items-center gap-3">
                   <Avatar className="w-7 h-7 shadow-2xl">
