@@ -107,7 +107,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
 
             <button 
             className="w-full bg-red-800 text-white rounded-full py-2.5 text-[11px] font-medium hover:bg-red-700"
-            onClick={onProceedToCheckout}
+            onClick={handleProceed}
             >
                 proceed to checkout →
             </button>
