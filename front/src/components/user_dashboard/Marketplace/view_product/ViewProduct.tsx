@@ -1,16 +1,15 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Heart, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import { MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
-import { LikedArtworksContext, LikedArtworksProvider } from "@/context/LikedArtworksProvider";
-import { useDonation, DonationProvider } from "@/context/DonationContext";
+import { LikedArtworksProvider } from "@/context/LikedArtworksProvider";
+import { DonationProvider } from "@/context/DonationContext";
 import Header from "@/components/user_dashboard/navbar/Header";
 import SellCardMenu from "@/components/user_dashboard/Marketplace/cards/SellCardMenu";
 import { useIsMobile } from "@/hooks/use-mobile";
-import useFavorite from "@/hooks/interactions/useFavorite";
 import ReviewModal from "@/components/user_dashboard/Marketplace/reviews/ReviewModal";
-import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/mockArtworks";
+import PreviewModal from "../buying_process/PreviewModal";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { useSellArtworkDetail } from "@/hooks/artworks/sell/useSellArtworkDetail";
 
@@ -18,18 +17,16 @@ const ProductViewingContent = () => {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, error } = useSellArtworkDetail(id);
 
-  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
-
   const [isExpanded, setIsExpanded] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
   const [menuOpen, setMenuOpen] = useState(false);
   const [isReported, setIsReported] = useState(false);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { likedItems, toggleWishlist } = useWishlist();
 
@@ -72,21 +69,6 @@ const ProductViewingContent = () => {
       verified: true,
     },
   ];
-
-  // useEffect(() => {
-  // if (id) {
-  //     const found = mockArtworks.find((artwork) => String(artwork.id) === String(id));
-  //     if (found) {
-  //     const productWithImages = {
-  //         ...found,
-  //         images: Array.isArray(found.images) ? found.images : [found.artworkImage],
-  //     };
-  //     setProduct(productWithImages);
-  //     } else {
-  //     setProduct(null);
-  //     }
-  // }
-  // }, [id]);
 
   if (isLoading) {
     return <div>Loading artwork...</div>;
@@ -451,7 +433,7 @@ const ProductViewingContent = () => {
 
                 <button
                   className="w-full bg-red-800 hover:bg-red-700 text-white py-2 text-xs font-medium rounded-full"
-                  onClick={() => toast("Added to cart!")}
+                  onClick={() => setIsModalOpen(true)}
                 >
                   <i className="bx bx-cart text-[15px] relative top-0.5 mr-3"></i>
                   Buy Now
@@ -518,6 +500,24 @@ const ProductViewingContent = () => {
         reviews={mockReviews}
         totalReviews={product.total_reviews}
       />
+
+      {/* Preview Modal */}
+      <PreviewModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        artwork={{
+          artworkImage: product.image_urls?.[0],
+          title: product.title,
+          artist: product.artist.name,
+          medium: product.medium,
+          style: product.artwork_style,
+          edition: product.edition,
+          size: product.size + " cm",
+          yearCreated: product.year_created,
+          price: product.price
+        }}
+      />
+
     </div>
   );
 };
