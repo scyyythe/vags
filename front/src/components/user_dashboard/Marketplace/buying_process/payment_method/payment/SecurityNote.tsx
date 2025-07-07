@@ -73,12 +73,12 @@ const SecurityNote: React.FC<SecurityNoteProps> = ({ type }) => {
   return (
     <div className={`${note.bgColor} border rounded-lg p-4`}>
       <div className="flex items-start space-x-3">
-        <svg className={`w-5 h-5 ${note.iconColor} mt-0.5`} fill="currentColor" viewBox="0 0 20 20">
+        <svg className={`w-3 h-3 ${note.iconColor} mt-0.5`} fill="currentColor" viewBox="0 0 20 20">
           {getIcon()}
         </svg>
         <div>
-          <h4 className={`text-sm font-medium ${note.titleColor}`}>{note.title}</h4>
-          <p className={`text-xs ${note.textColor} mt-1`}>{note.text}</p>
+          <h4 className={`text-xs font-medium ${note.titleColor}`}>{note.title}</h4>
+          <p className={`text-[10px] ${note.textColor} mt-1`}>{note.text}</p>
         </div>
       </div>
     </div>

@@ -18,7 +18,8 @@ const GCashForm: React.FC<GCashFormProps> = ({ number, pin, onNumberChange, onPi
           value={number}
           onChange={(e) => onNumberChange(e.target.value)}
           placeholder="GCash mobile number"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none"
+          style={{ fontSize: "10px" }}
         />
       </div>
       <div>
@@ -28,7 +29,8 @@ const GCashForm: React.FC<GCashFormProps> = ({ number, pin, onNumberChange, onPi
           onChange={(e) => onPinChange(e.target.value)}
           placeholder="GCash PIN"
           maxLength={6}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none"
+          style={{ fontSize: "10px" }}
         />
       </div>
       <ThirdPartyButton method="gcash" />

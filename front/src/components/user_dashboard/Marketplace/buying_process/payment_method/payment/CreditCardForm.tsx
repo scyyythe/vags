@@ -38,7 +38,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
   return (
     <div className="space-y-4">
       {/* Card Number, Expiry, CVC Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="md:col-span-1">
           <div className="relative">
             <input
@@ -48,6 +48,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
               placeholder="1234 1234 1234 1234"
               maxLength={19}
               className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+              style={{ fontSize: "10px" }}
             />
             <svg
               className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -58,25 +59,29 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
             </svg>
           </div>
         </div>
-        <div>
-          <input
-            type="text"
-            value={expiryDate}
-            onChange={(e) => onFieldChange("expiryDate", formatExpiryDate(e.target.value))}
-            placeholder="MM / YY"
-            maxLength={5}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            value={cvc}
-            onChange={(e) => onFieldChange("cvc", e.target.value.replace(/\D/g, ""))}
-            placeholder="CVC"
-            maxLength={4}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
-          />
+        <div className="md:col-span-1 grid grid-cols-2 gap-4">
+            <div>
+                <input
+                    type="text"
+                    value={expiryDate}
+                    onChange={(e) => onFieldChange("expiryDate", formatExpiryDate(e.target.value))}
+                    placeholder="MM / YY"
+                    maxLength={5}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+                    style={{ fontSize: "10px" }}
+                />
+            </div>
+            <div>
+                <input
+                    type="text"
+                    value={cvc}
+                    onChange={(e) => onFieldChange("cvc", e.target.value.replace(/\D/g, ""))}
+                    placeholder="CVC"
+                    maxLength={4}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+                    style={{ fontSize: "10px" }}
+                />
+            </div>
         </div>
       </div>
 
@@ -89,18 +94,19 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
             onChange={(e) => onFieldChange("nameOnCard", e.target.value)}
             placeholder="Name on card"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+            style={{ fontSize: "10px" }}
           />
         </div>
         <div>
-          <div className="relative">
+          <div className="relative flex gap-6">
+            <span className="text-gray-500 text-[11px] relative top-3">Country</span>
             <button
               type="button"
               onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none text-left flex items-center justify-between"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none text-left text-[11px] flex items-center justify-between"
             >
-              <span className="text-gray-500 text-sm">Country</span>
               <span>{country}</span>
-              <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
@@ -114,7 +120,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
                       onFieldChange("country", countryOption)
                       setShowCountryDropdown(false)
                     }}
-                    className="w-full px-4 py-2 text-left hover:bg-gray-50"
+                    className="w-full px-4 py-2 text-left text-[11px] hover:bg-gray-50"
                   >
                     {countryOption}
                   </button>
@@ -134,6 +140,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
             onChange={(e) => onFieldChange("addressLine1", e.target.value)}
             placeholder="Address line 1"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+            style={{ fontSize: "10px" }}
           />
         </div>
         <div>
@@ -143,12 +150,13 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
             onChange={(e) => onFieldChange("addressLine2", e.target.value)}
             placeholder="Address line 2 (optional)"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+            style={{ fontSize: "10px" }}
           />
         </div>
       </div>
 
       {/* City, State, Postal Code */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <input
             type="text"
@@ -156,25 +164,30 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
             onChange={(e) => onFieldChange("city", e.target.value)}
             placeholder="City"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+            style={{ fontSize: "10px" }}
           />
         </div>
-        <div>
-          <input
-            type="text"
-            value={state}
-            onChange={(e) => onFieldChange("state", e.target.value)}
-            placeholder="State, province, or region"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            value={postalCode}
-            onChange={(e) => onFieldChange("postalCode", e.target.value)}
-            placeholder="ZIP/Postal code"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
-          />
+        <div className="md:col-span-1 grid grid-cols-2 gap-4">
+            <div>
+            <input
+                type="text"
+                value={state}
+                onChange={(e) => onFieldChange("state", e.target.value)}
+                placeholder="State, province, or region"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+                style={{ fontSize: "10px" }}
+            />
+            </div>
+            <div>
+            <input
+                type="text"
+                value={postalCode}
+                onChange={(e) => onFieldChange("postalCode", e.target.value)}
+                placeholder="ZIP/Postal code"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+                style={{ fontSize: "10px" }}
+            />
+            </div>
         </div>
       </div>
 
@@ -185,9 +198,9 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
           id="saveCard"
           checked={saveCard}
           onChange={(e) => onFieldChange("saveCard", e.target.checked)}
-          className="w-4 h-4 text-red-800 border-gray-300 rounded"
+          className="w-3 h-3 text-red-800 border-gray-300 rounded"
         />
-        <label htmlFor="saveCard" className="text-sm text-gray-700">
+        <label htmlFor="saveCard" className="text-[10px] text-gray-700">
           Save credit card for later use.
         </label>
       </div>
