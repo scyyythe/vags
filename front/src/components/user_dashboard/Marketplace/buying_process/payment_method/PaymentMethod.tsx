@@ -41,6 +41,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onContinue(formData)
+    navigate("/reviewpurchase")  
   }
 
   const renderPaymentForm = () => {

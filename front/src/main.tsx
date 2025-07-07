@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { ThemeProvider } from './components/admin_&_moderator/theme/theme-provider'
+// import { ThemeProvider } from './components/admin_&_moderator/theme/theme-provider'
 import App from "./App.tsx";
 import "./index.css";
 
