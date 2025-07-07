@@ -34,6 +34,12 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  const handleContinue = () => {
+    if (selectedAddressId) {
+      navigate("/payment-method");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -100,7 +106,7 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
         {/* Continue Button */}
         <div className="flex justify-end">
           <button
-            onClick={onContinue}
+            onClick={handleContinue}
             disabled={!selectedAddressId}
             className="bg-red-800 text-white text-[11px] px-10 py-2.5 rounded-full font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
           >
