@@ -2,7 +2,7 @@ import React, { useState, memo } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import SellCardMenu from "./SellCardMenu";
-import PreviewModal from "../buying_process/PreviewModal";
+import PreviewModal from "../buying_process/preview/PreviewModal";
 
 export interface SellCardProps {
   id: string;
@@ -148,21 +148,6 @@ const SellCard = ({
           Buy Now
         </button>
       </div>
-      <PreviewModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        artwork={{
-          artworkImage,
-          title,
-          artist: "Angel Canete",
-          medium: "Canvas",
-          style: category || "Painting",
-          edition: edition || "Limited Edition",
-          size: "11 x 8.5 inches",
-          yearCreated: 2025,
-          price
-        }}
-      />  
     </div>
     
   );

@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAddressContext } from "../shipping_address/AddressContext";
 
 interface PreviewModalProps {
   isOpen: boolean;
@@ -14,10 +16,22 @@ interface PreviewModalProps {
     yearCreated: number;
     price: number;
   };
+  onProceedToCheckout: () => void;
 }
 
-const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork }) => {
+const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, onProceedToCheckout }) => {
     if (!isOpen) return null;
+    const navigate = useNavigate();
+    const { addresses } = useAddressContext(); 
+
+    const handleProceed = () => {
+        const hasDefaultAddress = addresses.length > 0;
+        if (hasDefaultAddress) {
+            navigate("/shipping");
+        } else {
+            navigate("/add-address");
+        }
+    };
 
     return (
         <div
@@ -91,7 +105,10 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork })
                 </p>
             </div>
 
-            <button className="w-full bg-red-800 text-white rounded-full py-2.5 text-[11px] font-medium hover:bg-red-700">
+            <button 
+            className="w-full bg-red-800 text-white rounded-full py-2.5 text-[11px] font-medium hover:bg-red-700"
+            onClick={onProceedToCheckout}
+            >
                 proceed to checkout →
             </button>
 

@@ -51,6 +51,10 @@ import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/Ex
 //MARKETPLACE
 import ViewProduct from "@/components/user_dashboard/Marketplace/view_product/ViewProduct";
 import TopSellers from "@/components/user_dashboard/Marketplace/top_seller/TopSellers"
+import PreviewPage from "@/components/user_dashboard/Marketplace/buying_process/shipping_address/pages/PreviewPage";
+import ShippingPage from "@/components/user_dashboard/Marketplace/buying_process/shipping_address/pages/ShippingPage"
+import AddAddressPage from "@/components/user_dashboard/Marketplace/buying_process/shipping_address/pages/AddAddressPage"
+import { AddressProvider } from "@/components/user_dashboard/Marketplace/buying_process/shipping_address/AddressContext"
 
 //ADMIN & MODERATOR
 import { AdminLayout } from "@/components/admin_&_moderator/layout/AdminLayout";
@@ -140,6 +144,10 @@ const App = () => {
                           {/* Marketplace */}
                           <Route path="/viewproduct/:id" element={<ViewProduct />} />
                           <Route path="/topsellers" element={<TopSellers />} />
+                          <Route path="/" element={<PreviewPage />} />
+                          <Route path="/shipping" element={<ShippingPage />} />
+                          <Route path="/add-address" element={<AddAddressPage isEditing={false} />} />
+                          <Route path="/edit-address/:id" element={<AddAddressPage isEditing={true} />} />
                           {/* Exhibit */}
                           <Route path="/add-exhibit" element={<AddExhibit />} />
                           <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />
