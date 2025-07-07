@@ -16,17 +16,8 @@ import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import { useMyExhibitCards } from "@/hooks/exhibit/useMyCardExhibit";
 import ExhibitCardSkeleton from "@/components/skeletons/ExhibitCardSkeleton";
 import { usePendingRequests } from "@/hooks/exhibit/usePendingRequests";
+
 import { ExhibitRequest } from "@/hooks/exhibit/usePendingRequests";
-// type ExhibitRequest = {
-//   id: number;
-//   exhibitTitle: string;
-//   status: string;
-//   exhibitId: number;
-//   isOwner?: boolean;
-//   type: "pending" | "review" | "ready" | "published";
-//   collaboratorsSubmitted?: number;
-//   totalCollaborators?: number;
-// };
 
 const ExhibitsTab = () => {
   const navigate = useNavigate();
