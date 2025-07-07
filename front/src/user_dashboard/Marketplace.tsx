@@ -130,7 +130,7 @@ const Marketplace = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex py-1 px-2.5 rounded-full border border-gray-300 gap-2">
-                      <Grid3X3 className="w-3 h-3 relative top-0.5" />
+                      <i className='bx bx-sort text-xs'></i>
                       <span className="text-[10px]">{selectedSort}</span>
                       <ChevronDown className="w-3 h-3 relative top-0.5" />
                     </button>
