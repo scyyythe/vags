@@ -6,12 +6,15 @@ import { Card } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/user_dashboard/navbar/Header";
+import { useCollaboratorExhibitView } from "@/hooks/exhibit/useCollaboratorExhibitView";
+import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
+import { getLoggedInUserId } from "@/auth/decode";
 
 // Color schemes for slots by user
 const slotColorSchemes = [
-  "border-primary bg-primary/10", // Owner (primary color)
-  "border-[#9b87f5] bg-[#9b87f5]/10", // First collaborator (purple)
-  "border-[#7E69AB] bg-[#7E69AB]/10", // Second collaborator (darker purple)
+  "border-primary bg-primary/10",
+  "border-[#9b87f5] bg-[#9b87f5]/10",
+  "border-[#7E69AB] bg-[#7E69AB]/10",
 ];
 
 type Artist = {
@@ -30,7 +33,7 @@ type CollaboratorViewProps = {
     environment: number;
     bannerImage: string;
     slotOwnerMap: Record<number, number>;
-    slotArtworkMap: Record<number, number>;
+    slotArtworkMap: Record<number, string>;
     owner: Artist;
     collaborators: Artist[];
   };
@@ -40,40 +43,50 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { exhibitId } = useParams();
-  
+  const { data, isLoading, error } = useCollaboratorExhibitView(exhibitId);
+  const userId = getLoggedInUserId();
+  const {
+    data: userArtworks,
+    isLoading: artworksLoading,
+    error: artworksError,
+  } = useArtworks(1, userId || undefined, !!userId, "created-by-me", "public", true);
+
   const [loading, setLoading] = useState(true);
   const [exhibit, setExhibit] = useState<CollaboratorViewProps["exhibitData"]>();
-  const [selectedArtworks, setSelectedArtworks] = useState<number[]>([]);
-  const [slotArtworkMap, setSlotArtworkMap] = useState<Record<number, number>>({});
+  const [selectedArtworks, setSelectedArtworks] = useState<string[]>([]);
+  const [slotArtworkMap, setSlotArtworkMap] = useState<Record<number, string>>({});
   const [currentCollaborator, setCurrentCollaborator] = useState<Artist | null>(null);
-  
-  // Mock environments data
+
+  const artworks = userArtworks || [];
+
   const environments = [
-    { id: 1, image: "https://images.unsplash.com/photo-1594122230689-45899d9e6f69?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", slots: 4 },
-    { id: 2, image: "https://images.unsplash.com/photo-1580136579312-94651dfd596d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", slots: 6 },
-    { id: 3, image: "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", slots: 9 },
-  ];
-  
-  // Mock artworks data
-  const artworks = [
-    { id: 1, image: "https://i.pinimg.com/736x/b4/01/da/b401dab097ac7f9e2e5ad0e5bb168f77.jpg" },
-    { id: 2, image: "https://i.pinimg.com/736x/6c/5b/49/6c5b490a1a86fd6b07c23599967486f6.jpg" },
-    { id: 3, image: "https://i.pinimg.com/736x/3d/aa/f2/3daaf26aafb613c049ee637ba71cc95d.jpg" },
-    { id: 4, image: "https://i.pinimg.com/736x/39/8d/54/398d54f3fbb37394b62882f30b058934.jpg" },
-    { id: 5, image: "https://i.pinimg.com/736x/34/00/33/3400334676f49e098b82459a1ed8d8c0.jpg" },
-    { id: 6, image: "https://i.pinimg.com/736x/42/b1/5d/42b15dc87e44a458a61c84f499799096.jpg" },
-    { id: 7, image: "https://i.pinimg.com/736x/97/63/d2/9763d2e3d5005a316631330401ccc99e.jpg" },
-    { id: 8, image: "https://i.pinimg.com/736x/0e/3f/e7/0e3fe7f3e1da1ac7baeab1947dfd08c3.jpg" },
+    {
+      id: 1,
+      image:
+        "https://images.unsplash.com/photo-1594122230689-45899d9e6f69?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      slots: 4,
+    },
+    {
+      id: 2,
+      image:
+        "https://images.unsplash.com/photo-1580136579312-94651dfd596d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      slots: 6,
+    },
+    {
+      id: 3,
+      image:
+        "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      slots: 9,
+    },
   ];
 
-  // Mock current user (collaborator) data 
   const mockCollaborator: Artist = {
     id: 201,
     name: "Jai Anoba",
-    avatar: "https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
+    avatar:
+      "https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80",
   };
 
-  // Mock exhibit data 
   const mockExhibitData = {
     id: parseInt(exhibitId || "1"),
     title: "Urban Dreamscape",
@@ -81,41 +94,70 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     startDate: "2025-06-01",
     endDate: "2025-06-15",
     environment: 2,
-    bannerImage: "https://images.unsplash.com/photo-1580136579312-94651dfd596d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    bannerImage:
+      "https://images.unsplash.com/photo-1580136579312-94651dfd596d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     slotOwnerMap: {
-      1: 100, 2: 100, 3: 201, 4: 201, 5: 202, 6: 202
+      1: 100,
+      2: 100,
+      3: 201,
+      4: 201,
+      5: 202,
+      6: 202,
     },
-    slotArtworkMap: { 1: 1, 2: 2 }, 
+    slotArtworkMap: { 1: "1", 2: "2" },
     owner: {
       id: 100,
       name: "Jera Anderson",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80",
     },
     collaborators: [
       mockCollaborator,
       {
         id: 202,
         name: "Angel Canete",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
-      }
-    ]
+        avatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80",
+      },
+    ],
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      const data = exhibitData || mockExhibitData;
-      setExhibit(data);
-      setSlotArtworkMap(data.slotArtworkMap);
-      
-      const currentUser = data.collaborators.find(c => c.id === mockCollaborator.id);
-      setCurrentCollaborator(currentUser || null);
-      
-      const selectedIds = Object.values(data.slotArtworkMap);
-      setSelectedArtworks(selectedIds);
-      
-      setLoading(false);
-    }, 600);
-  }, [exhibitData, exhibitId]);
+    if (!data) return;
+
+    const { slotOwnerMap, slotArtworkMap, owner, collaborators } = data;
+
+    const transformedExhibit = {
+      id: parseInt(data.id),
+      title: data.title,
+      description: data.description,
+      startDate: data.startDate,
+      endDate: data.endDate,
+      environment: data.environment,
+      bannerImage: data.bannerImage,
+      slotOwnerMap: Object.fromEntries(Object.entries(slotOwnerMap).map(([k, v]) => [parseInt(k), parseInt(v)])),
+      slotArtworkMap: Object.fromEntries(Object.entries(slotArtworkMap).map(([k, v]) => [parseInt(k), String(v)])),
+      owner: {
+        id: parseInt(owner.id),
+        name: owner.name,
+        avatar: owner.avatar,
+      },
+      collaborators: collaborators.map((collab) => ({
+        id: parseInt(collab.id),
+        name: collab.name,
+        avatar: collab.avatar,
+      })),
+    };
+
+    setExhibit(transformedExhibit);
+    setSlotArtworkMap(transformedExhibit.slotArtworkMap);
+    setSelectedArtworks(Object.values(transformedExhibit.slotArtworkMap));
+
+    const currentUser = transformedExhibit.collaborators.find((c) => String(c.id) === String(userId));
+
+    setCurrentCollaborator(currentUser || null);
+    setLoading(false);
+  }, [data]);
 
   if (loading) {
     return <div className="min-h-screen text-xs flex items-center justify-center">Loading exhibit data...</div>;
@@ -125,18 +167,20 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     return <div className="min-h-screen text-xs flex items-center justify-center">Exhibit not found</div>;
   }
 
-  const currentEnvironment = environments.find(env => env.id === exhibit.environment);
+  const currentEnvironment = environments.find((env) => env.id === exhibit.environment);
   const availableSlots = currentEnvironment ? Array.from({ length: currentEnvironment.slots }, (_, i) => i + 1) : [];
 
-  const handleArtworkSelect = (artworkId: number) => {
+  const handleArtworkSelect = (artworkId: string) => {
     if (!currentCollaborator) return;
-    
+
     const availableUserSlots = Object.entries(exhibit.slotOwnerMap)
-      .filter(([slotId, userId]) => userId === currentCollaborator.id && !slotArtworkMap[Number(slotId)])
+      .filter(
+        ([slotId, ownerId]) => String(ownerId) === String(currentCollaborator.id) && !slotArtworkMap[Number(slotId)]
+      )
       .map(([slotId]) => Number(slotId));
-    
+
     const availableSlot = availableUserSlots[0];
-    
+
     if (!availableSlot) {
       toast({
         title: "No available slots",
@@ -145,26 +189,26 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
       });
       return;
     }
-    
-    setSlotArtworkMap(prev => ({
+
+    setSlotArtworkMap((prev) => ({
       ...prev,
-      [availableSlot]: artworkId
+      [availableSlot]: artworkId,
     }));
-    
-    setSelectedArtworks(prev => [...prev, artworkId]);
+
+    setSelectedArtworks((prev) => [...prev, artworkId]);
   };
 
   const handleClearSlot = (slotId: number) => {
     if (!currentCollaborator) return;
-    
+
     if (exhibit.slotOwnerMap[slotId] !== currentCollaborator.id) {
       return;
     }
-    
+
     const artworkId = slotArtworkMap[slotId];
     if (artworkId) {
-      setSelectedArtworks(prev => prev.filter(id => id !== artworkId));
-      
+      setSelectedArtworks((prev) => prev.filter((id) => id !== artworkId));
+
       const newSlotArtworkMap = { ...slotArtworkMap };
       delete newSlotArtworkMap[slotId];
       setSlotArtworkMap(newSlotArtworkMap);
@@ -172,32 +216,31 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   };
 
   const handleSaveSelections = () => {
-    
     toast({
       title: "Selections Saved",
       description: "Your artwork selections have been saved to the exhibit!",
     });
-    
+
     navigate("/exhibits");
   };
 
   const getColorSchemeIndex = (userId: number) => {
-    if (userId === exhibit.owner.id) return 0; // Owner
-    
-    const collaboratorIndex = exhibit.collaborators.findIndex(c => c.id === userId);
+    if (userId === exhibit.owner.id) return 0;
+
+    const collaboratorIndex = exhibit.collaborators.findIndex((c) => c.id === userId);
     return collaboratorIndex + 1;
   };
 
   const getSlotColor = (slotId: number) => {
     const ownerId = exhibit.slotOwnerMap[slotId];
-    if (!ownerId) return slotColorSchemes[0]; 
-    
+    if (!ownerId) return slotColorSchemes[0];
+
     return slotColorSchemes[getColorSchemeIndex(ownerId)];
   };
 
   const getUserName = (userId: number) => {
     if (userId === exhibit.owner.id) return `${exhibit.owner.name}'s slot`;
-    const collaborator = exhibit.collaborators.find(c => c.id === userId);
+    const collaborator = exhibit.collaborators.find((c) => c.id === userId);
     return collaborator ? `${collaborator.name}'s slot` : "";
   };
 
@@ -208,16 +251,16 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
 
   const getUserSlotStats = () => {
     if (!currentCollaborator) return { total: 0, filled: 0 };
-    
+
     const userSlots = Object.entries(exhibit.slotOwnerMap)
       .filter(([_, userId]) => userId === currentCollaborator.id)
       .map(([slotId]) => Number(slotId));
-    
-    const filledSlots = userSlots.filter(slotId => slotArtworkMap[slotId]);
-    
+
+    const filledSlots = userSlots.filter((slotId) => slotArtworkMap[slotId]);
+
     return {
       total: userSlots.length,
-      filled: filledSlots.length
+      filled: filledSlots.length,
     };
   };
 
@@ -232,21 +275,19 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
             <i className="bx bx-chevron-left text-xl mr-2"></i>Go back
           </button>
         </div>
-        
+
         {/* Collaborator View Notice */}
         <div className=" mb-6">
-          <h2 className="text-[13px] font-medium mb-1">
-            Exhibit Collaboration
-          </h2>
+          <h2 className="text-[13px] font-medium mb-1">Exhibit Collaboration</h2>
           <p className="text-[11px]">
-            You are invited to contribute to "{exhibit.title}". 
-            Please select your artwork for the slots assigned to you below.
+            You are invited to contribute to "{exhibit.title}". Please select your artwork for the slots assigned to you
+            below.
           </p>
         </div>
-        
+
         <div className="space-y-8">
           {/* Banner Image */}
-          <div 
+          <div
             className="w-full rounded-lg h-64 mb-4 relative overflow-hidden bg-cover bg-center"
             style={{ backgroundImage: `url(${exhibit.bannerImage})` }}
           >
@@ -263,47 +304,56 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
             <div className="space-y-6">
               <div>
                 <h3 className="text-xs font-medium mb-4">Available Slots</h3>
-                
+
                 {/* Color coding legend */}
                 <div className="mb-3 flex flex-wrap gap-3">
                   <div className="flex items-center">
-                    <div className={`w-3 h-3 mr-1 rounded-full ${slotColorSchemes[0].replace('border-', 'bg-').replace('/10', '')}`}></div>
+                    <div
+                      className={`w-3 h-3 mr-1 rounded-full ${slotColorSchemes[0]
+                        .replace("border-", "bg-")
+                        .replace("/10", "")}`}
+                    ></div>
                     <span className="text-[10px]">{exhibit.owner.name}'s slots</span>
                   </div>
-                  
+
                   {exhibit.collaborators.map((collab, index) => (
                     <div key={collab.id} className="flex items-center">
-                      <div className={`w-3 h-3 mr-1 rounded-full ${slotColorSchemes[index + 1].replace('border-', 'bg-').replace('/10', '')}`}></div>
+                      <div
+                        className={`w-3 h-3 mr-1 rounded-full ${slotColorSchemes[index + 1]
+                          .replace("border-", "bg-")
+                          .replace("/10", "")}`}
+                      ></div>
                       <span className="text-[10px]">{collab.name}'s slots</span>
                     </div>
                   ))}
                 </div>
-                
+
                 <div className="grid grid-cols-3 gap-3">
                   {availableSlots.map((slotId) => {
                     const assignedArtworkId = slotArtworkMap[slotId];
-                    const assignedArtwork = assignedArtworkId ? artworks.find(artwork => artwork.id === assignedArtworkId) : null;
+                    const assignedArtwork = assignedArtworkId
+                      ? artworks.find((artwork) => artwork.id === String(assignedArtworkId))
+                      : null;
                     const slotColor = getSlotColor(slotId);
                     const slotOwner = exhibit.slotOwnerMap[slotId];
                     const userCanInteract = canInteractWithSlot(slotId);
-                    
+
                     return (
-                      <div 
+                      <div
                         key={slotId}
                         className={`h-[93px] rounded-lg relative overflow-hidden border flex items-center justify-center transition-colors 
-                          ${userCanInteract ? 'cursor-pointer' : ''}
-                          ${!userCanInteract ? slotColor + " opacity-75" : slotColor}`
-                        }
+                          ${userCanInteract ? "cursor-pointer" : ""}
+                          ${!userCanInteract ? slotColor + " opacity-75" : slotColor}`}
                       >
                         {assignedArtwork ? (
                           <>
-                            <img 
-                              src={assignedArtwork.image}
+                            <img
+                              src={assignedArtwork.artistImage || assignedArtwork.image_url}
                               alt={`Artwork ${assignedArtworkId}`}
                               className="w-full h-full object-cover"
                             />
                             {userCanInteract && (
-                              <div 
+                              <div
                                 className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
                                 onClick={() => handleClearSlot(slotId)}
                               >
@@ -316,9 +366,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                             <PopoverTrigger asChild>
                               <div className="flex flex-col items-center justify-center w-full h-full">
                                 <span className="text-xs font-semibold">{slotId}</span>
-                                <span className="text-[10px] text-gray-500">
-                                  {getUserName(slotOwner)}
-                                </span>
+                                <span className="text-[10px] text-gray-500">{getUserName(slotOwner)}</span>
                               </div>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-2">
@@ -331,7 +379,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                   })}
                 </div>
               </div>
-              
+
               {/* Collaborator progress status */}
               <div className="border rounded-md p-4 bg-gray-50">
                 <h3 className="text-[11px] font-medium mb-2">Your Artwork Selection</h3>
@@ -340,10 +388,10 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                     {slotStats.filled} of {slotStats.total} slots filled
                   </span>
                   <div className="w-24 h-1 bg-gray-200 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-[#9b87f5]" 
-                      style={{ 
-                        width: `${slotStats.total > 0 ? (slotStats.filled / slotStats.total) * 100 : 0}%`
+                    <div
+                      className="h-full bg-[#9b87f5]"
+                      style={{
+                        width: `${slotStats.total > 0 ? (slotStats.filled / slotStats.total) * 100 : 0}%`,
                       }}
                     ></div>
                   </div>
@@ -365,24 +413,22 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                 </p>
               </div>
             </div>
-            
+
             {/* Right Column - Artworks */}
             <div>
               <h3 className="text-xs font-medium mb-4">Your Artworks</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-96 overflow-y-auto pr-1">
                 {artworks.map((artwork) => {
-                  const isSelected = selectedArtworks.includes(artwork.id);
+                  const isSelected = selectedArtworks.includes(String(artwork.id));
                   return (
-                    <Card 
+                    <Card
                       key={artwork.id}
-                      onClick={() => !isSelected && handleArtworkSelect(artwork.id)}
-                      className={`cursor-pointer overflow-hidden ${
-                        isSelected ? "opacity-40" : ""
-                      }`}
+                      onClick={() => !isSelected && handleArtworkSelect(String(artwork.id))}
+                      className={`cursor-pointer overflow-hidden ${isSelected ? "opacity-40" : ""}`}
                     >
-                      <img 
-                        src={artwork.image} 
-                        alt={`Artwork ${artwork.id}`} 
+                      <img
+                        src={artwork.artworkImage}
+                        alt={`Artwork ${artwork.id}`}
                         className="w-full h-[96px] object-cover"
                       />
                     </Card>
@@ -391,10 +437,10 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
               </div>
             </div>
           </div>
-          
+
           {/* Submit button */}
           <div className="flex justify-end mt-8">
-            <button 
+            <button
               onClick={handleSaveSelections}
               className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full"
             >

@@ -1,4 +1,4 @@
-from mongoengine import Document, ReferenceField, DateTimeField
+from mongoengine import Document, ReferenceField, DateTimeField,IntField
 from datetime import datetime
 from ..user_model.users import User
 from ..artwork_model.artwork import Art
@@ -8,6 +8,7 @@ class ExhibitContribution(Document):
     exhibit = ReferenceField(Exhibit, required=True)
     contributor = ReferenceField(User, required=True)
     artwork = ReferenceField(Art, required=True)
+    slot_number = IntField(required=True)
     contributed_at = DateTimeField(default=datetime.utcnow)
 
     meta = {
