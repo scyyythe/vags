@@ -8,7 +8,8 @@ from api.views.exhibit_views.exhibit_invite import (
 from api.views.exhibit_views.exhibit_contribution import (
     ExhibitContributionCreateView, ExhibitContributionListView
 )
-
+from api.views.exhibit_views.pending_exhibit_requests import MyPendingExhibitRequestView
+from api.views.exhibit_views.exhibit_review_view import ExhibitReviewView
 exhibit_urlpatterns = [
 
     path('exhibits/', ExhibitListView.as_view(), name='exhibit-list'),
@@ -24,4 +25,7 @@ exhibit_urlpatterns = [
 
     path('exhibit-invitations/', ExhibitInvitationListView.as_view(), name='exhibit-invitation-list'),
     path('exhibit-invitations/create/', ExhibitInvitationCreateView.as_view(), name='exhibit-invitation-create'),
+    
+    path("exhibit/my-pending-requests/", MyPendingExhibitRequestView.as_view(), name="my-pending-requests"),
+     path("exhibits/<str:exhibit_id>/review/", ExhibitReviewView.as_view(), name="exhibit-review"),
 ]
