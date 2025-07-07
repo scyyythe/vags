@@ -10,7 +10,7 @@ import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { toast } from "sonner";
 import SellCardSkeleton from "@/components/skeletons/SellCardSkeleton";
-import usePersistentWishlist from "@/hooks/artworks/wishlist/usePersistentWishlist";
+
 import useWishlistArtCards from "@/hooks/artworks/wishlist/useWishlistArtCards";
 import { ChevronDown, Grid3X3 } from "lucide-react";
 import {
@@ -22,43 +22,41 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/mockArtworks";
 import useFetchArtCards from "@/hooks/artworks/sell/useFetchArtCards";
-import { useLocation } from "react-router-dom";
+
 const Marketplace = () => {
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
   const [selectedArtCategory, setSelectedArtCategory] = useState("All");
-  const [selectedSort, setSelectedSort] = useState("Latest"); // ✅ New
+  const [selectedSort, setSelectedSort] = useState("Latest");
+  const [selectedEdition, setSelectedEdition] = useState("All");
+
   const categories = ["All", "Trending", "Following"];
   const navigate = useNavigate();
-  const { wishlistIds } = usePersistentWishlist();
-  const { wishlistItems, isLoading: wishlistLoading, removeLocalItem, addLocalItem } = useWishlistArtCards(wishlistIds);
+
   const sortOptions = ["Latest", "Price: Low to High", "Price: High to Low", "Most Popular"];
   const editionOptions = ["Original (1 of 1)", "Limited Edition", "Open Edition"];
-  const { likedItems, toggleWishlist, removeFromWishlist } = useWishlist();
+
   const [showWishlist, setShowWishlist] = useState(false);
-  const { artCards, isLoading, error } = useFetchArtCards();
+  const { data: artCards = [], isLoading, error, refetch } = useFetchArtCards();
+
+  const { wishlist, likedItems, removeFromWishlist, toggleWishlist, isLoading: wishlistApiLoading } = useWishlist();
 
   const handleCategorySelect = (category) => setSelectedCategoryFilter(category);
   const handleArtCategoryChange = (category) => setSelectedArtCategory(category);
   const handleSortChange = (option) => setSelectedSort(option);
-  const { refetch } = usePersistentWishlist();
-  const location = useLocation();
-  useEffect(() => {
-    if (location.pathname === "/marketplace") {
-      refetch();
-    }
-  }, [location.pathname]);
+
   const filteredArtCards = artCards
     .filter((artwork) => {
       if (selectedCategoryFilter === "Trending" && !(artwork.total_ratings >= 4)) return false;
       if (selectedCategoryFilter === "Following") return false;
       if (selectedArtCategory !== "All" && artwork.category !== selectedArtCategory) return false;
+      if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
       return true;
     })
     .sort((a, b) => {
       if (selectedSort === "Price: Low to High") {
-        return a.price - b.price;
+        return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
       } else if (selectedSort === "Price: High to Low") {
-        return b.price - a.price;
+        return (b.discounted_price ?? b.price) - (a.discounted_price ?? a.price);
       } else if (selectedSort === "Most Popular") {
         return (b.total_ratings ?? 0) - (a.total_ratings ?? 0);
       } else {
@@ -76,11 +74,9 @@ const Marketplace = () => {
   const handleLike = async (id: string) => {
     const wasLiked = likedItems.has(id);
     await toggleWishlist(id);
-    toast(wasLiked ? "Removed from wishlist" : "Added to wishlist");
-    wasLiked ? removeLocalItem(id) : await addLocalItem(id);
   };
 
-  const handleRemoveFromWishlist = (id: string) => {
+  const handleRemoveFromWishlistModal = (id: string) => {
     removeFromWishlist(id);
     toast("Removed from wishlist");
   };
@@ -88,8 +84,8 @@ const Marketplace = () => {
   const handleWishlistClick = () => setShowWishlist(true);
 
   return (
-    <div className="relative -bottom-[5px]">
-      <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col flex-1 bg-background">
         <Header />
         <div className="flex-1 container mx-auto px-4 sm:px-6 pt-20">
           <TopSellers />
@@ -147,7 +143,7 @@ const Marketplace = () => {
                     ))}
                     <DropdownMenuSeparator />
                     {editionOptions.map((option) => (
-                      <DropdownMenuItem key={option} className="text-[10px]">
+                      <DropdownMenuItem key={option} className="text-[10px]" onClick={() => setSelectedEdition(option)}>
                         {option}
                       </DropdownMenuItem>
                     ))}
@@ -165,19 +161,17 @@ const Marketplace = () => {
           </div>
 
           {/* Marketplace Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {isLoading ? (
               <>
-                {Array.from({ length: 10 }).map((_, idx) => (
+                {Array.from({ length: 5 }).map((_, idx) => (
                   <SellCardSkeleton key={idx} />
                 ))}
               </>
-            ) : error ? (
-              <p className="text-sm text-red-500 col-span-full">{error}</p>
             ) : (
               <>
                 {selectedCategoryFilter === "Following" && filteredArtCards.length === 0 && (
-                  <p className="col-span-full text-sm text-gray-500 text-center">
+                  <p className="col-span-full text-xs text-gray-500 text-center">
                     No artworks from your followings yet.
                   </p>
                 )}
@@ -208,16 +202,17 @@ const Marketplace = () => {
 
       <Footer />
 
-      <WishlistModal
-        isOpen={showWishlist}
-        onClose={() => setShowWishlist(false)}
-        wishlistItems={wishlistItems}
-        onRemoveFromWishlist={(id) => {
-          removeFromWishlist(id);
-          removeLocalItem(id);
-        }}
-        removeLocalItem={removeLocalItem}
-      />
+      {wishlistApiLoading ? (
+        <SellCardSkeleton />
+      ) : (
+        <WishlistModal
+          isOpen={showWishlist}
+          onClose={() => setShowWishlist(false)}
+          wishlistItems={wishlist}
+          onRemoveFromWishlist={handleRemoveFromWishlistModal}
+          removeLocalItem={() => {}}
+        />
+      )}
     </div>
   );
 };

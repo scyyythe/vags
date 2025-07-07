@@ -6,6 +6,9 @@ from api.models.exhibit_model.exhibit import Exhibit
 from api.serializers.exhibit_s.exhibit_card import ExhibitCardSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework import generics, permissions
+from rest_framework.permissions import IsAuthenticated
+from api.models.user_model.users import User
+from rest_framework import status
 class ExhibitCreateView(APIView):
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
@@ -27,6 +30,21 @@ class ExhibitCardListView(APIView):
         exhibits = Exhibit.objects.filter(visibility='Pending')
         serializer = ExhibitCardSerializer(exhibits, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+        
+class MyExhibitCardListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            user_id = str(request.user.id)
+            user = User.objects.get(id=user_id)  # MongoEngine User
+            exhibits = Exhibit.objects.filter(owner=user)
+            serializer = ExhibitCardSerializer(exhibits, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print("🔥 ERROR in MyExhibitCardListView:", e)
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class ExhibitCardDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]

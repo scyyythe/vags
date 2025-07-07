@@ -10,21 +10,23 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
-import { useExhibitCards } from "@/hooks/exhibit/useCardExihibit";
-
-type ExhibitRequest = {
-  id: number;
-  exhibitTitle: string;
-  status: string;
-  exhibitId: number;
-  isOwner?: boolean;
-  type: "pending" | "review" | "ready";
-  collaboratorsSubmitted?: number;
-  totalCollaborators?: number;
-};
+import { useMyExhibitCards } from "@/hooks/exhibit/useMyCardExhibit";
+import ExhibitCardSkeleton from "@/components/skeletons/ExhibitCardSkeleton";
+import { usePendingRequests } from "@/hooks/exhibit/usePendingRequests";
+import { ExhibitRequest } from "@/hooks/exhibit/usePendingRequests";
+// type ExhibitRequest = {
+//   id: number;
+//   exhibitTitle: string;
+//   status: string;
+//   exhibitId: number;
+//   isOwner?: boolean;
+//   type: "pending" | "review" | "ready" | "published";
+//   collaboratorsSubmitted?: number;
+//   totalCollaborators?: number;
+// };
 
 const ExhibitsTab = () => {
   const navigate = useNavigate();
@@ -35,27 +37,28 @@ const ExhibitsTab = () => {
   const [showPublishDialog, setShowPublishDialog] = useState(false);
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitRequest | null>(null);
 
-  const { data: exhibits = [], isLoading } = useExhibitCards();
+  const { data: exhibits = [], isLoading } = useMyExhibitCards();
 
   const now = new Date();
 
   const isOngoing = (exhibit: any) =>
-    exhibit.startDate && exhibit.endDate &&
-    new Date(exhibit.startDate) <= now && new Date(exhibit.endDate) >= now;
+    exhibit.startDate && exhibit.endDate && new Date(exhibit.startDate) <= now && new Date(exhibit.endDate) >= now;
 
-  const isUpcoming = (exhibit: any) =>
-    exhibit.startDate && new Date(exhibit.startDate) > now;
+  const isUpcoming = (exhibit: any) => exhibit.startDate && new Date(exhibit.startDate) > now;
 
-  const isEnded = (exhibit: any) =>
-    exhibit.endDate && new Date(exhibit.endDate) < now;
+  const isEnded = (exhibit: any) => exhibit.endDate && new Date(exhibit.endDate) < now;
 
   const filteredExhibits = exhibits.filter((exhibit: any) => {
     const isCorrectType = typeTab === "solo" ? exhibit.isSolo : !exhibit.isSolo;
 
     const statusMatch =
-      statusFilter === "on_going" ? isOngoing(exhibit) :
-      statusFilter === "closed" ? isEnded(exhibit) :
-      statusFilter === "upcoming" ? isUpcoming(exhibit) : true;
+      statusFilter === "on_going"
+        ? isOngoing(exhibit)
+        : statusFilter === "closed"
+        ? isEnded(exhibit)
+        : statusFilter === "upcoming"
+        ? isUpcoming(exhibit)
+        : true;
 
     return isCorrectType && statusMatch;
   });
@@ -66,36 +69,37 @@ const ExhibitsTab = () => {
     closed: "No past exhibits found.",
   };
 
-  const pendingRequests: ExhibitRequest[] = [
-    { 
-      id: 1, 
-      exhibitTitle: "Nature's Symphony", 
-      status: "Waiting for collaborator submissions", 
-      exhibitId: 2,
-      isOwner: true,
-      type: "pending",
-      collaboratorsSubmitted: 1,
-      totalCollaborators: 2
-    },
-    { 
-      id: 2, 
-      exhibitTitle: "Urban Dreamscape", 
-      status: "Pending slot", 
-      exhibitId: 1,
-      isOwner: false,
-      type: "pending"
-    },
-    {
-      id: 3,
-      exhibitTitle: "Abstract Visions",
-      status: "All submissions received, ready for review",
-      exhibitId: 3,
-      isOwner: true,
-      type: "ready",
-      collaboratorsSubmitted: 2,
-      totalCollaborators: 2
-    },
-  ];
+  // const pendingRequests: ExhibitRequest[] = [
+  //   {
+  //     id: 1,
+  //     exhibitTitle: "Nature's Symphony",
+  //     status: "Waiting for collaborator submissions",
+  //     exhibitId: 2,
+  //     isOwner: true,
+  //     type: "pending",
+  //     collaboratorsSubmitted: 1,
+  //     totalCollaborators: 2,
+  //   },
+  //   {
+  //     id: 2,
+  //     exhibitTitle: "Urban Dreamscape",
+  //     status: "Pending slot",
+  //     exhibitId: 1,
+  //     isOwner: false,
+  //     type: "pending",
+  //   },
+  //   {
+  //     id: 3,
+  //     exhibitTitle: "Abstract Visions",
+  //     status: "All submissions received.",
+  //     exhibitId: 3,
+  //     isOwner: true,
+  //     type: "published",
+  //     collaboratorsSubmitted: 2,
+  //     totalCollaborators: 2,
+  //   },
+  // ];
+  const { data: pendingRequests = [], isLoading: isLoadingRequests } = usePendingRequests();
 
   const handleRequestClick = (request: ExhibitRequest) => {
     if (request.isOwner && request.type === "ready") {
@@ -109,14 +113,14 @@ const ExhibitsTab = () => {
   const handlePublishExhibit = () => {
     if (selectedExhibit) {
       toast.success(`Exhibit Published: ${selectedExhibit.exhibitTitle}`, {
-        description: "Your exhibit has been published successfully."
+        description: "Your exhibit has been published successfully.",
       });
       setShowPublishDialog(false);
     }
   };
 
   const hasUnreadRequests = pendingRequests.length > 0;
-  const hasReadyExhibits = pendingRequests.some(req => req.isOwner && req.type === "ready");
+  const hasReadyExhibits = pendingRequests.some((req) => req.isOwner && req.type === "ready");
 
   return (
     <div>
@@ -127,7 +131,9 @@ const ExhibitsTab = () => {
             {["solo", "collab"].map((tab) => (
               <button
                 key={tab}
-                className={`pb-2 font-medium uppercase ${typeTab === tab ? "border-b-2 border-red-800 text-red-800" : "text-gray-600"}`}
+                className={`pb-2 font-medium uppercase ${
+                  typeTab === tab ? "border-b-2 border-red-800 text-red-800" : "text-gray-600"
+                }`}
                 onClick={() => setTypeTab(tab as typeof typeTab)}
               >
                 {tab.toUpperCase()}
@@ -138,11 +144,17 @@ const ExhibitsTab = () => {
             {typeTab === "collab" && (
               <button onClick={() => setShowPending(!showPending)} className="relative group">
                 <div className="relative">
-                  <i className={`bx ${hasReadyExhibits ? 'bx-time text-yellow-500 mr-4': ''} cursor-pointer text-[15px]`}></i>
-                  {hasUnreadRequests && <span className="absolute -top-1 right-2.5 w-2 h-2 bg-red-600 rounded-full"></span>}
+                  <i
+                    className={`bx ${
+                      hasReadyExhibits ? "bx-time text-yellow-500 mr-4" : ""
+                    } cursor-pointer text-[15px]`}
+                  ></i>
+                  {hasUnreadRequests && (
+                    <span className="absolute -top-1 right-2.5 w-2 h-2 bg-red-600 rounded-full"></span>
+                  )}
                 </div>
                 <span className="absolute top-6 mb-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded px-2 py-1 text-[10px] text-black bg-white border shadow group-hover:opacity-100 opacity-0 transition-opacity pointer-events-none">
-                  {hasReadyExhibits ? 'Pending Requests' : ''}
+                  {hasReadyExhibits ? "Pending Requests" : ""}
                 </span>
               </button>
             )}
@@ -166,13 +178,48 @@ const ExhibitsTab = () => {
           {pendingRequests.length > 0 ? (
             <ul className="space-y-2">
               {pendingRequests.map((req) => (
-                <li key={req.id} className={`border rounded p-2 ${req.isOwner && req.type === "ready" ? "border-green-200 bg-green-50" : "border-yellow-200 bg-white"}`}>
+                <li
+                  key={req.id}
+                  className={`border rounded p-2 ${
+                    req.isOwner && req.type === "ready" ? "border-green-200 bg-green-50" : "border-yellow-200 bg-white"
+                  }`}
+                >
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{req.exhibitTitle}</span>
-                        {req.isOwner && <Badge variant="outline" className="text-[8px] px-1 py-0">Owner</Badge>}
-                        {req.type === "ready" && <Badge className="bg-green-500 text-white text-[8px] px-1 py-0">Ready</Badge>}
+
+                        {/* Role Badge */}
+                        {req.isOwner ? (
+                          <Badge variant="outline" className="text-[8px] px-1 py-0 text-blue-600 border-blue-500">
+                            Owner
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-[8px] px-1 py-0 text-purple-700 border-purple-400">
+                            Collaborator
+                          </Badge>
+                        )}
+
+                        {/* Status Tracker */}
+                        {req.type === "pending" && (
+                          <Badge className="bg-yellow-500 text-white text-[8px] px-1 py-0">Pending</Badge>
+                        )}
+                        {req.type === "published" && (
+                          <Badge className="bg-red-700 text-white text-[8px] px-1 py-0">Published</Badge>
+                        )}
+                        {/* {req.type === "review" && (
+                          <Badge className="bg-blue-500 text-white text-[8px] px-1 py-0">In Review</Badge>
+                        )} */}
+                        {/* Extra mocked statuses */}
+                        {req.status.toLowerCase().includes("draft") && (
+                          <Badge className="bg-black text-white text-[8px] px-1 py-0">Draft</Badge>
+                        )}
+                        {req.status.toLowerCase().includes("cancelled") && (
+                          <Badge className="bg-gray-400 text-white text-[8px] px-1 py-0">Cancelled</Badge>
+                        )}
+                        {req.type === "ready" && (
+                          <Badge className="bg-green-600 text-white text-[8px] px-1 py-0">Ready</Badge>
+                        )}
                       </div>
                       <p className="text-gray-500 mt-0.5">{req.status}</p>
                       {req.isOwner && req.collaboratorsSubmitted !== undefined && (
@@ -181,8 +228,22 @@ const ExhibitsTab = () => {
                             Progress: {req.collaboratorsSubmitted}/{req.totalCollaborators} submissions
                           </span>
                           <div className="w-24 h-1 bg-gray-200 rounded-full">
-                            <div className={`h-full ${req.type === "ready" ? "bg-green-500" : "bg-yellow-500"}`}
-                                 style={{width: `${(req.collaboratorsSubmitted / req.totalCollaborators) * 100}%`}}></div>
+                            <div
+                              className={`h-full ${
+                                req.type === "ready"
+                                  ? "bg-green-500"
+                                  : req.type === "pending"
+                                  ? "bg-yellow-500"
+                                  : req.type === "published"
+                                  ? "bg-red-700"
+                                  : req.status.toLowerCase().includes("draft")
+                                  ? "bg-black"
+                                  : req.status.toLowerCase().includes("cancelled")
+                                  ? "bg-gray-400"
+                                  : "bg-gray-300"
+                              }`}
+                              style={{ width: `${(req.collaboratorsSubmitted / req.totalCollaborators) * 100}%` }}
+                            ></div>
                           </div>
                         </div>
                       )}
@@ -216,7 +277,6 @@ const ExhibitsTab = () => {
                         View
                       </button>
                     )}
-
                   </div>
                 </li>
               ))}
@@ -229,7 +289,11 @@ const ExhibitsTab = () => {
 
       {/* Exhibit Cards Grid */}
       {isLoading ? (
-        <div className="text-center text-xs text-gray-500">Loading exhibits...</div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <ExhibitCardSkeleton key={i} />
+          ))}
+        </div>
       ) : filteredExhibits.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {filteredExhibits.map((exhibit: any) => (
@@ -244,9 +308,7 @@ const ExhibitsTab = () => {
           ))}
         </div>
       ) : (
-        <div className="col-span-full text-center p-4 text-xs text-gray-500">
-          {tabEmptyMessages[statusFilter]}
-        </div>
+        <div className="col-span-full text-center p-4 text-xs text-gray-500">{tabEmptyMessages[statusFilter]}</div>
       )}
 
       {/* Publish Confirmation Dialog */}
@@ -255,8 +317,8 @@ const ExhibitsTab = () => {
           <AlertDialogHeader>
             <AlertDialogTitle className="text-center text-sm">Publish Exhibit</AlertDialogTitle>
             <AlertDialogDescription className="text-center text-[10px]">
-              All collaborators have submitted their artwork for "{selectedExhibit?.exhibitTitle}". 
-              Are you ready to publish this exhibit?
+              All collaborators have submitted their artwork for "{selectedExhibit?.exhibitTitle}". Are you ready to
+              publish this exhibit?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex justify-center mb-2">
@@ -265,14 +327,14 @@ const ExhibitsTab = () => {
               className="flex items-center px-2.5 py-1 gap-1 text-[8px] rounded-full border border-gray-300"
               onClick={() => setShowPublishDialog(false)}
             >
-              <i className='bx bx-show-alt'></i> View Exhibit Details
+              <i className="bx bx-show-alt"></i> View Exhibit Details
             </Link>
           </div>
-          <AlertDialogFooter >
+          <AlertDialogFooter>
             <div className="w-full flex flex-row gap-6">
               <AlertDialogCancel className="h-[28px] w-full text-[9px] rounded-full">Cancel</AlertDialogCancel>
-              <AlertDialogAction 
-                className="bg-green-600 hover:bg-green-700 w-full h-[28px] text-[9px] rounded-full" 
+              <AlertDialogAction
+                className="bg-green-600 hover:bg-green-700 w-full h-[28px] text-[9px] rounded-full"
                 onClick={handlePublishExhibit}
               >
                 Publish Exhibit

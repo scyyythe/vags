@@ -1,6 +1,18 @@
 from django.urls import path
-from api.views.artwork_views.bid_views import PopularAuctionListView,AuctionListViewSpecificUser,FollowedAuctionsView,AuctionListViewParticipated,AuctionListViewOwner,AuctionListViewSpecificUser,AuctionCreateView,AuctionListView, ActiveAuctionsView, CloseAuctionView,AuctionDetailView,MyAuctionListView
-
+from api.views.artwork_views.bid_views import (
+    PopularAuctionListView,
+    AuctionListViewSpecificUser,
+    FollowedAuctionsView,
+    AuctionListViewParticipated,
+    AuctionListViewOwner,
+    AuctionCreateView,
+    AuctionListView,
+    ActiveAuctionsView,
+    CloseAuctionView,
+    AuctionDetailView,
+    MyAuctionListView,
+)
+from api.views.artwork_views.auction_views import LightweightAuctionListView  #
 
 auction_urlpatterns = [
     path('auction/create/', AuctionCreateView.as_view(), name='create_auction'),
@@ -16,4 +28,6 @@ auction_urlpatterns = [
     path('auction/list/participated/', AuctionListViewParticipated.as_view(), name='list_participated'),
 
     path("auctions/following", FollowedAuctionsView.as_view(), name="followed-auctions"),
+
+    path("auction/light-cards/", LightweightAuctionListView.as_view(), name="light-auctions"),  # ✅ Fixed route
 ]
