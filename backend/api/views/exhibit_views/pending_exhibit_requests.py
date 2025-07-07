@@ -62,6 +62,25 @@ class MyPendingExhibitRequestView(APIView):
                 "isOwner": False,
                 "type": "pending"
             })
+        
+        # 3. User is in exhibit.collaborators but has not submitted yet
+        collaborative_exhibits = Exhibit.objects(
+            collaborators=user,
+            exhibit_type="Collaborative",
+            visibility__ne="Public"
+        )
+
+        for exhibit in collaborative_exhibits:
+            has_submitted = ExhibitContribution.objects(exhibit=exhibit, contributor=user).first()
+            if not has_submitted:
+                pending_requests.append({
+                    "id": str(exhibit.id),
+                    "exhibitTitle": exhibit.title,
+                    "status": "Pending your contribution",
+                    "exhibitId": str(exhibit.id),
+                    "isOwner": False,
+                    "type": "pending"
+                })
 
         # Serialize and return
         serializer = PendingExhibitRequestSerializer(pending_requests, many=True)
