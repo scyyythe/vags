@@ -210,7 +210,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
               </label>
             </div>
 
-            <div className="flex justify-between">
+            
               {/* Buyer Protection */}
               <div className="flex items-center space-x-2 text-[10px] text-gray-600">
                 <i className='bx bxs-check-circle text-black text-sm'></i>
@@ -221,7 +221,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
               </div>
 
               {/* Save Button */}
-              <div>
+              <div className="flex justify-end">
                 <button
                   type="submit"
                   disabled={!isFormValid}
@@ -230,7 +230,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
                   Save
                 </button>
               </div>
-            </div>
+           
           </form>
         </div>
       </div>
