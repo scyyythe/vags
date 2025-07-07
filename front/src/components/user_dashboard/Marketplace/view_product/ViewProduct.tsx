@@ -505,6 +505,9 @@ const ProductViewingContent = () => {
       <PreviewModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        onProceedToCheckout={() => {
+          setIsModalOpen(false);
+        }}
         artwork={{
           artworkImage: product.image_urls?.[0],
           title: product.title,

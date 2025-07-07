@@ -148,6 +148,27 @@ const SellCard = ({
           Buy Now
         </button>
       </div>
+      {isModalOpen && (
+        <PreviewModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onProceedToCheckout={() => {
+            setIsModalOpen(false);
+          }}
+          artwork={{
+            artworkImage,
+            title,
+            artist: "Angel Canete",
+            medium: "Oil on Canvas",
+            style: category || "Contemporary",
+            edition: edition || "Original (1 of 1)",
+            size: "24x36 inches",
+            yearCreated: 2023,
+            price,
+          }}
+        />
+      )}
+
     </div>
     
   );
