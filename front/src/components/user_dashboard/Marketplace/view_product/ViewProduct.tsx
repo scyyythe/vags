@@ -9,7 +9,7 @@ import Header from "@/components/user_dashboard/navbar/Header";
 import SellCardMenu from "@/components/user_dashboard/Marketplace/cards/SellCardMenu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ReviewModal from "@/components/user_dashboard/Marketplace/reviews/ReviewModal";
-import PreviewModal from "../buying_process/PreviewModal";
+import PreviewModal from "../buying_process/preview/PreviewModal";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { useSellArtworkDetail } from "@/hooks/artworks/sell/useSellArtworkDetail";
 
