@@ -15,16 +15,18 @@ import {
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import { useMyExhibitCards } from "@/hooks/exhibit/useMyCardExhibit";
 import ExhibitCardSkeleton from "@/components/skeletons/ExhibitCardSkeleton";
-type ExhibitRequest = {
-  id: number;
-  exhibitTitle: string;
-  status: string;
-  exhibitId: number;
-  isOwner?: boolean;
-  type: "pending" | "review" | "ready" | "published";
-  collaboratorsSubmitted?: number;
-  totalCollaborators?: number;
-};
+import { usePendingRequests } from "@/hooks/exhibit/usePendingRequests";
+import { ExhibitRequest } from "@/hooks/exhibit/usePendingRequests";
+// type ExhibitRequest = {
+//   id: number;
+//   exhibitTitle: string;
+//   status: string;
+//   exhibitId: number;
+//   isOwner?: boolean;
+//   type: "pending" | "review" | "ready" | "published";
+//   collaboratorsSubmitted?: number;
+//   totalCollaborators?: number;
+// };
 
 const ExhibitsTab = () => {
   const navigate = useNavigate();
@@ -67,36 +69,37 @@ const ExhibitsTab = () => {
     closed: "No past exhibits found.",
   };
 
-  const pendingRequests: ExhibitRequest[] = [
-    {
-      id: 1,
-      exhibitTitle: "Nature's Symphony",
-      status: "Waiting for collaborator submissions",
-      exhibitId: 2,
-      isOwner: true,
-      type: "pending",
-      collaboratorsSubmitted: 1,
-      totalCollaborators: 2,
-    },
-    {
-      id: 2,
-      exhibitTitle: "Urban Dreamscape",
-      status: "Pending slot",
-      exhibitId: 1,
-      isOwner: false,
-      type: "pending",
-    },
-    {
-      id: 3,
-      exhibitTitle: "Abstract Visions",
-      status: "All submissions received.",
-      exhibitId: 3,
-      isOwner: true,
-      type: "published",
-      collaboratorsSubmitted: 2,
-      totalCollaborators: 2,
-    },
-  ];
+  // const pendingRequests: ExhibitRequest[] = [
+  //   {
+  //     id: 1,
+  //     exhibitTitle: "Nature's Symphony",
+  //     status: "Waiting for collaborator submissions",
+  //     exhibitId: 2,
+  //     isOwner: true,
+  //     type: "pending",
+  //     collaboratorsSubmitted: 1,
+  //     totalCollaborators: 2,
+  //   },
+  //   {
+  //     id: 2,
+  //     exhibitTitle: "Urban Dreamscape",
+  //     status: "Pending slot",
+  //     exhibitId: 1,
+  //     isOwner: false,
+  //     type: "pending",
+  //   },
+  //   {
+  //     id: 3,
+  //     exhibitTitle: "Abstract Visions",
+  //     status: "All submissions received.",
+  //     exhibitId: 3,
+  //     isOwner: true,
+  //     type: "published",
+  //     collaboratorsSubmitted: 2,
+  //     totalCollaborators: 2,
+  //   },
+  // ];
+  const { data: pendingRequests = [], isLoading: isLoadingRequests } = usePendingRequests();
 
   const handleRequestClick = (request: ExhibitRequest) => {
     if (request.isOwner && request.type === "ready") {
