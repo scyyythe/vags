@@ -56,6 +56,7 @@ import ShippingPage from "@/components/user_dashboard/Marketplace/buying_process
 import AddAddressPage from "@/components/user_dashboard/Marketplace/buying_process/shipping_address/pages/AddAddressPage"
 import { AddressProvider } from "@/components/user_dashboard/Marketplace/buying_process/shipping_address/AddressContext"
 import PaymentMethodPage from "@/components/user_dashboard/Marketplace/buying_process/payment_method/page/PaymentMethodPage";
+import ReviewPurchase from "@/components/user_dashboard/Marketplace/buying_process/review/ReviewPurchase"
 
 //ADMIN & MODERATOR
 import { AdminLayout } from "@/components/admin_&_moderator/layout/AdminLayout";
@@ -151,6 +152,7 @@ const App = () => {
                             <Route path="/add-address" element={<AddAddressPage isEditing={false} />} />
                             <Route path="/edit-address/:id" element={<AddAddressPage isEditing={true} />} />
                             <Route path="/payment-method" element={<PaymentMethodPage />} />
+                            <Route path="/reviewpurchase" element={<ReviewPurchase onBack={() => {}} onSubmit={() => {}} />} />
                             {/* Exhibit */}
                             <Route path="/add-exhibit" element={<AddExhibit />} />
                             <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />
