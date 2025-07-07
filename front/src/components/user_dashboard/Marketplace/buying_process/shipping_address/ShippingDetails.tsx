@@ -38,22 +38,22 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
     <div className="min-h-screen bg-white">
       <Header />
       <div className="container mx-auto px-4 pt-20 max-w-6xl">
-        <div className="mb-4">
+        <div className="mb-2">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
               Shipping Details
           </button>
         </div>
 
-      <div className="px-6 py-6 mx-auto">
+      <div className="px-6 py-4 mx-auto">
         <h2 className="text-xs font-medium text-gray-900 mb-6">Delivery Address</h2>
 
         {/* Address List */}
-        <div className="border grid-cols-2 space-y-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {addresses.map((address) => (
             <div
               key={address.id}
-              className="w-96 border border-gray-200 rounded-lg py-4 px-8 cursor-pointer hover:border-gray-300 transition-colors"
+              className="border border-gray-200 rounded-lg py-4 px-8 cursor-pointer hover:border-gray-300 transition-colors"
               onClick={() => onSelectAddress(address.id)}
             >
               <div className="flex items-start justify-between">
@@ -63,7 +63,7 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
                       type="radio"
                       checked={selectedAddressId === address.id}
                       onChange={() => onSelectAddress(address.id)}
-                      className="w-3 h-3 text-red-800 border-gray-300 focus:ring-red-800"
+                      className="w-3 h-3 accent-red-800"
                     />
                   </div>
                   <div>
@@ -80,7 +80,7 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
                     e.stopPropagation()
                     onEditAddress(address.id)
                   }}
-                  className="text-blue-600 text-xs font-semibold hover:text-blue-800 underline mt-1.5"
+                  className="text-blue-700 text-xs font-semibold hover:text-blue-800 underline mt-1.5"
                 >
                   Edit
                 </button>
