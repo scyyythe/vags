@@ -20,9 +20,9 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork })
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
             <div
-                className="bg-white rounded-2xl w-[300px] md:w-[330px] py-6 px-8 relative animate-fadeIn"
+                className="bg-white rounded-2xl w-[290px] md:w-[320px] py-6 px-8 relative animate-fadeIn"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* X button */}
@@ -34,7 +34,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork })
                 </button>
 
                 {/* Logo */}
-                <img src="pics/wx.png" alt="Logo" className="h-5 w-6 mb-4" />
+                <img src="/pics/wx.png" alt="Logo" className="h-5 w-6 mb-4" />
 
                 {/* Image */}
                 <div className="flex justify-center">
