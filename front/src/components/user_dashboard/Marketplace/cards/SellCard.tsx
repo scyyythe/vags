@@ -2,6 +2,7 @@ import React, { useState, memo } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import SellCardMenu from "./SellCardMenu";
+import PreviewModal from "../buying_process/PreviewModal";
 
 export interface SellCardProps {
   id: string;
@@ -33,6 +34,7 @@ const SellCard = ({
   onCardClick,
 }: SellCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -52,6 +54,7 @@ const SellCard = ({
 
   const handleBuyNow = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setIsModalOpen(true);
   };
 
   const handleReport = (data: { category: string; option?: string; description: string; additionalInfo: string }) => {
@@ -145,7 +148,23 @@ const SellCard = ({
           Buy Now
         </button>
       </div>
+      <PreviewModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        artwork={{
+          artworkImage,
+          title,
+          artist: "Angel Canete",
+          medium: "Canvas",
+          style: category || "Painting",
+          edition: edition || "Limited Edition",
+          size: "11 x 8.5 inches",
+          yearCreated: 2025,
+          price
+        }}
+      />  
     </div>
+    
   );
 };
 

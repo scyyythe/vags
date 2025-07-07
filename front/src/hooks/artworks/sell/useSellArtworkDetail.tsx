@@ -18,7 +18,7 @@ export interface ArtworkDetail {
   size?: string;
   medium?: string;
   artwork_style?: string;
-  year_created?: string;
+  year_created?: number;
   visibility: string;
   created_at: string;
   updated_at: string;
