@@ -71,28 +71,28 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
             {/* Grid Details */}
             <div className="my-4">
             <div className="border-t border-gray-100 w-[87%] mx-auto" />
-            <div className="grid grid-cols-2 text-[10px] text-center py-5">
-                <div>
-                    <h4 className="text-gray-500 font-medium">Size</h4>
-                    <p className="font-medium">{artwork.size}</p>
+                <div className="grid grid-cols-2 text-[10px] text-center py-5">
+                    <div>
+                        <h4 className="text-gray-500">Size</h4>
+                        <p className="font-medium">{artwork.size}</p>
+                    </div>
+                    <div>
+                        <h4 className="text-gray-500">Style</h4>
+                        <p className="font-medium">{artwork.style}</p>
+                    </div>
+                    <div className="pt-2 col-span-1">
+                        <h4 className="text-gray-500">Medium</h4>
+                        <p className="font-medium">{artwork.medium}</p>
+                    </div>
+                    <div className="pt-2 col-span-1">
+                        <h4 className="text-gray-500">Edition</h4>
+                        <p className="font-medium">{artwork.edition}</p>
+                    </div>
+                    <div className="pt-2 col-span-2">
+                        <h4 className="text-gray-500">Year Created</h4>
+                        <p className="font-medium">{artwork.yearCreated}</p>
+                    </div>
                 </div>
-                <div>
-                    <h4 className="text-gray-500 font-medium">Style</h4>
-                    <p className="font-medium">{artwork.style}</p>
-                </div>
-                <div className="pt-2 col-span-1">
-                    <h4 className="text-gray-500 font-medium">Medium</h4>
-                    <p className="font-medium">{artwork.medium}</p>
-                </div>
-                <div className="pt-2 col-span-1">
-                    <h4 className="text-gray-500 font-medium">Edition</h4>
-                    <p className="font-medium">{artwork.edition}</p>
-                </div>
-                <div className="pt-2 col-span-2">
-                    <h4 className="text-gray-500 font-medium">Year Created</h4>
-                    <p className="font-medium">{artwork.yearCreated}</p>
-                </div>
-            </div>
                 <div className="border-b border-gray-100 w-[87%] mx-auto" />
             </div>
 
