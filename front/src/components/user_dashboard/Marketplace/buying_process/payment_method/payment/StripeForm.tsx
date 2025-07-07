@@ -16,7 +16,8 @@ const StripeForm: React.FC<StripeFormProps> = ({ email, onEmailChange }) => {
           value={email}
           onChange={(e) => onEmailChange(e.target.value)}
           placeholder="Email address for Stripe"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none"
+          style={{ fontSize: "10px" }}
         />
       </div>
       <ThirdPartyButton method="stripe" />

@@ -27,7 +27,8 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
           value={email}
           onChange={(e) => onEmailChange(e.target.value)}
           placeholder="PayPal email address"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none"
+          style={{ fontSize: "10px" }}
           required
         />
       </div>
@@ -37,7 +38,8 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
           value={password}
           onChange={(e) => onPasswordChange(e.target.value)}
           placeholder="PayPal password"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none"
+          style={{ fontSize: "10px" }}
           required
         />
       </div>
@@ -47,9 +49,9 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
           id="rememberPayPal"
           checked={rememberMe}
           onChange={(e) => onRememberMeChange(e.target.checked)}
-          className="w-4 h-4 text-red-800 border-gray-300 rounded"
+          className="w-3 h-3 text-red-800 border-gray-300 rounded"
         />
-        <label htmlFor="rememberPayPal" className="text-sm text-gray-700">
+        <label htmlFor="rememberPayPal" className="text-[10px] text-gray-700">
           Keep me logged in for faster checkout
         </label>
       </div>
