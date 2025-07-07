@@ -12,7 +12,7 @@ const AccountDetails = () => {
 
   const [formData, setFormData] = useState({
     fullName: "",
-    gender: "",
+    gender: "", 
     country: "Philippines",
     date_of_birth: "",
     language: "English",
