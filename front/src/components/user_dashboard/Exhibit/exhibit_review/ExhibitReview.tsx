@@ -83,9 +83,22 @@ const ExhibitReview = () => {
   if (error || !exhibit) {
     return <div className="p-10 text-sm text-red-600">Failed to load exhibit review.</div>;
   }
-  const collaborators: Collaborator[] = exhibit.collaborators.map((collab: any) => {
-    const slotsForUser = exhibit.slots.filter((slot: any) => slot.contributor.id === collab.id);
-    const slotsToFill = 2;
+    // Determine total slots from environment
+  const totalSlotCount =
+    exhibit.chosen_env === 1 ? 4 : exhibit.chosen_env === 2 ? 6 : 10;
+
+  const numCollaborators = exhibit.collaborators.length;
+  const baseSlots = Math.floor(totalSlotCount / numCollaborators);
+  const remainder = totalSlotCount % numCollaborators;
+
+  let assigned = 0;
+  const collaborators: Collaborator[] = exhibit.collaborators.map((collab: any, index: number) => {
+    const slotsToFill = baseSlots + (index < remainder ? 1 : 0);
+    const slotsForUser = exhibit.slots.filter(
+      (slot: any) => slot.contributor.id === collab.id
+    );
+    assigned += slotsToFill;
+
     return {
       id: collab.id,
       name: collab.name,
@@ -95,12 +108,10 @@ const ExhibitReview = () => {
       inProgress: slotsForUser.length < slotsToFill,
     };
   });
-  const totalSlots = collaborators.reduce((acc, curr) => acc + curr.slotsToFill, 0);
-  const filledSlots = collaborators.reduce((acc, curr) => acc + curr.slotsFilled, 0);
 
+  const totalSlots = collaborators.reduce((acc, c) => acc + c.slotsToFill, 0);
+  const filledSlots = collaborators.reduce((acc, c) => acc + c.slotsFilled, 0);
   const completionPercentage = Math.floor((filledSlots / totalSlots) * 100);
-
-  // Determine if exhibit is ready to publish (all slots filled)
   const isReadyToPublish = filledSlots === totalSlots;
 
   return (
@@ -194,7 +205,7 @@ const ExhibitReview = () => {
             <Card className="p-5">
               <div className="mb-4">
                 <img
-                  src="https://i.pinimg.com/736x/a1/a8/42/a1a842b4254e1c79b2491caa0f5520e1.jpg"
+                  src={exhibit.banner}
                   alt="Gallery Space"
                   className="w-full h-32 object-cover rounded-md"
                 />
