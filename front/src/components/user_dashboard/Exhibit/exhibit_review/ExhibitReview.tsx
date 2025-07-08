@@ -157,11 +157,13 @@ const ExhibitReview = () => {
                   <p className="text-gray-500 text-[10px] font-medium mb-1">Title</p>
                   <p className="text-[11px]">{exhibit.title}</p>
                 </div>
+<div>
+  <p className="text-gray-500 text-[10px] font-medium mb-1">Category</p>
+  <p className="text-[11px]">
+    {exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1)}
+  </p>
+</div>
 
-                <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">Category</p>
-                  <p className="text-[11px]">{exhibit.category}</p>
-                </div>
 
                 <div>
                   <p className="text-gray-500 text-[10px] font-medium mb-1">Exhibit Type</p>
