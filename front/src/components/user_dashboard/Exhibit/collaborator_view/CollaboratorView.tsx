@@ -127,7 +127,7 @@ useEffect(() => {
   const { slotOwnerMap, slotArtworkMap, owner, collaborators } = data;
 
   const transformedExhibit = {
-    id: data.id, // 🔄 Keep as string if your target type allows it
+    id: data.id, 
     title: data.title,
     description: data.description,
     startDate: data.startDate,
@@ -135,12 +135,12 @@ useEffect(() => {
     environment: data.environment,
     bannerImage: data.bannerImage,
 
-    // ✅ Keep slotOwnerMap keys as numbers, values as strings
+   
     slotOwnerMap: Object.fromEntries(
       Object.entries(slotOwnerMap).map(([k, v]) => [parseInt(k), v])
     ),
 
-    // ✅ same for slotArtworkMap
+  
     slotArtworkMap: Object.fromEntries(
       Object.entries(slotArtworkMap).map(([k, v]) => [parseInt(k), v])
     ),
@@ -158,7 +158,7 @@ useEffect(() => {
     })),
   };
 
-  // ✅ Update state
+
   setExhibit(transformedExhibit);
   setSlotArtworkMap(transformedExhibit.slotArtworkMap);
   setSelectedArtworks(Object.values(transformedExhibit.slotArtworkMap));
@@ -167,10 +167,6 @@ useEffect(() => {
     (c) => String(c.id) === String(userId)
   );
 
-  console.log("🔍 Checking if logged-in user is a collaborator");
-  console.log("➡️ Logged-in userId:", userId);
-  console.log("➡️ Collaborator IDs:", transformedExhibit.collaborators.map((c) => c.id));
-  console.log("✅ Matched Collaborator:", currentUser);
 
   setCurrentCollaborator(currentUser || null);
   setLoading(false);

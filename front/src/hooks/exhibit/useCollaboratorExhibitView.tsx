@@ -33,13 +33,7 @@ export const useCollaboratorExhibitView = (id: string | undefined) => {
       try {
         const response = await apiClient.get(`/exhibits/${id}/collaborator-view/`);
         const data = response.data;
-
-        console.log("📦 Collaborator Exhibit View Response:", data);
-        console.log("🧩 slotOwnerMap:", data.slotOwnerMap);
-        console.log("🖼️ slotArtworkMap:", data.slotArtworkMap);
-        console.log("🙋‍♂️ Collaborators:", data.collaborators);
-        console.log("👑 Owner:", data.owner);
-
+        
         return data;
       } catch (error: any) {
         console.error("Collaborator view fetch error:", error);
