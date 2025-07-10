@@ -1,16 +1,16 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from api.serializers.exhibit_s.exhibit_contribution import ExhibitContributionSerializer
-from api.models.exhibit_model.exhibit_contribution import ExhibitContribution
 from rest_framework.permissions import IsAuthenticated
-from mongoengine.errors import DoesNotExist, ValidationError
+from mongoengine.errors import DoesNotExist
+from datetime import datetime
 
 from api.models.exhibit_model.exhibit import Exhibit
-from api.models.exhibit_model.exhibit_contribution import ExhibitContribution
 from api.models.artwork_model.artwork import Art
+from api.models.exhibit_model.exhibit_contribution import ExhibitContribution, ArtworkEntry
 from api.serializers.exhibit_s.exhibit_contribution import ExhibitContributionSerializer
 from api.serializers.exhibit_s.collaborator_exhibit_view import CollaboratorExhibitViewSerializer
+
 class ExhibitContributionCreateView(APIView):
     def post(self, request):
         serializer = ExhibitContributionSerializer(data=request.data)
@@ -25,15 +25,14 @@ class ExhibitContributionListView(APIView):
         contributions = ExhibitContribution.objects.all()
         serializer = ExhibitContributionSerializer(contributions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 class SubmitCollaboratorContributionView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, exhibit_id):
         user = request.user
-        data = request.data.get("artworks") 
+        artworks_data = request.data.get("artworks")
 
-        if not isinstance(data, list):
+        if not isinstance(artworks_data, list):
             return Response({"detail": "Invalid format. 'artworks' must be a list."}, status=400)
 
         try:
@@ -44,10 +43,14 @@ class SubmitCollaboratorContributionView(APIView):
         if user not in exhibit.collaborators:
             return Response({"detail": "You are not a collaborator of this exhibit."}, status=403)
 
-        slot_owner_map = CollaboratorExhibitViewSerializer().get_slotOwnerMap(exhibit)
-        contributions_to_insert = []
+        # Fetch existing contribution or create a new one
+        contribution = ExhibitContribution.objects(exhibit=exhibit, contributor=user).first()
+        if not contribution:
+            contribution = ExhibitContribution(exhibit=exhibit, contributor=user, artworks=[])
 
-        for entry in data:
+        slot_owner_map = CollaboratorExhibitViewSerializer().get_slotOwnerMap(exhibit)
+
+        for entry in artworks_data:
             slot = entry.get("slot_number")
             artwork_id = entry.get("artwork")
 
@@ -62,26 +65,26 @@ class SubmitCollaboratorContributionView(APIView):
             if str(slot_owner_map.get(slot)) != str(user.id):
                 return Response({"detail": f"Slot {slot} is not assigned to you."}, status=400)
 
-            if ExhibitContribution.objects(exhibit=exhibit, slot_number=slot).first():
-                return Response({"detail": f"Slot {slot} is already filled."}, status=400)
+            # Prevent slot duplicates
+            if any(a.slot_number == slot for a in contribution.artworks):
+                return Response({"detail": f"Slot {slot} already exists in your contributions."}, status=400)
 
             try:
                 artwork = Art.objects.get(id=artwork_id)
             except DoesNotExist:
                 return Response({"detail": f"Artwork {artwork_id} not found."}, status=404)
 
-            contributions_to_insert.append(ExhibitContribution(
-                exhibit=exhibit,
-                contributor=user,
-                artwork=artwork,
-                slot_number=slot
-            ))
+            # Add new entry
+            contribution.artworks.append(
+                ArtworkEntry(artwork=artwork, slot_number=slot, contributed_at=datetime.utcnow())
+            )
 
-        ExhibitContribution.objects.insert(contributions_to_insert)
+        # Save the updated single document
+        contribution.save()
 
-        serializer = ExhibitContributionSerializer(contributions_to_insert, many=True)
+        serializer = ExhibitContributionSerializer(contribution)
         return Response({
             "contributor": str(user.id),
             "exhibit": str(exhibit.id),
-            "artworks": serializer.data
+            "artworks": serializer.data["artworks"]
         }, status=status.HTTP_201_CREATED)
