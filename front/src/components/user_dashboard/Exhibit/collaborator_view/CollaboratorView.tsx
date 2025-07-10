@@ -229,7 +229,8 @@ useEffect(() => {
     }
   };
 
-const handleSaveSelections = () => {
+
+  const handleSaveSelections = () => {
   if (!currentCollaborator) return;
 
   const payload = Object.entries(slotArtworkMap)
@@ -244,8 +245,8 @@ const handleSaveSelections = () => {
   submitContributions(payload, {
     onSuccess: () => {
       toast({
-        title: "Contributions Saved",
-        description: "Your selected artworks have been submitted!",
+        title: "Selections Saved",
+        description: "Your artwork selections have been saved to the exhibit!",
       });
       navigate("/exhibits");
     },
