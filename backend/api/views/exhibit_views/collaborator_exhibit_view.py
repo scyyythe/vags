@@ -16,3 +16,5 @@ class CollaboratorExhibitView(APIView):
 
         serializer = CollaboratorExhibitViewSerializer(exhibit, context={"request": request})
         return Response(serializer.data)
+
+
