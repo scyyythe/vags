@@ -9,7 +9,7 @@ import Header from "@/components/user_dashboard/navbar/Header";
 import { useCollaboratorExhibitView } from "@/hooks/exhibit/useCollaboratorExhibitView";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { getLoggedInUserId } from "@/auth/decode";
-
+import { useSubmitContributions } from "@/hooks/exhibit/useSubmitContributions";
 // Color schemes for slots by user
 const slotColorSchemes = [
   "border-primary bg-primary/10",
@@ -56,6 +56,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const [selectedArtworks, setSelectedArtworks] = useState<string[]>([]);
   const [slotArtworkMap, setSlotArtworkMap] = useState<Record<number, string>>({});
   const [currentCollaborator, setCurrentCollaborator] = useState<Artist | null>(null);
+const { mutate: submitContributions } = useSubmitContributions(exhibitId!);
 
   const artworks = userArtworks || [];
 
@@ -228,14 +229,35 @@ useEffect(() => {
     }
   };
 
-  const handleSaveSelections = () => {
-    toast({
-      title: "Selections Saved",
-      description: "Your artwork selections have been saved to the exhibit!",
-    });
+const handleSaveSelections = () => {
+  if (!currentCollaborator) return;
 
-    navigate("/exhibits");
-  };
+  const payload = Object.entries(slotArtworkMap)
+    .filter(([slotId, artworkId]) => {
+      return exhibit.slotOwnerMap[parseInt(slotId)] === currentCollaborator.id;
+    })
+    .map(([slotId, artworkId]) => ({
+      slot_number: parseInt(slotId),
+      artwork: artworkId,
+    }));
+
+  submitContributions(payload, {
+    onSuccess: () => {
+      toast({
+        title: "Contributions Saved",
+        description: "Your selected artworks have been submitted!",
+      });
+      navigate("/exhibits");
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err?.response?.data?.detail || "Failed to submit contributions.",
+        variant: "destructive",
+      });
+    },
+  });
+};
 const getColorSchemeIndex = (userId: string) => {
   if (userId === exhibit.owner.id) return 0;
 
