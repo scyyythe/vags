@@ -3,7 +3,7 @@ import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import SellCardMenu from "./SellCardMenu";
 import PreviewModal from "../buying_process/preview/PreviewModal";
-
+import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 export interface SellCardProps {
   id: string;
   artworkImage: string;
@@ -15,6 +15,8 @@ export interface SellCardProps {
   rating?: number;
   isLiked?: boolean;
   onLike?: () => void;
+    isReported?: boolean;
+  onReportSuccess?: () => void;
   isMarketplace?: boolean;
   onCardClick?: () => void;
 }
@@ -30,12 +32,15 @@ const SellCard = ({
   rating,
   isLiked = false,
   onLike,
+    isReported,
+  onReportSuccess,
   isMarketplace = false,
   onCardClick,
 }: SellCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+ 
+  const { mutate: submitReport } = useSubmitReport();
   const toggleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
     toast(!isLiked ? "Added to wishlist" : "Removed from wishlist");
@@ -57,10 +62,32 @@ const SellCard = ({
     setIsModalOpen(true);
   };
 
-  const handleReport = (data: { category: string; option?: string; description: string; additionalInfo: string }) => {
-    console.log("Report submitted:", data);
-    toast("Report submitted. Thank you!");
-  };
+const handleReport = (data: {
+  category: string;
+  option?: string;
+  description: string;
+  additionalInfo: string;
+}) => {
+  if (!id) return;
+
+submitReport(
+  {
+    art_id: id,
+    category: data.category,
+    option: data.option,
+    description: data.description,
+    additionalInfo: data.additionalInfo,
+  },
+  {
+    onSuccess: () => {
+      onReportSuccess?.(); 
+      toast.success("Report submitted successfully");
+    },
+  }
+);
+
+};
+
 
   return (
     <div
@@ -122,15 +149,19 @@ const SellCard = ({
         </div>
 
         <div className="relative text-gray-500" style={{ height: "24px" }}>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setMenuOpen((prev) => !prev);
-            }}
-            className={`p-1 rounded-full ${menuOpen ? " text-black" : ""}`}
-          >
-            <MoreHorizontal size={14} />
-          </button>
+ <button
+  onClick={(e) => {
+    e.stopPropagation();
+    setMenuOpen((prev) => !prev);
+  }}
+  className={`p-1 rounded-full ${
+    isReported ? "text-red-600" : menuOpen ? "text-black" : ""
+  }`}
+>
+  <MoreHorizontal size={14} />
+</button>
+
+
 
           {/* Render Menu */}
           <SellCardMenu isOpen={menuOpen} onReport={handleReport} isReported={false} />

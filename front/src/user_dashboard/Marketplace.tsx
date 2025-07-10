@@ -28,6 +28,7 @@ const Marketplace = () => {
   const [selectedArtCategory, setSelectedArtCategory] = useState("All");
   const [selectedSort, setSelectedSort] = useState("Latest");
   const [selectedEdition, setSelectedEdition] = useState("All");
+const [reportedArtworks, setReportedArtworks] = useState<Set<string>>(new Set());
 
   const categories = ["All", "Trending", "Following"];
   const navigate = useNavigate();
@@ -180,19 +181,22 @@ const Marketplace = () => {
                 )}
                 {filteredArtCards.map((artwork) => (
                   <SellCard
-                    key={artwork.id}
-                    id={artwork.id}
-                    artworkImage={artwork.image_url?.[0] || "/images/placeholder.jpg"}
-                    price={artwork.discounted_price ?? artwork.price}
-                    originalPrice={artwork.discounted_price ? artwork.price : undefined}
-                    title={artwork.title}
-                    rating={artwork.total_ratings}
-                    isLiked={likedItems.has(artwork.id)}
-                    onLike={() => handleLike(artwork.id)}
-                    edition={""}
-                    isMarketplace={true}
-                    onCardClick={() => handleCardClick(artwork.id)}
-                  />
+  key={artwork.id}
+  id={artwork.id}
+  artworkImage={artwork.image_url?.[0] || "/images/placeholder.jpg"}
+  price={artwork.discounted_price ?? artwork.price}
+  originalPrice={artwork.discounted_price ? artwork.price : undefined}
+  title={artwork.title}
+  rating={artwork.total_ratings}
+  isLiked={likedItems.has(artwork.id)}
+  onLike={() => handleLike(artwork.id)}
+  edition={""}
+  isMarketplace={true}
+  onCardClick={() => handleCardClick(artwork.id)}
+ 
+isReported={reportedArtworks.has(artwork.id)}
+/>
+
                 ))}
               </>
             )}
