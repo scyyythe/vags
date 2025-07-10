@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"; 
 import { Outlet, useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import ProfileHeader from "../components/ProfileHeader";
@@ -9,16 +9,16 @@ const Settings = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    // Redirect to account details by default
     if (location.pathname === "/settings") {
       navigate("/settings/account-details");
     }
   }, [navigate]);
-  
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
-      <main className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 mt-10">
+      
+      <main className="flex-grow max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 mt-10">
         <h1 className="text-lg font-bold mb-8">Profile Settings</h1>
         
         <ProfileHeader
@@ -28,12 +28,10 @@ const Settings = () => {
         />
         
         <SettingsTabs />
-        
         <Outlet />
       </main>
-        <div>
-          <Footer />
-        </div>
+
+      <Footer />
     </div>
   );
 };
