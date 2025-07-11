@@ -6,7 +6,7 @@ from api.views.exhibit_views.exhibit_invite import (
     ExhibitInvitationCreateView, ExhibitInvitationListView
 )
 from api.views.exhibit_views.exhibit_contribution import (
-    ExhibitContributionCreateView, ExhibitContributionListView
+    ExhibitContributionCreateView, ExhibitContributionListView,SubmitCollaboratorContributionView
 )
 from api.views.exhibit_views.pending_exhibit_requests import MyPendingExhibitRequestView
 from api.views.exhibit_views.exhibit_review_view import ExhibitReviewView
@@ -31,5 +31,7 @@ exhibit_urlpatterns = [
     path("exhibits/<str:exhibit_id>/review/", ExhibitReviewView.as_view(), name="exhibit-review"),
     
     path("exhibits/<str:exhibit_id>/collaborator-view/", CollaboratorExhibitView.as_view(), name="collaborator-exhibit-view"),
+
+    path("exhibits/<str:exhibit_id>/contribute/", SubmitCollaboratorContributionView.as_view(), name="submit-collaborator-contributions"),
 
 ]

@@ -9,7 +9,7 @@ import Header from "@/components/user_dashboard/navbar/Header";
 import { useCollaboratorExhibitView } from "@/hooks/exhibit/useCollaboratorExhibitView";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { getLoggedInUserId } from "@/auth/decode";
-
+import { useSubmitContributions } from "@/hooks/exhibit/useSubmitContributions";
 // Color schemes for slots by user
 const slotColorSchemes = [
   "border-primary bg-primary/10",
@@ -18,21 +18,21 @@ const slotColorSchemes = [
 ];
 
 type Artist = {
-  id: number;
+  id: string;
   name: string;
   avatar: string;
 };
 
 type CollaboratorViewProps = {
   exhibitData?: {
-    id: number;
+    id: string;
     title: string;
     description: string;
     startDate: string;
     endDate: string;
     environment: number;
     bannerImage: string;
-    slotOwnerMap: Record<number, number>;
+    slotOwnerMap: Record<number, string>;
     slotArtworkMap: Record<number, string>;
     owner: Artist;
     collaborators: Artist[];
@@ -56,6 +56,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const [selectedArtworks, setSelectedArtworks] = useState<string[]>([]);
   const [slotArtworkMap, setSlotArtworkMap] = useState<Record<number, string>>({});
   const [currentCollaborator, setCurrentCollaborator] = useState<Artist | null>(null);
+const { mutate: submitContributions } = useSubmitContributions(exhibitId!);
 
   const artworks = userArtworks || [];
 
@@ -81,7 +82,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   ];
 
   const mockCollaborator: Artist = {
-    id: 201,
+    id: "201",
     name: "Jai Anoba",
     avatar:
       "https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80",
@@ -121,43 +122,56 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
       },
     ],
   };
+useEffect(() => {
+  if (!data) return;
 
-  useEffect(() => {
-    if (!data) return;
+  const { slotOwnerMap, slotArtworkMap, owner, collaborators } = data;
 
-    const { slotOwnerMap, slotArtworkMap, owner, collaborators } = data;
+  const transformedExhibit = {
+    id: data.id, 
+    title: data.title,
+    description: data.description,
+    startDate: data.startDate,
+    endDate: data.endDate,
+    environment: data.environment,
+    bannerImage: data.bannerImage,
 
-    const transformedExhibit = {
-      id: parseInt(data.id),
-      title: data.title,
-      description: data.description,
-      startDate: data.startDate,
-      endDate: data.endDate,
-      environment: data.environment,
-      bannerImage: data.bannerImage,
-      slotOwnerMap: Object.fromEntries(Object.entries(slotOwnerMap).map(([k, v]) => [parseInt(k), parseInt(v)])),
-      slotArtworkMap: Object.fromEntries(Object.entries(slotArtworkMap).map(([k, v]) => [parseInt(k), String(v)])),
-      owner: {
-        id: parseInt(owner.id),
-        name: owner.name,
-        avatar: owner.avatar,
-      },
-      collaborators: collaborators.map((collab) => ({
-        id: parseInt(collab.id),
-        name: collab.name,
-        avatar: collab.avatar,
-      })),
-    };
+   
+    slotOwnerMap: Object.fromEntries(
+      Object.entries(slotOwnerMap).map(([k, v]) => [parseInt(k), v])
+    ),
 
-    setExhibit(transformedExhibit);
-    setSlotArtworkMap(transformedExhibit.slotArtworkMap);
-    setSelectedArtworks(Object.values(transformedExhibit.slotArtworkMap));
+  
+    slotArtworkMap: Object.fromEntries(
+      Object.entries(slotArtworkMap).map(([k, v]) => [parseInt(k), v])
+    ),
 
-    const currentUser = transformedExhibit.collaborators.find((c) => String(c.id) === String(userId));
+    owner: {
+      id: owner.id,
+      name: owner.name,
+      avatar: owner.avatar,
+    },
 
-    setCurrentCollaborator(currentUser || null);
-    setLoading(false);
-  }, [data]);
+    collaborators: collaborators.map((collab) => ({
+      id: collab.id,
+      name: collab.name,
+      avatar: collab.avatar,
+    })),
+  };
+
+
+  setExhibit(transformedExhibit);
+  setSlotArtworkMap(transformedExhibit.slotArtworkMap);
+  setSelectedArtworks(Object.values(transformedExhibit.slotArtworkMap));
+
+  const currentUser = transformedExhibit.collaborators.find(
+    (c) => String(c.id) === String(userId)
+  );
+
+
+  setCurrentCollaborator(currentUser || null);
+  setLoading(false);
+}, [data]);
 
   if (loading) {
     return <div className="min-h-screen text-xs flex items-center justify-center">Loading exhibit data...</div>;
@@ -215,34 +229,54 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     }
   };
 
+
   const handleSaveSelections = () => {
-    toast({
-      title: "Selections Saved",
-      description: "Your artwork selections have been saved to the exhibit!",
-    });
+  if (!currentCollaborator) return;
 
-    navigate("/exhibits");
-  };
+  const payload = Object.entries(slotArtworkMap)
+    .filter(([slotId, artworkId]) => {
+      return exhibit.slotOwnerMap[parseInt(slotId)] === currentCollaborator.id;
+    })
+    .map(([slotId, artworkId]) => ({
+      slot_number: parseInt(slotId),
+      artwork: artworkId,
+    }));
 
-  const getColorSchemeIndex = (userId: number) => {
-    if (userId === exhibit.owner.id) return 0;
+  submitContributions(payload, {
+    onSuccess: () => {
+      toast({
+        title: "Selections Saved",
+        description: "Your artwork selections have been saved to the exhibit!",
+      });
+      navigate("/exhibits");
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err?.response?.data?.detail || "Failed to submit contributions.",
+        variant: "destructive",
+      });
+    },
+  });
+};
+const getColorSchemeIndex = (userId: string) => {
+  if (userId === exhibit.owner.id) return 0;
 
-    const collaboratorIndex = exhibit.collaborators.findIndex((c) => c.id === userId);
-    return collaboratorIndex + 1;
-  };
+  const collaboratorIndex = exhibit.collaborators.findIndex((c) => c.id === userId);
+  return collaboratorIndex + 1;
+};
 
-  const getSlotColor = (slotId: number) => {
-    const ownerId = exhibit.slotOwnerMap[slotId];
-    if (!ownerId) return slotColorSchemes[0];
+const getSlotColor = (slotId: number) => {
+  const ownerId = exhibit.slotOwnerMap[slotId]; 
+  if (!ownerId) return slotColorSchemes[0];
 
-    return slotColorSchemes[getColorSchemeIndex(ownerId)];
-  };
-
-  const getUserName = (userId: number) => {
-    if (userId === exhibit.owner.id) return `${exhibit.owner.name}'s slot`;
-    const collaborator = exhibit.collaborators.find((c) => c.id === userId);
-    return collaborator ? `${collaborator.name}'s slot` : "";
-  };
+  return slotColorSchemes[getColorSchemeIndex(ownerId)];
+};
+const getUserName = (userId: string) => {
+  if (userId === exhibit.owner.id) return `${exhibit.owner.name}'s slot`;
+  const collaborator = exhibit.collaborators.find((c) => c.id === userId);
+  return collaborator ? `${collaborator.name}'s slot` : "";
+};
 
   const canInteractWithSlot = (slotId: number) => {
     const ownerId = exhibit.slotOwnerMap[slotId];
@@ -348,7 +382,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                         {assignedArtwork ? (
                           <>
                             <img
-                              src={assignedArtwork.artistImage || assignedArtwork.image_url}
+                              src={assignedArtwork.artworkImage || assignedArtwork.image_url}
                               alt={`Artwork ${assignedArtworkId}`}
                               className="w-full h-full object-cover"
                             />

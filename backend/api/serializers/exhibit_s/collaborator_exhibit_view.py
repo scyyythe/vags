@@ -68,9 +68,11 @@ class CollaboratorExhibitViewSerializer(serializers.Serializer):
         contributions = ExhibitContribution.objects(exhibit=obj)
 
         for contribution in contributions:
-            if contribution.slot_number:
-                result[contribution.slot_number] = str(contribution.artwork.id)
+            for entry in getattr(contribution, "artworks", []):
+                if entry.slot_number and entry.artwork:
+                    result[entry.slot_number] = str(entry.artwork.id)
 
         return result
+
 
 

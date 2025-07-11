@@ -24,6 +24,7 @@ class ExhibitReviewSerializer(serializers.Serializer):
     description = serializers.CharField()
     banner = serializers.CharField()
     collaborators = serializers.SerializerMethodField()
+    chosen_env = serializers.IntegerField() 
     slots = serializers.SerializerMethodField()
 
     def get_collaborators(self, obj):
