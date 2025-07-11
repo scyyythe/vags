@@ -51,11 +51,11 @@ import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/Ex
 //MARKETPLACE
 import ViewProduct from "@/components/user_dashboard/Marketplace/view_product/ViewProduct";
 import TopSellers from "@/components/user_dashboard/Marketplace/top_seller/TopSellers"
-import PreviewPage from "@/components/user_dashboard/Marketplace/buying_process/shipping_address/pages/PreviewPage";
-import ShippingPage from "@/components/user_dashboard/Marketplace/buying_process/shipping_address/pages/ShippingPage"
-import AddAddressPage from "@/components/user_dashboard/Marketplace/buying_process/shipping_address/pages/AddAddressPage"
+import PreviewPage from "@/components/user_dashboard/Marketplace/buying_process/pages/PreviewPage";
+import ShippingPage from "@/components/user_dashboard/Marketplace/buying_process/pages/ShippingPage"
+import AddAddressPage from "@/components/user_dashboard/Marketplace/buying_process/pages/AddAddressPage"
 import { AddressProvider } from "@/components/user_dashboard/Marketplace/buying_process/shipping_address/AddressContext"
-import PaymentMethodPage from "@/components/user_dashboard/Marketplace/buying_process/payment_method/page/PaymentMethodPage";
+import PaymentMethodPage from "@/components/user_dashboard/Marketplace/buying_process/pages/PaymentMethodPage";
 import ReviewPurchase from "@/components/user_dashboard/Marketplace/buying_process/review/ReviewPurchase"
 
 //ADMIN & MODERATOR

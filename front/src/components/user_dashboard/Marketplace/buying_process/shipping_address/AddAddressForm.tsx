@@ -58,7 +58,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
     formData.fullName && formData.address && formData.city && formData.postalCode && formData.phoneNumber
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen overflow-y-auto bg-white">
       <Header />
       <div className="container mx-auto px-4 pt-20 max-w-6xl">
         <div className="mb-4">

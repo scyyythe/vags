@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import PaymentMethod from "@/components/user_dashboard/Marketplace/buying_process/payment_method/PaymentMethod";
 

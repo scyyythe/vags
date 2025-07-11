@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom"
-import AddAddressForm from "../AddAddressForm"
-import { useAddressContext } from "../AddressContext"
+import AddAddressForm from "../shipping_address/AddAddressForm"
+import { useAddressContext } from "../shipping_address/AddressContext"
 
 const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
   const navigate = useNavigate()

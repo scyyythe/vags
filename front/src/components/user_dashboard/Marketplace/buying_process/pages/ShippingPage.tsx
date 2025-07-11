@@ -1,6 +1,6 @@
-import ShippingDetails from "../ShippingDetails"
+import ShippingDetails from "../shipping_address/ShippingDetails"
 import { useNavigate } from "react-router-dom"
-import { useAddressContext } from "../AddressContext"
+import { useAddressContext } from "../shipping_address/AddressContext"
 
 const ShippingPage = () => {
   const navigate = useNavigate()

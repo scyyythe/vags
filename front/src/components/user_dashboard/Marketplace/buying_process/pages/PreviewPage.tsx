@@ -1,6 +1,6 @@
-import PreviewModal from "../../preview/PreviewModal"
+import PreviewModal from "../preview/PreviewModal"
 import { useNavigate } from "react-router-dom"
-import { useAddressContext } from "../AddressContext"
+import { useAddressContext } from "../shipping_address/AddressContext"
 
 const PreviewPage = () => {
   const navigate = useNavigate()
