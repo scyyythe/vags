@@ -15,11 +15,11 @@ const Settings = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="h-screen flex flex-col overflow-y-auto bg-white">
       <Header />
 
       <main className="flex-grow w-full px-4 sm:px-6 lg:px-8 py-6 md:py-10 mt-10">
-        <h1 className="text-lg font-bold mb-8 text-left">Profile Settings</h1>
+        <h1 className="text-lg font-bold mb-4 text-left">Profile Settings</h1>
 
         <ProfileHeader
           name="Angel Canete"
