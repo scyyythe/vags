@@ -228,7 +228,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </div> 
   )
 }
 
