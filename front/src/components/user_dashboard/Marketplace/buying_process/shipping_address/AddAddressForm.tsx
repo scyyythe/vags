@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, Shield } from "lucide-react"
 import Header from "@/components/user_dashboard/navbar/Header";
+import countries from "@/components/data/countries";
 
 interface AddressFormData {
   fullName: string
@@ -39,8 +40,6 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
   const navigate = useNavigate();
 
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false)
-
-  const countries = ["Philippines", "United States", "Canada", "United Kingdom", "Australia"]
 
   const handleInputChange = (field: keyof AddressFormData, value: string | boolean) => {
     setFormData((prev) => ({
@@ -81,7 +80,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
                   value={formData.fullName}
                   onChange={(e) => handleInputChange("fullName", e.target.value)}
                   placeholder="Enter full name"
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
@@ -91,14 +90,14 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
                   <button
                     type="button"
                     onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none transition-colors text-left flex items-center justify-between"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors text-left flex items-center justify-between"
                     style={{ fontSize: "10px" }}
                   >
                     <span>{formData.country}</span>
                     <ChevronDown className="w-3 h-3 text-gray-500" />
                   </button>
                   {isCountryDropdownOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto">
                       {countries.map((country) => (
                         <button
                           key={country}
@@ -127,7 +126,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
                   value={formData.address}
                   onChange={(e) => handleInputChange("address", e.target.value)}
                   placeholder="Address line 1"
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
@@ -138,7 +137,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
                   value={formData.state}
                   onChange={(e) => handleInputChange("state", e.target.value)}
                   placeholder="State, region/province"
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
@@ -153,7 +152,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
                   value={formData.apartment}
                   onChange={(e) => handleInputChange("apartment", e.target.value)}
                   placeholder="Apt, floor, suite, etc."
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
@@ -164,7 +163,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
                   value={formData.postalCode}
                   onChange={(e) => handleInputChange("postalCode", e.target.value)}
                   placeholder="ZIP/Postal code"
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
@@ -179,7 +178,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
                   value={formData.city}
                   onChange={(e) => handleInputChange("city", e.target.value)}
                   placeholder="Enter city"
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
@@ -190,7 +189,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
                   value={formData.phoneNumber}
                   onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
                   placeholder="Enter phone no."
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
