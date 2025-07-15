@@ -9,6 +9,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { useExhibitReview } from "@/hooks/exhibit/useExhibitReview";
+import { usePublishExhibit } from "@/hooks/mutate/exhibit/usePublishExhibit";
 interface Collaborator {
   id: number;
   name: string;
@@ -36,12 +37,12 @@ const ExhibitReview = () => {
   const { toast } = useToast();
 
   const exhibitId = new URLSearchParams(location.search).get("id");
-
   const { data: exhibit, isLoading, error } = useExhibitReview(exhibitId || "");
+   const { mutate: publishExhibit} = usePublishExhibit();
 
-  // For demo purposes, we're using the mode from the URL or default to "review"
-  // const exhibitId = new URLSearchParams(location.search).get('id') || "3";
+
   const exhibitMode: ExhibitMode = "review";
+
   const formatDateRange = (start: string, end: string) => {
     const startDate = new Date(start);
     const endDate = new Date(end);
@@ -49,7 +50,11 @@ const ExhibitReview = () => {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
-    })} - ${endDate.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" })}`;
+    })} - ${endDate.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })}`;
   };
 
   const handleGoBack = () => {
@@ -60,22 +65,26 @@ const ExhibitReview = () => {
     navigate(`/addexhibit/${exhibitId}?mode=edit`);
   };
 
-  const handlePublish = () => {
-    if (!isReadyToPublish) {
-      toast({
-        title: "Cannot publish yet",
-        description: "All collaborator slots must be filled before publishing.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+const handlePublish = () => {
+  if (!isReadyToPublish || !exhibitId) {
     toast({
-      title: "Exhibit Published",
-      description: "Your exhibit has been successfully published!",
+      title: "Cannot publish yet",
+      description: "All collaborator slots must be filled before publishing.",
+      variant: "destructive",
     });
-    navigate("/exhibits");
-  };
+    return;
+  }
+
+  publishExhibit(exhibitId, {
+    onSuccess: () => {
+      toast({
+        title: "Exhibit Published",
+        description: "Your exhibit has been successfully published!",
+      });
+      navigate("/exhibits");
+    },
+  });
+};
   if (isLoading) {
     return <div className="p-10 text-sm">Loading exhibit review...</div>;
   }
@@ -83,31 +92,46 @@ const ExhibitReview = () => {
   if (error || !exhibit) {
     return <div className="p-10 text-sm text-red-600">Failed to load exhibit review.</div>;
   }
-    // Determine total slots from environment
-  const totalSlotCount =
-    exhibit.chosen_env === 1 ? 4 : exhibit.chosen_env === 2 ? 6 : 10;
 
-  const numCollaborators = exhibit.collaborators.length;
-  const baseSlots = Math.floor(totalSlotCount / numCollaborators);
-  const remainder = totalSlotCount % numCollaborators;
+  let collaborators: Collaborator[] = [];
 
-  let assigned = 0;
-  const collaborators: Collaborator[] = exhibit.collaborators.map((collab: any, index: number) => {
-    const slotsToFill = baseSlots + (index < remainder ? 1 : 0);
-    const slotsForUser = exhibit.slots.filter(
-      (slot: any) => slot.contributor.id === collab.id
-    );
-    assigned += slotsToFill;
+  if (exhibit.chosen_env === 2) {
+    // Each collaborator gets 2 slots in env 2
+    collaborators = exhibit.collaborators.map((collab: any) => {
+      const slotsForUser = exhibit.slots.filter(
+        (slot: any) => slot.contributor.id === collab.id
+      );
+      return {
+        id: collab.id,
+        name: collab.name,
+        profile_picture: collab.profile_picture || "",
+        slotsToFill: 2,
+        slotsFilled: slotsForUser.length,
+        inProgress: slotsForUser.length < 2,
+      };
+    });
+  } else {
+    // Env 1 = 4 slots, Env 3 = 10 slots
+    const totalSlotCount = exhibit.chosen_env === 1 ? 4 : 10;
+    const numCollaborators = exhibit.collaborators.length;
+    const baseSlots = Math.floor(totalSlotCount / numCollaborators);
+    const remainder = totalSlotCount % numCollaborators;
 
-    return {
-      id: collab.id,
-      name: collab.name,
-      profile_picture: collab.profile_picture || "",
-      slotsToFill,
-      slotsFilled: slotsForUser.length,
-      inProgress: slotsForUser.length < slotsToFill,
-    };
-  });
+    collaborators = exhibit.collaborators.map((collab: any, index: number) => {
+      const slotsToFill = baseSlots + (index < remainder ? 1 : 0);
+      const slotsForUser = exhibit.slots.filter(
+        (slot: any) => slot.contributor.id === collab.id
+      );
+      return {
+        id: collab.id,
+        name: collab.name,
+        profile_picture: collab.profile_picture || "",
+        slotsToFill,
+        slotsFilled: slotsForUser.length,
+        inProgress: slotsForUser.length < slotsToFill,
+      };
+    });
+  }
 
   const totalSlots = collaborators.reduce((acc, c) => acc + c.slotsToFill, 0);
   const filledSlots = collaborators.reduce((acc, c) => acc + c.slotsFilled, 0);

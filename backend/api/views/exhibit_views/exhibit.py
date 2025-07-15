@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated
 from api.models.user_model.users import User
+from datetime import datetime
 from rest_framework import status
 class ExhibitCreateView(APIView):
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
@@ -37,7 +38,7 @@ class MyExhibitCardListView(APIView):
     def get(self, request):
         try:
             user_id = str(request.user.id)
-            user = User.objects.get(id=user_id)  # MongoEngine User
+            user = User.objects.get(id=user_id)  
             exhibits = Exhibit.objects.filter(owner=user)
             serializer = ExhibitCardSerializer(exhibits, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -64,3 +65,21 @@ class ExhibitCardDetailView(APIView):
         serializer = ExhibitCardSerializer(exhibit, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class PublishExhibitView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, exhibit_id):
+        try:
+            exhibit = Exhibit.objects.get(id=exhibit_id)
+
+            if exhibit.visibility == "Public":
+                return Response({"detail": "Exhibit already published."}, status=status.HTTP_400_BAD_REQUEST)
+
+            exhibit.visibility = "Public"
+            exhibit.updated_at = datetime.utcnow()
+            exhibit.save()
+
+            return Response({"detail": "Exhibit published successfully."}, status=status.HTTP_200_OK)
+        except Exhibit.DoesNotExist:
+            return Response({"detail": "Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)
