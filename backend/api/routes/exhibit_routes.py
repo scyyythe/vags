@@ -23,7 +23,6 @@ exhibit_urlpatterns = [
     path('exhibit-contributions/', ExhibitContributionListView.as_view(), name='exhibit-contribution-list'),
     path('exhibit-contributions/create/', ExhibitContributionCreateView.as_view(), name='exhibit-contribution-create'),
 
-
     path('exhibit-invitations/', ExhibitInvitationListView.as_view(), name='exhibit-invitation-list'),
     path('exhibit-invitations/create/', ExhibitInvitationCreateView.as_view(), name='exhibit-invitation-create'),
     

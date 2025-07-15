@@ -16,11 +16,25 @@ export interface ExhibitPayload {
   slot_artwork_map: Record<number, string>;
   slot_owner_map: Record<number, string>;
 }
-
 export const createExhibit = async (data: ExhibitPayload) => {
   if (!data.banner) {
     toast.error("Banner is required.");
     throw new Error("Banner is required");
+  }
+
+ 
+  const now = new Date();
+  const startTime = new Date(data.start_time);
+  const endTime = new Date(data.end_time);
+
+  if (startTime < now) {
+    toast.error("Start date must not be in the past.");
+    throw new Error("Start date must not be in the past");
+  }
+
+  if (endTime <= startTime) {
+    toast.error("End date must be after start date.");
+    throw new Error("End date must be after start date");
   }
 
   const formData = new FormData();
@@ -29,7 +43,6 @@ export const createExhibit = async (data: ExhibitPayload) => {
   formData.append("description", data.description);
   formData.append("category", data.category);
   formData.append("owner", data.owner);
-
 
   const formattedType =
     data.exhibit_type.toLowerCase() === "solo" ? "Solo" : "Collaborative";

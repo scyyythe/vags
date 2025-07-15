@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from api.models.user_model.users import User
 from datetime import datetime
 from rest_framework import status
+
 class ExhibitCreateView(APIView):
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
@@ -28,7 +29,7 @@ class ExhibitListView(APIView):
 
 class ExhibitCardListView(APIView):
     def get(self, request):
-        exhibits = Exhibit.objects.filter(visibility='Pending')
+        exhibits = Exhibit.objects.filter(visibility='Public')
         serializer = ExhibitCardSerializer(exhibits, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         

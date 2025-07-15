@@ -75,6 +75,7 @@ const AddExhibit = () => {
   const [showNotificationDialog, setShowNotificationDialog] = useState(false)
   const [isReadOnly, setIsReadOnly] = useState(false)
   const currentUserId = getLoggedInUserId()
+  
   const { data: artworks = [] } = useArtworks(
     1,
     currentUserId ?? undefined,
@@ -383,6 +384,7 @@ const AddExhibit = () => {
       distributeSlots()
     }, 0)
   }
+const isUploading = createExhibitMutation.status === "pending"
 
   return (
     <div className="min-h-screen bg-background">
@@ -538,16 +540,20 @@ const AddExhibit = () => {
           )}
 
           <div className="flex justify-end">
-            <button
-              type="submit"
-              className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full"
-            >
-              {viewMode === "collaborator"
-                ? "Save Selections"
-                : viewMode === "review" || viewMode === "monitoring" || viewMode === "preview"
-                  ? "Back to Exhibits"
-                  : "Publish Exhibit"}
-            </button>
+        <button
+  type="submit"
+  disabled={isUploading}
+  className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
+>
+  {isUploading
+    ? "Submitting..."
+    : viewMode === "collaborator"
+    ? "Save Selections"
+    : viewMode === "review" || viewMode === "monitoring" || viewMode === "preview"
+    ? "Back to Exhibits"
+    : "Publish Exhibit"}
+</button>
+
           </div>
         </form>
       </div>
