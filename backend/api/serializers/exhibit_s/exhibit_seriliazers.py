@@ -87,7 +87,6 @@ class ExhibitSerializer(serializers.Serializer):
                     actor=owner,
                     message=f"You were invited to collaborate on the exhibit '{exhibit.title}'",
                     exhibit=exhibit,
-                    name=f"{owner.first_name} {owner.last_name}",
                     action="invited you to collaborate",
                     target=exhibit.title,
                     icon="invite",
