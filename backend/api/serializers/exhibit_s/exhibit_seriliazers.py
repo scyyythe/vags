@@ -6,7 +6,7 @@ import cloudinary.uploader
 from datetime import datetime
 from api.models.interaction_model.interaction import Like
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
-
+from api.models.interaction_model.notification import Notification
 class ExhibitSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField(max_length=100)
@@ -58,14 +58,45 @@ class ExhibitSerializer(serializers.Serializer):
         artworks_ids = validated_data.pop("artworks", [])
         viewed_by_ids = validated_data.pop("viewed_by", [])
 
-        validated_data["owner"] = User.objects.get(id=owner_id)
-        validated_data["collaborators"] = [User.objects.get(id=uid) for uid in collaborators_ids]
-        validated_data["artworks"] = [Art.objects.get(id=aid) for aid in artworks_ids]
-        validated_data["viewed_by"] = [User.objects.get(id=uid) for uid in viewed_by_ids]
+        owner = User.objects.get(id=owner_id)
+        collaborators = [User.objects.get(id=uid) for uid in collaborators_ids]
+        artworks = [Art.objects.get(id=aid) for aid in artworks_ids]
+        viewed_by = [User.objects.get(id=uid) for uid in viewed_by_ids]
 
+        validated_data["owner"] = owner
+        validated_data["collaborators"] = collaborators
+        validated_data["artworks"] = artworks
+        validated_data["viewed_by"] = viewed_by
+
+       
+        exhibit_type = validated_data.get("exhibit_type", "Solo")
+        if exhibit_type == "Solo":
+            validated_data["visibility"] = "Public"
+        elif exhibit_type == "Collaborative":
+            validated_data["visibility"] = "Pending"
+
+      
         exhibit = Exhibit(**validated_data)
         exhibit.save()
+
+       
+        if exhibit_type == "Collaborative":
+            for collaborator in collaborators:
+                Notification.objects.create(
+                    user=collaborator,
+                    actor=owner,
+                    message=f"You were invited to collaborate on the exhibit '{exhibit.title}'",
+                    exhibit=exhibit,
+                    name=f"{owner.first_name} {owner.last_name}",
+                    action="invited you to collaborate",
+                    target=exhibit.title,
+                    icon="invite",
+                    created_at=datetime.now(),
+                    link="/exhibitreview",  
+                )
+
         return exhibit
+
 
     def update(self, instance, validated_data):
         banner_file = validated_data.pop("banner", None)
