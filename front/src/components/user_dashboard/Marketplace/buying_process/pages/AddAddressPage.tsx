@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
 import AddAddressForm from "../shipping_address/AddAddressForm";
 import { useAddress } from "@/hooks/users/address/useAddress";
-
+import { useQueryClient } from "@tanstack/react-query";
 const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { address, saveAddress, error, loading } = useAddress(id);
-
+  const queryClient = useQueryClient();
   const parseInitialData = () => {
     if (!address) return undefined;
     const addressParts = address.address?.split(", ") || [];
@@ -24,19 +24,18 @@ const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
     };
   };
 
- const handleSave = async (formData: any) => {
-  try {
-    const newId = await saveAddress(formData);
+  const handleSave = async (formData: any) => {
+    try {
+      await saveAddress(formData);
 
-    if (isEditing) {
+     
+      queryClient.invalidateQueries({ queryKey: ["allAddresses"] });
+
       navigate("/shipping");
-    } else {
-      navigate("/shipping"); 
+    } catch (err) {
+      alert("Failed to save address.");
     }
-  } catch (err) {
-    alert("Failed to save address.");
-  }
-};
+  };
 
 
   return (
