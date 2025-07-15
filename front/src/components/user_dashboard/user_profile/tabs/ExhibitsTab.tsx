@@ -16,7 +16,7 @@ import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import { useMyExhibitCards } from "@/hooks/exhibit/useMyCardExhibit";
 import ExhibitCardSkeleton from "@/components/skeletons/ExhibitCardSkeleton";
 import { usePendingRequests } from "@/hooks/exhibit/usePendingRequests";
-
+import { usePublishExhibit } from "@/hooks/mutate/exhibit/usePublishExhibit";
 import { ExhibitRequest } from "@/hooks/exhibit/usePendingRequests";
 
 const ExhibitsTab = () => {
@@ -29,6 +29,7 @@ const ExhibitsTab = () => {
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitRequest | null>(null);
 
   const { data: exhibits = [], isLoading } = useMyExhibitCards();
+const { mutate: publishExhibit } = usePublishExhibit();
 
   const now = new Date();
 
@@ -101,14 +102,24 @@ const ExhibitsTab = () => {
     }
   };
 
-  const handlePublishExhibit = () => {
-    if (selectedExhibit) {
-      toast.success(`Exhibit Published: ${selectedExhibit.exhibitTitle}`, {
-        description: "Your exhibit has been published successfully.",
-      });
-      setShowPublishDialog(false);
-    }
-  };
+const handlePublishExhibit = () => {
+  if (selectedExhibit) {
+    publishExhibit(selectedExhibit.exhibitId, {
+      onSuccess: () => {
+        toast.success(`Exhibit Published: ${selectedExhibit.exhibitTitle}`, {
+          description: "Your exhibit has been published successfully.",
+        });
+        setShowPublishDialog(false);
+      },
+      onError: (error: any) => {
+        toast.error("Failed to publish exhibit", {
+          description: error?.response?.data?.detail || "Something went wrong.",
+        });
+      },
+    });
+  }
+};
+
 
   const hasUnreadRequests = pendingRequests.length > 0;
   const hasReadyExhibits = pendingRequests.some((req) => req.isOwner && req.type === "ready");
