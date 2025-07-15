@@ -1,43 +1,43 @@
-import { useNavigate, useParams } from "react-router-dom"
-import AddAddressForm from "../shipping_address/AddAddressForm"
-import { useAddressContext } from "../shipping_address/AddressContext"
+import { useNavigate, useParams } from "react-router-dom";
+import AddAddressForm from "../shipping_address/AddAddressForm";
+import { useAddress } from "@/hooks/users/address/useAddress";
 
 const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
-  const navigate = useNavigate()
-  const { id } = useParams()
-  const { getAddressById, addOrUpdateAddress } = useAddressContext()
-
-  const existing = id ? getAddressById(id) : undefined
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { address, saveAddress, error, loading } = useAddress(id);
 
   const parseInitialData = () => {
-    if (!existing) return undefined
-    const addressParts = existing.address.split(", ")
-    const cityParts = existing.city.split(", ")
+    if (!address) return undefined;
+    const addressParts = address.address?.split(", ") || [];
+    const cityParts = address.city?.split(", ") || [];
     return {
-      fullName: existing.name,
+      fullName: address.name,
       country: cityParts[2] || "Philippines",
-      address: addressParts[0],
+      address: addressParts[0] || "",
       apartment: addressParts[1] || "",
-      city: cityParts[0],
-      state: cityParts[1],
-      postalCode: cityParts[3],
-      phoneNumber: existing.phone,
-      setAsDefault: existing.isDefault || false,
-    }
-  }
+      city: cityParts[0] || "",
+      state: cityParts[1] || "",
+      postalCode: cityParts[3] || "",
+      phoneNumber: address.phone,
+      setAsDefault: address.is_default || false,
+    };
+  };
 
-  const handleSave = (formData) => {
-    addOrUpdateAddress({
-      id: existing?.id || Date.now().toString(),
-      name: formData.fullName,
-      address: `${formData.address}${formData.apartment ? ", " + formData.apartment : ""}`,
-      city: `${formData.city}, ${formData.state}, ${formData.country}, ${formData.postalCode}`,
-      phone: formData.phoneNumber,
-      postalCode: formData.postalCode,
-      isDefault: formData.setAsDefault,
-    })
-    navigate("/shipping")
+ const handleSave = async (formData: any) => {
+  try {
+    const newId = await saveAddress(formData);
+
+    if (isEditing) {
+      navigate("/shipping");
+    } else {
+      navigate("/shipping"); 
+    }
+  } catch (err) {
+    alert("Failed to save address.");
   }
+};
+
 
   return (
     <AddAddressForm
@@ -45,8 +45,10 @@ const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
       onSave={handleSave}
       initialData={parseInitialData()}
       isEditing={isEditing}
+      loading={loading}
+      error={error}
     />
-  )
-}
+  );
+};
 
-export default AddAddressPage
+export default AddAddressPage;

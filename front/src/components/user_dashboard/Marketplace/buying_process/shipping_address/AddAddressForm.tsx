@@ -22,9 +22,19 @@ interface AddAddressFormProps {
   onSave: (addressData: AddressFormData) => void
   initialData?: Partial<AddressFormData>
   isEditing?: boolean
+  loading?: boolean         
+  error?: string | null    
 }
 
-const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initialData, isEditing = false }) => {
+const AddAddressForm: React.FC<AddAddressFormProps> = ({
+  onBack,
+  onSave,
+  initialData,
+  isEditing = false,
+  loading = false,
+  error = null,
+}) => {
+
   const [formData, setFormData] = useState<AddressFormData>({
     fullName: initialData?.fullName || "",
     country: initialData?.country || "Philippines",
@@ -221,13 +231,14 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({ onBack, onSave, initial
 
               {/* Save Button */}
               <div className="flex justify-end">
-                <button
-                  type="submit"
-                  disabled={!isFormValid}
-                  className="bg-red-800 text-white text-[11px] px-10 py-1.5 rounded-full font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-                >
-                  Save
-                </button>
+               <button
+  type="submit"
+  disabled={!isFormValid || loading}
+  className="bg-red-800 text-white text-[11px] px-10 py-1.5 rounded-full font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+>
+  {loading ? "Saving..." : "Save"}
+</button>
+
               </div>
            
           </form>
