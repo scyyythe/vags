@@ -8,6 +8,7 @@ export const useCreateExhibit = () => {
     onSuccess: () => {
       toast.success("Exhibit created successfully!");
     },
+    
     onError: (error: any) => {
       if (error.message !== "Banner is required") {
         toast.error(`Error creating exhibit: ${error?.message || "Something went wrong"}`);

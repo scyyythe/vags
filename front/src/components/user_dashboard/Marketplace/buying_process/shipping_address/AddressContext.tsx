@@ -1,4 +1,6 @@
 import { createContext, useContext, useState } from "react"
+import { useEffect } from "react"
+import axios from "@/utils/apiClient"
 
 interface Address {
   id: string
@@ -37,6 +39,28 @@ export const AddressProvider = ({ children }: { children: React.ReactNode }) => 
       setSelectedAddressId(newAddress.id)
     }
   }
+useEffect(() => {
+  const fetchAddresses = async () => {
+    try {
+      const res = await axios.get("/address/");
+      const fetched = res.data;
+
+      if (Array.isArray(fetched)) {
+        setAddresses(fetched);
+
+        // Auto-select default address if any
+        const defaultAddr = fetched.find((addr: Address) => addr.isDefault);
+        if (defaultAddr) {
+          setSelectedAddressId(defaultAddr.id);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load addresses", err);
+    }
+  };
+
+  fetchAddresses();
+}, []);
 
   const getAddressById = (id: string) => addresses.find((a) => a.id === id)
 
