@@ -3,23 +3,26 @@ import { Link } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
 import { Search, ChevronDown, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import Register from './Register';
-import Login from './Login';
 import { useModal } from '../context/ModalContext'; 
+import { useAutoTranslation } from '../hooks/autoTranslate/useAutoTranslation';
+import { languages } from '../components/constants/languages'; 
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [showLanguages, setShowLanguages] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('EN');
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [showMenu, setShowMenu] = useState(false);
   const { showRegisterModal, setShowRegisterModal } = useModal(); 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const languages = [
-    { code: 'EN', name: 'English' },
-    { code: 'ES', name: 'Spanish' },
-    { code: 'FR', name: 'French' }
-  ];
+
+  const discover = useAutoTranslation('Discover', selectedLanguage);
+  const artists = useAutoTranslation('Artists', selectedLanguage);
+  const artworks = useAutoTranslation('Artworks', selectedLanguage);
+  const auctions = useAutoTranslation('Auctions', selectedLanguage);
+  const hotBids = useAutoTranslation('Top Bids', selectedLanguage);
+  const browseNow = useAutoTranslation('Browse now', selectedLanguage);
+  const signUp = useAutoTranslation('Sign Up', selectedLanguage);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -54,7 +57,7 @@ const Navbar = () => {
     >
       <div className="max-w-screen-xl mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
-          <img src="/pics/wx.png" alt="logo" className=" w-10 h-7 " />
+          <img src="/pics/wx.png" alt="logo" className=" w-10 h-7" />
         </Link>
 
         {/* Desktop Navigation */}
@@ -68,7 +71,7 @@ const Navbar = () => {
             className="cursor-pointer hover:text-primary transition-colors"
             onClick={() => setShowMenu(false)}
           > 
-            Discover
+            {discover}
           </ScrollLink>
           <ScrollLink
             to="artists"
@@ -79,7 +82,7 @@ const Navbar = () => {
             className="cursor-pointer hover:text-primary transition-colors"
             onClick={() => setShowMenu(false)}
           >
-            Artists
+            {artists}
           </ScrollLink>
           <ScrollLink
             to="artworks"
@@ -90,7 +93,7 @@ const Navbar = () => {
             className="cursor-pointer hover:text-primary transition-colors"
             onClick={() => setShowMenu(false)}
           >
-            Artworks
+            {artworks}
           </ScrollLink>
           <ScrollLink
             to="auctions"
@@ -101,7 +104,7 @@ const Navbar = () => {
             className="cursor-pointer hover:text-primary transition-colors"
             onClick={() => setShowMenu(false)}
           >
-            Auctions
+            {auctions}
           </ScrollLink>
           <ScrollLink
             to="bids"
@@ -112,7 +115,7 @@ const Navbar = () => {
             className="cursor-pointer hover:text-primary transition-colors"
             onClick={() => setShowMenu(false)}
           >
-            Hot Bids
+            {hotBids}
           </ScrollLink>
         </nav>
 
@@ -157,7 +160,7 @@ const Navbar = () => {
               </button>
 
               {showLanguages && (
-                <ul className="absolute bg-white shadow-md text-[11px] rounded-md py-2 w-24 top-full left-0 z-10">
+                <ul className="absolute bg-white shadow-md text-[11px] rounded-md py-2 w-28 top-5 left-[-35px] z-10 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300">
                   {languages.map((lang) => (
                     <li
                       key={lang.code}
@@ -238,7 +241,7 @@ const Navbar = () => {
               className="cursor-pointer hover:text-primary transition-colors"
               onClick={() => setShowMenu(false)}
             >
-              Hot Bids
+              Top Bids
             </ScrollLink>
           </div>
         )}
