@@ -1,6 +1,6 @@
 from django.urls import path
 from api.views.exhibit_views.exhibit import (
-    ExhibitCreateView, ExhibitListView, ExhibitCardDetailView, ExhibitCardListView,MyExhibitCardListView
+    ExhibitCreateView, ExhibitListView, ExhibitCardDetailView, ExhibitCardListView,MyExhibitCardListView,PublishExhibitView
 )
 from api.views.exhibit_views.exhibit_invite import (
     ExhibitInvitationCreateView, ExhibitInvitationListView
@@ -23,7 +23,6 @@ exhibit_urlpatterns = [
     path('exhibit-contributions/', ExhibitContributionListView.as_view(), name='exhibit-contribution-list'),
     path('exhibit-contributions/create/', ExhibitContributionCreateView.as_view(), name='exhibit-contribution-create'),
 
-
     path('exhibit-invitations/', ExhibitInvitationListView.as_view(), name='exhibit-invitation-list'),
     path('exhibit-invitations/create/', ExhibitInvitationCreateView.as_view(), name='exhibit-invitation-create'),
     
@@ -33,5 +32,7 @@ exhibit_urlpatterns = [
     path("exhibits/<str:exhibit_id>/collaborator-view/", CollaboratorExhibitView.as_view(), name="collaborator-exhibit-view"),
 
     path("exhibits/<str:exhibit_id>/contribute/", SubmitCollaboratorContributionView.as_view(), name="submit-collaborator-contributions"),
+
+    path("exhibits/<str:exhibit_id>/publish/", PublishExhibitView.as_view(), name="publish-exhibit"),
 
 ]

@@ -42,12 +42,17 @@ class ExhibitReviewSerializer(serializers.Serializer):
         contributions = ExhibitContribution.objects(exhibit=obj)
         for contribution in contributions:
             contributor = contribution.contributor
-            slots.append({
-                "contributor": {
-                    "id": str(contributor.id),
-                    "name": f"{contributor.first_name} {contributor.last_name}".strip(),
-                    "profile_picture": contributor.profile_picture.url if getattr(contributor, "profile_picture", None) else ""
-                },
-                "artwork": ArtSerializer(contribution.artwork, context=self.context).data
-            })
+            for artwork_entry in contribution.artworks:
+                slots.append({
+                    "contributor": {
+                        "id": str(contributor.id),
+                        "name": f"{contributor.first_name} {contributor.last_name}".strip(),
+                        "profile_picture": contributor.profile_picture if getattr(contributor, "profile_picture", None) else ""
+                    },
+                    "artwork": ArtSerializer(artwork_entry.artwork, context=self.context).data,
+                    "slot_number": artwork_entry.slot_number,
+                    "contributed_at": artwork_entry.contributed_at
+                })
         return slots
+
+
