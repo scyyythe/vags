@@ -61,36 +61,6 @@ const { mutate: publishExhibit } = usePublishExhibit();
     closed: "No past exhibits found.",
   };
 
-  // const pendingRequests: ExhibitRequest[] = [
-  //   {
-  //     id: 1,
-  //     exhibitTitle: "Nature's Symphony",
-  //     status: "Waiting for collaborator submissions",
-  //     exhibitId: 2,
-  //     isOwner: true,
-  //     type: "pending",
-  //     collaboratorsSubmitted: 1,
-  //     totalCollaborators: 2,
-  //   },
-  //   {
-  //     id: 2,
-  //     exhibitTitle: "Urban Dreamscape",
-  //     status: "Pending slot",
-  //     exhibitId: 1,
-  //     isOwner: false,
-  //     type: "pending",
-  //   },
-  //   {
-  //     id: 3,
-  //     exhibitTitle: "Abstract Visions",
-  //     status: "All submissions received.",
-  //     exhibitId: 3,
-  //     isOwner: true,
-  //     type: "published",
-  //     collaboratorsSubmitted: 2,
-  //     totalCollaborators: 2,
-  //   },
-  // ];
   const { data: pendingRequests = [], isLoading: isLoadingRequests } = usePendingRequests();
 
   const handleRequestClick = (request: ExhibitRequest) => {
