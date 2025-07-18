@@ -21,7 +21,7 @@ const ArtCategorySelect = ({ selectedCategory, onChange }: Props) => {
         <img src="/pics/b_logo.png" className="w-3 h-3 mr-2" />
         <SelectValue placeholder="Select Category" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent style={{ maxHeight: "50vh" }} className="relative right-14">
         <SelectItem value="All" className={cn(isMobile ? "text-[10px]" : "text-[10px]")}>
           All
         </SelectItem>

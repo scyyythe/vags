@@ -35,7 +35,7 @@ const SellTab = () => {
     return (
       <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
         <img src="/pics/empty.png" alt="No on-sale artwork" className="w-48 h-48 mb-4 opacity-80" />
-        <p className="text-sm text-gray-500">
+        <p className="text-xs text-gray-500">
           {isOwnProfile
             ? "You haven’t listed any artworks for sale yet."
             : "This artist hasn’t listed any artworks for sale."}
