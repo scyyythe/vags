@@ -198,7 +198,10 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
             </button>
 
             {showFilters && (
-              <div className="absolute right-0 top-full mt-2 text-[10px] bg-white shadow-lg whitespace-nowrap rounded-md p-2 z-10 w-30 animate-fade-in">
+            <div
+              className="absolute right-0 top-full mt-2 text-[10px] bg-white shadow-lg whitespace-nowrap rounded-md p-2 mb-8 z-10 w-30 animate-fade-in overflow-y-auto"
+              style={{ maxHeight: "50vh" }}
+            >
                 {/* Medium Filter */}
                 <div className="mb-2">
                   <div
@@ -228,7 +231,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
                 </div>
 
                 {/* Price Range Filter */}
-                {/* <div className="mb-2">
+                <div className="mb-2">
                   <div
                     className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded"
                     onClick={() => setShowPriceOptions(!showPriceOptions)}
@@ -250,7 +253,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
                       ))}
                     </div>
                   )}
-                </div> */}
+                </div>
 
                 {/* Status Filter */}
                 {isOwnProfile && (

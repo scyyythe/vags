@@ -27,7 +27,7 @@ const Index = () => {
   }, [id, data, isLoading]);
   return (
     <>
-      <div className="min-h-screen">
+      <div className="min-h-screen flex flex-col">
         <Header />
         <div className="container mx-auto px-4 pt-20">
           <ProfileHeader

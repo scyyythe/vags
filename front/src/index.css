@@ -352,7 +352,7 @@ body.no-scroll {
 
 /* Firefox support */
 .wishlist-scrollbar {
-  scrollbar-width: thin;
   scrollbar-color: rgba(209, 209, 209, 0.4) transparent;
 }
+
 
