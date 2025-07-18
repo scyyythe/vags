@@ -13,7 +13,7 @@ const NotFound = () => {
     <div className="min-h-screen flex items-center justify-center bg-black text-white p-6">
       <div className="text-center max-w-md">
         <div className="mb-4 inline-block">
-          <img src="/pics/logo.png" alt="logo" className=" w-12 h-12 " />
+          <img src="/pics/wx.png" alt="logo" className=" w-12 h-12 " />
         </div>
         <h1 className="text-3xl font-bold mb-4">404</h1>
         <p className="text-xs text-gray-400 mb-8">Not Found</p>
