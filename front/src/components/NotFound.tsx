@@ -1,9 +1,11 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const NotFound = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
@@ -17,13 +19,13 @@ const NotFound = () => {
         </div>
         <h1 className="text-3xl font-bold mb-4">404</h1>
         <p className="text-xs text-gray-400 mb-8">Not Found</p>
-        <Link
-          to="/"
+        <button
+          onClick={() => navigate(-1)}
           className="inline-flex items-center space-x-2 bg-white text-black text-xs px-6 py-3 rounded-lg font-medium transition-all hover:bg-gray-200"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Return to Gallery</span>
-        </Link>
+          <span>Return to Gallery</span> 
+        </button>
       </div>
     </div>
   );

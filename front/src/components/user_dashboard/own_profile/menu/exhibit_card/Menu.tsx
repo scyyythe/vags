@@ -121,15 +121,17 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
             {/* View Insights */}
             <div className="flex items-center relative">
                 <button
-                onClick={() => onViewInsights(artworkId)}
-                className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
-                onMouseEnter={() => setHoveredItem("insights")}
-                onMouseLeave={() => setHoveredItem(null)}
+                    onClick={() => navigate(`/view-insights/${artworkId}`)}
+                    className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
+                    onMouseEnter={() => setHoveredItem("insights")}
+                    onMouseLeave={() => setHoveredItem(null)}
                 >
-                <BarChart2 size={12} />
+                    <BarChart2 size={12} />
                 </button>
                 {hoveredItem === "insights" && (
-                <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">View Insights</span>
+                    <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+                    View Insights
+                    </span>
                 )}
             </div>
 
