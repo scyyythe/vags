@@ -94,8 +94,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   formData.append("description", description.trim());
   formData.append("visibility", visibility);
 
-  // ✅ Use "images" to match DRF field
-  formData.append("images", selectedFile); // Single image
+  formData.append("images", selectedFile);
   // If you want multiple images:
   // selectedFiles.forEach(file => formData.append("images", file));
 

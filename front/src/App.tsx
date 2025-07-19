@@ -82,6 +82,7 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 
 //Exhibit
 import Gallery3D from "./components/gallery/Gallery3D";
+import ViewInsightsPage from "@/components/user_dashboard/Exhibit/insights/ViewInsights";
 
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
@@ -177,6 +178,7 @@ const App = () => {
                               <Route path="billing" element={<ProtectedRoute children={<BillingSettings />} />} />
                               <Route path="help-center" element={<ProtectedRoute children={<HelpCenter />} />} />
                             </Route>
+                            <Route path="/view-insights/:id" element={<ViewInsightsPage />} />
 
                             {/* Admin Routes */}
                             <Route
