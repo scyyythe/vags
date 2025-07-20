@@ -5,7 +5,7 @@ from api.views.user_views.user_views import (
     DeleteUserView, ListAllUsersView, BlockUserView, UnblockUserView
 )
 from api.views.user_views.top_sellers_view import TopSellersAPIView
-from api.views.user_views.address_view import AddressViewSet
+from api.views.user_views.address_view import AddressViewSet,DefaultAddressView,SetDefaultAddressView
 
 user_urlpatterns = [
     path('top-sellers/', TopSellersAPIView.as_view(), name='top-sellers'),
@@ -23,5 +23,6 @@ user_urlpatterns = [
     path('address/', AddressViewSet.as_view({'get': 'list', 'post': 'create'}), name='address-list-create'),
     path('address/<str:pk>/', AddressViewSet.as_view({'get': 'retrieve', 'patch': 'partial_update', 'delete': 'destroy'}), name='address-detail'),
     path('address/<str:pk>/edit/', AddressViewSet.as_view({'patch': 'partial_update'}), name='address-edit'),
-    path('address/default/', AddressViewSet.as_view({'get': 'get_default_address'}), name='address-default'),
+    path('address/<str:address_id>/set-default/', SetDefaultAddressView.as_view(), name='set-default-address'),
+    path('address-default/', DefaultAddressView.as_view(), name='default-address'),
 ]
