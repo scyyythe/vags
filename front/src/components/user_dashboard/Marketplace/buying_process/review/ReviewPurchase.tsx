@@ -1,30 +1,30 @@
-import type React from "react"
-import { useNavigate } from "react-router-dom"
+import type React from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
-
+import useDefaultAddress from "@/hooks/users/address/useDefaultAddress";
 interface ReviewPurchaseProps {
-  onBack: () => void
-  onSubmit: () => void
+  onBack: () => void;
+  onSubmit: () => void;
   selectedAddress?: {
-    name: string
-    address: string
-    city: string
-  }
+    name: string;
+    address: string;
+    city: string;
+  };
   selectedPaymentMethod?: {
-    type: string
-    details: string
-  }
+    type: string;
+    details: string;
+  };
   artwork?: {
-    artworkImage: string
-    title: string
-    artist: string
-    size: string
-    style: string
-    medium: string
-    edition: string
-    yearCreated: number
-    price: number
-  }
+    artworkImage: string;
+    title: string;
+    artist: string;
+    size: string;
+    style: string;
+    medium: string;
+    edition: string;
+    yearCreated: number;
+    price: number;
+  };
 }
 
 const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
@@ -34,31 +34,33 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   selectedPaymentMethod,
   artwork,
 }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { data: defaultAddress, isLoading: isAddressLoading } = useDefaultAddress();
 
   const handleAddressChange = () => {
-    navigate("/shipping")
-  }
+    navigate("/shipping");
+  };
 
   const handlePaymentMethodChange = () => {
-    navigate("/payment-method")
-  }
+    navigate("/payment-method");
+  };
 
   const handleSubmit = () => {
-    onSubmit()
-  }
+    onSubmit();
+  };
 
-  // Default data if not provided
-  const defaultAddress = selectedAddress || {
-    name: "Jamaica Anuba",
-    address: "Sitio Cabutoy",
-    city: "Talisay, Cebu City, Philippines",
-  }
+  // // Default data if not provided
+  const fallbackAddress = {
+    name: "No Name",
+    address: "No Address",
+    city: "No City",
+  };
 
+  const displayAddress = defaultAddress || fallbackAddress;
   const defaultPaymentMethod = selectedPaymentMethod || {
     type: "PayPal",
     details: "(display the major short details of the payment method)",
-  }
+  };
 
   const defaultArtwork = artwork || {
     artworkImage: "/placeholder.svg?height=200&width=200",
@@ -70,7 +72,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
     edition: "Limited Edition",
     yearCreated: 2025,
     price: 100000,
-  }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -79,7 +81,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
         <div className="mb-8">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
-              Review Purchase
+            Review Purchase
           </button>
         </div>
 
@@ -89,7 +91,17 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
             {/* Address Section */}
             <div className="border border-gray-200 rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-semibold text-gray-900">Address [{defaultAddress.city}]</h3>
+                {isAddressLoading ? (
+                  <p className="text-[11px] text-gray-400">Loading address...</p>
+                ) : defaultAddress ? (
+                  <>
+                    <h3 className="text-xs font-semibold text-gray-900">Address [{displayAddress.city}]</h3>
+                    <p className="text-[11px] text-gray-600">{displayAddress.address}</p>
+                  </>
+                ) : (
+                  <p className="text-[11px] text-red-600">No default address set.</p>
+                )}
+
                 <button
                   onClick={handleAddressChange}
                   className="text-xs font-medium text-gray-900 underline hover:text-gray-700"
@@ -145,7 +157,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
 
             {/* Buyer Protection */}
             <div className="flex items-center space-x-2 text-[11px] text-gray-600">
-              <i className='bx bxs-check-circle text-black text-sm'></i>
+              <i className="bx bxs-check-circle text-black text-sm"></i>
               <span>Your purchase is protected.</span>
               <button className="text-blue-600 underline hover:text-blue-700">
                 Learn more about Worxist's buyer protection
@@ -228,8 +240,8 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
           </div>
         </div>
       </div>
-    </div> 
-  )
-}
+    </div>
+  );
+};
 
-export default ReviewPurchase
+export default ReviewPurchase;

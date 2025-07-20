@@ -1,6 +1,6 @@
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route,useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Index from "./pages/Index";
@@ -50,13 +50,13 @@ import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/Ex
 
 //MARKETPLACE
 import ViewProduct from "@/components/user_dashboard/Marketplace/view_product/ViewProduct";
-import TopSellers from "@/components/user_dashboard/Marketplace/top_seller/TopSellers"
+import TopSellers from "@/components/user_dashboard/Marketplace/top_seller/TopSellers";
 import PreviewPage from "@/components/user_dashboard/Marketplace/buying_process/pages/PreviewPage";
-import ShippingPage from "@/components/user_dashboard/Marketplace/buying_process/pages/ShippingPage"
-import AddAddressPage from "@/components/user_dashboard/Marketplace/buying_process/pages/AddAddressPage"
-import { AddressProvider } from "@/components/user_dashboard/Marketplace/buying_process/shipping_address/AddressContext"
+import ShippingPage from "@/components/user_dashboard/Marketplace/buying_process/pages/ShippingPage";
+import AddAddressPage from "@/components/user_dashboard/Marketplace/buying_process/pages/AddAddressPage";
+import { AddressProvider } from "@/components/user_dashboard/Marketplace/buying_process/shipping_address/AddressContext";
 import PaymentMethodPage from "@/components/user_dashboard/Marketplace/buying_process/pages/PaymentMethodPage";
-import ReviewPurchase from "@/components/user_dashboard/Marketplace/buying_process/review/ReviewPurchase"
+import ReviewPurchase from "@/components/user_dashboard/Marketplace/buying_process/review/ReviewPurchase";
 
 //ADMIN & MODERATOR
 import { AdminLayout } from "@/components/admin_&_moderator/layout/AdminLayout";
@@ -114,191 +114,194 @@ const Gallery3DWrapper = () => {
   const slotArtworkMap: Record<number, string> = slotMapRaw ? JSON.parse(decodeURIComponent(slotMapRaw)) : {};
   const artworks = artworksRaw ? JSON.parse(decodeURIComponent(artworksRaw)) : [];
 
-  return (
-    <Gallery3D slotArtworkMap={slotArtworkMap} artworks={artworks} />
-  );
+  return <Gallery3D slotArtworkMap={slotArtworkMap} artworks={artworks} />;
 };
-
 
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <WishlistProvider>
         <LikedArtworksProvider>
-            <TooltipProvider>
-              <DonationProvider>
-                <DonationWrapper>
-                  <Toaster position="bottom-right" richColors />
-                  <ModalProvider>
-                    <ArtworkProvider>
-                      <AddressProvider>
-                        <BrowserRouter>
-                          <Routes>
-                            {/* Public & User Dashboard Routes (NO SidebarProvider) */}
-                            <Route path="/" element={<Index />} />
-                            <Route path="/bid/:id" element={<BidDetails />} />
-                            <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
-                            <Route path="/fingerprint-register" element={<FingerprintRegister />} />
-                            <Route path="/hero" element={<Hero />} />
-                            {/* Gallery */}
-                            <Route path="/gallery3d-preview" element={<Gallery3DWrapper />} />
-                            {/* Bid */}
-                            <Route path="/bid-winner/:id" element={<BidWinnerPage />} />
-                            <Route path="/payment" element={<PaymentPage />} />
-                            {/* Marketplace */}
-                            <Route path="/viewproduct/:id" element={<ViewProduct />} />
-                            <Route path="/topsellers" element={<TopSellers />} />
-                            <Route path="/" element={<PreviewPage />} />
-                            <Route path="/shipping" element={<ShippingPage />} />
-                            <Route path="/add-address" element={<AddAddressPage isEditing={false} />} />
-                            <Route path="/edit-address/:id" element={<AddAddressPage isEditing={true} />} />
-                            <Route path="/payment-method" element={<PaymentMethodPage />} />
-                            <Route path="/reviewpurchase" element={<ReviewPurchase onBack={() => {}} onSubmit={() => {}} />} />
-                            {/* Exhibit */}
-                            <Route path="/add-exhibit" element={<AddExhibit />} />
-                            <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />
-                            <Route path="/collaborator/exhibit/:exhibitId" element={<CollaboratorView />} />
-                            <Route path="/exhibitreview" element={<ExhibitReview />} />
-                            <Route path="/follow-demo" element={<FollowDemo />} />
-                            <Route path="/explore" element={<ProtectedRoute children={<Explore />} />} />
-                            <Route path="/create" element={<ProtectedRoute children={<Create />} />} />
-                            <Route path="/sell" element={<ProtectedRoute children={<SellArt />} />} />
-                            <Route path="/update/:id" element={<ProtectedRoute children={<UpdatePost />} />} />
-                            <Route path="/userprofile/:id" element={<ProtectedRoute children={<UserProfile />} />} />
-                            <Route path="/artwork/:id" element={<ProtectedRoute children={<ArtworkDetails />} />} />
-                            <Route path="/bidding" element={<ProtectedRoute children={<Bidding />} />} />
-                            <Route path="/marketplace" element={<ProtectedRoute children={<Marketplace />} />} />
-                            <Route path="/exhibits" element={<ProtectedRoute children={<Exhibits />} />} />
-                            <Route path="/all-notifications" element={<AllNotifications />} />
-                            <Route path="/settings" element={<ProtectedRoute children={<Settings />} />}>
-                              <Route path="edit-profile" element={<ProtectedRoute children={<EditProfile />} />} />
-                              <Route path="account-details" element={<ProtectedRoute children={<AccountDetails />} />} />
-                              <Route path="security" element={<ProtectedRoute children={<SecuritySettings />} />} />
-                              <Route path="notifications" element={<ProtectedRoute children={<NotificationsSettings />} />} />
-                              <Route path="billing" element={<ProtectedRoute children={<BillingSettings />} />} />
-                              <Route path="help-center" element={<ProtectedRoute children={<HelpCenter />} />} />
-                            </Route>
-                            <Route path="/view-insights/:id" element={<ViewInsightsPage />} />
+          <TooltipProvider>
+            <DonationProvider>
+              <DonationWrapper>
+                <Toaster position="bottom-right" richColors />
+                <ModalProvider>
+                  <ArtworkProvider>
+                    <AddressProvider>
+                      <BrowserRouter>
+                        <Routes>
+                          {/* Public & User Dashboard Routes (NO SidebarProvider) */}
+                          <Route path="/" element={<Index />} />
+                          <Route path="/bid/:id" element={<BidDetails />} />
+                          <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
+                          <Route path="/fingerprint-register" element={<FingerprintRegister />} />
+                          <Route path="/hero" element={<Hero />} />
+                          {/* Gallery */}
+                          <Route path="/gallery3d-preview" element={<Gallery3DWrapper />} />
+                          {/* Bid */}
+                          <Route path="/bid-winner/:id" element={<BidWinnerPage />} />
+                          <Route path="/payment" element={<PaymentPage />} />
+                          {/* Marketplace */}
+                          <Route path="/viewproduct/:id" element={<ViewProduct />} />
+                          <Route path="/topsellers" element={<TopSellers />} />
+                          <Route path="/" element={<PreviewPage />} />
+                          <Route path="/shipping" element={<ShippingPage />} />
+                          <Route path="/add-address" element={<AddAddressPage isEditing={false} />} />
+                          <Route path="/edit-address/:id" element={<AddAddressPage isEditing={true} />} />
+                          <Route path="/payment-method" element={<PaymentMethodPage />} />
+                          <Route
+                            path="/reviewpurchase"
+                            element={<ReviewPurchase onBack={() => {}} onSubmit={() => {}} />}
+                          />
+                          {/* Exhibit */}
+                          <Route path="/add-exhibit" element={<AddExhibit />} />
+                          <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />
+                          <Route path="/collaborator/exhibit/:exhibitId" element={<CollaboratorView />} />
+                          <Route path="/exhibitreview" element={<ExhibitReview />} />
+                          <Route path="/follow-demo" element={<FollowDemo />} />
+                          <Route path="/explore" element={<ProtectedRoute children={<Explore />} />} />
+                          <Route path="/create" element={<ProtectedRoute children={<Create />} />} />
+                          <Route path="/sell" element={<ProtectedRoute children={<SellArt />} />} />
+                          <Route path="/update/:id" element={<ProtectedRoute children={<UpdatePost />} />} />
+                          <Route path="/userprofile/:id" element={<ProtectedRoute children={<UserProfile />} />} />
+                          <Route path="/artwork/:id" element={<ProtectedRoute children={<ArtworkDetails />} />} />
+                          <Route path="/bidding" element={<ProtectedRoute children={<Bidding />} />} />
+                          <Route path="/marketplace" element={<ProtectedRoute children={<Marketplace />} />} />
+                          <Route path="/exhibits" element={<ProtectedRoute children={<Exhibits />} />} />
+                          <Route path="/all-notifications" element={<AllNotifications />} />
+                          <Route path="/settings" element={<ProtectedRoute children={<Settings />} />}>
+                            <Route path="edit-profile" element={<ProtectedRoute children={<EditProfile />} />} />
+                            <Route path="account-details" element={<ProtectedRoute children={<AccountDetails />} />} />
+                            <Route path="security" element={<ProtectedRoute children={<SecuritySettings />} />} />
+                            <Route
+                              path="notifications"
+                              element={<ProtectedRoute children={<NotificationsSettings />} />}
+                            />
+                            <Route path="billing" element={<ProtectedRoute children={<BillingSettings />} />} />
+                            <Route path="help-center" element={<ProtectedRoute children={<HelpCenter />} />} />
+                          </Route>
+                          <Route path="/view-insights/:id" element={<ViewInsightsPage />} />
 
-                            {/* Admin Routes */}
-                            <Route
-                              path="/admin"
-                              element={
-                                <ProtectedRoute allowedRoles={["admin"]}>
-                                  <AdminLayout role="admin">
-                                    <AdminDashboard />
-                                  </AdminLayout>
-                                </ProtectedRoute>
-                              }
-                            />
-                            <Route
-                              path="/admin/users"
-                              element={
-                                <ProtectedRoute allowedRoles={["admin"]}>
-                                  <AdminLayout role="admin">
-                                    <AdminUsers />
-                                  </AdminLayout>
-                                </ProtectedRoute>
-                              }
-                            />
-                            <Route
-                              path="/admin/config"
-                              element={
-                                <ProtectedRoute allowedRoles={["admin"]}>
-                                  <AdminLayout role="admin">
-                                    <AdminConfig />
-                                  </AdminLayout>
-                                </ProtectedRoute>
-                              }
-                            />
-                            <Route
-                              path="/admin/security"
-                              element={
-                                <ProtectedRoute allowedRoles={["admin"]}>
-                                  <AdminLayout role="admin">
-                                    <AdminSecurity />
-                                  </AdminLayout>
-                                </ProtectedRoute>
-                              }
-                            />
-                            <Route
-                              path="/admin/analytics"
-                              element={
-                                <ProtectedRoute allowedRoles={["admin"]}>
-                                  <AdminLayout role="admin">
-                                    <AdminAnalytics />
-                                  </AdminLayout>
-                                </ProtectedRoute>
-                              }
-                            />
-                            {/* Moderator Routes */}
-                            <Route
-                              path="/moderator"
-                              element={
-                                <ProtectedRoute allowedRoles={["moderator"]}>
-                                  <AdminLayout role="moderator">
-                                    <ModeratorDashboard />
-                                  </AdminLayout>
-                                </ProtectedRoute>
-                              }
-                            />
+                          {/* Admin Routes */}
+                          <Route
+                            path="/admin"
+                            element={
+                              <ProtectedRoute allowedRoles={["admin"]}>
+                                <AdminLayout role="admin">
+                                  <AdminDashboard />
+                                </AdminLayout>
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/admin/users"
+                            element={
+                              <ProtectedRoute allowedRoles={["admin"]}>
+                                <AdminLayout role="admin">
+                                  <AdminUsers />
+                                </AdminLayout>
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/admin/config"
+                            element={
+                              <ProtectedRoute allowedRoles={["admin"]}>
+                                <AdminLayout role="admin">
+                                  <AdminConfig />
+                                </AdminLayout>
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/admin/security"
+                            element={
+                              <ProtectedRoute allowedRoles={["admin"]}>
+                                <AdminLayout role="admin">
+                                  <AdminSecurity />
+                                </AdminLayout>
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/admin/analytics"
+                            element={
+                              <ProtectedRoute allowedRoles={["admin"]}>
+                                <AdminLayout role="admin">
+                                  <AdminAnalytics />
+                                </AdminLayout>
+                              </ProtectedRoute>
+                            }
+                          />
+                          {/* Moderator Routes */}
+                          <Route
+                            path="/moderator"
+                            element={
+                              <ProtectedRoute allowedRoles={["moderator"]}>
+                                <AdminLayout role="moderator">
+                                  <ModeratorDashboard />
+                                </AdminLayout>
+                              </ProtectedRoute>
+                            }
+                          />
 
-                            <Route
-                              path="/moderator/reports"
-                              element={
-                                <ProtectedRoute allowedRoles={["moderator"]}>
-                                  <AdminLayout role="moderator">
-                                    <ModeratorReports />
-                                  </AdminLayout>
-                                </ProtectedRoute>
-                              }
-                            />
+                          <Route
+                            path="/moderator/reports"
+                            element={
+                              <ProtectedRoute allowedRoles={["moderator"]}>
+                                <AdminLayout role="moderator">
+                                  <ModeratorReports />
+                                </AdminLayout>
+                              </ProtectedRoute>
+                            }
+                          />
 
-                            <Route
-                              path="/moderator/content"
-                              element={
-                                <ProtectedRoute allowedRoles={["moderator"]}>
-                                  <AdminLayout role="moderator">
-                                    <ModeratorContent />
-                                  </AdminLayout>
-                                </ProtectedRoute>
-                              }
-                            />
+                          <Route
+                            path="/moderator/content"
+                            element={
+                              <ProtectedRoute allowedRoles={["moderator"]}>
+                                <AdminLayout role="moderator">
+                                  <ModeratorContent />
+                                </AdminLayout>
+                              </ProtectedRoute>
+                            }
+                          />
 
-                            <Route
-                              path="/moderator/users"
-                              element={
-                                <ProtectedRoute allowedRoles={["moderator"]}>
-                                  <AdminLayout role="moderator">
-                                    <ModeratorUsers />
-                                  </AdminLayout>
-                                </ProtectedRoute>
-                              }
-                            />
+                          <Route
+                            path="/moderator/users"
+                            element={
+                              <ProtectedRoute allowedRoles={["moderator"]}>
+                                <AdminLayout role="moderator">
+                                  <ModeratorUsers />
+                                </AdminLayout>
+                              </ProtectedRoute>
+                            }
+                          />
 
-                            <Route
-                              path="/moderator/notifications"
-                              element={
-                                <ProtectedRoute allowedRoles={["moderator"]}>
-                                  <AdminLayout role="moderator">
-                                    <ModeratorNotifications />
-                                  </AdminLayout>
-                                </ProtectedRoute>
-                              }
-                            />
+                          <Route
+                            path="/moderator/notifications"
+                            element={
+                              <ProtectedRoute allowedRoles={["moderator"]}>
+                                <AdminLayout role="moderator">
+                                  <ModeratorNotifications />
+                                </AdminLayout>
+                              </ProtectedRoute>
+                            }
+                          />
 
-                            {/* Not Found */}
-                            <Route path="*" element={<NotFound />} />
-                            {/* Unauthorized */}
-                            <Route path="/unauthorized" element={<ErrorPage />} />
-                          </Routes>
-                        </BrowserRouter>
-                      </AddressProvider>
-                    </ArtworkProvider>
-                  </ModalProvider>
-                </DonationWrapper>
-              </DonationProvider>
-            </TooltipProvider>
+                          {/* Not Found */}
+                          <Route path="*" element={<NotFound />} />
+                          {/* Unauthorized */}
+                          <Route path="/unauthorized" element={<ErrorPage />} />
+                        </Routes>
+                      </BrowserRouter>
+                    </AddressProvider>
+                  </ArtworkProvider>
+                </ModalProvider>
+              </DonationWrapper>
+            </DonationProvider>
+          </TooltipProvider>
         </LikedArtworksProvider>
       </WishlistProvider>
       <ReactQueryDevtools initialIsOpen={false} />

@@ -132,9 +132,10 @@ class ArtCardListView(APIView):
 
             artworks = Art.objects(
                 visibility__iexact="public",
-                art_status__iexact="onSale", 
+                art_status__iexact="onSale",
                 artist__nin=blocked_user_ids
-            ).only("title", "price", "discounted_price", "total_ratings", "image_url", "category","edition").order_by("-created_at")
+            ).order_by("-created_at")
+
 
             serializer = ArtCardSerializer(artworks, many=True)
             return Response(serializer.data)
@@ -154,7 +155,7 @@ class MyArtCardListView(APIView):
                 art_status__in=["onSale", "on Sale"]  
             ).only(
                 "title", "price", "discounted_price", "total_ratings",
-                "image_url", "category", "visibility", "art_status"
+                "image_url", "category", "visibility", "art_status","artist"
             ).order_by("-created_at")
 
             serializer = ArtCardSerializer(artworks, many=True)
