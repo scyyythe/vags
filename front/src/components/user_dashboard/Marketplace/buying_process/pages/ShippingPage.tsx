@@ -4,12 +4,13 @@ import ShippingDetails from "../shipping_address/ShippingDetails";
 import useAllAddresses from "@/hooks/users/address/useAllAddresses";
 import ShippingSkeleton from "@/components/skeletons/ShippingSkeleton";
 import useSetDefaultAddress from "@/hooks/users/address/useSetDefaultAddress";
+import { getLoggedInUserId } from "@/auth/decode";
 const ShippingPage = () => {
   const navigate = useNavigate();
   const { mutate: makeDefaultAddress } = useSetDefaultAddress();
+  const userId = getLoggedInUserId();
 
-  const { data: addresses = [], isLoading, isError, error } = useAllAddresses();
-
+  const { data: addresses = [], isLoading, isError, error } = useAllAddresses({ enabled: !!userId });
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const handleSelectAddress = (addressId: string) => {
     setSelectedAddressId(addressId);
