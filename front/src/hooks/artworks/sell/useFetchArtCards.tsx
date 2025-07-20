@@ -4,19 +4,14 @@ import apiClient from "@/utils/apiClient";
 export interface ArtCard {
   id: string;
   title: string;
+  medium?: string;
   price: number;
   discounted_price?: number | null;
   total_ratings: number;
   image_url: string[];
   category: string;
   edition?: string;
-  visibility?: string;
-  art_status?: string;
-  medium?: string;
-  style?: string;
-  size?: string;
-  year_created?: number;
-  artist_name?: string;
+  artist?: string;
 }
 
 const fetchArtCards = async () => {

@@ -7,7 +7,9 @@ import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 export interface SellCardProps {
   id: string;
   artworkImage: string;
+  artist?: string;
   price: number;
+  medium?: string;
   originalPrice?: number;
   title: string;
   category?: string;
@@ -19,20 +21,20 @@ export interface SellCardProps {
   onReportSuccess?: () => void;
   isMarketplace?: boolean;
   onCardClick?: () => void;
-  artist_name: string;
 }
 
 const SellCard = ({
   id,
   artworkImage,
   price,
+  medium,
+  artist,
   originalPrice = 0,
   title,
   category,
   edition,
   rating,
   isLiked = false,
-  artist_name,
   onLike,
   isReported,
   onReportSuccess,
@@ -180,9 +182,9 @@ const SellCard = ({
           artwork={{
             artworkImage,
             title,
-            artist_name,
-            medium: "Oil on Canvas",
-            style: category || "Contemporary",
+            artist,
+            medium,
+            style: category,
             edition: edition || "Original (1 of 1)",
             size: "24x36 inches",
             yearCreated: 2023,
