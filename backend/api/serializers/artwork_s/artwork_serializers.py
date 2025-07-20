@@ -189,6 +189,8 @@ class ArtCardSerializer(serializers.Serializer):
     edition=serializers.SerializerMethodField()
     artist = serializers.SerializerMethodField()
     medium = serializers.SerializerMethodField() 
+    size=serializers.SerializerMethodField()
+    year_created=serializers.SerializerMethodField()
     
     def get_total_ratings(self, obj):
         return Like.objects.filter(art=obj).count()
@@ -226,11 +228,25 @@ class ArtCardSerializer(serializers.Serializer):
             print(f" Error in get_edition for art {obj.id}: {e}")
             return ""
         
+    def get_size(self, obj):
+        try:
+            return str(obj.size) if hasattr(obj, "size") and obj.size else ""
+        except Exception as e:
+            print(f" Error in get_size for art {obj.id}: {e}")
+            return ""
+        
     def get_medium(self, obj):
         try:
             return str(obj.medium) if hasattr(obj, "medium") else ""
         except Exception as e:
             print(f"Error in get_medium for art {obj.id}: {e}")
+            return ""
+        
+    def get_year_created(self, obj):
+        try:
+            return str(obj.year_created) if hasattr(obj, "year_created") else ""
+        except Exception as e:
+            print(f"Error in get_year_created for art {obj.id}: {e}")
             return ""
 
     def to_representation(self, instance):
