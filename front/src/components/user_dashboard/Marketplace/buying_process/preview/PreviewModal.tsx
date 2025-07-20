@@ -13,7 +13,7 @@ interface PreviewModalProps {
     style: string;
     edition: string;
     size: string;
-    yearCreated: number;
+    yearCreated: string;
     price: number;
   };
   onProceedToCheckout: () => void;
@@ -71,12 +71,17 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
             </div>
             <div>
               <h4 className="text-gray-500">Style</h4>
-              <p className="font-medium">{artwork.style}</p>
+              <p className="font-medium">
+                {artwork.style ? artwork.style.charAt(0).toUpperCase() + artwork.style.slice(1) : ""}
+              </p>
             </div>
             <div className="pt-2 col-span-1">
               <h4 className="text-gray-500">Medium</h4>
-              <p className="font-medium">{artwork.medium}</p>
+              <p className="font-medium">
+                {artwork.medium ? artwork.medium.charAt(0).toUpperCase() + artwork.medium.slice(1) : ""}
+              </p>
             </div>
+
             <div className="pt-2 col-span-1">
               <h4 className="text-gray-500">Edition</h4>
               <p className="font-medium">{artwork.edition}</p>

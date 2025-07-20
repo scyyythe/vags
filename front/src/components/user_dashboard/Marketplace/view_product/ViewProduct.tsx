@@ -12,7 +12,7 @@ import ReviewModal from "@/components/user_dashboard/Marketplace/reviews/ReviewM
 import PreviewModal from "../buying_process/preview/PreviewModal";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { useSellArtworkDetail } from "@/hooks/artworks/sell/useSellArtworkDetail";
-
+import ProductViewingSkeleton from "@/components/skeletons/ProductViewingSkeleton";
 const ProductViewingContent = () => {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, error } = useSellArtworkDetail(id);
@@ -71,7 +71,7 @@ const ProductViewingContent = () => {
   ];
 
   if (isLoading) {
-    return <div>Loading artwork...</div>;
+    return <ProductViewingSkeleton />;
   }
 
   if (error || !product) {
@@ -517,10 +517,9 @@ const ProductViewingContent = () => {
           edition: product.edition,
           size: product.size + " cm",
           yearCreated: product.year_created,
-          price: product.price
+          price: product.price,
         }}
       />
-
     </div>
   );
 };

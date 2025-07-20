@@ -186,6 +186,8 @@ const Marketplace = () => {
                     category={artwork.category}
                     artist={artwork.artist}
                     edition={artwork.edition}
+                    size={artwork.size}
+                    yearCreated={artwork.year_created}
                     medium={artwork.medium}
                     artworkImage={artwork.image_url?.[0] || "/images/placeholder.jpg"}
                     price={artwork.discounted_price ?? artwork.price}

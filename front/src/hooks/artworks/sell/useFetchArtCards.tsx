@@ -12,6 +12,8 @@ export interface ArtCard {
   category: string;
   edition?: string;
   artist?: string;
+  year_created?: string;
+  size?: string;
 }
 
 const fetchArtCards = async () => {

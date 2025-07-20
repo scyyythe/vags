@@ -14,6 +14,8 @@ export interface SellCardProps {
   title: string;
   category?: string;
   edition?: string;
+  size?: string;
+  yearCreated?: string;
   rating?: number;
   isLiked?: boolean;
   onLike?: () => void;
@@ -34,6 +36,8 @@ const SellCard = ({
   category,
   edition,
   rating,
+  size,
+  yearCreated,
   isLiked = false,
   onLike,
   isReported,
@@ -185,9 +189,9 @@ const SellCard = ({
             artist,
             medium,
             style: category,
-            edition: edition || "Original (1 of 1)",
-            size: "24x36 inches",
-            yearCreated: 2023,
+            edition,
+            size,
+            yearCreated,
             price,
           }}
         />
