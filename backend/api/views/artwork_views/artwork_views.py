@@ -134,15 +134,11 @@ class ArtCardListView(APIView):
                 visibility__iexact="public",
                 art_status__iexact="onSale",
                 artist__nin=blocked_user_ids
-            ).only(
-                "title", "price", "discounted_price", "total_ratings",
-                "image_url", "category", "edition", "medium", "style",
-                "size", "year_created", "artist.name"
             ).order_by("-created_at")
+
 
             serializer = ArtCardSerializer(artworks, many=True)
             return Response(serializer.data)
-
         except Exception as e:
             return Response({"error": str(e)}, status=500)
 
@@ -159,7 +155,7 @@ class MyArtCardListView(APIView):
                 art_status__in=["onSale", "on Sale"]  
             ).only(
                 "title", "price", "discounted_price", "total_ratings",
-                "image_url", "category", "visibility", "art_status"
+                "image_url", "category", "visibility", "art_status","artist"
             ).order_by("-created_at")
 
             serializer = ArtCardSerializer(artworks, many=True)

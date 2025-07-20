@@ -183,15 +183,17 @@ const Marketplace = () => {
                   <SellCard
                     key={artwork.id}
                     id={artwork.id}
+                    category={artwork.category}
+                    artist={artwork.artist}
+                    edition={artwork.edition}
+                    medium={artwork.medium}
                     artworkImage={artwork.image_url?.[0] || "/images/placeholder.jpg"}
                     price={artwork.discounted_price ?? artwork.price}
                     originalPrice={artwork.discounted_price ? artwork.price : undefined}
                     title={artwork.title}
-                    artist_name={artwork.artist_name}
                     rating={artwork.total_ratings}
                     isLiked={likedItems.has(artwork.id)}
                     onLike={() => handleLike(artwork.id)}
-                    edition={artwork.edition || ""}
                     isMarketplace={true}
                     onCardClick={() => handleCardClick(artwork.id)}
                     isReported={reportedArtworks.has(artwork.id)}

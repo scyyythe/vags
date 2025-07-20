@@ -8,7 +8,7 @@ interface PreviewModalProps {
   artwork: {
     artworkImage: string;
     title: string;
-    artist_name: string;
+    artist: string;
     medium: string;
     style: string;
     edition: string;
@@ -59,7 +59,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
 
         {/* Title & Artist */}
         <h2 className="text-[14px] font-semibold text-center mt-4">{artwork.title}</h2>
-        <p className="text-[10px] text-center text-gray-500 mt-1">by {artwork.artist_name}</p>
+        <p className="text-[10px] text-center text-gray-500 mt-1">by {artwork.artist}</p>
 
         {/* Grid Details */}
         <div className="my-4">
