@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback, memo } from "react";
+import { useState, useEffect, useContext, memo } from "react";
 import { Heart, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LikedArtworksContext } from "@/context/LikedArtworksProvider";
