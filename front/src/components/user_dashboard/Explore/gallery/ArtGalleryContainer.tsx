@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Heart } from "lucide-react";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 interface ArtGalleryContainerProps {
@@ -27,7 +28,6 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
     { left: 80, rotate: 11, z: 1 }, // rightmost
   ];
 
-  // Fan angles for 5 cards, adjust if you have a different number
   const fanAngles = [-12, -6, 0, 6, 12];
 
   const overlap = 70; //controls how much cards overlap in the stack
@@ -127,12 +127,20 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
                   {/* Full card image_url */}
                   <img src={art.image_url?.[0] } alt={art.title} className="w-full h-full object-cover" />
                   {/* Info container at the bottom */}
-                  <div className="absolute left-0 bottom-0 w-full px-4 pt-2 pb-1 bg-white/70 rounded-b-lg">
-                    <div className="font-semibold text-[11px] leading-tight text-black -mb-1">{art.title}</div>
+                  <div className="absolute left-1/2 bottom-2 transform -translate-x-1/2 bg-white/80 rounded-md px-3 py-2 w-[90%] shadow-md backdrop-blur-sm">
+                    {/* Truncated Title */}
+                    <div className="font-semibold text-[11px] leading-tight text-black -mb-0.5 truncate overflow-hidden whitespace-nowrap w-24">
+                      {art.title}
+                    </div>
+
                     <div className="flex items-center justify-between">
-                      <div className="text-[8px] text-gray-700">by {art.artist.name}</div>
+                      {/* Truncated Artist */}
+                      <div className="text-[8px] text-gray-700 truncate overflow-hidden whitespace-nowrap max-w-[60%]">
+                        by {art.artist.name}
+                      </div>
+
                       <div className="flex items-center gap-1">
-                        <span className="text-red-600 text-base">♥</span>
+                        <Heart size={10} className="text-red-700 fill-red-700" />
                         <span className="text-[11px] font-medium text-black">{art.likes_count}</span>
                       </div>
                     </div>
