@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import apiClient from "@/utils/apiClient";
 
@@ -18,7 +17,7 @@ export interface ArtworkDetail {
   size?: string;
   medium?: string;
   artwork_style?: string;
-  year_created?: number;
+  year_created?: string;
   visibility: string;
   created_at: string;
   updated_at: string;
@@ -46,8 +45,7 @@ export const useSellArtworkDetail = (id: string | undefined) => {
         const res = await apiClient.get(`/art/marketplace/${id}/`);
         setData(res.data);
       } catch (err: any) {
-        const msg =
-          err.response?.data?.detail || "Failed to fetch artwork details.";
+        const msg = err.response?.data?.detail || "Failed to fetch artwork details.";
         setError(msg);
       } finally {
         setIsLoading(false);
