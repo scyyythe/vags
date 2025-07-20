@@ -36,6 +36,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
 }) => {
   const navigate = useNavigate();
   const { data: defaultAddress, isLoading: isAddressLoading } = useDefaultAddress();
+
   const handleAddressChange = () => {
     navigate("/shipping");
   };
@@ -49,12 +50,13 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   };
 
   // // Default data if not provided
-  // const defaultAddress = selectedAddress || {
-  //   name: "Jamaica Anuba",
-  //   address: "Sitio Cabutoy",
-  //   city: "Talisay, Cebu City, Philippines",
-  // };
+  const fallbackAddress = {
+    name: "No Name",
+    address: "No Address",
+    city: "No City",
+  };
 
+  const displayAddress = defaultAddress || fallbackAddress;
   const defaultPaymentMethod = selectedPaymentMethod || {
     type: "PayPal",
     details: "(display the major short details of the payment method)",
@@ -93,8 +95,8 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
                   <p className="text-[11px] text-gray-400">Loading address...</p>
                 ) : defaultAddress ? (
                   <>
-                    <h3 className="text-xs font-semibold text-gray-900">Address [{defaultAddress.city}]</h3>
-                    <p className="text-[11px] text-gray-600">{defaultAddress.address}</p>
+                    <h3 className="text-xs font-semibold text-gray-900">Address [{displayAddress.city}]</h3>
+                    <p className="text-[11px] text-gray-600">{displayAddress.address}</p>
                   </>
                 ) : (
                   <p className="text-[11px] text-red-600">No default address set.</p>

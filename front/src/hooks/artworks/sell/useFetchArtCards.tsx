@@ -10,6 +10,13 @@ export interface ArtCard {
   image_url: string[];
   category: string;
   edition?: string;
+  visibility?: string;
+  art_status?: string;
+  medium?: string;
+  style?: string;
+  size?: string;
+  year_created?: number;
+  artist_name?: string;
 }
 
 const fetchArtCards = async () => {

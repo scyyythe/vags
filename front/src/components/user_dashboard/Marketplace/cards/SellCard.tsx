@@ -15,10 +15,11 @@ export interface SellCardProps {
   rating?: number;
   isLiked?: boolean;
   onLike?: () => void;
-    isReported?: boolean;
+  isReported?: boolean;
   onReportSuccess?: () => void;
   isMarketplace?: boolean;
   onCardClick?: () => void;
+  artist_name: string;
 }
 
 const SellCard = ({
@@ -31,15 +32,16 @@ const SellCard = ({
   edition,
   rating,
   isLiked = false,
+  artist_name,
   onLike,
-    isReported,
+  isReported,
   onReportSuccess,
   isMarketplace = false,
   onCardClick,
 }: SellCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
- 
+
   const { mutate: submitReport } = useSubmitReport();
   const toggleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -62,32 +64,25 @@ const SellCard = ({
     setIsModalOpen(true);
   };
 
-const handleReport = (data: {
-  category: string;
-  option?: string;
-  description: string;
-  additionalInfo: string;
-}) => {
-  if (!id) return;
+  const handleReport = (data: { category: string; option?: string; description: string; additionalInfo: string }) => {
+    if (!id) return;
 
-submitReport(
-  {
-    art_id: id,
-    category: data.category,
-    option: data.option,
-    description: data.description,
-    additionalInfo: data.additionalInfo,
-  },
-  {
-    onSuccess: () => {
-      onReportSuccess?.(); 
-      toast.success("Report submitted successfully");
-    },
-  }
-);
-
-};
-
+    submitReport(
+      {
+        art_id: id,
+        category: data.category,
+        option: data.option,
+        description: data.description,
+        additionalInfo: data.additionalInfo,
+      },
+      {
+        onSuccess: () => {
+          onReportSuccess?.();
+          toast.success("Report submitted successfully");
+        },
+      }
+    );
+  };
 
   return (
     <div
@@ -149,19 +144,15 @@ submitReport(
         </div>
 
         <div className="relative text-gray-500" style={{ height: "24px" }}>
- <button
-  onClick={(e) => {
-    e.stopPropagation();
-    setMenuOpen((prev) => !prev);
-  }}
-  className={`p-1 rounded-full ${
-    isReported ? "text-red-600" : menuOpen ? "text-black" : ""
-  }`}
->
-  <MoreHorizontal size={14} />
-</button>
-
-
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setMenuOpen((prev) => !prev);
+            }}
+            className={`p-1 rounded-full ${isReported ? "text-red-600" : menuOpen ? "text-black" : ""}`}
+          >
+            <MoreHorizontal size={14} />
+          </button>
 
           {/* Render Menu */}
           <SellCardMenu isOpen={menuOpen} onReport={handleReport} isReported={false} />
@@ -189,7 +180,7 @@ submitReport(
           artwork={{
             artworkImage,
             title,
-            artist: "Angel Canete",
+            artist_name,
             medium: "Oil on Canvas",
             style: category || "Contemporary",
             edition: edition || "Original (1 of 1)",
@@ -199,9 +190,7 @@ submitReport(
           }}
         />
       )}
-
     </div>
-    
   );
 };
 

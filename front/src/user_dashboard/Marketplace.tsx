@@ -28,7 +28,7 @@ const Marketplace = () => {
   const [selectedArtCategory, setSelectedArtCategory] = useState("All");
   const [selectedSort, setSelectedSort] = useState("Latest");
   const [selectedEdition, setSelectedEdition] = useState("All");
-const [reportedArtworks, setReportedArtworks] = useState<Set<string>>(new Set());
+  const [reportedArtworks, setReportedArtworks] = useState<Set<string>>(new Set());
 
   const categories = ["All", "Trending", "Following"];
   const navigate = useNavigate();
@@ -131,7 +131,7 @@ const [reportedArtworks, setReportedArtworks] = useState<Set<string>>(new Set())
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex py-1 px-2.5 rounded-full border border-gray-300 gap-2">
-                      <i className='bx bx-sort text-xs'></i>
+                      <i className="bx bx-sort text-xs"></i>
                       <span className="text-[10px]">{selectedSort}</span>
                       <ChevronDown className="w-3 h-3 relative top-0.5" />
                     </button>
@@ -181,22 +181,21 @@ const [reportedArtworks, setReportedArtworks] = useState<Set<string>>(new Set())
                 )}
                 {filteredArtCards.map((artwork) => (
                   <SellCard
-  key={artwork.id}
-  id={artwork.id}
-  artworkImage={artwork.image_url?.[0] || "/images/placeholder.jpg"}
-  price={artwork.discounted_price ?? artwork.price}
-  originalPrice={artwork.discounted_price ? artwork.price : undefined}
-  title={artwork.title}
-  rating={artwork.total_ratings}
-  isLiked={likedItems.has(artwork.id)}
-  onLike={() => handleLike(artwork.id)}
-  edition={""}
-  isMarketplace={true}
-  onCardClick={() => handleCardClick(artwork.id)}
- 
-isReported={reportedArtworks.has(artwork.id)}
-/>
-
+                    key={artwork.id}
+                    id={artwork.id}
+                    artworkImage={artwork.image_url?.[0] || "/images/placeholder.jpg"}
+                    price={artwork.discounted_price ?? artwork.price}
+                    originalPrice={artwork.discounted_price ? artwork.price : undefined}
+                    title={artwork.title}
+                    artist_name={artwork.artist_name}
+                    rating={artwork.total_ratings}
+                    isLiked={likedItems.has(artwork.id)}
+                    onLike={() => handleLike(artwork.id)}
+                    edition={artwork.edition || ""}
+                    isMarketplace={true}
+                    onCardClick={() => handleCardClick(artwork.id)}
+                    isReported={reportedArtworks.has(artwork.id)}
+                  />
                 ))}
               </>
             )}
