@@ -25,7 +25,7 @@ const SellTab = () => {
     : useUserSellArtCards(userId);
 
   const [mainTab, setMainTab] = useState("myListings");
-  const [activeSubGroup, setActiveSubGroup] = useState<"activeListings" | "soldArtworks">("activeListings");
+  const [activeSubGroup, setActiveSubGroup] = useState<"listings" | "soldArtworks">("listings");
   const [subTab, setSubTab] = useState("available");
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -98,7 +98,7 @@ const SellTab = () => {
 
   const onLikeToggle = useCallback(() => {}, []);
 
-  const activeListingTabs = ["available", "draft"];
+  const activeListingTabs = ["available", "unlisted", "deleted"];
   const soldArtworksTabs = ["awaiting_payment", "payment_received", "in_progress", "completed", "cancelled", "refunded", "reviews"];
   const myPurchaseTabs = ["pending_payment", "payment_processing", "paid", "failed", "cancelled", "completed", "refunded", "reviewed"];
 
@@ -380,7 +380,7 @@ const SellTab = () => {
             onClick={() => {
               setMainTab(tab);
               setSubTab(tab === "myListings" ? "available" : "pending_payment");
-              setActiveSubGroup("activeListings");
+              setActiveSubGroup("listings");
               setShowDropdown(false);
             }}
           >
@@ -397,31 +397,31 @@ const SellTab = () => {
               className="flex items-center space-x-1 px-3 py-1 border border-gray-300 rounded-full text-gray-700"
               onClick={() => setShowDropdown(!showDropdown)}
             >
-              <span>{activeSubGroup === "activeListings" ? "Active Listings" : "Sold Artworks"}</span>
+              <span>{activeSubGroup === "listings" ? "Listings" : "Sold Artworks"}</span>
               <svg className={`w-3 h-3 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             {showDropdown && (
               <div className="absolute z-10 bg-white border mt-2 rounded shadow text-[11px]">
-                {["activeListings", "soldArtworks"].map((option) => (
+                {["listings", "soldArtworks"].map((option) => (
                   <button
                     key={option}
                     className={`block px-4 py-2 w-full text-left ${activeSubGroup === option ? "text-black font-medium" : "text-gray-600"}`}
                     onClick={() => {
-                      setActiveSubGroup(option as "activeListings" | "soldArtworks");
-                      setSubTab(option === "activeListings" ? "available" : "awaiting_payment");
+                      setActiveSubGroup(option as "listings" | "soldArtworks");
+                      setSubTab(option === "listings" ? "available" : "awaiting_payment");
                       setShowDropdown(false);
                     }}
                   >
-                    {option === "activeListings" ? "Active Listings" : "Sold Artworks"}
+                    {option === "listings" ? "Listings" : "Sold"}
                   </button>
                 ))}
               </div>
             )}
           </div>
           <div className="flex flex-wrap gap-4">
-            {(activeSubGroup === "activeListings" ? activeListingTabs : soldArtworksTabs).map((tab) => (
+            {(activeSubGroup === "listings" ? activeListingTabs : soldArtworksTabs).map((tab) => (
               <button
                 key={tab}
                 className={`px-3 py-1 border-b-2 ${subTab === tab ? "border-red-800 text-red-800" : "border-transparent text-gray-600"}`}
