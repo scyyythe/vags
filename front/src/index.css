@@ -355,4 +355,44 @@ body.no-scroll {
   scrollbar-color: rgba(209, 209, 209, 0.4) transparent;
 }
 
+/* ORDER DETAILS */
+.order-details-scrollbar-hidden {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; 
+}
 
+.order-details-scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* REVIEW MODAL */
+.review-modal-scroll-hidden {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+}
+
+.review-modal-scroll-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* REVIEW-DETAILS MODAL */
+.review-details-scroll-hidden {
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+}
+
+.review-details-scroll-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* EDIT-REVIEW MODAL */
+.edit-review-scroll-hidden {
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; 
+}
+
+.edit-review-scroll-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
