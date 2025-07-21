@@ -42,8 +42,8 @@ const SellTab = () => {
   });
 
   const activeListingTabs = ["available", "draft"];
-  const soldArtworksTabs = ["awaiting_payment", "payment_received", "in_progress", "completed", "cancelled", "refunded"];
-  const myPurchaseTabs = ["pending_payment", "payment_processing", "paid", "failed", "cancelled", "completed", "refunded"];
+  const soldArtworksTabs = ["awaiting_payment", "payment_received", "in_progress", "completed", "cancelled", "refunded", "reviews"];
+  const myPurchaseTabs = ["pending_payment", "payment_processing", "paid", "failed", "cancelled", "completed", "refunded", "reviewed"];
 
   return (
     <div className="w-full">
