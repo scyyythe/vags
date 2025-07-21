@@ -1,9 +1,11 @@
 import React, { useState, memo } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
-import SellCardMenu from "./SellCardMenu";
+import SellMenu from "@/components/user_dashboard/own_profile/menu/sell_card/Menu";
+ import SellCardMenu from "./SellCardMenu";
 import PreviewModal from "../buying_process/preview/PreviewModal";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
+
 export interface SellCardProps {
   id: string;
   artworkImage: string;
@@ -23,6 +25,7 @@ export interface SellCardProps {
   onReportSuccess?: () => void;
   isMarketplace?: boolean;
   onCardClick?: () => void;
+  isOwner?: boolean;
 }
 
 const SellCard = ({
@@ -44,6 +47,7 @@ const SellCard = ({
   onReportSuccess,
   isMarketplace = false,
   onCardClick,
+  isOwner = false,
 }: SellCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -151,10 +155,7 @@ const SellCard = ({
 
         <div className="relative text-gray-500" style={{ height: "24px" }}>
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setMenuOpen((prev) => !prev);
-            }}
+            onClick={handleMenuClick}
             className={`p-1 rounded-full ${isReported ? "text-red-600" : menuOpen ? "text-black" : ""}`}
           >
             <MoreHorizontal size={14} />
@@ -162,6 +163,21 @@ const SellCard = ({
 
           {/* Render Menu */}
           <SellCardMenu isOpen={menuOpen} onReport={handleReport} isReported={false} />
+          {/* {isOwner ? ( */}
+            {/* <SellMenu
+              isOpen={menuOpen}
+              artworkId={id}
+              onEdit={(artworkId) => toast("Edit clicked for " + artworkId)}
+              onToggleVisibility={(newVisibility, artworkId) => toast(`Set visibility to ${newVisibility}`)}
+              onDelete={() => toast("Delete clicked")}
+              onMarkAsSold={() => toast("Marked as sold")}
+              onViewInsights={() => toast("Viewing insights")}
+            /> */}
+          {/* ) : (
+            
+          )} */}
+
+
         </div>
       </div>
 

@@ -16,8 +16,8 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 overflow-hidden">
       <div className="bg-white rounded-lg py-7 shadow-xl max-w-sm w-full text-center relative">
-        <h2 className="text-xs font-semibold text-gray-900 mb-2">You are about to delete this exhibit</h2>
-        <p className="text-[10px] text-gray-500 mb-6">This will permanently remove the exhibit from the dashboard.</p>
+        <h2 className="text-xs font-semibold text-gray-900 mb-2">You are about to delete this product</h2>
+        <p className="text-[10px] text-gray-500 mb-6">This will permanently remove the product from the dashboard.</p>
         <div className="flex justify-center gap-16">
           <button
             onClick={onCancel}

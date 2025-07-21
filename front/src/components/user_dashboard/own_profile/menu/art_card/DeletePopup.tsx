@@ -17,7 +17,7 @@ const DeleteConfirmationPopup: React.FC<DeleteConfirmationPopupProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 overflow-hidden">
       <div className="bg-white rounded-lg py-7 shadow-xl max-w-sm w-full text-center relative">
         <h2 className="text-xs font-semibold text-gray-900 mb-2">You are about to delete this artwork</h2>
-        <p className="text-[10px] text-gray-500 mb-6">This will permanently remove the artwork from your profile.<br />Are you sure?</p>
+        <p className="text-[10px] text-gray-500 mb-6">This will permanently remove the artwork from your profile.</p>
         <div className="flex justify-center gap-16">
           <button
             onClick={onCancel}
