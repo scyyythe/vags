@@ -20,9 +20,7 @@ const SellTab = () => {
   const navigate = useNavigate();
   const isOwnProfile = String(userId) === String(loggedInUserId);
 
-  const { myArtCards, isLoading } = isOwnProfile
-    ? useMySellArtCards()
-    : useUserSellArtCards(userId);
+  const { myArtCards, isLoading } = isOwnProfile ? useMySellArtCards() : useUserSellArtCards(userId);
 
   const [mainTab, setMainTab] = useState("myListings");
   const [activeSubGroup, setActiveSubGroup] = useState<"listings" | "soldArtworks">("listings");
@@ -67,8 +65,8 @@ const SellTab = () => {
       artwork: {
         artworkImage: order.artworkImage,
         title: order.title,
-        artist: order.artist
-      }
+        artist: order.artist,
+      },
     });
     setShowReviewDetailsModal(true);
   };
@@ -91,18 +89,43 @@ const SellTab = () => {
     setSelectedReview(null);
   };
 
-  const onCardClick = useCallback((id: string) => {
-    if (!id) return;
-    navigate(`/viewproduct/${id}/`);
-  }, [navigate]);
+  const onCardClick = useCallback(
+    (id: string) => {
+      if (!id) return;
+      navigate(`/viewproduct/${id}/`);
+    },
+    [navigate]
+  );
 
   const onLikeToggle = useCallback(() => {}, []);
+  const statusMap: Record<string, string> = {
+    available: "onsale",
+    unlisted: "unlisted",
+    deleted: "deleted",
+  };
 
   const activeListingTabs = ["available", "unlisted", "deleted"];
-  const soldArtworksTabs = ["awaiting_payment", "payment_received", "in_progress", "completed", "cancelled", "refunded", "reviews"];
-  const myPurchaseTabs = ["pending_payment", "payment_processing", "paid", "failed", "cancelled", "completed", "refunded", "reviewed"];
+  const soldArtworksTabs = [
+    "awaiting_payment",
+    "payment_received",
+    "in_progress",
+    "completed",
+    "cancelled",
+    "refunded",
+    "reviews",
+  ];
+  const myPurchaseTabs = [
+    "pending_payment",
+    "payment_processing",
+    "paid",
+    "failed",
+    "cancelled",
+    "completed",
+    "refunded",
+    "reviewed",
+  ];
 
-    // Mock data for purchased artworks
+  // Mock data for purchased artworks
   const mockOrders = [
     {
       id: "ORD-001",
@@ -118,22 +141,27 @@ const SellTab = () => {
         name: "John Doe",
         address: "123 Art Street",
         city: "Metro Manila",
-        postalCode: "1000"
+        postalCode: "1000",
       },
       artwork: {
         size: "16 x 12 inches",
         medium: "Acrylic on Canvas",
         style: "Abstract",
         edition: "Original (1 of 1)",
-        yearCreated: 2024
+        yearCreated: 2024,
       },
       timeline: [
         { status: "Order Placed", date: "Jan 15, 2025", description: "Your order has been confirmed", completed: true },
-        { status: "Payment Pending", date: "Jan 15, 2025", description: "Waiting for payment confirmation", completed: false },
+        {
+          status: "Payment Pending",
+          date: "Jan 15, 2025",
+          description: "Waiting for payment confirmation",
+          completed: false,
+        },
         { status: "Processing", date: "", description: "Order will be processed after payment", completed: false },
         { status: "Shipped", date: "", description: "Artwork will be shipped", completed: false },
-        { status: "Delivered", date: "", description: "Artwork delivered to your address", completed: false }
-      ]
+        { status: "Delivered", date: "", description: "Artwork delivered to your address", completed: false },
+      ],
     },
     {
       id: "ORD-002",
@@ -149,22 +177,32 @@ const SellTab = () => {
         name: "John Doe",
         address: "123 Art Street",
         city: "Metro Manila",
-        postalCode: "1000"
+        postalCode: "1000",
       },
       artwork: {
         size: "20 x 16 inches",
         medium: "Oil on Canvas",
         style: "Landscape",
         edition: "Limited Edition (5 of 50)",
-        yearCreated: 2024
+        yearCreated: 2024,
       },
       timeline: [
         { status: "Order Placed", date: "Jan 12, 2025", description: "Your order has been confirmed", completed: true },
-        { status: "Payment Processing", date: "Jan 12, 2025", description: "Payment is being processed", completed: true },
-        { status: "Processing", date: "", description: "Order will be processed after payment confirmation", completed: false },
+        {
+          status: "Payment Processing",
+          date: "Jan 12, 2025",
+          description: "Payment is being processed",
+          completed: true,
+        },
+        {
+          status: "Processing",
+          date: "",
+          description: "Order will be processed after payment confirmation",
+          completed: false,
+        },
         { status: "Shipped", date: "", description: "Artwork will be shipped", completed: false },
-        { status: "Delivered", date: "", description: "Artwork delivered to your address", completed: false }
-      ]
+        { status: "Delivered", date: "", description: "Artwork delivered to your address", completed: false },
+      ],
     },
     {
       id: "ORD-003",
@@ -180,22 +218,27 @@ const SellTab = () => {
         name: "John Doe",
         address: "123 Art Street",
         city: "Metro Manila",
-        postalCode: "1000"
+        postalCode: "1000",
       },
       artwork: {
         size: "18 x 14 inches",
         medium: "Watercolor",
         style: "Landscape",
         edition: "Original (1 of 1)",
-        yearCreated: 2024
+        yearCreated: 2024,
       },
       timeline: [
         { status: "Order Placed", date: "Jan 8, 2025", description: "Your order has been confirmed", completed: true },
-        { status: "Payment Confirmed", date: "Jan 8, 2025", description: "Payment received successfully", completed: true },
+        {
+          status: "Payment Confirmed",
+          date: "Jan 8, 2025",
+          description: "Payment received successfully",
+          completed: true,
+        },
         { status: "Processing", date: "Jan 9, 2025", description: "Order is being prepared", completed: true },
         { status: "Shipped", date: "", description: "Artwork will be shipped soon", completed: false },
-        { status: "Delivered", date: "", description: "Artwork delivered to your address", completed: false }
-      ]
+        { status: "Delivered", date: "", description: "Artwork delivered to your address", completed: false },
+      ],
     },
     {
       id: "ORD-004",
@@ -212,22 +255,27 @@ const SellTab = () => {
         name: "John Doe",
         address: "123 Art Street",
         city: "Metro Manila",
-        postalCode: "1000"
+        postalCode: "1000",
       },
       artwork: {
         size: "24 x 18 inches",
         medium: "Oil on Canvas",
         style: "Landscape",
         edition: "Original (1 of 1)",
-        yearCreated: 2024
+        yearCreated: 2024,
       },
       timeline: [
         { status: "Order Placed", date: "Dec 20, 2024", description: "Your order has been confirmed", completed: true },
-        { status: "Payment Confirmed", date: "Dec 20, 2024", description: "Payment received successfully", completed: true },
+        {
+          status: "Payment Confirmed",
+          date: "Dec 20, 2024",
+          description: "Payment received successfully",
+          completed: true,
+        },
         { status: "Processing", date: "Dec 21, 2024", description: "Order is being prepared", completed: true },
         { status: "Shipped", date: "Dec 25, 2024", description: "Artwork has been shipped", completed: true },
-        { status: "Delivered", date: "Dec 30, 2024", description: "Artwork delivered successfully", completed: true }
-      ]
+        { status: "Delivered", date: "Dec 30, 2024", description: "Artwork delivered successfully", completed: true },
+      ],
     },
     {
       id: "ORD-005",
@@ -242,19 +290,24 @@ const SellTab = () => {
         name: "John Doe",
         address: "123 Art Street",
         city: "Metro Manila",
-        postalCode: "1000"
+        postalCode: "1000",
       },
       artwork: {
         size: "12 x 12 inches",
         medium: "Acrylic on Canvas",
         style: "Abstract",
         edition: "Limited Edition (3 of 25)",
-        yearCreated: 2024
+        yearCreated: 2024,
       },
       timeline: [
         { status: "Order Placed", date: "Jan 10, 2025", description: "Your order has been confirmed", completed: true },
-        { status: "Payment Failed", date: "Jan 10, 2025", description: "Payment could not be processed", completed: false }
-      ]
+        {
+          status: "Payment Failed",
+          date: "Jan 10, 2025",
+          description: "Payment could not be processed",
+          completed: false,
+        },
+      ],
     },
     {
       id: "ORD-006",
@@ -269,19 +322,24 @@ const SellTab = () => {
         name: "John Doe",
         address: "123 Art Street",
         city: "Metro Manila",
-        postalCode: "1000"
+        postalCode: "1000",
       },
       artwork: {
         size: "14 x 18 inches",
         medium: "Oil on Canvas",
         style: "Landscape",
         edition: "Limited Edition (2 of 20)",
-        yearCreated: 2024
+        yearCreated: 2024,
       },
       timeline: [
         { status: "Order Placed", date: "Jan 5, 2025", description: "Your order has been confirmed", completed: true },
-        { status: "Order Cancelled", date: "Jan 5, 2025", description: "Order cancelled by customer request", completed: true }
-      ]
+        {
+          status: "Order Cancelled",
+          date: "Jan 5, 2025",
+          description: "Order cancelled by customer request",
+          completed: true,
+        },
+      ],
     },
     {
       id: "ORD-007",
@@ -296,22 +354,32 @@ const SellTab = () => {
         name: "John Doe",
         address: "123 Art Street",
         city: "Metro Manila",
-        postalCode: "1000"
+        postalCode: "1000",
       },
       artwork: {
         size: "20 x 24 inches",
         medium: "Acrylic on Canvas",
         style: "Abstract",
         edition: "Original (1 of 1)",
-        yearCreated: 2024
+        yearCreated: 2024,
       },
       timeline: [
         { status: "Order Placed", date: "Dec 15, 2024", description: "Your order has been confirmed", completed: true },
-        { status: "Payment Confirmed", date: "Dec 15, 2024", description: "Payment received successfully", completed: true },
+        {
+          status: "Payment Confirmed",
+          date: "Dec 15, 2024",
+          description: "Payment received successfully",
+          completed: true,
+        },
         { status: "Processing", date: "Dec 16, 2024", description: "Order is being prepared", completed: true },
         { status: "Refund Requested", date: "Dec 18, 2024", description: "Customer requested refund", completed: true },
-        { status: "Refund Processed", date: "Dec 20, 2024", description: "Refund completed successfully", completed: true }
-      ]
+        {
+          status: "Refund Processed",
+          date: "Dec 20, 2024",
+          description: "Refund completed successfully",
+          completed: true,
+        },
+      ],
     },
     {
       id: "ORD-008",
@@ -326,14 +394,15 @@ const SellTab = () => {
       review: {
         id: "REV-001",
         rating: 5,
-        comment: "Absolutely stunning artwork! The quality exceeded my expectations and the colors are so vibrant. The artist really captured the urban energy perfectly. Highly recommend!",
+        comment:
+          "Absolutely stunning artwork! The quality exceeded my expectations and the colors are so vibrant. The artist really captured the urban energy perfectly. Highly recommend!",
         photos: [
           "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=300&h=200&fit=crop",
-          "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?w=300&h=200&fit=crop"
+          "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?w=300&h=200&fit=crop",
         ],
         reviewDate: "2025-7-20",
         canEdit: differenceInDays(new Date(), new Date("2025-7-20")) <= 7, // 7 days to edit
-        canDelete: differenceInDays(new Date(), new Date("2025-7-20")) <= 3 // 3 days to delete
+        canDelete: differenceInDays(new Date(), new Date("2025-7-20")) <= 3, // 3 days to delete
       },
       expectedDelivery: "2024-12-05",
       paymentMethod: "GCash",
@@ -341,32 +410,36 @@ const SellTab = () => {
         name: "John Doe",
         address: "123 Art Street",
         city: "Metro Manila",
-        postalCode: "1000"
+        postalCode: "1000",
       },
       artwork: {
         size: "22 x 16 inches",
         medium: "Mixed Media",
         style: "Urban",
         edition: "Limited Edition (1 of 10)",
-        yearCreated: 2024
+        yearCreated: 2024,
       },
       timeline: [
         { status: "Order Placed", date: "Nov 25, 2024", description: "Your order has been confirmed", completed: true },
-        { status: "Payment Confirmed", date: "Nov 25, 2024", description: "Payment received successfully", completed: true },
+        {
+          status: "Payment Confirmed",
+          date: "Nov 25, 2024",
+          description: "Payment received successfully",
+          completed: true,
+        },
         { status: "Processing", date: "Nov 26, 2024", description: "Order is being prepared", completed: true },
         { status: "Shipped", date: "Nov 30, 2024", description: "Artwork has been shipped", completed: true },
         { status: "Delivered", date: "Dec 5, 2024", description: "Artwork delivered successfully", completed: true },
-        { status: "Reviewed", date: "Dec 10, 2024", description: "Customer left a 5-star review", completed: true }
-      ]
-    }
+        { status: "Reviewed", date: "Dec 10, 2024", description: "Customer left a 5-star review", completed: true },
+      ],
+    },
   ];
 
-  const filteredOrders = mockOrders.filter(order => order.status === subTab);
+  const filteredOrders = mockOrders.filter((order) => order.status === subTab);
   const filteredArtworks = myArtCards.filter((art) => {
-    const status = (art as any).order_status?.toLowerCase?.() || art.art_status?.toLowerCase?.() || "";
-    return mainTab === "myListings" || mainTab === "myPurchase"
-      ? status === subTab.replace("_", " ")
-      : false;
+    const status = (art as any).art_status?.toLowerCase?.() || "";
+    const expectedStatus = statusMap[subTab]?.toLowerCase() || subTab.toLowerCase();
+    return mainTab === "myListings" ? status === expectedStatus : false;
   });
 
   return (
@@ -398,7 +471,13 @@ const SellTab = () => {
               onClick={() => setShowDropdown(!showDropdown)}
             >
               <span>{activeSubGroup === "listings" ? "Listings" : "Sold Artworks"}</span>
-              <svg className={`w-3 h-3 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <svg
+                className={`w-3 h-3 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
                 <path d="M19 9l-7 7-7-7" />
               </svg>
             </button>
@@ -407,7 +486,9 @@ const SellTab = () => {
                 {["listings", "soldArtworks"].map((option) => (
                   <button
                     key={option}
-                    className={`block px-4 py-2 w-full text-left ${activeSubGroup === option ? "text-black font-medium" : "text-gray-600"}`}
+                    className={`block px-4 py-2 w-full text-left ${
+                      activeSubGroup === option ? "text-black font-medium" : "text-gray-600"
+                    }`}
                     onClick={() => {
                       setActiveSubGroup(option as "listings" | "soldArtworks");
                       setSubTab(option === "listings" ? "available" : "awaiting_payment");
@@ -424,10 +505,12 @@ const SellTab = () => {
             {(activeSubGroup === "listings" ? activeListingTabs : soldArtworksTabs).map((tab) => (
               <button
                 key={tab}
-                className={`px-3 py-1 border-b-2 ${subTab === tab ? "border-red-800 text-red-800" : "border-transparent text-gray-600"}`}
+                className={`px-3 py-1 border-b-2 ${
+                  subTab === tab ? "border-red-800 text-red-800" : "border-transparent text-gray-600"
+                }`}
                 onClick={() => setSubTab(tab)}
               >
-                {tab.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+                {tab.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
               </button>
             ))}
           </div>
@@ -437,10 +520,12 @@ const SellTab = () => {
           {myPurchaseTabs.map((tab) => (
             <button
               key={tab}
-              className={`px-3 py-1 border-b-2 ${subTab === tab ? "border-red-800 text-red-800" : "border-transparent text-gray-600"}`}
+              className={`px-3 py-1 border-b-2 ${
+                subTab === tab ? "border-red-800 text-red-800" : "border-transparent text-gray-600"
+              }`}
               onClick={() => setSubTab(tab)}
             >
-              {tab.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+              {tab.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
             </button>
           ))}
         </div>
@@ -449,7 +534,11 @@ const SellTab = () => {
       {/* ARTWORK / ORDER DISPLAY */}
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4">
-          {Array(6).fill(0).map((_, idx) => <SellCardSkeleton key={idx} />)}
+          {Array(6)
+            .fill(0)
+            .map((_, idx) => (
+              <SellCardSkeleton key={idx} />
+            ))}
         </div>
       ) : mainTab === "myPurchase" ? (
         filteredOrders.length === 0 ? (
@@ -497,11 +586,7 @@ const SellTab = () => {
 
       {/* Modals */}
       {selectedOrder && (
-        <OrderDetailsModal
-          isOpen={showOrderDetails}
-          onClose={() => setShowOrderDetails(false)}
-          order={selectedOrder}
-        />
+        <OrderDetailsModal isOpen={showOrderDetails} onClose={() => setShowOrderDetails(false)} order={selectedOrder} />
       )}
       {reviewingArtwork && (
         <ReviewModal
