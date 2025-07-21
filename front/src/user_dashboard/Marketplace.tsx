@@ -30,6 +30,12 @@ const Marketplace = () => {
   const [selectedEdition, setSelectedEdition] = useState("All");
   const [reportedArtworks, setReportedArtworks] = useState<Set<string>>(new Set());
 
+  const {
+    data: followedArtworksData = [],
+    isLoading: isFollowedLoading,
+    refetch: refetchFollowed,
+  } = useFollowedArtworksOnSale(1, selectedCategoryFilter === "Following");
+
   const categories = ["All", "Trending", "Following"];
   const navigate = useNavigate();
 
