@@ -131,7 +131,35 @@ class FollowedArtworksView(APIView):
             "artworks": serialized.data,
         }, status=status.HTTP_200_OK)
 
+class FollowedArtworksViewOnSale(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        followed_ids = [f.following for f in Follower.objects(follower=user)]
+
+        if not followed_ids:
+            return Response({
+                "total": 0,
+                "artworks": [],
+                "message": "You are not following any users yet."
+            }, status=status.HTTP_200_OK)
+
+        artworks_queryset = Art.objects(
+            artist__in=followed_ids,
+            visibility="Public",
+            art_status="onSale"
+        ).order_by('-created_at')
+
+        total = artworks_queryset.count()
+        artworks = artworks_queryset  
+
+        serialized = ArtSerializer(artworks, many=True)
+        return Response({
+            "total": total,
+            "artworks": serialized.data,
+        }, status=status.HTTP_200_OK)
 
 class FollowerListView(APIView):
     permission_classes = [IsAuthenticated]
