@@ -52,15 +52,9 @@ const BidDetails = () => {
     }
   }, [reportInfo]);
 
-  useEffect(() => {
-    console.log("Is reported:", isReported);
-  }, [isReported]);
 
-  useEffect(() => {
-    if (item) {
-      console.log("Fetched auction item:", item);
-    }
-  }, [item]);
+
+
   const { toggleLike } = useAuctionLike(id!, item?.user_has_liked_auction ?? false, item?.auction_likes_count ?? 0);
 
   const [views, setViews] = useState<number>(0);

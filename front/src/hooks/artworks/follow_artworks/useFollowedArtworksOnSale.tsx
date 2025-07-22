@@ -5,7 +5,7 @@ const useFollowedArtworksOnSale = (page: number, enabled: boolean) => {
   return useQuery({
     queryKey: ["followedArtworks", page],
     queryFn: async () => {
-      console.log("🔁 Fetching followed artworks on sale...");
+
       const response = await apiClient.get(`/artworks/onsale/following?page=${page}`);
       return response.data;
     },

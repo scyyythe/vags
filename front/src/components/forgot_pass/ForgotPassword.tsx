@@ -90,7 +90,7 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       });
       setCurrentStep("verification");
     } catch (err: unknown) {
-      console.error("Request Reset Email Error:", err);
+
       if (axios.isAxiosError(err)) {
         toast.error(err.response?.data?.error || "Failed to send reset email", {
           description: "There was an issue sending the reset email. Please try again.",

@@ -378,8 +378,7 @@ if (!exhibit) {
   const closeExpandedView = () => {
     setIsExpanded(false);
   };
-               console.log("exhibit.artworks", exhibit.artworks);
-console.log("exhibit.slotArtworkMap", exhibit.slotArtworkMap);
+
   return (
     
     <>
@@ -556,8 +555,6 @@ console.log("exhibit.slotArtworkMap", exhibit.slotArtworkMap);
         return e.id !== exhibit.id && eCategory === normalizedCategory;
       });
 
-      console.log("Exhibit category:", normalizedCategory);
-      console.log("Related Exhibits:", relatedExhibits);
 
       return relatedExhibits.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">

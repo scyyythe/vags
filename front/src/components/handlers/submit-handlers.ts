@@ -79,7 +79,6 @@ export const createSubmitHandler = (
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("📨 Submit triggered - ViewMode:", viewMode, "| ExhibitType:", exhibitType)
 
     if (viewMode === "review" || viewMode === "monitoring" || viewMode === "preview") {
       navigate("/exhibits")
@@ -88,7 +87,7 @@ export const createSubmitHandler = (
 
     if (viewMode === "owner") {
       if (exhibitType === "collab" && collaborators.length > 0) {
-        console.log("👥 Collaborative exhibit detected. Proceeding to submit.")
+
         // setShowNotificationDialog(true)
         completeExhibitSubmission()
         return
