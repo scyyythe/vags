@@ -103,7 +103,7 @@ const BidDetails = () => {
 
   const onReport = (issueDetails: string) => {
     setIsReported(true);
-    toast(`Report submitted: ${issueDetails}`);
+    toast(`Report submitted: ${issueDetails}`, { closeButton: true })
   };
 
   const handleReportSubmit = (categoryId: string, optionId?: string) => {
@@ -184,7 +184,7 @@ const BidDetails = () => {
 
   const handleBidSubmit = (amount: number) => {
     if (!item?.id) return;
-    toast.success(`Bid of ${amount}php placed successfully!`);
+    toast.success(`Bid of ${amount}php placed successfully!`, { closeButton: true })
   };
 
   const handleLike = () => {
@@ -193,7 +193,7 @@ const BidDetails = () => {
 
   const handleHide = () => {
     setIsHidden(true);
-    toast("Artwork hidden");
+    toast("Artwork hidden", { closeButton: true })
     setMenuOpen(false);
   };
   const handleReport = async ({
@@ -208,7 +208,7 @@ const BidDetails = () => {
     additionalInfo?: string;
   }) => {
     if (reportInfo?.reported) {
-      toast.error("You have already reported this auction.");
+      toast.error("You have already reported this auction.", { closeButton: true })
       setMenuOpen(false);
       return;
     }
@@ -221,7 +221,7 @@ const BidDetails = () => {
         description,
         additionalInfo,
       });
-      toast.success("Report submitted successfully. Thank you for your feedback.");
+      toast.success("Report submitted successfully. Thank you for your feedback.", { closeButton: true })
     } catch (error) {
       console.error("Auction report failed:", error);
     }

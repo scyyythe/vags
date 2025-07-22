@@ -24,22 +24,22 @@ const UsernameEditPopup: React.FC<UsernameEditPopupProps> = ({
     e.preventDefault();
     
     if (!username.trim()) {
-      toast.error("Username cannot be empty");
+      toast.error("Username cannot be empty", { closeButton: true })
       return;
     }
 
     if (username.length < 3) {
-      toast.error("Username must be at least 3 characters long");
+      toast.error("Username must be at least 3 characters long", { closeButton: true })
       return;
     }
 
     if (username.length > 20) {
-      toast.error("Username must be 20 characters or less");
+      toast.error("Username must be 20 characters or less", { closeButton: true })
       return;
     }
 
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      toast.error("Username can only contain letters, numbers, and underscores");
+      toast.error("Username can only contain letters, numbers, and underscores", { closeButton: true })
       return;
     }
 
@@ -48,7 +48,7 @@ const UsernameEditPopup: React.FC<UsernameEditPopupProps> = ({
     // Simulate API call
     setTimeout(() => {
       onUsernameUpdate(username);
-      toast.success("Username updated successfully!");
+      toast.success("Username updated successfully!", { closeButton: true })
       setIsLoading(false);
       onClose();
     }, 1000);

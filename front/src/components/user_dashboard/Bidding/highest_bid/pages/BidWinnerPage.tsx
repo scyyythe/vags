@@ -80,7 +80,7 @@ const BidWinnerPageContent = () => {
             <div
               onClick={() => {
                 if (!selectedPaymentMethod) {
-                  toast("Please select a payment method before proceeding.");
+                  toast("Please select a payment method before proceeding.", { closeButton: true })
                 } else {
                   setShowModal(true);
                 }
