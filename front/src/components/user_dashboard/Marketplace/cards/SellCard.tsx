@@ -162,9 +162,9 @@ const SellCard = ({
           </button>
 
           {/* Render Menu */}
-          <SellCardMenu isOpen={menuOpen} onReport={handleReport} isReported={false} />
-          {/* {isOwner ? ( */}
-            {/* <SellMenu
+          
+          {isOwner ? (
+            <SellMenu
               isOpen={menuOpen}
               artworkId={id}
               onEdit={(artworkId) => toast("Edit clicked for " + artworkId)}
@@ -172,10 +172,10 @@ const SellCard = ({
               onDelete={() => toast("Delete clicked")}
               onMarkAsSold={() => toast("Marked as sold")}
               onViewInsights={() => toast("Viewing insights")}
-            /> */}
-          {/* ) : (
-            
-          )} */}
+            />
+          ) : (
+            <SellCardMenu isOpen={menuOpen} onReport={handleReport} isReported={false} />
+          )}
 
 
         </div>
