@@ -7,7 +7,8 @@ import ExhibitMenu from "@/components/user_dashboard/Exhibit/menu/ExhibitMenu";
 import Menu from "@/components/user_dashboard/own_profile/menu/exhibit_card/Menu";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import useReportStatus from "@/hooks/mutate/report/useReportStatus";
-
+import { useDeleteExhibit } from "@/hooks/exhibit/useDeleteExhibit";
+import { getLoggedInUserId } from "@/auth/decode";
 interface ExhibitProps {
   exhibit: {
     id: string;
@@ -21,6 +22,7 @@ interface ExhibitProps {
     isShared: boolean;
     startDate?: string;
     endDate?: string;
+    ownerId: string; 
     collaborators?: {
       id: string;
       name: string;
@@ -37,9 +39,12 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
   const [showTooltip, setShowTooltip] = useState(false);
 
   const navigate = useNavigate();
-
+  
+const { mutate: deleteExhibit } = useDeleteExhibit();
   const { mutate: submitReport } = useSubmitReport();
   const { data: reportStatusData } = useReportStatus([exhibit.id]);
+const isOwner = getLoggedInUserId() === exhibit.ownerId;
+
 
   const formatNumber = (num: number) => {
     if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
@@ -148,19 +153,46 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
             </button>
 
             {/* {menuOpen && isOwnProfile ? ( */}
-              <Menu
-                isOpen={menuOpen}
-                artworkId={exhibit.id}
-                artworkTitle={exhibit.title}
-                isShared = {false}
-                isPublic={true}
-                onEdit={(id) => {
-                  const searchParams = new URLSearchParams({ mode: "edit" });
-                  navigate(`/add-exhibit/${id}?${searchParams.toString()}`);
+{menuOpen && (
+  isOwner ? (
+    <Menu
+      isOpen={menuOpen}
+      artworkId={exhibit.id}
+      artworkTitle={exhibit.title}
+      isShared={false}
+      isPublic={true}
+      onEdit={(id) => {
+        const searchParams = new URLSearchParams({ mode: "edit" });
+        navigate(`/add-exhibit/${id}?${searchParams.toString()}`);
+      }}
+      onToggleVisibility={(newVisibility, id) => console.log("Toggle visibility:", newVisibility, id)}
+      onViewInsights={(id) => console.log("View insights for:", id)}
+      onDelete={(id) => {
+        if (confirm("Are you sure you want to delete this exhibit?")) {
+          deleteExhibit(id);
+        }
+      }}
+    />
+  ) : (
+    <ExhibitMenu
+      isOpen={menuOpen}
+      onHide={() => {
+        setIsHidden(true);
+        setMenuOpen(false);
+      }}
+        onReport={() => {
+                  if (reportStatusData?.reported) {
+                    toast.error("You have already reported this exhibit.");
+                  }
+                  setMenuOpen(false);
                 }}
-                onToggleVisibility={(newVisibility, id) => console.log("Toggle visibility:", newVisibility, id)}
-                onViewInsights={(id) => console.log("View insights for:", id)}
-              />
+      isShared={exhibit.isShared}
+      isHidden={isHidden}
+    />
+  )
+)}
+
+
             {/* ) : (
               <ExhibitMenu
                 isOpen={menuOpen}
