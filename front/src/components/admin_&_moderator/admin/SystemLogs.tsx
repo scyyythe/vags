@@ -95,7 +95,7 @@ export function SystemLogs({ logs: initialLogs }: SystemLogsProps) {
     // Simulate export process
     setTimeout(() => {
       const fileName = `system_logs_${new Date().toISOString().split('T')[0]}.csv`;
-      toast.success(`Logs exported successfully as ${fileName}`);
+      toast.success(`Logs exported successfully as ${fileName}`, { closeButton: true });
       setIsExporting(false);
     }, 1000);
   };
@@ -107,7 +107,7 @@ export function SystemLogs({ logs: initialLogs }: SystemLogsProps) {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    toast.info(query ? `Searching for: "${query}"` : "Search cleared");
+    toast.info(query ? `Searching for: "${query}"` : "Search cleared", { closeButton: true });
   };
 
   return (

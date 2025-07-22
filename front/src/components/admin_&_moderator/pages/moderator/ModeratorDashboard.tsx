@@ -76,7 +76,7 @@ const ModeratorDashboard = () => {
       return report;
     });
     setReports(updatedReports);
-    toast.success("Report marked as investigating");
+    toast.success("Report marked as investigating", { closeButton: true });
   };
 
   const handleResolveReport = (id: string) => {
@@ -87,7 +87,7 @@ const ModeratorDashboard = () => {
       return report;
     });
     setReports(updatedReports);
-    toast.success("Report marked as resolved");
+    toast.success("Report marked as resolved", { closeButton: true });
   };
 
   const handleDismissReport = (id: string) => {
@@ -98,11 +98,11 @@ const ModeratorDashboard = () => {
       return report;
     });
     setReports(updatedReports);
-    toast.success("Report marked as dismissed");
+    toast.success("Report marked as dismissed", { closeButton: true });
   };
 
   const handleEscalateReport = (id: string) => {
-    toast.success("Report escalated to admin");
+    toast.success("Report escalated to admin", { closeButton: true });
   };
 
   return (

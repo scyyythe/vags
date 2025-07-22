@@ -73,7 +73,7 @@ export function ReportTable({
   );
 
   const handleExportReports = () => {
-    toast.success("Reports exported successfully");
+    toast.success("Reports exported successfully", { closeButton: true });
   };
 
   const getStatusBadge = (status: Report["status"]) => {

@@ -66,12 +66,12 @@ const AdminConfig = () => {
 
   const onConfigSubmit = (data: z.infer<typeof configSchema>) => {
     console.log("Config form submitted:", data);
-    toast.success("Platform configuration updated successfully");
+    toast.success("Platform configuration updated successfully", { closeButton: true });
   };
 
   const onPaymentSubmit = (data: z.infer<typeof paymentSchema>) => {
     console.log("Payment form submitted:", data);
-    toast.success("Payment settings updated successfully");
+    toast.success("Payment settings updated successfully", { closeButton: true });
   };
 
   const handleToggle = (setting: keyof typeof platformConfig, checked: boolean) => {
@@ -79,11 +79,11 @@ const AdminConfig = () => {
       ...platformConfig,
       [setting]: checked,
     });
-    toast.success(`${setting} ${checked ? "enabled" : "disabled"} successfully`);
+    toast.success(`${setting} ${checked ? "enabled" : "disabled"} successfully`, { closeButton: true });
   };
 
   const handleMaintenanceMode = () => {
-    toast.success("Maintenance mode activated. Platform will be unavailable to users in 5 minutes.");
+    toast.success("Maintenance mode activated. Platform will be unavailable to users in 5 minutes.", { closeButton: true });
   };
 
   return (
