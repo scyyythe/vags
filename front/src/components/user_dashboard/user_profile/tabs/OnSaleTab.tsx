@@ -14,6 +14,8 @@ import ReviewModal from "@/components/user_dashboard/Marketplace/my_purchase/mod
 import ReviewDetailsModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/ReviewDetailsModal";
 import EditReviewModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/EditReviewModal";
 
+import SoldArtworkCard from "@/components/user_dashboard/Marketplace/sold_artworks/card/SoldArtworksCard";
+
 const SellTab = () => {
   const { id: userId } = useParams();
   const loggedInUserId = getLoggedInUserId();
