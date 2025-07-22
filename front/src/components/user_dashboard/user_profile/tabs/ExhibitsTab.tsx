@@ -72,24 +72,25 @@ const { mutate: publishExhibit } = usePublishExhibit();
     }
   };
 
-const handlePublishExhibit = () => {
-  if (selectedExhibit) {
-    publishExhibit(selectedExhibit.exhibitId, {
-      onSuccess: () => {
-        toast.success(`Exhibit Published: ${selectedExhibit.exhibitTitle}`, {
-          description: "Your exhibit has been published successfully.",
-        });
-        setShowPublishDialog(false);
-      },
-      onError: (error: any) => {
-        toast.error("Failed to publish exhibit", {
-          description: error?.response?.data?.detail || "Something went wrong.",
-        });
-      },
-    });
-  }
-};
-
+  const handlePublishExhibit = () => {
+    if (selectedExhibit) {
+      publishExhibit(selectedExhibit.exhibitId, {
+        onSuccess: () => {
+          toast.success(`Exhibit Published: ${selectedExhibit.exhibitTitle}`, {
+            description: "Your exhibit has been published successfully.",
+            closeButton: true,
+          });
+          setShowPublishDialog(false);
+        },
+        onError: (error: any) => {
+          toast.error("Failed to publish exhibit", {
+            description: error?.response?.data?.detail || "Something went wrong.",
+            closeButton: true,
+          });
+        },
+      });
+    }
+  };
 
   const hasUnreadRequests = pendingRequests.length > 0;
   const hasReadyExhibits = pendingRequests.some((req) => req.isOwner && req.type === "ready");
