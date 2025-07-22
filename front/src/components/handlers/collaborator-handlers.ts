@@ -1,4 +1,4 @@
-import { useToast } from "@/components/ui/use-toast"
+import { toast } from "sonner";
 import type { User } from "@/hooks/users/useUserQuery"
 
 export const createCollaboratorHandlers = (
@@ -10,14 +10,12 @@ export const createCollaboratorHandlers = (
 ) => {
   // Handle adding a collaborator
   const handleAddCollaborator = (artist: User) => {
-    const { toast: toastHook } = useToast()
     if (collaborators.length >= 5) {
-      toastHook({
-        title: "Maximum collaborators reached",
+      toast.error("Maximum collaborators reached", {
         description: "You can only add up to 5 collaborators.",
-        variant: "destructive",
-      })
-      return
+        closeButton: true,
+      });
+      return;
     }
 
     setCollaborators((prev) => [...prev, artist])

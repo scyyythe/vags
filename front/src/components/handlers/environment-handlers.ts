@@ -1,4 +1,4 @@
-import { useToast } from "@/components/ui/use-toast"
+import { toast } from "sonner";
 import type { Environment } from "../types"
 
 export const createEnvironmentHandlers = (
@@ -13,18 +13,16 @@ export const createEnvironmentHandlers = (
   const handleEnvironmentChange = (envId: number) => {
     const selectedEnv = environments.find((env) => env.id === envId)
     const totalParticipants = collaborators.length + 1
-    const { toast: toastHook } = useToast()
 
     if (!selectedEnv) return
 
     if (selectedEnv.slots < totalParticipants) {
-      toastHook({
-        title: "Not enough slots to assign for all collaborators and the owner.",
+      toast.error("Not enough slots to assign for all collaborators and the owner.", {
         description: "Please select a virtual environment with more available slots.",
-        className: "text-red-600",
         duration: 4000,
-      })
-      return
+        closeButton: true,
+      });
+      return;
     }
 
     setSelectedEnvironment(envId)
