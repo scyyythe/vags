@@ -136,17 +136,29 @@ class UndoReportView(APIView):
         report_id = request.data.get("id")
         report_type = request.data.get("type")
 
-        if not report_id or report_type != "auction":
+        if not report_id or report_type not in ["auction", "exhibit"]:
             return Response({"error": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            report = Report.objects.get(user=ObjectId(request.user.id), auction=ObjectId(report_id))
+            filter_kwargs = {
+                "user": ObjectId(request.user.id)
+            }
+
+            if report_type == "auction":
+                filter_kwargs["auction"] = ObjectId(report_id)
+            elif report_type == "exhibit":
+                filter_kwargs["exhibit"] = ObjectId(report_id)
+
+            report = Report.objects.get(**filter_kwargs)
             report.delete()
+
             return Response({"detail": "Report undone"}, status=status.HTTP_204_NO_CONTENT)
+
         except Report.DoesNotExist:
             return Response({"error": "Report not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 class ReportStatus(APIView):
@@ -222,6 +234,34 @@ class AuctionReportStatus(APIView):
             )
         except Exception as e:
             logger.error(f"Error fetching report status: {e}")
+            return Response(
+                {"error": "Failed to fetch report status."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+class ExhibitReportStatus(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        user_id = request.user.id
+        try:
+            exhibit_obj_id = ObjectId(pk)
+            user_obj_id = ObjectId(user_id) if isinstance(user_id, str) else user_id
+
+            reported = Report.objects.filter(
+                user=user_obj_id,
+                exhibit=exhibit_obj_id
+            ).count() > 0
+
+
+            return Response({"reported": reported}, status=status.HTTP_200_OK)
+
+        except InvalidId:
+            return Response(
+                {"error": "Invalid exhibit ID."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as e:
+            logger.error(f"Error fetching exhibit report status: {e}")
             return Response(
                 {"error": "Failed to fetch report status."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,

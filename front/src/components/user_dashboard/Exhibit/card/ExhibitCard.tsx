@@ -5,10 +5,11 @@ import { Eye, Heart, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ExhibitMenu from "@/components/user_dashboard/Exhibit/menu/ExhibitMenu";
 import Menu from "@/components/user_dashboard/own_profile/menu/exhibit_card/Menu";
-import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
+import useExhibitReport from "@/hooks/mutate/report/useExhibitReport";
 import useReportStatus from "@/hooks/mutate/report/useReportStatus";
 import { useDeleteExhibit } from "@/hooks/exhibit/useDeleteExhibit";
 import { getLoggedInUserId } from "@/auth/decode";
+import useExhibitReportStatus from "@/hooks/mutate/report/useExhibitReportStatus";
 interface ExhibitProps {
   exhibit: {
     id: string;
@@ -22,7 +23,7 @@ interface ExhibitProps {
     isShared: boolean;
     startDate?: string;
     endDate?: string;
-    ownerId: string; 
+    ownerId: string;
     collaborators?: {
       id: string;
       name: string;
@@ -30,7 +31,7 @@ interface ExhibitProps {
     }[];
   };
   onClick?: () => void;
-  isOwnProfile?: boolean; 
+  isOwnProfile?: boolean;
 }
 
 const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = false }) => {
@@ -39,12 +40,13 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
   const [showTooltip, setShowTooltip] = useState(false);
 
   const navigate = useNavigate();
-  
-const { mutate: deleteExhibit } = useDeleteExhibit();
-  const { mutate: submitReport } = useSubmitReport();
-  const { data: reportStatusData } = useReportStatus([exhibit.id]);
-const isOwner = getLoggedInUserId() === exhibit.ownerId;
 
+  const { mutate: deleteExhibit } = useDeleteExhibit();
+  const { mutate: submitExhibitReport } = useExhibitReport();
+
+  const { data: reportStatusData } = useExhibitReportStatus(exhibit.id);
+  const isReported = reportStatusData?.reported;
+  const isOwner = getLoggedInUserId() === exhibit.ownerId;
 
   const formatNumber = (num: number) => {
     if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
@@ -55,7 +57,11 @@ const isOwner = getLoggedInUserId() === exhibit.ownerId;
   const collaborators = exhibit.collaborators || [];
 
   const getInitials = (name: string) => {
-    return name.split(" ").map((part) => part.charAt(0)).join("").toUpperCase();
+    return name
+      .split(" ")
+      .map((part) => part.charAt(0))
+      .join("")
+      .toUpperCase();
   };
 
   const isNotStartedYet = () => {
@@ -153,45 +159,50 @@ const isOwner = getLoggedInUserId() === exhibit.ownerId;
             </button>
 
             {/* {menuOpen && isOwnProfile ? ( */}
-{menuOpen && (
-  isOwner ? (
-    <Menu
-      isOpen={menuOpen}
-      artworkId={exhibit.id}
-      artworkTitle={exhibit.title}
-      isShared={false}
-      isPublic={true}
-      onEdit={(id) => {
-        const searchParams = new URLSearchParams({ mode: "edit" });
-        navigate(`/edit-exhibit/${id}?${searchParams.toString()}`);
-      }}
-      onToggleVisibility={(newVisibility, id) => console.log("Toggle visibility:", newVisibility, id)}
-      onViewInsights={(id) => console.log("View insights for:", id)}
-      onDelete={(id) => {
-        if (confirm("Are you sure you want to delete this exhibit?")) {
-          deleteExhibit(id);
-        }
-      }}
-    />
-  ) : (
-    <ExhibitMenu
-      isOpen={menuOpen}
-      onHide={() => {
-        setIsHidden(true);
-        setMenuOpen(false);
-      }}
-        onReport={() => {
-                  if (reportStatusData?.reported) {
-                    toast.error("You have already reported this exhibit.", { closeButton: true })
-                  }
-                  setMenuOpen(false);
-                }}
-      isShared={exhibit.isShared}
-      isHidden={isHidden}
-    />
-  )
-)}
-
+            {menuOpen &&
+              (isOwner ? (
+                <Menu
+                  isOpen={menuOpen}
+                  artworkId={exhibit.id}
+                  artworkTitle={exhibit.title}
+                  isShared={false}
+                  isPublic={true}
+                  onEdit={(id) => {
+                    const searchParams = new URLSearchParams({ mode: "edit" });
+                    navigate(`/edit-exhibit/${id}?${searchParams.toString()}`);
+                  }}
+                  onToggleVisibility={(newVisibility, id) => console.log("Toggle visibility:", newVisibility, id)}
+                  onViewInsights={(id) => console.log("View insights for:", id)}
+                  onDelete={(id) => {
+                    if (confirm("Are you sure you want to delete this exhibit?")) {
+                      deleteExhibit(id);
+                    }
+                  }}
+                />
+              ) : (
+                <ExhibitMenu
+                  isOpen={menuOpen}
+                  onHide={() => {
+                    setIsHidden(true);
+                    setMenuOpen(false);
+                  }}
+                  onReport={() => {
+                    if (reportStatusData?.reported) {
+                      toast.error("You have already reported this exhibit.", { closeButton: true });
+                    } else {
+                      submitExhibitReport({
+                        exhibit_id: exhibit.id,
+                        category: "Inappropriate Content",
+                        description: "The exhibit contains prohibited content",
+                      });
+                    }
+                    setMenuOpen(false);
+                  }}
+                  isShared={exhibit.isShared}
+                  isHidden={isHidden}
+                  isReported={isReported}
+                />
+              ))}
 
             {/* ) : (
               <ExhibitMenu
