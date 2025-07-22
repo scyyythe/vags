@@ -367,7 +367,7 @@ const SellTab = () => {
     return mainTab === "myListings" || mainTab === "myPurchase"
       ? status === subTab.replace("_", " ")
       : false;
-  });
+  }); 
 
   return (
     <div className="w-full">
