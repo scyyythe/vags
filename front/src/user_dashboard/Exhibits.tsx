@@ -13,13 +13,7 @@ import { useExhibitCards } from "@/hooks/exhibit/useCardExihibit";
 import ExhibitCardSkeleton from "@/components/skeletons/ExhibitCardSkeleton";
 
 type SortOption = "popularity" | "newest" | "oldest";
-type FilterOption =
-  | "none"
-  | "trending"
-  | "most-viewed"
-  | "upcoming"
-  | "ongoing"
-  | "ended";
+type FilterOption = "none" | "trending" | "most-viewed" | "upcoming" | "ongoing" | "ended";
 
 const Exhibits = () => {
   const navigate = useNavigate();
@@ -32,14 +26,11 @@ const Exhibits = () => {
   const now = new Date();
 
   const isOngoing = (exhibit: any) =>
-    exhibit.startDate && exhibit.endDate &&
-    new Date(exhibit.startDate) <= now && new Date(exhibit.endDate) >= now;
+    exhibit.startDate && exhibit.endDate && new Date(exhibit.startDate) <= now && new Date(exhibit.endDate) >= now;
 
-  const isUpcoming = (exhibit: any) =>
-    exhibit.startDate && new Date(exhibit.startDate) > now;
+  const isUpcoming = (exhibit: any) => exhibit.startDate && new Date(exhibit.startDate) > now;
 
-  const isEnded = (exhibit: any) =>
-    exhibit.endDate && new Date(exhibit.endDate) < now;
+  const isEnded = (exhibit: any) => exhibit.endDate && new Date(exhibit.endDate) < now;
 
   const filteredExhibits = exhibits.filter((exhibit: any) => {
     const matchesType = baseType === "solo" ? exhibit.isSolo : !exhibit.isSolo;
@@ -93,7 +84,7 @@ const Exhibits = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="py-1 px-4 rounded-full text-[10px] border border-gray-300">
-                      <i className='bx bx-sort text-xs mr-1.5'></i>
+                      <i className="bx bx-sort text-xs mr-1.5"></i>
                       {{
                         trending: "Trending",
                         "most-viewed": "Most Viewed",
@@ -139,16 +130,15 @@ const Exhibits = () => {
             {isLoading
               ? Array.from({ length: 8 }).map((_, i) => <ExhibitCardSkeleton key={i} />)
               : sortedExhibits.map((exhibit) => (
-                 <ExhibitCard
-  key={exhibit.id}
-  exhibit={{
-    ...exhibit,
-    ownerId: exhibit.ownerId, 
-    category: exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1),
-  }}
-  onClick={() => navigate(`/view-exhibit/${exhibit.id}`)}
-/>
-
+                  <ExhibitCard
+                    key={exhibit.id}
+                    exhibit={{
+                      ...exhibit,
+                      ownerId: exhibit.ownerId,
+                      category: exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1),
+                    }}
+                    onClick={() => navigate(`/view-exhibit/${exhibit.id}`)}
+                  />
                 ))}
           </div>
         </div>
