@@ -148,12 +148,12 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
 
   const handleSubmit = async () => {
     if (!selectedCategory) {
-      toast.error("Please select a category.");
+      toast.error("Please select a category.", { closeButton: true })
       return;
     }
 
     if (selectedCategory.id === "Other" && !customReason.trim()) {
-      toast.error("Please provide a reason for reporting.");
+      toast.error("Please provide a reason for reporting.", { closeButton: true })
       return;
     }
 
@@ -169,7 +169,7 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
       onClose();
       setCustomReason("");
     } catch {
-      toast.error("Failed to submit report. Please try again.");
+      toast.error("Failed to submit report. Please try again.", { closeButton: true })
     } finally {
       setShowConfirmation(false);
     }
