@@ -22,12 +22,12 @@ const UsernameSetupPopup: React.FC<UsernameSetupPopupProps> = ({
     e.preventDefault();
     
     if (!username.trim()) {
-      toast.error("Please enter a username");
+      toast.error("Please enter a username", { closeButton: true })
       return;
     }
 
     if (username.length < 3) {
-      toast.error("Username must be at least 3 characters long");
+      toast.error("Username must be at least 3 characters long", { closeButton: true })
       return;
     }
 
@@ -36,7 +36,7 @@ const UsernameSetupPopup: React.FC<UsernameSetupPopupProps> = ({
     // Simulate API call
     setTimeout(() => {
       onUsernameSet(username.trim());
-      toast.success("Username set successfully!");
+      toast.success("Username set successfully!", { closeButton: true })
       setIsLoading(false);
       onClose();
       setUsername("");
