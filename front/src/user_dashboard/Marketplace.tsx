@@ -51,25 +51,28 @@ const Marketplace = () => {
   const handleArtCategoryChange = (category) => setSelectedArtCategory(category);
   const handleSortChange = (option) => setSelectedSort(option);
 
-  const filteredArtCards = artCards
-    .filter((artwork) => {
-      if (selectedCategoryFilter === "Trending" && !(artwork.total_ratings >= 4)) return false;
-      if (selectedCategoryFilter === "Following") return false;
-      if (selectedArtCategory !== "All" && artwork.category !== selectedArtCategory) return false;
-      if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
-      return true;
-    })
-    .sort((a, b) => {
-      if (selectedSort === "Price: Low to High") {
-        return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
-      } else if (selectedSort === "Price: High to Low") {
-        return (b.discounted_price ?? b.price) - (a.discounted_price ?? a.price);
-      } else if (selectedSort === "Most Popular") {
-        return (b.total_ratings ?? 0) - (a.total_ratings ?? 0);
-      } else {
-        return 0;
-      }
-    });
+const filteredArtCards =
+  selectedCategoryFilter === "Following"
+  ? (followedArtworksData?.artworks ?? []).filter((art) => art.art_status === "onSale")
+
+    : artCards
+        .filter((artwork) => {
+          if (selectedCategoryFilter === "Trending" && !(artwork.total_ratings >= 4)) return false;
+          if (selectedArtCategory !== "All" && artwork.category !== selectedArtCategory) return false;
+          if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
+          return true;
+        })
+        .sort((a, b) => {
+          if (selectedSort === "Price: Low to High") {
+            return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
+          } else if (selectedSort === "Price: High to Low") {
+            return (b.discounted_price ?? b.price) - (a.discounted_price ?? a.price);
+          } else if (selectedSort === "Most Popular") {
+            return (b.total_ratings ?? 0) - (a.total_ratings ?? 0);
+          } else {
+            return 0;
+          }
+        });
 
   const handleCardClick = (id: string) => {
     if (!id) return;
