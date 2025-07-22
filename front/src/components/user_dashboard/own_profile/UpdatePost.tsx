@@ -52,7 +52,9 @@ const UpdatePost = () => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB");
+        toast.error("File size must be less than 20MB", {
+          closeButton: true,
+        });
         return;
       }
 
@@ -74,7 +76,9 @@ const UpdatePost = () => {
     const file = e.dataTransfer.files?.[0];
     if (file) {
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB");
+        toast.error("File size must be less than 20MB", {
+          closeButton: true,
+        });
         return;
       }
 
@@ -95,7 +99,9 @@ const UpdatePost = () => {
     e.preventDefault();
 
     if (!artworkTitle) {
-      toast.error("Please enter an artwork title");
+      toast.error("Please enter an artwork title", {
+        closeButton: true,
+      });
       return;
     }
 
@@ -117,12 +123,16 @@ const UpdatePost = () => {
       { id, formData },
       {
         onSuccess: () => {
-          toast.success("Artwork updated successfully!");
+          toast.error("Artwork updated successfully!", {
+            closeButton: true,
+          });
           navigate("/explore");
         },
         onError: (error) => {
           console.error("Error during update:", error);
-          toast.error("Failed to update artwork.");
+          toast.error("Failed to update artwork.", {
+            closeButton: true,
+          });
         },
         onSettled: () => {
           setIsUploading(false);
