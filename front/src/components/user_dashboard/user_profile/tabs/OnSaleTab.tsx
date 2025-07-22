@@ -76,6 +76,12 @@ const SellTab = () => {
       closeButton: true,
   });
 
+  const handleReorder = () =>
+    toast.success("Artwork reordered successfully!", {
+    closeButton: true,
+    description: "You can view it in your pending orders.",
+  });
+
   const handleCancelOrder = () =>
     toast.warning("Order cancelled successfully", {
       closeButton: true,
@@ -585,6 +591,7 @@ const SellTab = () => {
                 onTrackOrder={handleTrackOrder}
                 onRequestRefund={handleRequestRefund}
                 onCancelOrder={handleCancelOrder}
+                onReorder={handleReorder}
               />
             ))}
           </div>

@@ -26,6 +26,7 @@ interface PurchasedArtworkCardProps {
   onTrackOrder?: () => void;
   onRequestRefund?: () => void;
   onCancelOrder?: () => void;
+  onReorder?: () => void;
 }
 
 const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
@@ -45,6 +46,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
   onTrackOrder,
   onRequestRefund,
   onCancelOrder,
+  onReorder
 }) => {
   const canReview = () => {
     if (!completedDate) return false;
@@ -140,7 +142,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
         return (
           <button
             className="flex text-[10px] py-1.5 px-4 border border-gray-400 rounded-full"
-            onClick={wrap(onRequestRefund)}
+            onClick={wrap(onReorder)}
           >
             <RotateCcw className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
             Reorder
@@ -161,7 +163,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
             )}
             <button
               className="flex text-[10px] py-1.5 px-4 border border-gray-400 rounded-full"
-              onClick={wrap(onRequestRefund)}
+              onClick={wrap(onReorder)}
             >
               <RotateCcw className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Reorder
@@ -181,7 +183,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
             </button>
             <button
               className="flex text-[10px] py-1.5 px-4 border border-gray-400 rounded-full"
-              onClick={wrap(onRequestRefund)}
+              onClick={wrap(onReorder)}
             >
               <RotateCcw className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Reorder
