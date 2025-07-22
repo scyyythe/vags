@@ -14,6 +14,7 @@ interface ExhibitCardMenuProps {
   onToggleVisibility: (newVisibility: boolean, id: string) => void;
   onViewInsights: (id: string) => void;
   isPublic?: boolean;
+   onDelete?: (id: string) => void;
 }
 
 const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
@@ -24,6 +25,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
   onToggleVisibility,
   onViewInsights,
   artworkTitle,
+  onDelete,
   isPublic = true,
 }) => {
     const menuRef = useRef<HTMLDivElement>(null);

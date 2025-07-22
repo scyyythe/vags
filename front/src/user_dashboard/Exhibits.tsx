@@ -139,14 +139,16 @@ const Exhibits = () => {
             {isLoading
               ? Array.from({ length: 8 }).map((_, i) => <ExhibitCardSkeleton key={i} />)
               : sortedExhibits.map((exhibit) => (
-                  <ExhibitCard
-                    key={exhibit.id}
-                    exhibit={{
-                      ...exhibit,
-                      category: exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1),
-                    }}
-                    onClick={() => navigate(`/view-exhibit/${exhibit.id}`)}
-                  />
+                 <ExhibitCard
+  key={exhibit.id}
+  exhibit={{
+    ...exhibit,
+    ownerId: exhibit.ownerId, 
+    category: exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1),
+  }}
+  onClick={() => navigate(`/view-exhibit/${exhibit.id}`)}
+/>
+
                 ))}
           </div>
         </div>
