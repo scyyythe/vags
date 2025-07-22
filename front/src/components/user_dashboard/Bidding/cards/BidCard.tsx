@@ -57,7 +57,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
 
   const handleHide = () => {
     setIsHidden(true);
-    toast("Artwork hidden");
+    toast("Artwork hidden", { closeButton: true })
     setMenuOpen(false);
   };
 
@@ -73,7 +73,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
     additionalInfo?: string;
   }) => {
     if (reportInfo?.reported) {
-      toast.error("You have already reported this auction.");
+      toast.error("You have already reported this auction.", { closeButton: true })
       setMenuOpen(false);
       return;
     }
@@ -101,7 +101,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
 
   const handleBidSubmit = (amount: number) => {
     onPlaceBid?.(data.id, amount);
-    toast(`Bid of ${amount}K placed successfully!`);
+    toast(`Bid of ${amount}K placed successfully!`, { closeButton: true })
   };
 
   if (isHidden) return null;

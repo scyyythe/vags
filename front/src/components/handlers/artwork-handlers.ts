@@ -1,4 +1,4 @@
-import { useToast } from "@/components/ui/use-toast"
+import { toast } from "sonner";
 import { getLoggedInUserId } from "@/auth/decode"
 import type { User } from "@/hooks/users/useUserQuery"
 
@@ -19,7 +19,6 @@ export const createArtworkHandlers = (
     if (!currentUserId) return
 
     const currentUserIdStr = currentUserId.toString()
-    const { toast: toastHook } = useToast()
 
     // Filter slots owned by current user that don't have artwork assigned yet
     const availableUserSlots = Object.entries(slotOwnerMap)
@@ -27,23 +26,21 @@ export const createArtworkHandlers = (
       .map(([slotId]) => Number(slotId))
 
     if (selectedArtworks.includes(artworkId)) {
-      toastHook({
-        title: "Artwork already selected",
+      toast.error("Artwork already selected", {
         description: "This artwork has already been assigned to a slot.",
-        variant: "destructive",
-      })
-      return
+        closeButton: true,
+      });
+      return;
     }
 
     const availableSlot = availableUserSlots[0]
 
     if (!availableSlot) {
-      toastHook({
-        title: "No available slots",
+      toast.error("No available slots", {
         description: "You don't have any available slots for more artwork.",
-        variant: "destructive",
-      })
-      return
+        closeButton: true,
+      });
+      return;
     }
 
     setSlotArtworkMap((prev) => ({
@@ -64,13 +61,11 @@ export const createArtworkHandlers = (
     if (!currentUserId) return
 
     if (slotOwnerMap[slotId] !== currentUserId.toString()) {
-      toastHook({
-        title: "Access denied",
+      toast.error("Access denied", {
         description: "This slot is assigned to another participant.",
-        variant: "destructive",
-      })
-
-      return
+        closeButton: true,
+      });
+      return;
     }
 
     // If slot is already selected, toggle it off

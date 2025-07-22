@@ -55,13 +55,17 @@ const SellCard = ({
   const { mutate: submitReport } = useSubmitReport();
   const toggleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toast(!isLiked ? "Added to wishlist" : "Removed from wishlist");
+    toast(!isLiked ? "Added to wishlist" : "Removed from wishlist", {
+      closeButton: true,
+    });
     onLike?.();
   };
 
   const handleContact = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toast("Redirecting to contact the artist...");
+    toast("Redirecting to contact the artist...", {
+      closeButton: true,
+    });
   };
 
   const handleMenuClick = (e: React.MouseEvent) => {
@@ -88,7 +92,9 @@ const SellCard = ({
       {
         onSuccess: () => {
           onReportSuccess?.();
-          toast.success("Report submitted successfully");
+          toast.success("Report submitted successfully", {
+            closeButton: true,
+          });
         },
       }
     );
@@ -162,20 +168,30 @@ const SellCard = ({
           </button>
 
           {/* Render Menu */}
-          <SellCardMenu isOpen={menuOpen} onReport={handleReport} isReported={false} />
-          {/* {isOwner ? ( */}
-            {/* <SellMenu
+          
+          {isOwner ? (
+            <SellMenu
               isOpen={menuOpen}
               artworkId={id}
-              onEdit={(artworkId) => toast("Edit clicked for " + artworkId)}
-              onToggleVisibility={(newVisibility, artworkId) => toast(`Set visibility to ${newVisibility}`)}
-              onDelete={() => toast("Delete clicked")}
-              onMarkAsSold={() => toast("Marked as sold")}
-              onViewInsights={() => toast("Viewing insights")}
-            /> */}
-          {/* ) : (
-            
-          )} */}
+              onEdit={(artworkId) =>
+                toast(`Edit clicked for ${artworkId}`, { closeButton: true })
+              }
+              onToggleVisibility={(newVisibility, artworkId) =>
+                toast(`Set visibility to ${newVisibility}`, { closeButton: true })
+              }
+              onDelete={() =>
+                toast("Delete clicked", { closeButton: true })
+              }
+              onMarkAsSold={() =>
+                toast("Marked as sold", { closeButton: true })
+              }
+              onViewInsights={() =>
+                toast("Viewing insights", { closeButton: true })
+              }
+            />
+          ) : (
+            <SellCardMenu isOpen={menuOpen} onReport={handleReport} isReported={false} />
+          )}
 
 
         </div>

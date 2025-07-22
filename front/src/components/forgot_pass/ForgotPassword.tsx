@@ -74,7 +74,10 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
     e.preventDefault();
     if (!email) {
       setError("Please enter your email address");
-      toast.error("Email is required", { description: "Please enter your email address to proceed." });
+      toast.error("Email is required", {
+        description: "Please enter your email address to proceed.",
+        closeButton: true,
+      });
       return;
     }
 
@@ -83,18 +86,21 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       setError("");
       toast.success("Email sent successfully!", {
         description: "Please check your inbox for the OTP.",
+        closeButton: true,
       });
       setCurrentStep("verification");
     } catch (err: unknown) {
-      console.error("Request Reset Email Error:", err);
+
       if (axios.isAxiosError(err)) {
         toast.error(err.response?.data?.error || "Failed to send reset email", {
           description: "There was an issue sending the reset email. Please try again.",
+          closeButton: true,
         });
         setError(err.response?.data?.error || "Failed to send reset email");
       } else {
         toast.error("An unexpected error occurred", {
           description: "Something went wrong. Please try again later.",
+          closeButton: true,
         });
         setError("An unexpected error occurred");
       }
@@ -108,6 +114,7 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       setError("Please enter the complete verification code");
       toast.error("Incomplete OTP", {
         description: "The OTP must be 4 digits. Please enter the full code.",
+        closeButton: true,
       });
       return;
     }
@@ -120,6 +127,7 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       setError("");
       toast.success("OTP verified successfully!", {
         description: "You can now proceed to reset your password.",
+        closeButton: true,
       });
       setCurrentStep("newPassword");
     } catch (err: unknown) {
@@ -127,11 +135,13 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       if (axios.isAxiosError(err)) {
         toast.error(err.response?.data?.detail || "OTP verification failed", {
           description: "The OTP you entered is incorrect or expired. Please try again.",
+          closeButton: true,
         });
         setError(err.response?.data?.detail || "OTP verification failed");
       } else {
         toast.error("An unexpected error occurred", {
           description: "There was an issue verifying the OTP. Please try again later.",
+          closeButton: true,
         });
         setError("An unexpected error occurred");
       }
@@ -144,17 +154,20 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       setError("");
       toast.success("OTP resent successfully!", {
         description: "A new OTP has been sent to your email.",
+        closeButton: true,
       });
     } catch (err: unknown) {
       console.error("Resend Code Error:", err);
       if (axios.isAxiosError(err)) {
         toast.error(err.response?.data?.detail || "Failed to resend code", {
           description: "There was an issue resending the OTP. Please try again.",
+          closeButton: true,
         });
         setError(err.response?.data?.detail || "Failed to resend code");
       } else {
         toast.error("An unexpected error occurred", {
           description: "Something went wrong while resending the code. Please try again.",
+          closeButton: true,
         });
         setError("An unexpected error occurred");
       }
@@ -167,6 +180,7 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       setError("Password must be at least 8 characters");
       toast.error("Password too short", {
         description: "Your password must be at least 8 characters long.",
+        closeButton: true,
       });
       return;
     }
@@ -174,6 +188,7 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       setError("Passwords do not match");
       toast.error("Passwords mismatch", {
         description: "The passwords you entered do not match. Please try again.",
+        closeButton: true,
       });
       return;
     }
@@ -186,6 +201,7 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       setError("");
       toast.success("Password reset successfully!", {
         description: "You can now log in with your new password.",
+        closeButton: true,
       });
       setCurrentStep("success");
     } catch (err: unknown) {
@@ -193,11 +209,13 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       if (axios.isAxiosError(err)) {
         toast.error(err.response?.data?.detail || "Failed to reset password", {
           description: "There was an issue resetting your password. Please try again.",
+          closeButton: true,
         });
         setError(err.response?.data?.detail || "Failed to reset password");
       } else {
         toast.error("An unexpected error occurred", {
           description: "Something went wrong while resetting your password. Please try again later.",
+          closeButton: true,
         });
         setError("An unexpected error occurred");
       }

@@ -45,6 +45,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     if (!formData.email || !formData.password) {
       toast.error("Missing information", {
         description: "Please fill in all required fields.",
+        closeButton: true,
       });
       return;
     }
@@ -72,6 +73,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
 
       toast.success("Login successful!", {
         description: "You are now logged in.",
+        closeButton: true,
       });
 
       if (role === "Admin") {
@@ -88,6 +90,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
 
       toast.error("Login failed", {
         description: error.response?.data?.error || "Please check your credentials and try again.",
+        closeButton: true,
       });
     }
   };
@@ -109,6 +112,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
 
           toast.success("Login successful!", {
             description: "Welcome back!",
+            closeButton: true,
           });
 
           closeLoginModal();
@@ -116,12 +120,14 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         } else {
           toast.error("Google login failed", {
             description: "Missing tokens in response.",
+            closeButton: true,
           });
         }
       } catch (error) {
         console.error("Google login error:", error);
         toast.error("Google login failed", {
           description: "Please try again later.",
+          closeButton: true,
         });
       }
     },
@@ -129,6 +135,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       console.error("Google login error", error);
       toast.error("Google login failed", {
         description: "Google authentication was unsuccessful.",
+        closeButton: true,
       });
     },
   });

@@ -39,9 +39,10 @@ import {
 // Import extracted handlers
 import { createSubmitHandler } from "@/components/handlers/submit-handlers"
 
-const AddExhibit = () => {
+const EditExhibit = () => {
   const navigate = useNavigate()
-  const { exhibitId } = useParams()
+const { id: exhibitId } = useParams();
+
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
   const mode = queryParams.get("mode") || ""
@@ -576,4 +577,4 @@ const isUploading = createExhibitMutation.status === "pending"
   )
 }
 
-export default AddExhibit
+export default EditExhibit

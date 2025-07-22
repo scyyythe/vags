@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import DateTimePicker from "./DateTimePicker";
 import Confirmation from "./ConfirmRequest";
-import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
 import { X } from "lucide-react";
 import { addDays } from "date-fns";
@@ -38,31 +37,20 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
   const handlePublish = () => {
     if (!startDate) {
       // toast.error("Please select a start date for the auction");
-      // toast({
-      //   title: "Missing start date",
-      //   description: "Please select a start date for the auction",
-      //   variant: "destructive",
-      // });
       return;
     }
 
     if (!endDate) {
-      toast.error("Please select an end date for the auction");
-      // toast({
-      //   title: "Missing end date",
-      //   description: "Please select an end date for the auction",
-      //   variant: "destructive",
-      // });
+      toast.error("Please select an end date for the auction", {
+        closeButton: true,
+      });
       return;
     }
 
     if (!startingBid || isNaN(Number(startingBid)) || Number(startingBid) <= 0) {
-      toast.error("Please enter a valid starting bid amount");
-      // toast({
-      //   title: "Invalid starting bid",
-      //   description: "Please enter a valid starting bid amount",
-      //   variant: "destructive",
-      // });
+      toast.error("Please enter a valid starting bid amount", {
+        closeButton: true,
+      });
       return;
     }
 
@@ -73,12 +61,9 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
     endDateTime.setHours(endHours, endMinutes, 0, 0);
 
     if (endDateTime <= startDateTime) {
-      toast.error("End time must be after start time");
-      // toast({
-      //   title: "Invalid auction duration",
-      //   description: "End time must be after start time",
-      //   variant: "destructive",
-      // });
+      toast.error("End time must be after start time", {
+        closeButton: true,
+      });
       return;
     }
 
@@ -86,17 +71,16 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
     const durationDays = durationMs / (1000 * 60 * 60 * 24);
     const maxDurationMs = 3 * 24 * 60 * 60 * 1000;
     if (durationMs > maxDurationMs) {
-      toast.error("Auction duration cannot exceed 3 days");
+      toast.error("Auction duration cannot exceed 3 days", {
+        closeButton: true,
+      });
       return;
     }
 
     if (durationDays > maxDurationMs) {
-      toast.error("Auction duration cannot exceed 3 days");
-      // toast({
-      //   title: "Invalid auction duration",
-      //   description: "Auction duration cannot exceed 3 days",
-      //   variant: "destructive",
-      // });
+      toast.error("Auction duration cannot exceed 3 days", {
+        closeButton: true,
+      });
       return;
     }
 
@@ -122,18 +106,17 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
       },
       {
         onSuccess: () => {
-          toast.success("Auction created successfully");
-          // toast({
-          //   title: "Auction created successfully",
-          //   description: "Your auction has been published",
-          // });
-
+          toast.success("Auction created successfully", {
+            closeButton: true,
+          });
           setIsConfirmationOpen(false);
           onOpenChange(false);
         },
         onError: (error) => {
           const message = error.response?.data?.error || error.message || "Failed to create auction";
-          toast.error(message);
+          toast.error(message, {
+            closeButton: true,
+          });
         },
       }
     );

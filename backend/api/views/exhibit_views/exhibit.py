@@ -50,6 +50,8 @@ class MyExhibitCardListView(APIView):
         except Exception as e:
             print("🔥 ERROR in MyExhibitCardListView:", e)
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            
 class ExhibitCardDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -109,5 +111,22 @@ class PublishExhibitView(APIView):
             exhibit.save()
 
             return Response({"detail": "Exhibit published successfully."}, status=status.HTTP_200_OK)
+        except Exhibit.DoesNotExist:
+            return Response({"detail": "Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class DeleteExhibitView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, exhibit_id):
+        try:
+            exhibit = Exhibit.objects.get(id=exhibit_id)
+
+            if exhibit.owner.id != request.user.id:
+                return Response({"detail": "Not authorized to delete this exhibit."}, status=status.HTTP_403_FORBIDDEN)
+
+            exhibit.delete()
+            return Response({"detail": "Exhibit deleted successfully."}, status=status.HTTP_200_OK)
+
         except Exhibit.DoesNotExist:
             return Response({"detail": "Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)

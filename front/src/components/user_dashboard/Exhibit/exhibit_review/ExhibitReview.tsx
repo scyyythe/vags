@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { useExhibitReview } from "@/hooks/exhibit/useExhibitReview";
 import { usePublishExhibit } from "@/hooks/mutate/exhibit/usePublishExhibit";
@@ -34,7 +34,6 @@ type ExhibitMode = "monitor" | "review" | "ready";
 const ExhibitReview = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
 
   const exhibitId = new URLSearchParams(location.search).get("id");
   const { data: exhibit, isLoading, error } = useExhibitReview(exhibitId || "");
@@ -65,26 +64,26 @@ const ExhibitReview = () => {
     navigate(`/addexhibit/${exhibitId}?mode=edit`);
   };
 
-const handlePublish = () => {
-  if (!isReadyToPublish || !exhibitId) {
-    toast({
-      title: "Cannot publish yet",
-      description: "All collaborator slots must be filled before publishing.",
-      variant: "destructive",
-    });
-    return;
-  }
-
-  publishExhibit(exhibitId, {
-    onSuccess: () => {
-      toast({
-        title: "Exhibit Published",
-        description: "Your exhibit has been successfully published!",
+  const handlePublish = () => {
+    if (!isReadyToPublish || !exhibitId) {
+      toast.error("Cannot publish yet", {
+        description: "All collaborator slots must be filled before publishing.",
+        closeButton: true,
       });
-      navigate("/exhibits");
-    },
-  });
-};
+      return;
+    }
+
+    publishExhibit(exhibitId, {
+      onSuccess: () => {
+        toast.success("Exhibit Published", {
+          description: "Your exhibit has been successfully published!",
+          closeButton: true,
+        });
+        navigate("/exhibits");
+      },
+    });
+  };
+
   if (isLoading) {
     return <div className="p-10 text-sm">Loading exhibit review...</div>;
   }
