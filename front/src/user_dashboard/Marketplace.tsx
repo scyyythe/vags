@@ -88,7 +88,9 @@ const filteredArtCards =
 
   const handleRemoveFromWishlistModal = (id: string) => {
     removeFromWishlist(id);
-    toast("Removed from wishlist");
+    toast("Removed from wishlist", {
+      closeButton: true,
+    });
   };
 
   const handleWishlistClick = () => setShowWishlist(true);

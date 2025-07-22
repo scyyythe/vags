@@ -38,21 +38,29 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
         if (data.access_token) {
           localStorage.setItem("access_token", data.access_token);
           localStorage.setItem("refresh_token", data.refresh_token);
-          toast.success("Registration successful!");
+          toast.success("Registration successful!", {
+            closeButton: true,
+          });
 
           closeRegisterModal();
           setShowLoginModal(true);
         } else {
-          toast.error("Google sign-up failed");
+          toast.error("Google sign-up failed", {
+            closeButton: true,
+          });
         }
       } catch (error) {
         console.error("Google sign-up error", error);
-        toast.error("Google sign-up failed");
+        toast.error("Google sign-up failed", {
+          closeButton: true,
+        });
       }
     },
     onError: (error) => {
       console.error("Google login error", error);
-      toast.error("Google login failed");
+      toast.error("Google login failed", {
+        closeButton: true,
+      });
     },
   });
 
@@ -71,12 +79,14 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
     if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
       toast.error("Missing information", {
         description: "Please fill in all required fields.",
+        closeButton: true,
       });
       return;
     }
     if (!hasMinLength) {
       toast.error("Password too short", {
         description: "Password must be at least 8 characters long.",
+        closeButton: true,
       });
       return;
     }
@@ -84,6 +94,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
     if (!hasUniqueChar) {
       toast.error("Password must be stronger", {
         description: "Password must contain at least one special character (e.g. !, @, #, $).",
+        closeButton: true,
       });
       return;
     }
@@ -102,6 +113,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
       toast.success("Registration successful!", {
         description: "You can now log in.",
+        closeButton: true,
       });
 
       closeRegisterModal();
@@ -111,11 +123,13 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
         console.error("Registration failed:", error.message);
         toast.error("Registration failed", {
           description: "Please check your details and try again.",
+          closeButton: true,
         });
       } else {
         console.error("Unknown error:", error);
         toast.error("Registration failed", {
           description: "An unexpected error occurred. Please try again later.",
+          closeButton: true,
         });
       }
     } finally {
