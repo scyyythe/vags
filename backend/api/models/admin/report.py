@@ -2,6 +2,7 @@ from datetime import datetime
 from api.models.user_model.users import User
 from api.models.artwork_model.artwork import Art
 from api.models.artwork_model.bid import Bid
+from api.models.exhibit_model.exhibit import Exhibit
 from api.models.artwork_model.bid import Auction
 from mongoengine import (
     Document, StringField, ReferenceField, DateTimeField, ValidationError
@@ -11,6 +12,7 @@ class Report(Document):
     user = ReferenceField(User, required=True)
     art = ReferenceField(Art, required=False)
     auction = ReferenceField(Auction, required=False)
+    exhibit = ReferenceField(Exhibit, required=False)
     reported_user = ReferenceField(User, required=False)
     category = StringField(required=True)
     option = StringField()
@@ -27,8 +29,7 @@ class Report(Document):
     meta = {"collection": "reports"}
 
     def clean(self):
-        if not any([self.art, self.auction, self.reported_user]):
+        if not any([self.art, self.auction, self.reported_user, self.exhibit]):
             raise ValidationError(
-                "At least one of 'art', 'auction', or 'reported_user' must be provided."
+                "At least one of 'art', 'auction', 'reported_user', or 'exhibit' must be provided."
             )
-
