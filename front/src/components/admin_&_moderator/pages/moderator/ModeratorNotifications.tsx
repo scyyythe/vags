@@ -127,7 +127,7 @@ const ModeratorNotifications = () => {
     };
 
     setNotifications([newNotification, ...notifications]);
-    toast.success("System notification created");
+    toast.success("System notification created", { closeButton: true });
     setCreateDialogOpen(false);
     form.reset();
   };
@@ -152,7 +152,7 @@ const ModeratorNotifications = () => {
       return n;
     }) as Notification[];
     setNotifications(updatedNotifications);
-    toast.success("Notification archived");
+    toast.success("Notification archived", { closeButton: true });
     setViewDialogOpen(false);
   };
 
@@ -164,7 +164,7 @@ const ModeratorNotifications = () => {
       return n;
     }) as Notification[];
     setNotifications(updatedNotifications);
-    toast.success("All notifications marked as read");
+    toast.success("All notifications marked as read", { closeButton: true });
   };
 
   const formatDateTime = (dateString: string) => {
@@ -404,7 +404,7 @@ const ModeratorNotifications = () => {
                     className="rounded-full h-8"
                     style={{fontSize:"10px"}}
                     onClick={() => {
-                      toast.success("Opening related content");
+                      toast.success("Opening related content", { closeButton: true });
                       setViewDialogOpen(false);
                     }}
                   >

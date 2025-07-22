@@ -88,23 +88,23 @@ const AdminDashboard = () => {
   const { data: users, isLoading, error } = useAllUsersQuery();
   // Ensure these handler functions actually modify state in a real app
   const handlePromoteUser = (id: string) => {
-    toast.success("User role updated successfully");
+    toast.success("User role updated successfully", { closeButton: true });
   };
 
   const handleSuspendUser = (id: string) => {
-    toast.success("User suspended successfully");
+    toast.success("User suspended successfully", { closeButton: true });
   };
 
   const handleBanUser = (id: string) => {
-    toast.success("User banned successfully");
+    toast.success("User banned successfully", { closeButton: true });
   };
 
   const handleReinstateUser = (id: string) => {
-    toast.success("User reinstated successfully");
+    toast.success("User reinstated successfully", { closeButton: true });
   };
 
   const handleDeleteUser = (id: string) => {
-    toast.success("User deleted successfully");
+    toast.success("User deleted successfully", { closeButton: true });
   };
 
   return (

@@ -98,24 +98,24 @@ const ModeratorContent = () => {
 
   const handleApprove = (id: string) => {
     setFlaggedContent(flaggedContent.filter(content => content.id !== id));
-    toast.success("Content approved and restored");
+    toast.success("Content approved and restored", { closeButton: true });
   };
 
   const handleRemove = (id: string) => {
     setFlaggedContent(flaggedContent.filter(content => content.id !== id));
-    toast.success("Content removed");
+    toast.success("Content removed", { closeButton: true });
   };
 
   const handleWarn = (id: string) => {
-    toast.success("Warning sent to user");
+    toast.success("Warning sent to user", { closeButton: true });
   };
 
   const handleEscalate = (id: string) => {
-    toast.success("Content escalated to admin for review");
+    toast.success("Content escalated to admin for review", { closeButton: true });
   };
 
   const handleDownloadReport = () => {
-    toast.success("Report downloaded successfully");
+    toast.success("Report downloaded successfully", { closeButton: true });
   };
 
   const getContentTypeIcon = (type: ContentType) => {

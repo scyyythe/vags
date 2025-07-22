@@ -71,7 +71,7 @@ const AdminUsers = () => {
     };
 
     setUsersState([...usersState, newUser]);
-    toast.success("User added successfully");
+    toast.success("User added successfully", { closeButton: true });
     setOpen(false);
     form.reset();
   };
@@ -87,7 +87,7 @@ const AdminUsers = () => {
       return user;
     });
     setUsersState(updatedUsers);
-    toast.success("User role updated successfully");
+    toast.success("User role updated successfully", { closeButton: true });
   };
 
   const handleSuspendUser = (id: string) => {
@@ -101,7 +101,7 @@ const AdminUsers = () => {
       return user;
     });
     setUsersState(updatedUsers);
-    toast.success("User suspended successfully");
+    toast.success("User suspended successfully", { closeButton: true });
   };
 
   const handleBanUser = (id: string) => {
@@ -115,7 +115,7 @@ const AdminUsers = () => {
       return user;
     });
     setUsersState(updatedUsers);
-    toast.success("User banned successfully");
+    toast.success("User banned successfully", { closeButton: true });
   };
 
   const handleReinstateUser = (id: string) => {
@@ -129,13 +129,13 @@ const AdminUsers = () => {
       return user;
     });
     setUsersState(updatedUsers);
-    toast.success("User reinstated successfully");
+    toast.success("User reinstated successfully", { closeButton: true });
   };
 
   const handleDeleteUser = (id: string) => {
     const updatedUsers = users.filter((user) => user.id !== id);
     setUsersState(updatedUsers);
-    toast.success("User deleted successfully");
+    toast.success("User deleted successfully", { closeButton: true });
   };
 
   return (

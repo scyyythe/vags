@@ -61,7 +61,9 @@ const AdminAnalytics = () => {
   const [timeRange, setTimeRange] = useState("7d");
   
   const handleExport = (format: string) => {
-    toast.success(`Report exported as ${format.toUpperCase()}`);
+    toast.success(`Report exported as ${format.toUpperCase()}`, {
+      closeButton: true,
+    });
   };
 
   return (
