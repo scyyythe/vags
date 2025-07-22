@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { useToast } from "@/components/ui/use-toast"
+import { toast } from "sonner";
 import AddArtistDialog from "@/components/user_dashboard/Exhibit/add_exhibit/components/AddArtistDialog"
 import Header from "@/components/user_dashboard/navbar/Header"
 
@@ -41,7 +41,6 @@ import { createSubmitHandler } from "@/components/handlers/submit-handlers"
 
 const AddExhibit = () => {
   const navigate = useNavigate()
-  const { toast: toastHook } = useToast()
   const { exhibitId } = useParams()
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
@@ -154,23 +153,21 @@ const AddExhibit = () => {
       .map(([slotId]) => Number(slotId))
 
     if (selectedArtworks.includes(artworkId)) {
-      toastHook({
-        title: "Artwork already selected",
+      toast.error("Artwork already selected", {
         description: "This artwork has already been assigned to a slot.",
-        variant: "destructive",
-      })
-      return
+        closeButton: true,
+      });
+      return;
     }
 
     const availableSlot = availableUserSlots[0]
 
     if (!availableSlot) {
-      toastHook({
-        title: "No available slots",
+      toast.error("No available slots", {
         description: "You don't have any available slots for more artwork.",
-        variant: "destructive",
-      })
-      return
+        closeButton: true,
+      });
+      return;
     }
 
     setSlotArtworkMap((prev) => ({
@@ -192,12 +189,11 @@ const AddExhibit = () => {
     if (!currentUserIdForSelection) return
 
     if (slotOwnerMap[slotId] !== currentUserIdForSelection.toString()) {
-      toastHook({
-        title: "Access denied",
+      toast.error("Access denied", {
         description: "This slot is assigned to another participant.",
-        variant: "destructive",
-      })
-      return
+        closeButton: true,
+      });
+      return;
     }
 
     // If slot is already selected, toggle it off
@@ -245,13 +241,15 @@ const AddExhibit = () => {
     if (!selectedEnv) return
 
     if (selectedEnv.slots < totalParticipants) {
-      toastHook({
-        title: "Not enough slots to assign for all collaborators and the owner.",
-        description: "Please select a virtual environment with more available slots.",
-        className: "text-red-600",
-        duration: 4000,
-      })
-      return
+      toast.error(
+        "Not enough slots to assign for all collaborators and the owner.",
+        {
+          description: "Please select a virtual environment with more available slots.",
+          duration: 4000,
+          closeButton: true,
+        }
+      );
+      return;
     }
 
     setSelectedEnvironment(envId)
@@ -350,12 +348,11 @@ const AddExhibit = () => {
   // Handle adding a collaborator - ORIGINAL LOGIC
   const handleAddCollaborator = (artist: User) => {
     if (collaborators.length >= 5) {
-      toastHook({
-        title: "Maximum collaborators reached",
+      toast.error("Maximum collaborators reached", {
         description: "You can only add up to 5 collaborators.",
-        variant: "destructive",
-      })
-      return
+        closeButton: true,
+      });
+      return;
     }
 
     setCollaborators((prev) => [...prev, artist])

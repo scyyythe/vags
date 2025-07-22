@@ -46,7 +46,8 @@ const CollaboratorSubmissionStatus = ({
       setShowPublishDialog(true);
     } else {
       toast.error("Cannot publish yet", {
-        description: "Not all slots have been filled. Please wait for collaborators to complete their submissions."
+        description: "Not all slots have been filled. Please wait for collaborators to complete their submissions.",
+        closeButton: true,
       });
     }
   };
@@ -57,7 +58,8 @@ const CollaboratorSubmissionStatus = ({
     
     // Show confirmation toast
     toast.success("Review requested", {
-      description: "A review request has been sent to the appropriate parties."
+      description: "A review request has been sent to the appropriate parties.",
+        closeButton: true,
     });
   };
 
