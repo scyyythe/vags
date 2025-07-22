@@ -50,7 +50,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
 
     if (selectedIdentity) {
       onConfirm(selectedIdentity);
-      // toast.success(`Bid placed with ${selectedIdentity} identity`);
+      // toast.success(`Bid placed with ${selectedIdentity} identity`, { closeButton: true })
     }
   };
 
@@ -70,7 +70,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
         setSelectedIdentity("username");
       },
       onError: () => {
-        toast.error("Could not set username.");
+        toast.error("Could not set username.", { closeButton: true })
       },
     });
   };
@@ -85,7 +85,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
         setShowUsernameEdit(false);
       },
       onError: () => {
-        toast.error("Could not update username.");
+        toast.error("Could not update username.", { closeButton: true })
       },
     });
   };
@@ -152,7 +152,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                 className="text-red-800 hover:underline"
                 onClick={(e) => {
                   e.preventDefault();
-                  toast.info("Privacy information displayed");
+                  toast.info("Privacy information displayed", { closeButton: true })
                 }}
               >
                 Learn more about bid privacy and security

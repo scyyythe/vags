@@ -55,19 +55,19 @@ const BidPopup: React.FC<BidPopupProps> = ({
         minute: "2-digit",
         hour12: true,
       });
-      toast.error(`Auction hasn't started yet. It will start on ${formattedStart}`);
+      toast.error(`Auction hasn't started yet. It will start on ${formattedStart}`, { closeButton: true })
       return;
     }
 
     const bid = parseInt(bidAmount);
 
     if (isNaN(bid)) {
-      toast.error("Please enter a valid number.");
+      toast.error("Please enter a valid number.", { closeButton: true })
       return;
     }
 
     if (bid < start_bid_amount) {
-      toast.warning(`Minimum bid amount is ₱${start_bid_amount}`);
+      toast.warning(`Minimum bid amount is ₱${start_bid_amount}`, { closeButton: true })
       return;
     }
 
@@ -86,7 +86,7 @@ const BidPopup: React.FC<BidPopupProps> = ({
         },
         {
           onSuccess: () => {
-            toast.success(`Bid of ₱${bid.toLocaleString()} placed as ${identity}`);
+            toast.success(`Bid of ₱${bid.toLocaleString()} placed as ${identity}`, { closeButton: true })
             setShowIdentityPopup(false);
             setBidAmount("");
             onClose();
