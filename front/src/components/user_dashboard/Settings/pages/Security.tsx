@@ -60,32 +60,43 @@ const SecuritySettings = () => {
 
     if (wantsToChangePassword) {
       if (!currentPassword || !newPassword || !confirmPassword) {
-        toast.error("All password fields are required.");
+        toast.error("All password fields are required.", {
+          closeButton: true,
+        });
         return;
       }
 
       if (newPassword.length < 8) {
-        toast.error("New password must be at least 8 characters long.");
+        toast.error("New password must be at least 8 characters long.", {
+          closeButton: true,
+        });
         return;
       }
 
       if (newPassword === currentPassword) {
-        toast.error("New password must be different from the current password.");
+        toast.error("New password must be different from the current password.", {
+          closeButton: true,
+        });
         return;
       }
 
       if (newPassword !== confirmPassword) {
-        toast.error("New passwords do not match.");
+        toast.error("New passwords do not match.", {
+          closeButton: true,
+        });
         return;
       }
 
-      data.append("current_password", currentPassword);
-      data.append("new_password", newPassword);
-    }
+  data.append("current_password", currentPassword);
+  data.append("new_password", newPassword);
+}
+
 
     updateUser.mutate([userId, data], {
       onSuccess: () => {
-        toast.success("User updated successfully.");
+        toast.success("User updated successfully.", {
+          closeButton: true,
+        });
         setOriginalData({ ...formData });
         setOriginalCredentials([...credentials]);
         setIsEditingPassword(false);
@@ -97,9 +108,13 @@ const SecuritySettings = () => {
           const message = Array.isArray(responseData[firstKey])
             ? (responseData[firstKey] as string[])[0]
             : (responseData[firstKey] as string);
-          toast.error(message || "Failed to update user.");
+          toast.error(message || "Failed to update user.", {
+            closeButton: true,
+          });
         } else {
-          toast.error("Failed to update user.");
+          toast.error("Failed to update user.", {
+            closeButton: true,
+          });
         }
       },
     });
