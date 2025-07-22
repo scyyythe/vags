@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import { PaymentMethod, ShippingInfo, PaymentState } from "@/components/types/index";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 interface PaymentContextProps {
@@ -35,16 +35,14 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     shippingInfo: defaultShippingInfo,
     isEditingShipping: false,
   });
-  
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const selectPaymentMethod = (method: PaymentMethod) => {
     setState((prev) => ({ ...prev, selectedPaymentMethod: method }));
     localStorage.setItem("selectedPaymentMethod", method); 
-    toast({
-      title: "Payment Method Selected",
+    toast.success("Payment method selected!", {
       description: `You've selected ${method} as your payment method.`,
+      closeButton: true,
     });
   };
 
@@ -64,74 +62,72 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const confirmPurchase = () => {
     if (!state.selectedPaymentMethod) {
-      toast({
-        title: "Payment method required",
+      toast.error("Payment method required", {
         description: "Please select a payment method to continue.",
-        variant: "destructive",
+        closeButton: true,
       });
       return;
     }
-    
+
     if (
       !state.shippingInfo.fullName ||
       !state.shippingInfo.address ||
       !state.shippingInfo.city ||
       !state.shippingInfo.country
     ) {
-      toast({
-        title: "Shipping information required",
+      toast.error("Shipping information required", {
         description: "Please complete your shipping details to continue.",
-        variant: "destructive",
+        closeButton: true,
       });
       return;
     }
-    
-    toast({
-      title: "Processing Payment...",
+
+    toast.info("Processing Payment...", {
       description: "Please wait while we process your payment.",
+      closeButton: true,
     });
-    
+
     setTimeout(() => {
-      toast({
-        title: "Payment Successful!",
+      toast.success("Payment Successful!", {
         description: "Your artwork purchase has been confirmed. Thank you!",
+        closeButton: true,
       });
-      
+
       setTimeout(() => navigate("/bid-winner"), 1500);
     }, 2000);
   };
 
   const messageArtist = () => {
-    toast({
-      title: "Message Sent",
+    toast.success("Message Sent", {
       description: "Your message has been sent to the artist. They'll respond shortly.",
+      closeButton: true,
     });
   };
 
   const downloadInvoice = () => {
-    toast({
-      title: "Invoice Downloaded",
+    toast.success("Invoice Downloaded", {
       description: "Your invoice has been downloaded as a PDF.",
+      closeButton: true,
     });
   };
 
   const resendConfirmation = () => {
-    toast({
-      title: "Confirmation Resent",
+    toast.success("Confirmation Resent", {
       description: "A confirmation email has been resent to your email address.",
+      closeButton: true,
     });
   };
-  
+
   const processStripePayment = () => {
-    toast({
-      title: "Redirecting to Stripe",
+    toast.info("Redirecting to Stripe", {
       description: "You'll be redirected to Stripe to complete your payment securely.",
+      closeButton: true,
     });
-    
+
     setTimeout(() => {
-      toast({
-        title: "Stripe Integration Demo",
+      toast.info("Stripe Integration Demo", {
         description: "In a real implementation, you would be redirected to Stripe's checkout page.",
+        closeButton: true,
       });
     }, 1500);
   };
