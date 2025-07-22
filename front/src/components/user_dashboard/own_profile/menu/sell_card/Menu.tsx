@@ -65,7 +65,10 @@ const SellMenu: React.FC<SellMenuProps> = ({
     toast.success(
       newStatus
         ? `"${artworkTitle ?? "Artwork"}" is now listed.`
-        : `"${artworkTitle ?? "Artwork"}" has been unlisted.`
+        : `"${artworkTitle ?? "Artwork"}" has been unlisted.`,
+        {
+          closeButton: true,
+        }
     );
   };
 
@@ -92,9 +95,12 @@ const SellMenu: React.FC<SellMenuProps> = ({
     onMarkAsSold(artworkId);
 
     toast.success(
-        newSoldStatus
+      newSoldStatus
         ? `"${artworkTitle ?? "Artwork"}" marked as sold.`
-        : `"${artworkTitle ?? "Artwork"}" marked as not sold.`
+        : `"${artworkTitle ?? "Artwork"}" marked as not sold.`,
+      {
+        closeButton: true,
+      }
     );
   };
 

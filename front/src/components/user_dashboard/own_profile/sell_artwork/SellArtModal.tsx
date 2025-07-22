@@ -97,7 +97,9 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
     if (validateForm()) {
       onSellArtwork(formData);
     } else {
-      toast.error('Please fix the errors before submitting');
+      toast.error("Please fix the errors before submitting", {
+        closeButton: true,
+      });
     }
   };
 
