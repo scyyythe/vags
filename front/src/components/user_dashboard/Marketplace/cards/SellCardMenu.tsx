@@ -9,50 +9,30 @@ import { ReportOption } from "@/components/user_dashboard/Bidding/cards/ReportOp
 
 interface SellCardMenuProps {
   isOpen: boolean;
-  onReport: (data: {
-    category: string;
-    option?: string;
-    description: string;
-    additionalInfo: string;
-  }) => void;
+  onReport: (data: { category: string; option?: string; description: string; additionalInfo: string }) => void;
   isReported: boolean;
   className?: string;
 }
 
-const SellCardMenu: React.FC<SellCardMenuProps> = ({
-  isOpen,
-  onReport,
-  isReported = false,
-}) => {
+const SellCardMenu: React.FC<SellCardMenuProps> = ({ isOpen, onReport, isReported = false }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showReportOptions, setShowReportOptions] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
-  const handleReportSubmit = (
-    categoryId: string,
-    optionData?: ReportOption | string
-  ) => {
-    const selectedCategory = reportCategories.find(
-      (cat) => cat.id === categoryId
-    );
+  const handleReportSubmit = (categoryId: string, optionData?: ReportOption | string) => {
+    const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
     if (!selectedCategory) {
       console.error("Category not found for id:", categoryId);
       return;
     }
 
     const isCustomReason = typeof optionData === "string";
-    const selectedOption = !isCustomReason
-      ? (optionData as ReportOption)
-      : null;
+    const selectedOption = !isCustomReason ? (optionData as ReportOption) : null;
 
-    const option = isCustomReason
-      ? optionData
-      : selectedOption?.id || "";
-    const additionalInfo = isCustomReason
-      ? optionData
-      : selectedOption?.additionalInfo || "";
+    const option = isCustomReason ? optionData : selectedOption?.id || "";
+    const additionalInfo = isCustomReason ? optionData : selectedOption?.additionalInfo || "";
 
     const normalizedCategory = normalizeReportType(option, categoryId);
 
@@ -87,11 +67,7 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
           />
 
           {/* Share Modal */}
-          <ShareModal
-            isOpen={showShareModal}
-            onClose={() => setShowShareModal(false)}
-            linkToShare={shareUrl}
-          />
+          <ShareModal isOpen={showShareModal} onClose={() => setShowShareModal(false)} linkToShare={shareUrl} />
 
           {/* Find Similar */}
           {/* <MenuItem
@@ -105,13 +81,7 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
 
           {/* Report */}
           <MenuItem
-            icon={
-              <Flag
-                size={10}
-                fill={isReported ? "red" : "none"}
-                stroke={isReported ? "red" : "currentColor"}
-              />
-            }
+            icon={<Flag size={10} fill={isReported ? "red" : "none"} stroke={isReported ? "red" : "currentColor"} />}
             label="Report"
             onHover={setHoveredItem}
             hoveredItem={hoveredItem}
@@ -142,14 +112,7 @@ interface MenuItemProps {
   itemId: string;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({
-  icon,
-  label,
-  onClick,
-  onHover,
-  hoveredItem,
-  itemId,
-}) => (
+const MenuItem: React.FC<MenuItemProps> = ({ icon, label, onClick, onHover, hoveredItem, itemId }) => (
   <div className="flex items-center relative">
     <button
       onClick={onClick}

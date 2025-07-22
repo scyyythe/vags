@@ -6,7 +6,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ExhibitMenu from "@/components/user_dashboard/Exhibit/menu/ExhibitMenu";
 import Menu from "@/components/user_dashboard/own_profile/menu/exhibit_card/Menu";
 import useExhibitReport from "@/hooks/mutate/report/useExhibitReport";
-import useReportStatus from "@/hooks/mutate/report/useReportStatus";
 import { useDeleteExhibit } from "@/hooks/exhibit/useDeleteExhibit";
 import { getLoggedInUserId } from "@/auth/decode";
 import useExhibitReportStatus from "@/hooks/mutate/report/useExhibitReportStatus";

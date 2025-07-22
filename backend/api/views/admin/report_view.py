@@ -266,6 +266,41 @@ class ExhibitReportStatus(APIView):
                 {"error": "Failed to fetch report status."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+            
+class ArtworkReportStatus(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        user_id = request.user.id
+        try:
+            artwork_obj_id = ObjectId(pk)
+            user_obj_id = ObjectId(user_id) if isinstance(user_id, str) else user_id
+
+            report = Report.objects.filter(
+                user=user_obj_id,
+                art=artwork_obj_id
+            ).order_by('-created_at').first()
+
+
+            reported = report is not None
+            status_value = report.status if report else None 
+
+            return Response({
+                "reported": reported,
+                "status": status_value
+            }, status=status.HTTP_200_OK)
+
+        except InvalidId:
+            return Response(
+                {"error": "Invalid artwork ID."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as e:
+            logger.error(f"Error fetching artwork report status: {e}")
+            return Response(
+                {"error": "Failed to fetch report status."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
 class BulkAuctionReportStatusView(APIView):
     permission_classes = [IsAuthenticated]

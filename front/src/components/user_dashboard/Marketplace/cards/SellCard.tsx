@@ -2,9 +2,10 @@ import React, { useState, memo } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import SellMenu from "@/components/user_dashboard/own_profile/menu/sell_card/Menu";
- import SellCardMenu from "./SellCardMenu";
+import SellCardMenu from "./SellCardMenu";
 import PreviewModal from "../buying_process/preview/PreviewModal";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
+import useArtworkReportStatus from "@/hooks/mutate/report/useArtworkReportStatus";
 
 export interface SellCardProps {
   id: string;
@@ -43,7 +44,7 @@ const SellCard = ({
   yearCreated,
   isLiked = false,
   onLike,
-  isReported,
+
   onReportSuccess,
   isMarketplace = false,
   onCardClick,
@@ -53,6 +54,9 @@ const SellCard = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { mutate: submitReport } = useSubmitReport();
+  const { data: reportStatusData } = useArtworkReportStatus(id);
+  const isReported = reportStatusData?.reported ?? false;
+
   const toggleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
     toast(!isLiked ? "Added to wishlist" : "Removed from wishlist", {
@@ -92,6 +96,7 @@ const SellCard = ({
       {
         onSuccess: () => {
           onReportSuccess?.();
+
           toast.success("Report submitted successfully", {
             closeButton: true,
           });
@@ -168,32 +173,22 @@ const SellCard = ({
           </button>
 
           {/* Render Menu */}
-          
+
           {isOwner ? (
             <SellMenu
               isOpen={menuOpen}
               artworkId={id}
-              onEdit={(artworkId) =>
-                toast(`Edit clicked for ${artworkId}`, { closeButton: true })
-              }
+              onEdit={(artworkId) => toast(`Edit clicked for ${artworkId}`, { closeButton: true })}
               onToggleVisibility={(newVisibility, artworkId) =>
                 toast(`Set visibility to ${newVisibility}`, { closeButton: true })
               }
-              onDelete={() =>
-                toast("Delete clicked", { closeButton: true })
-              }
-              onMarkAsSold={() =>
-                toast("Marked as sold", { closeButton: true })
-              }
-              onViewInsights={() =>
-                toast("Viewing insights", { closeButton: true })
-              }
+              onDelete={() => toast("Delete clicked", { closeButton: true })}
+              onMarkAsSold={() => toast("Marked as sold", { closeButton: true })}
+              onViewInsights={() => toast("Viewing insights", { closeButton: true })}
             />
           ) : (
-            <SellCardMenu isOpen={menuOpen} onReport={handleReport} isReported={false} />
+            <SellCardMenu isOpen={menuOpen} onReport={handleReport} isReported={isReported} />
           )}
-
-
         </div>
       </div>
 
