@@ -163,7 +163,7 @@ const isOwner = getLoggedInUserId() === exhibit.ownerId;
       isPublic={true}
       onEdit={(id) => {
         const searchParams = new URLSearchParams({ mode: "edit" });
-        navigate(`/add-exhibit/${id}?${searchParams.toString()}`);
+        navigate(`/edit-exhibit/${id}?${searchParams.toString()}`);
       }}
       onToggleVisibility={(newVisibility, id) => console.log("Toggle visibility:", newVisibility, id)}
       onViewInsights={(id) => console.log("View insights for:", id)}
