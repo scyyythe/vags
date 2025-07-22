@@ -181,6 +181,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                 />
               ) : (
                 <ExhibitMenu
+                  exhibitId={exhibit.id}
                   isOpen={menuOpen}
                   onHide={() => {
                     setIsHidden(true);

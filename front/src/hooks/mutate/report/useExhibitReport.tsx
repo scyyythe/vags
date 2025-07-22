@@ -53,6 +53,8 @@ const useExhibitReport = () => {
       queryClient.invalidateQueries({ queryKey: ["exhibitReportStatus", exhibit_id] });
       queryClient.invalidateQueries({ queryKey: ["exhibits"] });
       queryClient.invalidateQueries({ queryKey: ["exhibitReportStatusBulk"] });
+
+      toast.success("Exhibit reported successfully!", { duration: 3000 });
     },
 
     onError: (error: unknown) => {

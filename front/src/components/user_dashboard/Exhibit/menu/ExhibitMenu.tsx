@@ -3,7 +3,9 @@ import { EyeOff, Flag, Undo2, Share2 } from "lucide-react";
 import ShareModal from "../../local_components/share/ShareModal";
 import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import useUndoExhibitReport from "@/hooks/mutate/report/undo/useUndoExhibitReport";
+
 interface ExhibitMenuProps {
+  exhibitId: string;
   isOpen: boolean;
   onHide: () => void;
   onReport: (category: string, option?: string) => void;
@@ -17,6 +19,7 @@ interface ExhibitMenuProps {
 const BLACK = "#000000";
 
 const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
+  exhibitId,
   isOpen,
   onHide,
   onReport,
@@ -30,8 +33,8 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
   const [showReportOptions, setShowReportOptions] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
-  const { handleUndoReport: runUndoExhibitReport } = useUndoExhibitReport();
-  const exhibitId = shareUrl.split("/").pop();
+
+  const { handleUndoReport } = useUndoExhibitReport();
 
   if (!isOpen) return null;
 
@@ -43,16 +46,6 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
   const handleReportSubmit = (category: string, option?: string) => {
     setShowReportOptions(false);
     onReport(category, option);
-  };
-
-  const handleUndoReport = (e: React.MouseEvent) => {
-    e.stopPropagation();
-
-    if (!exhibitId) {
-      return;
-    }
-
-    runUndoExhibitReport(e, exhibitId);
   };
 
   return (
@@ -81,7 +74,6 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
             )}
           </div>
 
-          {/* Share Modal */}
           <ShareModal isOpen={showShareModal} onClose={() => setShowShareModal(false)} linkToShare={shareUrl} />
 
           {/* Hide */}
@@ -101,6 +93,7 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
               </span>
             )}
           </div>
+
           {/* Report */}
           <div className="flex items-center relative">
             <button
@@ -119,11 +112,11 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
             )}
           </div>
 
-          {/* Undo Report - Only show when content is reported */}
+          {/* Undo Report */}
           {isReported && (
             <div className="flex items-center relative">
               <button
-                onClick={handleUndoReport}
+                onClick={(e) => handleUndoReport(e, exhibitId)}
                 className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
                 aria-label="Undo Report"
                 onMouseEnter={() => setHoveredItem("undoReport")}
