@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 interface ActionButtonsProps {
   hasChanges: boolean;
@@ -17,13 +17,12 @@ const ActionButtons = ({
   saveText = "Update Settings",
   cancelText = "Reset"
 }: ActionButtonsProps) => {
-  const { toast } = useToast();
   
   const handleSave = () => {
     onSave();
-    toast({
-      title: "Settings updated",
+    toast.success("Settings updated", {
       description: "Your settings have been successfully updated.",
+      closeButton: true,
     });
   };
 
