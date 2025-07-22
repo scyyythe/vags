@@ -77,9 +77,12 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   const confirmEmptyTrash = () => {
     const filtered = artworkList.filter((art) => art.status !== "Deleted");
     setArtworkList(filtered);
-    toast.success("Trash emptied!");
+    toast.success("Trash emptied!", {
+      closeButton: true,
+    });
     setShowEmptyTrashPopup(false);
   };
+
 
   const cancelEmptyTrash = () => {
     setShowEmptyTrashPopup(false);
@@ -88,7 +91,9 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   // UNHIDE BUTTON
   const confirmUnhideAll = () => {
     unhideAllMyArtworks();
-    toast.success("All hidden artworks have been unhidden!");
+    toast.success("All hidden artworks have been unhidden!", {
+      closeButton: true,
+    });
     setShowUnhidePopup(false);
   };
 
@@ -99,7 +104,9 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   // UNARCHIVE BUTTON
   const confirmUnarchiveAll = () => {
     unarchiveAllMyArtworks();
-    toast.success("All archived artworks have been unarchived!");
+    toast.success("All archived artworks have been unarchived!", {
+      closeButton: true,
+    });
     setShowUnarchivePopup(false);
   };
 
@@ -155,7 +162,9 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
-    toast(`Selected category: ${category}`);
+    toast(`Selected category: ${category}`, {
+      closeButton: true,
+    });
   };
 
   const handleSortBySelect = (option: string) => {

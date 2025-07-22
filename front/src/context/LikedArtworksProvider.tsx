@@ -55,10 +55,14 @@ export const LikedArtworksProvider = ({ children }: { children: ReactNode }) => 
         likeCount: like_count !== undefined ? like_count : oldData?.likeCount,
       }));
 
-      toast(detail || (is_liked ? "You liked this artwork." : "You unliked this artwork."));
+      toast(detail || (is_liked ? "You liked this artwork." : "You unliked this artwork."), {
+        closeButton: true,
+      });
     } catch (error) {
       console.error("Like operation failed:", error);
-      toast("Failed to update like status");
+      toast("Failed to update like status", {
+        closeButton: true,
+      });
     }
   };
 

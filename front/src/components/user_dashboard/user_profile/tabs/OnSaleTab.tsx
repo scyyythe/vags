@@ -14,6 +14,8 @@ import ReviewModal from "@/components/user_dashboard/Marketplace/my_purchase/mod
 import ReviewDetailsModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/ReviewDetailsModal";
 import EditReviewModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/EditReviewModal";
 
+import SoldArtworkCard from "@/components/user_dashboard/Marketplace/sold_artworks/card/SoldArtworksCard";
+
 const SellTab = () => {
   const { id: userId } = useParams();
   const loggedInUserId = getLoggedInUserId();
@@ -53,14 +55,37 @@ const SellTab = () => {
   };
 
   const handleSubmitReview = (reviewData) => {
-    toast.success("Review submitted successfully!");
+    toast.success("Review submitted successfully!", {
+      closeButton: true,
+    });
     console.log("Review submitted:", reviewData);
   };
 
-  const handleContact = () => toast.info("Redirecting to contact seller...");
-  const handleTrackOrder = () => toast.info("Opening payment tracking...");
-  const handleRequestRefund = () => toast.info("Refund request initiated...");
-  const handleCancelOrder = () => toast.warning("Order cancelled successfully");
+  const handleContact = () =>
+    toast.info("Redirecting to contact seller...", {
+      closeButton: true,
+  });
+
+  const handleTrackOrder = () =>
+    toast.info("Opening payment tracking...", {
+      closeButton: true,
+  });
+
+  const handleRequestRefund = () =>
+    toast.info("Refund request initiated...", {
+      closeButton: true,
+  });
+
+  const handleReorder = () =>
+    toast.success("Artwork reordered successfully!", {
+    closeButton: true,
+    description: "You can view it in your pending orders.",
+  });
+
+  const handleCancelOrder = () =>
+    toast.warning("Order cancelled successfully", {
+      closeButton: true,
+  });
 
   const handleViewReview = (order) => {
     setSelectedReview({
@@ -80,13 +105,17 @@ const SellTab = () => {
   };
 
   const handleDeleteReview = () => {
-    toast.success("Review deleted successfully!");
+    toast.warning("Review deleted successfully!", {
+      closeButton: true,
+    });
     setShowReviewDetailsModal(false);
     setSelectedReview(null);
   };
 
   const handleUpdateReview = (reviewData) => {
-    toast.success("Review updated successfully!");
+    toast.warning("Review updated successfully!", {
+      closeButton: true,
+    });
     console.log("Updated review:", reviewData);
     setShowEditReviewModal(false);
     setSelectedReview(null);
@@ -562,6 +591,7 @@ const SellTab = () => {
                 onTrackOrder={handleTrackOrder}
                 onRequestRefund={handleRequestRefund}
                 onCancelOrder={handleCancelOrder}
+                onReorder={handleReorder}
               />
             ))}
           </div>
