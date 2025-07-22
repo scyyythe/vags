@@ -65,13 +65,13 @@ const AdminConfig = () => {
   });
 
   const onConfigSubmit = (data: z.infer<typeof configSchema>) => {
-    console.log("Config form submitted:", data);
-    toast.success("Platform configuration updated successfully", { closeButton: true });
+
+    toast.success("Platform configuration updated successfully");
   };
 
   const onPaymentSubmit = (data: z.infer<typeof paymentSchema>) => {
-    console.log("Payment form submitted:", data);
-    toast.success("Payment settings updated successfully", { closeButton: true });
+   
+    toast.success("Payment settings updated successfully");
   };
 
   const handleToggle = (setting: keyof typeof platformConfig, checked: boolean) => {

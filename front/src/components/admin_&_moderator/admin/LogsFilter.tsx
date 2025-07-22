@@ -34,10 +34,8 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
       onSearch(searchQuery);
     } else {
       // Default search behavior
-      toast.success(`Searching logs for: ${searchQuery}`, {
-        closeButton: true,
-      });
-      console.log("Searching logs for:", searchQuery);
+      toast.success(`Searching logs for: ${searchQuery}`);
+
     }
   };
   
@@ -46,7 +44,7 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
     
     // Simulate export process
     setTimeout(() => {
-      console.log("Exporting logs with filters:", filter);
+
       const fileName = `system_logs_${new Date().toISOString().split('T')[0]}.csv`;
       
       toast.success(`Logs exported successfully as ${fileName}`, {

@@ -85,9 +85,7 @@ const AddExhibit = () => {
   )
   const { data: currentUser, isLoading } = useUserQuery(currentUserId ?? "")
 
-  useEffect(() => {
-    console.log("Fetched artworks:", artworks)
-  }, [artworks])
+
 
   // Function to distribute slots among participants
   const distributeSlots = () => {
