@@ -125,7 +125,16 @@ const App = () => {
           <TooltipProvider>
             <DonationProvider>
               <DonationWrapper>
-                <Toaster position="bottom-right" richColors />
+                <Toaster
+                  position="bottom-right"
+                  richColors
+                  closeButton
+                  toastOptions={{
+                    classNames: {
+                      closeButton: "left-[95%] top-3 text-gray-500 hover:text-gray-700",
+                    },
+                  }}
+                />
                 <ModalProvider>
                   <ArtworkProvider>
                     <AddressProvider>
