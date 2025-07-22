@@ -20,7 +20,10 @@ const SellTab = () => {
   const navigate = useNavigate();
   const isOwnProfile = String(userId) === String(loggedInUserId);
 
-  const { myArtCards, isLoading } = isOwnProfile ? useMySellArtCards() : useUserSellArtCards(userId);
+  const mySellArtData = useMySellArtCards();
+  const userSellArtData = useUserSellArtCards(userId);
+
+  const { myArtCards, isLoading } = isOwnProfile ? mySellArtData : userSellArtData;
 
   const [mainTab, setMainTab] = useState("myListings");
   const [activeSubGroup, setActiveSubGroup] = useState<"listings" | "soldArtworks">("listings");
@@ -104,7 +107,7 @@ const SellTab = () => {
     deleted: "deleted",
   };
 
-  const activeListingTabs = ["available", "unlisted", "deleted"];
+  const activeListingTabs = ["available", "unlisted"];
   const soldArtworksTabs = [
     "awaiting_payment",
     "payment_received",
@@ -437,7 +440,7 @@ const SellTab = () => {
 
   const filteredOrders = mockOrders.filter((order) => order.status === subTab);
   const filteredArtworks = myArtCards.filter((art) => {
-    const status = (art as any).art_status?.toLowerCase?.() || "";
+    const status = art.art_status?.toLowerCase?.() || "";
     const expectedStatus = statusMap[subTab]?.toLowerCase() || subTab.toLowerCase();
     return mainTab === "myListings" ? status === expectedStatus : false;
   });
