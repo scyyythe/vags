@@ -32,7 +32,9 @@ const SellArtwork = () => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB");
+        toast.error("File size must be less than 20MB", {
+          closeButton: true,
+        });
         return;
       }
       setSelectedFile(file);
@@ -59,11 +61,15 @@ const SellArtwork = () => {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB");
+        toast.error("File size must be less than 20MB", {
+          closeButton: true,
+        });
         return;
       }
       if (!file.type.startsWith("image/")) {
-        toast.error("Please upload only image files");
+        toast.error("Please upload only image files", {
+          closeButton: true,
+        });
         return;
       }
       handleAdditionalImageChange(index, file);
@@ -82,7 +88,9 @@ const SellArtwork = () => {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB");
+        toast.error("File size must be less than 20MB", {
+          closeButton: true,
+        });
         return;
       }
       setSelectedFile(file);
@@ -95,17 +103,23 @@ const SellArtwork = () => {
     e.preventDefault();
     
     if (!artworkTitle.trim()) {
-      toast.error("Please enter an artwork title");
+      toast.error("Please enter an artwork title", {
+        closeButton: true,
+      });
       return;
     }
 
     if (!selectedFile) {
-      toast.error("Please upload an artwork image");
+      toast.error("Please upload an artwork image", {
+        closeButton: true,
+      });
       return;
     }
 
     if (!price) {
-      toast.error("Please enter a price");
+      toast.error("Please enter a price", {
+        closeButton: true,
+      });
       return;
     }
 
@@ -128,10 +142,16 @@ const SellArtwork = () => {
     mainImage: selectedFile,
     additionalImages,
   });
-      toast.success("Artwork listed successfully!", { id: "upload" });
+      toast.success("Artwork listed successfully!", {
+        id: "upload",
+        closeButton: true,
+      });
       navigate("/marketplace");
     } catch (error) {
-      toast.error("Failed to list artwork", { id: "upload" });
+      toast.error("Failed to list artwork", {
+        id: "upload",
+        closeButton: true,
+      });
     } finally {
       setIsUploading(false);
     }

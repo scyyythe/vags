@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Share2, BarChart2, MoreHorizontal } from "lucide-react";
 import DeleteConfirmation from "./DeleteConfirmation";
-import useDeleteArtwork from "@/hooks/mutate/visibility/trash/useDeleteArtwork";
+import { useDeleteExhibit } from "@/hooks/exhibit/useDeleteExhibit";
 import ShareModal from "../../../local_components/share/ShareModal";
 
 interface ExhibitCardMenuProps {
@@ -14,6 +14,7 @@ interface ExhibitCardMenuProps {
   onToggleVisibility: (newVisibility: boolean, id: string) => void;
   onViewInsights: (id: string) => void;
   isPublic?: boolean;
+   onDelete?: (id: string) => void;
 }
 
 const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
@@ -24,6 +25,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
   onToggleVisibility,
   onViewInsights,
   artworkTitle,
+  onDelete,
   isPublic = true,
 }) => {
     const menuRef = useRef<HTMLDivElement>(null);
@@ -32,7 +34,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [isMoreOptionsOpen, setIsMoreOptionsOpen] = useState(false);
     const navigate = useNavigate();
-    const deleteArtwork = useDeleteArtwork();
+const deleteExhibit = useDeleteExhibit();
     const [showShareModal, setShowShareModal] = useState(false);
     const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
@@ -57,15 +59,17 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
     };
 
     const handleConfirmDelete = () => {
-        deleteArtwork.mutate(artworkId, {
-        onSuccess: () => setShowDeletePopup(false),
-        onError: () => setShowDeletePopup(false),
-        });
+deleteExhibit.mutate(artworkId, {
+  onSuccess: () => setShowDeletePopup(false),
+  onError: () => setShowDeletePopup(false),
+});
     };
 
-    const handleEditClick = () => {
-        navigate(`/add-exhibit`);
-    };
+const handleEditClick = () => {
+  navigate(`/edit-exhibit/${artworkId}?mode=edit`);
+};
+
+
 
     return (
         <>

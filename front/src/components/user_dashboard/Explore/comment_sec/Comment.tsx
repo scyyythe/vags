@@ -88,7 +88,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
         ...prev,
         [newComment.id]: 0 
       }));
-      toast("Comment posted");
+      toast("Comment posted", { closeButton: true })
       setComment(""); 
       setReplyingTo(null); 
       setShowEmojiPicker(false);
@@ -119,13 +119,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   const handleBlockUser = (commentId: string) => {
     const foundComment = comments.find(c => c.id === commentId);
     if (foundComment) {
-      toast.success(`Blocked user ${foundComment.user}`);
+      toast.success(`Blocked user ${foundComment.user}`, { closeButton: true })
     }
     toggleCommentMenu(commentId);
   };
 
   const handleReportContent = (commentId: string) => {
-    toast.success("Content reported");
+    toast.success("Content reported", { closeButton: true })
     toggleCommentMenu(commentId);
   };
 
@@ -234,7 +234,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                         isMobile ? "text-[8px]" : "text-[8px]"
                       } hover:bg-gray-100 hover:text-black`}
                       onClick={() => {
-                        toast.success(`Blocked user ${comment.user}`);
+                        toast.success(`Blocked user ${comment.user}`, { closeButton: true })
                         toggleCommentMenu(comment.id);
                       }}
                     >
@@ -247,7 +247,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                       onClick={() => {
                         setShowReportOptions(true);
                         setOptionsOpen(false);
-                        toast.success("Content reported");
+                        toast.success("Content reported", { closeButton: true })
                         toggleCommentMenu(comment.id);
                       }} 
                     >

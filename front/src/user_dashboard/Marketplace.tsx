@@ -10,7 +10,7 @@ import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { toast } from "sonner";
 import SellCardSkeleton from "@/components/skeletons/SellCardSkeleton";
-
+import useFollowedArtworksOnSale from "@/hooks/artworks/follow_artworks/useFollowedArtworksOnSale";
 import useWishlistArtCards from "@/hooks/artworks/wishlist/useWishlistArtCards";
 import { ChevronDown, Grid3X3 } from "lucide-react";
 import {
@@ -30,6 +30,12 @@ const Marketplace = () => {
   const [selectedEdition, setSelectedEdition] = useState("All");
   const [reportedArtworks, setReportedArtworks] = useState<Set<string>>(new Set());
 
+  const {
+    data: followedArtworksData = [],
+    isLoading: isFollowedLoading,
+    refetch: refetchFollowed,
+  } = useFollowedArtworksOnSale(1, selectedCategoryFilter === "Following");
+
   const categories = ["All", "Trending", "Following"];
   const navigate = useNavigate();
 
@@ -45,25 +51,28 @@ const Marketplace = () => {
   const handleArtCategoryChange = (category) => setSelectedArtCategory(category);
   const handleSortChange = (option) => setSelectedSort(option);
 
-  const filteredArtCards = artCards
-    .filter((artwork) => {
-      if (selectedCategoryFilter === "Trending" && !(artwork.total_ratings >= 4)) return false;
-      if (selectedCategoryFilter === "Following") return false;
-      if (selectedArtCategory !== "All" && artwork.category !== selectedArtCategory) return false;
-      if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
-      return true;
-    })
-    .sort((a, b) => {
-      if (selectedSort === "Price: Low to High") {
-        return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
-      } else if (selectedSort === "Price: High to Low") {
-        return (b.discounted_price ?? b.price) - (a.discounted_price ?? a.price);
-      } else if (selectedSort === "Most Popular") {
-        return (b.total_ratings ?? 0) - (a.total_ratings ?? 0);
-      } else {
-        return 0;
-      }
-    });
+const filteredArtCards =
+  selectedCategoryFilter === "Following"
+  ? (followedArtworksData?.artworks ?? []).filter((art) => art.art_status === "onSale")
+
+    : artCards
+        .filter((artwork) => {
+          if (selectedCategoryFilter === "Trending" && !(artwork.total_ratings >= 4)) return false;
+          if (selectedArtCategory !== "All" && artwork.category !== selectedArtCategory) return false;
+          if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
+          return true;
+        })
+        .sort((a, b) => {
+          if (selectedSort === "Price: Low to High") {
+            return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
+          } else if (selectedSort === "Price: High to Low") {
+            return (b.discounted_price ?? b.price) - (a.discounted_price ?? a.price);
+          } else if (selectedSort === "Most Popular") {
+            return (b.total_ratings ?? 0) - (a.total_ratings ?? 0);
+          } else {
+            return 0;
+          }
+        });
 
   const handleCardClick = (id: string) => {
     if (!id) return;
@@ -79,7 +88,9 @@ const Marketplace = () => {
 
   const handleRemoveFromWishlistModal = (id: string) => {
     removeFromWishlist(id);
-    toast("Removed from wishlist");
+    toast("Removed from wishlist", {
+      closeButton: true,
+    });
   };
 
   const handleWishlistClick = () => setShowWishlist(true);
@@ -162,7 +173,7 @@ const Marketplace = () => {
           </div>
 
           {/* Marketplace Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4">
             {isLoading ? (
               <>
                 {Array.from({ length: 5 }).map((_, idx) => (

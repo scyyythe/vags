@@ -117,11 +117,11 @@ const AdminSecurity = () => {
       ...securityConfig,
       [setting]: checked,
     });
-    toast.success(`${setting} ${checked ? "enabled" : "disabled"} successfully`);
+    toast.success(`${setting} ${checked ? "enabled" : "disabled"} successfully`, { closeButton: true });
   };
 
   const handleResetSecurity = () => {
-    toast.success("Security alerts have been reset");
+    toast.success("Security alerts have been reset", { closeButton: true });
   };
 
   return (
@@ -173,7 +173,11 @@ const AdminSecurity = () => {
             <Button
               size="sm"
               className="text-[10px] rounded-full h-7"
-              onClick={() => toast.success("Security settings saved")}
+              onClick={() =>
+                toast.success("Security settings saved", {
+                  closeButton: true,
+                })
+              }
             >
               Save Settings
             </Button>

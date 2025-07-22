@@ -35,7 +35,7 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
     } else {
       // Default search behavior
       toast.success(`Searching logs for: ${searchQuery}`);
-      console.log("Searching logs for:", searchQuery);
+
     }
   };
   
@@ -44,10 +44,12 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
     
     // Simulate export process
     setTimeout(() => {
-      console.log("Exporting logs with filters:", filter);
+
       const fileName = `system_logs_${new Date().toISOString().split('T')[0]}.csv`;
       
-      toast.success(`Logs exported successfully as ${fileName}`);
+      toast.success(`Logs exported successfully as ${fileName}`, {
+        closeButton: true,
+      });
       setIsExporting(false);
     }, 1000);
   };
@@ -55,7 +57,7 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
   const handleClearFilters = () => {
     onChange({ severity: "all", role: "all" });
     setSearchQuery("");
-    toast.info("All filters cleared");
+    toast.info("All filters cleared", { closeButton: true });
   };
 
   return (
@@ -77,7 +79,7 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
           value={filter.severity}
           onValueChange={(value) => {
             onChange({ ...filter, severity: value as "all" | "info" | "warning" | "error" });
-            toast.info(`Severity filter set to: ${value}`);
+            toast.info(`Severity filter set to: ${value}`, { closeButton: true });
           }}
         >
           <SelectTrigger className="w-[140px] text-[10px] rounded-full h-8">
@@ -94,7 +96,7 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
           value={filter.role}
           onValueChange={(value) => {
             onChange({ ...filter, role: value as "all" | "admin" | "moderator" | "system" });
-            toast.info(`Role filter set to: ${value}`);
+            toast.info(`Role filter set to: ${value}`, { closeButton: true });
           }}
         >
           <SelectTrigger className="w-[140px] text-[10px] rounded-full h-8">

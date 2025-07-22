@@ -83,7 +83,9 @@ const popularArtworks = popularArtworksRaw?.slice(0, 5) ?? [];
   }, [artworks, searchQuery, selectedCategory, followedArtworksData]);
 
   const handleTipJar = () => {
-    toast("Opening tip jar");
+    toast("Opening tip jar", {
+      closeButton: true,
+    });
   };
 
   const handleCreateClick = () => {
@@ -91,7 +93,9 @@ const popularArtworks = popularArtworksRaw?.slice(0, 5) ?? [];
   };
 
   const handleSortClick = () => {
-    toast("Sort artworks");
+    toast("Sort artworks", {
+      closeButton: true,
+    });
   };
 
   return (

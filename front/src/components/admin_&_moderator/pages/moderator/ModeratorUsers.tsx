@@ -113,7 +113,7 @@ const ModeratorUsers = () => {
       return user;
     });
     setUsers(updatedUsers);
-    toast.success("Warning issued to user");
+    toast.success("Warning issued to user", { closeButton: true });
   };
 
   const handleMuteUser = (id: string) => {
@@ -124,7 +124,7 @@ const ModeratorUsers = () => {
       return user;
     });
     setUsers(updatedUsers);
-    toast.success("User muted for 24 hours");
+    toast.success("User muted for 24 hours", { closeButton: true });
   };
 
   const handleSuspendUser = (id: string) => {
@@ -135,7 +135,7 @@ const ModeratorUsers = () => {
       return user;
     });
     setUsers(updatedUsers);
-    toast.success("User suspended");
+    toast.success("User suspended", { closeButton: true });
   };
 
   const handleRestoreUser = (id: string) => {
@@ -146,7 +146,7 @@ const ModeratorUsers = () => {
       return user;
     });
     setUsers(updatedUsers);
-    toast.success("User restored to active status");
+    toast.success("User restored to active status", { closeButton: true });
   };
 
   const handleSaveNotes = () => {
@@ -158,7 +158,7 @@ const ModeratorUsers = () => {
         return user;
       });
       setUsers(updatedUsers);
-      toast.success("User notes updated");
+      toast.success("User notes updated", { closeButton: true });
       setDialogOpen(false);
     }
   };
@@ -413,7 +413,7 @@ const ModeratorUsers = () => {
                       variant="outline"
                       className="text-xs"
                       onClick={() => {
-                        toast.success("Report sent to admin");
+                        toast.success("Report sent to admin", { closeButton: true });
                         setDialogOpen(false);
                       }}
                     >

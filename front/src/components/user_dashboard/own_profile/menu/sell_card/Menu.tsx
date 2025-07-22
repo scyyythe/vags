@@ -61,7 +61,17 @@ const SellMenu: React.FC<SellMenuProps> = ({
     const newStatus = !publicStatus;
     setPublicStatus(newStatus);
     onToggleVisibility(newStatus, artworkId);
+
+    toast.success(
+      newStatus
+        ? `"${artworkTitle ?? "Artwork"}" is now listed.`
+        : `"${artworkTitle ?? "Artwork"}" has been unlisted.`,
+        {
+          closeButton: true,
+        }
+    );
   };
+
 
   const handleConfirmDelete = () => {
     deleteArtwork.mutate(artworkId, {
@@ -85,12 +95,14 @@ const SellMenu: React.FC<SellMenuProps> = ({
     onMarkAsSold(artworkId);
 
     toast.success(
-        newSoldStatus
+      newSoldStatus
         ? `"${artworkTitle ?? "Artwork"}" marked as sold.`
-        : `"${artworkTitle ?? "Artwork"}" marked as not sold.`
+        : `"${artworkTitle ?? "Artwork"}" marked as not sold.`,
+      {
+        closeButton: true,
+      }
     );
   };
-
 
 
   return (

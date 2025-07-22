@@ -35,7 +35,7 @@ const CreatePost = () => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB");
+        toast.error("File size must be less than 20MB", { closeButton: true })
         return;
       }
 
@@ -57,7 +57,7 @@ const CreatePost = () => {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB");
+        toast.error("File size must be less than 20MB", { closeButton: true })
         return;
       }
 
@@ -75,12 +75,12 @@ const handleSubmit = async (e: React.FormEvent) => {
   const size = `${artworkHeight} x ${artworkWidth}`;
 
   if (!artworkTitle.trim()) {
-    toast.error("Please enter an artwork title");
+    toast.error("Please enter an artwork title", { closeButton: true })
     return;
   }
 
   if (!selectedFile) {
-    toast.error("Please upload at least one artwork image");
+    toast.error("Please upload at least one artwork image", { closeButton: true })
     return;
   }
 
@@ -100,11 +100,11 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   const token = localStorage.getItem("access_token");
   if (!token) {
-    toast.error("You must be logged in to post artwork.");
+    toast.error("You must be logged in to post artwork.", { closeButton: true })
     return;
   }
 
-  toast.loading("Uploading artwork...", { id: "upload" });
+  toast.loading("Uploading artwork...", { id: "upload", closeButton: true }) ;
 
   try {
     const response = await apiClient.post("art/create/", formData, {
@@ -114,7 +114,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       },
     });
 
-    toast.success("Artwork posted successfully!", { id: "upload" });
+    toast.success("Artwork posted successfully!", { id: "upload", closeButton: true });
     setSelectedFile(null);
     setPreviewUrl(null);
     queryClient.invalidateQueries({ queryKey: ["artworks"] });
@@ -125,16 +125,16 @@ const handleSubmit = async (e: React.FormEvent) => {
       console.error("Upload error:", errors);
 
       if (Array.isArray(errors) && errors.length > 0) {
-        toast.error(errors[0], { id: "upload" });
+        toast.error(errors[0], { id: "upload", closeButton: true });
       } else if (errors?.detail) {
-        toast.error(errors.detail, { id: "upload" });
+        toast.error(errors.detail, { id: "upload", closeButton: true });
       } else if (errors?.images?.length) {
-        toast.error(errors.images[0], { id: "upload" });
+        toast.error(errors.images[0], { id: "upload", closeButton: true });
       } else {
-        toast.error("Upload failed", { id: "upload" });
+        toast.error("Upload failed", { id: "upload", closeButton: true });
       }
     } else {
-      toast.error("Unexpected error occurred", { id: "upload" });
+      toast.error("Unexpected error occurred", { id: "upload", closeButton: true });
     }
   }
 };

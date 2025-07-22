@@ -120,7 +120,7 @@ const EditProfile = () => {
     const [firstName, ...rest] = formData.fullName.trim().split(" ");
     const lastName = rest.join(" ");
 
-    const updatedUser = new FormData();
+  const updatedUser = new FormData();
     updatedUser.append("first_name", firstName);
     updatedUser.append("last_name", lastName);
     updatedUser.append("username", formData.username);
@@ -144,11 +144,15 @@ const EditProfile = () => {
         setOriginalData({ ...formData });
         setRemoveProfilePic(false);
         setRemoveCoverPhoto(false);
-        toast.success("User details updated successfully!");
+        toast.success("User details updated successfully!", {
+          closeButton: true,
+        });
         toast.dismiss(loadingToast);
       },
       onError: () => {
-        toast.error("Failed to update user details.");
+        toast.error("Failed to update user details.", {
+          closeButton: true,
+        });
         toast.dismiss(loadingToast);
       },
     });
@@ -196,26 +200,30 @@ const EditProfile = () => {
   const handleAddSocial = () => {
     const platform = extractPlatform(socialInput);
     if (!platform) {
-      toast.error("Invalid URL");
+      toast.error("Invalid URL", { closeButton: true });
       return;
     }
 
     if (socials[platform]) {
-      toast.error(`You already added your ${platform} account.`);
+      toast.error(`You already added your ${platform} account.`, { closeButton: true });
       return;
     }
 
     setSocials((prev) => ({ ...prev, [platform]: socialInput }));
     setSocialInput("");
+    
+    toast.success(`${platform} account added successfully!`, { closeButton: true });
   };
 
   const isValidEmail = (email: string) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-};
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
   const handleSaveEmail = () => {
     if (!isValidEmail(formData.email)) {
-      toast.error("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.", {
+        closeButton: true,
+      });
       return;
     }
 

@@ -22,9 +22,9 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, linkToShare })
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(linkToShare);
-      toast.success("Link copied to clipboard!");
+      toast.success("Link copied to clipboard!", { closeButton: true })
     } catch (err) {
-      toast.error("Failed to copy link");
+      toast.error("Failed to copy link", { closeButton: true })
     }
   };
 

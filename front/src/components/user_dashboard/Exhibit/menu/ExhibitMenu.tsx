@@ -6,7 +6,7 @@ import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/Report
 interface ExhibitMenuProps {
   isOpen: boolean;
   onHide: () => void;
-  onReport: () => void;
+onReport: (category: string, option?: string) => void;
   onUndoReport?: () => void;
   isReported?: boolean;
   isShared: boolean;
@@ -38,10 +38,11 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
     setShowReportOptions(true);
   };
 
-  const handleReportSubmit = (category: string, option?: string) => {
-    console.log("Report submitted:", { category, option });
-    onReport();
-  };
+const handleReportSubmit = (category: string, option?: string) => {
+  setShowReportOptions(false);
+  onReport(category, option);
+};
+
 
   const handleUndoReport = (e: React.MouseEvent) => {
     e.stopPropagation();

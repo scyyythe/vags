@@ -100,7 +100,9 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
 
   const handleConfirmSell = () => {
     console.log('Selling artwork with data:', sellArtworkData);
-    toast.success('Artwork successfully listed for sale!');
+    toast.success("Artwork successfully listed for sale!", {
+      closeButton: true,
+    });
     setShowSellConfirmation(false);
     setSellArtworkData(null);
     onSell(); 

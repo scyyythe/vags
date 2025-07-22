@@ -4,7 +4,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { useCollaboratorExhibitView } from "@/hooks/exhibit/useCollaboratorExhibitView";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
@@ -41,7 +41,6 @@ type CollaboratorViewProps = {
 
 const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { exhibitId } = useParams();
   const { data, isLoading, error } = useCollaboratorExhibitView(exhibitId);
   const userId = getLoggedInUserId();
@@ -196,10 +195,9 @@ useEffect(() => {
     const availableSlot = availableUserSlots[0];
 
     if (!availableSlot) {
-      toast({
-        title: "No available slots",
+      toast.error("No available slots", {
         description: "You don't have any available slots for more artwork.",
-        variant: "destructive",
+        closeButton: true,
       });
       return;
     }
@@ -244,21 +242,21 @@ useEffect(() => {
 
   submitContributions(payload, {
     onSuccess: () => {
-      toast({
-        title: "Selections Saved",
+      toast.success("Selections Saved", {
         description: "Your artwork selections have been saved to the exhibit!",
+        closeButton: true,
       });
       navigate("/exhibits");
     },
     onError: (err: any) => {
-      toast({
-        title: "Error",
+      toast.error("Error", {
         description: err?.response?.data?.detail || "Failed to submit contributions.",
-        variant: "destructive",
+        closeButton: true,
       });
     },
   });
 };
+
 const getColorSchemeIndex = (userId: string) => {
   if (userId === exhibit.owner.id) return 0;
 

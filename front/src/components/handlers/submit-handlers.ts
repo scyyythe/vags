@@ -1,6 +1,6 @@
 import type React from "react"
 import type { useNavigate } from "react-router-dom"
-import type { useToast } from "@/components/ui/use-toast"
+import { toast } from "sonner";
 import type { useCreateExhibit } from "@/hooks/mutate/exhibit/AddExhibit"
 import type { ExhibitPayload } from "@/hooks/mutate/exhibit/exhibit"
 import { sendCollaboratorNotifications, showCollaboratorNotification } from "@/utils/notificationUtils"
@@ -8,7 +8,6 @@ import type { User } from "@/hooks/users/useUserQuery"
 
 export const createSubmitHandler = (
   navigate: ReturnType<typeof useNavigate>,
-  toast: ReturnType<typeof useToast>["toast"],
   createExhibitMutation: ReturnType<typeof useCreateExhibit>,
   viewMode: string,
   exhibitType: string,
@@ -48,20 +47,19 @@ export const createSubmitHandler = (
 
     createExhibitMutation.mutate(payload, {
       onSuccess: () => {
-        toast({
-          title: "Exhibit Created",
+        toast.success("Exhibit Created", {
           description: "Your exhibit has been successfully created!",
-        })
-        navigate("/exhibits")
+          closeButton: true,
+        });
+        navigate("/exhibits");
       },
       onError: (error) => {
-        toast({
-          title: "Failed to create exhibit",
+        toast.error("Failed to create exhibit", {
           description: error?.message || "Unknown error",
-          variant: "destructive",
-        })
+          closeButton: true,
+        });
       },
-    })
+    });
   }
 
   // const sendNotificationsToCollaborators = () => {
@@ -81,7 +79,6 @@ export const createSubmitHandler = (
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("📨 Submit triggered - ViewMode:", viewMode, "| ExhibitType:", exhibitType)
 
     if (viewMode === "review" || viewMode === "monitoring" || viewMode === "preview") {
       navigate("/exhibits")
@@ -90,7 +87,7 @@ export const createSubmitHandler = (
 
     if (viewMode === "owner") {
       if (exhibitType === "collab" && collaborators.length > 0) {
-        console.log("👥 Collaborative exhibit detected. Proceeding to submit.")
+
         // setShowNotificationDialog(true)
         completeExhibitSubmission()
         return
@@ -98,10 +95,10 @@ export const createSubmitHandler = (
 
       completeExhibitSubmission()
     } else if (viewMode === "collaborator") {
-      toast({
-        title: "Selections Saved",
+      toast.success("Selections Saved", {
         description: "Your artwork selections have been saved to the exhibit!",
-      })
+        closeButton: true,
+      });
 
       navigate("/exhibits")
     }

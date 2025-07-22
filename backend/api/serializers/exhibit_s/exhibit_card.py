@@ -22,6 +22,10 @@ class ExhibitCardSerializer(serializers.Serializer):
     user_has_liked_exhibit = serializers.SerializerMethodField()
     artworks = serializers.SerializerMethodField()
     slotArtworkMap = serializers.SerializerMethodField()
+    ownerId = serializers.SerializerMethodField()
+
+    def get_ownerId(self, obj):
+        return str(obj.owner.id) if obj.owner else None
 
     def get_artworks(self, obj):
         
