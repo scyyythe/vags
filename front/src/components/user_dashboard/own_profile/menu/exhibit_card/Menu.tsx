@@ -65,9 +65,11 @@ deleteExhibit.mutate(artworkId, {
 });
     };
 
-    const handleEditClick = () => {
-        navigate(`/add-exhibit`);
-    };
+const handleEditClick = () => {
+  navigate(`/edit-exhibit/${artworkId}?mode=edit`);
+};
+
+
 
     return (
         <>
