@@ -107,7 +107,7 @@ const TipJarPopup = ({
   const handleProceedToDonate = () => {
     const amount = selectedAmount || customAmount;
     if (!amount) {
-      toast.error("Please select or enter an amount");
+      toast.error("Please select or enter an amount", { closeButton: true })
       return;
     }
 
@@ -118,11 +118,11 @@ const TipJarPopup = ({
     artistId: artistId,
     id: artId,
     onSuccess: (details) => {
-      toast.success("Thank you for your donation!");
+      toast.success("Thank you for your donation!", { closeButton: true })
       onClose();
     },
     onError: (error) => {
-      toast.error("PayPal payment failed. Please try again.");
+      toast.error("PayPal payment failed. Please try again.", { closeButton: true })
       console.error(error);
     },
   });
@@ -130,14 +130,14 @@ const TipJarPopup = ({
   const handleConfirmDonation = () => {
     const amount = selectedAmount || customAmount;
     if (!amount) {
-      toast.error("Invalid amount.");
+      toast.error("Invalid amount.", { closeButton: true })
       return;
     }
 
     if (paymentMethod === "PayPal") {
       setStep("paypal");
     } else {
-      toast.success(`Donation of ₱${amount} sent via ${paymentMethod}!`);
+      toast.success(`Donation of ₱${amount} sent via ${paymentMethod}!`, { closeButton: true })
       onClose();
     }
   };
