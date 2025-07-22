@@ -182,7 +182,7 @@ const isOwner = getLoggedInUserId() === exhibit.ownerId;
       }}
         onReport={() => {
                   if (reportStatusData?.reported) {
-                    toast.error("You have already reported this exhibit.");
+                    toast.error("You have already reported this exhibit.", { closeButton: true })
                   }
                   setMenuOpen(false);
                 }}
@@ -202,7 +202,7 @@ const isOwner = getLoggedInUserId() === exhibit.ownerId;
                 }}
                 onReport={() => {
                   if (reportStatusData?.reported) {
-                    toast.error("You have already reported this exhibit.");
+                    toast.error("You have already reported this exhibit.", { closeButton: true })
                   }
                   setMenuOpen(false);
                 }}

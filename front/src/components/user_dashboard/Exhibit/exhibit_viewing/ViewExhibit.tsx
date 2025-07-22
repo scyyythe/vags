@@ -82,14 +82,14 @@ const ExhibitViewing = () => {
         ...prev,
         [newComment.id]: 0,
       }));
-      toast("Comment posted");
+      toast("Comment posted", { closeButton: true })
       setComment("");
     }
   };
 
   const handleHide = () => {
     setIsHidden(true);
-    toast("Artwork hidden");
+    toast("Artwork hidden", { closeButton: true })
     setMenuOpen(false);
   };
 
@@ -101,7 +101,7 @@ const ExhibitViewing = () => {
 
   const handleReport = () => {
     setIsReported(!isReported);
-    toast(isReported ? "Artwork report removed" : "Artwork reported");
+    toast(isReported ? "Artwork report removed" : "Artwork reported", { closeButton: true })
     setMenuOpen(false);
   };
 
@@ -211,7 +211,7 @@ const ExhibitViewing = () => {
                     <button
                       className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[8px]"} hover:bg-gray-100`}
                       onClick={() => {
-                        toast.success(`Blocked user ${commentItem.user}`);
+                        toast.success(`Blocked user ${commentItem.user}`, { closeButton: true })
                         toggleCommentMenu(commentItem.id);
                       }}
                     >
@@ -220,7 +220,7 @@ const ExhibitViewing = () => {
                     <button
                       className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[9px]"} hover:bg-gray-100`}
                       onClick={() => {
-                        toast.success("Content reported");
+                        toast.success("Content reported", { closeButton: true })
                         toggleCommentMenu(commentItem.id);
                       }}
                     >
