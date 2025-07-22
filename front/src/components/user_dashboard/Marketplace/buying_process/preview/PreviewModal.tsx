@@ -22,7 +22,7 @@ interface PreviewModalProps {
 const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, onProceedToCheckout }) => {
   if (!isOpen) return null;
   const navigate = useNavigate();
-  const { addresses } = useAddressContext();
+  const { addresses, loading } = useAddressContext();
 
   const handleProceed = () => {
     const hasDefaultAddress = addresses.length > 0;
@@ -102,12 +102,12 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
               ₱{artwork.price >= 1000 ? `${artwork.price / 1000}k` : artwork.price}
             </p>
           </div>
-
           <button
-            className="w-full bg-red-800 text-white rounded-full py-2.5 text-[11px] font-medium hover:bg-red-700"
             onClick={handleProceed}
+            disabled={loading}
+            className="w-full bg-red-800 text-white rounded-full py-2.5 text-[11px] font-medium hover:bg-red-700 disabled:opacity-50"
           >
-            proceed to checkout →
+            {loading ? "Loading..." : "proceed to checkout →"}
           </button>
 
           <p className="text-[9px] text-gray-400 mt-2 italic">

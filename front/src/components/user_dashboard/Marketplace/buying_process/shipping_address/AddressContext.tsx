@@ -1,7 +1,7 @@
-import { createContext, useContext, useState } from "react";
-import { useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import axios from "@/utils/apiClient";
 import { useIsAuthenticated } from "@/auth/useIsAuthenticated";
+
 interface Address {
   id: string;
   name: string;
@@ -18,6 +18,7 @@ interface AddressContextType {
   setSelectedAddressId: (id: string | null) => void;
   addOrUpdateAddress: (address: Address) => void;
   getAddressById: (id: string) => Address | undefined;
+  loading: boolean;
 }
 
 const AddressContext = createContext<AddressContextType | undefined>(undefined);
@@ -25,7 +26,9 @@ const AddressContext = createContext<AddressContextType | undefined>(undefined);
 export const AddressProvider = ({ children }: { children: React.ReactNode }) => {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const isAuthenticated = useIsAuthenticated();
+
   const addOrUpdateAddress = (newAddress: Address) => {
     setAddresses((prev) => {
       const exists = prev.find((a) => a.id === newAddress.id);
@@ -40,7 +43,10 @@ export const AddressProvider = ({ children }: { children: React.ReactNode }) => 
     }
   };
   useEffect(() => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated) {
+      setLoading(false);
+      return;
+    }
 
     const fetchAddresses = async () => {
       try {
@@ -49,7 +55,6 @@ export const AddressProvider = ({ children }: { children: React.ReactNode }) => 
 
         if (Array.isArray(fetched)) {
           setAddresses(fetched);
-
           const defaultAddr = fetched.find((addr: Address) => addr.isDefault);
           if (defaultAddr) {
             setSelectedAddressId(defaultAddr.id);
@@ -59,6 +64,8 @@ export const AddressProvider = ({ children }: { children: React.ReactNode }) => 
         if (err.response?.status !== 401) {
           console.error("Failed to load addresses", err);
         }
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -69,7 +76,14 @@ export const AddressProvider = ({ children }: { children: React.ReactNode }) => 
 
   return (
     <AddressContext.Provider
-      value={{ addresses, selectedAddressId, setSelectedAddressId, addOrUpdateAddress, getAddressById }}
+      value={{
+        addresses,
+        selectedAddressId,
+        setSelectedAddressId,
+        addOrUpdateAddress,
+        getAddressById,
+        loading,
+      }}
     >
       {children}
     </AddressContext.Provider>
