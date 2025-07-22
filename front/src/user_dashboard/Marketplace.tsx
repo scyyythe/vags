@@ -171,7 +171,7 @@ const filteredArtCards =
           </div>
 
           {/* Marketplace Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4">
             {isLoading ? (
               <>
                 {Array.from({ length: 5 }).map((_, idx) => (
