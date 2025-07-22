@@ -112,7 +112,7 @@ const ArtCard = ({
     additionalInfo?: string;
   }) => {
     if (isReportedFromBulk) {
-      toast.error("You have already reported this artwork.");
+      toast.error("You have already reported this artwork.", { closeButton: true })
       setMenuOpen(false);
       return;
     }
@@ -191,7 +191,7 @@ const ArtCard = ({
               }}
               onUnarchive={handleRestore}
               onDelete={() => {
-                toast.success("Artwork permanently deleted");
+                toast.success("Artwork permanently deleted", { closeButton: true })
                 setIsDeletedLocally(true);
                 setMenuOpen(false);
               }}
