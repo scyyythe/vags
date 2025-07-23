@@ -20,6 +20,8 @@ const Explore = () => {
   const navigate = useNavigate();
   const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedFilter, setSelectedFilter] = useState("All");
+  const [selectedStyle, setSelectedStyle] = useState("All");
 
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
@@ -111,7 +113,16 @@ const popularArtworks = popularArtworksRaw?.slice(0, 5) ?? [];
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-3">
             <div className="flex items-center justify-between mb-6 lg:w-[133%] pl-2 sm:pl-0">
-              <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
+              <CategoryFilter
+                categories={categories}
+                onSelectCategory={(category) => {
+                  setSelectedFilter(category);
+                  // Reset style when switching to Trending/Following
+                  if (category === "Trending" || category === "Following") {
+                    setSelectedStyle("All");
+                  }
+                }}
+              />
               <div className="flex space-x-2 text-xs">
                 <div className="relative">
                   <ArtCategorySelect

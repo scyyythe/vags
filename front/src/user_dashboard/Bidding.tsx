@@ -7,7 +7,7 @@ import ArtCategorySelect from "@/components/user_dashboard/local_components/cate
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useMemo, memo } from "react";
-import useAuctions from "@/hooks/auction/useAuction";
+import useAuctions from "@/hooks/auction/useAuction"; 
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import "react-loading-skeleton/dist/skeleton.css";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
@@ -37,21 +37,22 @@ const Bidding = () => {
   const searchQuery = searchParams.get("q") || "";
   const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedFilterCategory, setSelectedFilterCategory] = useState("All"); 
+  const [selectedArtCategory, setSelectedArtCategory] = useState("All"); 
 
   const [showIncoming, setShowIncoming] = useState(false);
 
   const currentPage = 1;
 
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
+  const handleCategorySelect = (category: string) => {
+    setSelectedFilterCategory(category);
   };
-
 
   const { data: biddingArtworks = [], isLoading, isError } = useFetchBiddingArtworks();
 
   const [page, setPage] = useState(1);
   const { data: followedAuctions = [] } = useFollowedAuctions(page);
-const filteredArtworks = useMemo(() => {
+  const filteredArtworks = useMemo(() => {
   const now = new Date();
 
  
@@ -134,8 +135,8 @@ const filteredArtworks = useMemo(() => {
 
               <div className="relative">
                 <ArtCategorySelect
-                  selectedCategory={selectedCategory}
-                  onChange={(value) => setSelectedCategory(value)}
+                  selectedCategory={selectedArtCategory}
+                  onChange={(value) => setSelectedArtCategory(value)}
                 />
               </div>
             </div>
