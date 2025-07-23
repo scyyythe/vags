@@ -18,6 +18,7 @@ import PaymentDetailsModal from "@/components/user_dashboard/Marketplace/my_list
 import RefundDetailsModal from "@/components/user_dashboard/Marketplace/my_listings/RefundDetailsModal";
 
 import SoldArtworkCard from "@/components/user_dashboard/Marketplace/sold_artworks/card/SoldArtworksCard";
+import { q } from "node_modules/framer-motion/dist/types.d-B50aGbjN";
 
 const SellTab = () => {
   const { id: userId } = useParams();
@@ -225,7 +226,8 @@ const SellTab = () => {
         size: "20 x 16 inches",
         medium: "Oil on Canvas",
         style: "Landscape",
-        edition: "Limited Edition (5 of 50)",
+        edition: "Limited Edition",
+        quantity: 5,
         yearCreated: 2024,
       },
       timeline: [
@@ -338,7 +340,8 @@ const SellTab = () => {
         size: "12 x 12 inches",
         medium: "Acrylic on Canvas",
         style: "Abstract",
-        edition: "Limited Edition (3 of 25)",
+        edition: "Limited Edition",
+        quantity: 3,
         yearCreated: 2024,
       },
       timeline: [
@@ -370,7 +373,8 @@ const SellTab = () => {
         size: "14 x 18 inches",
         medium: "Oil on Canvas",
         style: "Landscape",
-        edition: "Limited Edition (2 of 20)",
+        edition: "Open Edition",
+        quantity: 10,
         yearCreated: 2024,
       },
       timeline: [
@@ -458,7 +462,8 @@ const SellTab = () => {
         size: "22 x 16 inches",
         medium: "Mixed Media",
         style: "Urban",
-        edition: "Limited Edition (1 of 10)",
+        edition: "Open Edition",
+        quantity: 6,
         yearCreated: 2024,
       },
       timeline: [
@@ -519,7 +524,8 @@ const SellTab = () => {
         size: "24 x 18 inches",
         medium: "Acrylic on Canvas",
         style: "Contemporary",
-        edition: "Limited Edition (2 of 5)",
+        edition: "Limited Edition",
+        quantity: 8,
         yearCreated: 2024
       }
     },
@@ -586,7 +592,8 @@ const SellTab = () => {
         size: "18 x 14 inches",
         medium: "Mixed Media",
         style: "Abstract",
-        edition: "Limited Edition (3 of 10)",
+        edition: "Open Edition",
+        quantity: 20,
         yearCreated: 2024
       }
     },
@@ -631,7 +638,8 @@ const SellTab = () => {
         size: "26 x 20 inches",
         medium: "Oil on Canvas",
         style: "Impressionist",
-        edition: "Limited Edition (1 of 3)",
+        edition: "Limited Edition",
+        quantity: 2,
         yearCreated: 2024
       },
       review: {
