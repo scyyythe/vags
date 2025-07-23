@@ -704,31 +704,13 @@ const SellTab = () => {
 
   const filteredOrders = mockOrders.filter((order) => order.status === subTab);
   const filteredSoldArtworks = mockSoldArtworks.filter((artwork) => artwork.status === subTab);
-
-  const filteredArtworks = myArtCards
-    .filter((art) => {
-      const status = art.art_status?.toLowerCase?.();
-      const expectedStatus = statusMap[subTab]?.toLowerCase();
-      return (
-        mainTab === "myListings" &&
-        activeSubGroup === "listings" &&
-        expectedStatus === "onsale" &&
-        status === expectedStatus &&
-        art.visibility !== "hidden"
-      );
-    })
-    .map((art) => ({
-      id: art.id,
-      title: art.title,
-      price: art.discounted_price ?? art.price,
-      originalPrice: art.discounted_price ? art.price : 0,
-      rating: art.total_ratings,
-      category: art.category,
-      artworkImage: art.image_url[0] || "", // Use first image
-      status: "active", // Set as "active" for badge + BuyNow
-    }));
-
-
+  const filteredArtworks = myArtCards.filter((art) => {
+    const status = art.art_status?.toLowerCase?.() || "";
+    const expectedStatus = statusMap[subTab]?.toLowerCase() || subTab.toLowerCase();
+    return mainTab === "myListings" || mainTab === "myPurchase"
+      ? status === subTab.replace("_", " ")
+      : false;
+  });
 
   // Seller actions for sold artworks
   const handleContactBuyer = (artwork) => {
@@ -972,51 +954,12 @@ const SellTab = () => {
             ))
           )
         ) : (
-          filteredArtworks.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="w-24 h-24 mx-auto mb-4 opacity-50">
-                <svg className="w-full h-full text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-              </div>
-              <p className="text-muted-foreground">No active artworks found for this user.</p>
-            </div>
-          ) : (
-            filteredArtworks.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="w-24 h-24 mx-auto mb-4 opacity-50">
-                  <svg className="w-full h-full text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                </div>
-                <p className="text-muted-foreground">No active artworks found for this user.</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                {filteredArtworks.map((art) => (
-                  <SellCard
-                    key={art.id}
-                    id={art.id}
-                    artworkImage={art.artworkImage}
-                    title={art.title}
-                    price={art.price}
-                    originalPrice={art.originalPrice}
-                    rating={art.rating}
-                    category={art.category}
-                    status="active"
-                    isMarketplace={true}
-                    isOwner={isOwnProfile}
-                    onCardClick={() => onCardClick(art.id)}
-                  />
-                ))}
-              </div>
-
-            )
-
-          )
-
+          <div className="text-center text-sm py-12">
+            <p className="text-muted-foreground">Active listings would be displayed here.</p>
+          </div>
         )}
       </div>
+
 
       {/* Order Details Modal */}
       {selectedOrder && (
