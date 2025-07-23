@@ -1,9 +1,19 @@
 import React from "react";
-import { Calendar, User, DollarSign, Package, MessageCircle, Eye, CheckCircle, XCircle, RotateCcw } from "lucide-react";
+import {
+  Calendar,
+  User,
+  DollarSign,
+  Package,
+  MessageCircle,
+  Eye,
+  CheckCircle,
+  XCircle,
+  RotateCcw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { differenceInDays, format } from "date-fns";
+import { format } from "date-fns";
 
 interface SoldArtworkCardProps {
   id: string;
@@ -34,12 +44,14 @@ interface SoldArtworkCardProps {
     photos: string[];
     reviewDate: string;
   };
-  onViewDetails: () => void;
-  onContactBuyer: () => void;
-  onMarkAsShipped?: () => void;
-  onViewPayment?: () => void;
-  onProcessRefund?: () => void;
-  onViewReview?: () => void;
+  onViewDetails: (artwork: any) => void;
+  onContactBuyer: (artwork: any) => void;
+  onMarkAsShipped?: (artwork: any) => void;
+  onViewPayment?: (artwork: any) => void;
+  onProcessRefund?: (artwork: any) => void;
+  onViewReview?: (artwork: any) => void;
+  onTrackProgress?: (artwork: any) => void;
+  onViewSummary?: (artwork: any) => void;
 }
 
 const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
@@ -52,6 +64,8 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
   saleDate,
   completedDate,
   paymentMethod,
+  shippingAddress,
+  artwork,
   commission = 0.1,
   review,
   onViewDetails,
@@ -60,7 +74,30 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
   onViewPayment,
   onProcessRefund,
   onViewReview,
+  onTrackProgress,
+  onViewSummary,
 }) => {
+  const artworkData = {
+    id,
+    artworkImage,
+    title,
+    buyer,
+    price,
+    status,
+    saleDate,
+    completedDate,
+    paymentMethod,
+    shippingAddress,
+    artwork,
+    review,
+    timeline: [
+      { status: "Order Placed", date: saleDate, description: "Your order has been confirmed", completed: true },
+      { status: "Payment Confirmed", date: saleDate, description: "Payment received", completed: true },
+      { status: "Shipped", date: "", description: "Artwork will be shipped", completed: false },
+      { status: "Delivered", date: "", description: "Artwork delivered to buyer", completed: false }
+    ]
+  };
+
   const getStatusBadge = () => {
     const statusConfig = {
       awaiting_payment: { label: "Awaiting Payment", variant: "secondary" as const },
@@ -71,7 +108,10 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       refunded: { label: "Refunded", variant: "secondary" as const },
       reviews: { label: "Reviewed", variant: "default" as const },
     };
-    return statusConfig[status as keyof typeof statusConfig] || { label: status, variant: "default" as const };
+    return statusConfig[status as keyof typeof statusConfig] || {
+      label: status,
+      variant: "default" as const,
+    };
   };
 
   const getActionButtons = () => {
@@ -79,11 +119,11 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       case "awaiting_payment":
         return (
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={onContactBuyer} className="text-xs">
+            <Button size="sm" variant="outline" onClick={() => onContactBuyer(artworkData)} className="text-xs">
               <MessageCircle className="w-3 h-3 mr-1" />
               Contact Buyer
             </Button>
-            <Button size="sm" variant="outline" onClick={onViewDetails} className="text-xs">
+            <Button size="sm" variant="outline" onClick={() => onViewDetails(artworkData)} className="text-xs">
               <Eye className="w-3 h-3 mr-1" />
               View Details
             </Button>
@@ -92,11 +132,11 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       case "payment_received":
         return (
           <div className="flex gap-2">
-            <Button size="sm" onClick={onMarkAsShipped} className="text-xs">
+            <Button size="sm" onClick={() => onMarkAsShipped?.(artworkData)} className="text-xs">
               <Package className="w-3 h-3 mr-1" />
               Mark as Shipped
             </Button>
-            <Button size="sm" variant="outline" onClick={onViewPayment} className="text-xs">
+            <Button size="sm" variant="outline" onClick={() => onViewPayment?.(artworkData)} className="text-xs">
               <DollarSign className="w-3 h-3 mr-1" />
               View Payment
             </Button>
@@ -105,11 +145,11 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       case "in_progress":
         return (
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={onContactBuyer} className="text-xs">
+            <Button size="sm" variant="outline" onClick={() => onContactBuyer(artworkData)} className="text-xs">
               <MessageCircle className="w-3 h-3 mr-1" />
               Contact Buyer
             </Button>
-            <Button size="sm" variant="outline" onClick={onViewDetails} className="text-xs">
+            <Button size="sm" variant="outline" onClick={() => onTrackProgress?.(artworkData)} className="text-xs">
               <Eye className="w-3 h-3 mr-1" />
               Track Progress
             </Button>
@@ -118,11 +158,11 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       case "completed":
         return (
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={onViewDetails} className="text-xs">
+            <Button size="sm" variant="outline" onClick={() => onViewSummary?.(artworkData)} className="text-xs">
               <CheckCircle className="w-3 h-3 mr-1" />
               View Summary
             </Button>
-            <Button size="sm" variant="outline" onClick={onContactBuyer} className="text-xs">
+            <Button size="sm" variant="outline" onClick={() => onContactBuyer(artworkData)} className="text-xs">
               <MessageCircle className="w-3 h-3 mr-1" />
               Contact Buyer
             </Button>
@@ -131,7 +171,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       case "cancelled":
         return (
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={onViewDetails} className="text-xs">
+            <Button size="sm" variant="outline" onClick={() => onViewDetails(artworkData)} className="text-xs">
               <XCircle className="w-3 h-3 mr-1" />
               View Details
             </Button>
@@ -140,11 +180,11 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       case "refunded":
         return (
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={onProcessRefund} className="text-xs">
+            <Button size="sm" variant="outline" onClick={() => onProcessRefund?.(artworkData)} className="text-xs">
               <RotateCcw className="w-3 h-3 mr-1" />
               Refund Details
             </Button>
-            <Button size="sm" variant="outline" onClick={onViewDetails} className="text-xs">
+            <Button size="sm" variant="outline" onClick={() => onViewDetails(artworkData)} className="text-xs">
               <Eye className="w-3 h-3 mr-1" />
               View Details
             </Button>
@@ -153,11 +193,11 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       case "reviews":
         return (
           <div className="flex gap-2">
-            <Button size="sm" onClick={onViewReview} className="text-xs">
+            <Button size="sm" onClick={() => onViewReview?.(artworkData)} className="text-xs">
               <Eye className="w-3 h-3 mr-1" />
               View Review
             </Button>
-            <Button size="sm" variant="outline" onClick={onContactBuyer} className="text-xs">
+            <Button size="sm" variant="outline" onClick={() => onContactBuyer(artworkData)} className="text-xs">
               <MessageCircle className="w-3 h-3 mr-1" />
               Thank Buyer
             </Button>
@@ -165,7 +205,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
         );
       default:
         return (
-          <Button size="sm" variant="outline" onClick={onViewDetails} className="text-xs">
+          <Button size="sm" variant="outline" onClick={() => onViewDetails(artworkData)} className="text-xs">
             <Eye className="w-3 h-3 mr-1" />
             View Details
           </Button>
@@ -220,16 +260,14 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
             </div>
           </div>
 
-          {/* Review preview for reviewed status */}
+          {/* Review preview */}
           {status === "reviews" && review && (
             <div className="mb-3 p-2 bg-muted rounded-md">
               <div className="flex items-center gap-1 mb-1">
                 {[...Array(5)].map((_, i) => (
                   <span
                     key={i}
-                    className={`text-xs ${
-                      i < review.rating ? "text-yellow-400" : "text-gray-300"
-                    }`}
+                    className={`text-xs ${i < review.rating ? "text-yellow-400" : "text-gray-300"}`}
                   >
                     ★
                   </span>
@@ -242,7 +280,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
             </div>
           )}
 
-          {/* Action Buttons */}
+          {/* Actions */}
           <div className="flex items-center justify-between">
             {getActionButtons()}
           </div>
