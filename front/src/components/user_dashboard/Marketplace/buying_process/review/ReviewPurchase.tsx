@@ -2,6 +2,7 @@ import type React from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import useDefaultAddress from "@/hooks/users/address/useDefaultAddress";
+import { usePurchase } from "@/context/PurchaseContext";
 interface ReviewPurchaseProps {
   onBack: () => void;
   onSubmit: () => void;
@@ -36,6 +37,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
 }) => {
   const navigate = useNavigate();
   const { data: defaultAddress, isLoading: isAddressLoading } = useDefaultAddress();
+  const { artwork: purchasedArtwork } = usePurchase();
 
   const handleAddressChange = () => {
     navigate("/shipping");
@@ -62,24 +64,25 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
     details: "(display the major short details of the payment method)",
   };
 
-  const defaultArtwork = artwork || {
-    artworkImage: "/placeholder.svg?height=200&width=200",
-    title: "Butterfly",
-    artist: "Angie Canete",
-    size: "11 x 8.5 inches",
-    style: "Painting",
-    medium: "Canvas",
-    edition: "Limited Edition",
-    yearCreated: 2025,
-    price: 100000,
-  };
+  const defaultArtwork = artwork ||
+    purchasedArtwork || {
+      artworkImage: "/placeholder.svg?height=200&width=200",
+      title: "Butterfly",
+      artist: "Angie Canete",
+      size: "11 x 8.5 inches",
+      style: "Painting",
+      medium: "Canvas",
+      edition: "Limited Edition",
+      yearCreated: 2025,
+      price: 100000,
+    };
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <div className="container mx-auto px-4 pt-20 max-w-6xl">
         <div className="mb-8">
-          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+          <button onClick={() => navigate("/payment-method")} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
             Review Purchase
           </button>
