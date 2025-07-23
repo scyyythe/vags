@@ -3,6 +3,7 @@ import { Footer } from "@/components/user_dashboard/footer/Footer";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
+import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +21,7 @@ const Exhibits = () => {
   const [baseType, setBaseType] = useState<"solo" | "collab">("solo");
   const [filter, setFilter] = useState<FilterOption>("ongoing");
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const { data: exhibits = [], isLoading } = useExhibitCards();
 
@@ -34,8 +36,11 @@ const Exhibits = () => {
 
   const filteredExhibits = exhibits.filter((exhibit: any) => {
     const matchesType = baseType === "solo" ? exhibit.isSolo : !exhibit.isSolo;
+    const matchesCategory =
+    selectedCategory === "All" ||
+    exhibit.category?.toLowerCase() === selectedCategory.toLowerCase();
 
-    if (!matchesType) return false;
+    if (!matchesType || !matchesCategory) return false;
 
     if (filter === "trending") return exhibit.likes > 100;
     if (filter === "most-viewed") return exhibit.views > 1.3;
@@ -43,8 +48,9 @@ const Exhibits = () => {
     if (filter === "ongoing") return isOngoing(exhibit);
     if (filter === "ended") return isEnded(exhibit);
 
-    return true; // filter === "none"
+    return true;
   });
+
 
   const sortedExhibits = [...filteredExhibits].sort((a, b) => {
     if (sortBy === "popularity") return b.likes - a.likes;
@@ -80,7 +86,11 @@ const Exhibits = () => {
               </div>
 
               {/* FILTER DROPDOWN */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Art Category Dropdown */}
+                <ArtCategorySelect selectedCategory={selectedCategory} onChange={setSelectedCategory} />
+
+                {/* Filter Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="py-1 px-4 rounded-full text-[10px] border border-gray-300">
@@ -95,25 +105,15 @@ const Exhibits = () => {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setFilter("trending")} className="text-[10px]">
-                      Trending
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("most-viewed")} className="text-[10px]">
-                      Most Viewed
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("upcoming")} className="text-[10px]">
-                      Upcoming
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("ongoing")} className="text-[10px]">
-                      Ongoing
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("ended")} className="text-[10px]">
-                      Ended
-                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilter("trending")} className="text-[10px]">Trending</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilter("most-viewed")} className="text-[10px]">Most Viewed</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilter("upcoming")} className="text-[10px]">Upcoming</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilter("ongoing")} className="text-[10px]">Ongoing</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilter("ended")} className="text-[10px]">Ended</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* CREATE BUTTON */}
+                {/* Create Button */}
                 <button
                   className="py-[5px] px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
                   onClick={() => navigate("/add-exhibit")}
@@ -122,6 +122,7 @@ const Exhibits = () => {
                   Create
                 </button>
               </div>
+
             </div>
           </div>
 
