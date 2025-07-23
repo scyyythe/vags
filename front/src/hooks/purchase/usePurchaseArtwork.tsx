@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 
 type PurchasePayload = {
@@ -18,9 +18,14 @@ type PurchasePayload = {
 };
 
 const usePurchaseArtwork = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (payload: PurchasePayload) => {
       return apiClient.post("/purchase/", payload);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
     },
   });
 };

@@ -7,6 +7,7 @@ interface PreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   artwork: {
+    id: string;
     artworkImage: string;
     title: string;
     artist: string;
@@ -29,6 +30,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
     if (isLoading) return;
     setArtwork({
       ...artwork,
+      id: artwork.id,
       yearCreated: Number(artwork.yearCreated),
     });
 
