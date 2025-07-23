@@ -211,14 +211,14 @@ const TransactionsTab: React.FC = () => {
     return (
         <div className="w-full bg-white border-gray-200">
         {/* FILTERS & SEARCH BAR */}
-        <div className="flex flex-row justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
             {/* Left: Filter Buttons */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mb-1.5 md:mb-0">
             {filterOptions.map(opt => (
                 <button
                 key={opt.key}
                 onClick={() => setFilter(opt.key)}
-                className={`px-3 py-1 text-[9px] rounded-full border ${
+                className={`px-3 py-1 text-[11px] rounded-full border ${
                     filter === opt.key ? "bg-red-800 text-white border-red-800" : "bg-white text-gray-600 border-gray-200 hover:bg-red-50"
                 }`}
                 >
@@ -232,7 +232,7 @@ const TransactionsTab: React.FC = () => {
             {/* Date Picker Button */}
             <div className="relative">
                 <button
-                className="flex items-center border rounded-full px-3 py-1 text-[9px] text-gray-700 bg-white hover:bg-gray-50"
+                className="flex items-center border rounded-full px-3 py-1 text-[11px] text-gray-700 bg-white hover:bg-gray-50"
                 onClick={() => setShowDatePicker(v => !v)}
                 >
                 <FiCalendar className="mr-1" />
@@ -265,7 +265,7 @@ const TransactionsTab: React.FC = () => {
             {/* Apply Filter Button with Currency Dropdown */}
             <div className="relative">
                 <button
-                    className="flex items-center border rounded-full px-3 py-1 text-[9px] text-gray-700 bg-white hover:bg-gray-50"
+                    className="flex items-center border rounded-full px-3 py-1 text-[11px] text-gray-700 bg-white hover:bg-gray-50"
                     onClick={() => setShowFilterDropdown(v => !v)}
                 >
                 <FiChevronDown className="mr-1" />
@@ -277,7 +277,7 @@ const TransactionsTab: React.FC = () => {
                     
                     {/* Days filter */}
                     <div
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[9px]"
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[11px]"
                         onClick={() => setShowDaysDropdown(v => !v)}
                         >
                         Days
@@ -340,7 +340,7 @@ const TransactionsTab: React.FC = () => {
                 <input
                     type="text"
                     placeholder="Search"
-                    className="w-full pl-8 pr-2 py-1 border rounded-full text-[9px] focus:outline-none"
+                    className="w-full pl-8 pr-2 py-1 border rounded-full text-[11px] focus:outline-none"
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                 />
@@ -350,8 +350,8 @@ const TransactionsTab: React.FC = () => {
 
         <div className="overflow-x-auto max-h-64 overflow-y-auto">
             <table className="w-full text-center text-xs text-gray-500">
-                <thead className="text-[10px] text-gray-700 text-center uppercase bg-gray-50 sticky top-0 z-10">
-                    <tr className="text-[10px]">
+                <thead className="text-[11px] text-gray-700 text-center uppercase bg-gray-50 sticky top-0 z-10">
+                    <tr className="text-[11px]">
                         <th className="py-2">Activity</th>
                         <th className=" py-2">Date</th>
                         <th className=" py-2">Amount</th>
@@ -362,7 +362,7 @@ const TransactionsTab: React.FC = () => {
 
                 <tbody className="max-h-64 overflow-y-auto">
                     {filtered.map(tx => (
-                    <tr key={tx.id} className="text-[10px]">
+                    <tr key={tx.id} className="text-[12px]">
                         <td className="px-4 py-2 flex items-center gap-2">
                             <TypeIcon type={tx.type} />
                             {/* {tx.type} */}
@@ -381,7 +381,7 @@ const TransactionsTab: React.FC = () => {
                         <div className="text-gray-500 text-[9px]">{tx.methodDetail}</div>
                         </td>
                         <td className="px-4 py-2">
-                        <span className={`px-2 py-1 rounded-full text-[10px] ${statusColors[tx.status]}`}>{tx.status}</span>
+                        <span className={`px-2 py-1 rounded-full text-[11px] ${statusColors[tx.status]}`}>{tx.status}</span>
                         </td>
                     </tr>
                     ))}
