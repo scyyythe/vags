@@ -31,7 +31,7 @@ export interface SellCardProps {
   status?: string;
   reason?: string;
   onRelist?: (id: string) => void;
-  isWishlistView?: boolean; 
+  isWishlistView?: boolean;
 }
 
 const SellCard = ({
@@ -165,7 +165,6 @@ const SellCard = ({
           </div>
         )}
 
-
         {edition !== "Original (1 of 1)" && rating !== undefined && (
           <div className="absolute bottom-2 right-2 bg-white font-medium px-2 py-0.5 rounded-full flex items-center gap-1 shadow">
             <i className="bx bxs-star text-[10px] text-yellow-500"></i>
@@ -219,9 +218,7 @@ const SellCard = ({
           <p className="text-[11px] font-medium mt-0.5 truncate" title={title}>
             {title}
           </p>
-          {status !== "active" && reason && (
-            <p className="text-[10px] text-red-600 mt-1">{reason}</p>
-          )}
+          {status !== "active" && reason && <p className="text-[10px] text-red-600 mt-1">{reason}</p>}
         </div>
 
         {status === "active" ? (
@@ -250,6 +247,7 @@ const SellCard = ({
           onClose={() => setIsModalOpen(false)}
           onProceedToCheckout={() => setIsModalOpen(false)}
           artwork={{
+            id,
             artworkImage,
             title,
             artist,

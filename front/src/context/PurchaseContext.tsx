@@ -1,7 +1,7 @@
-
 import React, { createContext, useContext, useState } from "react";
 
 interface Artwork {
+  id: string;
   artworkImage: string;
   title: string;
   artist: string;
