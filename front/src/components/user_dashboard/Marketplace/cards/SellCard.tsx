@@ -6,6 +6,7 @@ import SellCardMenu from "./SellCardMenu";
 import PreviewModal from "../buying_process/preview/PreviewModal";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import useArtworkReportStatus from "@/hooks/mutate/report/useArtworkReportStatus";
+import { Badge } from "@/components/ui/badge";
 
 export interface SellCardProps {
   id: string;
@@ -27,6 +28,10 @@ export interface SellCardProps {
   isMarketplace?: boolean;
   onCardClick?: () => void;
   isOwner?: boolean;
+  status?: string;
+  reason?: string;
+  onRelist?: (id: string) => void;
+  isWishlistView?: boolean; 
 }
 
 const SellCard = ({
@@ -44,11 +49,14 @@ const SellCard = ({
   yearCreated,
   isLiked = false,
   onLike,
-
+  status,
+  reason,
+  onRelist,
   onReportSuccess,
   isMarketplace = false,
   onCardClick,
   isOwner = false,
+  isWishlistView = false,
 }: SellCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -108,39 +116,55 @@ const SellCard = ({
   return (
     <div
       onClick={onCardClick}
-      className="sell-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg 
-    transition-all duration-300 border border-gray-200 px-3 py-3 relative cursor-pointer"
+      className="sell-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border border-gray-200 px-3 py-3 relative cursor-pointer"
     >
       <div className="relative">
         <img src={artworkImage} alt={title} className="rounded-md w-full h-44 object-cover" />
 
-        {/* Message Icon */}
-        <button
-          onClick={handleContact}
-          className="absolute top-2 right-9 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm"
-        >
-          <img
-            src="https://img.icons8.com/?size=100&id=8h51YOzhBJmT&format=png&color=000000"
-            alt="Message"
-            className="w-3 h-3"
-          />
-        </button>
+        {/* Icons or Status */}
+        {status === "active" && (isWishlistView || isMarketplace) ? (
+          <>
+            {/* Message Icon */}
+            <button
+              onClick={handleContact}
+              className="absolute top-2 right-9 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm"
+            >
+              <img
+                src="https://img.icons8.com/?size=100&id=8h51YOzhBJmT&format=png&color=000000"
+                alt="Message"
+                className="w-3 h-3"
+              />
+            </button>
 
-        {/* Wishlist Icon */}
-        <button
-          onClick={toggleLike}
-          className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm"
-        >
-          <img
-            src={
-              isLiked
-                ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
-                : "https://img.icons8.com/puffy/32/like.png"
-            }
-            alt="Heart"
-            className="w-3 h-3"
-          />
-        </button>
+            {/* Wishlist Icon */}
+            <button
+              onClick={toggleLike}
+              className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm"
+            >
+              <img
+                src={
+                  isLiked
+                    ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
+                    : "https://img.icons8.com/puffy/32/like.png"
+                }
+                alt="Heart"
+                className="w-3 h-3"
+              />
+            </button>
+          </>
+        ) : (
+          // Show status badge instead
+          <div className="absolute top-2 right-2 bg-gray-100 border border-gray-300 text-[10px] text-gray-600 font-medium px-2 py-0.5 rounded-full">
+            {status === "cancelled"
+              ? "Cancelled"
+              : status === "expired"
+              ? "Expired"
+              : status === "unsold"
+              ? "Unsold"
+              : status?.charAt(0).toUpperCase() + status?.slice(1) || "Unavailable"}
+          </div>
+        )}
+
 
         {edition !== "Original (1 of 1)" && rating !== undefined && (
           <div className="absolute bottom-2 right-2 bg-white font-medium px-2 py-0.5 rounded-full flex items-center gap-1 shadow">
@@ -172,8 +196,6 @@ const SellCard = ({
             <MoreHorizontal size={14} />
           </button>
 
-          {/* Render Menu */}
-
           {isOwner ? (
             <SellMenu
               isOpen={menuOpen}
@@ -193,23 +215,40 @@ const SellCard = ({
       </div>
 
       <div className="flex justify-between mt-1.5 items-center">
-        <p className="text-[11px] font-medium mt-0.5 truncate" title={title}>
-          {title}
-        </p>
-        <button
-          onClick={handleBuyNow}
-          className="text-white text-[9px] bg-red-800 hover:bg-red-700 transition px-4 py-1.5 rounded-full"
-        >
-          Buy Now
-        </button>
+        <div className="flex flex-col">
+          <p className="text-[11px] font-medium mt-0.5 truncate" title={title}>
+            {title}
+          </p>
+          {status !== "active" && reason && (
+            <p className="text-[10px] text-red-600 mt-1">{reason}</p>
+          )}
+        </div>
+
+        {status === "active" ? (
+          <button
+            onClick={handleBuyNow}
+            className="text-white text-[9px] bg-red-800 hover:bg-red-700 transition px-4 py-1.5 rounded-full"
+          >
+            Buy Now
+          </button>
+        ) : onRelist ? (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onRelist(id);
+            }}
+            className="text-white text-[9px] bg-blue-600 hover:bg-blue-500 transition px-4 py-1.5 rounded-full"
+          >
+            Relist Artwork
+          </button>
+        ) : null}
       </div>
+
       {isModalOpen && (
         <PreviewModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onProceedToCheckout={() => {
-            setIsModalOpen(false);
-          }}
+          onProceedToCheckout={() => setIsModalOpen(false)}
           artwork={{
             artworkImage,
             title,

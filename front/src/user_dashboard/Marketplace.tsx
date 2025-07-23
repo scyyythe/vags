@@ -208,6 +208,8 @@ const filteredArtCards =
                     isLiked={likedItems.has(artwork.id)}
                     onLike={() => handleLike(artwork.id)}
                     isMarketplace={true}
+                    status="active"
+                    isWishlistView={true}
                     onCardClick={() => handleCardClick(artwork.id)}
                     isReported={reportedArtworks.has(artwork.id)}
                   />
