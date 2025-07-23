@@ -1,7 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAddressContext } from "../shipping_address/AddressContext";
-
+import useAllAddresses from "@/hooks/users/address/useAllAddresses";
+import { usePurchase } from "@/context/PurchaseContext";
 interface PreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -22,15 +23,17 @@ interface PreviewModalProps {
 const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, onProceedToCheckout }) => {
   if (!isOpen) return null;
   const navigate = useNavigate();
-  const { addresses, loading } = useAddressContext();
-
+  const { data: addresses, isLoading } = useAllAddresses();
+  const { setArtwork } = usePurchase();
   const handleProceed = () => {
-    const hasDefaultAddress = addresses.length > 0;
-    if (hasDefaultAddress) {
-      navigate("/shipping");
-    } else {
-      navigate("/add-address");
-    }
+    if (isLoading) return;
+    setArtwork({
+      ...artwork,
+      yearCreated: Number(artwork.yearCreated),
+    });
+
+    const hasAddress = addresses.length > 0;
+    navigate(hasAddress ? "/shipping" : "/add-address");
   };
 
   return (
@@ -104,10 +107,10 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
           </div>
           <button
             onClick={handleProceed}
-            disabled={loading}
+            disabled={isLoading}
             className="w-full bg-red-800 text-white rounded-full py-2.5 text-[11px] font-medium hover:bg-red-700 disabled:opacity-50"
           >
-            {loading ? "Loading..." : "proceed to checkout →"}
+            {isLoading ? "Loading..." : "proceed to checkout →"}
           </button>
 
           <p className="text-[9px] text-gray-400 mt-2 italic">
