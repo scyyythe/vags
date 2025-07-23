@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Calendar,
   User,
@@ -114,101 +114,144 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
     };
   };
 
+  const [shippedArtworks, setShippedArtworks] = useState<Record<string, boolean>>({});
+
   const getActionButtons = () => {
     switch (status) {
       case "awaiting_payment":
         return (
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => onContactBuyer(artworkData)} className="text-xs">
-              <MessageCircle className="w-3 h-3 mr-1" />
+            <button 
+            onClick={() => onContactBuyer(artworkData)} 
+            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border">
+              <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Contact Buyer
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => onViewDetails(artworkData)} className="text-xs">
-              <Eye className="w-3 h-3 mr-1" />
+            </button>
+            <button 
+            onClick={() => onViewDetails(artworkData)} 
+            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200">
+              <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               View Details
-            </Button>
+            </button>
           </div>
         );
       case "payment_received":
         return (
           <div className="flex gap-2">
-            <Button size="sm" onClick={() => onMarkAsShipped?.(artworkData)} className="text-xs">
-              <Package className="w-3 h-3 mr-1" />
-              Mark as Shipped
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => onViewPayment?.(artworkData)} className="text-xs">
-              <DollarSign className="w-3 h-3 mr-1" />
+            <button 
+              onClick={() => {
+                setShippedArtworks((prev) => ({
+                  ...prev,
+                  [id]: !prev[id], // toggle state
+                }));
+                if (!shippedArtworks[id]) {
+                  onMarkAsShipped?.(artworkData); 
+                }
+              }} 
+              className={`flex text-[10px] font-medium py-1.5 px-4 rounded-full border transition-all duration-150
+                ${shippedArtworks[id] ? "bg-black text-white" : "text-black border"}`}
+            >
+              <Package className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
+              {shippedArtworks[id] ? "Marked as Shipped" : "Mark as Shipped"}
+            </button>
+
+            <button 
+              onClick={() => onViewPayment?.(artworkData)} 
+              className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100"
+            >
+              <DollarSign className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               View Payment
-            </Button>
+            </button>
           </div>
         );
       case "in_progress":
         return (
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => onContactBuyer(artworkData)} className="text-xs">
-              <MessageCircle className="w-3 h-3 mr-1" />
+            <button 
+            onClick={() => onContactBuyer(artworkData)} 
+            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border">
+              <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Contact Buyer
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => onTrackProgress?.(artworkData)} className="text-xs">
-              <Eye className="w-3 h-3 mr-1" />
+            </button>
+            <button 
+            onClick={() => onTrackProgress?.(artworkData)}
+            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200">
+              <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Track Progress
-            </Button>
+            </button>
           </div>
         );
       case "completed":
         return (
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => onViewSummary?.(artworkData)} className="text-xs">
-              <CheckCircle className="w-3 h-3 mr-1" />
+            <button
+            onClick={() => onViewSummary?.(artworkData)} 
+            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
+              >
+              <CheckCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               View Summary
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => onContactBuyer(artworkData)} className="text-xs">
-              <MessageCircle className="w-3 h-3 mr-1" />
+            </button>
+            <button 
+            onClick={() => onContactBuyer(artworkData)} 
+            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border">
+              <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Contact Buyer
-            </Button>
+            </button>
           </div>
         );
       case "cancelled":
         return (
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => onViewDetails(artworkData)} className="text-xs">
-              <XCircle className="w-3 h-3 mr-1" />
+            <button 
+            onClick={() => onViewDetails(artworkData)} 
+            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200">
+              <XCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               View Details
-            </Button>
+            </button>
           </div>
         );
       case "refunded":
         return (
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => onProcessRefund?.(artworkData)} className="text-xs">
-              <RotateCcw className="w-3 h-3 mr-1" />
+            <button 
+            onClick={() => onProcessRefund?.(artworkData)} 
+            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border">
+              <RotateCcw className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Refund Details
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => onViewDetails(artworkData)} className="text-xs">
-              <Eye className="w-3 h-3 mr-1" />
+            </button>
+            <button
+            onClick={() => onViewDetails(artworkData)}
+            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200">
+              <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               View Details
-            </Button>
+            </button>
           </div>
         );
       case "reviews":
         return (
           <div className="flex gap-2">
-            <Button size="sm" onClick={() => onViewReview?.(artworkData)} className="text-xs">
-              <Eye className="w-3 h-3 mr-1" />
+            <button
+            onClick={() => onViewReview?.(artworkData)}
+            className="flex text-[10px] text-white font-medium py-1.5 px-4 rounded-full bg-black">
+              <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               View Review
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => onContactBuyer(artworkData)} className="text-xs">
-              <MessageCircle className="w-3 h-3 mr-1" />
+            </button>
+            <button 
+            onClick={() => onContactBuyer(artworkData)} 
+            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border">
+              <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Thank Buyer
-            </Button>
+            </button>
           </div>
         );
       default:
         return (
-          <Button size="sm" variant="outline" onClick={() => onViewDetails(artworkData)} className="text-xs">
-            <Eye className="w-3 h-3 mr-1" />
-            View Details
-          </Button>
+          <button
+            onClick={() => onViewDetails(artworkData)}
+            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200">
+              <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
+              View Details
+          </button>
         );
     }
   };
@@ -229,62 +272,46 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
         </div>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 flex flex-col justify-between">
           <div className="flex items-start justify-between mb-2">
             <div>
-              <h3 className="font-semibold text-sm truncate">{title}</h3>
-              <p className="text-xs text-muted-foreground">Order #{id}</p>
+              <h3 className="font-semibold text-[13px] truncate">{title}</h3>
+              <p className="text-[11px] text-muted-foreground">Order #{id}</p>
             </div>
-            <Badge variant={statusBadge.variant} className="text-xs">
+            {/* <Badge variant={statusBadge.variant} className="text-[11px]">
               {statusBadge.label}
-            </Badge>
+            </Badge> */}
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-muted-foreground mb-3">
-            <div className="flex items-center gap-1">
-              <User className="w-3 h-3" />
-              <span className="truncate">{buyer}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <DollarSign className="w-3 h-3" />
-              <span>₱{price >= 1000 ? `${(price / 1000).toFixed(0)}k` : price}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
-              <span>{format(new Date(saleDate), "MMM dd")}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-green-600 font-medium">
-                +₱{netEarnings >= 1000 ? `${(netEarnings / 1000).toFixed(0)}k` : Math.round(netEarnings)}
-              </span>
-            </div>
-          </div>
-
-          {/* Review preview */}
-          {status === "reviews" && review && (
-            <div className="mb-3 p-2 bg-muted rounded-md">
-              <div className="flex items-center gap-1 mb-1">
-                {[...Array(5)].map((_, i) => (
-                  <span
-                    key={i}
-                    className={`text-xs ${i < review.rating ? "text-yellow-400" : "text-gray-300"}`}
-                  >
-                    ★
-                  </span>
-                ))}
-                <span className="text-xs text-muted-foreground ml-1">
-                  {format(new Date(review.reviewDate), "MMM dd")}
+          {/* Info + Actions aligned in row */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-[11px]">
+              <div className="flex items-center gap-1 text-gray-700">
+                <User className="w-2.5 h-2.5" />
+                <span className="truncate">{buyer}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <p>Price:   </p>
+                <DollarSign className="w-2.5 h-2.5" />
+                <span className="font-semibold">{price >= 1000 ? `${(price / 1000).toFixed(0)}k` : price}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Calendar className="w-2.5 h-2.5" />
+                <span>{format(new Date(saleDate), "MMM dd")}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <p>Net Earnings:   </p>
+                <span className="text-green-600 font-semibold">
+                  +₱{netEarnings >= 1000 ? `${(netEarnings / 1000).toFixed(0)}k` : Math.round(netEarnings)}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground line-clamp-2">{review.comment}</p>
             </div>
-          )}
 
-          {/* Actions */}
-          <div className="flex items-center justify-between">
-            {getActionButtons()}
+            {/* Actions */}
+            <div className="flex-shrink-0">{getActionButtons()}</div>
           </div>
         </div>
+
       </div>
     </Card>
   );
