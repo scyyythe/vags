@@ -160,10 +160,7 @@ const EditReviewModal: React.FC<EditReviewModalProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="flex gap-2 pt-4">
-            <Button variant="outline" onClick={handleCancel} className="flex-1 text-[11px]">
-              Cancel
-            </Button>
+          <div className="flex">
             <Button
               onClick={handleSubmit}
               disabled={rating === 0}
