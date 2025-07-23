@@ -10,7 +10,7 @@ interface HeroProps {
         <div className="relative w-full h-[400px] mb-8 overflow-hidden rounded-3xl">
           <div 
             className="absolute inset-0 bg-cover bg-center" 
-            style={{ backgroundImage: `url(${imageUrl})` }}
+            style={{ backgroundImage: `url(${imageUrl})` }} 
           />
           <div className="absolute inset-0 gradient-hero" />
           <div className="absolute bottom-0 left-0 p-8 text-white">
