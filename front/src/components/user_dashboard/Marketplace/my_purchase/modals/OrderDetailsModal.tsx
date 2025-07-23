@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   X,
   Calendar,
@@ -87,6 +87,8 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
         return "bg-gray-400";
     }
   };
+
+  const [isShipped, setIsShipped] = useState(false);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => {if (!open) onClose();}}>
@@ -262,30 +264,37 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
               <div className="space-y-2 pt-4">
                 {viewType === "seller" ? (
                   <>
-                    <Button className="w-full" size="sm" onClick={onContactBuyer}>
+                    <button className="w-full py-2 rounded-lg text-[11px] text-black font-medium border" onClick={onContactBuyer}>
                       Contact Buyer
-                    </Button>
-                    <Button variant="outline" className="w-full" size="sm" onClick={onViewPayment}>
+                    </button>
+                    <button className="w-full py-2 rounded-lg text-[11px] text-black font-medium bg-gray-100" onClick={onViewPayment}>
                       View Payment Details
-                    </Button>
+                    </button>
                     {(order.status === "payment_received" || order.status === "in_progress") && (
-                      <Button variant="secondary" className="w-full" size="sm" onClick={onMarkAsShipped}>
-                        Mark as Shipped
-                      </Button>
+                      <button
+                        className={`w-full py-2 rounded-lg text-[11px] font-medium transition-colors ${
+                          isShipped
+                            ? "bg-black text-white"
+                            : "border text-black"
+                        }`}
+                        onClick={() => setIsShipped(!isShipped)}
+                      >
+                        {isShipped ? "Marked as Shipped" : "Mark as Shipped"}
+                      </button>
                     )}
                   </>
                 ) : (
                   <>
-                    <Button className="w-full" size="sm">
+                    <button className="w-full py-2 rounded-lg text-[11px] text-white font-medium bg-black">
                       Contact Seller
-                    </Button>
-                    <Button variant="outline" className="w-full" size="sm">
+                    </button>
+                    <button className="w-full py-2 rounded-lg text-[11px] text-black font-medium border">
                       Track Payment
-                    </Button>
+                    </button>
                     {order.status === "completed" && (
-                      <Button variant="secondary" className="w-full" size="sm">
+                      <button className="w-full py-2 rounded-lg text-[11px] text-black font-medium bg-gray-100">
                         Leave Review
-                      </Button>
+                      </button>
                     )}
                   </>
                 )}
