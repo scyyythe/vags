@@ -44,6 +44,7 @@ interface OrderDetailsModalProps {
       medium: string;
       style: string;
       edition: string;
+      quantity?: number;
       yearCreated: number;
     };
     timeline: Array<{
@@ -121,19 +122,26 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   className="w-24 h-24 rounded-md object-cover"
                 />
                 <div className="flex-1">
-                  <h4 className="font-semibold text-[11px] text-foreground">
+                  <h4 className="font-semibold text-xs text-foreground mb-0.5">
                     {order.title}
                   </h4>
-                  <p className="text-[10px] text-muted-foreground mb-2">
+                  <p className="text-[10px] text-black mb-2">
                     {viewType === "seller" ? `Sold to ${order.buyer}` : `by ${order.artist}`}
                   </p>
                   <div className="grid grid-cols-2 gap-2 text-[10px] text-muted-foreground">
                     <div>Size: {order.artwork.size}</div>
                     <div>Medium: {order.artwork.medium}</div>
                     <div>Style: {order.artwork.style}</div>
-                    <div>Edition: {order.artwork.edition}</div>
-                    <div className="col-span-2">
+                    <div>
+                      Edition: {order.artwork.edition}
+                    </div>
+                    <div>
                       Year: {order.artwork.yearCreated}
+                    </div>
+                    <div>
+                      {(order.artwork.edition === "Limited Edition" || order.artwork.edition === "Open Edition") && order.artwork.quantity && (
+                        <span className="block">Quantity: {order.artwork.quantity}</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -146,12 +154,12 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                 <MapPin className="w-2.5 h-2.5" />
                 {viewType === "seller" ? "Buyer Address" : "Shipping Address"}
               </h3>
-              <div className="text-[10px] leading-snug">
-                <p className="font-medium">{order.shippingAddress.name}</p>
-                <p className="text-muted-foreground">
+              <div className=" leading-snug">
+                <p className="font-medium text-xs">{order.shippingAddress.name}</p>
+                <p className="text-muted-foreground text-[10px]">
                   {order.shippingAddress.address}
                 </p>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground text-[10px]">
                   {order.shippingAddress.city}{order.shippingAddress.postalCode ? `, ${order.shippingAddress.postalCode}` : ""}
                 </p>
               </div>
@@ -168,7 +176,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   <CreditCard className="w-2.5 h-2.5 text-primary-foreground" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-medium">{order.paymentMethod}</p>
+                  <p className="text-[11px] font-medium">{order.paymentMethod}</p>
                   <p className="text-[10px] text-muted-foreground">
                     {viewType === "seller" ? "Payment received" : "Payment confirmed"}
                   </p>
