@@ -12,6 +12,7 @@ from .routes.fingerprint_routes import fingerprint_urlpatterns
 from .routes.exhibit_routes import exhibit_urlpatterns
 from .routes.reset_routes import reset_urlpatterns
 from .routes.auth_routes import auth_urlpatterns
+from .routes.purchase_routes import purchase_urlpatterns
 urlpatterns = (
     user_urlpatterns +
     admin_urlpatterns +
@@ -23,6 +24,7 @@ urlpatterns = (
     bid_urlpatterns +
     report_urlpatterns +
     exhibit_urlpatterns +
-    reset_urlpatterns +
+    reset_urlpatterns + 
+    purchase_urlpatterns +
     fingerprint_urlpatterns
 )
