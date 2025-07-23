@@ -9,6 +9,7 @@ interface ReviewDetailsModalProps {
   onClose: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  viewType?: "buyer" | "seller";
   review: {
     id: string;
     rating: number;
@@ -17,6 +18,7 @@ interface ReviewDetailsModalProps {
     reviewDate: string;
     canEdit: boolean;
     canDelete: boolean;
+    reviewerName?: string;
   };
   artwork: {
     artworkImage: string;
@@ -30,6 +32,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
   onClose,
   onEdit,
   onDelete,
+  viewType = "buyer",
   review,
   artwork,
 }) => {
@@ -39,18 +42,18 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
       onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between text-sm mt-2">
-            <span>Your Review</span>
+            <span>{viewType === "seller" ? "Customer Review" : "Your Review"}</span>
             <div className="flex items-center gap-2">
-              {review.canEdit && (
+              {viewType === "buyer" && review.canEdit && (
                 <button onClick={onEdit} className="flex text-[10px] py-1 px-4 border rounded-full hover:bg-gray-100 transition-colors">
                   <Edit className="w-2.5 h-2.5 mr-1.5 mt-1" />
                   Edit
                 </button>
               )}
               {review.canDelete && (
-                <button onClick={onEdit} className="flex text-[10px] text-white py-1 px-4 bg-red-600 rounded-full hover:bg-red-700 transition-colors">
+                <button onClick={onDelete} className="flex text-[10px] text-white py-1 px-4 bg-red-600 rounded-full hover:bg-red-700 transition-colors">
                   <Trash2 className="w-2.5 h-2.5 mr-1.5 mt-1 text-white" />
-                  Delete
+                  {viewType === "seller" ? "Remove" : "Delete"}
                 </button>
               )}
             </div>
@@ -88,12 +91,19 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
               <Calendar className="w-3 h-3" />
-              <span>Reviewed on {format(new Date(review.reviewDate), "MMMM dd, yyyy")}</span>
+              <span>
+                Reviewed on {format(new Date(review.reviewDate), "MMMM dd, yyyy")}
+                {viewType === "seller" && review.reviewerName && (
+                  <span> by {review.reviewerName}</span>
+                )}
+              </span>
             </div>
 
             {/* Comment */}
             <div className="space-y-2">
-              <h4 className="font-medium text-xs">Your Review</h4>
+              <h4 className="font-medium text-xs">
+                {viewType === "seller" ? "Customer's Review" : "Your Review"}
+              </h4>
               <div className="p-4 bg-muted rounded-lg">
                 <p className="text-[10px] leading-relaxed">
                   {review.comment || "No written review provided."}
@@ -123,20 +133,29 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
             )}
 
             {/* Edit/Delete Restrictions */}
-            {!review.canEdit && !review.canDelete && (
+            {viewType === "seller" ? (
               <div className="p-3 bg-muted rounded-lg">
                 <p className="text-[10px] text-muted-foreground">
-                  This review can no longer be edited or deleted as the time limit has expired.
+                  As a seller, you can only remove inappropriate reviews. You cannot edit customer reviews.
                 </p>
               </div>
-            )}
-
-            {review.canEdit && !review.canDelete && (
-              <div className="p-3 bg-muted rounded-lg">
-                <p className="text-[10px] text-muted-foreground">
-                  You can still edit this review, but it can no longer be deleted.
-                </p>
-              </div>
+            ) : (
+              <>
+                {!review.canEdit && !review.canDelete && (
+                  <div className="p-3 bg-muted rounded-lg">
+                    <p className="text-[10px] text-muted-foreground">
+                      This review can no longer be edited or deleted as the time limit has expired.
+                    </p>
+                  </div>
+                )}
+                {review.canEdit && !review.canDelete && (
+                  <div className="p-3 bg-muted rounded-lg">
+                    <p className="text-[10px] text-muted-foreground">
+                      You can still edit this review, but it can no longer be deleted.
+                    </p>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

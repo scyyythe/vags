@@ -13,6 +13,8 @@ import OrderDetailsModal from "@/components/user_dashboard/Marketplace/my_purcha
 import ReviewModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/ReviewModal";
 import ReviewDetailsModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/ReviewDetailsModal";
 import EditReviewModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/EditReviewModal";
+import PaymentDetailsModal from "@/components/user_dashboard/Marketplace/my_listings/PaymentDetailsModal";
+import RefundDetailsModal from "@/components/user_dashboard/Marketplace/my_listings/RefundDetailsModal";
 
 import SoldArtworkCard from "@/components/user_dashboard/Marketplace/sold_artworks/card/SoldArtworksCard";
 
@@ -30,18 +32,23 @@ const SellTab = () => {
   const [mainTab, setMainTab] = useState("myListings");
   const [activeSubGroup, setActiveSubGroup] = useState<"listings" | "soldArtworks">("listings");
   const [subTab, setSubTab] = useState("available");
+  const [activeSubTab, setActiveSubTab] = useState("awaiting_payment");
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showReviewDetailsModal, setShowReviewDetailsModal] = useState(false);
   const [showEditReviewModal, setShowEditReviewModal] = useState(false);
+  const [showPaymentDetailsModal, setShowPaymentDetailsModal] = useState(false);
+  const [showRefundDetailsModal, setShowRefundDetailsModal] = useState(false);
   const [reviewingArtwork, setReviewingArtwork] = useState(null);
+  const [selectedPayment, setSelectedPayment] = useState(null);
+  const [selectedRefund, setSelectedRefund] = useState(null);
   const [selectedReview, setSelectedReview] = useState(null);
 
-  const handleViewDetails = (order) => {
-    setSelectedOrder(order);
+  const handleViewDetails = (artwork: any) => {
+    setSelectedOrder(artwork);
     setShowOrderDetails(true);
   };
 
@@ -467,7 +474,225 @@ const SellTab = () => {
     },
   ];
 
+  // Mock data for sold artworks (seller POV)
+  const mockSoldArtworks = [
+    {
+      id: "SALE-001",
+      artworkImage: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+      title: "Mystic Forest",
+      buyer: "Sarah Johnson",
+      price: 85000,
+      status: "awaiting_payment",
+      saleDate: "2025-01-20",
+      paymentMethod: "PayPal",
+      shippingAddress: {
+        name: "Sarah Johnson",
+        address: "456 Oak Avenue",
+        city: "Quezon City"
+      },
+      artwork: {
+        size: "16 x 20 inches",
+        medium: "Oil on Canvas",
+        style: "Abstract",
+        edition: "Original (1 of 1)",
+        yearCreated: 2024
+      }
+    },
+    {
+      id: "SALE-002",
+      artworkImage: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop",
+      title: "Urban Sunset",
+      buyer: "Michael Chen",
+      price: 120000,
+      status: "payment_received",
+      saleDate: "2025-01-18",
+      paymentMethod: "GCash",
+      shippingAddress: {
+        name: "Michael Chen",
+        address: "789 Pine Street",
+        city: "Makati City"
+      },
+      artwork: {
+        size: "24 x 18 inches",
+        medium: "Acrylic on Canvas",
+        style: "Contemporary",
+        edition: "Limited Edition (2 of 5)",
+        yearCreated: 2024
+      }
+    },
+    {
+      id: "SALE-003",
+      artworkImage: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+      title: "Ocean Dreams",
+      buyer: "Emma Rodriguez",
+      price: 95000,
+      status: "in_progress",
+      saleDate: "2025-01-15",
+      paymentMethod: "Credit Card",
+      shippingAddress: {
+        name: "Emma Rodriguez",
+        address: "321 Beach Road",
+        city: "Cebu City"
+      },
+      artwork: {
+        size: "20 x 16 inches",
+        medium: "Watercolor",
+        style: "Landscape",
+        edition: "Original (1 of 1)",
+        yearCreated: 2024
+      }
+    },
+    {
+      id: "SALE-004",
+      artworkImage: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop",
+      title: "Mountain Vista",
+      buyer: "David Kim",
+      price: 150000,
+      status: "completed",
+      saleDate: "2024-12-10",
+      completedDate: "2024-12-20",
+      paymentMethod: "PayPal",
+      shippingAddress: {
+        name: "David Kim",
+        address: "654 Hill Drive",
+        city: "Baguio City"
+      },
+      artwork: {
+        size: "30 x 24 inches",
+        medium: "Oil on Canvas",
+        style: "Realism",
+        edition: "Original (1 of 1)",
+        yearCreated: 2024
+      }
+    },
+    {
+      id: "SALE-005",
+      artworkImage: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+      title: "Abstract Emotions",
+      buyer: "Lisa Martinez",
+      price: 75000,
+      status: "cancelled",
+      saleDate: "2025-01-12",
+      paymentMethod: "GCash",
+      shippingAddress: {
+        name: "Lisa Martinez",
+        address: "987 Art Street",
+        city: "Davao City"
+      },
+      artwork: {
+        size: "18 x 14 inches",
+        medium: "Mixed Media",
+        style: "Abstract",
+        edition: "Limited Edition (3 of 10)",
+        yearCreated: 2024
+      }
+    },
+    {
+      id: "SALE-006",
+      artworkImage: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop",
+      title: "City Reflections",
+      buyer: "Carlos Mendoza",
+      price: 110000,
+      status: "refunded",
+      saleDate: "2024-12-25",
+      paymentMethod: "Credit Card",
+      shippingAddress: {
+        name: "Carlos Mendoza",
+        address: "147 Urban Plaza",
+        city: "Taguig City"
+      },
+      artwork: {
+        size: "22 x 18 inches",
+        medium: "Acrylic on Canvas",
+        style: "Urban",
+        edition: "Original (1 of 1)",
+        yearCreated: 2024
+      }
+    },
+    {
+      id: "SALE-007",
+      artworkImage: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+      title: "Golden Meadow",
+      buyer: "Ana Torres",
+      price: 135000,
+      status: "reviews",
+      saleDate: "2024-11-15",
+      completedDate: "2024-11-25",
+      paymentMethod: "PayPal",
+      shippingAddress: {
+        name: "Ana Torres",
+        address: "258 Garden Lane",
+        city: "Iloilo City"
+      },
+      artwork: {
+        size: "26 x 20 inches",
+        medium: "Oil on Canvas",
+        style: "Impressionist",
+        edition: "Limited Edition (1 of 3)",
+        yearCreated: 2024
+      },
+      review: {
+        rating: 5,
+        comment: "Absolutely beautiful artwork! The artist's technique is exceptional and the piece looks stunning in my living room. Highly recommend!",
+        photos: [
+          "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop"
+        ],
+        reviewDate: "2024-11-30"
+      }
+    }
+  ];
+
+  // Mock data for payment details
+  const mockPaymentDetails = {
+    id: "PAY-001",
+    amount: 120000,
+    currency: "PHP",
+    status: "completed",
+    paymentMethod: "GCash",
+    transactionId: "TXN-GC-2025012001",
+    paymentDate: "2025-01-20T10:30:00Z",
+    processingFee: 6000,
+    netAmount: 114000,
+    buyer: {
+      name: "Michael Chen",
+      email: "michael.chen@email.com"
+    },
+    billing: {
+      address: "789 Pine Street",
+      city: "Makati City",
+      postalCode: "1234",
+      country: "Philippines"
+    }
+  };
+
+  // Mock data for refund details
+  const mockRefundDetails = {
+    id: "REF-001",
+    originalAmount: 110000,
+    refundAmount: 110000,
+    currency: "PHP",
+    status: "processed",
+    reason: "Customer requested refund due to shipping damage. Item was damaged during transit and customer provided photos as evidence.",
+    requestDate: "2024-12-18T14:30:00Z",
+    processedDate: "2024-12-20T09:15:00Z",
+    refundMethod: "Credit Card",
+    transactionId: "REF-CC-2024122001",
+    originalTransactionId: "TXN-CC-2024121501",
+    buyer: {
+      name: "Carlos Mendoza",
+      email: "carlos.mendoza@email.com"
+    },
+    timeline: [
+      { status: "Refund Requested", date: "Dec 18, 2024", description: "Customer requested refund", completed: true },
+      { status: "Under Review", date: "Dec 18, 2024", description: "Refund request under review", completed: true },
+      { status: "Approved", date: "Dec 19, 2024", description: "Refund request approved", completed: true },
+      { status: "Processing", date: "Dec 19, 2024", description: "Refund being processed", completed: true },
+      { status: "Completed", date: "Dec 20, 2024", description: "Refund processed successfully", completed: true }
+    ]
+  };
+
   const filteredOrders = mockOrders.filter((order) => order.status === subTab);
+  const filteredSoldArtworks = mockSoldArtworks.filter((artwork) => artwork.status === subTab);
   const filteredArtworks = myArtCards.filter((art) => {
     const status = art.art_status?.toLowerCase?.() || "";
     const expectedStatus = statusMap[subTab]?.toLowerCase() || subTab.toLowerCase();
@@ -476,24 +701,82 @@ const SellTab = () => {
       : false;
   });
 
+  // Seller actions for sold artworks
+  const handleContactBuyer = (artwork) => {
+    toast.info("Redirecting to contact buyer...");
+  };
+
+  const handleMarkAsShipped = (artwork) => {
+    toast.success("Artwork marked as shipped!");
+  };
+
+  const handleTrackProgress = (artwork: any) => {
+    setSelectedOrder(artwork);
+    setShowOrderDetails(true);
+  };
+
+  const handleViewSummary = (artwork: any) => {
+    setSelectedOrder(artwork);
+    setShowOrderDetails(true);
+  };
+
+  const handleViewPayment = (artwork) => {
+    setSelectedPayment(mockPaymentDetails);
+    setShowPaymentDetailsModal(true);
+  };
+
+  const handleProcessRefund = (artwork) => {
+    setSelectedRefund(mockRefundDetails);
+    setShowRefundDetailsModal(true);
+  };
+
+  const handleViewSellerReview = (artwork) => {
+    setSelectedReview({
+      ...artwork.review,
+      reviewerName: artwork.buyer, // Show buyer's name as reviewer
+      canEdit: false, // Sellers cannot edit buyer reviews
+      canDelete: true, // Sellers can only delete inappropriate reviews
+      artwork: {
+        artworkImage: artwork.artworkImage,
+        title: artwork.title,
+        artist: "You" // This is the seller's artwork
+      }
+    });
+    setShowReviewDetailsModal(true);
+  };
+
   return (
     <div className="w-full">
       {/* MAIN TABS */}
-      <div className="flex space-x-4 mb-4 text-[11px] font-semibold">
-        {["myListings", "myPurchase"].map((tab) => (
-          <button
-            key={tab}
-            className={`px-3 ${mainTab === tab ? "text-red-800" : "text-gray-600"}`}
-            onClick={() => {
-              setMainTab(tab);
-              setSubTab(tab === "myListings" ? "available" : "pending_payment");
-              setActiveSubGroup("listings");
-              setShowDropdown(false);
-            }}
-          >
-            {tab === "myListings" ? "MY LISTINGS" : "MY PURCHASE"}
-          </button>
-        ))}
+      <div className="flex justify-between items-center mb-4 text-[11px] font-semibold">
+        {/* Left: MY LISTINGS + MY PURCHASE */}
+        <div className="flex space-x-4">
+          {["myListings", "myPurchase"].map((tab) => (
+            <button
+              key={tab}
+              className={`px-3 ${mainTab === tab ? "text-red-800" : "text-gray-600"}`}
+              onClick={() => {
+                setMainTab(tab);
+                setSubTab(tab === "myListings" ? "available" : "pending_payment");
+                setActiveSubGroup("listings");
+                setShowDropdown(false);
+              }}
+            >
+              {tab === "myListings" ? "MY LISTINGS" : "MY PURCHASE"}
+            </button>
+          ))}
+        </div>
+
+        {/* Right: SALES SUMMARY */}
+        <button
+          className={`px-3 ${mainTab === "salesSummary" ? "text-red-800" : "text-gray-600"}`}
+          onClick={() => {
+            setMainTab("salesSummary");
+            setShowDropdown(false);
+          }}
+        >
+          SALES SUMMARY
+        </button>
       </div>
 
       {/* DROPDOWN + SUBTABS */}
@@ -565,91 +848,173 @@ const SellTab = () => {
         </div>
       )}
 
-      {/* ARTWORK / ORDER DISPLAY */}
-      {isLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4">
-          {Array(6)
-            .fill(0)
-            .map((_, idx) => (
-              <SellCardSkeleton key={idx} />
-            ))}
+        {/* Content Display */}
+        <div className="space-y-4">
+          {mainTab === "myListings" && activeSubGroup === "soldArtworks" ? (
+            // Sold Artworks (Seller POV)
+            filteredSoldArtworks.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-24 h-24 mx-auto mb-4 opacity-50">
+                  <svg
+                    className="w-full h-full text-muted-foreground"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1}
+                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                    />
+                  </svg>
+                </div>
+                <p className="text-muted-foreground">No sold artworks found for this status.</p>
+              </div>
+            ) : (
+              filteredSoldArtworks.map((artwork) => (
+                <SoldArtworkCard
+                  key={artwork.id}
+                  id={artwork.id}
+                  artworkImage={artwork.artworkImage}
+                  title={artwork.title}
+                  buyer={artwork.buyer}
+                  price={artwork.price}
+                  status={artwork.status}
+                  saleDate={artwork.saleDate}
+                  completedDate={artwork.completedDate}
+                  paymentMethod={artwork.paymentMethod}
+                  shippingAddress={artwork.shippingAddress}
+                  artwork={artwork.artwork}
+                  review={artwork.review}
+                  onViewDetails={(art) => handleViewDetails(art)}
+                  onContactBuyer={(art) => handleContactBuyer(art)}
+                  onMarkAsShipped={(art) => handleMarkAsShipped(art)}
+                  onViewPayment={(art) => handleViewPayment(art)}
+                  onProcessRefund={(art) => handleProcessRefund(art)}
+                  onViewReview={(art) => handleViewSellerReview(art)}
+                  onTrackProgress={(art) => handleTrackProgress(art)}
+                  onViewSummary={(art) => handleViewSummary(art)}
+                />
+              ))
+            )
+          ) : mainTab === "myPurchase" ? (
+            // Purchased Artworks (Buyer POV)
+            filteredOrders.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-24 h-24 mx-auto mb-4 opacity-50">
+                  <svg
+                    className="w-full h-full text-muted-foreground"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1}
+                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                    />
+                  </svg>
+                </div>
+                <p className="text-muted-foreground">No orders found for this status.</p>
+              </div>
+            ) : (
+              filteredOrders.map((order) => (
+                <PurchasedArtworkCard
+                  key={order.id}
+                  id={order.id}
+                  artworkImage={order.artworkImage}
+                  title={order.title}
+                  artist={order.artist}
+                  price={order.price}
+                  status={order.status}
+                  orderDate={order.orderDate}
+                  completedDate={order.completedDate}
+                  expectedDelivery={order.expectedDelivery}
+                  onViewDetails={() => handleViewDetails(order)}
+                  onReview={() => handleReview(order)}
+                  onViewReview={() => handleViewReview(order)}
+                  onContact={handleContact}
+                  onTrackOrder={handleTrackOrder}
+                  onRequestRefund={handleRequestRefund}
+                  onCancelOrder={handleCancelOrder}
+                />
+              ))
+            )
+          ) : (
+            // Active Listings placeholder
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Active listings would be displayed here.</p>
+            </div>
+          )}
         </div>
-      ) : mainTab === "myPurchase" ? (
-        filteredOrders.length === 0 ? (
-          <div className="text-center py-12">
-            <img src="/pics/empty.png" alt="No orders" className="w-32 h-32 mx-auto opacity-70 mb-4" />
-            <p className="text-xs text-gray-500">No artworks found for this status.</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredOrders.map((order) => (
-              <PurchasedArtworkCard
-                key={order.id}
-                {...order}
-                onViewDetails={() => handleViewDetails(order)}
-                onReview={() => handleReview(order)}
-                onViewReview={() => handleViewReview(order)}
-                onContact={handleContact}
-                onTrackOrder={handleTrackOrder}
-                onRequestRefund={handleRequestRefund}
-                onCancelOrder={handleCancelOrder}
-                onReorder={handleReorder}
-              />
-            ))}
-          </div>
-        )
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4">
-          {filteredArtworks.map((art) => (
-            <SellCard
-              key={art.id}
-              id={art.id}
-              artworkImage={art.image_url?.[0] || "/placeholder.jpg"}
-              price={art.discounted_price ?? art.price}
-              originalPrice={art.discounted_price ? art.price : 0}
-              title={art.title}
-              category={art.category}
-              edition="Original (1 of 1)"
-              rating={art.total_ratings}
-              isMarketplace
-              onLike={onLikeToggle}
-              onCardClick={() => onCardClick(art.id)}
-            />
-          ))}
-        </div>
-      )}
 
-      {/* Modals */}
-      {selectedOrder && (
-        <OrderDetailsModal isOpen={showOrderDetails} onClose={() => setShowOrderDetails(false)} order={selectedOrder} />
-      )}
-      {reviewingArtwork && (
-        <ReviewModal
-          isOpen={showReviewModal}
-          onClose={() => setShowReviewModal(false)}
-          onSubmit={handleSubmitReview}
-          artwork={reviewingArtwork}
-        />
-      )}
-      {selectedReview && (
-        <ReviewDetailsModal
-          isOpen={showReviewDetailsModal}
-          onClose={() => setShowReviewDetailsModal(false)}
-          onEdit={handleEditReview}
-          onDelete={handleDeleteReview}
-          review={selectedReview}
-          artwork={selectedReview.artwork}
-        />
-      )}
-      {selectedReview && (
-        <EditReviewModal
-          isOpen={showEditReviewModal}
-          onClose={() => setShowEditReviewModal(false)}
-          onSubmit={handleUpdateReview}
-          artwork={selectedReview.artwork}
-          existingReview={selectedReview}
-        />
-      )}
+        {/* Order Details Modal */}
+        {selectedOrder && (
+          <OrderDetailsModal
+            key={selectedOrder.id} 
+            isOpen={showOrderDetails}
+            onClose={() => setShowOrderDetails(false)}
+            order={selectedOrder}
+            viewType={mainTab === "myListings" && activeSubGroup === "soldArtworks" ? "seller" : "buyer"}
+            onContactBuyer={() => handleContactBuyer(selectedOrder)}
+            onViewPayment={() => handleViewPayment(selectedOrder)}
+            onMarkAsShipped={() => handleMarkAsShipped(selectedOrder)}
+          />
+        )}
+
+        {/* Payment Details Modal */}
+        {selectedPayment && (
+          <PaymentDetailsModal
+            isOpen={showPaymentDetailsModal}
+            onClose={() => setShowPaymentDetailsModal(false)}
+            payment={selectedPayment}
+          />
+        )}
+
+        {/* Refund Details Modal */}
+        {selectedRefund && (
+          <RefundDetailsModal
+            isOpen={showRefundDetailsModal}
+            onClose={() => setShowRefundDetailsModal(false)}
+            refund={selectedRefund}
+          />
+        )}
+
+        {/* Review Modal */}
+        {reviewingArtwork && (
+          <ReviewModal
+            isOpen={showReviewModal}
+            onClose={() => setShowReviewModal(false)}
+            onSubmit={handleSubmitReview}
+            artwork={reviewingArtwork}
+          />
+        )}
+
+        {/* Review Details Modal */}
+        {selectedReview && (
+          <ReviewDetailsModal
+            isOpen={showReviewDetailsModal}
+            onClose={() => setShowReviewDetailsModal(false)}
+            onEdit={handleEditReview}
+            onDelete={handleDeleteReview}
+            viewType={mainTab === "myListings" && activeSubGroup === "soldArtworks" ? "seller" : "buyer"}
+            review={selectedReview}
+            artwork={selectedReview.artwork}
+          />
+        )}
+
+        {/* Edit Review Modal */}
+        {selectedReview && (
+          <EditReviewModal
+            isOpen={showEditReviewModal}
+            onClose={() => setShowEditReviewModal(false)}
+            onSubmit={handleUpdateReview}
+            artwork={selectedReview.artwork}
+            existingReview={selectedReview}
+          />
+        )}
     </div>
   );
 };
