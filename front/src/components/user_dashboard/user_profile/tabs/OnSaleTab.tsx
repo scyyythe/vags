@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { differenceInDays } from "date-fns";
 import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
 import SellCardSkeleton from "@/components/skeletons/SellCardSkeleton";
+import SalesSummary from "@/components/user_dashboard/Marketplace/sales_summary/SalesSummary";
 import useMySellArtCards from "@/hooks/artworks/sell/useMySellArtCards";
 import useUserSellArtCards from "@/hooks/artworks/sell/useUserSellArtCards";
 import { getLoggedInUserId } from "@/auth/decode";
@@ -46,6 +47,8 @@ const SellTab = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [selectedRefund, setSelectedRefund] = useState(null);
   const [selectedReview, setSelectedReview] = useState(null);
+
+  const [showSalesSummary, setShowSalesSummary] = useState(false);
 
   const handleViewDetails = (artwork: any) => {
     setSelectedOrder(artwork);
@@ -772,7 +775,6 @@ const SellTab = () => {
           className={`px-3 ${mainTab === "salesSummary" ? "text-red-800" : "text-gray-600"}`}
           onClick={() => {
             setMainTab("salesSummary");
-            setShowDropdown(false);
           }}
         >
           SALES SUMMARY
@@ -780,46 +782,62 @@ const SellTab = () => {
       </div>
 
       {/* DROPDOWN + SUBTABS */}
-      {mainTab === "myListings" ? (
-        <div className="relative mb-6 flex flex-wrap items-center gap-4 text-[11px]">
-          <div className="relative">
-            <button
-              className="flex items-center space-x-1 px-3 py-1 border border-gray-300 rounded-full text-gray-700"
-              onClick={() => setShowDropdown(!showDropdown)}
-            >
-              <span>{activeSubGroup === "listings" ? "Listings" : "Sold Artworks"}</span>
-              <svg
-                className={`w-3 h-3 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
+      {mainTab !== "salesSummary" && (
+        mainTab === "myListings" ? (
+          <div className="relative mb-6 flex flex-wrap items-center gap-4 text-[11px]">
+            <div className="relative">
+              <button
+                className="flex items-center space-x-1 px-3 py-1 border border-gray-300 rounded-full text-gray-700"
+                onClick={() => setShowDropdown(!showDropdown)}
               >
-                <path d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {showDropdown && (
-              <div className="absolute z-10 bg-white border mt-2 rounded shadow text-[11px]">
-                {["listings", "soldArtworks"].map((option) => (
-                  <button
-                    key={option}
-                    className={`block px-4 py-2 w-full text-left ${
-                      activeSubGroup === option ? "text-black font-medium" : "text-gray-600"
-                    }`}
-                    onClick={() => {
-                      setActiveSubGroup(option as "listings" | "soldArtworks");
-                      setSubTab(option === "listings" ? "available" : "awaiting_payment");
-                      setShowDropdown(false);
-                    }}
-                  >
-                    {option === "listings" ? "Listings" : "Sold"}
-                  </button>
-                ))}
-              </div>
-            )}
+                <span>{activeSubGroup === "listings" ? "Listings" : "Sold Artworks"}</span>
+                <svg
+                  className={`w-3 h-3 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {showDropdown && (
+                <div className="absolute z-10 bg-white border mt-2 rounded shadow text-[11px]">
+                  {["listings", "soldArtworks"].map((option) => (
+                    <button
+                      key={option}
+                      className={`block px-4 py-2 w-full text-left ${
+                        activeSubGroup === option ? "text-black font-medium" : "text-gray-600"
+                      }`}
+                      onClick={() => {
+                        setActiveSubGroup(option as "listings" | "soldArtworks");
+                        setSubTab(option === "listings" ? "available" : "awaiting_payment");
+                        setShowDropdown(false);
+                      }}
+                    >
+                      {option === "listings" ? "Listings" : "Sold"}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-4">
+              {(activeSubGroup === "listings" ? activeListingTabs : soldArtworksTabs).map((tab) => (
+                <button
+                  key={tab}
+                  className={`px-3 py-1 border-b-2 ${
+                    subTab === tab ? "border-red-800 text-red-800" : "border-transparent text-gray-600"
+                  }`}
+                  onClick={() => setSubTab(tab)}
+                >
+                  {tab.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="flex flex-wrap gap-4">
-            {(activeSubGroup === "listings" ? activeListingTabs : soldArtworksTabs).map((tab) => (
+        ) : (
+          <div className="flex flex-wrap gap-5 mb-6 text-[11px] font-normal">
+            {myPurchaseTabs.map((tab) => (
               <button
                 key={tab}
                 className={`px-3 py-1 border-b-2 ${
@@ -831,124 +849,90 @@ const SellTab = () => {
               </button>
             ))}
           </div>
-        </div>
-      ) : (
-        <div className="flex flex-wrap gap-5 mb-6 text-[11px] font-normal">
-          {myPurchaseTabs.map((tab) => (
-            <button
-              key={tab}
-              className={`px-3 py-1 border-b-2 ${
-                subTab === tab ? "border-red-800 text-red-800" : "border-transparent text-gray-600"
-              }`}
-              onClick={() => setSubTab(tab)}
-            >
-              {tab.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
-            </button>
-          ))}
-        </div>
+        )
       )}
 
-        {/* Content Display */}
-        <div className="space-y-4">
-          {mainTab === "myListings" && activeSubGroup === "soldArtworks" ? (
-            // Sold Artworks (Seller POV)
-            filteredSoldArtworks.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="w-24 h-24 mx-auto mb-4 opacity-50">
-                  <svg
-                    className="w-full h-full text-muted-foreground"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                    />
-                  </svg>
-                </div>
-                <p className="text-muted-foreground">No sold artworks found for this status.</p>
-              </div>
-            ) : (
-              filteredSoldArtworks.map((artwork) => (
-                <SoldArtworkCard
-                  key={artwork.id}
-                  id={artwork.id}
-                  artworkImage={artwork.artworkImage}
-                  title={artwork.title}
-                  buyer={artwork.buyer}
-                  price={artwork.price}
-                  status={artwork.status}
-                  saleDate={artwork.saleDate}
-                  completedDate={artwork.completedDate}
-                  paymentMethod={artwork.paymentMethod}
-                  shippingAddress={artwork.shippingAddress}
-                  artwork={artwork.artwork}
-                  review={artwork.review}
-                  onViewDetails={(art) => handleViewDetails(art)}
-                  onContactBuyer={(art) => handleContactBuyer(art)}
-                  onMarkAsShipped={(art) => handleMarkAsShipped(art)}
-                  onViewPayment={(art) => handleViewPayment(art)}
-                  onProcessRefund={(art) => handleProcessRefund(art)}
-                  onViewReview={(art) => handleViewSellerReview(art)}
-                  onTrackProgress={(art) => handleTrackProgress(art)}
-                  onViewSummary={(art) => handleViewSummary(art)}
-                />
-              ))
-            )
-          ) : mainTab === "myPurchase" ? (
-            // Purchased Artworks (Buyer POV)
-            filteredOrders.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="w-24 h-24 mx-auto mb-4 opacity-50">
-                  <svg
-                    className="w-full h-full text-muted-foreground"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                    />
-                  </svg>
-                </div>
-                <p className="text-muted-foreground">No orders found for this status.</p>
-              </div>
-            ) : (
-              filteredOrders.map((order) => (
-                <PurchasedArtworkCard
-                  key={order.id}
-                  id={order.id}
-                  artworkImage={order.artworkImage}
-                  title={order.title}
-                  artist={order.artist}
-                  price={order.price}
-                  status={order.status}
-                  orderDate={order.orderDate}
-                  completedDate={order.completedDate}
-                  expectedDelivery={order.expectedDelivery}
-                  onViewDetails={() => handleViewDetails(order)}
-                  onReview={() => handleReview(order)}
-                  onViewReview={() => handleViewReview(order)}
-                  onContact={handleContact}
-                  onTrackOrder={handleTrackOrder}
-                  onRequestRefund={handleRequestRefund}
-                  onCancelOrder={handleCancelOrder}
-                />
-              ))
-            )
-          ) : (
-            // Active Listings placeholder
+      {/* Content Display */}
+      <div className="space-y-4">
+        {mainTab === "salesSummary" ? (
+          <SalesSummary />
+        ) : mainTab === "myListings" && activeSubGroup === "soldArtworks" ? (
+          filteredSoldArtworks.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">Active listings would be displayed here.</p>
+              <div className="w-24 h-24 mx-auto mb-4 opacity-50">
+                <svg className="w-full h-full text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+              </div>
+              <p className="text-muted-foreground">No sold artworks found for this status.</p>
             </div>
-          )}
-        </div>
+          ) : (
+            filteredSoldArtworks.map((artwork) => (
+              <SoldArtworkCard
+                key={artwork.id}
+                id={artwork.id}
+                artworkImage={artwork.artworkImage}
+                title={artwork.title}
+                buyer={artwork.buyer}
+                price={artwork.price}
+                status={artwork.status}
+                saleDate={artwork.saleDate}
+                completedDate={artwork.completedDate}
+                paymentMethod={artwork.paymentMethod}
+                shippingAddress={artwork.shippingAddress}
+                artwork={artwork.artwork}
+                review={artwork.review}
+                onViewDetails={(art) => handleViewDetails(art)}
+                onContactBuyer={(art) => handleContactBuyer(art)}
+                onMarkAsShipped={(art) => handleMarkAsShipped(art)}
+                onViewPayment={(art) => handleViewPayment(art)}
+                onProcessRefund={(art) => handleProcessRefund(art)}
+                onViewReview={(art) => handleViewSellerReview(art)}
+                onTrackProgress={(art) => handleTrackProgress(art)}
+                onViewSummary={(art) => handleViewSummary(art)}
+              />
+            ))
+          )
+        ) : mainTab === "myPurchase" ? (
+          filteredOrders.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="w-24 h-24 mx-auto mb-4 opacity-50">
+                <svg className="w-full h-full text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+              </div>
+              <p className="text-muted-foreground">No orders found for this status.</p>
+            </div>
+          ) : (
+            filteredOrders.map((order) => (
+              <PurchasedArtworkCard
+                key={order.id}
+                id={order.id}
+                artworkImage={order.artworkImage}
+                title={order.title}
+                artist={order.artist}
+                price={order.price}
+                status={order.status}
+                orderDate={order.orderDate}
+                completedDate={order.completedDate}
+                expectedDelivery={order.expectedDelivery}
+                onViewDetails={() => handleViewDetails(order)}
+                onReview={() => handleReview(order)}
+                onViewReview={() => handleViewReview(order)}
+                onContact={handleContact}
+                onTrackOrder={handleTrackOrder}
+                onRequestRefund={handleRequestRefund}
+                onCancelOrder={handleCancelOrder}
+              />
+            ))
+          )
+        ) : (
+          <div className="text-center text-sm py-12">
+            <p className="text-muted-foreground">Active listings would be displayed here.</p>
+          </div>
+        )}
+      </div>
+
 
         {/* Order Details Modal */}
         {selectedOrder && (
