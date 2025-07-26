@@ -712,7 +712,7 @@ const SellTab = () => {
     refunded: "Refunded",
     reviewed: "Reviewed",
   };
-  // Debug logs
+  // Debug logs dont delete
   // console.log("🧾 myPurchases:", myPurchases);
   // console.log("📦 subTab:", subTab);
   // console.log("🧭 Expected Status:", purchaseStatusMap[subTab]);
@@ -720,11 +720,10 @@ const SellTab = () => {
   //   "📜 All order statuses:",
   //   myPurchases?.map((o) => o.status)
   // );
+  const expectedStatus = purchaseStatusMap[subTab?.toLowerCase()]?.toLowerCase().trim();
 
   const filteredOrders = Array.isArray(myPurchases)
-    ? myPurchases.filter(
-        (order) => order.status?.toLowerCase().trim() === purchaseStatusMap[subTab]?.toLowerCase().trim()
-      )
+    ? myPurchases.filter((order) => order.status?.toLowerCase().trim() === expectedStatus)
     : [];
 
   const filteredSoldArtworks = mockSoldArtworks.filter((artwork) => artwork.status === subTab);
@@ -980,7 +979,7 @@ const SellTab = () => {
                 price={order.artwork?.price ?? 0}
                 status={order.status === "Pending" ? "pending_payment" : order.status}
                 orderDate={order.created_at ? new Date(order.created_at).toLocaleDateString() : "Unknown"}
-                completedDate={order.completedDate}
+                completedDate="2025-07-10T10:00:00Z"
                 expectedDelivery={
                   order.expectedDelivery
                     ? new Date(order.expectedDelivery).toLocaleDateString()
