@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Calendar,
-  Package,
-  Star,
-  MessageSquare,
-  RotateCcw,
-  Clock,
-} from "lucide-react";
+import { Calendar, Package, Star, MessageSquare, RotateCcw, Clock } from "lucide-react";
 import { differenceInDays } from "date-fns";
 
 interface PurchasedArtworkCardProps {
@@ -46,14 +39,11 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
   onTrackOrder,
   onRequestRefund,
   onCancelOrder,
-  onReorder
+  onReorder,
 }) => {
   const canReview = () => {
     if (!completedDate) return false;
-    const daysSinceCompleted = differenceInDays(
-      new Date(),
-      new Date(completedDate)
-    );
+    const daysSinceCompleted = differenceInDays(new Date(), new Date(completedDate));
     return daysSinceCompleted <= 30;
   };
 
@@ -63,19 +53,14 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
   };
 
   const getStatusActions = () => {
-    const daysLeft = completedDate
-      ? 30 - differenceInDays(new Date(), new Date(completedDate))
-      : 0;
+    const daysLeft = completedDate ? 30 - differenceInDays(new Date(), new Date(completedDate)) : 0;
     const reviewAllowed = canReview();
 
     switch (status.toLowerCase()) {
       case "pending_payment":
         return (
           <>
-            <button
-              className="text-[10px] text-gray-500 py-1.5 px-4 rounded-full border"
-              onClick={wrap(onCancelOrder)}
-            >
+            <button className="text-[10px] text-gray-500 py-1.5 px-4 rounded-full border" onClick={wrap(onCancelOrder)}>
               Cancel
             </button>
             <button
@@ -128,10 +113,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
               <RotateCcw className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Retry Payment
             </button>
-            <button
-              className="text-[10px] py-1.5 px-4 bg-gray-200 rounded-full"
-              onClick={wrap(onContact)}
-            >
+            <button className="text-[10px] py-1.5 px-4 bg-gray-200 rounded-full" onClick={wrap(onContact)}>
               Support
             </button>
           </>
@@ -204,28 +186,24 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
       <div className="flex gap-4">
         {/* Image */}
         <div className="relative">
-          <img
-            src={artworkImage}
-            alt={title}
-            className="w-20 h-20 rounded-md object-cover"
-          />
+          <img src={artworkImage} alt={title} className="w-20 h-20 rounded-md object-cover" />
         </div>
 
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start pt-1.5">
             <div>
-              <h3 className="font-semibold text-[13px] text-foreground truncate pb-0.5">
-                {title}
-              </h3>
+              <h3 className="font-semibold text-[13px] text-foreground truncate pb-0.5">{title}</h3>
               <p className="text-[10px] text-muted-foreground">by {artist}</p>
             </div>
             <div className="text-right">
               <p className="font-bold text-sm text-foreground">
                 ₱
-                {price >= 1000
-                  ? `${(price / 1000).toFixed(1)}k`
-                  : price.toLocaleString()}
+                {typeof price === "number"
+                  ? price >= 1000
+                    ? `${(price / 1000).toFixed(1)}k`
+                    : price.toLocaleString()
+                  : "₱—"}
               </p>
             </div>
           </div>
