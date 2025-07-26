@@ -42,8 +42,15 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
   onReorder,
 }) => {
   const canReview = () => {
-    if (!completedDate) return false;
-    const daysSinceCompleted = differenceInDays(new Date(), new Date(completedDate));
+    if (!completedDate || typeof completedDate !== "string") return false;
+
+    const completed = new Date(completedDate);
+    if (isNaN(completed.getTime())) {
+      console.warn("Invalid completedDate:", completedDate);
+      return false;
+    }
+
+    const daysSinceCompleted = differenceInDays(new Date(), completed);
     return daysSinceCompleted <= 30;
   };
 
@@ -51,12 +58,13 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
     e.stopPropagation();
     fn?.();
   };
+  const normalizedStatus = status?.toLowerCase().trim();
 
   const getStatusActions = () => {
     const daysLeft = completedDate ? 30 - differenceInDays(new Date(), new Date(completedDate)) : 0;
     const reviewAllowed = canReview();
 
-    switch (status.toLowerCase()) {
+    switch (normalizedStatus) {
       case "pending_payment":
         return (
           <>
@@ -72,7 +80,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
           </>
         );
 
-      case "payment_processing":
+      case "processing":
         return (
           <button
             className="flex text-[10px] py-1.5 px-4 border border-gray-400 rounded-full"
