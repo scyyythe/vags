@@ -3,16 +3,21 @@ from rest_framework import serializers
 from api.models.purchase_model.order import PurchasedArtwork
 from api.models.artwork_model.artwork import Art
 
-class ArtworkMiniSerializer(serializers.Serializer):
+class ArtworkDetailSerializer(serializers.Serializer):
     id = serializers.CharField()
     title = serializers.CharField()
     image_url = serializers.ListField(child=serializers.URLField())
     price = serializers.FloatField()
+    size = serializers.CharField()
+    medium = serializers.CharField()
+    category = serializers.CharField()
+    edition = serializers.CharField()
+    year_created = serializers.CharField(required=False, allow_blank=True)
+    quantity = serializers.IntegerField(required=False)
     artist_name = serializers.SerializerMethodField()
 
     def get_artist_name(self, obj):
         return f"{obj.artist.first_name} {obj.artist.last_name}" if obj.artist else "Unknown"
-
 
 class ShippingSnapshotViewSerializer(serializers.Serializer):
     name = serializers.CharField()
@@ -25,7 +30,7 @@ class ShippingSnapshotViewSerializer(serializers.Serializer):
 
 class PurchasedArtworkListSerializer(serializers.Serializer):
     id = serializers.CharField()
-    artwork = ArtworkMiniSerializer()
+    artwork = ArtworkDetailSerializer() 
     shipping_address = ShippingSnapshotViewSerializer()
     payment_method = serializers.CharField()
     is_paid = serializers.BooleanField()
@@ -33,3 +38,4 @@ class PurchasedArtworkListSerializer(serializers.Serializer):
     total_price = serializers.FloatField()
     status = serializers.CharField()
     created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
