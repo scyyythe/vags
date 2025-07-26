@@ -28,5 +28,23 @@ class MyPurchasesView(APIView):
             queryset = queryset.filter(status=status_filter)
 
         purchases = queryset.order_by("-created_at")
-        serializer = PurchasedArtworkListSerializer(purchases, many=True)
+
+        
+        result = []
+        for purchase in purchases:
+            purchase_data = {
+                "id": str(purchase.id),
+                "artwork": purchase.artwork, 
+                "shipping_address": purchase.shipping_address,
+                "payment_method": purchase.payment_method,
+                "is_paid": purchase.is_paid,
+                "quantity": purchase.quantity,
+                "total_price": purchase.total_price,
+                "status": purchase.status,
+                "created_at": purchase.created_at,
+                "updated_at": purchase.updated_at,
+            }
+            result.append(purchase_data)
+
+        serializer = PurchasedArtworkListSerializer(result, many=True)
         return Response(serializer.data)

@@ -20,7 +20,7 @@ import RefundDetailsModal from "@/components/user_dashboard/Marketplace/my_listi
 import SoldArtworkCard from "@/components/user_dashboard/Marketplace/sold_artworks/card/SoldArtworksCard";
 import { useMyPurchases } from "@/hooks/purchase/useMyPurchases";
 import { q } from "node_modules/framer-motion/dist/types.d-B50aGbjN";
-
+import { formatOrderDetails } from "@/utils/purchase/formatOrder";
 const SellTab = () => {
   const { id: userId } = useParams();
   const loggedInUserId = getLoggedInUserId();
@@ -713,13 +713,13 @@ const SellTab = () => {
     reviewed: "Reviewed",
   };
   // Debug logs
-  console.log("🧾 myPurchases:", myPurchases);
-  console.log("📦 subTab:", subTab);
-  console.log("🧭 Expected Status:", purchaseStatusMap[subTab]);
-  console.log(
-    "📜 All order statuses:",
-    myPurchases?.map((o) => o.status)
-  );
+  // console.log("🧾 myPurchases:", myPurchases);
+  // console.log("📦 subTab:", subTab);
+  // console.log("🧭 Expected Status:", purchaseStatusMap[subTab]);
+  // console.log(
+  //   "📜 All order statuses:",
+  //   myPurchases?.map((o) => o.status)
+  // );
 
   const filteredOrders = Array.isArray(myPurchases)
     ? myPurchases.filter(
@@ -1064,7 +1064,7 @@ const SellTab = () => {
           key={selectedOrder.id}
           isOpen={showOrderDetails}
           onClose={() => setShowOrderDetails(false)}
-          order={selectedOrder}
+          order={formatOrderDetails(selectedOrder)}
           viewType={mainTab === "myListings" && activeSubGroup === "soldArtworks" ? "seller" : "buyer"}
           onContactBuyer={() => handleContactBuyer(selectedOrder)}
           onViewPayment={() => handleViewPayment(selectedOrder)}
