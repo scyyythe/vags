@@ -2,7 +2,7 @@ from django.urls import path
 from api.views.purchase_view.purchase_view import PurchaseArtworkView,MyPurchasesView
 from api.views.purchase_view.review_view import SubmitReviewView
 from api.views.purchase_view.sold_artworks_view import MySoldArtworksView
-from api.views.purchase_view.review_view import SubmitReviewView, GetReviewByPurchaseView,UpdateReviewView,DeleteReviewView
+from api.views.purchase_view.review_view import SubmitReviewView, GetReviewByPurchaseView,AllReviewsByPurchaseView,UpdateReviewView,DeleteReviewView
 purchase_urlpatterns = [
 
 # purchases
@@ -17,4 +17,5 @@ purchase_urlpatterns = [
    path("get-review-by-purchase/", GetReviewByPurchaseView.as_view(), name="get-review-by-purchase"),
    path("review/<str:review_id>/update/", UpdateReviewView.as_view()),
    path("review/<str:review_id>/delete/", DeleteReviewView.as_view()),
+   path("review/all-by-purchase/<str:purchase_id>/", AllReviewsByPurchaseView.as_view(), name="all-reviews-by-purchase"),
 ]

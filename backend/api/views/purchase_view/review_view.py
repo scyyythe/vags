@@ -91,3 +91,29 @@ class DeleteReviewView(APIView):
 
         return Response({"message": "Review deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
+
+
+class AllReviewsByPurchaseView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, purchase_id):
+        try:
+            reviews = Review.objects(purchase=ObjectId(purchase_id))
+        except Exception:
+            return Response({"error": "Invalid purchase ID."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not reviews:
+            return Response({"message": "No reviews found for this purchase."}, status=status.HTTP_404_NOT_FOUND)
+
+        data = []
+        for review in reviews:
+            data.append({
+                "id": str(review.id),
+                "rating": review.rating,
+                "comment": review.comment,
+                "photos": review.photos,
+                "created_at": review.created_at,
+                "reviewerName": review.reviewer.username,
+            })
+
+        return Response(data, status=status.HTTP_200_OK)
