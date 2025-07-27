@@ -5,6 +5,7 @@ from rest_framework import status
 from api.serializers.review_serializer.review_serializer import ReviewSerializer
 from api.models.review_model.review import Review
 from bson import ObjectId
+from api.serializers.review_serializer.review_serializer import ReviewSerializer, ReviewUpdateSerializer
 
 class SubmitReviewView(APIView):
     permission_classes = [IsAuthenticated]
@@ -57,7 +58,7 @@ class UpdateReviewView(APIView):
         except Review.DoesNotExist:
             return Response({"error": "Review not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = ReviewSerializer(data=request.data, context={"request": request})
+        serializer = ReviewUpdateSerializer(data=request.data)
         if serializer.is_valid():
             validated_data = serializer.validated_data
             review.rating = validated_data["rating"]
@@ -66,6 +67,7 @@ class UpdateReviewView(APIView):
             review.save()
             return Response({"message": "Review updated successfully."})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
     
 class DeleteReviewView(APIView):
