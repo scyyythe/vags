@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-import {
-  Calendar,
-  User,
-  DollarSign,
-  Package,
-  MessageCircle,
-  Eye,
-  CheckCircle,
-  XCircle,
-  RotateCcw,
-} from "lucide-react";
+import { Calendar, User, DollarSign, Package, MessageCircle, Eye, CheckCircle, XCircle, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -94,8 +84,8 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       { status: "Order Placed", date: saleDate, description: "Your order has been confirmed", completed: true },
       { status: "Payment Confirmed", date: saleDate, description: "Payment received", completed: true },
       { status: "Shipped", date: "", description: "Artwork will be shipped", completed: false },
-      { status: "Delivered", date: "", description: "Artwork delivered to buyer", completed: false }
-    ]
+      { status: "Delivered", date: "", description: "Artwork delivered to buyer", completed: false },
+    ],
   };
 
   const getStatusBadge = () => {
@@ -108,10 +98,12 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       refunded: { label: "Refunded", variant: "secondary" as const },
       reviews: { label: "Reviewed", variant: "default" as const },
     };
-    return statusConfig[status as keyof typeof statusConfig] || {
-      label: status,
-      variant: "default" as const,
-    };
+    return (
+      statusConfig[status as keyof typeof statusConfig] || {
+        label: status,
+        variant: "default" as const,
+      }
+    );
   };
 
   const [shippedArtworks, setShippedArtworks] = useState<Record<string, boolean>>({});
@@ -121,15 +113,17 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       case "awaiting_payment":
         return (
           <div className="flex gap-2">
-            <button 
-            onClick={() => onContactBuyer(artworkData)} 
-            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border">
+            <button
+              onClick={() => onContactBuyer(artworkData)}
+              className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border"
+            >
               <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Contact Buyer
             </button>
-            <button 
-            onClick={() => onViewDetails(artworkData)} 
-            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200">
+            <button
+              onClick={() => onViewDetails(artworkData)}
+              className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
+            >
               <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               View Details
             </button>
@@ -138,16 +132,16 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       case "payment_received":
         return (
           <div className="flex gap-2">
-            <button 
+            <button
               onClick={() => {
                 setShippedArtworks((prev) => ({
                   ...prev,
                   [id]: !prev[id], // toggle state
                 }));
                 if (!shippedArtworks[id]) {
-                  onMarkAsShipped?.(artworkData); 
+                  onMarkAsShipped?.(artworkData);
                 }
-              }} 
+              }}
               className={`flex text-[10px] font-medium py-1.5 px-4 rounded-full border transition-all duration-150
                 ${shippedArtworks[id] ? "bg-black text-white" : "text-black border"}`}
             >
@@ -155,8 +149,8 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
               {shippedArtworks[id] ? "Marked as Shipped" : "Mark as Shipped"}
             </button>
 
-            <button 
-              onClick={() => onViewPayment?.(artworkData)} 
+            <button
+              onClick={() => onViewPayment?.(artworkData)}
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100"
             >
               <DollarSign className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
@@ -167,15 +161,17 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       case "in_progress":
         return (
           <div className="flex gap-2">
-            <button 
-            onClick={() => onContactBuyer(artworkData)} 
-            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border">
+            <button
+              onClick={() => onContactBuyer(artworkData)}
+              className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border"
+            >
               <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Contact Buyer
             </button>
-            <button 
-            onClick={() => onTrackProgress?.(artworkData)}
-            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200">
+            <button
+              onClick={() => onTrackProgress?.(artworkData)}
+              className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
+            >
               <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Track Progress
             </button>
@@ -185,15 +181,16 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
         return (
           <div className="flex gap-2">
             <button
-            onClick={() => onViewSummary?.(artworkData)} 
-            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
-              >
+              onClick={() => onViewSummary?.(artworkData)}
+              className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
+            >
               <CheckCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               View Summary
             </button>
-            <button 
-            onClick={() => onContactBuyer(artworkData)} 
-            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border">
+            <button
+              onClick={() => onContactBuyer(artworkData)}
+              className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border"
+            >
               <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Contact Buyer
             </button>
@@ -202,9 +199,10 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       case "cancelled":
         return (
           <div className="flex gap-2">
-            <button 
-            onClick={() => onViewDetails(artworkData)} 
-            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200">
+            <button
+              onClick={() => onViewDetails(artworkData)}
+              className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
+            >
               <XCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               View Details
             </button>
@@ -213,32 +211,36 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       case "refunded":
         return (
           <div className="flex gap-2">
-            <button 
-            onClick={() => onProcessRefund?.(artworkData)} 
-            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border">
+            <button
+              onClick={() => onProcessRefund?.(artworkData)}
+              className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border"
+            >
               <RotateCcw className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Refund Details
             </button>
             <button
-            onClick={() => onViewDetails(artworkData)}
-            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200">
+              onClick={() => onViewDetails(artworkData)}
+              className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
+            >
               <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               View Details
             </button>
           </div>
         );
-      case "reviews":
+      case "reviewed":
         return (
           <div className="flex gap-2">
             <button
-            onClick={() => onViewReview?.(artworkData)}
-            className="flex text-[10px] text-white font-medium py-1.5 px-4 rounded-full bg-black">
+              onClick={() => onViewReview?.(artworkData)}
+              className="flex text-[10px] text-white font-medium py-1.5 px-4 rounded-full bg-black"
+            >
               <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               View Review
             </button>
-            <button 
-            onClick={() => onContactBuyer(artworkData)} 
-            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border">
+            <button
+              onClick={() => onContactBuyer(artworkData)}
+              className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border"
+            >
               <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
               Thank Buyer
             </button>
@@ -248,9 +250,10 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
         return (
           <button
             onClick={() => onViewDetails(artworkData)}
-            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200">
-              <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              View Details
+            className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
+          >
+            <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
+            View Details
           </button>
         );
     }
@@ -264,11 +267,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       <div className="flex gap-4">
         {/* Artwork Image */}
         <div className="flex-shrink-0">
-          <img
-            src={artworkImage}
-            alt={title}
-            className="w-20 h-20 rounded-lg object-cover"
-          />
+          <img src={artworkImage} alt={title} className="w-20 h-20 rounded-lg object-cover" />
         </div>
 
         {/* Content */}
@@ -291,16 +290,18 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
                 <span className="truncate">{buyer}</span>
               </div>
               <div className="flex items-center gap-1">
-                <p>Price:   </p>
+                <p>Price: </p>
                 <DollarSign className="w-2.5 h-2.5" />
                 <span className="font-semibold">{price >= 1000 ? `${(price / 1000).toFixed(0)}k` : price}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Calendar className="w-2.5 h-2.5" />
-                <span>{format(new Date(saleDate), "MMM dd")}</span>
+                <span>
+                  {saleDate && !isNaN(new Date(saleDate).getTime()) ? format(new Date(saleDate), "MMM dd") : "N/A"}
+                </span>
               </div>
               <div className="flex items-center gap-1">
-                <p>Net Earnings:   </p>
+                <p>Net Earnings: </p>
                 <span className="text-green-600 font-semibold">
                   +₱{netEarnings >= 1000 ? `${(netEarnings / 1000).toFixed(0)}k` : Math.round(netEarnings)}
                 </span>
@@ -311,7 +312,6 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
             <div className="flex-shrink-0">{getActionButtons()}</div>
           </div>
         </div>
-
       </div>
     </Card>
   );
