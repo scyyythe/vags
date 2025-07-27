@@ -35,7 +35,7 @@ class ReviewSerializer(serializers.Serializer):
         if Review.objects(purchase=purchase).first():
             raise serializers.ValidationError("You have already reviewed this purchase.")
 
-        uploaded_urls = validated_data.pop("photos", [])  # ✅ use directly
+        uploaded_urls = validated_data.pop("photos", [])  
 
         review = Review.objects.create(
             reviewer=user,
@@ -45,4 +45,8 @@ class ReviewSerializer(serializers.Serializer):
             comment=validated_data.get("comment", ""),
             photos=uploaded_urls
         )
+        
+        purchase.status = "Reviewed"
+        purchase.save()
+
         return review

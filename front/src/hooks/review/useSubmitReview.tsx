@@ -1,5 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
+import { toast } from "sonner";
 
 type ReviewPayload = {
   artwork_id: string;
@@ -25,11 +26,12 @@ export const uploadToCloudinary = async (file: File): Promise<string> => {
   }
 
   const data = await res.json();
-
   return data.secure_url;
 };
 
 export const useSubmitReview = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (payload: ReviewPayload) => {
       const { photos = [], ...rest } = payload;
@@ -42,8 +44,6 @@ export const useSubmitReview = () => {
         } else if (photo instanceof File) {
           const url = await uploadToCloudinary(photo);
           uploadedUrls.push(url);
-        } else {
-          console.warn("⚠️ Skipped invalid photo type:", photo);
         }
       }
 
@@ -53,8 +53,15 @@ export const useSubmitReview = () => {
       };
 
       const response = await apiClient.post("/submit-review/", finalPayload);
-
       return response.data;
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-purchases"] });
+    },
+
+    onError: () => {
+      toast.error("Failed to submit review.");
     },
   });
 };
