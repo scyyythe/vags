@@ -765,26 +765,32 @@ const SellTab = () => {
     cancelled: "Cancelled",
     completed: "Completed",
     refunded: "Refunded",
-    reviewed: "Reviewed",
+    reviewed: "Reviewed", // included just for consistency
   };
-  // Debug logs dont delete
-  // console.log("🧾 myPurchases:", myPurchases);
-  // console.log("📦 subTab:", subTab);
-  // console.log("🧭 Expected Status:", purchaseStatusMap[subTab]);
-  // console.log(
-  //   "📜 All order statuses:",
-  //   myPurchases?.map((o) => o.status)
-  // );
-  const expectedStatus = purchaseStatusMap[subTab?.toLowerCase()]?.toLowerCase().trim();
+
+  const normalizedTab = subTab?.toLowerCase().trim();
+  const expectedStatus = purchaseStatusMap[normalizedTab]?.toLowerCase();
 
   const filteredOrders = Array.isArray(myPurchases)
-    ? myPurchases.filter((order) => {
-        const normalized = order.status?.toLowerCase().trim();
-        if (expectedStatus === "completed") {
-          return normalized === "completed" || normalized === "reviewed";
-        }
-        return normalized === expectedStatus;
-      })
+    ? myPurchases
+        .filter((order) => {
+          const status = order.status?.toLowerCase().trim();
+
+          // ✅ Show both "completed" and "reviewed" in Completed tab
+          if (normalizedTab === "completed") {
+            return status === "completed" || status === "reviewed";
+          }
+
+          // ✅ For all other tabs, match status exactly
+          return status === expectedStatus;
+        })
+        .map((order) => {
+          // ✅ Normalize "reviewed" to "completed" only for UI in Completed tab
+          if (normalizedTab === "completed" && order.status?.toLowerCase() === "reviewed") {
+            return { ...order, status: "completed" };
+          }
+          return order;
+        })
     : [];
 
   const soldArtworkStatusMap: Record<string, string> = {
@@ -792,15 +798,44 @@ const SellTab = () => {
     payment_received: "Paid",
     in_progress: "Shipped",
     completed: "Completed",
-    reviewed: "Reviewed",
+    reviews: "reviewed", // ✅ fix: match backend lowercase
     cancelled: "Cancelled",
     refunded: "Refunded",
   };
 
-  const mappedStatus = soldArtworkStatusMap[subTab];
-  const { data: soldArtworks, isLoading: isLoadingSoldArtworks } = useMySoldArtworks(mappedStatus);
+  const mappedStatus = soldArtworkStatusMap[normalizedTab];
 
-  const filteredSoldArtworks = Array.isArray(soldArtworks) ? formatSoldArtworks(soldArtworks) : [];
+  // ✅ Only pass mapped status to backend if it's not one where we want to fetch all and filter client-side
+  const shouldPassStatusToBackend = !["completed", "reviews", "reviewed"].includes(normalizedTab);
+
+  const { data: soldArtworks } = useMySoldArtworks(shouldPassStatusToBackend ? mappedStatus : undefined);
+
+  const filteredSoldArtworks = Array.isArray(soldArtworks)
+    ? formatSoldArtworks(soldArtworks)
+        .filter((sale) => {
+          const status = sale.status?.toLowerCase();
+
+          if (normalizedTab === "completed") {
+            // ✅ Show both reviewed and completed
+            return status === "completed" || status === "reviewed";
+          }
+
+          if (normalizedTab === "reviews" || normalizedTab === "reviewed") {
+            // ✅ Show only reviewed
+            return status === "reviewed";
+          }
+
+          // ✅ Exact match for other tabs
+          return status === mappedStatus?.toLowerCase();
+        })
+        .map((sale) => {
+          // ✅ Treat reviewed as completed for UI button logic in Completed tab
+          if (normalizedTab === "completed" && sale.status?.toLowerCase() === "reviewed") {
+            return { ...sale, status: "completed" };
+          }
+          return sale;
+        })
+    : [];
 
   const filteredArtworks = myArtCards
     .filter((art) => {
