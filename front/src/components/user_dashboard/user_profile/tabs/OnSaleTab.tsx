@@ -23,6 +23,7 @@ import { q } from "node_modules/framer-motion/dist/types.d-B50aGbjN";
 import { useSubmitReview } from "@/hooks/review/useSubmitReview";
 import { formatOrderDetails } from "@/utils/purchase/formatOrder";
 import { uploadToCloudinary } from "@/hooks/review/useSubmitReview";
+import { useMySoldArtworks } from "@/hooks/purchase/useMySoldArtworks";
 const SellTab = () => {
   const { id: userId } = useParams();
   const loggedInUserId = getLoggedInUserId();
@@ -210,6 +211,7 @@ const SellTab = () => {
     "refunded",
     "reviews",
   ];
+
   const myPurchaseTabs = [
     "pending_payment",
     "payment_processing",
@@ -764,6 +766,16 @@ const SellTab = () => {
     refunded: "Refunded",
     reviewed: "Reviewed",
   };
+  const soldStatusMap: Record<string, string> = {
+    awaiting_payment: "Pending",
+    payment_received: "Paid",
+    in_progress: "Shipped",
+    completed: "Completed",
+    cancelled: "Cancelled",
+    refunded: "Refunded",
+    reviews: "Reviewed",
+  };
+
   // Debug logs dont delete
   // console.log("🧾 myPurchases:", myPurchases);
   // console.log("📦 subTab:", subTab);
@@ -772,17 +784,36 @@ const SellTab = () => {
   //   "📜 All order statuses:",
   //   myPurchases?.map((o) => o.status)
   // );
-  const expectedStatus = purchaseStatusMap[subTab?.toLowerCase()]?.toLowerCase().trim();
 
+  let expectedStatus: string | undefined;
+
+  if (mainTab === "myPurchases") {
+    expectedStatus = purchaseStatusMap[subTab?.toLowerCase()]?.trim();
+  } else if (mainTab === "soldArtworks") {
+    expectedStatus = soldStatusMap[subTab?.toLowerCase()]?.trim();
+  } else if (mainTab === "myListings") {
+    expectedStatus = statusMap[subTab?.toLowerCase()]?.trim();
+  }
+
+  const { data: soldArtworks, isLoading: isSoldArtworksLoading } = useMySoldArtworks(expectedStatus);
   const filteredOrders = Array.isArray(myPurchases)
-    ? myPurchases.filter((order) => order.status?.toLowerCase().trim() === expectedStatus)
+    ? myPurchases.filter((order) => order.status === expectedStatus)
+    : [];
+  console.log("🧾 soldArtworks:", soldArtworks);
+  console.log("📦 subTab:", subTab);
+  console.log("🧭 Expected Sold Status:", expectedStatus);
+  console.log(
+    "📜 Sold artwork statuses:",
+    soldArtworks?.map((a) => a.status)
+  );
+
+  const filteredSoldArtworks = Array.isArray(soldArtworks)
+    ? soldArtworks.filter((artwork) => artwork.status === expectedStatus)
     : [];
 
-  const filteredSoldArtworks = mockSoldArtworks.filter((artwork) => artwork.status === subTab);
   const filteredArtworks = myArtCards
     .filter((art) => {
       const status = art.art_status?.toLowerCase?.();
-      const expectedStatus = statusMap[subTab]?.toLowerCase();
       return (
         mainTab === "myListings" &&
         activeSubGroup === "listings" &&
@@ -798,8 +829,8 @@ const SellTab = () => {
       originalPrice: art.discounted_price ? art.price : 0,
       rating: art.total_ratings,
       category: art.category,
-      artworkImage: art.image_url[0] || "", // Use first image
-      status: "active", // Set as "active" for badge + BuyNow
+      artworkImage: art.image_url[0] || "",
+      status: "active",
     }));
 
   // Seller actions for sold artworks
