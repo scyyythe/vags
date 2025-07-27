@@ -15,8 +15,6 @@ export const uploadToCloudinary = async (file: File): Promise<string> => {
   formData.append("upload_preset", "user_artwork_uploads");
   formData.append("folder", "review_photos");
 
-  console.log("📤 Uploading to Cloudinary:", file.name);
-
   const res = await fetch("https://api.cloudinary.com/v1_1/du5bwye4h/image/upload", {
     method: "POST",
     body: formData,
@@ -27,7 +25,7 @@ export const uploadToCloudinary = async (file: File): Promise<string> => {
   }
 
   const data = await res.json();
-  console.log("✅ Cloudinary uploaded:", data.secure_url);
+
   return data.secure_url;
 };
 
@@ -40,10 +38,8 @@ export const useSubmitReview = () => {
 
       for (const photo of photos) {
         if (typeof photo === "string" && photo.startsWith("http")) {
-          console.log("🖼️ Using existing photo URL:", photo);
           uploadedUrls.push(photo);
         } else if (photo instanceof File) {
-          console.log("📁 Uploading new photo file:", photo.name);
           const url = await uploadToCloudinary(photo);
           uploadedUrls.push(url);
         } else {
@@ -56,10 +52,7 @@ export const useSubmitReview = () => {
         photos: uploadedUrls,
       };
 
-      console.log("📦 Submitting review payload:", finalPayload);
-
       const response = await apiClient.post("/submit-review/", finalPayload);
-      console.log("✅ Review submitted successfully:", response.data);
 
       return response.data;
     },
