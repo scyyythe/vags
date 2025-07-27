@@ -25,6 +25,10 @@ import { formatOrderDetails } from "@/utils/purchase/formatOrder";
 import { uploadToCloudinary } from "@/hooks/review/useSubmitReview";
 import { useMySoldArtworks } from "@/hooks/purchase/useMySoldArtworks";
 import { formatSoldArtworks } from "@/utils/purchase/formatSoldArtwork";
+import { useReviewByPurchase } from "@/hooks/review/useReviewByPurchase";
+import { ReviewResponse } from "@/hooks/review/useReviewByPurchase";
+import { useEditReview } from "@/hooks/review/useEditReview";
+import { useDeleteReview } from "@/hooks/review/useDeleteReview";
 const SellTab = () => {
   const { id: userId } = useParams();
   const loggedInUserId = getLoggedInUserId();
@@ -45,14 +49,14 @@ const SellTab = () => {
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
-  const [showReviewDetailsModal, setShowReviewDetailsModal] = useState(false);
+
   const [showEditReviewModal, setShowEditReviewModal] = useState(false);
   const [showPaymentDetailsModal, setShowPaymentDetailsModal] = useState(false);
   const [showRefundDetailsModal, setShowRefundDetailsModal] = useState(false);
   const [reviewingArtwork, setReviewingArtwork] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [selectedRefund, setSelectedRefund] = useState(null);
-  const [selectedReview, setSelectedReview] = useState(null);
+
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedArtwork, setSelectedArtwork] = useState<{
     artworkId: string;
@@ -62,7 +66,12 @@ const SellTab = () => {
   } | null>(null);
 
   const [showSalesSummary, setShowSalesSummary] = useState(false);
+  const [selectedReview, setSelectedReview] = useState<ReviewResponse | null>(null);
+  const [showReviewDetailsModal, setShowReviewDetailsModal] = useState(false);
 
+  const { mutate: fetchReviewByPurchase, isPending } = useReviewByPurchase();
+  const { mutateAsync: editReview, isPending: isUpdating } = useEditReview();
+  const { mutateAsync: deleteReview } = useDeleteReview();
   const { mutate: submitReview } = useSubmitReview();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -154,16 +163,24 @@ const SellTab = () => {
       closeButton: true,
     });
 
-  const handleViewReview = (order) => {
-    setSelectedReview({
-      ...order.review,
-      artwork: {
-        artworkImage: order.artworkImage,
-        title: order.title,
-        artist: order.artist,
+  const handleViewReview = (order: any) => {
+    fetchReviewByPurchase(order.id, {
+      onSuccess: (data) => {
+        setSelectedReview({
+          ...data,
+          artwork: {
+            artworkImage: order.artwork?.image_url?.[0] || "",
+            title: order.artwork?.title || "Untitled",
+            artist: order.artwork?.artist_name || "Unknown",
+          },
+        });
+        setShowReviewDetailsModal(true);
+      },
+      onError: (err) => {
+        toast.error("Failed to load review.");
+        console.error(err);
       },
     });
-    setShowReviewDetailsModal(true);
   };
 
   const handleEditReview = () => {
@@ -171,21 +188,24 @@ const SellTab = () => {
     setShowEditReviewModal(true);
   };
 
-  const handleDeleteReview = () => {
-    toast.warning("Review deleted successfully!", {
-      closeButton: true,
-    });
-    setShowReviewDetailsModal(false);
-    setSelectedReview(null);
-  };
+  const handleDeleteReview = async () => {
+    if (!selectedReview?.id) {
+      toast.error("No review selected to delete.");
+      return;
+    }
 
-  const handleUpdateReview = (reviewData) => {
-    toast.warning("Review updated successfully!", {
-      closeButton: true,
-    });
-    console.log("Updated review:", reviewData);
-    setShowEditReviewModal(false);
-    setSelectedReview(null);
+    try {
+      await deleteReview(selectedReview.id);
+      toast.warning("Review deleted successfully!", {
+        closeButton: true,
+      });
+
+      setShowReviewDetailsModal(false);
+      setSelectedReview(null);
+    } catch (err) {
+      console.error("❌ Failed to delete review:", err);
+      toast.error("Failed to delete review.");
+    }
   };
 
   const onCardClick = useCallback(
@@ -195,6 +215,31 @@ const SellTab = () => {
     },
     [navigate]
   );
+  const handleUpdateReview = async (reviewData: { rating: number; comment: string; photos: string[] }) => {
+    if (!selectedReview?.id) {
+      toast.error("No review selected to update.");
+      return;
+    }
+
+    try {
+      await editReview({
+        review_id: selectedReview.id,
+        rating: reviewData.rating,
+        comment: reviewData.comment,
+        photos: reviewData.photos,
+      });
+
+      toast.success("Review updated successfully!", {
+        closeButton: true,
+      });
+
+      setShowEditReviewModal(false);
+      setSelectedReview(null);
+    } catch (err) {
+      console.error("Review update failed", err);
+      toast.error("Failed to update review.");
+    }
+  };
 
   const onLikeToggle = useCallback(() => {}, []);
   const statusMap: Record<string, string> = {
@@ -776,16 +821,13 @@ const SellTab = () => {
         .filter((order) => {
           const status = order.status?.toLowerCase().trim();
 
-          // ✅ Show both "completed" and "reviewed" in Completed tab
           if (normalizedTab === "completed") {
             return status === "completed" || status === "reviewed";
           }
 
-          // ✅ For all other tabs, match status exactly
           return status === expectedStatus;
         })
         .map((order) => {
-          // ✅ Normalize "reviewed" to "completed" only for UI in Completed tab
           if (normalizedTab === "completed" && order.status?.toLowerCase() === "reviewed") {
             return { ...order, status: "completed" };
           }
@@ -798,14 +840,13 @@ const SellTab = () => {
     payment_received: "Paid",
     in_progress: "Shipped",
     completed: "Completed",
-    reviews: "reviewed", // ✅ fix: match backend lowercase
+    reviews: "reviewed",
     cancelled: "Cancelled",
     refunded: "Refunded",
   };
 
   const mappedStatus = soldArtworkStatusMap[normalizedTab];
 
-  // ✅ Only pass mapped status to backend if it's not one where we want to fetch all and filter client-side
   const shouldPassStatusToBackend = !["completed", "reviews", "reviewed"].includes(normalizedTab);
 
   const { data: soldArtworks } = useMySoldArtworks(shouldPassStatusToBackend ? mappedStatus : undefined);
@@ -816,20 +857,16 @@ const SellTab = () => {
           const status = sale.status?.toLowerCase();
 
           if (normalizedTab === "completed") {
-            // ✅ Show both reviewed and completed
             return status === "completed" || status === "reviewed";
           }
 
           if (normalizedTab === "reviews" || normalizedTab === "reviewed") {
-            // ✅ Show only reviewed
             return status === "reviewed";
           }
 
-          // ✅ Exact match for other tabs
           return status === mappedStatus?.toLowerCase();
         })
         .map((sale) => {
-          // ✅ Treat reviewed as completed for UI button logic in Completed tab
           if (normalizedTab === "completed" && sale.status?.toLowerCase() === "reviewed") {
             return { ...sale, status: "completed" };
           }
