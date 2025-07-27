@@ -109,8 +109,6 @@ const SellTab = () => {
         photos: uploadedPhotoUrls,
       };
 
-      console.log("📦 Final review payload:", payload);
-
       if (!payload.purchase_id) {
         toast.error("Missing purchase ID for review.");
         return;
