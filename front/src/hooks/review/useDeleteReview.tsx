@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
-
 export const useDeleteReview = () => {
   const queryClient = useQueryClient();
 
@@ -10,6 +9,7 @@ export const useDeleteReview = () => {
       await apiClient.delete(`/review/${reviewId}/delete/`);
     },
     onSuccess: () => {
+      toast.warning("Review deleted successfully!", { closeButton: true });
       queryClient.invalidateQueries({ queryKey: ["my-purchases"] });
     },
     onError: () => {

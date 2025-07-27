@@ -50,3 +50,12 @@ class ReviewSerializer(serializers.Serializer):
         purchase.save()
 
         return review
+    
+    
+class ReviewUpdateSerializer(serializers.Serializer):
+    rating = serializers.IntegerField(min_value=1, max_value=5)
+    comment = serializers.CharField(allow_blank=True)
+    photos = serializers.ListField(
+        child=serializers.URLField(), 
+        required=False
+    )
