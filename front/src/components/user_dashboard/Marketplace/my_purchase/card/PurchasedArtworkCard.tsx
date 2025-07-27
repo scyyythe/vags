@@ -63,6 +63,8 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
   const getStatusActions = () => {
     const daysLeft = completedDate ? 30 - differenceInDays(new Date(), new Date(completedDate)) : 0;
     const reviewAllowed = canReview();
+    const normalizedStatus = status?.toLowerCase().trim();
+    const hasBeenReviewed = normalizedStatus === "reviewed";
 
     switch (normalizedStatus) {
       case "pending_payment":
@@ -142,7 +144,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
       case "completed":
         return (
           <>
-            {reviewAllowed && (
+            {!hasBeenReviewed && reviewAllowed && (
               <button
                 className="flex text-[10px] text-white py-1.5 px-4 bg-red-700 rounded-full"
                 onClick={wrap(onReview)}
