@@ -25,7 +25,7 @@ class PurchasedArtwork(Document):
     is_paid = BooleanField(default=False)
     quantity = IntField(default=1)
     total_price = FloatField(required=True)
-    status = StringField(choices=["Pending", "Paid", "Shipped", "Reviewed"], default="Pending")
+    status = StringField(choices=["Pending", "Paid", "Shipped", "Reviewed","Completed"], default="Completed")
     created_at = DateTimeField(default=datetime.utcnow)
     updated_at = DateTimeField(default=datetime.utcnow)
 
