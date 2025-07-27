@@ -20,7 +20,9 @@ import RefundDetailsModal from "@/components/user_dashboard/Marketplace/my_listi
 import SoldArtworkCard from "@/components/user_dashboard/Marketplace/sold_artworks/card/SoldArtworksCard";
 import { useMyPurchases } from "@/hooks/purchase/useMyPurchases";
 import { q } from "node_modules/framer-motion/dist/types.d-B50aGbjN";
+import { useSubmitReview } from "@/hooks/review/useSubmitReview";
 import { formatOrderDetails } from "@/utils/purchase/formatOrder";
+import { uploadToCloudinary } from "@/hooks/review/useSubmitReview";
 const SellTab = () => {
   const { id: userId } = useParams();
   const loggedInUserId = getLoggedInUserId();
@@ -49,28 +51,80 @@ const SellTab = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [selectedRefund, setSelectedRefund] = useState(null);
   const [selectedReview, setSelectedReview] = useState(null);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [selectedArtwork, setSelectedArtwork] = useState<{
+    artworkId: string;
+    artworkImage: string;
+    title: string;
+    artist: string;
+  } | null>(null);
 
   const [showSalesSummary, setShowSalesSummary] = useState(false);
+
+  const { mutate: submitReview } = useSubmitReview();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleViewDetails = (artwork: any) => {
     setSelectedOrder(artwork);
     setShowOrderDetails(true);
   };
 
-  const handleReview = (order) => {
-    setReviewingArtwork({
-      artworkImage: order.artworkImage,
-      title: order.title,
-      artist: order.artist,
-    });
-    setShowReviewModal(true);
+  const handleReviewClick = (
+    artwork: {
+      artworkId: string;
+      artworkImage: string;
+      title: string;
+      artist: string;
+    },
+    order: { id: string }
+  ) => {
+    setSelectedArtwork(artwork);
+    setSelectedOrder(order);
+    setReviewModalOpen(true);
   };
+  const handleSubmitReview = async (reviewData: {
+    artworkId: string;
+    rating: number;
+    comment: string;
+    photos: string[];
+  }) => {
+    try {
+      setIsSubmitting(true);
 
-  const handleSubmitReview = (reviewData) => {
-    toast.success("Review submitted successfully!", {
-      closeButton: true,
-    });
-    console.log("Review submitted:", reviewData);
+      const uploadedPhotoUrls: string[] = [];
+
+      for (const localUrl of reviewData.photos) {
+        const file = await fetch(localUrl)
+          .then((r) => r.blob())
+          .then((b) => new File([b], "review.jpg"));
+        const uploadedUrl = await uploadToCloudinary(file);
+        uploadedPhotoUrls.push(uploadedUrl);
+      }
+
+      const payload = {
+        artwork_id: reviewData.artworkId,
+        purchase_id: selectedOrder?.id,
+        rating: reviewData.rating,
+        comment: reviewData.comment,
+        photos: uploadedPhotoUrls,
+      };
+
+      console.log("📦 Final review payload:", payload);
+
+      if (!payload.purchase_id) {
+        toast.error("Missing purchase ID for review.");
+        return;
+      }
+
+      await submitReview(payload);
+      toast.success("Review submitted successfully!", { closeButton: true });
+      setReviewModalOpen(false);
+    } catch (err) {
+      console.error("❌ Review submission failed", err);
+      toast.error("Failed to submit review.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleContact = () =>
@@ -988,7 +1042,17 @@ const SellTab = () => {
                     : "Unknown"
                 }
                 onViewDetails={() => handleViewDetails(order)}
-                onReview={() => handleReview(order)}
+                onReview={() =>
+                  handleReviewClick(
+                    {
+                      artworkId: order.artwork.id,
+                      artworkImage: order.artwork.image_url?.[0],
+                      title: order.artwork?.title || "Untitled",
+                      artist: order.artwork?.artist_name || "Unknown",
+                    },
+                    order
+                  )
+                }
                 onViewReview={() => handleViewReview(order)}
                 onContact={handleContact}
                 onTrackOrder={handleTrackOrder}
@@ -1090,12 +1154,14 @@ const SellTab = () => {
       )}
 
       {/* Review Modal */}
-      {reviewingArtwork && (
+
+      {selectedArtwork && (
         <ReviewModal
-          isOpen={showReviewModal}
-          onClose={() => setShowReviewModal(false)}
+          isOpen={reviewModalOpen}
+          onClose={() => setReviewModalOpen(false)}
           onSubmit={handleSubmitReview}
-          artwork={reviewingArtwork}
+          artwork={selectedArtwork}
+          isSubmitting={isSubmitting}
         />
       )}
 
