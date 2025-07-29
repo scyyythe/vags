@@ -148,7 +148,7 @@ const SalesSummary = () => {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {relistableArtworks.map((artwork) => (
-            <SalesCard
+            <SalesCard 
                 key={artwork.id}
                 id={artwork.id}
                 title={artwork.title}
