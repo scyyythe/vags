@@ -29,7 +29,7 @@ const Explore = () => {
   const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all", "public");
   const { data: popularArtworksRaw } = useFetchPopularArtworks();
 
-const popularArtworks = popularArtworksRaw?.slice(0, 5) ?? [];
+  const popularArtworks = popularArtworksRaw?.slice(0, 5) ?? [];
 
   const artworkIds = artworks?.map((a) => a.id) || [];
   const { data: bulkStatus } = useBulkArtworkStatus(artworkIds);

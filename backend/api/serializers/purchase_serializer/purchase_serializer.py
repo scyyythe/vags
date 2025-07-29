@@ -54,7 +54,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
         )
 
 
-        # Send notification to the artist
+   
         Notification.objects.create(
             user=artwork.artist,
             actor=mongo_user,
@@ -67,7 +67,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             link=f"/artwork/{artwork.id}/"
         )
 
-        # Optional: Send a self-confirmation to buyer
+ 
         Notification.objects.create(
             user=mongo_user,
             actor=mongo_user,

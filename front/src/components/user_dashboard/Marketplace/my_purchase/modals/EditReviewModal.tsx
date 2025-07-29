@@ -8,11 +8,7 @@ import { Label } from "@/components/ui/label";
 interface EditReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (review: {
-    rating: number;
-    comment: string;
-    photos: string[];
-  }) => void;
+  onSubmit: (review: { rating: number; comment: string; photos: string[] }) => void;
   artwork: {
     artworkImage: string;
     title: string;
@@ -21,21 +17,16 @@ interface EditReviewModalProps {
   existingReview: {
     rating: number;
     comment: string;
-    photos: string[];
+
+    photos?: string[];
   };
 }
 
-const EditReviewModal: React.FC<EditReviewModalProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  artwork,
-  existingReview,
-}) => {
+const EditReviewModal: React.FC<EditReviewModalProps> = ({ isOpen, onClose, onSubmit, artwork, existingReview }) => {
   const [rating, setRating] = useState(existingReview.rating);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState(existingReview.comment);
-  const [photos, setPhotos] = useState<string[]>(existingReview.photos);
+  const [photos, setPhotos] = useState<string[]>(existingReview.photos ?? []);
 
   const handleSubmit = () => {
     if (rating === 0) return;
@@ -47,13 +38,13 @@ const EditReviewModal: React.FC<EditReviewModalProps> = ({
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
-      const newPhotos = Array.from(files).map(file => URL.createObjectURL(file));
-      setPhotos(prev => [...prev, ...newPhotos].slice(0, 5));
+      const newPhotos = Array.from(files).map((file) => URL.createObjectURL(file));
+      setPhotos((prev) => [...prev, ...newPhotos].slice(0, 5));
     }
   };
 
   const removePhoto = (index: number) => {
-    setPhotos(prev => prev.filter((_, i) => i !== index));
+    setPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleCancel = () => {
@@ -65,8 +56,10 @@ const EditReviewModal: React.FC<EditReviewModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleCancel}>
-      <DialogContent className="max-w-lg text-xs edit-review-scroll-hidden max-h-[90vh]"
-      onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent
+        className="max-w-lg text-xs edit-review-scroll-hidden max-h-[90vh]"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle className="text-sm">Edit Your Review</DialogTitle>
         </DialogHeader>
@@ -74,11 +67,7 @@ const EditReviewModal: React.FC<EditReviewModalProps> = ({
         <div className="space-y-6">
           {/* Artwork Info */}
           <div className="flex gap-4 p-4 bg-muted rounded-lg">
-            <img
-              src={artwork.artworkImage}
-              alt={artwork.title}
-              className="w-16 h-16 rounded-md object-cover"
-            />
+            <img src={artwork.artworkImage} alt={artwork.title} className="w-16 h-16 rounded-md object-cover" />
             <div>
               <h3 className="font-semibold text-[11px]">{artwork.title}</h3>
               <p className="text-[10px] text-muted-foreground">by {artwork.artist}</p>
@@ -100,9 +89,7 @@ const EditReviewModal: React.FC<EditReviewModalProps> = ({
                 >
                   <Star
                     className={`w-5 h-5 ${
-                      star <= (hoveredRating || rating)
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "text-gray-300"
+                      star <= (hoveredRating || rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
                     }`}
                   />
                 </button>
@@ -127,11 +114,7 @@ const EditReviewModal: React.FC<EditReviewModalProps> = ({
             <div className="flex flex-wrap gap-2">
               {photos.map((photo, index) => (
                 <div key={index} className="relative">
-                  <img
-                    src={photo}
-                    alt={`Review photo ${index + 1}`}
-                    className="w-16 h-16 rounded-md object-cover"
-                  />
+                  <img src={photo} alt={`Review photo ${index + 1}`} className="w-16 h-16 rounded-md object-cover" />
                   <button
                     onClick={() => removePhoto(index)}
                     className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-[10px]"
@@ -144,28 +127,16 @@ const EditReviewModal: React.FC<EditReviewModalProps> = ({
               {photos.length < 5 && (
                 <label className="w-16 h-16 border-2 border-dashed border-border rounded-md flex items-center justify-center cursor-pointer hover:border-primary transition-colors">
                   <Camera className="w-4 h-4 text-muted-foreground" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handlePhotoUpload}
-                    className="hidden"
-                  />
+                  <input type="file" accept="image/*" multiple onChange={handlePhotoUpload} className="hidden" />
                 </label>
               )}
             </div>
-            <p className="text-[10px] text-muted-foreground">
-              Add up to 5 photos to help other buyers
-            </p>
+            <p className="text-[10px] text-muted-foreground">Add up to 5 photos to help other buyers</p>
           </div>
 
           {/* Actions */}
           <div className="flex">
-            <Button
-              onClick={handleSubmit}
-              disabled={rating === 0}
-              className="flex-1 text-[11px]"
-            >
+            <Button onClick={handleSubmit} disabled={rating === 0} className="flex-1 text-[11px]">
               Update Review
             </Button>
           </div>
