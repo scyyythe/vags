@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import useDefaultAddress from "@/hooks/users/address/useDefaultAddress";
 import { usePurchase } from "@/context/PurchaseContext";
+import usePurchaseArtwork from "@/hooks/purchase/usePurchaseArtwork";
+import useUpdateArtwork from "@/hooks/mutate/artwork/useArtworkMutate";
+import { toast } from "sonner";
 interface ReviewPurchaseProps {
   onBack: () => void;
   onSubmit: () => void;
@@ -16,6 +19,7 @@ interface ReviewPurchaseProps {
     details: string;
   };
   artwork?: {
+    id: string;
     artworkImage: string;
     title: string;
     artist: string;
@@ -38,6 +42,8 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   const navigate = useNavigate();
   const { data: defaultAddress, isLoading: isAddressLoading } = useDefaultAddress();
   const { artwork: purchasedArtwork } = usePurchase();
+  const purchaseMutation = usePurchaseArtwork();
+  const updateArtworkMutation = useUpdateArtwork(1, true, "All", "Public");
 
   const handleAddressChange = () => {
     navigate("/shipping");
@@ -47,8 +53,56 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
     navigate("/payment-method");
   };
 
-  const handleSubmit = () => {
-    onSubmit();
+  const handleSubmit = async () => {
+    const defaultArtwork = artwork || purchasedArtwork;
+
+    if (!defaultAddress || !defaultArtwork?.id) {
+      console.error("Missing required information.", {
+        defaultAddress,
+        defaultArtwork,
+      });
+      return;
+    }
+
+    const payload = {
+      artwork_id: defaultArtwork.id,
+      payment_method: selectedPaymentMethod?.type || "PayPal",
+      is_paid: true,
+      quantity: 1,
+      shipping_address: {
+        name: defaultAddress.name,
+        address: defaultAddress.address,
+        city: defaultAddress.city,
+        state: defaultAddress.state || "N/A",
+        country: "Philippines",
+        postal_code: defaultAddress.postal_code || "0000",
+        phone: defaultAddress.phone || "0000-000-0000",
+      },
+    };
+
+    try {
+      await purchaseMutation.mutateAsync(payload);
+
+      const formData = new FormData();
+      formData.append("art_status", "Sold");
+
+      await updateArtworkMutation.mutateAsync({
+        id: defaultArtwork.id,
+        formData,
+      });
+
+      toast.success("Your purchase has been successfully completed!");
+      navigate("/marketplace");
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.detail ||
+        error?.message ||
+        "Failed to complete purchase.";
+
+      toast.error(errorMessage);
+      console.error("Purchase Error:", error);
+    }
   };
 
   // // Default data if not provided
@@ -66,6 +120,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
 
   const defaultArtwork = artwork ||
     purchasedArtwork || {
+      id: "placeholder-id",
       artworkImage: "/placeholder.svg?height=200&width=200",
       title: "Butterfly",
       artist: "Angie Canete",
