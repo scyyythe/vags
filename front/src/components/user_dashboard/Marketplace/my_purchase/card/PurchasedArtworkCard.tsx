@@ -1,5 +1,5 @@
 import React from "react";
-import { Calendar, Package, Star, MessageSquare, RotateCcw, Clock } from "lucide-react";
+import { Calendar, Package, Star, MessageSquare, RotateCcw, CheckCircle } from "lucide-react";
 import { differenceInDays } from "date-fns";
 
 interface PurchasedArtworkCardProps {
@@ -20,6 +20,7 @@ interface PurchasedArtworkCardProps {
   onRequestRefund?: () => void;
   onCancelOrder?: () => void;
   onReorder?: () => void;
+  onMarkCompleted?: () => void;
 }
 
 const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
@@ -40,6 +41,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
   onRequestRefund,
   onCancelOrder,
   onReorder,
+  onMarkCompleted,
 }) => {
   const canReview = () => {
     if (!completedDate || typeof completedDate !== "string") return false;
@@ -125,6 +127,26 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
             </button>
             <button className="text-[10px] py-1.5 px-4 bg-gray-200 rounded-full" onClick={wrap(onContact)}>
               Support
+            </button>
+          </>
+        );
+
+      case "to_receive":
+        return (
+          <>
+            <button
+              className="flex text-[10px] py-1.5 px-4 border border-gray-300 rounded-full"
+              onClick={wrap(onContact)}
+            >
+              <MessageSquare className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
+              Contact Seller
+            </button>
+            <button
+              className="flex text-[10px] text-white py-1.5 px-4 bg-green-600 rounded-full"
+              onClick={wrap(onMarkCompleted)}
+            >
+              <CheckCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
+              Mark as Completed
             </button>
           </>
         );
