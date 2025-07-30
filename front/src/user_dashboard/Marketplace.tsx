@@ -56,12 +56,19 @@ const Marketplace = () => {
     selectedCategoryFilter === "Following"
       ? (followedArtworksData?.artworks ?? []).filter((art) => art.art_status === "onSale")
       : artCards
-          .filter((artwork) => {
-            if (selectedCategoryFilter === "Trending" && !(artwork.total_ratings >= 4)) return false;
-            if (selectedArtCategory !== "All" && artwork.category !== selectedArtCategory) return false;
-            if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
-            return true;
-          })
+         .filter((artwork) => {
+        const isSold = artwork.art_status === "Sold";
+        const isOpenEdition = artwork.edition === "Open Edition";
+        const shouldInclude = !isSold || isOpenEdition;
+
+        if (!shouldInclude) return false;
+        if (selectedCategoryFilter === "Trending" && !(artwork.total_ratings >= 4)) return false;
+        if (selectedArtCategory !== "All" && artwork.category !== selectedArtCategory) return false;
+        if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
+
+        return true;
+      })
+
           .sort((a, b) => {
             if (selectedSort === "Price: Low to High") {
               return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
