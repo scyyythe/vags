@@ -147,10 +147,10 @@ const SellTab = () => {
       closeButton: true,
     });
 
-  const handleTrackOrder = () =>
-    toast.info("Opening payment tracking...", {
-      closeButton: true,
-    });
+  const handleTrackOrder = (order) => {
+    setSelectedOrderForTracking(order);
+    setShowTrackPaymentModal(true);
+  };
 
   const handleRequestRefund = () =>
     toast.info("Refund request initiated...", {
@@ -692,10 +692,10 @@ const filteredOrders = Array.isArray(myPurchases)
                 }
                 onViewReview={() => handleViewReview(order)}
                 onContact={handleContact}
-                onTrackOrder={handleTrackOrder}
+                onTrackOrder={() => handleTrackOrder(order)}
                 onRequestRefund={handleRequestRefund}
                 onCancelOrder={handleCancelOrder}
-                  onMarkCompleted={() => markAsCompleted(order.id)}
+                onMarkCompleted={() => markAsCompleted(order.id)}
               />
             ))
           )
