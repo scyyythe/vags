@@ -28,11 +28,12 @@ class MySoldArtworksView(APIView):
       
         result = []
         for sale in queryset:
+            artwork = sale.artwork
             result.append({
                 "id": str(sale.id),
-                "artwork_id": str(sale.artwork.id),
-                "artwork_title": sale.artwork.title,
-                "artwork_image": sale.artwork.image_url[0] if sale.artwork.image_url else "",
+                "artwork_id": str(artwork.id),
+                "artwork_title": artwork.title,
+                "artwork_image": artwork.image_url[0] if artwork.image_url else "",
                 "price": sale.total_price,
                 "quantity": sale.quantity,
                 "payment_method": sale.payment_method,
@@ -42,6 +43,14 @@ class MySoldArtworksView(APIView):
                 "shipping_address": sale.shipping_address.to_mongo(),
                 "created_at": sale.created_at,
                 "updated_at": sale.updated_at,
+
+                
+                "artwork_size": artwork.size or "",
+                "artwork_medium": artwork.medium or "",
+                "artwork_style": artwork.category or "",
+                "artwork_edition": artwork.edition or "",
+                "artwork_year_created": artwork.year_created,
             })
+
 
         return Response(result)

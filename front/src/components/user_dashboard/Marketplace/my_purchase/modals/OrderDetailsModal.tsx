@@ -119,7 +119,12 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   <div className="grid grid-cols-2 gap-2 text-[10px] text-muted-foreground">
                     <div>Size: {order.artwork.size}</div>
                     <div>Medium: {order.artwork.medium}</div>
-                    <div>Style: {order.artwork.style}</div>
+                <div>
+  Style:{" "}
+  {order.artwork.style.charAt(0).toUpperCase() + order.artwork.style.slice(1)}
+</div>
+
+
                     <div>Edition: {order.artwork.edition}</div>
                     <div>Year: {order.artwork.yearCreated}</div>
                     <div>

@@ -12,6 +12,12 @@ export interface RawSoldArtwork {
   shipping_address: any;
   created_at: string;
   updated_at: string;
+
+  artwork_size?: string;
+  artwork_medium?: string;
+  artwork_style?: string;
+  artwork_edition?: string;
+  artwork_year_created?: number;
 }
 
 export interface FormattedSoldArtwork {
@@ -52,14 +58,14 @@ export function formatSoldArtworks(data: RawSoldArtwork[] = []): FormattedSoldAr
     paymentMethod: sale.payment_method,
     shippingAddress: sale.shipping_address,
     artwork: {
-      size: "",
-      medium: "",
-      style: "",
-      edition: "",
-      yearCreated: new Date(sale.created_at).getFullYear(),
+      size: sale.artwork_size || "Unknown",
+      medium: sale.artwork_medium || "Unknown",
+      style: sale.artwork_style || "Unknown",
+      edition: sale.artwork_edition || "Unknown",
+      yearCreated: sale.artwork_year_created ?? new Date(sale.created_at).getFullYear(),
     },
     review:
-      sale.status === "Reviewed"
+      sale.status.toLowerCase() === "reviewed"
         ? {
             rating: 5,
             comment: "Excellent work!",
