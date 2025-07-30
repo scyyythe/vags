@@ -36,3 +36,5 @@ urllib3==2.3.0
 virtualenv==20.29.3
 gunicorn
 whitenoise
+Pillow>=9.0.0
+

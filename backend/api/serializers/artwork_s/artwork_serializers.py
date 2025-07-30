@@ -25,6 +25,8 @@ class ArtSerializer(serializers.Serializer):
     updated_at = serializers.DateTimeField(read_only=True)
     edition = serializers.CharField(max_length=50, required=False)
     year_created = serializers.CharField(max_length=10, required=False)
+    quantity = serializers.IntegerField(required=False, allow_null=True)
+
 
     images = serializers.ListField(
         child=serializers.ImageField(),
@@ -45,10 +47,25 @@ class ArtSerializer(serializers.Serializer):
     def validate(self, data):
         price = data.get("price")
         discounted_price = data.get("discounted_price")
+        edition = data.get("edition", "").strip()
+        quantity = data.get("quantity", None)
 
+     
         if discounted_price is not None and discounted_price >= price:
             raise ValidationError("Discounted price must be less than the original price.")
+
+       
+        if edition == "Open Edition":
+            if quantity is None:
+                raise ValidationError("Quantity is required for Open Edition.")
+            if quantity <= 0:
+                raise ValidationError("Quantity must be a positive number.")
+        else:
+      
+            data["quantity"] = None
+
         return data
+
 
     def create(self, validated_data):
         images = validated_data.pop("images", [])
@@ -139,7 +156,9 @@ class ArtSerializer(serializers.Serializer):
             "likes_count": self.get_likes_count(instance),
             "edition": instance.edition,
             "year_created": instance.year_created,
+            **({"quantity": instance.quantity} if instance.edition == "Open Edition" else {}),
         }
+
 
 
 
