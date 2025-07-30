@@ -16,6 +16,7 @@ import ReviewDetailsModal from "@/components/user_dashboard/Marketplace/my_purch
 import EditReviewModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/EditReviewModal";
 import PaymentDetailsModal from "@/components/user_dashboard/Marketplace/my_listings/PaymentDetailsModal";
 import RefundDetailsModal from "@/components/user_dashboard/Marketplace/my_listings/RefundDetailsModal";
+import TrackPaymentModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/TrackPaymentModal";
 
 import SoldArtworkCard from "@/components/user_dashboard/Marketplace/sold_artworks/card/SoldArtworksCard";
 import { useMyPurchases } from "@/hooks/purchase/useMyPurchases";
@@ -50,6 +51,8 @@ const SellTab = () => {
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showTrackPaymentModal, setShowTrackPaymentModal] = useState(false);
+  const [selectedOrderForTracking, setSelectedOrderForTracking] = useState<any>(null);
 
   const [showEditReviewModal, setShowEditReviewModal] = useState(false);
   const [showPaymentDetailsModal, setShowPaymentDetailsModal] = useState(false);
@@ -779,6 +782,29 @@ const filteredOrders = Array.isArray(myPurchases)
           isOpen={showPaymentDetailsModal}
           onClose={() => setShowPaymentDetailsModal(false)}
           payment={selectedPayment}
+        />
+      )}
+
+      {/* Track Payment Modal */}
+      {selectedOrderForTracking && (
+        <TrackPaymentModal
+          isOpen={showTrackPaymentModal}
+          onClose={() => {
+            setShowTrackPaymentModal(false);
+            setSelectedOrderForTracking(null);
+          }}
+          order={{
+            id: selectedOrderForTracking.id,
+            artworkImage: selectedOrderForTracking.artwork.image_url?.[0] || "",
+            title: selectedOrderForTracking.artwork?.title || "Untitled",
+            artist: selectedOrderForTracking.artwork?.artist_name || "Unknown",
+            price: selectedOrderForTracking.artwork?.price ?? 0,
+            status: selectedOrderForTracking.status,
+            orderDate: selectedOrderForTracking.created_at 
+              ? new Date(selectedOrderForTracking.created_at).toLocaleDateString() 
+              : "Unknown",
+            paymentMethod: "GCash" // Mock payment method
+          }}
         />
       )}
 
