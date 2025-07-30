@@ -77,7 +77,7 @@ const SellTab = () => {
   const { mutateAsync: editReview, isPending: isUpdating } = useEditReview();
   const { mutateAsync: deleteReview } = useDeleteReview();
   const { mutate: submitReview } = useSubmitReview();
-const { mutate: markAsCompleted } = useMarkPurchaseCompleted();
+  const { mutate: markAsCompleted } = useMarkPurchaseCompleted();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -324,8 +324,8 @@ const { mutate: markAsCompleted } = useMarkPurchaseCompleted();
       { status: "Completed", date: "Dec 20, 2024", description: "Refund processed successfully", completed: true },
     ],
   };
- const normalizedTab = subTab?.toLowerCase().trim();
-const normalizedKey = normalizedTab?.replace(/\s+/g, "_");
+  const normalizedTab = subTab?.toLowerCase().trim();
+  const normalizedKey = normalizedTab?.replace(/\s+/g, "_");
 
 console.log("🟢 Active Tab:", subTab);
 console.log("🟢 Normalized Tab:", normalizedTab);
@@ -351,6 +351,7 @@ const filteredOrders = Array.isArray(myPurchases)
         const rawStatus = order.status?.trim() || "";
         const normalizedStatus = rawStatus.toLowerCase().replace(/\s+/g, "_");
 
+        
         if (normalizedKey === "completed") {
           const matched = normalizedStatus === "completed" || normalizedStatus === "reviewed";
         
@@ -369,7 +370,8 @@ const filteredOrders = Array.isArray(myPurchases)
         console.log("🧾 Final Status Used:", overrideStatus);
         return { ...order, status: overrideStatus };
       })
-  : [];
+      
+  :  [];
 
 
   const soldArtworkStatusMap: Record<string, string> = {
