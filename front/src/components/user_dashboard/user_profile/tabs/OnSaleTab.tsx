@@ -487,7 +487,7 @@ const filteredOrders = Array.isArray(myPurchases)
               className={`px-3 ${mainTab === tab ? "text-red-800" : "text-gray-600"}`}
               onClick={() => {
                 setMainTab(tab);
-                setSubTab(tab === "myListings" ? "available" : "pending_payment");
+                setSubTab(tab === "myListings" ? "available" : "paid");
                 setActiveSubGroup("listings");
                 setShowDropdown(false);
               }}
@@ -659,10 +659,10 @@ const filteredOrders = Array.isArray(myPurchases)
                 artist={order.artwork?.artist_name || "Unknown"}
                 price={order.artwork?.price ?? 0}
                status={
-  order.status === "Pending"
-    ? "pending_payment"
-    : order.status?.toLowerCase().replace(/\s+/g, "_")
-}
+                order.status === "Pending"
+                  ? "pending_payment"
+                  : order.status?.toLowerCase().replace(/\s+/g, "_")
+              }
 
                 orderDate={order.created_at ? new Date(order.created_at).toLocaleDateString() : "Unknown"}
                 completedDate="2025-07-10T10:00:00Z"
@@ -761,10 +761,10 @@ const filteredOrders = Array.isArray(myPurchases)
           isOpen={showOrderDetails}
           onClose={() => setShowOrderDetails(false)}
         order={
-  mainTab === "myListings" && activeSubGroup === "soldArtworks"
-    ? selectedOrder 
-    : formatOrderDetails(selectedOrder)
-}
+        mainTab === "myListings" && activeSubGroup === "soldArtworks"
+          ? selectedOrder 
+          : formatOrderDetails(selectedOrder)
+      }
 
           viewType={mainTab === "myListings" && activeSubGroup === "soldArtworks" ? "seller" : "buyer"}
           onContactBuyer={() => handleContactBuyer(selectedOrder)}
@@ -792,7 +792,6 @@ const filteredOrders = Array.isArray(myPurchases)
       )}
 
       {/* Review Modal */}
-
       {selectedArtwork && (
         <ReviewModal
           isOpen={reviewModalOpen}
