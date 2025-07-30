@@ -1,6 +1,6 @@
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
+import { toast } from "sonner";
 
 const useMarkPurchaseCompleted = () => {
   const queryClient = useQueryClient();
@@ -10,7 +10,15 @@ const useMarkPurchaseCompleted = () => {
       return await apiClient.patch(`/my-purchases/${purchaseId}/complete/`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-purchases"] }); 
+      toast.success("Purchase marked as completed!", {
+        closeButton: true,
+      });
+      queryClient.invalidateQueries({ queryKey: ["my-purchases"] });
+    },
+    onError: () => {
+      toast.error("Failed to mark as completed.", {
+        closeButton: true,
+      });
     },
   });
 };
