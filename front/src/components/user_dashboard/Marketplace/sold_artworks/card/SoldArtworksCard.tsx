@@ -89,15 +89,27 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
   };
 
   const getStatusBadge = () => {
+    const normalizedStatus = status.toLowerCase();
+
     const statusConfig = {
       awaiting_payment: { label: "Awaiting Payment", variant: "secondary" as const },
       payment_received: { label: "Payment Received", variant: "default" as const },
       in_progress: { label: "In Progress", variant: "outline" as const },
+      to_receive: { label: "In Progress", variant: "outline" as const },
       completed: { label: "Completed", variant: "default" as const },
       cancelled: { label: "Cancelled", variant: "destructive" as const },
       refunded: { label: "Refunded", variant: "secondary" as const },
       reviews: { label: "Reviewed", variant: "default" as const },
+      reviewed: { label: "Reviewed", variant: "default" as const },
     };
+
+    return (
+      statusConfig[normalizedStatus as keyof typeof statusConfig] || {
+        label: status,
+        variant: "default" as const,
+      }
+    );
+
     return (
       statusConfig[status as keyof typeof statusConfig] || {
         label: status,
@@ -130,13 +142,14 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
           </div>
         );
       case "payment_received":
+      case "paid":
         return (
           <div className="flex gap-2">
             <button
               onClick={() => {
                 setShippedArtworks((prev) => ({
                   ...prev,
-                  [id]: !prev[id], // toggle state
+                  [id]: !prev[id],
                 }));
                 if (!shippedArtworks[id]) {
                   onMarkAsShipped?.(artworkData);

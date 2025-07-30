@@ -31,6 +31,7 @@ import { ReviewResponse } from "@/hooks/review/useReviewByPurchase";
 import { useEditReview } from "@/hooks/review/useEditReview";
 import { useDeleteReview } from "@/hooks/review/useDeleteReview";
 import useMarkPurchaseCompleted from "@/hooks/purchase/useMarkPurchaseCompleted";
+import useMarkAsShipped from "@/hooks/purchase/useMarkAsShipped";
 const SellTab = () => {
   const { id: userId } = useParams();
   const loggedInUserId = getLoggedInUserId();
@@ -78,6 +79,7 @@ const SellTab = () => {
   const { mutateAsync: deleteReview } = useDeleteReview();
   const { mutate: submitReview } = useSubmitReview();
   const { mutate: markAsCompleted } = useMarkPurchaseCompleted();
+  const { mutate: markAsShipped } = useMarkAsShipped();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -328,57 +330,48 @@ const SellTab = () => {
   const normalizedTab = subTab?.toLowerCase().trim();
   const normalizedKey = normalizedTab?.replace(/\s+/g, "_");
 
-console.log("🟢 Active Tab:", subTab);
-console.log("🟢 Normalized Tab:", normalizedTab);
-console.log("🟢 Normalized Key:", normalizedKey);
+  const purchaseStatusMap: Record<string, string> = {
+    pending_payment: "Pending",
+    payment_processing: "Processing",
+    paid: "Paid",
+    failed: "Failed",
+    to_receive: "To Receive",
+    cancelled: "Cancelled",
+    completed: "Completed",
+    refunded: "Refunded",
+    reviewed: "Reviewed",
+  };
 
-const purchaseStatusMap: Record<string, string> = {
-  pending_payment: "Pending",
-  payment_processing: "Processing",
-  paid: "Paid",
-  failed: "Failed",
-  to_receive: "To Receive",
-  cancelled: "Cancelled",
-  completed: "Completed",
-  refunded: "Refunded",
-  reviewed: "Reviewed",
-};
+  const expectedStatus = purchaseStatusMap[normalizedKey];
 
-const expectedStatus = purchaseStatusMap[normalizedKey];
+  const filteredOrders = Array.isArray(myPurchases)
+    ? myPurchases
+        .filter((order) => {
+          const rawStatus = order.status?.trim() || "";
+          const normalizedStatus = rawStatus.toLowerCase().replace(/\s+/g, "_");
 
-const filteredOrders = Array.isArray(myPurchases)
-  ? myPurchases
-      .filter((order) => {
-        const rawStatus = order.status?.trim() || "";
-        const normalizedStatus = rawStatus.toLowerCase().replace(/\s+/g, "_");
+          if (normalizedKey === "completed") {
+            const matched = normalizedStatus === "completed" || normalizedStatus === "reviewed";
 
-        
-        if (normalizedKey === "completed") {
-          const matched = normalizedStatus === "completed" || normalizedStatus === "reviewed";
-        
+            return matched;
+          }
+
+          const matched = normalizedStatus === normalizedKey;
+
           return matched;
-        }
-
-        const matched = normalizedStatus === normalizedKey;
-       
-        return matched;
-      })
-      .map((order) => {
-        const overrideStatus =
-          normalizedKey === "completed" && order.status?.trim() === "Reviewed"
-            ? "Completed"
-            : order.status;
-        console.log("🧾 Final Status Used:", overrideStatus);
-        return { ...order, status: overrideStatus };
-      })
-      
-  :  [];
-
+        })
+        .map((order) => {
+          const overrideStatus =
+            normalizedKey === "completed" && order.status?.trim() === "Reviewed" ? "Completed" : order.status;
+          console.log("🧾 Final Status Used:", overrideStatus);
+          return { ...order, status: overrideStatus };
+        })
+    : [];
 
   const soldArtworkStatusMap: Record<string, string> = {
     awaiting_payment: "Pending",
     payment_received: "Paid",
-    in_progress: "Shipped",
+    in_progress: "To Receive",
     completed: "Completed",
     reviews: "reviewed",
     cancelled: "Cancelled",
@@ -404,13 +397,24 @@ const filteredOrders = Array.isArray(myPurchases)
             return status === "reviewed";
           }
 
+          if (normalizedTab === "in_progress") {
+            return status === "in_progress" || status === "to_receive";
+          }
+
           return status === mappedStatus?.toLowerCase();
         })
         .map((sale) => {
+          let updatedStatus = sale.status;
+
           if (normalizedTab === "completed" && sale.status?.toLowerCase() === "reviewed") {
-            return { ...sale, status: "completed" };
+            updatedStatus = "completed";
           }
-          return sale;
+
+          if (normalizedTab === "in_progress" && sale.status?.toLowerCase() === "to_receive") {
+            updatedStatus = "in_progress";
+          }
+
+          return { ...sale, status: updatedStatus };
         })
     : [];
 
@@ -443,7 +447,7 @@ const filteredOrders = Array.isArray(myPurchases)
   };
 
   const handleMarkAsShipped = (artwork) => {
-    toast.success("Artwork marked as shipped!");
+    markAsShipped(artwork.id);
   };
 
   const handleTrackProgress = (artwork: any) => {
@@ -664,12 +668,9 @@ const filteredOrders = Array.isArray(myPurchases)
                 title={order.artwork?.title || "Untitled"}
                 artist={order.artwork?.artist_name || "Unknown"}
                 price={order.artwork?.price ?? 0}
-               status={
-                order.status === "Pending"
-                  ? "pending_payment"
-                  : order.status?.toLowerCase().replace(/\s+/g, "_")
-              }
-
+                status={
+                  order.status === "Pending" ? "pending_payment" : order.status?.toLowerCase().replace(/\s+/g, "_")
+                }
                 orderDate={order.created_at ? new Date(order.created_at).toLocaleDateString() : "Unknown"}
                 completedDate="2025-07-10T10:00:00Z"
                 expectedDelivery={
@@ -766,12 +767,11 @@ const filteredOrders = Array.isArray(myPurchases)
           key={selectedOrder.id}
           isOpen={showOrderDetails}
           onClose={() => setShowOrderDetails(false)}
-        order={
-        mainTab === "myListings" && activeSubGroup === "soldArtworks"
-          ? selectedOrder 
-          : formatOrderDetails(selectedOrder)
-      }
-
+          order={
+            mainTab === "myListings" && activeSubGroup === "soldArtworks"
+              ? selectedOrder
+              : formatOrderDetails(selectedOrder)
+          }
           viewType={mainTab === "myListings" && activeSubGroup === "soldArtworks" ? "seller" : "buyer"}
           onContactBuyer={() => handleContactBuyer(selectedOrder)}
           onViewPayment={() => handleViewPayment(selectedOrder)}
@@ -803,10 +803,10 @@ const filteredOrders = Array.isArray(myPurchases)
             artist: selectedOrderForTracking.artwork?.artist_name || "Unknown",
             price: selectedOrderForTracking.artwork?.price ?? 0,
             status: selectedOrderForTracking.status,
-            orderDate: selectedOrderForTracking.created_at 
-              ? new Date(selectedOrderForTracking.created_at).toLocaleDateString() 
+            orderDate: selectedOrderForTracking.created_at
+              ? new Date(selectedOrderForTracking.created_at).toLocaleDateString()
               : "Unknown",
-            paymentMethod: "GCash" // Mock payment method
+            paymentMethod: "GCash", // Mock payment method
           }}
         />
       )}
