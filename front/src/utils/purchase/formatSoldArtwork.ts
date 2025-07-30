@@ -45,33 +45,47 @@ export interface FormattedSoldArtwork {
     reviewDate: string;
   };
 }
+
+function normalizeSoldStatus(status: string): string {
+  const normalized = status.toLowerCase().replace(/\s+/g, "_");
+
+  if (normalized === "to_receive") return "in_progress";
+  if (normalized === "reviewed") return "completed";
+
+  return normalized;
+}
+
 export function formatSoldArtworks(data: RawSoldArtwork[] = []): FormattedSoldArtwork[] {
-  return data.map((sale) => ({
-    id: sale.id,
-    artworkImage: sale.artwork_image,
-    title: sale.artwork_title,
-    buyer: sale.buyer_name,
-    price: sale.price,
-    status: sale.status.toLowerCase(),
-    saleDate: new Date(sale.created_at).toLocaleDateString(),
-    completedDate: new Date(sale.updated_at).toISOString(),
-    paymentMethod: sale.payment_method,
-    shippingAddress: sale.shipping_address,
-    artwork: {
-      size: sale.artwork_size || "Unknown",
-      medium: sale.artwork_medium || "Unknown",
-      style: sale.artwork_style || "Unknown",
-      edition: sale.artwork_edition || "Unknown",
-      yearCreated: sale.artwork_year_created ?? new Date(sale.created_at).getFullYear(),
-    },
-    review:
-      sale.status.toLowerCase() === "reviewed"
-        ? {
-            rating: 5,
-            comment: "Excellent work!",
-            photos: [],
-            reviewDate: new Date(sale.updated_at).toISOString(),
-          }
-        : undefined,
-  }));
+  return data.map((sale) => {
+    const normalizedStatus = normalizeSoldStatus(sale.status);
+
+    return {
+      id: sale.id,
+      artworkImage: sale.artwork_image,
+      title: sale.artwork_title,
+      buyer: sale.buyer_name,
+      price: sale.price,
+      status: normalizedStatus,
+      saleDate: new Date(sale.created_at).toLocaleDateString(),
+      completedDate: new Date(sale.updated_at).toISOString(),
+      paymentMethod: sale.payment_method,
+      shippingAddress: sale.shipping_address,
+      artwork: {
+        size: sale.artwork_size || "Unknown",
+        medium: sale.artwork_medium || "Unknown",
+        style: sale.artwork_style || "Unknown",
+        edition: sale.artwork_edition || "Unknown",
+        yearCreated: sale.artwork_year_created ?? new Date(sale.created_at).getFullYear(),
+      },
+      review:
+        normalizedStatus === "reviewed"
+          ? {
+              rating: 5,
+              comment: "Excellent work!",
+              photos: [],
+              reviewDate: new Date(sale.updated_at).toISOString(),
+            }
+          : undefined,
+    };
+  });
 }
