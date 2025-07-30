@@ -584,7 +584,7 @@ const filteredOrders = Array.isArray(myPurchases)
           <SalesSummary />
         ) : mainTab === "myListings" && activeSubGroup === "soldArtworks" ? (
           filteredSoldArtworks.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-xs text-center py-12">
               <div className="w-24 h-24 mx-auto mb-4 opacity-50">
                 <svg
                   className="w-full h-full text-muted-foreground"
@@ -631,7 +631,7 @@ const filteredOrders = Array.isArray(myPurchases)
           )
         ) : mainTab === "myPurchase" ? (
           filteredOrders.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-xs text-center py-12">
               <div className="w-24 h-24 mx-auto mb-4 opacity-50">
                 <svg
                   className="w-full h-full text-muted-foreground"
@@ -695,7 +695,7 @@ const filteredOrders = Array.isArray(myPurchases)
             ))
           )
         ) : filteredArtworks.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="text-xs text-center py-12">
             <div className="w-24 h-24 mx-auto mb-4 opacity-50">
               <svg
                 className="w-full h-full text-muted-foreground"
