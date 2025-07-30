@@ -235,7 +235,7 @@ const filteredArtCards =
                     price={artwork.discounted_price ?? artwork.price}
                     originalPrice={artwork.discounted_price ? artwork.price : undefined}
                     title={artwork.title}
-                    rating={artwork.total_ratings}
+                    rating={artwork.average_rating}
                     isLiked={likedItems.has(artwork.id)}
                     onLike={() => handleLike(artwork.id)}
                     isMarketplace={true}
