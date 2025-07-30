@@ -515,6 +515,7 @@ const ProductViewingContent = () => {
           setIsModalOpen(false);
         }}
         artwork={{
+          id: product.id,
           artworkImage: product.image_urls?.[0],
           title: product.title,
           artist: product.artist.name,
