@@ -355,7 +355,7 @@ const filteredOrders = Array.isArray(myPurchases)
         }
 
         const matched = normalizedStatus === normalizedKey;
-        console.log("✅ Match:", matched);
+       
         return matched;
       })
       .map((order) => {
@@ -760,7 +760,12 @@ const filteredOrders = Array.isArray(myPurchases)
           key={selectedOrder.id}
           isOpen={showOrderDetails}
           onClose={() => setShowOrderDetails(false)}
-          order={formatOrderDetails(selectedOrder)}
+        order={
+  mainTab === "myListings" && activeSubGroup === "soldArtworks"
+    ? selectedOrder 
+    : formatOrderDetails(selectedOrder)
+}
+
           viewType={mainTab === "myListings" && activeSubGroup === "soldArtworks" ? "seller" : "buyer"}
           onContactBuyer={() => handleContactBuyer(selectedOrder)}
           onViewPayment={() => handleViewPayment(selectedOrder)}
