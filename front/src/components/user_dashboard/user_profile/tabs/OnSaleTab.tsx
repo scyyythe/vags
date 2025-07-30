@@ -320,40 +320,53 @@ const SellTab = () => {
       { status: "Completed", date: "Dec 20, 2024", description: "Refund processed successfully", completed: true },
     ],
   };
+ const normalizedTab = subTab?.toLowerCase().trim();
+const normalizedKey = normalizedTab?.replace(/\s+/g, "_");
 
-  const purchaseStatusMap: Record<string, string> = {
-    pending_payment: "Pending",
-    payment_processing: "Processing",
-    paid: "Paid",
-    failed: "Failed",
-    receive: "To Receive",
-    cancelled: "Cancelled",
-    completed: "Completed",
-    refunded: "Refunded",
-    reviewed: "Reviewed", 
-  };
+console.log("🟢 Active Tab:", subTab);
+console.log("🟢 Normalized Tab:", normalizedTab);
+console.log("🟢 Normalized Key:", normalizedKey);
 
-  const normalizedTab = subTab?.toLowerCase().trim();
-  const expectedStatus = purchaseStatusMap[normalizedTab]?.toLowerCase();
+const purchaseStatusMap: Record<string, string> = {
+  pending_payment: "Pending",
+  payment_processing: "Processing",
+  paid: "Paid",
+  failed: "Failed",
+  to_receive: "To Receive",
+  cancelled: "Cancelled",
+  completed: "Completed",
+  refunded: "Refunded",
+  reviewed: "Reviewed",
+};
 
-  const filteredOrders = Array.isArray(myPurchases)
-    ? myPurchases
-        .filter((order) => {
-          const status = order.status?.toLowerCase().trim();
+const expectedStatus = purchaseStatusMap[normalizedKey];
 
-          if (normalizedTab === "completed") {
-            return status === "completed" || status === "reviewed";
-          }
+const filteredOrders = Array.isArray(myPurchases)
+  ? myPurchases
+      .filter((order) => {
+        const rawStatus = order.status?.trim() || "";
+        const normalizedStatus = rawStatus.toLowerCase().replace(/\s+/g, "_");
 
-          return status === expectedStatus;
-        })
-        .map((order) => {
-          if (normalizedTab === "completed" && order.status?.toLowerCase() === "reviewed") {
-            return { ...order, status: "completed" };
-          }
-          return order;
-        })
-    : [];
+        if (normalizedKey === "completed") {
+          const matched = normalizedStatus === "completed" || normalizedStatus === "reviewed";
+        
+          return matched;
+        }
+
+        const matched = normalizedStatus === normalizedKey;
+        console.log("✅ Match:", matched);
+        return matched;
+      })
+      .map((order) => {
+        const overrideStatus =
+          normalizedKey === "completed" && order.status?.trim() === "Reviewed"
+            ? "Completed"
+            : order.status;
+        console.log("🧾 Final Status Used:", overrideStatus);
+        return { ...order, status: overrideStatus };
+      })
+  : [];
+
 
   const soldArtworkStatusMap: Record<string, string> = {
     awaiting_payment: "Pending",
@@ -644,7 +657,12 @@ const SellTab = () => {
                 title={order.artwork?.title || "Untitled"}
                 artist={order.artwork?.artist_name || "Unknown"}
                 price={order.artwork?.price ?? 0}
-                status={order.status === "Pending" ? "pending_payment" : order.status}
+               status={
+  order.status === "Pending"
+    ? "pending_payment"
+    : order.status?.toLowerCase().replace(/\s+/g, "_")
+}
+
                 orderDate={order.created_at ? new Date(order.created_at).toLocaleDateString() : "Unknown"}
                 completedDate="2025-07-10T10:00:00Z"
                 expectedDelivery={
