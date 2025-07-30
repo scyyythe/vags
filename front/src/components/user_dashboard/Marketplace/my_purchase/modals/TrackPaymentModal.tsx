@@ -85,13 +85,13 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({
   const getPaymentMethodIcon = (method: string) => {
     switch (method.toLowerCase()) {
       case "gcash":
-        return "💙";
+        return "💳";
       case "paymaya":
-        return "💚";
+        return "💳";
       case "credit card":
         return "💳";
       case "bank transfer":
-        return "🏦";
+        return "💳";
       default:
         return "💳";
     }
@@ -99,9 +99,10 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto"
+      onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between text-sm">
+          <DialogTitle className="flex items-center justify-between text-sm mt-3">
             <span>Payment Tracking</span>
             <Badge className={`${getStatusColor(order.status)} text-white text-[10px]`}>
               {order.status.replace(/_/g, " ").toUpperCase()}
@@ -130,7 +131,7 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[11px]">
             <div className="space-y-4">
               <div className="border border-border rounded-lg p-4">
-                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                <h3 className="font-semibold text-[13px] mb-3 flex items-center gap-2">
                   <CreditCard className="w-4 h-4" />
                   Transaction Details
                 </h3>
@@ -174,7 +175,7 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({
 
             {/* Payment Timeline */}
             <div className="border border-border rounded-lg p-4">
-              <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+              <h3 className="font-semibold text-[13px] mb-3 flex items-center gap-2">
                 <Clock className="w-4 h-4" />
                 Payment Timeline
               </h3>
@@ -242,19 +243,11 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-2">
-            <button 
-              className="flex-1 py-2 px-4 border border-gray-300 rounded-lg text-xs font-medium hover:bg-gray-50"
-              onClick={onClose}
-            >
-              Close
-            </button>
             {(order.status.toLowerCase() === "failed" || order.status.toLowerCase() === "pending_payment") && (
               <button className="flex-1 py-2 px-4 bg-primary text-primary-foreground rounded-lg text-xs font-medium hover:bg-primary/90">
                 Retry Payment
               </button>
             )}
-          </div>
         </div>
       </DialogContent>
     </Dialog>
