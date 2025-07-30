@@ -250,10 +250,11 @@ const SellTab = () => {
   const statusMap: Record<string, string> = {
     available: "onsale",
     unlisted: "unlisted",
+    sold: "sold",
     deleted: "deleted",
   };
 
-  const activeListingTabs = ["available", "unlisted"];
+  const activeListingTabs = ["available", "unlisted", "sold"];
   const soldArtworksTabs = [
     "awaiting_payment",
     "payment_received",
