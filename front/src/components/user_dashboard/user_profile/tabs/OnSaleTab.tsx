@@ -29,7 +29,7 @@ import { useReviewByPurchase } from "@/hooks/review/useReviewByPurchase";
 import { ReviewResponse } from "@/hooks/review/useReviewByPurchase";
 import { useEditReview } from "@/hooks/review/useEditReview";
 import { useDeleteReview } from "@/hooks/review/useDeleteReview";
-
+import useMarkPurchaseCompleted from "@/hooks/purchase/useMarkPurchaseCompleted";
 const SellTab = () => {
   const { id: userId } = useParams();
   const loggedInUserId = getLoggedInUserId();
@@ -74,6 +74,7 @@ const SellTab = () => {
   const { mutateAsync: editReview, isPending: isUpdating } = useEditReview();
   const { mutateAsync: deleteReview } = useDeleteReview();
   const { mutate: submitReview } = useSubmitReview();
+const { mutate: markAsCompleted } = useMarkPurchaseCompleted();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -689,6 +690,7 @@ const filteredOrders = Array.isArray(myPurchases)
                 onTrackOrder={handleTrackOrder}
                 onRequestRefund={handleRequestRefund}
                 onCancelOrder={handleCancelOrder}
+                  onMarkCompleted={() => markAsCompleted(order.id)}
               />
             ))
           )
