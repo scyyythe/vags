@@ -407,50 +407,56 @@ const ProductViewingContent = () => {
             </div>
 
             {/* Quantity, Buy Now, Wishlist */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between space-x-3">
-                <div className="flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs">
-                  <button
-                    onClick={() => handleQuantityChange(-1)}
-                    className="w-8 h-8 pl-1.5 flex items-center justify-center text-black"
-                  >
-                    −
-                  </button>
+    
+<div className="space-y-2">
+  <div className="flex items-center justify-between space-x-3">
 
-                  <div className="w-px h-3 bg-gray-300" />
+    {/* Show quantity selector only if edition is "Open Edition" */}
+    {product.edition === "Open Edition" && (
+      <div className="flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs">
+        <button
+          onClick={() => handleQuantityChange(-1)}
+          className="w-8 h-8 pl-1.5 flex items-center justify-center text-black"
+        >
+          −
+        </button>
 
-                  <span className="w-8 text-center font-medium text-black">{quantity}</span>
+        <div className="w-px h-3 bg-gray-300" />
 
-                  <div className="w-px h-3 bg-gray-300" />
+        <span className="w-8 text-center font-medium text-black">{quantity}</span>
 
-                  <button
-                    onClick={() => handleQuantityChange(1)}
-                    className="w-8 h-8 pr-1.5 flex items-center justify-center text-black"
-                  >
-                    +
-                  </button>
-                </div>
+        <div className="w-px h-3 bg-gray-300" />
 
-                <button
-                  className="w-full bg-red-800 hover:bg-red-700 text-white py-2 text-xs font-medium rounded-full"
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  <i className="bx bx-cart text-[15px] relative top-0.5 mr-3"></i>
-                  Buy Now
-                </button>
+        <button
+          onClick={() => handleQuantityChange(1)}
+          className="w-8 h-8 pr-1.5 flex items-center justify-center text-black"
+        >
+          +
+        </button>
+      </div>
+    )}
 
-                <button onClick={handleWishlistToggle} className="py-1.5 px-2.5 border border-gray-300 rounded-full">
-                  <img
-                    src={
-                      likedItems.has(id)
-                        ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
-                        : "https://img.icons8.com/puffy/32/like.png"
-                    }
-                    className="w-5 h-5 object-contain"
-                  />
-                </button>
-              </div>
-            </div>
+    <button
+      className="w-full bg-red-800 hover:bg-red-700 text-white py-2 text-xs font-medium rounded-full"
+      onClick={() => setIsModalOpen(true)}
+    >
+      <i className="bx bx-cart text-[15px] relative top-0.5 mr-3"></i>
+      Buy Now
+    </button>
+
+    <button onClick={handleWishlistToggle} className="py-1.5 px-2.5 border border-gray-300 rounded-full">
+      <img
+        src={
+          likedItems.has(id)
+            ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
+            : "https://img.icons8.com/puffy/32/like.png"
+        }
+        className="w-5 h-5 object-contain"
+      />
+    </button>
+  </div>
+</div>
+
           </div>
         </div>
       </div>
@@ -509,6 +515,7 @@ const ProductViewingContent = () => {
           setIsModalOpen(false);
         }}
         artwork={{
+          id: product.id,
           artworkImage: product.image_urls?.[0],
           title: product.title,
           artist: product.artist.name,

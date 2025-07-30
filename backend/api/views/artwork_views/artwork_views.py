@@ -21,7 +21,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
-
+from mongoengine.queryset.visitor import Q
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
     serializer_class = ArtSerializer
@@ -130,12 +130,12 @@ class ArtCardListView(APIView):
             if request.user.is_authenticated and hasattr(request.user, 'blocked_users'):
                 blocked_user_ids = [user.id for user in request.user.blocked_users]
 
-            artworks = Art.objects(
-                visibility__iexact="public",
-                art_status__iexact="onSale",
-                artist__nin=blocked_user_ids
-            ).order_by("-created_at")
+            query = Q(visibility__iexact="public") & Q(artist__nin=blocked_user_ids) & (
+                Q(art_status__iexact="onSale") |
+                (Q(edition__iexact="Open Edition") & Q(quantity__gt=0))
+            )
 
+            artworks = Art.objects(query).order_by("-created_at")
 
             serializer = ArtCardSerializer(artworks, many=True)
             return Response(serializer.data)

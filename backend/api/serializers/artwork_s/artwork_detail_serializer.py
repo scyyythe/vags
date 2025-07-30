@@ -54,7 +54,7 @@ class ArtDetailSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
 
-    artist = ArtistMiniSerializer(read_only=True)  # ✅ removed `source="artist"`
+    artist = ArtistMiniSerializer(read_only=True)  
     image_urls = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
     rating = serializers.FloatField(required=False)

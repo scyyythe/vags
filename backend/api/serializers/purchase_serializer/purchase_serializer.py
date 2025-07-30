@@ -22,6 +22,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
     quantity = serializers.IntegerField(default=1)
     shipping_address = ShippingSnapshotSerializer()
 
+      
     def create(self, validated_data):
         request = self.context["request"]
         try:
@@ -50,11 +51,23 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             payment_method=validated_data["payment_method"],
             is_paid=validated_data.get("is_paid", False),
             quantity=quantity,
-            total_price=total_price
+            total_price=total_price,
+            status="To Receive",
         )
 
+ 
+        if artwork.edition == "Open Edition" and artwork.quantity is not None:
+            artwork.quantity -= quantity
+            if artwork.quantity == 0:
+                artwork.art_status = "Sold Out"
+            else:
+                artwork.art_status = "To Receive"
+        else:
+            artwork.art_status = "To Receive"
 
-   
+        artwork.save()
+
+        # Notifications
         Notification.objects.create(
             user=artwork.artist,
             actor=mongo_user,
@@ -67,7 +80,6 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             link=f"/artwork/{artwork.id}/"
         )
 
- 
         Notification.objects.create(
             user=mongo_user,
             actor=mongo_user,
@@ -77,7 +89,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             target=artwork.title,
             icon="purchase",
             created_at=datetime.now(),
-            link=f"/orders/{purchase.id}/"
+            link=f"/viewproduct/{purchase.id}/"
         )
 
         return purchase
