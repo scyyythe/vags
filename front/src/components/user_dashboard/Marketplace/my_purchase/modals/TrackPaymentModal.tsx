@@ -23,12 +23,11 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({
   onClose,
   order,
 }) => {
-  // Mock payment tracking data
   const paymentDetails = {
     transactionId: `TXN-${order.id.slice(-8).toUpperCase()}`,
     paymentMethod: order.paymentMethod || "GCash",
     amount: order.price,
-    processingFee: order.price * 0.05, // 5% processing fee
+    processingFee: order.price * 0.05,
     netAmount: order.price * 0.95,
     status: order.status,
     timeline: [
@@ -43,7 +42,7 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({
       {
         status: "Payment Processing",
         date: order.orderDate,
-        time: "10:31 AM", 
+        time: "10:31 AM",
         description: "Payment being processed by bank",
         completed: order.status !== "pending_payment",
         icon: <Clock className="w-3 h-3" />
@@ -110,7 +109,7 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-6 text-[11px]">
           {/* Artwork Info */}
           <div className="flex gap-4 p-4 border border-border rounded-lg">
             <img 
@@ -128,14 +127,14 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({
           </div>
 
           {/* Payment Details */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[11px]">
             <div className="space-y-4">
               <div className="border border-border rounded-lg p-4">
                 <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
                   <CreditCard className="w-4 h-4" />
                   Transaction Details
                 </h3>
-                <div className="space-y-2 text-xs">
+                <div className="space-y-2 text-[10px]">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Transaction ID:</span>
                     <span className="font-mono">{paymentDetails.transactionId}</span>
@@ -156,7 +155,7 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({
 
               <div className="border border-border rounded-lg p-4">
                 <h3 className="font-semibold text-sm mb-3">Payment Breakdown</h3>
-                <div className="space-y-2 text-xs">
+                <div className="space-y-2 text-[10px]">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Artwork Price:</span>
                     <span>₱{paymentDetails.amount.toLocaleString()}</span>
