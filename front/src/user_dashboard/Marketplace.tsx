@@ -13,6 +13,7 @@ import SellCardSkeleton from "@/components/skeletons/SellCardSkeleton";
 import useFollowedArtworksOnSale from "@/hooks/artworks/follow_artworks/useFollowedArtworksOnSale";
 import useWishlistArtCards from "@/hooks/artworks/wishlist/useWishlistArtCards";
 import { ChevronDown, Grid3X3 } from "lucide-react";
+import { useTrendingArtworks } from "@/hooks/artworks/sell/useTrendingArtworks";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +31,7 @@ const Marketplace = () => {
   const [selectedEdition, setSelectedEdition] = useState("All");
   const [reportedArtworks, setReportedArtworks] = useState<Set<string>>(new Set());
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+const { data: trendingArtworks = [] } = useTrendingArtworks();
 
   const {
     data: followedArtworksData = [],
@@ -51,35 +53,57 @@ const Marketplace = () => {
   const handleCategorySelect = (category) => setSelectedCategoryFilter(category);
   const handleArtCategoryChange = (category) => setSelectedArtCategory(category);
   const handleSortChange = (option) => setSelectedSort(option);
-
-  const filteredArtCards =
-    selectedCategoryFilter === "Following"
-      ? (followedArtworksData?.artworks ?? []).filter((art) => art.art_status === "onSale")
-      : artCards
-         .filter((artwork) => {
-        const isSold = artwork.art_status === "Sold";
-        const isOpenEdition = artwork.edition === "Open Edition";
-        const shouldInclude = !isSold || isOpenEdition;
-
-        if (!shouldInclude) return false;
-        if (selectedCategoryFilter === "Trending" && !(artwork.total_ratings >= 4)) return false;
-        if (selectedArtCategory !== "All" && artwork.category !== selectedArtCategory) return false;
-        if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
-
+const filteredArtCards =
+  selectedCategoryFilter === "Following"
+    ? (followedArtworksData?.artworks ?? []).filter((art) => {
+        if (art.art_status !== "onSale") return false;
+        if (
+          selectedArtCategory !== "All" &&
+          art.category?.trim().toLowerCase() !== selectedArtCategory.trim().toLowerCase()
+        )
+          return false;
+        if (selectedEdition !== "All" && art.edition !== selectedEdition) return false;
         return true;
       })
+    : selectedCategoryFilter === "Trending"
+    ? (trendingArtworks ?? []).filter((artwork) => {
+        if (
+          selectedArtCategory !== "All" &&
+          artwork.category?.trim().toLowerCase() !== selectedArtCategory.trim().toLowerCase()
+        )
+          return false;
+        if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
+        return true;
+      })
+    : artCards
+        .filter((artwork) => {
+          const isSold = artwork.art_status === "Sold";
+          const isOpenEdition = artwork.edition === "Open Edition";
+          const shouldInclude = !isSold || isOpenEdition;
 
-          .sort((a, b) => {
-            if (selectedSort === "Price: Low to High") {
-              return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
-            } else if (selectedSort === "Price: High to Low") {
-              return (b.discounted_price ?? b.price) - (a.discounted_price ?? a.price);
-            } else if (selectedSort === "Most Popular") {
-              return (b.total_ratings ?? 0) - (a.total_ratings ?? 0);
-            } else {
-              return 0;
-            }
-          });
+          if (!shouldInclude) return false;
+          if (
+            selectedArtCategory !== "All" &&
+            artwork.category?.trim().toLowerCase() !== selectedArtCategory.trim().toLowerCase()
+          )
+            return false;
+          if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
+          return true;
+        })
+        .sort((a, b) => {
+          if (selectedSort === "Price: Low to High") {
+            return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
+          } else if (selectedSort === "Price: High to Low") {
+            return (b.discounted_price ?? b.price) - (a.discounted_price ?? a.price);
+          } else if (selectedSort === "Most Popular") {
+            return (b.total_ratings ?? 0) - (a.total_ratings ?? 0);
+          } else {
+            return 0; 
+          }
+        });
+
+
+
 
   const handleCardClick = (artwork: Artwork) => {
     setSelectedArtwork(artwork);

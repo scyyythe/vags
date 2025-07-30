@@ -210,7 +210,14 @@ class ArtCardSerializer(serializers.Serializer):
     medium = serializers.SerializerMethodField() 
     size=serializers.SerializerMethodField()
     year_created=serializers.SerializerMethodField()
-    
+    average_rating = serializers.SerializerMethodField()
+
+    def get_average_rating(self, obj):
+            from api.models.review_model.review import Review
+            reviews = Review.objects(artwork=obj)
+            if not reviews:
+                return 0
+            return round(sum(r.rating for r in reviews) / len(reviews), 1)
     def get_total_ratings(self, obj):
         return Like.objects.filter(art=obj).count()
 
