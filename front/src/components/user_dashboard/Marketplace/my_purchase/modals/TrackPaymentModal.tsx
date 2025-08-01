@@ -174,7 +174,7 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({
             </div>
 
             {/* Payment Timeline */}
-            <div className="border border-border rounded-lg p-4">
+            <div className="border border-border rounded-lg p-4"> 
               <h3 className="font-semibold text-[13px] mb-3 flex items-center gap-2">
                 <Clock className="w-4 h-4" />
                 Payment Timeline
