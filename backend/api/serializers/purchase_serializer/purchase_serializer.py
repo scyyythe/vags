@@ -52,7 +52,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             is_paid=validated_data.get("is_paid", False),
             quantity=quantity,
             total_price=total_price,
-            status="To Receive",
+            status="Paid",
         )
 
  

@@ -1,5 +1,5 @@
 from django.urls import path
-from api.views.purchase_view.purchase_view import PurchaseArtworkView,MyPurchasesView,MarkPurchaseCompletedView
+from api.views.purchase_view.purchase_view import PurchaseArtworkView,MyPurchasesView,MarkPurchaseCompletedView,MarkPurchaseAsShippedView
 from api.views.purchase_view.review_view import SubmitReviewView
 from api.views.purchase_view.sold_artworks_view import MySoldArtworksView
 from api.views.purchase_view.review_view import SubmitReviewView, GetReviewByPurchaseView,AllReviewsByPurchaseView,UpdateReviewView,DeleteReviewView
@@ -9,6 +9,7 @@ purchase_urlpatterns = [
    path("purchase/", PurchaseArtworkView.as_view(), name="purchase-artwork"),
    path("my-purchases/", MyPurchasesView.as_view(), name="my-purchases"),
    path("my-purchases/<str:purchase_id>/complete/", MarkPurchaseCompletedView.as_view(), name="mark-purchase-completed"),
+    path("my-sales/<str:purchase_id>/mark-shipped/", MarkPurchaseAsShippedView.as_view()),
 #   sold artworks
    path("my-sold-artworks/", MySoldArtworksView.as_view(), name="my-sold-artworks"),
    

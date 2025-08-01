@@ -166,36 +166,21 @@ const Bidding = () => {
           )}
 
           {/* UPCOMING AUCTIONS SECTION */}
-          {!showIncoming && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {filteredArtworks.length === 0 ? (
-                <div className="col-span-full flex flex-col items-center justify-center text-center py-16">
-                  <img
-                    src="/pics/empty.png"
-                    alt="No Active Auctions"
-                    className="w-48 h-48 mb-4 opacity-70"
-                  />
-            <p className="text-gray-500 text-sm">
-            {selectedCategory === "Following"
-              ? "You’re not following any artists with active auctions."
-              : selectedCategory === "Trending"
-              ? "No trending auctions found right now."
-              : "No auctions found for this category."}
-          </p>
+          {showIncoming && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {upcomingArtworks.length === 0 && (
+              <div className="col-span-full flex flex-col items-center justify-center text-center py-16">
+                <img
+                  src="/pics/empty.png"
+                  alt="No Upcoming Auctions"
+                  className="w-48 h-48 mb-4 opacity-70"
+                />
+                <p className="text-gray-500 text-sm">No upcoming auctions found.</p>
+              </div>
+            )}
+          </div>
+        )}
 
-                </div>
-              ) : (
-                filteredArtworks.map((artwork) => {
-                  const reportInfo = reportStatusData?.[artwork.id];
-                  return (
-                    <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
-                      <BidCard data={artwork} reportInfo={reportInfo} onPlaceBid={handlePlaceBid} />
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          )}
 
         </div>
       </div>
