@@ -116,13 +116,13 @@ const Explore = () => {
               <CategoryFilter
                 categories={categories}
                 onSelectCategory={(category) => {
-                  setSelectedFilter(category);
-                  // Reset style when switching to Trending/Following
+                  setSelectedCategory(category);
                   if (category === "Trending" || category === "Following") {
                     setSelectedStyle("All");
                   }
                 }}
               />
+
               <div className="flex space-x-2 text-xs">
                 <div className="relative">
                   <ArtCategorySelect

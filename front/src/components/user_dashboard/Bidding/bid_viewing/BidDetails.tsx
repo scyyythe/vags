@@ -52,9 +52,6 @@ const BidDetails = () => {
     }
   }, [reportInfo]);
 
-
-
-
   const { toggleLike } = useAuctionLike(id!, item?.user_has_liked_auction ?? false, item?.auction_likes_count ?? 0);
 
   const [views, setViews] = useState<number>(0);
@@ -97,7 +94,7 @@ const BidDetails = () => {
 
   const onReport = (issueDetails: string) => {
     setIsReported(true);
-    toast(`Report submitted: ${issueDetails}`, { closeButton: true })
+    toast(`Report submitted: ${issueDetails}`, { closeButton: true });
   };
 
   const handleReportSubmit = (categoryId: string, optionId?: string) => {
@@ -178,7 +175,7 @@ const BidDetails = () => {
 
   const handleBidSubmit = (amount: number) => {
     if (!item?.id) return;
-    toast.success(`Bid of ${amount}php placed successfully!`, { closeButton: true })
+    toast.success(`Bid of ${amount}php placed successfully!`, { closeButton: true });
   };
 
   const handleLike = () => {
@@ -187,7 +184,7 @@ const BidDetails = () => {
 
   const handleHide = () => {
     setIsHidden(true);
-    toast("Artwork hidden", { closeButton: true })
+    toast("Artwork hidden", { closeButton: true });
     setMenuOpen(false);
   };
   const handleReport = async ({
@@ -202,7 +199,7 @@ const BidDetails = () => {
     additionalInfo?: string;
   }) => {
     if (reportInfo?.reported) {
-      toast.error("You have already reported this auction.", { closeButton: true })
+      toast.error("You have already reported this auction.", { closeButton: true });
       setMenuOpen(false);
       return;
     }
@@ -215,7 +212,7 @@ const BidDetails = () => {
         description,
         additionalInfo,
       });
-      toast.success("Report submitted successfully. Thank you for your feedback.", { closeButton: true })
+      toast.success("Report submitted successfully. Thank you for your feedback.", { closeButton: true });
     } catch (error) {
       console.error("Auction report failed:", error);
     }
@@ -289,7 +286,10 @@ const BidDetails = () => {
                       <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
-                          <p className="text-[9px] text-gray-700">{item.artwork.title || "Painting"}</p>
+                          <p className="text-[9px] text-gray-700">
+                            {(item.artwork.category || "Painting").charAt(0).toUpperCase() +
+                              (item.artwork.category || "Painting").slice(1)}
+                          </p>
                         </div>
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Medium</h3>
@@ -305,7 +305,6 @@ const BidDetails = () => {
                             {item.artwork.created_at ? formatDate(item.artwork.created_at) : "March 25, 2023"}
                           </p>
                         </div>
-
                       </div>
                     </div>
                   )}
@@ -430,7 +429,7 @@ const BidDetails = () => {
                         onHide={handleHide}
                         onReport={handleReport}
                         isReported={isReported}
-                        isShared = {item.isShared}
+                        isShared={item.isShared}
                         className={isMobile ? "mobile-menu-position" : ""}
                         auctionId={item.id}
                       />
@@ -595,10 +594,10 @@ const BidDetails = () => {
           {isExpanded && (
             <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
               <button
-              onClick={closeExpandedView}
-              className="absolute top-4 right-6 z-[60] bg-white rounded-full px-1 shadow-md transition-colors duration-200"
+                onClick={closeExpandedView}
+                className="absolute top-4 right-6 z-[60] bg-white rounded-full px-1 shadow-md transition-colors duration-200"
               >
-              <i className="bx bx-x text-xl text-black"></i>
+                <i className="bx bx-x text-xl text-black"></i>
               </button>
 
               <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
