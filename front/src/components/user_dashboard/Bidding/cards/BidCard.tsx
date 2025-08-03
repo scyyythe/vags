@@ -57,7 +57,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
 
   const handleHide = () => {
     setIsHidden(true);
-    toast("Artwork hidden", { closeButton: true })
+    toast("Artwork hidden", { closeButton: true });
     setMenuOpen(false);
   };
 
@@ -73,7 +73,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
     additionalInfo?: string;
   }) => {
     if (reportInfo?.reported) {
-      toast.error("You have already reported this auction.", { closeButton: true })
+      toast.error("You have already reported this auction.", { closeButton: true });
       setMenuOpen(false);
       return;
     }
@@ -101,7 +101,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
 
   const handleBidSubmit = (amount: number) => {
     onPlaceBid?.(data.id, amount);
-    toast(`Bid of ${amount}K placed successfully!`, { closeButton: true })
+    toast(`Bid of ${amount}K placed successfully!`, { closeButton: true });
   };
 
   if (isHidden) return null;
@@ -168,7 +168,10 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
           <div className="absolute bottom-3 left-3 right-3">
             <div className="bg-white bg-opacity-60 backdrop-blur-[3px] h-[69px] px-6 flex items-center justify-between rounded-lg">
               <div className="flex flex-col justify-center">
-                <h2 className="text-xs font-semibold">{data.artwork.title}</h2>
+                <h2 className="text-xs font-semibold truncate max-w-[150px]" title={data.artwork.title}>
+                  {data.artwork.title}
+                </h2>
+
                 <div className="text-gray-700 text-[9px]">
                   {hasWon ? "Your Bid" : "Current Bid"}{" "}
                   <span className="text-black text-sm font-bold ml-2">

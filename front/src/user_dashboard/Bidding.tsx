@@ -7,7 +7,7 @@ import ArtCategorySelect from "@/components/user_dashboard/local_components/cate
 import BidCard from "@/components/user_dashboard/Bidding/cards/BidCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useMemo, memo } from "react";
-import useAuctions from "@/hooks/auction/useAuction"; 
+import useAuctions from "@/hooks/auction/useAuction";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import "react-loading-skeleton/dist/skeleton.css";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
@@ -37,8 +37,8 @@ const Bidding = () => {
   const searchQuery = searchParams.get("q") || "";
   const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedFilterCategory, setSelectedFilterCategory] = useState("All"); 
-  const [selectedArtCategory, setSelectedArtCategory] = useState("All"); 
+  const [selectedFilterCategory, setSelectedFilterCategory] = useState("All");
+  const [selectedArtCategory, setSelectedArtCategory] = useState("All");
 
   const [showIncoming, setShowIncoming] = useState(false);
 
@@ -53,46 +53,35 @@ const Bidding = () => {
   const [page, setPage] = useState(1);
   const { data: followedAuctions = [] } = useFollowedAuctions(page);
   const filteredArtworks = useMemo(() => {
-  const now = new Date();
+    const now = new Date();
+    let activeArtworks: ArtworkAuction[] = [];
 
- 
-  if (selectedCategory === "Following") {
-    return followedAuctions || [];
-  }
+    if (selectedFilterCategory === "Following") {
+      activeArtworks = followedAuctions || [];
+    } else {
+      activeArtworks = biddingArtworks?.filter((a) => new Date(a.start_time) <= now) || [];
 
+      if (selectedFilterCategory === "Trending") {
+        activeArtworks = [...activeArtworks].sort((a, b) => b.auction_likes_count - a.auction_likes_count);
+      }
+    }
 
-  let activeArtworks = biddingArtworks?.filter(
-    (a) => new Date(a.start_time) <= now
-  ) || [];
+    if (selectedArtCategory !== "All") {
+      activeArtworks = activeArtworks.filter(
+        (artwork) => artwork.artwork.category?.toLowerCase() === selectedArtCategory.toLowerCase()
+      );
+    }
 
-  if (
-    selectedCategory &&
-    !["All", "Following", "Trending"].includes(selectedCategory)
-  ) {
-    activeArtworks = activeArtworks.filter(
-      (artwork) => artwork.artwork.category === selectedCategory
-    );
-  }
+    if (searchQuery?.trim()) {
+      const query = searchQuery.toLowerCase();
+      activeArtworks = activeArtworks.filter(
+        (artwork) =>
+          artwork.artwork.title.toLowerCase().includes(query) || artwork.artwork.artist.toLowerCase().includes(query)
+      );
+    }
 
-
-  if (selectedCategory === "Trending") {
-    activeArtworks = [...activeArtworks].sort(
-      (a, b) => b.auction_likes_count - a.auction_likes_count
-    );
-  }
-
-
-  if (searchQuery?.trim()) {
-    const query = searchQuery.toLowerCase();
-    activeArtworks = activeArtworks.filter(
-      (artwork) =>
-        artwork.artwork.title.toLowerCase().includes(query) ||
-        artwork.artwork.artist.toLowerCase().includes(query)
-    );
-  }
-
-  return activeArtworks;
-}, [biddingArtworks, followedAuctions, searchQuery, selectedCategory]);
+    return activeArtworks;
+  }, [biddingArtworks, followedAuctions, searchQuery, selectedFilterCategory, selectedArtCategory]);
 
   const auctionIds = useMemo(() => filteredArtworks.map((artwork) => artwork.id), [filteredArtworks]);
   const { data: reportStatusData, isLoading: isReportLoading } = useBulkBidReportStatus(auctionIds);
@@ -122,7 +111,7 @@ const Bidding = () => {
             <ArtsContainer artworks={staticArtworks} />
           </section>
           <div className="flex items-center justify-between -ml-7 mb-6 w-[114%] md:w-[105%] lg:w-[105%] pl-2 sm:pl-0">
-            <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
+            <CategoryFilter categories={categories} onSelectCategory={setSelectedFilterCategory} />
             <div className="flex space-x-2 text-xs">
               {/* Incoming Auctions */}
               <button
@@ -167,21 +156,15 @@ const Bidding = () => {
 
           {/* UPCOMING AUCTIONS SECTION */}
           {showIncoming && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {upcomingArtworks.length === 0 && (
-              <div className="col-span-full flex flex-col items-center justify-center text-center py-16">
-                <img
-                  src="/pics/empty.png"
-                  alt="No Upcoming Auctions"
-                  className="w-48 h-48 mb-4 opacity-70"
-                />
-                <p className="text-gray-500 text-sm">No upcoming auctions found.</p>
-              </div>
-            )}
-          </div>
-        )}
-
-
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {upcomingArtworks.length === 0 && (
+                <div className="col-span-full flex flex-col items-center justify-center text-center py-16">
+                  <img src="/pics/empty.png" alt="No Upcoming Auctions" className="w-48 h-48 mb-4 opacity-70" />
+                  <p className="text-gray-500 text-sm">No upcoming auctions found.</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <Footer />
