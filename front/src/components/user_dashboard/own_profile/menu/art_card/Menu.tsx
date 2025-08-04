@@ -147,7 +147,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
               onMouseLeave={() => setHoveredItem(null)}
             >
               <ShoppingCart size={10} />
-            </button>
+            </button> 
             {hoveredItem === "sell" && (
               <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
                 Sell Artwork
