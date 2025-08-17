@@ -149,7 +149,7 @@ class AuctionListView(generics.ListAPIView):
         except Exception as e:
             print(f"Error fetching expired auctions: {e}")
 
-        # ✅ 2. Handle blocked users
+       
         blocked_user_ids = []
         user = self.request.user
         if user.is_authenticated and hasattr(user, "blocked_users"):
@@ -167,7 +167,7 @@ class AuctionListView(generics.ListAPIView):
             except Exception as e:
                 print(f"Error filtering artworks: {e}")
 
-        # ✅ 3. Handle status param safely
+       
         query = {}
         status_param = self.request.query_params.get("status")
         allowed_statuses = [choice.value for choice in AuctionStatus]
@@ -272,7 +272,7 @@ class AuctionListViewParticipated(generics.ListAPIView):
         all_auctions = Auction.objects()
 
         for auction in all_auctions:
-            # Check if user participated in bids
+           
             participated = any(
                 (getattr(bid.bidder, 'id', None) and str(bid.bidder.id) == user_id)
                 or (getattr(bid.bidder, 'username', None) == user_id)

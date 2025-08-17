@@ -7,7 +7,7 @@ from api.models.artwork_model.wishlist import Wishlist
 from api.models.artwork_model.artwork import Art
 from bson import ObjectId
 from api.serializers.artwork_s.artwork_serializers import ArtCardSerializer
-
+from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 class ToggleWishlistView(APIView):
     permission_classes = [IsAuthenticated]
 

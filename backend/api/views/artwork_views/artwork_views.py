@@ -22,6 +22,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from mongoengine.queryset.visitor import Q
+from rest_framework.exceptions import NotFound
+
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
     serializer_class = ArtSerializer
