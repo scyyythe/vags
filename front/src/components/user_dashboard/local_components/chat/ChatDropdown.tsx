@@ -7,7 +7,10 @@ import { MessagesList } from "./MessagesList";
 import { MessageInput } from "./MessageInput";
 import { Conversation, Message } from "./types/types";
 import { InviteFriends } from "./InviteFriends";
-
+import { db } from "@/firebase/firebaseConfig";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { onSnapshot, query, orderBy } from "firebase/firestore";
+import { useEffect } from "react";
 interface ChatDropdownProps {
   isOpen: boolean;
   onClose: () => void;
@@ -47,9 +50,9 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
           timestamp: new Date(Date.now() - 1000 * 60 * 10),
           isRead: true,
           isStarred: false,
-          type: 'text',
-          reactions: [{ emoji: '👍', users: ['currentUser'] }],
-          deliveryStatus: 'seen'
+          type: "text",
+          reactions: [{ emoji: "👍", users: ["currentUser"] }],
+          deliveryStatus: "seen",
         },
         {
           id: "m2",
@@ -59,8 +62,8 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
           timestamp: new Date(Date.now() - 1000 * 60 * 5),
           isRead: false,
           isStarred: true,
-          type: 'text',
-          deliveryStatus: 'delivered'
+          type: "text",
+          deliveryStatus: "delivered",
         },
       ],
     },
@@ -85,8 +88,8 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3),
           isRead: true,
           isStarred: false,
-          type: 'text',
-          deliveryStatus: 'seen'
+          type: "text",
+          deliveryStatus: "seen",
         },
         {
           id: "m4",
@@ -96,8 +99,8 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
           isRead: true,
           isStarred: false,
-          type: 'text',
-          deliveryStatus: 'seen'
+          type: "text",
+          deliveryStatus: "seen",
         },
       ],
     },
@@ -122,13 +125,31 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
           isRead: false,
           isStarred: false,
-          type: 'text',
-          deliveryStatus: 'delivered'
+          type: "text",
+          deliveryStatus: "delivered",
         },
       ],
     },
   ]);
 
+  useEffect(() => {
+    if (!selectedConversation) return;
+
+    const q = query(collection(db, "conversations", selectedConversation, "messages"), orderBy("timestamp", "asc"));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const msgs = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Message[];
+
+      setConversations((prev) =>
+        prev.map((conv) => (conv.id === selectedConversation ? { ...conv, messages: msgs } : conv))
+      );
+    });
+
+    return () => unsubscribe();
+  }, [selectedConversation]);
   const filteredConversations = conversations.filter((conv) => {
     const matchesSearch = conv.participantName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesArchive = showArchived ? conv.isArchived : !conv.isArchived;
@@ -137,43 +158,37 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
 
   const selectedConv = conversations.find((conv) => conv.id === selectedConversation);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!messageInput.trim() || !selectedConversation) return;
 
-    const newMessage: Message = {
-      id: `m${Date.now()}`,
-      senderId: "currentUser",
-      senderName: "You",
+    const userId = localStorage.getItem("user_id"); // from your Mongo auth
+    const email = localStorage.getItem("email"); // or username
+
+    const newMessage = {
+      senderId: userId,
+      senderEmail: email,
       content: messageInput,
-      timestamp: new Date(),
-      isRead: true,
-      isStarred: false,
-      type: 'text',
-      replyTo: replyingTo?.id,
-      deliveryStatus: 'sent'
+      timestamp: serverTimestamp(),
+      isRead: false,
+      type: "text",
+      deliveryStatus: "sent",
+      replyTo: replyingTo?.id || null,
     };
 
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === selectedConversation
-          ? {
-              ...conv,
-              messages: [...conv.messages, newMessage],
-              lastMessage: messageInput,
-              lastMessageTime: new Date(),
-            }
-          : conv
-      )
-    );
+    try {
+      await addDoc(collection(db, "conversations", selectedConversation, "messages"), newMessage);
 
-    setMessageInput("");
-    setReplyingTo(null);
+      setMessageInput("");
+      setReplyingTo(null);
+    } catch (err) {
+      console.error("Error sending message:", err);
+    }
   };
 
   const handleFileAttachment = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*,video/*,.pdf,.doc,.docx,.txt';
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*,video/*,.pdf,.doc,.docx,.txt";
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file && selectedConversation) {
@@ -181,14 +196,14 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
           id: `m${Date.now()}`,
           senderId: "currentUser",
           senderName: "You",
-          content: file.type.startsWith('image/') ? 'Sent an image' : `Sent ${file.name}`,
+          content: file.type.startsWith("image/") ? "Sent an image" : `Sent ${file.name}`,
           timestamp: new Date(),
           isRead: true,
           isStarred: false,
-          type: file.type.startsWith('image/') ? 'image' : 'file',
-          imageUrl: file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined,
+          type: file.type.startsWith("image/") ? "image" : "file",
+          imageUrl: file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined,
           fileName: file.name,
-          deliveryStatus: 'sent'
+          deliveryStatus: "sent",
         };
 
         setConversations((prev) =>
@@ -209,7 +224,7 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
   };
 
   const handleEmojiClick = (emojiData: any) => {
-    setMessageInput(prev => prev + emojiData.emoji);
+    setMessageInput((prev) => prev + emojiData.emoji);
     setShowEmojiPicker(false);
   };
 
@@ -220,7 +235,7 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
       setIsRecording(true);
       setTimeout(() => {
         setIsRecording(false);
-        
+
         const voiceMessage: Message = {
           id: `m${Date.now()}`,
           senderId: "currentUser",
@@ -229,9 +244,9 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
           timestamp: new Date(),
           isRead: true,
           isStarred: false,
-          type: 'voice',
+          type: "voice",
           voiceDuration: 5,
-          deliveryStatus: 'sent'
+          deliveryStatus: "sent",
         };
 
         setConversations((prev) =>
@@ -253,26 +268,26 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
   };
 
   const handleCameraCapture = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*,video/*';
-    input.capture = 'environment'; 
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*,video/*";
+    input.capture = "environment";
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file && selectedConversation) {
-        const isVideo = file.type.startsWith('video/');
+        const isVideo = file.type.startsWith("video/");
         const cameraMessage: Message = {
           id: `m${Date.now()}`,
           senderId: "currentUser",
           senderName: "You",
-          content: isVideo ? 'Sent a video' : 'Sent a photo',
+          content: isVideo ? "Sent a video" : "Sent a photo",
           timestamp: new Date(),
           isRead: true,
           isStarred: false,
-          type: 'image',
+          type: "image",
           imageUrl: URL.createObjectURL(file),
           fileName: file.name,
-          deliveryStatus: 'sent'
+          deliveryStatus: "sent",
         };
 
         setConversations((prev) =>
@@ -293,83 +308,73 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
   };
 
   const toggleArchive = (convId: string) => {
-    setConversations(prev =>
-      prev.map(conv =>
-        conv.id === convId ? { ...conv, isArchived: !conv.isArchived } : conv
-      )
+    setConversations((prev) =>
+      prev.map((conv) => (conv.id === convId ? { ...conv, isArchived: !conv.isArchived } : conv))
     );
   };
 
   const markAsRead = (convId: string) => {
-    setConversations(prev =>
-      prev.map(conv =>
-        conv.id === convId 
-          ? { 
-              ...conv, 
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === convId
+          ? {
+              ...conv,
               unreadCount: 0,
-              messages: conv.messages.map(msg => ({ ...msg, isRead: true }))
-            } 
+              messages: conv.messages.map((msg) => ({ ...msg, isRead: true })),
+            }
           : conv
       )
     );
   };
 
   const markAsUnread = (convId: string) => {
-    setConversations(prev =>
-      prev.map(conv =>
-        conv.id === convId 
-          ? { 
-              ...conv, 
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === convId
+          ? {
+              ...conv,
               unreadCount: Math.max(1, conv.unreadCount),
-              messages: conv.messages.map((msg, index) => 
+              messages: conv.messages.map((msg, index) =>
                 index === conv.messages.length - 1 ? { ...msg, isRead: false } : msg
-              )
-            } 
+              ),
+            }
           : conv
       )
     );
   };
 
   const markAllAsRead = () => {
-    setConversations(prev =>
-      prev.map(conv => ({
+    setConversations((prev) =>
+      prev.map((conv) => ({
         ...conv,
         unreadCount: 0,
-        messages: conv.messages.map(msg => ({ ...msg, isRead: true }))
+        messages: conv.messages.map((msg) => ({ ...msg, isRead: true })),
       }))
     );
   };
 
   const markAllAsUnread = () => {
-    setConversations(prev =>
-      prev.map(conv => ({
+    setConversations((prev) =>
+      prev.map((conv) => ({
         ...conv,
         unreadCount: Math.max(1, conv.unreadCount),
-        messages: conv.messages.map((msg, index) => 
+        messages: conv.messages.map((msg, index) =>
           index === conv.messages.length - 1 ? { ...msg, isRead: false } : msg
-        )
+        ),
       }))
     );
   };
 
   const togglePin = (convId: string) => {
-    setConversations(prev =>
-      prev.map(conv =>
-        conv.id === convId ? { ...conv, isPinned: !conv.isPinned } : conv
-      )
-    );
+    setConversations((prev) => prev.map((conv) => (conv.id === convId ? { ...conv, isPinned: !conv.isPinned } : conv)));
   };
 
   const toggleMute = (convId: string) => {
-    setConversations(prev =>
-      prev.map(conv =>
-        conv.id === convId ? { ...conv, isMuted: !conv.isMuted } : conv
-      )
-    );
+    setConversations((prev) => prev.map((conv) => (conv.id === convId ? { ...conv, isMuted: !conv.isMuted } : conv)));
   };
 
   const deleteConversation = (convId: string) => {
-    setConversations(prev => prev.filter(conv => conv.id !== convId));
+    setConversations((prev) => prev.filter((conv) => conv.id !== convId));
     if (selectedConversation === convId) {
       setSelectedConversation(null);
     }
@@ -377,15 +382,15 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
 
   const starMessage = (messageId: string) => {
     if (!selectedConversation) return;
-    
-    setConversations(prev =>
-      prev.map(conv =>
+
+    setConversations((prev) =>
+      prev.map((conv) =>
         conv.id === selectedConversation
           ? {
               ...conv,
-              messages: conv.messages.map(msg =>
+              messages: conv.messages.map((msg) =>
                 msg.id === messageId ? { ...msg, isStarred: !msg.isStarred } : msg
-              )
+              ),
             }
           : conv
       )
@@ -394,13 +399,13 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
 
   const deleteMessage = (messageId: string) => {
     if (!selectedConversation) return;
-    
-    setConversations(prev =>
-      prev.map(conv =>
+
+    setConversations((prev) =>
+      prev.map((conv) =>
         conv.id === selectedConversation
           ? {
               ...conv,
-              messages: conv.messages.filter(msg => msg.id !== messageId)
+              messages: conv.messages.filter((msg) => msg.id !== messageId),
             }
           : conv
       )
@@ -413,40 +418,40 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
 
   const addReactionToMessage = (messageId: string, emoji: string) => {
     if (!selectedConversation) return;
-    
-    setConversations(prev =>
-      prev.map(conv =>
+
+    setConversations((prev) =>
+      prev.map((conv) =>
         conv.id === selectedConversation
           ? {
               ...conv,
-              messages: conv.messages.map(msg => {
+              messages: conv.messages.map((msg) => {
                 if (msg.id === messageId) {
                   const existingReactions = msg.reactions || [];
-                  const existingReaction = existingReactions.find(r => r.emoji === emoji);
-                  
+                  const existingReaction = existingReactions.find((r) => r.emoji === emoji);
+
                   if (existingReaction) {
-                    const userIndex = existingReaction.users.indexOf('currentUser');
+                    const userIndex = existingReaction.users.indexOf("currentUser");
                     if (userIndex > -1) {
                       existingReaction.users.splice(userIndex, 1);
                       if (existingReaction.users.length === 0) {
                         return {
                           ...msg,
-                          reactions: existingReactions.filter(r => r.emoji !== emoji)
+                          reactions: existingReactions.filter((r) => r.emoji !== emoji),
                         };
                       }
                     } else {
-                      existingReaction.users.push('currentUser');
+                      existingReaction.users.push("currentUser");
                     }
                     return { ...msg, reactions: existingReactions };
                   } else {
                     return {
                       ...msg,
-                      reactions: [...existingReactions, { emoji, users: ['currentUser'] }]
+                      reactions: [...existingReactions, { emoji, users: ["currentUser"] }],
                     };
                   }
                 }
                 return msg;
-              })
+              }),
             }
           : conv
       )
@@ -461,87 +466,85 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
   };
 
   return (
-    <div
-        className="absolute right-4 md:right-0.5 bg-white rounded-2xl shadow-xl z-50 w-[330px] md:w-[330px] h-[534px]"
-      >
-        <div className="flex h-full">
-          <div className="w-full flex flex-col">
-            <ChatHeader
-              selectedConversation={selectedConversation}
-              selectedConv={selectedConv}
-              showArchived={showArchived}
-              searchQuery={searchQuery}
-              onBack={() => {
-                if (selectedConversation) {
-                  setSelectedConversation(null);
-                } else {
-                  setShowArchived(false);
-                }
-              }}
-              onClose={onClose}
-              onCall={handleCall}
-              onTogglePin={togglePin}
-              onToggleArchived={() => setShowArchived(!showArchived)}
-              onMarkAllAsRead={markAllAsRead}
-              onMarkAllAsUnread={markAllAsUnread}
-              onSearchChange={setSearchQuery}
-            />
+    <div className="absolute right-4 md:right-0.5 bg-white rounded-2xl shadow-xl z-50 w-[330px] md:w-[330px] h-[534px]">
+      <div className="flex h-full">
+        <div className="w-full flex flex-col">
+          <ChatHeader
+            selectedConversation={selectedConversation}
+            selectedConv={selectedConv}
+            showArchived={showArchived}
+            searchQuery={searchQuery}
+            onBack={() => {
+              if (selectedConversation) {
+                setSelectedConversation(null);
+              } else {
+                setShowArchived(false);
+              }
+            }}
+            onClose={onClose}
+            onCall={handleCall}
+            onTogglePin={togglePin}
+            onToggleArchived={() => setShowArchived(!showArchived)}
+            onMarkAllAsRead={markAllAsRead}
+            onMarkAllAsUnread={markAllAsUnread}
+            onSearchChange={setSearchQuery}
+          />
 
-            <ScrollArea className="flex-1">
-              {selectedConversation && selectedConv ? (
-                <MessagesList
-                  conversation={selectedConv}
-                  selectedMessage={selectedMessage}
-                  showReactionPicker={showReactionPicker}
-                  onSelectMessage={setSelectedMessage}
-                  onReplyToMessage={replyToMessage}
-                  onStarMessage={starMessage}
-                  onDeleteMessage={deleteMessage}
+          <ScrollArea className="flex-1">
+            {selectedConversation && selectedConv ? (
+              <MessagesList
+                conversation={selectedConv}
+                selectedMessage={selectedMessage}
+                showReactionPicker={showReactionPicker}
+                onSelectMessage={setSelectedMessage}
+                onReplyToMessage={replyToMessage}
+                onStarMessage={starMessage}
+                onDeleteMessage={deleteMessage}
                 //   onAddReaction={addReactionToMessage}
-                  onSetReactionPicker={setShowReactionPicker}
-                />
-              ) : (
-                <div className="flex flex-col h-full">
-                  <ConversationList
-                    conversations={filteredConversations}
-                    selectedConversation={selectedConversation}
-                    onSelectConversation={(convId) => {
-                      setSelectedConversation(convId);
-                      markAsRead(convId);
-                    }}
-                    onMarkAsRead={markAsRead}
-                    onMarkAsUnread={markAsUnread}
-                    onTogglePin={togglePin}
-                    onToggleMute={toggleMute}
-                    onToggleArchive={toggleArchive}
-                    onDeleteConversation={deleteConversation}
-                  />
-                  <div className="mt-auto">
-                    <InviteFriends />
-                  </div>
-                </div>
-              )}
-            </ScrollArea>
-
-            {selectedConversation && (
-              <MessageInput
-                messageInput={messageInput}
-                replyingTo={replyingTo}
-                isRecording={isRecording}
-                showEmojiPicker={showEmojiPicker}
-                onMessageChange={setMessageInput}
-                onSendMessage={handleSendMessage}
-                onFileAttachment={handleFileAttachment}
-                onVoiceRecord={handleVoiceRecord}
-                onEmojiClick={handleEmojiClick}
-                onSetShowEmojiPicker={setShowEmojiPicker}
-                onCancelReply={() => setReplyingTo(null)}
-                onCameraCapture={handleCameraCapture}
+                onSetReactionPicker={setShowReactionPicker}
               />
+            ) : (
+              <div className="flex flex-col h-full">
+                <ConversationList
+                  conversations={filteredConversations}
+                  selectedConversation={selectedConversation}
+                  onSelectConversation={(convId) => {
+                    setSelectedConversation(convId);
+                    markAsRead(convId);
+                  }}
+                  onMarkAsRead={markAsRead}
+                  onMarkAsUnread={markAsUnread}
+                  onTogglePin={togglePin}
+                  onToggleMute={toggleMute}
+                  onToggleArchive={toggleArchive}
+                  onDeleteConversation={deleteConversation}
+                />
+                <div className="mt-auto">
+                  <InviteFriends />
+                </div>
+              </div>
             )}
-          </div>
+          </ScrollArea>
+
+          {selectedConversation && (
+            <MessageInput
+              messageInput={messageInput}
+              replyingTo={replyingTo}
+              isRecording={isRecording}
+              showEmojiPicker={showEmojiPicker}
+              onMessageChange={setMessageInput}
+              onSendMessage={handleSendMessage}
+              onFileAttachment={handleFileAttachment}
+              onVoiceRecord={handleVoiceRecord}
+              onEmojiClick={handleEmojiClick}
+              onSetShowEmojiPicker={setShowEmojiPicker}
+              onCancelReply={() => setReplyingTo(null)}
+              onCameraCapture={handleCameraCapture}
+            />
+          )}
         </div>
       </div>
+    </div>
   );
 };
 

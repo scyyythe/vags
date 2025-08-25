@@ -8,7 +8,8 @@ import SystemMessage from "../components/page/SystemMessage";
 import { toast } from "sonner";
 import { useGoogleLogin } from "@react-oauth/google";
 import { AxiosError } from "axios";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase/firebaseConfig";
 const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [formData, setFormData] = useState({
     email: "",
@@ -51,6 +52,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     }
 
     try {
+      // ---- 1. Try your existing Django backend login ----
       const response = await apiClient.post<{
         access_token: string;
         refresh_token: string;
@@ -84,14 +86,36 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         navigate("/explore");
       }
     } catch (err) {
-      const error = err as AxiosError<{ error: string }>;
+      // ---- 2. If Django login fails, fall back to Firebase ----
+      console.warn("Django login failed, trying Firebase...", err);
 
-      console.error("Login error:", error);
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
 
-      toast.error("Login failed", {
-        description: error.response?.data?.error || "Please check your credentials and try again.",
-        closeButton: true,
-      });
+        const user = userCredential.user;
+        const firebaseToken = await user.getIdToken();
+
+        // optional: send Firebase token to Django to sync users
+        await apiClient.post("user/firebase-login/", {
+          firebase_token: firebaseToken,
+        });
+
+        localStorage.setItem("firebase_uid", user.uid);
+        localStorage.setItem("email", user.email || "");
+
+        toast.success("Firebase login successful!", {
+          description: "Welcome back!",
+          closeButton: true,
+        });
+
+        navigate("/explore");
+      } catch (firebaseError: any) {
+        console.error("Firebase login error:", firebaseError);
+        toast.error("Login failed", {
+          description: firebaseError.message || "Please check your credentials and try again.",
+          closeButton: true,
+        });
+      }
     }
   };
 
