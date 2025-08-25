@@ -57,3 +57,5 @@ media/
 
 # VS Code workspace settings (optional)
 *.code-workspace
+
+backend/secrets/*.json
