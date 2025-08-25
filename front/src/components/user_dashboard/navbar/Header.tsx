@@ -1,16 +1,16 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Link, useLocation, NavLink } from "react-router-dom";
+import { Link, useLocation, NavLink, useNavigate } from "react-router-dom";
 import Logo from "./Logo";
 import { Bell, MessageCircle, Search, X, Menu } from "lucide-react";
 import SearchBar from "@/components/user_dashboard/local_components/SearchBar";
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef } from "react";
 import ProfileDropdown from "../local_components/profile_dropdown/ProfileDropdown";
 import ChatDropdown from "../local_components/chat/ChatDropdown";
 import Notifications from "../local_components/notification/Notification";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useChat } from "@/context/ChatContext";
 
 const Header = () => {
   const location = useLocation();
@@ -19,12 +19,19 @@ const Header = () => {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const notificationRef = useRef(null);
-  const [isChatOpen, setIsChatOpen] = useState(false);
   const chatRef = useRef(null);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage] = useState(1);
-  const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all", "public");
+  const { data: artworks } = useArtworks(currentPage, undefined, true, "all", "public");
   const navigate = useNavigate();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const avatarRef = useRef(null);
+
+  const userId = getLoggedInUserId();
+  const { firstName, profilePicture } = useUserDetails(userId);
+
+  const { isChatOpen, openChat, closeChat, participantId, participantName } = useChat();
 
   const handleSearchChange = (value: string) => {
     if (!value.trim()) return;
@@ -36,23 +43,15 @@ const Header = () => {
     const isBiddingPage = currentPath.includes("/bidding");
     const isExhibitPage = currentPath.includes("/exhibits");
     const isMarketplacePage = currentPath.includes("/exhibits");
-    if (isExplorePage) {
-      navigate(`/explore?${params.toString()}`);
-    } else if (isBiddingPage) {
-      navigate(`/bidding?${params.toString()}`);
-    } else if (isExhibitPage) {
-      navigate(`/exhibit?${params.toString()}`);
-    } else if (isMarketplacePage) {
-      navigate(`/marketplace?${params.toString()}`);
-    }
+
+    if (isExplorePage) navigate(`/explore?${params.toString()}`);
+    else if (isBiddingPage) navigate(`/bidding?${params.toString()}`);
+    else if (isExhibitPage) navigate(`/exhibit?${params.toString()}`);
+    else if (isMarketplacePage) navigate(`/marketplace?${params.toString()}`);
 
     setSearchQuery(value);
   };
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const avatarRef = useRef(null);
 
-  const userId = getLoggedInUserId();
-  const { firstName, profilePicture } = useUserDetails(userId);
   if (!userId) {
     return <p>No user found</p>;
   }
@@ -62,7 +61,6 @@ const Header = () => {
       <div className="container mx-auto px-2 sm:px-4 flex items-center h-16 gap-2 sm:gap-4">
         {/* Left Section: Logo + Hamburger + Nav */}
         <div className="flex items-center gap-2 flex-grow md:flex-grow-0">
-          {/* Logo */}
           <div className="flex items-center gap-2 pl-2 sm:pl-0">
             <Logo />
 
@@ -74,7 +72,6 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Nav Links (desktop only) */}
           <nav className="hidden md:flex items-center space-x-16 text-xs ml-16">
             {["Explore", "Exhibits", "Bidding", "Marketplace"].map((label) => (
               <NavLink
@@ -90,12 +87,12 @@ const Header = () => {
 
         {/* Right: Searchbar + Icons + Profile */}
         <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
-          {/* SearchBar for large screens */}
+          {/* SearchBar (desktop) */}
           <div className="hidden md:block w-[250px] border border-gray-400 rounded-full px-3">
             <SearchBar onSearchChange={handleSearchChange} />
           </div>
 
-          {/* Search Icon for small screens */}
+          {/* Search Icon (mobile) */}
           <div className="block md:hidden relative top-0.5 right-1 ">
             <button
               className="button-icon hover:scale-110 transition"
@@ -105,7 +102,6 @@ const Header = () => {
               <Search size={15} />
             </button>
 
-            {/* Dropdown with SearchBar */}
             <AnimatePresence>
               {isSearchOpen && (
                 <motion.div
@@ -120,15 +116,18 @@ const Header = () => {
             </AnimatePresence>
           </div>
 
+          {/* Chat Dropdown (global from context) */}
           <div className="relative top-0.5" ref={chatRef}>
             <button
-              onClick={() => {
-                setIsChatOpen(!isChatOpen);
-                setIsNotificationOpen(false);
-                setIsProfileDropdownOpen(false);
-              }}
               className="button-icon hover:scale-110 transition"
               title="ChatDropdown"
+              onClick={() => {
+                if (isChatOpen) {
+                  closeChat();
+                } else {
+                  openChat("", "");
+                }
+              }}
             >
               <MessageCircle size={15} />
             </button>
@@ -141,18 +140,22 @@ const Header = () => {
                   exit={{ opacity: 0, y: -10 }}
                   className="absolute -right-[100px] mt-4 z-50"
                 >
-                  <ChatDropdown isOpen={true} onClose={() => setIsChatOpen(false)} />
+                  <ChatDropdown
+                    isOpen={isChatOpen}
+                    onClose={closeChat}
+                    participantId={participantId}
+                    participantName={participantName}
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Chat Dropdown */}
+          {/* Notifications */}
           <div className="relative top-0.5" ref={notificationRef}>
             <button
               onClick={() => {
                 setIsNotificationOpen(!isNotificationOpen);
-                setIsChatOpen(false);
                 setIsProfileDropdownOpen(false);
               }}
               className="button-icon hover:scale-110 transition"
@@ -175,7 +178,7 @@ const Header = () => {
             </AnimatePresence>
           </div>
 
-          {/* Profile Avatar + Chevron */}
+          {/* Profile */}
           <div className="relative flex items-center" ref={avatarRef}>
             <Link to={`/userprofile/${userId}`}>
               <div className="h-7 w-7 rounded-full overflow-hidden border cursor-pointer flex items-center justify-center bg-gray-300">
@@ -187,15 +190,10 @@ const Header = () => {
               </div>
             </Link>
             <button
-              onClick={() => {
-                setIsProfileDropdownOpen(!isProfileDropdownOpen);
-                setIsChatOpen(false);
-                setIsNotificationOpen(false);
-              }}
+              onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
               className="ml-1 z-10"
               aria-label="Profile menu"
             >
-              {/* Chevron icon always visible */}
               <i className="bx bx-chevron-down text-xl"></i>
             </button>
 
@@ -214,31 +212,6 @@ const Header = () => {
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="md:hidden bg-white shadow px-4 py-4 space-y-3"
-          >
-            {["Explore", "Exhibits", "Bidding", "Marketplace"].map((label) => (
-              <NavLink
-                key={label}
-                to={`/${label.toLowerCase()}`}
-                onClick={() => setIsMenuOpen(false)}
-                className={({ isActive }) =>
-                  `block text-center text-xs py-2 rounded ${isActive ? "font-semibold text-black" : "text-gray-700"}`
-                }
-              >
-                {label}
-              </NavLink>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 };

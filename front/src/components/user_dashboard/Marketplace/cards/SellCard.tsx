@@ -7,6 +7,8 @@ import PreviewModal from "../buying_process/preview/PreviewModal";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import useArtworkReportStatus from "@/hooks/mutate/report/useArtworkReportStatus";
 import { Badge } from "@/components/ui/badge";
+import ChatDropdown from "../../local_components/chat/ChatDropdown";
+import { useChat } from "@/context/ChatContext";
 
 export interface SellCardProps {
   id: string;
@@ -65,6 +67,9 @@ const SellCard = ({
   const { data: reportStatusData } = useArtworkReportStatus(id);
   const isReported = reportStatusData?.reported ?? false;
 
+  // 👇 use context instead of local state
+  const { isChatOpen, openChat, closeChat, participantId, participantName } = useChat();
+
   const toggleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
     toast(!isLiked ? "Added to wishlist" : "Removed from wishlist", {
@@ -75,9 +80,8 @@ const SellCard = ({
 
   const handleContact = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toast("Redirecting to contact the artist...", {
-      closeButton: true,
-    });
+    openChat(id, artist || "Unknown"); // 👈 context handles open
+    toast("Redirecting to contact the artist...", { closeButton: true });
   };
 
   const handleMenuClick = (e: React.MouseEvent) => {
@@ -104,10 +108,7 @@ const SellCard = ({
       {
         onSuccess: () => {
           onReportSuccess?.();
-
-          toast.success("Report submitted successfully", {
-            closeButton: true,
-          });
+          toast.success("Report submitted successfully", { closeButton: true });
         },
       }
     );

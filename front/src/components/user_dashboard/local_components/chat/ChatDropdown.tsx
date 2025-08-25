@@ -14,9 +14,10 @@ import { useEffect } from "react";
 interface ChatDropdownProps {
   isOpen: boolean;
   onClose: () => void;
+  participantId?: string;
+  participantName?: string;
 }
-
-const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
+const ChatDropdown = ({ isOpen, onClose, participantId, participantName }: ChatDropdownProps) => {
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -150,6 +151,39 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
 
     return () => unsubscribe();
   }, [selectedConversation]);
+  useEffect(() => {
+    if (isOpen && participantId) {
+      setConversations((prev) => {
+        let targetConv = prev.find((c) => c.participantId === participantId);
+
+        if (targetConv) {
+          setSelectedConversation(targetConv.id);
+          markAsRead(targetConv.id);
+          return prev;
+        }
+
+        // Create new conversation
+        const newConv: Conversation = {
+          id: Date.now().toString(),
+          participantId,
+          participantName: participantName || "New Seller",
+          participantAvatar: undefined,
+          lastMessage: "",
+          lastMessageTime: new Date(),
+          unreadCount: 0,
+          isOnline: false,
+          isArchived: false,
+          isPinned: false,
+          isMuted: false,
+          messages: [],
+        };
+
+        setSelectedConversation(newConv.id);
+        return [...prev, newConv];
+      });
+    }
+  }, [isOpen, participantId, participantName]);
+
   const userId = localStorage.getItem("user_id");
   const filteredConversations = conversations.filter((conv) => {
     const matchesUser = conv.participantId === userId || conv.messages.some((m) => m.senderId === userId);
@@ -531,7 +565,6 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
               </div>
             )}
           </ScrollArea>
-
           {selectedConversation && (
             <MessageInput
               messageInput={messageInput}
