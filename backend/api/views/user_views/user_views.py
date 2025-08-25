@@ -15,8 +15,15 @@ import traceback
 from bson import ObjectId
 from rest_framework import status
 from rest_framework.response import Response
-
-                            
+import firebase_admin
+from firebase_admin import credentials, auth as firebase_auth
+from api.core.firebase_config import initialize_firebase      
+      
+      
+if not firebase_admin._apps:
+    cred = credentials.Certificate("path/to/firebase-service-account.json")
+    firebase_admin.initialize_app(cred)
+                
 class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
@@ -129,10 +136,10 @@ class UnblockUserView(APIView):
             status=status.HTTP_200_OK
         )
 
+initialize_firebase()
 
 class CustomTokenObtainPairView(APIView):
-    """Handles JWT authentication for MongoEngine users"""
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
 
     def post(self, request):
         email = request.data.get("email")
@@ -140,8 +147,9 @@ class CustomTokenObtainPairView(APIView):
 
         user = User.objects(email=email).first()
         if not user or not user.password or not bcrypt.checkpw(password, user.password.encode("utf-8")):
-            return Response({"error": "Please check your credentials and try again"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
+        # Local JWT tokens
         def generate_token(payload, exp_delta):
             payload.update({"exp": datetime.utcnow() + exp_delta, "iat": datetime.utcnow()})
             return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
@@ -149,26 +157,29 @@ class CustomTokenObtainPairView(APIView):
         access_token = generate_token({
             "user_id": str(user.id),
             "email": user.email,
-            "role": user.role, 
+            "role": user.role,
             "jti": f"{user.id}_access",
             "token_type": "access"
         }, timedelta(hours=8))
 
         refresh_token = generate_token({
             "user_id": str(user.id),
-            "role": user.role,  
+            "role": user.role,
             "jti": f"{user.id}_refresh",
             "token_type": "refresh"
         }, timedelta(days=7))
 
+        # Firebase Custom Token
+        firebase_token = firebase_auth.create_custom_token(str(user.id)).decode("utf-8")
+
         return Response({
             "access_token": access_token,
             "refresh_token": refresh_token,
+            "firebase_token": firebase_token,
             "user_id": str(user.id),
             "email": user.email,
-            "role": user.role 
+            "role": user.role
         }, status=status.HTTP_200_OK)
-
 
 class CustomTokenRefreshView(APIView):
     """Handles JWT token refresh"""
