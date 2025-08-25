@@ -1,3 +1,5 @@
+export type DeliveryStatus = "sending" | "sent" | "delivered" | "seen" | "failed";
+
 export interface Message {
   id: string;
   senderId: string;
@@ -6,13 +8,12 @@ export interface Message {
   timestamp: Date;
   isRead: boolean;
   isStarred: boolean;
-  type: 'text' | 'image' | 'file' | 'voice';
+  type: "text" | "image" | "file" | "voice";
+  deliveryStatus: DeliveryStatus;
   reactions?: { emoji: string; users: string[] }[];
-  replyTo?: string;
   imageUrl?: string;
   fileName?: string;
   voiceDuration?: number;
-  deliveryStatus: 'sent' | 'delivered' | 'seen';
 }
 
 export interface Conversation {
