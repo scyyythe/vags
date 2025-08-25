@@ -31,7 +31,7 @@ const Header = () => {
   const userId = getLoggedInUserId();
   const { firstName, profilePicture } = useUserDetails(userId);
 
-  const { isChatOpen, openChat, closeChat, participantId, participantName } = useChat();
+  const { isChatOpen, openChat, closeChat, participantId, participantName, participantAvatar } = useChat();
 
   const handleSearchChange = (value: string) => {
     if (!value.trim()) return;
@@ -145,6 +145,7 @@ const Header = () => {
                     onClose={closeChat}
                     participantId={participantId}
                     participantName={participantName}
+                    participantAvatar={participantAvatar}
                   />
                 </motion.div>
               )}

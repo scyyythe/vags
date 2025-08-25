@@ -16,6 +16,7 @@ interface ChatDropdownProps {
   onClose: () => void;
   participantId?: string;
   participantName?: string;
+  participantAvatar?: string;
 }
 const ChatDropdown = ({ isOpen, onClose, participantId, participantName }: ChatDropdownProps) => {
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
