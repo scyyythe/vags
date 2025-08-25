@@ -150,10 +150,12 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
 
     return () => unsubscribe();
   }, [selectedConversation]);
+  const userId = localStorage.getItem("user_id");
   const filteredConversations = conversations.filter((conv) => {
+    const matchesUser = conv.participantId === userId || conv.messages.some((m) => m.senderId === userId);
     const matchesSearch = conv.participantName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesArchive = showArchived ? conv.isArchived : !conv.isArchived;
-    return matchesSearch && matchesArchive;
+    return matchesUser && matchesSearch && matchesArchive;
   });
 
   const selectedConv = conversations.find((conv) => conv.id === selectedConversation);
@@ -500,25 +502,29 @@ const ChatDropdown = ({ isOpen, onClose }: ChatDropdownProps) => {
                 onReplyToMessage={replyToMessage}
                 onStarMessage={starMessage}
                 onDeleteMessage={deleteMessage}
-                //   onAddReaction={addReactionToMessage}
                 onSetReactionPicker={setShowReactionPicker}
               />
             ) : (
               <div className="flex flex-col h-full">
-                <ConversationList
-                  conversations={filteredConversations}
-                  selectedConversation={selectedConversation}
-                  onSelectConversation={(convId) => {
-                    setSelectedConversation(convId);
-                    markAsRead(convId);
-                  }}
-                  onMarkAsRead={markAsRead}
-                  onMarkAsUnread={markAsUnread}
-                  onTogglePin={togglePin}
-                  onToggleMute={toggleMute}
-                  onToggleArchive={toggleArchive}
-                  onDeleteConversation={deleteConversation}
-                />
+                {filteredConversations.length > 0 ? (
+                  <ConversationList
+                    conversations={filteredConversations}
+                    selectedConversation={selectedConversation}
+                    onSelectConversation={(convId) => {
+                      setSelectedConversation(convId);
+                      markAsRead(convId);
+                    }}
+                    onMarkAsRead={markAsRead}
+                    onMarkAsUnread={markAsUnread}
+                    onTogglePin={togglePin}
+                    onToggleMute={toggleMute}
+                    onToggleArchive={toggleArchive}
+                    onDeleteConversation={deleteConversation}
+                  />
+                ) : (
+                  <div className="flex items-center justify-center flex-1 text-gray-500 text-xs">No messages yet</div>
+                )}
+
                 <div className="mt-auto">
                   <InviteFriends />
                 </div>
