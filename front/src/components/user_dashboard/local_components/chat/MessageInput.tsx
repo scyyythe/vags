@@ -32,7 +32,7 @@ export const MessageInput = ({
   onEmojiClick,
   onSetShowEmojiPicker,
   onCancelReply,
-  onCameraCapture
+  onCameraCapture,
 }: MessageInputProps) => {
   return (
     <>
@@ -57,18 +57,18 @@ export const MessageInput = ({
             <button onClick={onFileAttachment} className="pr-1">
               <Paperclip size={13} className="text-gray-500 hover:text-black" />
             </button>
-            
+
             {/* <button onClick={onCameraCapture} className="pr-1">
               <Camera size={13} className="text-gray-500 hover:text-black" />
             </button> */}
-            
-            <button 
+
+            <button
               onClick={onVoiceRecord}
               className={` ${isRecording ? "bg-red-100 text-red-600" : "text-gray-500 hover:text-black"}`}
             >
               {isRecording ? <MicOff size={13} /> : <Mic size={13} />}
             </button>
-            
+
             <Popover open={showEmojiPicker} onOpenChange={onSetShowEmojiPicker}>
               <PopoverTrigger asChild>
                 <button>
@@ -80,7 +80,7 @@ export const MessageInput = ({
               </PopoverContent>
             </Popover>
           </div>
-          
+
           <Input
             placeholder="Type a message..."
             value={messageInput}
@@ -90,21 +90,17 @@ export const MessageInput = ({
             style={{ fontSize: "11px" }}
             disabled={isRecording}
           />
-          
-          <Button 
-            onClick={onSendMessage} 
-            size="sm" 
+
+          <Button
+            onClick={onSendMessage}
+            size="sm"
             disabled={!messageInput.trim() || isRecording}
             className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
           >
             <Send size={15} />
           </Button>
         </div>
-        {isRecording && (
-          <div className="mt-2 text-center text-[11px] text-red-600">
-            Recording voice message...
-          </div>
-        )}
+        {isRecording && <div className="mt-2 text-center text-[11px] text-red-600">Recording voice message...</div>}
       </div>
     </>
   );

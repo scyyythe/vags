@@ -17,6 +17,7 @@ class User(Document):
     is_oauth_user = BooleanField(default=False)
     registered_via = StringField(choices=["google", "email", "other"], required=False)
 
+    firebase_uid = StringField(required=False, unique=True)  
     
     profile_picture = URLField(required=False)  
     cover_photo=URLField(required=False)  
