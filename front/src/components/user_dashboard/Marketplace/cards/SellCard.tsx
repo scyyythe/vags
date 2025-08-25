@@ -16,6 +16,7 @@ export interface SellCardProps {
   artist?: string;
   price: number;
   medium?: string;
+  profile_picture: string;
   originalPrice?: number;
   title: string;
   category?: string;
@@ -49,6 +50,7 @@ const SellCard = ({
   rating,
   size,
   yearCreated,
+  profile_picture,
   isLiked = false,
   onLike,
   status,
@@ -58,6 +60,7 @@ const SellCard = ({
   isMarketplace = false,
   onCardClick,
   isOwner = false,
+
   isWishlistView = false,
 }: SellCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -80,7 +83,7 @@ const SellCard = ({
 
   const handleContact = (e: React.MouseEvent) => {
     e.stopPropagation();
-    openChat(id, artist || "Unknown"); // 👈 context handles open
+    openChat(id, artist || "Unknown", profile_picture);
     toast("Redirecting to contact the artist...", { closeButton: true });
   };
 
