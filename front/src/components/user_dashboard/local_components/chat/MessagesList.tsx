@@ -105,9 +105,9 @@ export const MessagesList = ({
           return (
             <ContextMenu key={message.id}>
               <ContextMenuTrigger>
-                <div className={`flex ${message.senderId === "currentUser" ? "justify-end" : "justify-start"} mb-6`}>
+                <div className={`flex ${message.senderId === currentUserId ? "justify-end" : "justify-start"} mb-6`}>
                   <div className="relative group max-w-[80%]">
-                    {message.senderId !== "currentUser" && (
+                    {message.senderId !== currentUserId && (
                       <div className="flex items-center space-x-2 mb-2">
                         <Avatar className="h-6 w-6">
                           <AvatarImage src={conversation.participantAvatar} />
@@ -118,13 +118,13 @@ export const MessagesList = ({
                               .join("")}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-[11px] font-medium text-gray-700">{message.senderName}</span>
+                        <span className="text-[11px] font-medium text-gray-700">{conversation.participantName}</span>
                       </div>
                     )}
 
                     <div
                       className={`rounded-lg px-4 py-3 ${
-                        message.senderId === "currentUser"
+                        message.senderId === currentUserId
                           ? "bg-blue-600 text-white text-[10px]"
                           : "bg-gray-100 text-gray-900 text-[10px]"
                       } ${selectedMessage === message.id ? "ring-2 ring-blue-300" : ""}`}
@@ -133,7 +133,7 @@ export const MessagesList = ({
                       {repliedMessage && (
                         <div
                           className={`text-[10px] mb-2 border-l-2 pl-2 ${
-                            message.senderId === "currentUser"
+                            message.senderId === currentUserId
                               ? "border-blue-300 bg-blue-500 bg-opacity-20"
                               : "border-gray-300 bg-gray-200"
                           } rounded p-2`}
@@ -187,12 +187,12 @@ export const MessagesList = ({
                       <div className="flex items-center justify-between mt-2">
                         <p
                           className={`text-[9px] ${
-                            message.senderId === "currentUser" ? "text-blue-100" : "text-gray-500"
+                            message.senderId === currentUserId ? "text-blue-100" : "text-gray-500"
                           }`}
                         >
                           {formatFullDateTime(message.timestamp)}
                         </p>
-                        {message.senderId === "currentUser" && (
+                        {message.senderId === currentUserId && (
                           <div className="flex items-center space-x-1">{renderDeliveryStatus(message)}</div>
                         )}
                       </div>
@@ -274,7 +274,7 @@ export const MessagesList = ({
                   <Forward className="mr-2 h-3 w-3" />
                   Forward
                 </ContextMenuItem>
-                {message.senderId === "currentUser" && (
+                {message.senderId === currentUserId && (
                   <>
                     <ContextMenuSeparator />
                     <ContextMenuItem className="text-[10px]">
