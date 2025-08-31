@@ -225,6 +225,7 @@ const Marketplace = () => {
                     id={artwork.id}
                     category={artwork.category}
                     artist={artwork.artist}
+                    artistId={artwork.artistId}
                     edition={artwork.edition}
                     size={artwork.size}
                     yearCreated={artwork.year_created}

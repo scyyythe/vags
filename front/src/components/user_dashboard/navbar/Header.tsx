@@ -131,7 +131,7 @@ const Header = () => {
                 if (isChatOpen) {
                   closeChat();
                 } else {
-                  closeAllDropdowns(); // ✅ close others first
+                  closeAllDropdowns();
                   openChat("", "");
                 }
               }}
@@ -166,7 +166,7 @@ const Header = () => {
                 if (isNotificationOpen) {
                   setIsNotificationOpen(false);
                 } else {
-                  closeAllDropdowns(); // ✅ close others first
+                  closeAllDropdowns();
                   setIsNotificationOpen(true);
                 }
               }}
@@ -206,7 +206,7 @@ const Header = () => {
                 if (isProfileDropdownOpen) {
                   setIsProfileDropdownOpen(false);
                 } else {
-                  closeAllDropdowns(); // ✅ close others first
+                  closeAllDropdowns();
                   setIsProfileDropdownOpen(true);
                 }
               }}
