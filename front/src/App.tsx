@@ -13,7 +13,7 @@ import SellArt from "./components/user_dashboard/Marketplace/sell/SellArtwork";
 import UpdatePost from "./components/user_dashboard/own_profile/UpdatePost";
 import Hero from "./pages/Hero";
 import Explore from "./user_dashboard/Explore";
-import Bidding from "./user_dashboard/Bidding";
+import Auctions from "./user_dashboard/Bidding";
 import Marketplace from "./user_dashboard/Marketplace";
 import Exhibits from "./user_dashboard/Exhibits";
 import { ModalProvider } from "./context/ModalContext";
@@ -180,7 +180,7 @@ const App = () => {
                               <Route path="/update/:id" element={<ProtectedRoute children={<UpdatePost />} />} />
                               <Route path="/userprofile/:id" element={<ProtectedRoute children={<UserProfile />} />} />
                               <Route path="/artwork/:id" element={<ProtectedRoute children={<ArtworkDetails />} />} />
-                              <Route path="/bidding" element={<ProtectedRoute children={<Bidding />} />} />
+                              <Route path="/auctions" element={<ProtectedRoute children={<Auctions />} />} />
                               <Route path="/marketplace" element={<ProtectedRoute children={<Marketplace />} />} />
                               <Route path="/exhibits" element={<ProtectedRoute children={<Exhibits />} />} />
                               <Route path="/all-notifications" element={<AllNotifications />} />
