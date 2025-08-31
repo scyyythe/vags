@@ -457,7 +457,7 @@ const ExhibitViewing = () => {
           <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
             <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
               <i className="bx bx-chevron-left text-lg mr-2"></i>
-              Go back
+              Exhibit Details
             </button>
           </div>
 
@@ -472,7 +472,7 @@ const ExhibitViewing = () => {
                     <div
                       className={`${
                         isMobile
-                          ? ""
+                          ? "-mt-4"
                           : "w-[580px] h-[420px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"
                       }`}
                     >
@@ -503,7 +503,7 @@ const ExhibitViewing = () => {
               {/* Right side - Title, artist, description, comments */}
               <div className={`${isMobile ? "w-full mt-6 px-4" : "w-[530px] "}`}>
                 <div className={`${isMobile ? "" : "relative top-5"}`}>
-                  <div className="flex justify-between items-start mb-4">
+                  <div className="flex justify-between items-start">
                     <div className="flex items-center space-x-4">
                       <button
                         onClick={() => {
@@ -565,10 +565,7 @@ const ExhibitViewing = () => {
                   <div className="relative mt-4">
                     <div
                       ref={descriptionRef}
-                      className={`
-                      text-[9px] text-gray-700 transition-all duration-300 ease-in-out 
-                      ${showFullDescription ? "max-h-10 overflow-y-auto pr-1" : "max-h-10 overflow-hidden"}
-                    `}
+                      className="text-[10px] text-gray-700 transition-all duration-300 ease-in-out h-[100px] overflow-y-auto"
                       style={{ lineHeight: "1.1rem" }}
                     >
                       {exhibit.description || "No description available."}
@@ -603,7 +600,7 @@ const ExhibitViewing = () => {
         {/* Related Artworks Section */}
         {exhibit && exhibit.category && exhibits && exhibits.length > 0 && (
           <div className="container md:px-6 mt-4 mb-6">
-            <h2 className={`font-semibold ${isMobile ? "text-sm ml-1" : "text-md mb-4"}`}>Related Exhibits</h2>
+            <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"}`}>Related Exhibits</h2>
 
             {(() => {
               const normalizedCategory = exhibit.category.trim().toLowerCase();

@@ -14,7 +14,8 @@ interface ExhibitCardMenuProps {
   onToggleVisibility: (newVisibility: boolean, id: string) => void;
   onViewInsights: (id: string) => void;
   isPublic?: boolean;
-   onDelete?: (id: string) => void;
+  onDelete?: (id: string) => void;
+  className?: string;
 }
 
 const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
@@ -27,6 +28,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
   artworkTitle,
   onDelete,
   isPublic = true,
+  className,
 }) => {
     const menuRef = useRef<HTMLDivElement>(null);
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -75,7 +77,7 @@ const handleEditClick = () => {
         <>
         <div
             ref={menuRef}
-            className="absolute -left-2 top-5 z-10 bg-gray-100 rounded-full py-2 px-2 shadow-md"
+            className={`absolute z-10 bg-gray-100 rounded-full py-1 px-1.5 shadow-md ${className}`}
             onClick={(e) => e.stopPropagation()}
         >
             <div className="flex flex-col items-start">

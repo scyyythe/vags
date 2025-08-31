@@ -161,6 +161,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
               onReport={handleReport}
               isReported={isReported}
               auctionId={data.id}
+              className="top-8 -left-[12px]"
             />
           </div>
 
