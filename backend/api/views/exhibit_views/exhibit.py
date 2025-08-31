@@ -123,10 +123,29 @@ class DeleteExhibitView(APIView):
             exhibit = Exhibit.objects.get(id=exhibit_id)
 
             if exhibit.owner.id != request.user.id:
-                return Response({"detail": "Not authorized to delete this exhibit."}, status=status.HTTP_403_FORBIDDEN)
+                return Response(
+                    {"detail": "Not authorized to delete this exhibit."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
 
+         
+            if exhibit.visibility != "Deleted":
+                exhibit.visibility = "Deleted"
+                exhibit.save(update_fields=["visibility", "updated_at"])
+                return Response(
+                    {"detail": "Exhibit moved to trash."},
+                    status=status.HTTP_200_OK,
+                )
+
+         
             exhibit.delete()
-            return Response({"detail": "Exhibit deleted successfully."}, status=status.HTTP_200_OK)
+            return Response(
+                {"detail": "Exhibit permanently deleted."},
+                status=status.HTTP_200_OK,
+            )
 
         except Exhibit.DoesNotExist:
-            return Response({"detail": "Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Exhibit not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
