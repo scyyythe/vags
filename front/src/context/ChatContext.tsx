@@ -5,22 +5,25 @@ interface ChatContextType {
   participantId: string | null;
   participantName: string | null;
   participantAvatar: string | null;
-  openChat: (id: string, name: string, avatar?: string) => void;
+  directMessageMode: boolean;
+  openChat: (id: string, name: string, avatar?: string, direct?: boolean) => void;
   closeChat: () => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
-export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
+export const ChatProvider = ({ children }: { children: ReactNode }) => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [participantId, setParticipantId] = useState<string | null>(null);
   const [participantName, setParticipantName] = useState<string | null>(null);
   const [participantAvatar, setParticipantAvatar] = useState<string | null>(null);
+  const [directMessageMode, setDirectMessageMode] = useState(false);
 
-  const openChat = (id: string, name: string, avatar?: string) => {
+  const openChat = (id: string, name: string, avatar?: string, direct = false) => {
     setParticipantId(id);
     setParticipantName(name);
     setParticipantAvatar(avatar || null);
+    setDirectMessageMode(direct);
     setIsChatOpen(true);
   };
 
@@ -28,12 +31,13 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     setParticipantId(null);
     setParticipantName(null);
     setParticipantAvatar(null);
+    setDirectMessageMode(false);
     setIsChatOpen(false);
   };
 
   return (
     <ChatContext.Provider
-      value={{ isChatOpen, participantId, participantName, participantAvatar, openChat, closeChat }}
+      value={{ isChatOpen, participantId, participantName, participantAvatar, directMessageMode, openChat, closeChat }}
     >
       {children}
     </ChatContext.Provider>

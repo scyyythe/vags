@@ -87,7 +87,8 @@ const SellCard = ({
 
   const handleContact = (e: React.MouseEvent) => {
     e.stopPropagation();
-    openChat(artistId, artist || "Unknown", profile_picture);
+
+    openChat(artistId!, artist || "Unknown", profile_picture, true);
     toast("Redirecting to contact the artist...", { closeButton: true });
   };
 
