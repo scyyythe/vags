@@ -14,8 +14,10 @@ export interface SellCardProps {
   id: string;
   artworkImage: string;
   artist?: string;
+  artistId?: string;
   price: number;
   medium?: string;
+
   profile_picture?: string;
   originalPrice?: number;
   title: string;
@@ -43,11 +45,13 @@ const SellCard = ({
   price,
   medium,
   artist,
+  artistId,
   originalPrice = 0,
   title,
   category,
   edition,
   rating,
+
   size,
   yearCreated,
   profile_picture,
@@ -83,7 +87,7 @@ const SellCard = ({
 
   const handleContact = (e: React.MouseEvent) => {
     e.stopPropagation();
-    openChat(id, artist || "Unknown", profile_picture);
+    openChat(artistId, artist || "Unknown", profile_picture);
     toast("Redirecting to contact the artist...", { closeButton: true });
   };
 
