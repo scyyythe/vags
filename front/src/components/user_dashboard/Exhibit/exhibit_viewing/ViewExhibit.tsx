@@ -530,7 +530,7 @@ const ExhibitViewing = () => {
                     </div>
 
                     <div className="relative">
-                      <button className="py-3 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
+                      <button className="py-3 mr-3 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
                         <MoreHorizontal size={isMobile ? 14 : 14} />
                       </button>
 
@@ -544,6 +544,7 @@ const ExhibitViewing = () => {
                           isReported={isReported}
                           isShared={exhibit.isShared}
                           isHidden={isHidden}
+                          className="-left-[10px] top-7"
                         />
                       </div>
                     </div>
