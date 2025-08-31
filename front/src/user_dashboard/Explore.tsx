@@ -16,7 +16,8 @@ import FollowingSection from "@/components/user_dashboard/Explore/navigation/tre
 import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 import useFollowedArtworks from "@/hooks/artworks/follow_artworks/useFollowedArtworks";
-const Explore = () => { 
+import { getLoggedInUserId } from "@/auth/decode";
+const Explore = () => {
   const navigate = useNavigate();
   const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -34,7 +35,7 @@ const Explore = () => {
   const artworkIds = artworks?.map((a) => a.id) || [];
   const { data: bulkStatus } = useBulkArtworkStatus(artworkIds);
   const { data: reportStatus } = useBulkReportStatus(artworkIds);
-
+  const loggedInUserId = getLoggedInUserId();
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
