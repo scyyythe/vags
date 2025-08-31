@@ -15,23 +15,26 @@ import { useChat } from "@/context/ChatContext";
 const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const navigate = useNavigate();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   const notificationRef = useRef(null);
   const chatRef = useRef(null);
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage] = useState(1);
-  const { data: artworks } = useArtworks(currentPage, undefined, true, "all", "public");
-  const navigate = useNavigate();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const avatarRef = useRef(null);
 
   const userId = getLoggedInUserId();
   const { firstName, profilePicture } = useUserDetails(userId);
+  const [currentPage] = useState(1);
+  const { data: artworks } = useArtworks(currentPage, undefined, true, "all", "public");
 
   const { isChatOpen, openChat, closeChat, participantId, participantName, participantAvatar } = useChat();
+
+  if (!userId) return <p>No user found</p>;
 
   // ✅ Helper: close all dropdowns
   const closeAllDropdowns = () => {
@@ -47,30 +50,27 @@ const Header = () => {
     params.set("q", value);
 
     const isExplorePage = currentPath.includes("/explore");
-    const isBiddingPage = currentPath.includes("/auctions");
+    const isBiddingPage = currentPath.includes("/bidding");
     const isExhibitPage = currentPath.includes("/exhibits");
     const isMarketplacePage = currentPath.includes("/exhibits");
 
     if (isExplorePage) navigate(`/explore?${params.toString()}`);
-    else if (isBiddingPage) navigate(`/auctions?${params.toString()}`);
+    else if (isBiddingPage) navigate(`/bidding?${params.toString()}`);
     else if (isExhibitPage) navigate(`/exhibit?${params.toString()}`);
     else if (isMarketplacePage) navigate(`/marketplace?${params.toString()}`);
 
     setSearchQuery(value);
   };
 
-  if (!userId) {
-    return <p>No user found</p>;
-  }
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border/50">
       <div className="container mx-auto px-2 sm:px-4 flex items-center h-16 gap-2 sm:gap-4">
-        {/* Left Section */}
+        {/* Left Section: Logo + Hamburger + Nav */}
         <div className="flex items-center gap-2 flex-grow md:flex-grow-0">
           <div className="flex items-center gap-2 pl-2 sm:pl-0">
             <Logo />
-            {/* Hamburger */}
+
+            {/* Hamburger Menu (mobile only) */}
             <div className="md:hidden ml-2 mt-1">
               <button aria-label="Toggle menu" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 {isMenuOpen ? <X size={15} /> : <Menu size={15} />}
@@ -78,6 +78,7 @@ const Header = () => {
             </div>
           </div>
 
+          {/* Nav Links (desktop only) */}
           <nav className="hidden md:flex items-center space-x-16 text-xs ml-16">
             {["Explore", "Exhibits", "Auctions", "Marketplace"].map((label) => (
               <NavLink
@@ -91,14 +92,14 @@ const Header = () => {
           </nav>
         </div>
 
-        {/* Right */}
+        {/* Right Section: Search + Chat + Notifications + Profile */}
         <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
-          {/* SearchBar (desktop) */}
+          {/* Desktop SearchBar */}
           <div className="hidden md:block w-[250px] border border-gray-400 rounded-full px-3">
             <SearchBar onSearchChange={handleSearchChange} />
           </div>
 
-          {/* Search Icon (mobile) */}
+          {/* Mobile Search Icon */}
           <div className="block md:hidden relative top-0.5 right-1 ">
             <button
               className="button-icon hover:scale-110 transition"
@@ -128,9 +129,8 @@ const Header = () => {
               className="button-icon hover:scale-110 transition"
               title="ChatDropdown"
               onClick={() => {
-                if (isChatOpen) {
-                  closeChat();
-                } else {
+                if (isChatOpen) closeChat();
+                else {
                   closeAllDropdowns();
                   openChat("", "");
                 }
@@ -162,16 +162,15 @@ const Header = () => {
           {/* Notifications */}
           <div className="relative top-0.5" ref={notificationRef}>
             <button
+              className="button-icon hover:scale-110 transition"
+              title="Notifications"
               onClick={() => {
-                if (isNotificationOpen) {
-                  setIsNotificationOpen(false);
-                } else {
+                if (isNotificationOpen) setIsNotificationOpen(false);
+                else {
                   closeAllDropdowns();
                   setIsNotificationOpen(true);
                 }
               }}
-              className="button-icon hover:scale-110 transition"
-              title="Notifications"
             >
               <Bell size={15} />
             </button>
@@ -190,7 +189,7 @@ const Header = () => {
             </AnimatePresence>
           </div>
 
-          {/* Profile */}
+          {/* Profile Avatar + Dropdown */}
           <div className="relative flex items-center" ref={avatarRef}>
             <Link to={`/userprofile/${userId}`}>
               <div className="h-7 w-7 rounded-full overflow-hidden border cursor-pointer flex items-center justify-center bg-gray-300">
@@ -201,11 +200,11 @@ const Header = () => {
                 )}
               </div>
             </Link>
+
             <button
               onClick={() => {
-                if (isProfileDropdownOpen) {
-                  setIsProfileDropdownOpen(false);
-                } else {
+                if (isProfileDropdownOpen) setIsProfileDropdownOpen(false);
+                else {
                   closeAllDropdowns();
                   setIsProfileDropdownOpen(true);
                 }
@@ -231,6 +230,31 @@ const Header = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="md:hidden bg-white shadow px-4 py-4 space-y-3"
+          >
+            {["Explore", "Exhibits", "Bidding", "Marketplace"].map((label) => (
+              <NavLink
+                key={label}
+                to={`/${label.toLowerCase()}`}
+                onClick={() => setIsMenuOpen(false)}
+                className={({ isActive }) =>
+                  `block text-center text-xs py-2 rounded ${isActive ? "font-semibold text-black" : "text-gray-700"}`
+                }
+              >
+                {label}
+              </NavLink>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
