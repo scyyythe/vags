@@ -1,7 +1,18 @@
 // hooks/useFirebaseChat.ts
 import { useEffect, useState, useCallback } from "react";
 import { db } from "@/firebase/firebaseConfig";
-import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  onSnapshot,
+  serverTimestamp,
+  doc,
+  setDoc,
+  updateDoc,
+  increment,
+} from "firebase/firestore";
 
 export interface Message {
   id?: string;
@@ -11,13 +22,14 @@ export interface Message {
   senderName: string;
   senderAvatar?: string;
   timestamp: any;
+  isRead?: boolean;
 }
 
 export const useFirebaseChat = (conversationId: string, currentUserId: string) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Listen for messages in real-time
+  // 🔹 Real-time listener for messages
   useEffect(() => {
     if (!conversationId) return;
 
@@ -30,40 +42,49 @@ export const useFirebaseChat = (conversationId: string, currentUserId: string) =
       })) as Message[];
       setMessages(msgs);
       setLoading(false);
-      console.log("Messages updated:", msgs); // ✅ see all messages
     });
 
     return () => unsubscribe();
   }, [conversationId]);
 
-  // Send a new message
+  // 🔹 Send a new message + update conversation metadata
   const sendMessage = useCallback(
     async (text: string, receiverId: string, senderName: string, senderAvatar?: string) => {
       if (!text.trim() || !conversationId) return null;
 
-      const newMessage = {
+      const newMessage: Message = {
         text,
         senderId: currentUserId,
         receiverId,
         senderName,
         senderAvatar: senderAvatar || null,
         timestamp: serverTimestamp(),
+        isRead: false,
       };
 
       try {
+        // Add message
         const docRef = await addDoc(collection(db, "conversations", conversationId, "messages"), newMessage);
 
-        console.log("Message inserted with ID:", docRef.id);
-
+        // ✅ Update conversation metadata (instead of overwriting everything)
         await setDoc(
           doc(db, "conversations", conversationId),
           {
             lastMessage: text,
             lastMessageTime: serverTimestamp(),
             participants: [currentUserId, receiverId],
+            updatedAt: serverTimestamp(),
+            isArchived: false,
+            isPinned: false,
+            isMuted: false,
           },
           { merge: true }
         );
+
+        // ✅ Increment unread count for receiver
+        await updateDoc(doc(db, "conversations", conversationId), {
+          [`unread.${receiverId}`]: increment(1), // e.g. { unread: { userA: 0, userB: 3 } }
+        });
 
         return docRef.id;
       } catch (err) {

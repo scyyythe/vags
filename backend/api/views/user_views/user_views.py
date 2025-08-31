@@ -51,8 +51,7 @@ class ListAllUsersView(APIView):
 
         
 class RetrieveUserView(APIView):
-    permission_classes = [IsAuthenticated]
-
+    permission_classes = [AllowAny]
     def get(self, request, pk):
         try:
             if not ObjectId.is_valid(pk):
