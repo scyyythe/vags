@@ -49,10 +49,15 @@ const Header = () => {
     const params = new URLSearchParams();
     params.set("q", value);
 
-    if (currentPath.includes("/explore")) navigate(`/explore?${params.toString()}`);
-    else if (currentPath.includes("/bidding")) navigate(`/bidding?${params.toString()}`);
-    else if (currentPath.includes("/exhibits")) navigate(`/exhibit?${params.toString()}`);
-    else if (currentPath.includes("/marketplace")) navigate(`/marketplace?${params.toString()}`);
+    const isExplorePage = currentPath.includes("/explore");
+    const isBiddingPage = currentPath.includes("/bidding");
+    const isExhibitPage = currentPath.includes("/exhibits");
+    const isMarketplacePage = currentPath.includes("/exhibits");
+
+    if (isExplorePage) navigate(`/explore?${params.toString()}`);
+    else if (isBiddingPage) navigate(`/bidding?${params.toString()}`);
+    else if (isExhibitPage) navigate(`/exhibit?${params.toString()}`);
+    else if (isMarketplacePage) navigate(`/marketplace?${params.toString()}`);
 
     setSearchQuery(value);
   };
@@ -75,7 +80,7 @@ const Header = () => {
 
           {/* Nav Links (desktop only) */}
           <nav className="hidden md:flex items-center space-x-16 text-xs ml-16">
-            {["Explore", "Exhibits", "Bidding", "Marketplace"].map((label) => (
+            {["Explore", "Exhibits", "Auctions", "Marketplace"].map((label) => (
               <NavLink
                 key={label}
                 to={`/${label.toLowerCase()}`}
