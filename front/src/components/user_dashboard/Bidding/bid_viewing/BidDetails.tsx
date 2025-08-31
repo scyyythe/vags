@@ -519,7 +519,7 @@ const BidDetails = () => {
           {/* Related Bids Section */}
           {relatedBids.length > 0 ? (
             <div className="container md:px-6 mt-2 mb-2">
-              <h2 className={`font-medium ${isMobile ? "text-xs mt-8 mb-4 -ml-3" : "text-xs mb-4"}`}>Related Bids</h2>
+              <h2 className={`font-medium ${isMobile ? "text-xs mt-8 mb-4 -ml-3" : "text-xs mt-6 mb-6"}`}>Related Bids</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {relatedBids.map((art) => (
                   <div key={art.id} className="min-w-[200px] flex-shrink-0">
