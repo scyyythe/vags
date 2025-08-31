@@ -293,17 +293,17 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   );  
   
   return (
-    <div className="relative h-56 md:h-56 sm:h-44 p-1">
-      <p className="text-[10px] font-semibold mb-4">
+    <div className={`relative ${isMobile ? "h-56" : "h-[160px]"}`}>
+      <p className="text-[10px] font-semibold mb-2">
           Comments
       </p>
       {/* Scrollable comment container */}
       <div
-        className={`overflow-y-auto h-[60%] pb-20 custom-scrollbar`}
+        className={`overflow-y-auto h-[45%] custom-scrollbar`}
       >
         <div
           className={`transition-all duration-300 ${
-            showAllComments ? 'max-h-48' : ''
+            showAllComments ? 'max-h-36' : ''
           }`}
           style={{
             scrollbarWidth: 'none',
@@ -326,7 +326,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
         {comments.length > 1 && (
           <button
             onClick={() => setShowAllComments(prev => !prev)}
-            className="text-gray-500 hover:text-gray-700 text-[10px] mb-4 px-4"
+            className="text-gray-500 hover:text-gray-700 text-[10px] px-4"
           >
             {showAllComments
               ? "Hide comments"

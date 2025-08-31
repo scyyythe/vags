@@ -8,7 +8,6 @@ import { LikedArtworksContext } from "@/context/LikedArtworksProvider";
 import ArtCardMenu from "@/components/user_dashboard/Explore/cards/ArtCardMenu";
 import { useDonation } from "@/context/DonationContext";
 import Header from "@/components/user_dashboard/navbar/Header";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDistanceToNow } from "date-fns";
 import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comment";
@@ -298,118 +297,102 @@ const ArtworkDetails = () => {
           <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
             <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
               <i className="bx bx-chevron-left text-lg mr-2"></i>
-              Go back
+              Artwork Details
             </button>
           </div>
 
           <div className={` ${isMobile ? "flex flex-col" : "flex justify-center items-start space-x-2 mt-2"}`}>
-            {/* Artwork, Right-side Sliding */}
             <div
-              className={`transition-all duration-500 ease-in-out ${
-                isMobile ? "w-full" : `flex justify-center items-start ${isDetailOpen ? "ml-[150px]" : "ml-0"}`
+              className={`${
+                isMobile ? "w-full" : "flex justify-center items-start ml-[260px]"
               }`}
             >
               {/* Artwork container */}
-              <div className={`mr-8 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
-                {/* Collapsible Sidebar */}
-                <div className="relative mr-8 w-full max-w-[500px] min-w-[380px]">
+              <div className={`mr-8 ${isMobile ? "w-full mt-3" : "w-full"}`}>
+                {/* Artwork Sidebar */}
+                <div className="relative w-full">
                   {!isMobile && (
-                    <div
-                      className={`absolute top-28 w-[27%] h-[140%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
-                        isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-50"
-                      }`}
-                      style={{ right: "calc(100% + 50px)" }}
+                    <aside
+                      className="absolute top-3 z-20 left-[-250px] hidden lg:block"
+                      style={{width: "150px" }}
                     >
-                      <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
+                      <div className="border rounded-xl p-6 text-left">
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
                           <p className="text-[9px] text-gray-700">
                             {artwork?.style
                               ? artwork?.style
                                   .split(" ")
-                                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                  .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
                                   .join(" ")
                               : "Painting"}
                           </p>
                         </div>
+
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Medium</h3>
                           <p className="text-[9px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
                         </div>
+
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Dimensions</h3>
                           <p className="text-[9px] text-gray-700">
                             {artwork?.size
                               ? artwork?.size
                                   .split(" x ")
-                                  .map((dim) => `${dim}″`)
                                   .join(" x ")
-                              : "20 x 20"}
-                              cm
+                              : "20 x 20"}{" "}
+                            cm
                           </p>
                         </div>
+
                         <div className="mb-1">
                           <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
                           <p className="text-[9px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
                         </div>
                       </div>
-                    </div>
+                    </aside>
                   )}
                 </div>
 
-                {/* Mobile Information Panel (Collapsible) */}
+                {/* Mobile Sidebar Panel */}
                 {isMobile && (
-                  <Collapsible className="px-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <CollapsibleTrigger className="p-1 -mb-2 mt-2">
-                        <GripVertical size={16} />
-                      </CollapsibleTrigger>
-                    </div>
-                    <CollapsibleContent className="transition-all duration-500 ease-in-out">
-                      <div className="bg-gray-50 rounded-md p-4 text-xs">
-                        <div className="grid grid-cols-4 gap-8 px-8 whitespace-nowrap">
-                          <div>
-                            <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
-                            <p className="text-[10px] text-gray-700">{artwork.style || "Painting"}</p>
-                          </div>
-                          <div>
-                            <h4 className="text-[10px] font-medium mb-1">Medium</h4>
-                            <p className="text-[10px] text-gray-700">{artwork.medium || "Acrylic Paint"}</p>
-                          </div>
-                          <div>
-                            <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
-                            <p className="text-[10px] text-gray-700">{artwork.datePosted || "March 25, 2023"}</p>
-                          </div>
-                          <div className="mb-1">
-                            <h3 className="text-[10px] font-medium mb-1">Artwork Size</h3>
-                            <p className="text-[9px] text-gray-700">
-                              {artwork.size
-                                ? artwork.size
-                                    .split(" x ")
-                                    .map((dim) => `${dim}″`)
-                                    .join(" x ")
-                                : "20 x 20″"}
-                            </p>
-                          </div>
-                        </div>
+                <div className="px-4 mt-4">
+                  <div className="bg-gray-50 rounded-md p-4 text-xs">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
+                        <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
                       </div>
-                    </CollapsibleContent>
-                  </Collapsible>
+                      <div>
+                        <h4 className="text-[10px] font-medium mb-1">Medium</h4>
+                        <p className="text-[10px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
+                        <p className="text-[10px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-[10px] font-medium mb-1">Artwork Size</h4>
+                        <p className="text-[9px] text-gray-700">
+                          {artwork?.size
+                            ? artwork.size
+                                .split(" x ")
+                                .map((dim) => `${dim}″`)
+                                .join(" x ")
+                            : "20 x 20″"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 )}
 
                 {/* Center - Artwork Image */}
-                <div className={`relative z-0 mt-8 ${isMobile ? "px-4" : ""}`}>
-                  {!isMobile && (
-                    <button
-                      onClick={toggleDetailsPanel}
-                      className="p-1 text-gray-500 hover:text-black absolute -left-12 top-1/2 transform -translate-y-1/2S"
-                    >
-                      <GripVertical size={15} />
-                    </button>
-                  )}
+                <div className={`relative z-0 ${isMobile ? "pl-5 mt-9" : "mt-8 w-[400px]"}`}>
 
-                  <div className="inline-block transform scale-[1.10] -mb-6 relative">
-                    <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
+                  <div className={`inline-block transform scale-[1.10] -mb-6 relative ${isMobile ? "" : "left-[-55px]"}`}>
+                    <div className="w-[420px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                       <img
                         src={artwork?.image_url}
                         alt={artwork?.title}
@@ -448,8 +431,8 @@ const ArtworkDetails = () => {
               </div>
 
               {/* Right side - Title, artist, description, comments */}
-              <div className={`${isMobile ? "w-full mt-6 px-4" : "w-[500px] -ml-[80px]"}`}>
-                <div className={`${isMobile ? "" : "relative top-3.5"}`}>
+              <div className={` ${isMobile ? "w-full mt-10 px-4" : "w-[700px] -ml-[235px] mt-4"} h-[600px] overflow-y-auto`}>
+                <div className={` ${isMobile ? "" : ""}`}>
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center space-x-4">
                       <button
@@ -502,23 +485,20 @@ const ArtworkDetails = () => {
                   <div className="relative mt-4">
                     <div
                       ref={descriptionRef}
-                      className={`
-                      text-[9px] text-gray-700 transition-all duration-300 ease-in-out 
-                      ${showFullDescription ? "max-h-10 overflow-y-auto pr-1" : "max-h-10 overflow-hidden"}
-                    `}
+                      className="text-[10px] text-gray-700 transition-all duration-300 ease-in-out h-[120px] overflow-y-auto"
                       style={{ lineHeight: "1.1rem" }}
                     >
                       {artwork?.description || "No description available."}
                     </div>
 
-                    {isOverflowing && (
+                    {/* {isOverflowing && (
                       <button
                         onClick={() => setShowFullDescription((prev) => !prev)}
                         className="text-[9px] text-blue-500 hover:underline mt-1 block"
                       >
                         {showFullDescription ? "Show Less" : "Show More"}
                       </button>
-                    )}
+                    )} */}
                   </div>
 
                   <Separator className="my-6" />
@@ -561,7 +541,7 @@ const ArtworkDetails = () => {
                   </div>
                 ) : (
                   <div className="flex flex-col justify-center items-center h-32 w-full">
-                    <p className="text-gray-500 text-sm mb-2">No related artworks found.</p>
+                    <p className="text-gray-500 text-xs mb-2">No related artworks found.</p>
                   </div>
                 )}
               </div>
