@@ -7,18 +7,24 @@ const devLog = (...args: any[]) => {
     console.log(...args);
   }
 };
-export const useMyExhibitCards = (includeSpecial = false) => {
+export const useMyExhibitCards = (
+  { includeDeleted, includeHidden, includeArchived } = {
+    includeDeleted: false,
+    includeHidden: false,
+    includeArchived: false,
+  }
+) => {
   return useQuery({
-    queryKey: ["my-exhibit-cards", includeSpecial],
+    queryKey: ["my-exhibit-cards", includeDeleted, includeHidden, includeArchived],
     queryFn: async () => {
-      try {
-        const response = await apiClient.get(`/exhibits/my/?include_deleted=${includeSpecial}`);
-        return response.data;
-      } catch (error: any) {
-        toast.error("Failed to load my exhibit cards.");
-        console.error("Error fetching my exhibit cards:", error);
-        throw new Error(error?.response?.data?.detail || error.message || "Error fetching my exhibit cards");
-      }
+      const response = await apiClient.get(`/exhibits/my/`, {
+        params: {
+          include_deleted: includeDeleted,
+          include_hidden: includeHidden,
+          include_archived: includeArchived,
+        },
+      });
+      return response.data;
     },
     staleTime: 1000 * 60 * 5,
   });
