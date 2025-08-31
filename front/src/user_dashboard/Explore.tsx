@@ -16,7 +16,7 @@ import FollowingSection from "@/components/user_dashboard/Explore/navigation/tre
 import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 import useFollowedArtworks from "@/hooks/artworks/follow_artworks/useFollowedArtworks";
-const Explore = () => {
+const Explore = () => { 
   const navigate = useNavigate();
   const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
