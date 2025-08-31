@@ -211,6 +211,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                   isShared={exhibit.isShared}
                   isHidden={isHidden}
                   isReported={isReported}
+                  className="-right-1.5 top-5"
                 />
               ))}
 

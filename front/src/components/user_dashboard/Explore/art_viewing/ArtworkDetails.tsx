@@ -361,39 +361,6 @@ const ArtworkDetails = () => {
                   )}
                 </div>
 
-                {/* Mobile Sidebar Panel */}
-                {isMobile && (
-                <div className="px-4 mt-4">
-                  <div className="bg-gray-50 rounded-md p-4 text-xs">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
-                        <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
-                      </div>
-                      <div>
-                        <h4 className="text-[10px] font-medium mb-1">Medium</h4>
-                        <p className="text-[10px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
-                      </div>
-                      <div>
-                        <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
-                        <p className="text-[10px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
-                      </div>
-                      <div>
-                        <h4 className="text-[10px] font-medium mb-1">Artwork Size</h4>
-                        <p className="text-[9px] text-gray-700">
-                          {artwork?.size
-                            ? artwork.size
-                                .split(" x ")
-                                .map((dim) => `${dim}″`)
-                                .join(" x ")
-                            : "20 x 20″"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                )}
-
                 {/* Center - Artwork Image */}
                 <div className={`relative z-0 ${isMobile ? "pl-5 mt-9" : "mt-8 w-[400px]"}`}>
                   <div className={`inline-block transform scale-[1.10] -mb-6 relative ${isMobile ? "" : "left-[-55px]"}`}>
@@ -436,7 +403,7 @@ const ArtworkDetails = () => {
               </div>
 
               {/* Right side - Title, artist, description, comments */}
-              <div className={` ${isMobile ? "w-full mt-10 px-4 h-[540px]" : "w-[700px] -ml-[235px] mt-4 h-[450px]"}  overflow-y-auto`}>
+              <div className={` ${isMobile ? "w-full mt-10 px-4 h-[580px]" : "w-[700px] -ml-[235px] mt-4 h-[450px]"}  overflow-y-auto`}>
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center space-x-4">
@@ -458,7 +425,7 @@ const ArtworkDetails = () => {
                     </div>
 
                     <div>
-                      <button className="py-3 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
+                      <button className="py-3 mr-4 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
                         <MoreHorizontal size={isMobile ? 14 : 14} />
                       </button>
 
@@ -470,7 +437,7 @@ const ArtworkDetails = () => {
                         isFavorite={isFavorite}
                         isReported={isReportedFromBulk}
                         isShared = {artwork?.isShared}
-                        className={isMobile ? "mobile-menu-position" : ""}
+                        className="right-[65px] top-[163px]"
                       />
                     </div>
                   </div>
@@ -505,6 +472,35 @@ const ArtworkDetails = () => {
                       </button>
                     )} */}
                   </div>
+
+                {/* Mobile Sidebar Panel */}
+                {isMobile && (
+                <div className="w-full py-3 mb-4 grid grid-cols-4 text-center gap-4">
+                      <div>
+                        <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
+                        <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-[10px] font-medium mb-1">Medium</h4>
+                        <p className="text-[10px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
+                        <p className="text-[10px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-[10px] font-medium mb-1">Artwork Size</h4>
+                        <p className="text-[9px] text-gray-700">
+                          {artwork?.size
+                            ? artwork.size
+                                .split(" x ")
+                                .map((dim) => `${dim}″`)
+                                .join(" x ")
+                            : "20 x 20″"}
+                        </p>
+                      </div>
+                </div>
+                )}
 
                   <Separator className="my-6" />
 
