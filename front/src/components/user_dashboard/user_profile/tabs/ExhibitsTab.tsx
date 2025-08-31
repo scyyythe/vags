@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -18,18 +18,27 @@ import ExhibitCardSkeleton from "@/components/skeletons/ExhibitCardSkeleton";
 import { usePendingRequests } from "@/hooks/exhibit/usePendingRequests";
 import { usePublishExhibit } from "@/hooks/mutate/exhibit/usePublishExhibit";
 import { ExhibitRequest } from "@/hooks/exhibit/usePendingRequests";
+type ExhibitsTabProps = {
+  selectedStatus: string;
+  includeDeleted?: boolean; // <-- new prop
+};
 
-const ExhibitsTab = () => {
+const ExhibitsTab: React.FC<ExhibitsTabProps> = ({ selectedStatus, includeDeleted = false }) => {
   const navigate = useNavigate();
   const params = useParams();
   const [typeTab, setTypeTab] = useState<"solo" | "collab">("solo");
   const [statusFilter, setStatusFilter] = useState<"on_going" | "closed" | "upcoming">("on_going");
+
   const [showPending, setShowPending] = useState(false);
   const [showPublishDialog, setShowPublishDialog] = useState(false);
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitRequest | null>(null);
 
-  const { data: exhibits = [], isLoading } = useMyExhibitCards();
-const { mutate: publishExhibit } = usePublishExhibit();
+  // Pass `includeDeleted` to the hook
+  const { data: exhibits = [], isLoading } = useMyExhibitCards(includeDeleted);
+  console.log("includeDeleted prop:", includeDeleted);
+  console.log("Raw exhibits from API:", exhibits);
+
+  const { mutate: publishExhibit } = usePublishExhibit();
 
   const now = new Date();
 
@@ -39,26 +48,33 @@ const { mutate: publishExhibit } = usePublishExhibit();
   const isUpcoming = (exhibit: any) => exhibit.startDate && new Date(exhibit.startDate) > now;
 
   const isEnded = (exhibit: any) => exhibit.endDate && new Date(exhibit.endDate) < now;
+  const filteredExhibits = useMemo(() => {
+    if (!exhibits) return [];
 
-  const filteredExhibits = exhibits.filter((exhibit: any) => {
-    const isCorrectType = typeTab === "solo" ? exhibit.isSolo : !exhibit.isSolo;
+    return exhibits.filter((exhibit: any) => {
+      const isCorrectType = typeTab === "solo" ? exhibit.isSolo : !exhibit.isSolo;
 
-    const statusMatch =
-      statusFilter === "on_going"
-        ? isOngoing(exhibit)
-        : statusFilter === "closed"
-        ? isEnded(exhibit)
-        : statusFilter === "upcoming"
-        ? isUpcoming(exhibit)
-        : true;
+      const statusMatch =
+        statusFilter === "on_going"
+          ? isOngoing(exhibit)
+          : statusFilter === "closed"
+          ? isEnded(exhibit)
+          : statusFilter === "upcoming"
+          ? isUpcoming(exhibit)
+          : true;
 
-    return isCorrectType && statusMatch;
-  });
+      const visibilityMatch = includeDeleted
+        ? exhibit.visibility?.toLowerCase() === "deleted"
+        : exhibit.visibility?.toLowerCase() !== "deleted";
+
+      return isCorrectType && statusMatch && visibilityMatch;
+    });
+  }, [exhibits, statusFilter, typeTab, includeDeleted]);
 
   const tabEmptyMessages = {
-    upcoming: "No upcoming exhibits found.",
-    on_going: "No ongoing exhibits found.",
-    closed: "No past exhibits found.",
+    upcoming: includeDeleted ? "No deleted exhibits found." : "No upcoming exhibits found.",
+    on_going: includeDeleted ? "No deleted exhibits found." : "No ongoing exhibits found.",
+    closed: includeDeleted ? "No deleted exhibits found." : "No past exhibits found.",
   };
 
   const { data: pendingRequests = [], isLoading: isLoadingRequests } = usePendingRequests();

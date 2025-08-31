@@ -42,14 +42,24 @@ class MyExhibitCardListView(APIView):
 
     def get(self, request):
         try:
-            user_id = str(request.user.id)
-            user = User.objects.get(id=user_id)  
-            exhibits = Exhibit.objects.filter(owner=user)
+            user = request.user  
+            include_deleted = request.query_params.get("include_deleted", "false").lower() == "true"
+
+  
+            exhibits = Exhibit.objects(owner=user)
+
+        
+            if not include_deleted:
+                exhibits = exhibits.filter(visibility__ne="Deleted")
+
             serializer = ExhibitCardSerializer(exhibits, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
+
         except Exception as e:
             print("🔥 ERROR in MyExhibitCardListView:", e)
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
             
 class ExhibitCardDetailView(APIView):
