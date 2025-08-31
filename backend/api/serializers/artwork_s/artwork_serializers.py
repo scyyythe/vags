@@ -207,6 +207,7 @@ class ArtCardSerializer(serializers.Serializer):
     art_status=serializers.SerializerMethodField()
     edition=serializers.SerializerMethodField()
     artist = serializers.SerializerMethodField()
+    artist_id = serializers.SerializerMethodField()
     medium = serializers.SerializerMethodField() 
     size=serializers.SerializerMethodField()
     year_created=serializers.SerializerMethodField()
@@ -238,7 +239,10 @@ class ArtCardSerializer(serializers.Serializer):
         if obj.artist:
             return f"{obj.artist.first_name} {obj.artist.last_name}"
         return "Unknown"
-
+    def get_artist_id(self, obj):
+        if obj.artist:
+            return str(obj.artist.id) 
+        return None
 
     def get_category(self, obj):
         try:

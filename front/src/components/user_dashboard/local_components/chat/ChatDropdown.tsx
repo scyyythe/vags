@@ -11,7 +11,7 @@ import { InviteFriends } from "./InviteFriends";
 import { db } from "@/firebase/firebaseConfig";
 import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, where } from "firebase/firestore";
 import { useFirebaseChat } from "@/hooks/messages/useFirebaseChat";
-
+import { useUserConversations } from "@/hooks/messages/useUserConversations";
 interface ChatDropdownProps {
   isOpen: boolean;
   onClose: () => void;
@@ -30,11 +30,11 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const [showArchived, setShowArchived] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [showReactionPicker, setShowReactionPicker] = useState<string | null>(null);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
 
   const userId = localStorage.getItem("user_id")!;
   const userName = localStorage.getItem("username")!;
   const userAvatarLocal = localStorage.getItem("avatar_url") || undefined;
+  const [conversations, setConversations] = useUserConversations(userId);
 
   const {
     messages: firebaseMessages,
@@ -116,12 +116,10 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   }, [isOpen, participantId, participantName, participantAvatar]);
 
   const filteredConversations = conversations.filter((conv) => {
-    const matchesUser = conv.participantId === userId || conv.messages.some((m) => m.senderId === userId);
-    const matchesSearch = conv.participantName.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = conv.participantName?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesArchive = showArchived ? conv.isArchived : !conv.isArchived;
-    return matchesUser && matchesSearch && matchesArchive;
+    return matchesSearch && matchesArchive;
   });
-
   const selectedConv = conversations.find((conv) => conv.id === selectedConversation);
 
   const handleSendMessage = async () => {
