@@ -187,6 +187,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                       });
                     }
                   }}
+                  className="-left-1.5 top-5"
                 />
               ) : (
                 <ExhibitMenu

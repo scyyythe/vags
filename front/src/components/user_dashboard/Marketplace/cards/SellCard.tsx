@@ -215,9 +215,10 @@ const SellCard = ({
               onDelete={() => toast("Delete clicked", { closeButton: true })}
               onMarkAsSold={() => toast("Marked as sold", { closeButton: true })}
               onViewInsights={() => toast("Viewing insights", { closeButton: true })}
+              className="-right-1 top-5"
             />
           ) : (
-            <SellCardMenu isOpen={menuOpen} onReport={handleReport} isReported={isReported} />
+            <SellCardMenu isOpen={menuOpen} onReport={handleReport} isReported={isReported} className="-left-2" />
           )}
         </div>
       </div>

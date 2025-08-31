@@ -269,6 +269,7 @@ const ProductViewingContent = () => {
                     setIsReported(true);
                     setMenuOpen(false);
                   }}
+                  className="-left-1 top-7"
                 />
               </div>
             </div>
