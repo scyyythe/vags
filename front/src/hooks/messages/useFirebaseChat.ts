@@ -12,6 +12,7 @@ import {
   setDoc,
   updateDoc,
   increment,
+  getDoc,
 } from "firebase/firestore";
 
 export interface Message {
@@ -25,7 +26,7 @@ export interface Message {
   isRead?: boolean;
 }
 
-export const useFirebaseChat = (conversationId: string, currentUserId: string) => {
+export const useFirebaseChat = (conversationId: string | null, currentUserId: string) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -34,7 +35,6 @@ export const useFirebaseChat = (conversationId: string, currentUserId: string) =
     if (!conversationId) return;
 
     const q = query(collection(db, "conversations", conversationId, "messages"), orderBy("timestamp", "asc"));
-
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const msgs: Message[] = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -47,46 +47,56 @@ export const useFirebaseChat = (conversationId: string, currentUserId: string) =
     return () => unsubscribe();
   }, [conversationId]);
 
-  // 🔹 Send a new message + update conversation metadata
   const sendMessage = useCallback(
-    async (text: string, receiverId: string, senderName: string, senderAvatar?: string) => {
-      if (!text.trim() || !conversationId) return null;
-
-      const newMessage: Message = {
-        text,
-        senderId: currentUserId,
-        receiverId,
-        senderName,
-        senderAvatar: senderAvatar || null,
-        timestamp: serverTimestamp(),
-        isRead: false,
-      };
+    async (
+      text: string,
+      receiverId: string,
+      senderName: string,
+      senderAvatar?: string,
+      existingConvoId?: string // pass existing conversation ID
+    ) => {
+      if (!text.trim() || !currentUserId) return null;
 
       try {
-        // Add message
-        const docRef = await addDoc(collection(db, "conversations", conversationId, "messages"), newMessage);
+        let convoId = existingConvoId || conversationId;
 
-        // ✅ Update conversation metadata (instead of overwriting everything)
-        await setDoc(
-          doc(db, "conversations", conversationId),
-          {
-            lastMessage: text,
-            lastMessageTime: serverTimestamp(),
+        // If conversation doesn't exist, create it
+        if (!convoId) {
+          const newConvoRef = doc(collection(db, "conversations"));
+          await setDoc(newConvoRef, {
             participants: [currentUserId, receiverId],
-            updatedAt: serverTimestamp(),
+            lastMessage: "",
+            lastMessageTime: serverTimestamp(),
+            unread: { [receiverId]: 0 },
             isArchived: false,
             isPinned: false,
             isMuted: false,
-          },
-          { merge: true }
-        );
+            createdAt: serverTimestamp(),
+          });
+          convoId = newConvoRef.id;
+        }
 
-        // ✅ Increment unread count for receiver
-        await updateDoc(doc(db, "conversations", conversationId), {
-          [`unread.${receiverId}`]: increment(1), // e.g. { unread: { userA: 0, userB: 3 } }
+        const message: Message = {
+          text,
+          senderId: currentUserId,
+          receiverId,
+          senderName,
+          senderAvatar: senderAvatar || null,
+          timestamp: serverTimestamp(),
+          isRead: false,
+        };
+
+        const msgRef = await addDoc(collection(db, "conversations", convoId, "messages"), message);
+
+        // Update conversation metadata
+        await updateDoc(doc(db, "conversations", convoId), {
+          lastMessage: text,
+          lastMessageTime: serverTimestamp(),
+          [`unread.${receiverId}`]: increment(1),
+          updatedAt: serverTimestamp(),
         });
 
-        return docRef.id;
+        return { messageId: msgRef.id, conversationId: convoId };
       } catch (err) {
         console.error("Error sending message:", err);
         return null;
