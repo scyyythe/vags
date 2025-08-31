@@ -36,7 +36,6 @@ const Header = () => {
 
   if (!userId) return <p>No user found</p>;
 
-  // ✅ Helper: close all dropdowns
   const closeAllDropdowns = () => {
     setIsProfileDropdownOpen(false);
     setIsNotificationOpen(false);

@@ -393,14 +393,17 @@ class DeleteArtwork(APIView):
         try:
             artwork = Art.objects.get(id=ObjectId(pk))
         except Art.DoesNotExist:
-            raise Http404("Artwork not found")
+            return Response({"error": "Artwork not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        artwork.art_status = "Active"
-        artwork.visibility = "Deleted"
-        artwork.updated_at = datetime.utcnow()
-        artwork.save()
+        # Only update the necessary fields without triggering full validation
+        Art.objects(id=ObjectId(pk)).update_one(
+            set__art_status="Active",
+            set__visibility="Deleted",
+            set__updated_at=datetime.utcnow()
+        )
 
         return Response({"message": "Artwork deleted successfully."}, status=status.HTTP_200_OK)
+
 
 class RestoreArtwork(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -409,7 +412,13 @@ class RestoreArtwork(APIView):
         try:
             artwork = Art.objects.get(id=ObjectId(pk))
         except Art.DoesNotExist:
-            raise Http404("Artwork not found")
+            return Response({"error": "Artwork not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Ensure image_url is always a list
+        if isinstance(artwork.image_url, str):
+            artwork.image_url = [artwork.image_url]
+        elif not isinstance(artwork.image_url, (list, tuple)):
+            artwork.image_url = []
 
         artwork.art_status = "Active"
         artwork.visibility = "Public"
@@ -417,6 +426,7 @@ class RestoreArtwork(APIView):
         artwork.save()
 
         return Response({"message": "Artwork restored successfully."}, status=status.HTTP_200_OK)
+
     
 class DeletePermanentArtwork(APIView):
     permission_classes = [permissions.IsAuthenticated]

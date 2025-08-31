@@ -86,6 +86,7 @@ import ViewInsightsPage from "@/components/user_dashboard/Exhibit/insights/ViewI
 import EditExhibit from "./components/user_dashboard/Exhibit/add_exhibit/EditExhibit";
 
 import { ChatProvider } from "./context/ChatContext";
+import Header from "./components/user_dashboard/navbar/Header";
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
 
@@ -143,6 +144,7 @@ const App = () => {
                       <PurchaseProvider>
                         <ChatProvider>
                           <BrowserRouter>
+                            <Header />
                             <Routes>
                               {/* Public & User Dashboard Routes (NO SidebarProvider) */}
                               <Route path="/" element={<Index />} />

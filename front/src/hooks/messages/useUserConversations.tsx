@@ -21,37 +21,60 @@ export const useUserConversations = (userId: string) => {
 
       for (const docSnap of snapshot.docs) {
         const data = docSnap.data();
-        const otherUserId = data.participants.find((id: string) => id !== userId);
+        const participantIds: string[] = data.participants.filter((id: string) => id !== userId);
 
-        let participantName = "Unknown";
-        let participantAvatar = undefined;
+        const userCache: Record<string, { name: string; avatar?: string }> = {};
 
-        if (otherUserId) {
+        for (const pid of participantIds) {
           try {
-            const res = await apiClient.get(`/user/${otherUserId}/`);
-            participantName = `${res.data.first_name} ${res.data.last_name}`;
-            participantAvatar = res.data.profile_picture;
+            const res = await apiClient.get(`/user/${pid}/`);
+            userCache[pid] = {
+              name: `${res.data.first_name} ${res.data.last_name}`,
+              avatar: res.data.profile_picture,
+            };
           } catch (err) {
-            console.error("❌ Failed to fetch user from API:", err);
+            console.error("❌ Failed to fetch user:", err);
+            userCache[pid] = { name: "Unknown" };
           }
         }
 
+        // Fetch messages
         const messagesQuery = query(
           collection(db, "conversations", docSnap.id, "messages"),
           orderBy("createdAt", "asc")
         );
         const messagesSnapshot = await getDocs(messagesQuery);
-        const messages: Message[] = messagesSnapshot.docs.map((m) => ({
-          id: m.id,
-          ...(m.data() as Omit<Message, "id">),
-          createdAt: m.data().createdAt?.toDate?.() ?? new Date(),
-        }));
 
+        const messages: Message[] = messagesSnapshot.docs.map((m) => {
+          const msgData = m.data();
+          const senderId = msgData.senderId as string;
+          const senderInfo = userCache[senderId] || { name: "Unknown", avatar: undefined };
+
+          return {
+            id: m.id,
+            senderId,
+            senderName: senderInfo.name,
+            senderAvatar: senderInfo.avatar,
+            content: msgData.content || "",
+            type: msgData.type || "text",
+            fileName: msgData.fileName,
+            imageUrl: msgData.imageUrl,
+            voiceDuration: msgData.voiceDuration,
+            isStarred: msgData.isStarred || false,
+            reactions: msgData.reactions || [],
+            deliveryStatus: msgData.deliveryStatus || "sent",
+            replyTo: msgData.replyTo || null,
+            timestamp: msgData.createdAt?.toDate?.() ?? new Date(),
+            isRead: msgData.isRead || false,
+          };
+        });
+
+        const firstParticipant = participantIds[0];
         convs.push({
           id: docSnap.id,
-          participantId: otherUserId,
-          participantName,
-          participantAvatar,
+          participantId: firstParticipant,
+          participantName: userCache[firstParticipant]?.name || "Unknown",
+          participantAvatar: userCache[firstParticipant]?.avatar,
           lastMessage: data.lastMessage,
           lastMessageTime: data.lastMessageTime?.toDate?.() ?? new Date(),
           unreadCount: data.unreadCount || 0,
