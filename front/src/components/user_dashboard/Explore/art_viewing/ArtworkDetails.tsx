@@ -396,7 +396,6 @@ const ArtworkDetails = () => {
 
                 {/* Center - Artwork Image */}
                 <div className={`relative z-0 ${isMobile ? "pl-5 mt-9" : "mt-8 w-[400px]"}`}>
-
                   <div className={`inline-block transform scale-[1.10] -mb-6 relative ${isMobile ? "" : "left-[-55px]"}`}>
                     <div className="w-[420px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                       <img
@@ -438,7 +437,7 @@ const ArtworkDetails = () => {
 
               {/* Right side - Title, artist, description, comments */}
               <div className={` ${isMobile ? "w-full mt-10 px-4 h-[540px]" : "w-[700px] -ml-[235px] mt-4 h-[450px]"}  overflow-y-auto`}>
-                <div className={` ${isMobile ? "" : ""}`}>
+                <div>
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center space-x-4">
                       <button

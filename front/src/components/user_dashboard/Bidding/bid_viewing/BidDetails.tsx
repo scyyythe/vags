@@ -1,15 +1,14 @@
 import { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Heart, MoreHorizontal, GripVertical } from "lucide-react";
+import { Heart, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
-import { LikedArtworksContext } from "@/context/LikedArtworksProvider";
+import { Separator } from "@/components/ui/separator";
 import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import BidMenu from "@/components/user_dashboard/Bidding/cards/BidMenu";
 import BidPopup from "../place_bid/BidPopup";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { useArtworkContext } from "@/context/ArtworkContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useLocation } from "react-router-dom";
 import "react-loading-skeleton/dist/skeleton.css";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
@@ -56,7 +55,6 @@ const BidDetails = () => {
 
   const [views, setViews] = useState<number>(0);
   const [showBidPopup, setShowBidPopup] = useState(false);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const location = useLocation();
   const artwork = location.state?.artwork || item?.artwork;
 
@@ -123,34 +121,6 @@ const BidDetails = () => {
         art.artwork?.category?.trim().toLowerCase() === item.artwork.category.trim().toLowerCase()
     );
   }, [item, allAuctions]);
-
-  // Mock bid data
-  const mockBids = [
-    {
-      id: "1",
-      amount: 3000,
-      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
-      created_at: "2025-05-13T16:40:00Z",
-    },
-    {
-      id: "2",
-      amount: 3000,
-      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/women/32.jpg" },
-      created_at: "2025-05-24T20:40:00Z",
-    },
-    {
-      id: "3",
-      amount: 3000,
-      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/women/33.jpg" },
-      created_at: "2025-05-24T20:40:00Z",
-    },
-    {
-      id: "4",
-      amount: 3000,
-      user: { name: "jayjay", avatar: "https://randomuser.me/api/portraits/women/34.jpg" },
-      created_at: "2025-05-24T20:40:00Z",
-    },
-  ];
 
   useEffect(() => {
     if (descriptionRef.current) {
@@ -220,10 +190,6 @@ const BidDetails = () => {
     setMenuOpen(false);
   };
 
-  const toggleDetailsPanel = () => {
-    setIsDetailOpen(!isDetailOpen);
-  };
-
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
@@ -251,112 +217,109 @@ const BidDetails = () => {
           >
             <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
               <i className="bx bx-chevron-left text-lg mr-2"></i>
-              Go back
+              Bid Details
             </button>
           </div>
 
-          <div className={`w-full ${isMobile ? "flex flex-col px-4" : "flex justify-center items-start py-6"}`}>
-            {/* Flex container with gap between panels */}
+          <div className={` ${isMobile ? "flex flex-col" : "flex justify-center items-start space-x-2 mt-2"}`}>
             <div
-              className={`flex ${isMobile ? "flex-col" : "flex-row"} items-start`}
-              style={{
-                gap: isMobile ? 0 : "2rem",
-                transition: "margin 0.5s cubic-bezier(.4,0,.2,1)",
-                marginLeft: !isMobile && isDetailOpen ? "60px" : 0,
-              }}
+              className={`${
+                isMobile ? "w-full" : "flex justify-center items-start ml-[260px]"
+              }`}
             >
-              <div
-                className={`flex ${
-                  isMobile ? "flex-col" : "flex-row"
-                } gap-6 transition-transform duration-500 ease-in-out`}
-                style={{
-                  transform: !isMobile && isDetailOpen ? "translateX(30px)" : "translateX(0)",
-                }}
-              >
                 {/* Artwork container */}
-                <div className={`relative -mr-4 ${isMobile ? "w-full" : "w-full max-w-[500px] min-w-[380px]"}`}>
-                  {/* Collapsible Sidebar */}
+                <div className={`mr-8 ${isMobile ? "w-full mt-3" : "w-full"}`}>
+                  {/* Sidebar (desktop) */}
+                  <div className="relative w-full">
                   {!isMobile && (
                     <div
-                      className={`absolute right-100 -top-14 w-[32%] h-[140%] z-20 transition-all duration-500 ease-in-out pointer-events-none ${
-                        isDetailOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 -translate-x-1"
-                      }`}
-                      style={{ right: "calc(100% + 16px)", marginRight: "40px" }}
+                      className="absolute top-3 z-20 left-[-250px] hidden lg:block"
+                      style={{ width: "150px" }}
                     >
-                      <div className="bg-gray-100 rounded-sm relative top-1/4 p-6 text-justify shadow-md">
-                        <div className="mb-6">
-                          <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
-                          <p className="text-[9px] text-gray-700">
-                            {(item.artwork.category || "Painting").charAt(0).toUpperCase() +
-                              (item.artwork.category || "Painting").slice(1)}
-                          </p>
+                      {/* Left Side - Bids Sidebar */}
+                      <div className="p-3 text-left rounded-sm">
+                        <h2 className="font-semibold text-xs mb-2">Bids</h2>
+                        <div className="max-h-[440px] overflow-y-auto pr-1 flex flex-col gap-2">
+                          {bids.length > 0 ? (
+                            bids.map((bid: any) => {
+                              const isAnonymous = bid.identity_type === "anonymous";
+                              const profilePicture =
+                                !isAnonymous && bid.user?.profile_picture
+                                  ? bid.user.profile_picture
+                                  : null;
+                              const avatarLetter = (bid.bidderFullName?.charAt(0) || "A").toUpperCase();
+
+                              return (
+                                <div key={bid.id || bid.timestamp} className="flex items-center gap-2">
+                                  {profilePicture ? (
+                                    <img
+                                      src={profilePicture}
+                                      alt={bid.bidderFullName || "Bidder"}
+                                      className="w-4 h-4 rounded-full object-cover border"
+                                    />
+                                  ) : (
+                                    <div className="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center text-[8px] font-semibold text-gray-700 border">
+                                      {avatarLetter}
+                                    </div>
+                                  )}
+                                  <div>
+                                    <span className="font-semibold text-[11px] mr-1">
+                                      <i className="bx bx-money text-[8px] text-gray-400"></i>{" "}
+                                      {bid.amount.toLocaleString()}
+                                    </span>
+                                    <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
+                                      by <p className="font-medium text-gray-700">{bid.bidderFullName}</p>
+                                      {isOwner && (
+                                        <span className="ml-1 text-[9px] text-gray-400">
+                                          {formatBidDate(bid.timestamp)}
+                                        </span>
+                                      )}
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            })
+                          ) : (
+                            <div className="text-[11px] text-gray-400">No bids yet.</div>
+                          )}
                         </div>
-                        <div className="mb-6">
-                          <h3 className="text-[9px] font-medium mb-1">Medium</h3>
-                          <p className="text-[9px] text-gray-700">{item.artwork.medium || "Acrylic Paint"}</p>
-                        </div>
-                        <div className="mb-6">
-                          <h3 className="text-[9px] font-medium mb-1">Dimensions</h3>
-                          <p className="text-[9px] text-gray-700">{item.artwork.size || "No Size"} cm</p>
-                        </div>
-                        <div className="mb-1">
-                          <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
-                          <p className="text-[9px] text-gray-700">
-                            {item.artwork.created_at ? formatDate(item.artwork.created_at) : "March 25, 2023"}
-                          </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                  {/* Mobile Sidebar */}
+                  {isMobile && (
+                    <div className="px-4 mt-4">
+                      <div className="bg-gray-50 rounded-md p-4 text-xs">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
+                            <p className="text-[10px] text-gray-700">{item.artwork.category || "Painting"}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-[10px] font-medium mb-1">Medium</h4>
+                            <p className="text-[10px] text-gray-700">{item.artwork.medium || "Acrylic Paint"}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
+                            <p className="text-[10px] text-gray-700">
+                              {item.artwork.created_at ? formatDate(item.artwork.created_at) : "March 25, 2023"}
+                            </p>
+                          </div>
+                          <div>
+                            <h4 className="text-[10px] font-medium mb-1">Artwork Size</h4>
+                            <p className="text-[9px] text-gray-700">{item.artwork.size || "No Size"}</p>
+                          </div>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* Mobile Information Panel (Collapsible) */}
-                  {isMobile && (
-                    <Collapsible className="px-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <CollapsibleTrigger className="p-1 my-2">
-                          <GripVertical size={16} />
-                        </CollapsibleTrigger>
-                      </div>
-                      <CollapsibleContent className="transition-all duration-500 ease-in-out">
-                        <div className="bg-gray-50 rounded-md p-4 text-xs whitespace-nowrap mb-8">
-                          <div className="grid grid-cols-4 gap-10 px-6">
-                            <div>
-                              <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
-                              <p className="text-[10px] text-gray-700">{item.artwork.category || "Painting"}</p>
-                            </div>
-                            <div>
-                              <h4 className="text-[10px] font-medium mb-1">Medium</h4>
-                              <p className="text-[10px] text-gray-700">{item.artwork.medium || "Acrylic Paint"}</p>
-                            </div>
-                            <div>
-                              <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
-                              <p className="text-[10px] text-gray-700">
-                                {item.artwork.created_at ? formatDate(item.artwork.created_at) : "March 25, 2023"}
-                              </p>
-                            </div>
-                            <div>
-                              <h3 className="text-[10px] font-medium mb-1">Artwork Size</h3>
-                              <p className="text-[10px] text-gray-700">{item.artwork.size}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  )}
-
                   {/* Center - Artwork Image */}
-                  <div className={`relative z-0  ${isMobile ? "my-6 pl-9" : "mt-3"}`}>
-                    {!isMobile && (
-                      <button
-                        onClick={toggleDetailsPanel}
-                        className="p-1 text-gray-500 hover:text-black absolute -left-12 top-1/2 transform -translate-y-1/2"
-                      >
-                        <GripVertical size={15} />
-                      </button>
-                    )}
-
-                    <div className="inline-block transform scale-[1.10]">
-                      <div className="w-[400px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
+                  <div className={`relative z-0 ${isMobile ? "pl-5 mt-9" : "mt-8 w-[400px]"}`}>
+                    <div className={`inline-block transform scale-[1.10] -mb-6 relative ${isMobile ? "" : "left-[-60px]"}`}>
+                      <div className="w-[420px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                         <img
                           src={item.artwork.image_url}
                           alt={item.artwork.title}
@@ -384,19 +347,10 @@ const BidDetails = () => {
                     </div>
                   </div>
                 </div>
-              </div>
 
               {/* Right side - Title, artist, description*/}
-              <div className={`${isMobile ? "w-full mt-2 px-4" : "w-full max-w-[390px] -mt-2"}`}>
-                <div
-                  className={`transition-all duration-500 ease-in-out ${
-                    isMobile ? "" : isDetailOpen ? "relative" : "relative"
-                  }`}
-                  style={{
-                    left: !isMobile && isDetailOpen ? "68px" : "40px",
-                    transition: "left 0.5s cubic-bezier(.4,0,.2,1)",
-                  }}
-                >
+              <div className={` ${isMobile ? "w-full mt-10 px-4 h-[540px]" : "w-[730px] -ml-[250px] mt-3 h-[450px]"}`}>
+                <div>
                   <div className="flex justify-between items-start">
                     <div className="flex items-center space-x-4">
                       <button
@@ -449,15 +403,16 @@ const BidDetails = () => {
                     </span>
                   </p>
 
+                  {/* Description */}
                   <div className="relative mt-2">
                     <div
                       ref={descriptionRef}
                       className={`
-                      text-[9px] text-gray-700 transition-all duration-300 ease-in-out mb-2
+                      text-[9px] text-gray-700 transition-all duration-300 ease-in-out mb-2 h-[100px]
                       ${
                         showFullDescription
-                          ? "max-h-9 overflow-y-auto pr-1"
-                          : "max-h-9 overflow-y-auto pr-1 overflow-hidden"
+                          ? "max-h-24 overflow-y-auto pr-1"
+                          : "max-h-24 overflow-y-auto pr-1 overflow-hidden"
                       }
                     `}
                       style={{ lineHeight: "1.25rem" }}
@@ -475,11 +430,39 @@ const BidDetails = () => {
                     )}
                   </div>
 
-                  <div className="w-full border px-10 py-4 rounded-xl flex justify-between items-center text-center mt-4">
+                  {/* Horizontal Sidebar Info */}
+                  <div className="w-full py-3 mb-4 grid grid-cols-4 gap-4 text-center">
+                    <div>
+                      <h3 className="text-[10px] font-medium">Artwork Style</h3>
+                      <p className="text-[10px] text-gray-700">
+                        {(item.artwork.category || "Painting").charAt(0).toUpperCase() +
+                          (item.artwork.category || "Painting").slice(1)}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-[9px] font-medium">Medium</h3>
+                      <p className="text-[9px] text-gray-700">{item.artwork.medium || "Acrylic Paint"}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-[9px] font-medium">Dimensions</h3>
+                      <p className="text-[9px] text-gray-700">{item.artwork.size || "No Size"} cm</p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-[9px] font-medium">Date Posted</h3>
+                      <p className="text-[9px] text-gray-700">
+                        {item.artwork.created_at ? formatDate(item.artwork.created_at) : "March 25, 2023"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="w-full border px-10 py-4 rounded-xl flex justify-between items-center text-center mt-4 mb-2">
                     {/* Highest Bid */}
                     <div className="flex-1">
                       <p className="text-[10px] text-gray-500 mb-2 -mt-2">Highest Bid</p>
-                      <p className="text-md font-semibold">
+                      <p className="text-lg font-semibold">
                         {item.highest_bid && item.highest_bid.amount != null
                           ? `₱${item.highest_bid.amount.toLocaleString()}`
                           : "No bids yet"}
@@ -497,55 +480,9 @@ const BidDetails = () => {
                     </div>
                   </div>
 
-                  {/* Bids Section */}
-                  <div className="mt-5 h-[123px] overflow-y-auto">
-                    <h2 className="font-semibold text-[10px]">Bids</h2>
-                    <div className="w-6 h-[2px] bg-black mb-3 rounded" />
-                    <div className="max-h-28 overflow-y-auto pr-2 flex flex-col gap-1">
-                      {bids.length > 0 ? (
-                        bids.map((bid: any) => {
-                          const isAnonymous = bid.identity_type === "anonymous";
-                          const profilePicture =
-                            !isAnonymous && bid.user?.profile_picture ? bid.user.profile_picture : null;
-                          const avatarLetter = (bid.bidderFullName?.charAt(0) || "A").toUpperCase();
-                          return (
-                            <div key={bid.id || bid.timestamp} className="flex items-center gap-2">
-                              {profilePicture ? (
-                                <img
-                                  src={profilePicture}
-                                  alt={bid.bidderFullName || "Bidder"}
-                                  className="w-4 h-4 rounded-full object-cover border"
-                                />
-                              ) : (
-                                <div className="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center text-[8px] font-semibold text-gray-700 border">
-                                  {avatarLetter}
-                                </div>
-                              )}
-                              <div>
-                                <span className="font-semibold text-[11px] mr-1">
-                                  <i className="bx bx-money text-[8px] text-gray-400"></i> {bid.amount.toLocaleString()}
-                                </span>
-                                <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
-                                  by <p className="font-medium text-gray-700">{bid.bidderFullName}</p>
-                                  {isOwner && (
-                                    <span className="ml-1 text-[9px] text-gray-400">
-                                      {formatBidDate(bid.timestamp)}
-                                    </span>
-                                  )}
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <div className="text-[11px] text-gray-400">No bids yet.</div>
-                      )}
-                    </div>
-                  </div>
-
                   <button
                     onClick={() => setShowBidPopup(true)}
-                    className="w-full bg-red-800 hover:bg-red-700 text-white text-xs py-2 rounded-full mt-3"
+                    className="w-full bg-red-800 hover:bg-red-700 text-white text-xs py-[11px] rounded-full mt-3"
                   >
                     Place A Bid
                   </button>
