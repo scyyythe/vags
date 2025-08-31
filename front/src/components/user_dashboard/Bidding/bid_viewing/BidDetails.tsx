@@ -346,7 +346,7 @@ const BidDetails = () => {
                     </div>
 
                     <div className="relative">
-                      <button className="py-3 pr-[11px] text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
+                      <button className="py-3 pr-[11px] mr-2 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
                         <MoreHorizontal size={isMobile ? 14 : 14} />
                       </button>
 
@@ -356,8 +356,8 @@ const BidDetails = () => {
                         onReport={handleReport}
                         isReported={isReported}
                         isShared={item.isShared}
-                        className={isMobile ? "mobile-menu-position" : ""}
                         auctionId={item.id}
+                        className="top-7 -left-[11px]"
                       />
                     </div>
                   </div>
