@@ -18,6 +18,7 @@ interface ArtCardMenuProps {
   onToggleVisibility: (newVisibility: boolean, id: string) => void;
   onArchive: () => void;
   isPublic?: boolean;
+  className?: string;
 }
 
 const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
@@ -30,6 +31,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   onArchive,
   artworkTitle,
   isPublic = true,
+  className,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -117,7 +119,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     <>
       <div
         ref={menuRef}
-        className="absolute -left-2 top-8 z-10 bg-gray-100 rounded-full py-2 px-2 shadow-md"
+        className="absolute -left-[6px] top-7 z-10 bg-gray-100 rounded-full py-2 px-2 shadow-md"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start gap-[3px]">

@@ -27,6 +27,7 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
   isReported = false,
   isShared = false,
   isHidden = false,
+  className,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
