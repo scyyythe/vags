@@ -457,7 +457,7 @@ const ExhibitViewing = () => {
           <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
             <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
               <i className="bx bx-chevron-left text-lg mr-2"></i>
-              Go back
+              Exhibit Details
             </button>
           </div>
 
@@ -472,7 +472,7 @@ const ExhibitViewing = () => {
                     <div
                       className={`${
                         isMobile
-                          ? ""
+                          ? "-mt-4"
                           : "w-[580px] h-[420px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"
                       }`}
                     >
@@ -600,7 +600,7 @@ const ExhibitViewing = () => {
         {/* Related Artworks Section */}
         {exhibit && exhibit.category && exhibits && exhibits.length > 0 && (
           <div className="container md:px-6 mt-4 mb-6">
-            <h2 className={`font-semibold ${isMobile ? "text-sm ml-1" : "text-md mb-4"}`}>Related Exhibits</h2>
+            <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"}`}>Related Exhibits</h2>
 
             {(() => {
               const normalizedCategory = exhibit.category.trim().toLowerCase();
