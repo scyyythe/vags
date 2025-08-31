@@ -180,6 +180,7 @@ const ArtCard = ({
               isFavorite={status.isSaved}
               isReported={report?.reported}
               isShared={false}
+              className="-right-1 top-7"
             />
           ) : isDeleted ? (
             <DeletedMenu
