@@ -41,7 +41,7 @@ const AuctionCountdown = ({ startTime, endTime }: { startTime: string | Date; en
     return (
       <div className=" text-gray-600">
         <p className="text-[10px] relative bottom-2">Auction will start on</p>
-        <p className="text-xs font-semibold text-black mt-1">
+        <p className="text-lg font-semibold text-black mt-1">
           {new Date(startTime).toLocaleString("en-PH", {
             year: "numeric",
             month: "long",
@@ -66,28 +66,28 @@ const AuctionCountdown = ({ startTime, endTime }: { startTime: string | Date; en
       <div className="flex items-center justify-center gap-8 relative top-1">
         <div className="flex flex-col items-center">
           <div className="flex -mb-2">
-            <p className="text-md font-semibold">{timeRemaining.hrs}</p>
+            <p className="text-lg font-semibold">{timeRemaining.hrs}</p>
             <p className="font-medium relative left-4">:</p>
           </div>
           <div>
-            <span className="text-[8px] text-gray-400">hrs</span>
+            <span className="text-[9px] text-gray-400">hrs</span>
           </div>
         </div>
         <div className="flex flex-col items-center">
           <div className="flex -mb-2">
-            <p className="text-md font-semibold">{timeRemaining.mins}</p>
+            <p className="text-lg font-semibold">{timeRemaining.mins}</p>
             <p className="font-medium relative left-4">:</p>
           </div>
           <div>
-            <span className="text-[8px] text-gray-400">mins</span>
+            <span className="text-[9px] text-gray-400">mins</span>
           </div>
         </div>
         <div className="flex flex-col items-center">
           <div className="flex -mb-2">
-            <p className="text-md font-semibold">{timeRemaining.secs}</p>
+            <p className="text-lg font-semibold">{timeRemaining.secs}</p>
           </div>
           <div>
-            <span className="text-[8px] text-gray-400">secs</span>
+            <span className="text-[9px] text-gray-400">secs</span>
           </div>
         </div>
       </div>
