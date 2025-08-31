@@ -216,6 +216,7 @@ const ArtCard = ({
               onToggleVisibility={(newStatus: boolean) => console.log("Toggle visibility", newStatus, id)}
               onArchive={() => console.log("Archive", id)}
               isPublic={true}
+              className="-left-1 top-7"
             />
           )}
         </div>

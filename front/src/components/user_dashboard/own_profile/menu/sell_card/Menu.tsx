@@ -25,6 +25,7 @@ interface SellMenuProps {
   onDelete: () => void;
   onViewInsights: () => void;
   onMarkAsSold: (id: string) => void;
+  className?: string;
 }
 
 const SellMenu: React.FC<SellMenuProps> = ({
@@ -37,6 +38,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
   onViewInsights,
   artworkTitle,
   isPublic = true,
+  className,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -109,7 +111,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
     <>
       <div
         ref={menuRef}
-        className="absolute right-2 top-8 z-10 bg-gray-100 rounded-full py-2 px-2 shadow-md"
+        className={`absolute z-10 bg-gray-100 rounded-full py-1 px-1.5 shadow-md ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start gap-1 text-[10px]">
