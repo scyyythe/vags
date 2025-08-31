@@ -316,7 +316,7 @@ const ArtworkDetails = () => {
                       className="absolute top-3 z-20 left-[-250px] hidden lg:block"
                       style={{width: "150px" }}
                     >
-                      <div className="border rounded-xl p-6 text-left">
+                      <div className="px-3 py-6 text-left">
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
                           <p className="text-[9px] text-gray-700">
@@ -329,10 +329,14 @@ const ArtworkDetails = () => {
                           </p>
                         </div>
 
+                        <Separator className="my-3" />
+
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Medium</h3>
                           <p className="text-[9px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
                         </div>
+
+                        <Separator className="my-3" />
 
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Dimensions</h3>
@@ -345,6 +349,8 @@ const ArtworkDetails = () => {
                             cm
                           </p>
                         </div>
+
+                        <Separator className="my-3" />
 
                         <div className="mb-1">
                           <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
@@ -431,7 +437,7 @@ const ArtworkDetails = () => {
               </div>
 
               {/* Right side - Title, artist, description, comments */}
-              <div className={` ${isMobile ? "w-full mt-10 px-4" : "w-[700px] -ml-[235px] mt-4"} h-[600px] overflow-y-auto`}>
+              <div className={` ${isMobile ? "w-full mt-10 px-4 h-[540px]" : "w-[700px] -ml-[235px] mt-4 h-[450px]"}  overflow-y-auto`}>
                 <div className={` ${isMobile ? "" : ""}`}>
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center space-x-4">
@@ -520,8 +526,8 @@ const ArtworkDetails = () => {
           return (
             related &&
             related.length > 0 && (
-              <div className="container md:px-6 mt-2 mb-2">
-                <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Artworks</h2>
+              <div className="container md:px-6 mb-4">
+                <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"}`}>Related Artworks</h2>
                 {filteredRelated && filteredRelated.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                     {filteredRelated.map((card) => {
