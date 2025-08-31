@@ -12,14 +12,13 @@ import DeletedMenu from "@/components/user_dashboard/user_profile/components/sta
 import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
-import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
-import useLikeStatus from "@/hooks/interactions/useLikeStatus";
+import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import useHideArtwork from "@/hooks/mutate/visibility/private/useHideArtwork";
 import useUnarchiveArtwork from "@/hooks/mutate/visibility/arc/useUnarchiveArtwork";
 import useRestoreArtwork from "@/hooks/mutate/visibility/trash/useRestoreArtwork";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
-import useReportStatus from "@/hooks/mutate/report/useReportStatus";
-import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
+import { getLoggedInUserId } from "@/auth/decode";
+
 export interface ArtCardProps {
   artwork: Artwork;
   isExplore?: boolean;
@@ -63,7 +62,7 @@ const ArtCard = ({
 
   const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id, isSavedFromBulk ?? false);
 
-  const { likedArtworks, likeCounts, setLikedArtworks, setLikeCounts, toggleLike } = useContext(LikedArtworksContext);
+  const { likedArtworks, likeCounts, setLikedArtworks, toggleLike } = useContext(LikedArtworksContext);
 
   const { openPopup } = useDonation();
 
@@ -71,7 +70,6 @@ const ArtCard = ({
 
   const { mutate: hideArtwork } = useHideArtwork();
   const { mutate: unarchiveArtwork } = useUnarchiveArtwork();
-
   const { mutate: restore } = useRestoreArtwork();
   const { mutate: submitReport } = useSubmitReport();
 
@@ -82,9 +80,7 @@ const ArtCard = ({
   }, [isLiked, id, setLikedArtworks]);
 
   const handleLike = () => {
-    if (id) {
-      toggleLike(id);
-    }
+    if (id) toggleLike(id);
   };
 
   const handleHide = () => {
@@ -92,14 +88,17 @@ const ArtCard = ({
     hideArtwork(id);
     setMenuOpen(false);
   };
+
   const handleUnarchive = () => {
     unarchiveArtwork(id);
     setMenuOpen(false);
   };
+
   const handleRestore = () => {
     restore(id);
     setMenuOpen(false);
   };
+
   const handleReport = ({
     category,
     option,
@@ -112,7 +111,7 @@ const ArtCard = ({
     additionalInfo?: string;
   }) => {
     if (isReportedFromBulk) {
-      toast.error("You have already reported this artwork.", { closeButton: true })
+      toast.error("You have already reported this artwork.", { closeButton: true });
       setMenuOpen(false);
       return;
     }
@@ -145,9 +144,10 @@ const ArtCard = ({
     });
   };
 
-  if (isHidden || isDeletedLocally) {
-    return null;
-  }
+  const loggedInUserId = getLoggedInUserId();
+  const isOwner = String(loggedInUserId) === String(artistId);
+
+  if (isHidden || isDeletedLocally) return null;
 
   return (
     <div className="art-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 px-4 py-3">
@@ -159,9 +159,9 @@ const ArtCard = ({
               <AvatarFallback>{(artistName || "?").charAt(0)}</AvatarFallback>
             </Avatar>
           </Link>
-
           <span className="text-[9px] font-medium">{artistName}</span>
         </div>
+
         <div className="relative text-gray-500" style={{ height: "24px" }}>
           <button
             onClick={() => setMenuOpen((prev) => !prev)}
@@ -171,18 +171,7 @@ const ArtCard = ({
           </button>
 
           {/* CONDITIONAL MENU */}
-          {isExplore ? (
-            <ArtCardMenu
-              isOpen={menuOpen}
-              onFavorite={handleFavorite}
-              onHide={handleHide}
-              onReport={handleReport}
-              isFavorite={status.isSaved}
-              isReported={report?.reported}
-              isShared={false}
-              className="-right-1 top-7"
-            />
-          ) : isDeleted ? (
+          {isDeleted ? (
             <DeletedMenu
               artworkId={id}
               isOpen={menuOpen}
@@ -192,7 +181,7 @@ const ArtCard = ({
               }}
               onUnarchive={handleRestore}
               onDelete={() => {
-                toast.success("Artwork permanently deleted", { closeButton: true })
+                toast.success("Artwork permanently deleted", { closeButton: true });
                 setIsDeletedLocally(true);
                 setMenuOpen(false);
               }}
@@ -205,7 +194,7 @@ const ArtCard = ({
               onUnarchive={handleUnarchive}
               onDelete={() => console.log("Delete artwork")}
             />
-          ) : (
+          ) : isOwner ? (
             <OwnerMenu
               isOpen={menuOpen}
               artworkId={id}
@@ -218,9 +207,21 @@ const ArtCard = ({
               isPublic={true}
               className="-left-1 top-7"
             />
+          ) : (
+            <ArtCardMenu
+              isOpen={menuOpen}
+              onFavorite={handleFavorite}
+              onHide={handleHide}
+              onReport={handleReport}
+              isFavorite={status.isSaved}
+              isReported={report?.reported}
+              isShared={false}
+              className="-right-1 top-7"
+            />
           )}
         </div>
       </div>
+
       <Link
         to={`/artwork/${artwork.id}`}
         state={{
