@@ -42,14 +42,30 @@ class MyExhibitCardListView(APIView):
 
     def get(self, request):
         try:
-            user_id = str(request.user.id)
-            user = User.objects.get(id=user_id)  
-            exhibits = Exhibit.objects.filter(owner=user)
+            user = request.user  
+            include_deleted = request.query_params.get("include_deleted", "false").lower() == "true"
+            include_hidden = request.query_params.get("include_hidden", "false").lower() == "true"
+            include_archived = request.query_params.get("include_archived", "false").lower() == "true"
+
+            exhibits = Exhibit.objects(owner=user)
+
+            # Filter based on visibility
+            if not include_deleted:
+                exhibits = exhibits.filter(visibility__ne="Deleted")
+            if not include_hidden:
+                exhibits = exhibits.filter(visibility__ne="Hidden")
+            if not include_archived:
+                exhibits = exhibits.filter(visibility__ne="Archived")
+
             serializer = ExhibitCardSerializer(exhibits, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
+
         except Exception as e:
             print("🔥 ERROR in MyExhibitCardListView:", e)
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 
             
 class ExhibitCardDetailView(APIView):
@@ -123,10 +139,29 @@ class DeleteExhibitView(APIView):
             exhibit = Exhibit.objects.get(id=exhibit_id)
 
             if exhibit.owner.id != request.user.id:
-                return Response({"detail": "Not authorized to delete this exhibit."}, status=status.HTTP_403_FORBIDDEN)
+                return Response(
+                    {"detail": "Not authorized to delete this exhibit."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
 
+         
+            if exhibit.visibility != "Deleted":
+                exhibit.visibility = "Deleted"
+                exhibit.save(update_fields=["visibility", "updated_at"])
+                return Response(
+                    {"detail": "Exhibit moved to trash."},
+                    status=status.HTTP_200_OK,
+                )
+
+         
             exhibit.delete()
-            return Response({"detail": "Exhibit deleted successfully."}, status=status.HTTP_200_OK)
+            return Response(
+                {"detail": "Exhibit permanently deleted."},
+                status=status.HTTP_200_OK,
+            )
 
         except Exhibit.DoesNotExist:
-            return Response({"detail": "Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Exhibit not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )

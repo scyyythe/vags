@@ -13,6 +13,7 @@ class ExhibitCardSerializer(serializers.Serializer):
     likes = serializers.SerializerMethodField()
     views = serializers.SerializerMethodField()
     isSolo = serializers.SerializerMethodField()
+    visibility = serializers.SerializerMethodField()
     isShared = serializers.SerializerMethodField()
     collaborators = serializers.SerializerMethodField()
     owner = serializers.SerializerMethodField()
@@ -51,6 +52,9 @@ class ExhibitCardSerializer(serializers.Serializer):
 
     def get_likes(self, obj):
         return 1
+    
+    def get_visibility(self, obj):
+        return getattr(obj, "visibility", None)
 
     def get_views(self, obj):
         return len(obj.viewed_by or [])
