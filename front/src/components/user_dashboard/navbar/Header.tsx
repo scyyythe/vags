@@ -3,7 +3,7 @@ import { Link, useLocation, NavLink, useNavigate } from "react-router-dom";
 import Logo from "./Logo";
 import { Bell, MessageCircle, Search, X, Menu } from "lucide-react";
 import SearchBar from "@/components/user_dashboard/local_components/SearchBar";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import ProfileDropdown from "../local_components/profile_dropdown/ProfileDropdown";
 import ChatDropdown from "../local_components/chat/ChatDropdown";
 import Notifications from "../local_components/notification/Notification";
@@ -16,26 +16,33 @@ const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  const [activeDropdown, setActiveDropdown] = useState<"chat" | "notifications" | "profile" | null>(null);
-
-  const notificationRef = useRef<HTMLDivElement>(null);
-  const chatRef = useRef<HTMLDivElement>(null);
-  const avatarRef = useRef<HTMLDivElement>(null);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const notificationRef = useRef(null);
+  const chatRef = useRef(null);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage] = useState(1);
   const { data: artworks } = useArtworks(currentPage, undefined, true, "all", "public");
   const navigate = useNavigate();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const avatarRef = useRef(null);
 
   const userId = getLoggedInUserId();
   const { firstName, profilePicture } = useUserDetails(userId);
 
   const { isChatOpen, openChat, closeChat, participantId, participantName, participantAvatar } = useChat();
 
+  // ✅ Helper: close all dropdowns
+  const closeAllDropdowns = () => {
+    setIsProfileDropdownOpen(false);
+    setIsNotificationOpen(false);
+    closeChat();
+  };
+
   const handleSearchChange = (value: string) => {
     if (!value.trim()) return;
+
     const params = new URLSearchParams();
     params.set("q", value);
 
@@ -52,25 +59,6 @@ const Header = () => {
     setSearchQuery(value);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        chatRef.current?.contains(event.target as Node) ||
-        notificationRef.current?.contains(event.target as Node) ||
-        avatarRef.current?.contains(event.target as Node)
-      ) {
-        return; // inside click, ignore
-      }
-      setActiveDropdown(null);
-      closeChat(); // also close chat from context
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [closeChat]);
-
   if (!userId) {
     return <p>No user found</p>;
   }
@@ -78,10 +66,11 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border/50">
       <div className="container mx-auto px-2 sm:px-4 flex items-center h-16 gap-2 sm:gap-4">
-        {/* Left Section: Logo + Hamburger + Nav */}
+        {/* Left Section */}
         <div className="flex items-center gap-2 flex-grow md:flex-grow-0">
           <div className="flex items-center gap-2 pl-2 sm:pl-0">
             <Logo />
+            {/* Hamburger */}
             <div className="md:hidden ml-2 mt-1">
               <button aria-label="Toggle menu" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 {isMenuOpen ? <X size={15} /> : <Menu size={15} />}
@@ -102,14 +91,14 @@ const Header = () => {
           </nav>
         </div>
 
-        {/* Right: Searchbar + Icons + Profile */}
+        {/* Right */}
         <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
-          {/* Desktop Search */}
+          {/* SearchBar (desktop) */}
           <div className="hidden md:block w-[250px] border border-gray-400 rounded-full px-3">
             <SearchBar onSearchChange={handleSearchChange} />
           </div>
 
-          {/* Mobile Search */}
+          {/* Search Icon (mobile) */}
           <div className="block md:hidden relative top-0.5 right-1 ">
             <button
               className="button-icon hover:scale-110 transition"
@@ -118,6 +107,7 @@ const Header = () => {
             >
               <Search size={15} />
             </button>
+
             <AnimatePresence>
               {isSearchOpen && (
                 <motion.div
@@ -138,19 +128,19 @@ const Header = () => {
               className="button-icon hover:scale-110 transition"
               title="ChatDropdown"
               onClick={() => {
-                if (activeDropdown === "chat") {
-                  setActiveDropdown(null);
+                if (isChatOpen) {
                   closeChat();
                 } else {
-                  setActiveDropdown("chat");
+                  closeAllDropdowns(); // ✅ close others first
                   openChat("", "");
                 }
               }}
             >
               <MessageCircle size={15} />
             </button>
+
             <AnimatePresence>
-              {activeDropdown === "chat" && isChatOpen && (
+              {isChatOpen && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -159,10 +149,7 @@ const Header = () => {
                 >
                   <ChatDropdown
                     isOpen={isChatOpen}
-                    onClose={() => {
-                      closeChat();
-                      setActiveDropdown(null);
-                    }}
+                    onClose={closeChat}
                     participantId={participantId}
                     participantName={participantName}
                     participantAvatar={participantAvatar}
@@ -175,21 +162,29 @@ const Header = () => {
           {/* Notifications */}
           <div className="relative top-0.5" ref={notificationRef}>
             <button
-              onClick={() => setActiveDropdown(activeDropdown === "notifications" ? null : "notifications")}
+              onClick={() => {
+                if (isNotificationOpen) {
+                  setIsNotificationOpen(false);
+                } else {
+                  closeAllDropdowns(); // ✅ close others first
+                  setIsNotificationOpen(true);
+                }
+              }}
               className="button-icon hover:scale-110 transition"
               title="Notifications"
             >
               <Bell size={15} />
             </button>
+
             <AnimatePresence>
-              {activeDropdown === "notifications" && (
+              {isNotificationOpen && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="absolute -right-[70px] mt-4 z-50"
                 >
-                  <Notifications isOpen={true} onClose={() => setActiveDropdown(null)} />
+                  <Notifications isOpen={true} onClose={() => setIsNotificationOpen(false)} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -207,21 +202,29 @@ const Header = () => {
               </div>
             </Link>
             <button
-              onClick={() => setActiveDropdown(activeDropdown === "profile" ? null : "profile")}
+              onClick={() => {
+                if (isProfileDropdownOpen) {
+                  setIsProfileDropdownOpen(false);
+                } else {
+                  closeAllDropdowns(); // ✅ close others first
+                  setIsProfileDropdownOpen(true);
+                }
+              }}
               className="ml-1 z-10"
               aria-label="Profile menu"
             >
               <i className="bx bx-chevron-down text-xl"></i>
             </button>
+
             <AnimatePresence>
-              {activeDropdown === "profile" && (
+              {isProfileDropdownOpen && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="absolute left-16 top-10 z-50"
                 >
-                  <ProfileDropdown isOpen={true} onClose={() => setActiveDropdown(null)} />
+                  <ProfileDropdown isOpen={true} onClose={() => setIsProfileDropdownOpen(false)} />
                 </motion.div>
               )}
             </AnimatePresence>

@@ -16,7 +16,7 @@ export interface SellCardProps {
   artist?: string;
   price: number;
   medium?: string;
-  profile_picture: string;
+  profile_picture?: string;
   originalPrice?: number;
   title: string;
   category?: string;
