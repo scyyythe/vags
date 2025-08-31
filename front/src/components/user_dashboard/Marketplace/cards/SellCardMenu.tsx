@@ -14,7 +14,7 @@ interface SellCardMenuProps {
   className?: string;
 }
 
-const SellCardMenu: React.FC<SellCardMenuProps> = ({ isOpen, onReport, isReported = false }) => {
+const SellCardMenu: React.FC<SellCardMenuProps> = ({ isOpen, onReport, isReported = false, className, }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showReportOptions, setShowReportOptions] = useState(false);
@@ -52,7 +52,7 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({ isOpen, onReport, isReporte
     <>
       <div
         ref={menuRef}
-        className="absolute -right-1.5 top-5 z-10 bg-gray-100 rounded-full py-1 px-1 shadow-md"
+        className={`absolute z-10 bg-gray-100 rounded-full py-1 px-1.5 shadow-md ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start">
