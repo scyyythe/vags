@@ -9,9 +9,10 @@ import { MessageInput } from "./MessageInput";
 import { Conversation, Message } from "./types/types";
 import { InviteFriends } from "./InviteFriends";
 import { db } from "@/firebase/firebaseConfig";
-import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, where } from "firebase/firestore";
+import { collection, query, orderBy, where, onSnapshot } from "firebase/firestore";
 import { useFirebaseChat } from "@/hooks/messages/useFirebaseChat";
 import { useUserConversations } from "@/hooks/messages/useUserConversations";
+
 interface ChatDropdownProps {
   isOpen: boolean;
   onClose: () => void;
@@ -36,50 +37,44 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const userAvatarLocal = localStorage.getItem("avatar_url") || undefined;
   const [conversations, setConversations] = useUserConversations(userId);
 
-  const {
-    messages: firebaseMessages,
-    loading,
-    sendMessage: sendFirebaseMessage,
-  } = useFirebaseChat(selectedConversation || "", userId);
+  const { messages: firebaseMessages, sendMessage: sendFirebaseMessage } = useFirebaseChat(
+    selectedConversation || "",
+    userId // must match exactly
+  );
+
+  // Fetch user conversations on open
   useEffect(() => {
     if (!isOpen) return;
 
     const q = query(
       collection(db, "conversations"),
-      // Assuming each conversation has a 'participants' array
       where("participants", "array-contains", userId),
       orderBy("lastMessageTime", "desc")
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const convs = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Conversation[];
-
+      const convs: Conversation[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          participantId: data.participantId || "",
+          participantName: data.participantName || "Unknown",
+          participantAvatar: data.participantAvatar,
+          lastMessage: data.lastMessage || "",
+          lastMessageTime: data.lastMessageTime?.toDate ? data.lastMessageTime.toDate() : new Date(),
+          unreadCount: data.unreadCount || 0,
+          isOnline: data.isOnline || false,
+          isArchived: data.isArchived || false,
+          isPinned: data.isPinned || false,
+          isMuted: data.isMuted || false,
+          messages: data.messages || [], // ✅ default to empty array
+        };
+      });
       setConversations(convs);
     });
 
     return () => unsubscribe();
   }, [isOpen]);
-  // Listen for changes in the selected conversation to update messages
-  useEffect(() => {
-    if (!selectedConversation) return;
-
-    const q = query(collection(db, "conversations", selectedConversation, "messages"), orderBy("timestamp", "asc"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const msgs = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Message[];
-
-      setConversations((prev) =>
-        prev.map((conv) => (conv.id === selectedConversation ? { ...conv, messages: msgs } : conv))
-      );
-    });
-
-    return () => unsubscribe();
-  }, [selectedConversation]);
 
   // Open or create conversation if a participant is passed
   useEffect(() => {
@@ -93,7 +88,6 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
           return prev;
         }
 
-        // Create new conversation
         const newConv: Conversation = {
           id: Date.now().toString(),
           participantId,
@@ -120,22 +114,64 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     const matchesArchive = showArchived ? conv.isArchived : !conv.isArchived;
     return matchesSearch && matchesArchive;
   });
+
   const selectedConv = conversations.find((conv) => conv.id === selectedConversation);
 
-  const handleSendMessage = async () => {
-    if (!messageInput.trim() || !selectedConversation || !participantId) return;
+  // Add a message safely
+  const addMessageToConversation = (convId: string, message: Partial<Message>) => {
+    const newMessage: Message = {
+      id: `m${Date.now()}`,
+      senderId: userId,
+      senderName: userName,
+      content: message.content || "",
+      timestamp: new Date(),
+      isRead: true,
+      isStarred: false,
+      type: message.type || "text",
+      imageUrl: message.imageUrl,
+      fileName: message.fileName,
+      voiceDuration: message.voiceDuration,
+      deliveryStatus: "sent",
+      isMine: true,
+      reactions: [],
+    };
 
-    const messageId = await sendFirebaseMessage(messageInput, participantId, userName, userAvatarLocal);
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === convId
+          ? {
+              ...conv,
+              messages: [...(conv.messages || []), newMessage], // ✅ safeguard
+              lastMessage: newMessage.content,
+              lastMessageTime: new Date(),
+            }
+          : conv
+      )
+    );
 
-    if (messageId) {
-      console.log("Message successfully inserted with ID:", messageId);
-      setMessageInput("");
-    } else {
-      console.log("Failed to insert message.");
-    }
+    setTimeout(() => {
+      const chatContainer = document.getElementById("chat-container");
+      if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+    }, 50);
   };
 
-  // File, camera, voice, emoji handlers
+  const handleSendMessage = async () => {
+    if (!messageInput.trim() || !selectedConversation) return;
+
+    await sendFirebaseMessage(
+      messageInput,
+      participantId || selectedConv?.participantId,
+      userName,
+      userAvatarLocal,
+      selectedConversation
+    );
+
+    addMessageToConversation(selectedConversation, { content: messageInput, type: "text" });
+
+    setMessageInput("");
+    setReplyingTo(null);
+  };
+
   const handleFileAttachment = () => {
     const input = document.createElement("input");
     input.type = "file";
@@ -143,32 +179,12 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file && selectedConversation) {
-        const fileMessage: Message = {
-          id: `m${Date.now()}`,
-          senderId: userId,
-          senderName: userName,
+        addMessageToConversation(selectedConversation, {
           content: file.type.startsWith("image/") ? "Sent an image" : `Sent ${file.name}`,
-          timestamp: new Date(),
-          isRead: true,
-          isStarred: false,
           type: file.type.startsWith("image/") ? "image" : "file",
           imageUrl: file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined,
           fileName: file.name,
-          deliveryStatus: "sent",
-        };
-
-        setConversations((prev) =>
-          prev.map((conv) =>
-            conv.id === selectedConversation
-              ? {
-                  ...conv,
-                  messages: [...conv.messages, fileMessage],
-                  lastMessage: fileMessage.content,
-                  lastMessageTime: new Date(),
-                }
-              : conv
-          )
-        );
+        });
       }
     };
     input.click();
@@ -182,33 +198,12 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file && selectedConversation) {
-        const isVideo = file.type.startsWith("video/");
-        const cameraMessage: Message = {
-          id: `m${Date.now()}`,
-          senderId: userId,
-          senderName: userName,
-          content: isVideo ? "Sent a video" : "Sent a photo",
-          timestamp: new Date(),
-          isRead: true,
-          isStarred: false,
+        addMessageToConversation(selectedConversation, {
+          content: file.type.startsWith("video/") ? "Sent a video" : "Sent a photo",
           type: "image",
           imageUrl: URL.createObjectURL(file),
           fileName: file.name,
-          deliveryStatus: "sent",
-        };
-
-        setConversations((prev) =>
-          prev.map((conv) =>
-            conv.id === selectedConversation
-              ? {
-                  ...conv,
-                  messages: [...conv.messages, cameraMessage],
-                  lastMessage: cameraMessage.content,
-                  lastMessageTime: new Date(),
-                }
-              : conv
-          )
-        );
+        });
       }
     };
     input.click();
@@ -216,40 +211,17 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
   const handleVoiceRecord = () => {
     if (!selectedConversation) return;
-
     if (!isRecording) {
       setIsRecording(true);
       setTimeout(() => {
         setIsRecording(false);
-        const voiceMessage: Message = {
-          id: `m${Date.now()}`,
-          senderId: userId,
-          senderName: userName,
+        addMessageToConversation(selectedConversation, {
           content: "Voice message",
-          timestamp: new Date(),
-          isRead: true,
-          isStarred: false,
           type: "voice",
           voiceDuration: 5,
-          deliveryStatus: "sent",
-        };
-
-        setConversations((prev) =>
-          prev.map((conv) =>
-            conv.id === selectedConversation
-              ? {
-                  ...conv,
-                  messages: [...conv.messages, voiceMessage],
-                  lastMessage: voiceMessage.content,
-                  lastMessageTime: new Date(),
-                }
-              : conv
-          )
-        );
+        });
       }, 2000);
-    } else {
-      setIsRecording(false);
-    }
+    } else setIsRecording(false);
   };
 
   const handleEmojiClick = (emojiData: any) => {
@@ -258,72 +230,55 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   };
 
   const handleCall = () => {
-    if (selectedConv) {
-      alert(`Initiating voice call with ${selectedConv.participantName}...`);
-    }
+    if (selectedConv) alert(`Initiating voice call with ${selectedConv.participantName}...`);
   };
 
-  // Mark as read/unread, pin, mute, archive, delete
-  const markAsRead = (convId: string) => {
+  // Conversation utilities
+  const markAsRead = (convId: string) =>
     setConversations((prev) =>
       prev.map((conv) =>
         conv.id === convId
-          ? {
-              ...conv,
-              unreadCount: 0,
-              messages: conv.messages.map((msg) => ({ ...msg, isRead: true })),
-            }
+          ? { ...conv, unreadCount: 0, messages: (conv.messages || []).map((msg) => ({ ...msg, isRead: true })) }
           : conv
       )
     );
-  };
 
-  const markAsUnread = (convId: string) => {
+  const markAsUnread = (convId: string) =>
     setConversations((prev) =>
       prev.map((conv) =>
         conv.id === convId
           ? {
               ...conv,
               unreadCount: Math.max(1, conv.unreadCount),
-              messages: conv.messages.map((msg, index) =>
-                index === conv.messages.length - 1 ? { ...msg, isRead: false } : msg
+              messages: (conv.messages || []).map((msg, idx) =>
+                idx === (conv.messages?.length || 0) - 1 ? { ...msg, isRead: false } : msg
               ),
             }
           : conv
       )
     );
-  };
 
-  const togglePin = (convId: string) => {
+  const togglePin = (convId: string) =>
     setConversations((prev) => prev.map((conv) => (conv.id === convId ? { ...conv, isPinned: !conv.isPinned } : conv)));
-  };
-
-  const toggleMute = (convId: string) => {
+  const toggleMute = (convId: string) =>
     setConversations((prev) => prev.map((conv) => (conv.id === convId ? { ...conv, isMuted: !conv.isMuted } : conv)));
-  };
-
-  const toggleArchive = (convId: string) => {
+  const toggleArchive = (convId: string) =>
     setConversations((prev) =>
       prev.map((conv) => (conv.id === convId ? { ...conv, isArchived: !conv.isArchived } : conv))
     );
-  };
-
   const deleteConversation = (convId: string) => {
     setConversations((prev) => prev.filter((conv) => conv.id !== convId));
-    if (selectedConversation === convId) {
-      setSelectedConversation(null);
-    }
+    if (selectedConversation === convId) setSelectedConversation(null);
   };
 
   const starMessage = (messageId: string) => {
     if (!selectedConversation) return;
-
     setConversations((prev) =>
       prev.map((conv) =>
         conv.id === selectedConversation
           ? {
               ...conv,
-              messages: conv.messages.map((msg) =>
+              messages: (conv.messages || []).map((msg) =>
                 msg.id === messageId ? { ...msg, isStarred: !msg.isStarred } : msg
               ),
             }
@@ -334,65 +289,16 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
   const deleteMessage = (messageId: string) => {
     if (!selectedConversation) return;
-
     setConversations((prev) =>
       prev.map((conv) =>
         conv.id === selectedConversation
-          ? {
-              ...conv,
-              messages: conv.messages.filter((msg) => msg.id !== messageId),
-            }
+          ? { ...conv, messages: (conv.messages || []).filter((msg) => msg.id !== messageId) }
           : conv
       )
     );
   };
 
-  const replyToMessage = (message: Message) => {
-    setReplyingTo(message);
-  };
-
-  const addReactionToMessage = (messageId: string, emoji: string) => {
-    if (!selectedConversation) return;
-
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === selectedConversation
-          ? {
-              ...conv,
-              messages: conv.messages.map((msg) => {
-                if (msg.id === messageId) {
-                  const existingReactions = msg.reactions || [];
-                  const existingReaction = existingReactions.find((r) => r.emoji === emoji);
-
-                  if (existingReaction) {
-                    const userIndex = existingReaction.users.indexOf(userId);
-                    if (userIndex > -1) {
-                      existingReaction.users.splice(userIndex, 1);
-                      if (existingReaction.users.length === 0) {
-                        return {
-                          ...msg,
-                          reactions: existingReactions.filter((r) => r.emoji !== emoji),
-                        };
-                      }
-                    } else {
-                      existingReaction.users.push(userId);
-                    }
-                    return { ...msg, reactions: existingReactions };
-                  } else {
-                    return {
-                      ...msg,
-                      reactions: [...existingReactions, { emoji, users: [userId] }],
-                    };
-                  }
-                }
-                return msg;
-              }),
-            }
-          : conv
-      )
-    );
-    setShowReactionPicker(null);
-  };
+  const replyToMessage = (message: Message) => setReplyingTo(message);
 
   return (
     <div className="absolute right-4 md:right-0.5 bg-white rounded-2xl shadow-xl z-50 w-[330px] md:w-[330px] h-[534px]">
@@ -403,10 +309,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
             selectedConv={selectedConv}
             showArchived={showArchived}
             searchQuery={searchQuery}
-            onBack={() => {
-              if (selectedConversation) setSelectedConversation(null);
-              else setShowArchived(false);
-            }}
+            onBack={() => (selectedConversation ? setSelectedConversation(null) : setShowArchived(false))}
             onClose={onClose}
             onCall={handleCall}
             onTogglePin={togglePin}
@@ -421,23 +324,29 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
               <MessagesList
                 conversation={{
                   ...selectedConv,
-                  messages: firebaseMessages.map((msg: any) => ({
-                    id: msg.id,
-                    senderId: msg.senderId,
-                    senderName: msg.senderName || "Unknown",
-                    content: msg.content || msg.text || "",
-                    timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(),
-                    isRead: msg.isRead || false,
-                    isStarred: msg.isStarred || false,
-                    type: msg.type || "text",
-                    deliveryStatus: msg.deliveryStatus || "sent",
-                    reactions: msg.reactions || [],
-                    imageUrl: msg.imageUrl || undefined,
-                    fileName: msg.fileName || undefined,
-                    voiceDuration: msg.voiceDuration || undefined,
-                    isMine: msg.senderId === userId,
-                  })) as Message[],
+                  messages: [
+                    ...(selectedConv.messages || []),
+                    ...(firebaseMessages || [])
+                      .filter((fmsg: any) => !(selectedConv.messages || []).some((m) => m.id === fmsg.id))
+                      .map((msg: any) => ({
+                        id: msg.id,
+                        senderId: msg.senderId,
+                        senderName: msg.senderName || "Unknown",
+                        content: msg.content || msg.text || "",
+                        timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(),
+                        isRead: msg.isRead || false,
+                        isStarred: msg.isStarred || false,
+                        type: msg.type || "text",
+                        deliveryStatus: msg.deliveryStatus || "sent",
+                        reactions: msg.reactions || [],
+                        imageUrl: msg.imageUrl,
+                        fileName: msg.fileName,
+                        voiceDuration: msg.voiceDuration,
+                        isMine: String(msg.senderId) === String(userId),
+                      })),
+                  ],
                 }}
+                currentUserId={userId}
                 selectedMessage={selectedMessage}
                 showReactionPicker={showReactionPicker}
                 onSelectMessage={setSelectedMessage}

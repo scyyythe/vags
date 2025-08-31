@@ -14,6 +14,9 @@ export interface Message {
   imageUrl?: string;
   fileName?: string;
   voiceDuration?: number;
+  isMine?: boolean;
+  senderAvatar?: string;
+  replyTo?: string;
 }
 
 export interface Conversation {
