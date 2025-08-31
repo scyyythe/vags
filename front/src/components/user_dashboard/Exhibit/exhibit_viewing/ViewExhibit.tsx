@@ -503,7 +503,7 @@ const ExhibitViewing = () => {
               {/* Right side - Title, artist, description, comments */}
               <div className={`${isMobile ? "w-full mt-6 px-4" : "w-[530px] "}`}>
                 <div className={`${isMobile ? "" : "relative top-5"}`}>
-                  <div className="flex justify-between items-start mb-4">
+                  <div className="flex justify-between items-start">
                     <div className="flex items-center space-x-4">
                       <button
                         onClick={() => {
@@ -565,10 +565,7 @@ const ExhibitViewing = () => {
                   <div className="relative mt-4">
                     <div
                       ref={descriptionRef}
-                      className={`
-                      text-[9px] text-gray-700 transition-all duration-300 ease-in-out 
-                      ${showFullDescription ? "max-h-10 overflow-y-auto pr-1" : "max-h-10 overflow-hidden"}
-                    `}
+                      className="text-[10px] text-gray-700 transition-all duration-300 ease-in-out h-[100px] overflow-y-auto"
                       style={{ lineHeight: "1.1rem" }}
                     >
                       {exhibit.description || "No description available."}
