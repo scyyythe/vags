@@ -14,22 +14,18 @@ import useFavorite from "@/hooks/interactions/useFavorite";
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import { useExhibitCardDetail } from "@/hooks/exhibit/useCardDetail";
 import ExhibitCardDetailSkeleton from "@/components/skeletons/ExhibitCardDetail";
-import Gallery3D from "@/components/gallery/Gallery3D"; 
+import Gallery3D from "@/components/gallery/Gallery3D";
 import { useExhibitLike } from "@/hooks/interactions/exhibit_like/useExhibitLike";
 import { useExhibitCards } from "@/hooks/exhibit/useCardExihibit";
 const ExhibitViewing = () => {
   const { id } = useParams<{ id: string }>();
 
-  const {data:exhibit, isLoading}=useExhibitCardDetail(id);
-    const { data: exhibits = [] } = useExhibitCards();
-  
+  const { data: exhibit, isLoading } = useExhibitCardDetail(id);
+  const { data: exhibits = [] } = useExhibitCards();
+
   const isExhibitEnded = exhibit?.endDate ? new Date() > new Date(exhibit.endDate) : false;
 
-  const {
-    isLiked,
-    likeCount,
-    toggleLike,
-  } = useExhibitLike(
+  const { isLiked, likeCount, toggleLike } = useExhibitLike(
     id ?? "",
     exhibit?.user_has_liked_exhibit ?? false,
     exhibit?.exhibit_likes_count ?? 0
@@ -38,7 +34,7 @@ const ExhibitViewing = () => {
   // const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
   // const isLiked = likedArtworks[id] || false;
   const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
-  
+
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobile = useIsMobile();
 
@@ -82,14 +78,14 @@ const ExhibitViewing = () => {
         ...prev,
         [newComment.id]: 0,
       }));
-      toast("Comment posted", { closeButton: true })
+      toast("Comment posted", { closeButton: true });
       setComment("");
     }
   };
 
   const handleHide = () => {
     setIsHidden(true);
-    toast("Artwork hidden", { closeButton: true })
+    toast("Artwork hidden", { closeButton: true });
     setMenuOpen(false);
   };
 
@@ -101,7 +97,7 @@ const ExhibitViewing = () => {
 
   const handleReport = () => {
     setIsReported(!isReported);
-    toast(isReported ? "Artwork report removed" : "Artwork reported", { closeButton: true })
+    toast(isReported ? "Artwork report removed" : "Artwork reported", { closeButton: true });
     setMenuOpen(false);
   };
 
@@ -164,7 +160,7 @@ const ExhibitViewing = () => {
       </div>
     );
   }
-       
+
   const renderComment = (commentItem: any, isReply = false) => (
     <div key={commentItem.id} className={`mb-6 relative ${isReply ? "ml-8 pl-4 border-l border-gray-200" : ""}`}>
       <div className="flex items-start justify-between">
@@ -211,7 +207,7 @@ const ExhibitViewing = () => {
                     <button
                       className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[8px]"} hover:bg-gray-100`}
                       onClick={() => {
-                        toast.success(`Blocked user ${commentItem.user}`, { closeButton: true })
+                        toast.success(`Blocked user ${commentItem.user}`, { closeButton: true });
                         toggleCommentMenu(commentItem.id);
                       }}
                     >
@@ -220,7 +216,7 @@ const ExhibitViewing = () => {
                     <button
                       className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[9px]"} hover:bg-gray-100`}
                       onClick={() => {
-                        toast.success("Content reported", { closeButton: true })
+                        toast.success("Content reported", { closeButton: true });
                         toggleCommentMenu(commentItem.id);
                       }}
                     >
@@ -257,8 +253,10 @@ const ExhibitViewing = () => {
     {
       id: "1",
       title: "Code and Canvas",
-      description: "Blending technology and creativity, the modern balance between digital algorithms — how AI can enhance and digital creativity.",
-      image: "https://images.unsplash.com/photo-1533158307587-828f0a76ef46?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      description:
+        "Blending technology and creativity, the modern balance between digital algorithms — how AI can enhance and digital creativity.",
+      image:
+        "https://images.unsplash.com/photo-1533158307587-828f0a76ef46?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       category: "Digital Art",
       likes: 125,
       views: 1.5,
@@ -268,24 +266,43 @@ const ExhibitViewing = () => {
     {
       id: "2",
       title: "Beyond the Frame",
-      description: "A collection of modern works that defy traditions, challenge norms, and break outside of the frame. Three pieces.",
-      image: "https://images.unsplash.com/photo-1580136579312-94651dfd596d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      description:
+        "A collection of modern works that defy traditions, challenge norms, and break outside of the frame. Three pieces.",
+      image:
+        "https://images.unsplash.com/photo-1580136579312-94651dfd596d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       category: "Contemporary Art",
       likes: 118,
       views: 1.4,
       isSolo: false,
       isShared: false,
       collaborators: [
-        { id: '1', name: 'Mark Johnson', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
-        { id: '2', name: 'Sara Williams', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
-        { id: '3', name: 'John Parker', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+        {
+          id: "1",
+          name: "Mark Johnson",
+          avatar:
+            "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        },
+        {
+          id: "2",
+          name: "Sara Williams",
+          avatar:
+            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        },
+        {
+          id: "3",
+          name: "John Parker",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        },
       ],
     },
     {
       id: "3",
       title: "Through the Lens of Now",
-      description: "A visual journey of fleeting moments, raw emotions, and untold stories. These photographs freeze time and light.",
-      image: "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      description:
+        "A visual journey of fleeting moments, raw emotions, and untold stories. These photographs freeze time and light.",
+      image:
+        "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       category: "Photography",
       likes: 94,
       views: 1.3,
@@ -295,23 +312,41 @@ const ExhibitViewing = () => {
     {
       id: "4",
       title: "Words in Motion",
-      description: "This segment celebrates the power of the written word — poems, short stories, and excerpts that provoke thought.",
-      image: "https://images.unsplash.com/photo-1594122230689-45899d9e6f69?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      description:
+        "This segment celebrates the power of the written word — poems, short stories, and excerpts that provoke thought.",
+      image:
+        "https://images.unsplash.com/photo-1594122230689-45899d9e6f69?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       category: "Literature",
       likes: 85,
       views: 1.1,
       isSolo: false,
       isShared: false,
       collaborators: [
-        { id: '4', name: 'Emily Chen', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
-        { id: '5', name: 'David Lee', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
-        { id: '6', name: 'Alice Wong', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+        {
+          id: "4",
+          name: "Emily Chen",
+          avatar:
+            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        },
+        {
+          id: "5",
+          name: "David Lee",
+          avatar:
+            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        },
+        {
+          id: "6",
+          name: "Alice Wong",
+          avatar:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        },
       ],
     },
     {
       id: "5",
       title: "Urban Expressions",
-      description: "Street art and urban culture collide in this vibrant collection of works from city artists around the world.",
+      description:
+        "Street art and urban culture collide in this vibrant collection of works from city artists around the world.",
       image: "https://images.unsplash.com/photo-1551913902-c92207136625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       category: "Street Art",
       likes: 132,
@@ -322,7 +357,8 @@ const ExhibitViewing = () => {
     {
       id: "6",
       title: "Abstract Realities",
-      description: "Exploring the boundary between perception and reality through abstract forms and experimental techniques.",
+      description:
+        "Exploring the boundary between perception and reality through abstract forms and experimental techniques.",
       image: "https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       category: "Abstract Art",
       likes: 107,
@@ -330,9 +366,24 @@ const ExhibitViewing = () => {
       isSolo: false,
       isShared: false,
       collaborators: [
-        { id: '7', name: 'Thomas White', avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
-        { id: '8', name: 'Rebecca Smith', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
-        { id: '9', name: 'Michael Brown', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+        {
+          id: "7",
+          name: "Thomas White",
+          avatar:
+            "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        },
+        {
+          id: "8",
+          name: "Rebecca Smith",
+          avatar:
+            "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        },
+        {
+          id: "9",
+          name: "Michael Brown",
+          avatar:
+            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        },
       ],
     },
     {
@@ -349,19 +400,36 @@ const ExhibitViewing = () => {
     {
       id: "8",
       title: "Nature's Canvas",
-      description: "Environmental art that showcases the beauty of natural landscapes and raises awareness about conservation.",
-      image: "https://images.unsplash.com/photo-1518998053901-5348d3961a04?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      description:
+        "Environmental art that showcases the beauty of natural landscapes and raises awareness about conservation.",
+      image:
+        "https://images.unsplash.com/photo-1518998053901-5348d3961a04?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       category: "Environmental Art",
       likes: 114,
       views: 1.3,
       isSolo: false,
       isShared: false,
       collaborators: [
-        { id: '10', name: 'Jennifer Kim', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
-        { id: '11', name: 'Robert Davis', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
-        { id: '12', name: 'Sophie Miller', avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+        {
+          id: "10",
+          name: "Jennifer Kim",
+          avatar:
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        },
+        {
+          id: "11",
+          name: "Robert Davis",
+          avatar:
+            "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        },
+        {
+          id: "12",
+          name: "Sophie Miller",
+          avatar:
+            "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        },
       ],
-    }
+    },
   ];
 
   // useEffect(() => {
@@ -371,237 +439,218 @@ const ExhibitViewing = () => {
   //   }
   // }, [id]);
 
-if (!exhibit) {
-  return <ExhibitCardDetailSkeleton />;
-}
+  if (!exhibit) {
+    return <ExhibitCardDetailSkeleton />;
+  }
 
   const closeExpandedView = () => {
     setIsExpanded(false);
   };
 
   return (
-    
     <>
-    <div className="min-h-screen">
-      <Header />
+      <div className="min-h-screen">
+        <Header />
 
-      <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
-        {/* Back button */}
-        <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
-          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
-            <i className="bx bx-chevron-left text-lg mr-2"></i>
-            Go back
-          </button>
-        </div>
+        <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
+          {/* Back button */}
+          <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
+            <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+              <i className="bx bx-chevron-left text-lg mr-2"></i>
+              Go back
+            </button>
+          </div>
 
-        <div className={` ${isMobile ? "flex flex-col" : "flex justify-center items-start space-x-2 mt-2"}`}>
-          {/* Exhibit */}
-          <div
-            className={`${
-              isMobile ? "w-full" : "flex justify-center items-start gap-1"
-            }`}
-          >
-            {/* Artwork container */}
-            <div className={`relative mr-8 ${isMobile ? "w-full" : "w-full max-w-[580px] min-w-[400px]"}`}>
-
-              {/* Center - Artwork Image */}
-              <div className={`relative z-0 mt-8 ${isMobile ? "px-4" : ""}`}>
-
-                <div className={`relative ${isMobile ? "w-full" : "inline-block -mb-6"}`}>
-                  <div className={`${isMobile ? "" : "w-[580px] h-[420px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"}`}>
-                    <div className="w-full h-[420px] relative rounded-xl overflow-hidden bg-black">
-<Gallery3D
-  slotArtworkMap={exhibit?.slotArtworkMap || {}}
-  artworks={exhibit?.artworks || []}              
-/>
-                    </div>
-
-
-                    {/* Expand Button Container */}
+          <div className={` ${isMobile ? "flex flex-col" : "flex justify-center items-start space-x-2 mt-2"}`}>
+            {/* Exhibit */}
+            <div className={`${isMobile ? "w-full" : "flex justify-center items-start gap-1"}`}>
+              {/* Artwork container */}
+              <div className={`relative mr-8 ${isMobile ? "w-full" : "w-full max-w-[580px] min-w-[400px]"}`}>
+                {/* Center - Artwork Image */}
+                <div className={`relative z-0 mt-8 ${isMobile ? "px-4" : ""}`}>
+                  <div className={`relative ${isMobile ? "w-full" : "inline-block -mb-6"}`}>
                     <div
-                      className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}
+                      className={`${
+                        isMobile
+                          ? ""
+                          : "w-[580px] h-[420px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl -mt-4"
+                      }`}
                     >
-                      {/* Expand Icon */}
+                      <div className="w-full h-[420px] relative rounded-xl overflow-hidden bg-black">
+                        <Gallery3D slotArtworkMap={exhibit?.slotArtworkMap || {}} artworks={exhibit?.artworks || []} />
+                      </div>
+
+                      {/* Expand Button Container */}
                       <div
-                        className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
-                        onClick={() => setIsExpanded(true)}
+                        className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}
                       >
-                        <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
-                        <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
-                          Expand
-                        </span>
+                        {/* Expand Icon */}
+                        <div
+                          className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
+                          onClick={() => setIsExpanded(true)}
+                        >
+                          <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
+                          <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
+                            Expand
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Right side - Title, artist, description, comments */}
-            <div className={`${isMobile ? "w-full mt-6 px-4" : "w-[530px] "}`}>
-              <div className={`${isMobile ? "" : "relative top-5"}`}>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center space-x-4">
+              {/* Right side - Title, artist, description, comments */}
+              <div className={`${isMobile ? "w-full mt-6 px-4" : "w-[530px] "}`}>
+                <div className={`${isMobile ? "" : "relative top-5"}`}>
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center space-x-4">
+                      <button
+                        onClick={() => {
+                          if (!isExhibitEnded) toggleLike();
+                        }}
+                        disabled={isExhibitEnded}
+                        className={`flex items-center space-x-1 rounded-3xl py-1.5 px-3 border ${
+                          isExhibitEnded ? "cursor-not-allowed opacity-60 bg-gray-100" : "text-gray-800 border-gray-200"
+                        }`}
+                      >
+                        <Heart
+                          size={13}
+                          className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
+                          fill={isLiked ? "currentColor" : "none"}
+                        />
+                        {likeCount > 0 && <span className="text-[10px] text-gray-800">{likeCount}</span>}
+                      </button>
 
-                    <button
-                      onClick={() => {
-                        if (!isExhibitEnded) toggleLike();
-                      }}
-                      disabled={isExhibitEnded}
-                      className={`flex items-center space-x-1 rounded-3xl py-1.5 px-3 border ${
-                        isExhibitEnded ? "cursor-not-allowed opacity-60 bg-gray-100" : "text-gray-800 border-gray-200"
-                      }`}
-                    >
-                      <Heart
-                        size={13}
-                        className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
-                        fill={isLiked ? "currentColor" : "none"}
-                      />
-                      {likeCount > 0 && (
-                        <span className="text-[10px] text-gray-800">
-                          {likeCount}
-                        </span>
-                      )}
-                    </button>
-
-
-
-
-                    {/* Views */}
-                    <div className="flex items-center space-x-1 rounded-3xl py-1.5 px-3 border border-gray-200">
+                      {/* Views */}
+                      <div className="flex items-center space-x-1 rounded-3xl py-1.5 px-3 border border-gray-200">
                         <i className="bx bx-show text-[15px]"></i>
                         <span className="text-[10px]">{exhibit.views}</span>
+                      </div>
+                    </div>
+
+                    <div className="relative">
+                      <button className="py-3 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
+                        <MoreHorizontal size={isMobile ? 14 : 14} />
+                      </button>
+
+                      <div className="pt-2">
+                        <ExhibitMenu
+                          exhibitId={exhibit.id}
+                          isOpen={menuOpen}
+                          onHide={handleHide}
+                          onReport={handleReport}
+                          onUndoReport={handleReport}
+                          isReported={isReported}
+                          isShared={exhibit.isShared}
+                          isHidden={isHidden}
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="relative">
-                    <button className="py-3 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
-                      <MoreHorizontal size={isMobile ? 14 : 14} />
-                    </button>
+                  <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>
+                    {exhibit.title || "The Distorted Face"}
+                  </h1>
 
-                    <div className="pt-2"> 
-                      <ExhibitMenu
-                        isOpen={menuOpen}
-                        onHide={handleHide}
-                        onReport={handleReport}
-                        onUndoReport={handleReport}
-                        isReported={isReported}
-                        isShared={exhibit.isShared}
-                        isHidden={isHidden}
-                      />
-                    </div>
-                  </div>
+                  <p
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate(`/userprofile/${exhibit.artistId}`)}
+                    className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
+                  >
+                    by {exhibit.owner.name || "Angel Ganev"}
+                  </p>
 
-                </div>
-
-                <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>
-                  {exhibit.title || "The Distorted Face"}
-                </h1>
-
-                <p
-                  style={{ cursor: "pointer" }}
-                  onClick={() => navigate(`/userprofile/${exhibit.artistId}`)}
-                  className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
-                >
-                  by {exhibit.owner.name || "Angel Ganev"}
-                </p>
-
-                <div className="relative mt-4">
-                  <div
-                    ref={descriptionRef}
-                    className={`
+                  <div className="relative mt-4">
+                    <div
+                      ref={descriptionRef}
+                      className={`
                       text-[9px] text-gray-700 transition-all duration-300 ease-in-out 
                       ${showFullDescription ? "max-h-10 overflow-y-auto pr-1" : "max-h-10 overflow-hidden"}
                     `}
-                    style={{ lineHeight: "1.1rem" }}
-                  >
-                    {exhibit.description || "No description available."}
+                      style={{ lineHeight: "1.1rem" }}
+                    >
+                      {exhibit.description || "No description available."}
+                    </div>
+
+                    {isOverflowing && (
+                      <button
+                        onClick={() => setShowFullDescription((prev) => !prev)}
+                        className="text-[9px] text-blue-500 hover:underline mt-1 block"
+                      >
+                        {showFullDescription ? "Show Less" : "Show More"}
+                      </button>
+                    )}
                   </div>
 
-                  {isOverflowing && (
-                    <button
-                      onClick={() => setShowFullDescription((prev) => !prev)}
-                      className="text-[9px] text-blue-500 hover:underline mt-1 block"
-                    >
-                      {showFullDescription ? "Show Less" : "Show More"}
-                    </button>
+                  <Separator className="my-6" />
+
+                  {/* Comment Section */}
+                  {isExhibitEnded ? (
+                    <div className="text-[10px] text-gray-500 italic">
+                      This exhibit has ended. Commenting is disabled.
+                    </div>
+                  ) : (
+                    <CommentSection artworkId={id} />
                   )}
                 </div>
-
-                <Separator className="my-6" />
-
-                {/* Comment Section */}
-                {isExhibitEnded ? (
-                  <div className="text-[10px] text-gray-500 italic">This exhibit has ended. Commenting is disabled.</div>
-                ) : (
-                  <CommentSection artworkId={id} />
-                )}
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Related Artworks Section */}
-{exhibit && exhibit.category && exhibits && exhibits.length > 0 && (
-  <div className="container md:px-6 mt-4 mb-6">
-    <h2 className={`font-semibold ${isMobile ? "text-sm ml-1" : "text-md mb-4"}`}>Related Exhibits</h2>
+        {/* Related Artworks Section */}
+        {exhibit && exhibit.category && exhibits && exhibits.length > 0 && (
+          <div className="container md:px-6 mt-4 mb-6">
+            <h2 className={`font-semibold ${isMobile ? "text-sm ml-1" : "text-md mb-4"}`}>Related Exhibits</h2>
 
-    {(() => {
-      const normalizedCategory = exhibit.category.trim().toLowerCase();
+            {(() => {
+              const normalizedCategory = exhibit.category.trim().toLowerCase();
 
-      const relatedExhibits = exhibits.filter((e) => {
-        const eCategory = e.category?.trim().toLowerCase();
-        return e.id !== exhibit.id && eCategory === normalizedCategory;
-      });
+              const relatedExhibits = exhibits.filter((e) => {
+                const eCategory = e.category?.trim().toLowerCase();
+                return e.id !== exhibit.id && eCategory === normalizedCategory;
+              });
 
-
-      return relatedExhibits.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {relatedExhibits.map((card) => (
-            <ExhibitCard
-              key={card.id}
-              exhibit={{
-                ...card,
-                category: card.category.charAt(0).toUpperCase() + card.category.slice(1),
-              }}
-              onClick={() => navigate(`/view-exhibit/${card.id}`)}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="flex flex-col justify-center items-center h-32 w-full">
-          <p className="text-gray-500 text-xs mb-2">No related exhibits found.</p>
-        </div>
-      );
-    })()}
-  </div>
-)}
-
-
-
-      {/* Expanded artwork view */}
-      {isExpanded && (
-        <div
-          className="fixed inset-0 bg-black z-[100] flex justify-center items-center"
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              setIsExpanded(false);
-            }
-          }}
-          tabIndex={0}
-        >
-          <div className="absolute inset-0 z-[100]">
-            <Gallery3D
-              slotArtworkMap={exhibit.slotArtworkMap || {}}
-              artworks={exhibit.artworks || []}
-            />
+              return relatedExhibits.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                  {relatedExhibits.map((card) => (
+                    <ExhibitCard
+                      key={card.id}
+                      exhibit={{
+                        ...card,
+                        category: card.category.charAt(0).toUpperCase() + card.category.slice(1),
+                      }}
+                      onClick={() => navigate(`/view-exhibit/${card.id}`)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col justify-center items-center h-32 w-full">
+                  <p className="text-gray-500 text-xs mb-2">No related exhibits found.</p>
+                </div>
+              );
+            })()}
           </div>
-        </div>
-      )}
+        )}
 
-    </div>
-    
+        {/* Expanded artwork view */}
+        {isExpanded && (
+          <div
+            className="fixed inset-0 bg-black z-[100] flex justify-center items-center"
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                setIsExpanded(false);
+              }
+            }}
+            tabIndex={0}
+          >
+            <div className="absolute inset-0 z-[100]">
+              <Gallery3D slotArtworkMap={exhibit.slotArtworkMap || {}} artworks={exhibit.artworks || []} />
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 };

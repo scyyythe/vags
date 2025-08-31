@@ -20,10 +20,17 @@ import { usePublishExhibit } from "@/hooks/mutate/exhibit/usePublishExhibit";
 import { ExhibitRequest } from "@/hooks/exhibit/usePendingRequests";
 type ExhibitsTabProps = {
   selectedStatus: string;
-  includeDeleted?: boolean; // <-- new prop
+  includeDeleted?: boolean;
+  includeHidden?: boolean;
+  includeArchived?: boolean;
 };
 
-const ExhibitsTab: React.FC<ExhibitsTabProps> = ({ selectedStatus, includeDeleted = false }) => {
+const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
+  selectedStatus,
+  includeDeleted = false,
+  includeHidden = false,
+  includeArchived = false,
+}) => {
   const navigate = useNavigate();
   const params = useParams();
   const [typeTab, setTypeTab] = useState<"solo" | "collab">("solo");
@@ -33,10 +40,11 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({ selectedStatus, includeDelete
   const [showPublishDialog, setShowPublishDialog] = useState(false);
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitRequest | null>(null);
 
-  // Pass `includeDeleted` to the hook
-  const { data: exhibits = [], isLoading } = useMyExhibitCards(includeDeleted);
-  console.log("includeDeleted prop:", includeDeleted);
-  console.log("Raw exhibits from API:", exhibits);
+  const { data: exhibits = [], isLoading } = useMyExhibitCards({
+    includeDeleted,
+    includeHidden,
+    includeArchived,
+  });
 
   const { mutate: publishExhibit } = usePublishExhibit();
 
@@ -62,10 +70,11 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({ selectedStatus, includeDelete
           : statusFilter === "upcoming"
           ? isUpcoming(exhibit)
           : true;
-
-      const visibilityMatch = includeDeleted
-        ? exhibit.visibility?.toLowerCase() === "deleted"
-        : exhibit.visibility?.toLowerCase() !== "deleted";
+      let visibilityMatch = true;
+      if (selectedStatus === "Deleted") visibilityMatch = exhibit.visibility?.toLowerCase() === "deleted";
+      else if (selectedStatus === "Hidden") visibilityMatch = exhibit.visibility?.toLowerCase() === "hidden";
+      else if (selectedStatus === "Archived") visibilityMatch = exhibit.visibility?.toLowerCase() === "archived";
+      else visibilityMatch = exhibit.visibility?.toLowerCase() === "public";
 
       return isCorrectType && statusMatch && visibilityMatch;
     });

@@ -44,13 +44,18 @@ class MyExhibitCardListView(APIView):
         try:
             user = request.user  
             include_deleted = request.query_params.get("include_deleted", "false").lower() == "true"
+            include_hidden = request.query_params.get("include_hidden", "false").lower() == "true"
+            include_archived = request.query_params.get("include_archived", "false").lower() == "true"
 
-  
             exhibits = Exhibit.objects(owner=user)
 
-        
+            # Filter based on visibility
             if not include_deleted:
                 exhibits = exhibits.filter(visibility__ne="Deleted")
+            if not include_hidden:
+                exhibits = exhibits.filter(visibility__ne="Hidden")
+            if not include_archived:
+                exhibits = exhibits.filter(visibility__ne="Archived")
 
             serializer = ExhibitCardSerializer(exhibits, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -58,6 +63,7 @@ class MyExhibitCardListView(APIView):
         except Exception as e:
             print("🔥 ERROR in MyExhibitCardListView:", e)
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 

@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { useExhibitReview } from "@/hooks/exhibit/useExhibitReview";
 import { usePublishExhibit } from "@/hooks/mutate/exhibit/usePublishExhibit";
+import ExhibitReviewSkeleton from "@/components/skeletons/ExhibitReviewSkeleton";
 interface Collaborator {
   id: number;
   name: string;
@@ -37,8 +38,7 @@ const ExhibitReview = () => {
 
   const exhibitId = new URLSearchParams(location.search).get("id");
   const { data: exhibit, isLoading, error } = useExhibitReview(exhibitId || "");
-   const { mutate: publishExhibit} = usePublishExhibit();
-
+  const { mutate: publishExhibit } = usePublishExhibit();
 
   const exhibitMode: ExhibitMode = "review";
 
@@ -85,7 +85,7 @@ const ExhibitReview = () => {
   };
 
   if (isLoading) {
-    return <div className="p-10 text-sm">Loading exhibit review...</div>;
+    return <ExhibitReviewSkeleton />;
   }
 
   if (error || !exhibit) {
@@ -97,9 +97,7 @@ const ExhibitReview = () => {
   if (exhibit.chosen_env === 2) {
     // Each collaborator gets 2 slots in env 2
     collaborators = exhibit.collaborators.map((collab: any) => {
-      const slotsForUser = exhibit.slots.filter(
-        (slot: any) => slot.contributor.id === collab.id
-      );
+      const slotsForUser = exhibit.slots.filter((slot: any) => slot.contributor.id === collab.id);
       return {
         id: collab.id,
         name: collab.name,
@@ -118,9 +116,7 @@ const ExhibitReview = () => {
 
     collaborators = exhibit.collaborators.map((collab: any, index: number) => {
       const slotsToFill = baseSlots + (index < remainder ? 1 : 0);
-      const slotsForUser = exhibit.slots.filter(
-        (slot: any) => slot.contributor.id === collab.id
-      );
+      const slotsForUser = exhibit.slots.filter((slot: any) => slot.contributor.id === collab.id);
       return {
         id: collab.id,
         name: collab.name,
@@ -180,13 +176,10 @@ const ExhibitReview = () => {
                   <p className="text-gray-500 text-[10px] font-medium mb-1">Title</p>
                   <p className="text-[11px]">{exhibit.title}</p>
                 </div>
-<div>
-  <p className="text-gray-500 text-[10px] font-medium mb-1">Category</p>
-  <p className="text-[11px]">
-    {exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1)}
-  </p>
-</div>
-
+                <div>
+                  <p className="text-gray-500 text-[10px] font-medium mb-1">Category</p>
+                  <p className="text-[11px]">{exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1)}</p>
+                </div>
 
                 <div>
                   <p className="text-gray-500 text-[10px] font-medium mb-1">Exhibit Type</p>
@@ -229,11 +222,7 @@ const ExhibitReview = () => {
             <h3 className="text-xs font-medium mb-4">Environment & Slots</h3>
             <Card className="p-5">
               <div className="mb-4">
-                <img
-                  src={exhibit.banner}
-                  alt="Gallery Space"
-                  className="w-full h-32 object-cover rounded-md"
-                />
+                <img src={exhibit.banner} alt="Gallery Space" className="w-full h-32 object-cover rounded-md" />
               </div>
 
               <div className="grid grid-cols-3 gap-2 mb-4">
