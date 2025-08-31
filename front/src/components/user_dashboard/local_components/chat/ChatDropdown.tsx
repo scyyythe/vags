@@ -328,22 +328,24 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                     ...(selectedConv.messages || []),
                     ...(firebaseMessages || [])
                       .filter((fmsg: any) => !(selectedConv.messages || []).some((m) => m.id === fmsg.id))
-                      .map((msg: any) => ({
-                        id: msg.id,
-                        senderId: msg.senderId,
-                        senderName: msg.senderName || "Unknown",
-                        content: msg.content || msg.text || "",
-                        timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(),
-                        isRead: msg.isRead || false,
-                        isStarred: msg.isStarred || false,
-                        type: msg.type || "text",
-                        deliveryStatus: msg.deliveryStatus || "sent",
-                        reactions: msg.reactions || [],
-                        imageUrl: msg.imageUrl,
-                        fileName: msg.fileName,
-                        voiceDuration: msg.voiceDuration,
-                        isMine: String(msg.senderId) === String(userId),
-                      })),
+                      .map((msg: any) => {
+                        return {
+                          id: msg.id,
+                          senderId: msg.senderId,
+                          senderName: msg.senderName || msg.participantName || "Unknown",
+                          content: msg.content || msg.text || "",
+                          timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(),
+                          isRead: msg.isRead || false,
+                          isStarred: msg.isStarred || false,
+                          type: msg.type || "text",
+                          deliveryStatus: msg.deliveryStatus || "sent",
+                          reactions: msg.reactions || [],
+                          imageUrl: msg.imageUrl,
+                          fileName: msg.fileName,
+                          voiceDuration: msg.voiceDuration,
+                          isMine: String(msg.senderId) === String(userId),
+                        };
+                      }),
                   ],
                 }}
                 currentUserId={userId}
