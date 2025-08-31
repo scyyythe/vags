@@ -36,6 +36,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   isHidden = false,
   isReportedFromBulk,
   reportStatusFromBulk,
+  className,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -80,7 +81,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     <>
       <div
         ref={menuRef}
-        className="absolute -right-1 top-8 z-10 bg-gray-100 rounded-full py-1 px-1 shadow-md"
+        className={`absolute z-10 bg-gray-100 rounded-full py-1 px-1 shadow-md ${className || "-right-1 top-8"}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start">

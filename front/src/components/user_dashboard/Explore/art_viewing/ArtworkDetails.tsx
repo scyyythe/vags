@@ -425,7 +425,7 @@ const ArtworkDetails = () => {
                     </div>
 
                     <div>
-                      <button className="py-3 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
+                      <button className="py-3 mr-4 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
                         <MoreHorizontal size={isMobile ? 14 : 14} />
                       </button>
 
@@ -437,7 +437,7 @@ const ArtworkDetails = () => {
                         isFavorite={isFavorite}
                         isReported={isReportedFromBulk}
                         isShared = {artwork?.isShared}
-                        className={isMobile ? "mobile-menu-position" : ""}
+                        className="right-[65px] top-[163px]"
                       />
                     </div>
                   </div>
