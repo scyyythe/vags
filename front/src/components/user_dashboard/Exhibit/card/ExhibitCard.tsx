@@ -174,7 +174,17 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                   onViewInsights={(id) => console.log("View insights for:", id)}
                   onDelete={(id) => {
                     if (confirm("Are you sure you want to delete this exhibit?")) {
-                      deleteExhibit(id);
+                      deleteExhibit(id, {
+                        onSuccess: (data: { detail: string }) => {
+                          if (data.detail.includes("trash")) {
+                            toast.success("Exhibit moved to trash");
+                          } else if (data.detail.includes("permanently")) {
+                            toast.success("Exhibit permanently deleted");
+                          } else {
+                            toast.success("Exhibit deleted successfully");
+                          }
+                        },
+                      });
                     }
                   }}
                 />

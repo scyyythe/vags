@@ -16,7 +16,7 @@ class Exhibit(Document):
     collaborators = ListField(ReferenceField(User), default=[])
     artworks = ListField(ReferenceField(Art), required=False)
     category = StringField(max_length=100)
-    visibility = StringField(choices=['Public', 'Private', 'Pending'], default='Pending')
+    visibility = StringField(choices=['Public', 'Private', 'Pending','Deleted'], default='Pending')
     start_time = DateTimeField(required=True)
     end_time = DateTimeField(required=True)
     chosen_env = IntField(required=False, null=True)
