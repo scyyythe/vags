@@ -83,7 +83,6 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
     setShowEmptyTrashPopup(false);
   };
 
-
   const cancelEmptyTrash = () => {
     setShowEmptyTrashPopup(false);
   };
@@ -207,10 +206,10 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
             </button>
 
             {showFilters && (
-            <div
-              className="absolute right-0 top-full mt-2 text-[10px] bg-white shadow-lg whitespace-nowrap rounded-md p-2 mb-8 z-10 w-30 animate-fade-in overflow-y-auto"
-              style={{ maxHeight: "50vh" }}
-            >
+              <div
+                className="absolute right-0 top-full mt-2 text-[10px] bg-white shadow-lg whitespace-nowrap rounded-md p-2 mb-8 z-10 w-30 animate-fade-in overflow-y-auto"
+                style={{ maxHeight: "50vh" }}
+              >
                 {/* Medium Filter */}
                 <div className="mb-2">
                   <div
@@ -371,10 +370,49 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
       {activeTab === "collections" && <CollectionTab />}
       {activeTab === "onBid" && <OnBidTab />}
 
-      {activeTab === "exhibits" && <ExhibitTab />}
+      {activeTab === "exhibits" && (
+        <>
+          {selectedStatus === "Archived" && (
+            <div className="flex justify-between items-center my-4">
+              <h2 className="text-sm font-semibold">Archived Exhibits</h2>
+              <button
+                onClick={() => setShowUnarchivePopup(true)}
+                className="text-[10px] py-2 pr-2 text-yellow-700 hover:text-yellow-600 font-medium"
+              >
+                Unarchive All
+              </button>
+            </div>
+          )}
 
-      {activeTab === "onSale" && 
-      <SellTab/>}
+          {selectedStatus === "Deleted" && (
+            <div className="flex justify-between items-center my-4">
+              <h2 className="text-sm font-semibold">Deleted Exhibits</h2>
+              <button
+                onClick={handleEmptyTrash}
+                className="text-[10px] py-2 pr-2 text-red-700 hover:text-red-600 font-medium"
+              >
+                Empty Trash
+              </button>
+            </div>
+          )}
+
+          {selectedStatus === "Hidden" && (
+            <div className="flex justify-between items-center my-4">
+              <h2 className="text-sm font-semibold">Hidden Exhibits</h2>
+              <button
+                onClick={() => setShowUnhidePopup(true)}
+                className="text-[10px] py-2 pr-2 text-blue-700 hover:text-blue-600 font-medium"
+              >
+                Unhide All
+              </button>
+            </div>
+          )}
+
+          <ExhibitTab selectedStatus={selectedStatus} includeDeleted={selectedStatus === "Deleted"} />
+        </>
+      )}
+
+      {activeTab === "onSale" && <SellTab />}
       <UnarchivePopup isOpen={showUnarchivePopup} onCancel={cancelUnarchive} onConfirm={confirmUnarchiveAll} />
       <EmptyTrashPopup isOpen={showEmptyTrashPopup} onCancel={cancelEmptyTrash} onConfirm={confirmEmptyTrash} />
       <UnhidePopup isOpen={showUnhidePopup} onCancel={cancelUnhide} onConfirm={confirmUnhideAll} />

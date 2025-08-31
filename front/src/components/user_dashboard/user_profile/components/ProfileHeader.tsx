@@ -16,7 +16,7 @@ import useFollowStatus from "@/hooks/follow/useFollowStatus";
 import useFollowCounts from "@/hooks/follow/useFollowCount";
 import EditProfile from "../../own_profile/edit_profile/EditButton";
 import FollowModals from "@/components/user_dashboard/own_profile/following_&_followers/owners/profile/FollowModals";
-
+import ProfileHeaderSkeleton from "@/components/skeletons/ProfileHeaderSkeleton";
 interface ProfileHeaderProps {
   profileImage: string;
   name: string;
@@ -87,12 +87,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
     fileInputRef.current?.click();
   };
 
-  if (isFollowStatusLoading) {
-    return (
-      <button disabled className="px-8 py-[6px] rounded-full text-[10px] bg-gray-500 text-white">
-        Loading...
-      </button>
-    );
+  if (isFollowStatusLoading || !followCounts) {
+    return <ProfileHeaderSkeleton />;
   }
 
   const handleReportSubmit = async (category: string, reason?: string) => {
@@ -129,7 +125,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
     },
   ];
 
-
   return (
     <div className="w-full px-4">
       {/* Cover Photo */}
@@ -146,11 +141,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
               className="group relative flex items-center justify-start"
             >
               <div className="flex items-center opacity-90 bg-white  rounded-full px-[10px] py-[7px] w-9 group-hover:w-36 overflow-hidden transition-all duration-300 ease-in-out shadow-md">
-                <img
-                  src={social.icon}
-                  alt={social.name}
-                  className="w-4 h-4 object-contain"
-                />
+                <img src={social.icon} alt={social.name} className="w-4 h-4 object-contain" />
                 <span className="ml-2 text-[10px] text-gray-800 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
                   {social.username}
                 </span>
