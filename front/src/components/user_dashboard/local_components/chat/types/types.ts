@@ -17,6 +17,7 @@ export interface Message {
   isMine?: boolean;
   senderAvatar?: string;
   replyTo?: string;
+  participantName?: string;
 }
 
 export interface Conversation {
