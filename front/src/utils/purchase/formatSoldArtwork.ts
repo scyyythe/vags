@@ -22,6 +22,7 @@ export interface RawSoldArtwork {
 
 export interface FormattedSoldArtwork {
   id: string;
+  artwork_id: string;
   artworkImage: string;
   title: string;
   buyer: string;
@@ -61,6 +62,7 @@ export function formatSoldArtworks(data: RawSoldArtwork[] = []): FormattedSoldAr
 
     return {
       id: sale.id,
+      artwork_id: sale.artwork_id,
       artworkImage: sale.artwork_image,
       title: sale.artwork_title,
       buyer: sale.buyer_name,
