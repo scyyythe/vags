@@ -30,7 +30,7 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
 
   const fanAngles = [-12, -6, 0, 6, 12];
 
-  const overlap = 70; //controls how much cards overlap in the stack
+  const overlap = 80; //controls how much cards overlap in the stack
 
   const cardGap = 210;
   if (isLoading || artworks.length === 0) {
@@ -118,8 +118,8 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
                 <div
                   className="relative rounded-lg overflow-hidden shadow-lg transition-transform duration-500 ease-in-out hover:scale-105 bg-white"
                   style={{
-                    width: "158px",
-                    height: "158px",
+                    width: "200px",
+                    height: "200px",
                     animation: spread ? `float ${duration}s ease-in-out infinite` : undefined,
                     animationDelay: spread ? `${delay}s` : undefined,
                   }}
