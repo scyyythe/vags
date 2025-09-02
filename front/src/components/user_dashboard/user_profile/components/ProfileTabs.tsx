@@ -46,10 +46,11 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
   const [selectedStatus, setSelectedStatus] = useState("Active");
   const [showStatusOptions, setShowStatusOptions] = useState(false);
-  const statusOptions = ["Active", "Hidden", "Archived", "Deleted"];
+  const statusOptions = ["Active", "Hidden", "Archived", "Deleted", "Private"];
 
   const [showEmptyTrashPopup, setShowEmptyTrashPopup] = useState(false);
   const [showUnhidePopup, setShowUnhidePopup] = useState(false);
+  const [ShowMakePublicPopup, setShowMakePublicPopup] = useState(false);
   const [showUnarchivePopup, setShowUnarchivePopup] = useState(false);
 
   const [artworkList, setArtworkList] = useState<Artwork[]>([]);
@@ -129,19 +130,28 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
     const statusMap: Record<string, string> = {
       active: "public",
       hidden: "hidden",
-      private: "hidden",
+      private: "private",
       archived: "archived",
       deleted: "deleted",
     };
 
     filtered = filtered.filter((art) => {
       const mapped = statusMap[selectedStatus.toLowerCase()];
+
+      if (selectedStatus.toLowerCase() === "active") {
+        return (
+          art.visibility?.toLowerCase() === "public" ||
+          (art.visibility?.toLowerCase() === "private" && art.art_status?.toLowerCase() === "active")
+        );
+      }
+
       return art.visibility?.toLowerCase() === mapped;
     });
 
-    artworks.forEach((art) => console.log(art.visibility));
+    // Debug
+    artworks.forEach((art) => console.log("VISIBILITY →", art.visibility, "STATUS →", art.art_status));
 
-    // Sort
+    // Sorting
     switch (selectedSortBy) {
       case "Latest":
         filtered = filtered.sort((a, b) => new Date(b.datePosted).getTime() - new Date(a.datePosted).getTime());
@@ -360,6 +370,18 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
                 className="text-[10px] py-2 pr-2 text-blue-700 hover:text-blue-600 font-medium"
               >
                 Unhide All
+              </button>
+            </div>
+          )}
+
+          {selectedStatus === "Private" && (
+            <div className="flex justify-between items-center my-4">
+              <h2 className="text-sm font-semibold">Private Artworks</h2>
+              <button
+                onClick={() => setShowMakePublicPopup(true)}
+                className="text-[10px] py-2 pr-2 text-green-700 hover:text-green-600 font-medium"
+              >
+                Make All Public
               </button>
             </div>
           )}

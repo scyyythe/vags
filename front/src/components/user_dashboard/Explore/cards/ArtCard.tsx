@@ -18,7 +18,8 @@ import useUnarchiveArtwork from "@/hooks/mutate/visibility/arc/useUnarchiveArtwo
 import useRestoreArtwork from "@/hooks/mutate/visibility/trash/useRestoreArtwork";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import { getLoggedInUserId } from "@/auth/decode";
-
+import useUpdateArtworkVisibility from "@/hooks/mutate/visibility/private/useUpdateArtworkVisibility";
+import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork";
 export interface ArtCardProps {
   artwork: Artwork;
   isExplore?: boolean;
@@ -72,6 +73,8 @@ const ArtCard = ({
   const { mutate: unarchiveArtwork } = useUnarchiveArtwork();
   const { mutate: restore } = useRestoreArtwork();
   const { mutate: submitReport } = useSubmitReport();
+  const { mutate: updateVisibility } = useUpdateArtworkVisibility();
+  const { mutate: archiveArtwork } = useArchivedArtwork();
 
   const isLiked = typeof isLikedFromBulk === "boolean" ? isLikedFromBulk : likedArtworks[id] ?? false;
 
@@ -96,6 +99,10 @@ const ArtCard = ({
 
   const handleRestore = () => {
     restore(id);
+    setMenuOpen(false);
+  };
+  const handleArchive = () => {
+    archiveArtwork(id);
     setMenuOpen(false);
   };
 
@@ -202,9 +209,12 @@ const ArtCard = ({
               onRequestBid={() => console.log("Request to bid", id)}
               onSell={() => console.log("Sell artwork", id)}
               onEdit={() => console.log("Edit artwork", id)}
-              onToggleVisibility={(newStatus: boolean) => console.log("Toggle visibility", newStatus, id)}
-              onArchive={() => console.log("Archive", id)}
-              isPublic={true}
+              onToggleVisibility={(newStatus: boolean) => {
+                updateVisibility({ id, visibility: newStatus ? "Public" : "Private" });
+                setMenuOpen(false);
+              }}
+              onArchive={handleArchive}
+              isPublic={artwork.visibility === "Public"}
               className="-left-1 top-7"
             />
           ) : (
