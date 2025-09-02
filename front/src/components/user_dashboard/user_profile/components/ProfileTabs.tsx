@@ -118,6 +118,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
     setSelectedPriceRange(option);
     setShowPriceOptions(false);
   };
+
   const filteredArtworksMemo = useMemo(() => {
     if (!artworks) return [];
 
@@ -433,8 +434,8 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
           <ExhibitTab selectedStatus={selectedStatus} includeDeleted={selectedStatus === "Deleted"} />
         </>
       )}
+      {activeTab === "onSale" && <SellTab selectedPriceRange={selectedPriceRange} />}
 
-      {activeTab === "onSale" && <SellTab />}
       <UnarchivePopup isOpen={showUnarchivePopup} onCancel={cancelUnarchive} onConfirm={confirmUnarchiveAll} />
       <EmptyTrashPopup isOpen={showEmptyTrashPopup} onCancel={cancelEmptyTrash} onConfirm={confirmEmptyTrash} />
       <UnhidePopup isOpen={showUnhidePopup} onCancel={cancelUnhide} onConfirm={confirmUnhideAll} />
