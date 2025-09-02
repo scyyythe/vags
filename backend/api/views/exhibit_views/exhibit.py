@@ -165,3 +165,59 @@ class DeleteExhibitView(APIView):
                 {"detail": "Exhibit not found."},
                 status=status.HTTP_404_NOT_FOUND,
             )
+            
+class ToggleVisibilityExhibitView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, exhibit_id):
+        try:
+            exhibit = Exhibit.objects.get(id=exhibit_id)
+        except Exhibit.DoesNotExist:
+            return Response({"detail": "Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if str(exhibit.owner.id) != str(request.user.id):
+            return Response(
+                {"detail": "Not authorized to change visibility of this exhibit."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        if exhibit.visibility == "Public":
+            exhibit.visibility = "Private"
+            message = "Exhibit successfully set to Private."
+        else:
+            exhibit.visibility = "Public"
+            message = "Exhibit successfully set to Public."
+
+        exhibit.updated_at = datetime.utcnow()
+        exhibit.save()
+
+        return Response(
+            {"detail": message, "new_visibility": exhibit.visibility},
+            status=status.HTTP_200_OK,
+        )
+
+
+class ToggleHideExhibitView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, exhibit_id):
+        try:
+            exhibit = Exhibit.objects.get(id=exhibit_id)
+        except Exhibit.DoesNotExist:
+            return Response({"detail": "Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)
+
+ 
+        if exhibit.visibility == "Hidden":
+            exhibit.visibility = "Public"
+            message = "Exhibit successfully unhidden."
+        else:
+            exhibit.visibility = "Hidden"
+            message = "Exhibit successfully hidden."
+
+        exhibit.updated_at = datetime.utcnow()
+        exhibit.save()
+
+        return Response(
+            {"detail": message, "new_visibility": exhibit.visibility},
+            status=status.HTTP_200_OK,
+        )

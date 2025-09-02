@@ -88,11 +88,6 @@ const SellCard = ({
   const handleContact = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    console.log("Contact button clicked");
-    console.log("artistId:", artistId);
-    console.log("artist name:", artist);
-    console.log("profile_picture:", profile_picture);
-
     if (!artistId) {
       console.warn("No artistId provided, cannot open chat");
       return;
@@ -100,11 +95,6 @@ const SellCard = ({
 
     // Pass to context
     openChat(artistId, artist || "Unknown", profile_picture, true);
-
-    console.log("Chat opened via context:", {
-      participantId,
-      participantName,
-    });
 
     toast("Redirecting to contact the artist...", { closeButton: true });
   };

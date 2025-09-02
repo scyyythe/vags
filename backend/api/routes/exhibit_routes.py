@@ -1,6 +1,7 @@
 from django.urls import path
 from api.views.exhibit_views.exhibit import (
-    ExhibitCreateView, ExhibitListView, ExhibitCardDetailView, ExhibitCardListView,MyExhibitCardListView,PublishExhibitView,DeleteExhibitView
+    ExhibitCreateView, ExhibitListView, ExhibitCardDetailView,
+    ToggleHideExhibitView,ToggleVisibilityExhibitView,ExhibitCardListView,MyExhibitCardListView,PublishExhibitView,DeleteExhibitView
 )
 from api.views.exhibit_views.exhibit_invite import (
     ExhibitInvitationCreateView, ExhibitInvitationListView
@@ -34,6 +35,8 @@ exhibit_urlpatterns = [
     path("exhibits/<str:exhibit_id>/contribute/", SubmitCollaboratorContributionView.as_view(), name="submit-collaborator-contributions"),
 
     path("exhibits/<str:exhibit_id>/publish/", PublishExhibitView.as_view(), name="publish-exhibit"),
+    path("exhibits/<str:exhibit_id>/toggle-visibility/", ToggleVisibilityExhibitView.as_view(), name="toggle-visibility-exhibit"),
+    path("exhibits/<str:exhibit_id>/toggle-hide/", ToggleHideExhibitView.as_view(), name="toggle-hide-exhibit"),
     path("exhibits/<str:exhibit_id>/delete/", DeleteExhibitView.as_view(), name="delete-exhibit"),
 
 ]
