@@ -32,7 +32,10 @@ import { useEditReview } from "@/hooks/review/useEditReview";
 import { useDeleteReview } from "@/hooks/review/useDeleteReview";
 import useMarkPurchaseCompleted from "@/hooks/purchase/useMarkPurchaseCompleted";
 import useMarkAsShipped from "@/hooks/purchase/useMarkAsShipped";
-const SellTab = () => {
+type SellTabProps = {
+  selectedPriceRange?: string;
+};
+const SellTab = ({ selectedPriceRange }) => {
   const { id: userId } = useParams();
   const loggedInUserId = getLoggedInUserId();
   const navigate = useNavigate();
@@ -438,7 +441,7 @@ const SellTab = () => {
         : []
       : [];
 
-  const filteredArtworks = myArtCards
+  let filteredArtworks = myArtCards
     .filter((art) => {
       const status = art.art_status?.toLowerCase?.();
       const expectedStatus = statusMap[subTab]?.toLowerCase();
@@ -460,6 +463,12 @@ const SellTab = () => {
       artworkImage: art.image_url[0] || "",
       status: "active",
     }));
+
+  if (selectedPriceRange === "Low to High") {
+    filteredArtworks = filteredArtworks.slice().sort((a, b) => a.price - b.price);
+  } else if (selectedPriceRange === "High to Low") {
+    filteredArtworks = filteredArtworks.slice().sort((a, b) => b.price - a.price);
+  }
 
   // Seller actions for sold artworks
   const handleContactBuyer = (artwork) => {

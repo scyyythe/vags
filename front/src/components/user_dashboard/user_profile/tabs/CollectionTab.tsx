@@ -6,6 +6,7 @@ import { getLoggedInUserId } from "@/auth/decode";
 import useSavedArtworks from "@/hooks/artworks/fetch_artworks/useSavedArtworks";
 import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
+
 type CollectionTabProps = {
   setSavedArtworksCount?: React.Dispatch<React.SetStateAction<number>>;
 };
@@ -16,7 +17,11 @@ const CollectionTab = ({ setSavedArtworksCount }: CollectionTabProps) => {
   const isOwnProfile = !visitedUserId || visitedUserId === loggedInUserId;
   const targetUserId = isOwnProfile ? undefined : visitedUserId;
 
-  const { data: savedArtworks = [], isLoading, isError } = useSavedArtworks(targetUserId);
+  const { data: savedArtworks = [], isLoading, isError, refetch } = useSavedArtworks(targetUserId);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, visitedUserId]);
 
   const filteredSavedArtworks = useMemo(() => {
     return (savedArtworks || []).filter((art) => art && typeof art.id === "string" && art.id.trim() !== "");
@@ -38,12 +43,17 @@ const CollectionTab = ({ setSavedArtworksCount }: CollectionTabProps) => {
     return bulkStatus.reduce((acc, item) => {
       acc[item.artwork_id] = item;
       return acc;
-    }, {});
+    }, {} as Record<string, (typeof bulkStatus)[number]>);
   }, [bulkStatus]);
 
   const reportStatusLookup = reportStatus || {};
 
-  const handleButtonClick = useCallback((artworkId: string) => {}, []);
+  const handleButtonClick = useCallback(
+    (artworkId: string) => {
+      refetch();
+    },
+    [refetch]
+  );
 
   if (!isLoading && filteredSavedArtworks.length === 0) {
     return (
@@ -72,6 +82,7 @@ const CollectionTab = ({ setSavedArtworksCount }: CollectionTabProps) => {
             artistImage: art.artistImage || art.profile_picture || "",
             artistName: art.artist || art.artistName,
             likesCount: art.likes_count,
+            artistId: art.artist_id,
           };
 
           return (
