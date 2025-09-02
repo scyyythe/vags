@@ -13,6 +13,7 @@ from rest_framework import generics, permissions
 from datetime import datetime
 from django.utils.timesince import timesince
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
+from api.models.user_model.users import User
 
 class CommentCreateView(APIView):
     permission_classes = [IsAuthenticated]  
@@ -254,16 +255,25 @@ class SavedCreateView(APIView):
             artist = art.artist
             message = f"{user.first_name} saved your artwork '{art.title}'"
             return Response(SavedSerializer(saved).data, status=status.HTTP_201_CREATED)
+        
 class SavedArtworksListView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
-        user = request.user
+    def get(self, request, user_id=None, *args, **kwargs):
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            user = request.user
+
         saved_entries = Saved.objects.filter(user=user)
         artworks = [entry.art for entry in saved_entries if entry.art is not None]
 
         serializer = ArtSerializer(artworks, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
         
 class SavedListView(generics.ListAPIView):

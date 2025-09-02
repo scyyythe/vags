@@ -8,10 +8,13 @@ interaction_urlpatterns = [
     path('likes/<str:art_id>/', LikeCreateView.as_view(), name='like-create'),
     path('auction-likes/<str:auction_id>/', LikeCreateView.as_view(), name='like-create-auction'),
     path('exhibit-likes/<str:exhibit_id>/', LikeCreateView.as_view(), name="exhibit-create-like"),
+   path("saved/", SavedArtworksListView.as_view(), name="saved-artworks"),
+    path("saved/user/<str:user_id>/", SavedArtworksListView.as_view(), name="saved-artworks-user"),
 
     path('saved/<str:art_id>/status/', SavedStatusView.as_view()),
     path('saved/<str:art_id>/', SavedCreateView.as_view(), name='saved-art'),
-    path('saved/', SavedArtworksListView.as_view(), name='saved-artwork'),
+ 
+
     path('likes/<str:art_id>/count/', LikeListView.as_view(), name='like-list'),
     path('likes/<str:art_id>/status/', LikeStatusView.as_view()),
     

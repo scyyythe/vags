@@ -11,9 +11,12 @@ type CollectionTabProps = {
 };
 
 const CollectionTab = ({ setSavedArtworksCount }: CollectionTabProps) => {
-  const { savedArtworks, isLoading } = useSavedArtworks();
   const loggedInUserId = getLoggedInUserId();
   const { id: visitedUserId } = useParams();
+  const isOwnProfile = !visitedUserId || visitedUserId === loggedInUserId;
+  const targetUserId = isOwnProfile ? undefined : visitedUserId;
+
+  const { data: savedArtworks = [], isLoading, isError } = useSavedArtworks(targetUserId);
 
   const filteredSavedArtworks = useMemo(() => {
     return (savedArtworks || []).filter((art) => art && typeof art.id === "string" && art.id.trim() !== "");
