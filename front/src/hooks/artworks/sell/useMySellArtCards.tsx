@@ -9,8 +9,9 @@ export interface ArtCard {
   total_ratings: number;
   image_url: string[];
   category: string;
-  art_status: string;      
-  visibility: string;    
+  art_status: string;
+  visibility: string;
+  artist_id: string;
 }
 
 const useMySellArtCards = () => {

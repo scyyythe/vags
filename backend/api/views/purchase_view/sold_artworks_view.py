@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from api.models.purchase_model.order import PurchasedArtwork
 from api.models.artwork_model.artwork import Art
 from bson import ObjectId
-
+from rest_framework import status
 class MySoldArtworksView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -34,6 +34,7 @@ class MySoldArtworksView(APIView):
                 "artwork_id": str(artwork.id),
                 "artwork_title": artwork.title,
                 "artwork_image": artwork.image_url[0] if artwork.image_url else "",
+                "artist_id": str(artwork.artist.id), 
                 "price": sale.total_price,
                 "quantity": sale.quantity,
                 "payment_method": sale.payment_method,
@@ -54,3 +55,51 @@ class MySoldArtworksView(APIView):
 
 
         return Response(result)
+
+class ToggleArtworkStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, artwork_id):
+        try:
+            artwork = Art.objects.get(id=ObjectId(artwork_id), artist=request.user)
+        except Art.DoesNotExist:
+            return Response({"error": "Artwork not found"}, status=status.HTTP_404_NOT_FOUND)
+
+     
+        if artwork.art_status == "Sold":
+            artwork.art_status = "onSale" 
+            message = "Artwork is now on sale"
+        else:
+            artwork.art_status = "Sold"
+            message = "Artwork marked as sold"
+
+        artwork.save()
+
+        return Response(
+            {"message": message, "artwork_id": str(artwork.id), "new_status": artwork.art_status},
+            status=status.HTTP_200_OK
+        )
+    
+class MarkArtworkAsUnlistedView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, artwork_id):
+        try:
+            artwork = Art.objects.get(id=ObjectId(artwork_id), artist=request.user)
+        except Art.DoesNotExist:
+            return Response({"error": "Artwork not found"}, status=status.HTTP_404_NOT_FOUND)
+
+      
+        if artwork.art_status == "Unlisted":
+            artwork.art_status = "onSale"
+            message = "Artwork is now on sale"
+        else:
+            artwork.art_status = "Unlisted"
+            message = "Artwork marked as unlisted"
+
+        artwork.save()
+
+        return Response(
+            {"message": message, "artwork_id": str(artwork.id), "new_status": artwork.art_status},
+            status=status.HTTP_200_OK
+        )
