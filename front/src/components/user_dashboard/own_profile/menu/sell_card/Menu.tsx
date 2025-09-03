@@ -74,8 +74,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
   };
 
   const handleEdit = () => {
-    navigate("/sell-update", { state: { artworkId } });
-    setIsMoreOptionsOpen(false);
+    navigate(`/sell-update/${artworkId}`, { state: { artworkId } });
   };
 
   const handleInsights = () => {
@@ -171,9 +170,16 @@ const SellMenu: React.FC<SellMenuProps> = ({
 
             {isMoreOptionsOpen && (
               <div className="absolute left-8 -top-3 bg-black rounded text-[9px] flex flex-col z-20 w-18">
-                <button onClick={handleEdit} className="px-3 py-1 text-left text-white hover:bg-gray-800">
+                <button
+                  onClick={() => {
+                    onEdit(artworkId);
+                    setIsMoreOptionsOpen(false);
+                  }}
+                  className="px-3 py-1 text-left text-white hover:bg-gray-800"
+                >
                   Edit
                 </button>
+
                 <button
                   onClick={() => {
                     setShowDeletePopup(true);
