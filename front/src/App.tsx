@@ -87,6 +87,7 @@ import EditExhibit from "./components/user_dashboard/Exhibit/add_exhibit/EditExh
 
 import { ChatProvider } from "./context/ChatContext";
 import Header from "./components/user_dashboard/navbar/Header";
+import UpdateArtwork from "./components/user_dashboard/Marketplace/sell/UpdateArtwork";
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
 
@@ -179,6 +180,10 @@ const App = () => {
                               <Route path="/explore" element={<ProtectedRoute children={<Explore />} />} />
                               <Route path="/create" element={<ProtectedRoute children={<Create />} />} />
                               <Route path="/sell" element={<ProtectedRoute children={<SellArt />} />} />
+                              <Route
+                                path="/sell-update/:id"
+                                element={<ProtectedRoute children={<UpdateArtwork />} />}
+                              />
                               <Route path="/update/:id" element={<ProtectedRoute children={<UpdatePost />} />} />
                               <Route path="/userprofile/:id" element={<ProtectedRoute children={<UserProfile />} />} />
                               <Route path="/artwork/:id" element={<ProtectedRoute children={<ArtworkDetails />} />} />

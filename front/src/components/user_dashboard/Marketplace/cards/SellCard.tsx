@@ -12,6 +12,7 @@ import { useChat } from "@/context/ChatContext";
 import useToggleArtworkStatus from "@/hooks/purchase/useMarkArtworkAsSold";
 import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";
 import { getLoggedInUserId } from "@/auth/decode";
+import { useNavigate } from "react-router-dom";
 export interface SellCardProps {
   id: string;
   artworkImage: string;
@@ -73,6 +74,7 @@ const SellCard = ({
   console.log("SellCard owner check:", { artistId, loggedInUserId, isOwner });
   const [menuOpen, setMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const { mutate: submitReport } = useSubmitReport();
   const markAsSoldMutation = useToggleArtworkStatus();
@@ -222,7 +224,25 @@ const SellCard = ({
             <SellMenu
               isOpen={menuOpen}
               artworkId={id}
-              onEdit={(artworkId) => toast(`Edit clicked for ${artworkId}`, { closeButton: true })}
+              onEdit={() => {
+                navigate(`/sell-update/${id}`, {
+                  state: {
+                    id,
+                    title,
+                    year_created: yearCreated || "",
+                    style: category || "",
+                    medium: medium || "",
+                    height: "",
+                    width: "",
+                    description: "",
+                    price: price?.toString() || "0",
+                    edition: edition || "Original (1 of 1)",
+                    quantity: "1",
+                    mainImageUrl: artworkImage,
+                    additionalImagesUrls: [],
+                  },
+                });
+              }}
               onToggleVisibility={(newVisibility, artworkId) => {
                 if (newVisibility === "Unlisted") {
                   markAsUnlistedMutation.mutate(artworkId);
