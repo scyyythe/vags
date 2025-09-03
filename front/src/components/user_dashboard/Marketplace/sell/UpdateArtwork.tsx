@@ -41,7 +41,9 @@ const UpdateArtwork = () => {
   const [description, setDescription] = useState(artworkData?.description || "");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(artworkData?.mainImageUrl || null);
-  const [additionalImages, setAdditionalImages] = useState<(File | null)[]>([null, null, null, null]);
+  const [additionalImages, setAdditionalImages] = useState<(File | string | null)[]>(
+    artworkData?.additionalImagesUrls?.length ? artworkData.additionalImagesUrls : [null, null, null, null]
+  );
   const [price, setPrice] = useState(artworkData?.price || "");
   const [edition, setEdition] = useState(artworkData?.edition || "Original (1 of 1)");
   const [quantity, setQuantity] = useState(artworkData?.quantity || "1");
@@ -91,7 +93,7 @@ const UpdateArtwork = () => {
         edition,
         quantity,
         mainImage: selectedFile,
-        additionalImages,
+        additionalImages: additionalImages.filter((img): img is File => img instanceof File),
       });
 
       toast.success("Artwork updated successfully!", { id: "upload" });
@@ -120,53 +122,61 @@ const UpdateArtwork = () => {
           </button>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Left side - Image */}
+          {/* Left side - Images */}
           <div className="space-y-6">
-            <div className="bg-gray-100 rounded-lg flex flex-col items-center justify-center p-8 h-[313px]">
+            {/* Main Image */}
+            <div className="bg-gray-100 rounded-lg flex flex-col items-center justify-center p-4 h-[320px] relative">
               {previewUrl ? (
-                <div className="relative w-full h-full">
-                  <img src={previewUrl} alt="Artwork preview" className="w-full h-full object-contain rounded-lg" />
-                  <button
-                    onClick={() => {
-                      setSelectedFile(null);
-                      setPreviewUrl(null);
-                    }}
-                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md hover:bg-gray-100"
-                  >
-                    ×
-                  </button>
-                </div>
+                <img src={previewUrl} alt="Main artwork" className="w-full h-full object-contain rounded-lg" />
               ) : (
-                <div className="text-center text-[11px] text-gray-500">Upload a new artwork image</div>
+                <div className="text-center text-[11px] text-gray-500">Upload the main artwork image</div>
               )}
-              <input type="file" accept="image/*" onChange={handleFileChange} className="mt-4" />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+              />
+              {previewUrl && (
+                <button
+                  onClick={() => {
+                    setSelectedFile(null);
+                    setPreviewUrl(null);
+                  }}
+                  className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md hover:bg-gray-100"
+                >
+                  ×
+                </button>
+              )}
             </div>
-            {/* Additional images */}
+
+            {/* Additional Images */}
             <div>
-              <h3 className="text-[11px] font-medium text-gray-900 mb-3">Additional Images (Optional)</h3>
-              <div className="grid grid-cols-4 gap-4">
-                {additionalImages.map((img, index) => (
+              <h3 className="text-[11px] font-medium text-gray-900 mb-2">Additional Images (Optional)</h3>
+              <div className="grid grid-cols-4 gap-3">
+                {additionalImages.map((img, idx) => (
                   <div
-                    key={index}
+                    key={idx}
                     className="relative w-full h-24 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200 cursor-pointer overflow-hidden"
                   >
                     {img ? (
-                      <img
-                        src={URL.createObjectURL(img)}
-                        alt={`Additional ${index}`}
-                        className="w-full h-full object-cover"
-                      />
+                      typeof img === "string" ? (
+                        <img src={img} alt={`Additional ${idx}`} className="w-full h-full object-cover" />
+                      ) : (
+                        <img
+                          src={URL.createObjectURL(img)}
+                          alt={`Additional ${idx}`}
+                          className="w-full h-full object-cover"
+                        />
+                      )
                     ) : (
                       <span className="text-gray-400 text-[11px]">+</span>
                     )}
                     <input
                       type="file"
-                      className="hidden"
                       accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0] || null;
-                        handleAdditionalImageChange(index, file);
-                      }}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      onChange={(e) => handleAdditionalImageChange(idx, e.target.files?.[0] || null)}
                     />
                   </div>
                 ))}

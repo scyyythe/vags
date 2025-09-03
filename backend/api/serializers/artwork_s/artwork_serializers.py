@@ -200,6 +200,7 @@ class ArtCardSerializer(serializers.Serializer):
     title = serializers.CharField()
     price = serializers.IntegerField()
     discounted_price = serializers.IntegerField(required=False, allow_null=True)
+    description = serializers.SerializerMethodField()
     total_ratings = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
@@ -229,12 +230,19 @@ class ArtCardSerializer(serializers.Serializer):
         return str(obj.art_status).lower() if hasattr(obj, "art_status") and obj.art_status else ""
 
     def get_image_url(self, obj):
-        if hasattr(obj, "image_url"):
-            if isinstance(obj.image_url, str):
-                return [obj.image_url]
-            if isinstance(obj.image_url, list):
-                return obj.image_url
-        return []
+      
+        try:
+            if hasattr(obj, "image_url"):
+                if isinstance(obj.image_url, str):
+                    return [obj.image_url]  
+                if isinstance(obj.image_url, list):
+                    return obj.image_url
+            return []
+        except Exception as e:
+            print(f"Error in get_image_url for art {obj.id}: {e}")
+            return []
+
+
     def get_artist(self, obj):
         if obj.artist:
             return f"{obj.artist.first_name} {obj.artist.last_name}"
@@ -277,6 +285,15 @@ class ArtCardSerializer(serializers.Serializer):
             return str(obj.year_created) if hasattr(obj, "year_created") else ""
         except Exception as e:
             print(f"Error in get_year_created for art {obj.id}: {e}")
+            return ""
+         
+    def get_description(self, obj):
+        try:
+            if hasattr(obj, "description") and obj.description:
+                return str(obj.description)
+            return ""
+        except Exception as e:
+            print(f"Error in get_description for art {obj.id}: {e}")
             return ""
 
     def to_representation(self, instance):
