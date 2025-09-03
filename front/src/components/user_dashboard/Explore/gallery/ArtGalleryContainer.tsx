@@ -32,7 +32,7 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
 
   const overlap = 80; //controls how much cards overlap in the stack
 
-  const cardGap = 210;
+  const cardGap = 220;
   if (isLoading || artworks.length === 0) {
     return (
       <div className="w-full mx-auto rounded-lg overflow-hidden py-12 border relative text-center">
@@ -71,7 +71,7 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
         </div>
       </div>
 
-      <div className="relative flex justify-center items-center h-[230px] pt-6">
+      <div className="relative flex justify-center items-center h-[230px] pt-2">
         <div className="relative w-full max-w-7xl h-full">
           {artworks.map((art, index) => {
             const total = artworks.length;
@@ -141,7 +141,7 @@ const ArtGalleryContainer = ({ artworks, isLoading = false }: ArtGalleryContaine
 
                       <div className="flex items-center gap-1">
                         <Heart size={10} className="text-red-700 fill-red-700" />
-                        <span className="text-[11px] font-medium text-black">{art.likes_count}</span>
+                        <span className="text-[10px] font-medium text-black">{art.likes_count}</span>
                       </div>
                     </div>
                   </div>
