@@ -1,147 +1,220 @@
-import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { FloatingParticles } from "./FloatingParticles";
-import { ArtworkInfoCard } from "./ArtworkInfoCard";
-import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
+import { useNavigate } from "react-router-dom";
+import { Heart } from "lucide-react";
+import ArtVideoIntro from "./ArtVideoIntro";
+import ArtVideoOutro from "./ArtVideoOutro";
+import ParticleBackground from "./ParticleBg";
 
-type ShowcaseStage = "intro" | "transition" | "showcase" | "closing";
+interface Artwork {
+  id: string;
+  title: string;
+  image_url: string[];
+  artist: {
+    name: string;
+  };
+  likes_count: number;
+}
 
-export const ArtworkShowcase = () => {
-  const [stage, setStage] = useState<ShowcaseStage>("intro");
-  const [currentArtworkIndex, setCurrentArtworkIndex] = useState(0);
-  const [showNarration, setShowNarration] = useState(false);
+interface ArtVideoShowcaseProps {
+  artworks: Artwork[];
+  isLoading?: boolean;
+}
 
-  const { data: artworks = [], isLoading, error } = useFetchPopularArtworks();
+type ShowcasePhase = "intro" | "main" | "outro";
 
+const ArtVideoShowcase = ({
+  artworks,
+  isLoading = false,
+}: ArtVideoShowcaseProps) => {
+  const navigate = useNavigate();
+  const [phase, setPhase] = useState<ShowcasePhase>("intro");
+  const [spread, setSpread] = useState(false);
+
+  const handleArtworkClick = (
+    artworkId: string,
+    image_url: string,
+    artistName: string
+  ) => {
+    navigate(`/artwork/${artworkId}`, { state: { image_url, artistName } });
+  };
+
+  // Start flow: intro → outro
   useEffect(() => {
-    if (isLoading || artworks.length === 0) return;
-
-    const timeline = [
-      { stage: "intro" as ShowcaseStage, duration: 4000 },
-      { stage: "transition" as ShowcaseStage, duration: 2000 },
-      { stage: "showcase" as ShowcaseStage, duration: artworks.length * 5000 },
-      { stage: "closing" as ShowcaseStage, duration: 5000 },
-    ];
-
-    let currentIndex = 0;
-
-    const executeStage = () => {
-      const currentStage = timeline[currentIndex];
-      setStage(currentStage.stage);
-
-      if (currentStage.stage === "intro") {
-        setTimeout(() => setShowNarration(true), 1000);
-      } else if (currentStage.stage === "closing") {
-        setShowNarration(false);
-      }
-
-      setTimeout(() => {
-        currentIndex++;
-        if (currentIndex >= timeline.length) {
-          currentIndex = 0;
-          setCurrentArtworkIndex(0);
-        }
-        executeStage();
-      }, currentStage.duration);
-    };
-
-    executeStage();
-  }, [isLoading, artworks]);
-
-  useEffect(() => {
-    if (stage === "showcase" && artworks.length > 0) {
-      const interval = setInterval(() => {
-        setCurrentArtworkIndex((prev) => {
-          const next = prev + 1;
-          return next < artworks.length ? next : prev;
-        });
-      }, 5000);
-
-      return () => clearInterval(interval);
+    if (phase === "intro") {
+      const introTimer = setTimeout(() => {
+        setPhase("outro");
+      }, 5000); // 5s intro
+      return () => clearTimeout(introTimer);
     }
-  }, [stage, artworks]);
+  }, [phase]);
+
+  const handleOutroComplete = () => {
+    // After outro, show main
+    setPhase("main");
+    setTimeout(() => setSpread(true), 100);
+
+    // After 3s of main → back to intro
+    setTimeout(() => {
+      setPhase("intro");
+      setSpread(false);
+
+      // Then intro will again transition to outro automatically
+    }, 3000); // main lasts 3s
+  };
 
   if (isLoading || artworks.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg text-muted-foreground">Loading popular artworks...</p>
+      <div className="relative w-full max-w-7xl mx-auto rounded-lg overflow-hidden border bg-white h-[400px] flex flex-col items-center justify-center">
+        <ParticleBackground />
+        <h2 className="text-md font-bold pb-2">Loading Popular Artworks...</h2>
       </div>
     );
   }
 
-  const currentArtwork = artworks[currentArtworkIndex];
-
   return (
-    <div className="min-h-screen relative overflow-hidden border">
-      <FloatingParticles />
+    <div className="relative w-full max-w-7xl mx-auto rounded-lg overflow-hidden border bg-white h-[400px]">
+      <ParticleBackground />
 
-      {/* Intro Stage */}
-      {/* ... keep intro, transition, showcase, closing as before */}
-      {/* Just replace artwork.src → art.image_url?.[0], artwork.artist → art.artist.name, etc. */}
+      {/* Intro */}
+      {phase === "intro" && <ArtVideoIntro artworks={artworks} />}
 
-      {/* Example replacement in Showcase Stage Featured Artwork */}
-      <AnimatePresence>
-        {stage === "showcase" && currentArtwork && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0"
-          >
-            {/* Background Artworks */}
-            <div className="absolute inset-0 grid grid-cols-3 gap-4 p-8 opacity-20">
-              {artworks.map((art, index) => (
-                <motion.div
-                  key={art.id}
-                  animate={{
-                    filter:
-                      index === currentArtworkIndex ? "blur(0px)" : "blur(8px)",
-                    scale: index === currentArtworkIndex ? 1.05 : 0.95,
-                  }}
-                  transition={{ duration: 0.8 }}
-                  className="relative overflow-hidden rounded-2xl aspect-[4/3]"
-                >
-                  <img
-                    src={art.image_url?.[0]}
-                    alt={art.title}
-                    className="w-full h-full object-cover"
-                  />
-                </motion.div>
-              ))}
+      {/* Outro */}
+      {phase === "outro" && (
+        <ArtVideoOutro
+          artworks={artworks.slice(0, 5)}
+          onComplete={handleOutroComplete}
+        />
+      )}
+
+      {/* Main */}
+      {phase === "main" && (
+        <div className="relative text-center h-full flex flex-col">
+          <h2 className="text-md font-bold pb-2 text-gray-900 mt-6">
+            Popular this week
+          </h2>
+          <div className="w-96 mx-auto">
+            <p className="text-[10px] text-gray-700 mt-2">
+              Dive into this week's handpicked collection of stunning
+              creations—each piece a bold exploration of imagination, emotion,
+              and visual storytelling.
+            </p>
+          </div>
+
+          <div className="relative flex justify-center items-center flex-1 pt-2">
+            <div className="relative w-full max-w-7xl h-[230px]">
+              {artworks.slice(0, 5).map((art, index) => {
+                const total = 5;
+                const centerOffset = (total - 1) / 2;
+                const overlap = 80;
+                const cardGap = 220;
+
+                const initialLeft = `calc(50% + ${
+                  (index - centerOffset) * overlap
+                }px)`;
+                const fanAngles = [-12, -6, 0, 6, 12];
+                const initialRotate = fanAngles[index] || 0;
+
+                const floatConfigA = { duration: 3, delay: 0 };
+                const floatConfigB = { duration: 3.5, delay: 0.3 };
+                const { duration, delay } =
+                  index === 1 || index === 3 ? floatConfigB : floatConfigA;
+
+                const stacked = [
+                  { left: -80, rotate: -11, z: 1 },
+                  { left: -40, rotate: -5, z: 2 },
+                  { left: 0, rotate: 0, z: 3 },
+                  { left: 40, rotate: 5, z: 2 },
+                  { left: 80, rotate: 11, z: 1 },
+                ];
+                const stack = stacked[index] || { left: 0, rotate: 0, z: 1 };
+
+                const spreadLeft = `calc(50% + ${
+                  (index - centerOffset) * cardGap
+                }px)`;
+
+                let topOffset = 0;
+                if (spread && total === 5) {
+                  topOffset = index === 1 || index === 3 ? 30 : 0;
+                }
+
+                return (
+                  <div
+                    key={art.id}
+                    onClick={() =>
+                      handleArtworkClick(
+                        art.id,
+                        art.image_url?.[0],
+                        art.artist.name
+                      )
+                    }
+                    className={
+                      "absolute transition-all duration-1000 ease-in-out cursor-pointer" +
+                      (spread
+                        ? " hover:rotate-[1.5deg] hover:-translate-y-1"
+                        : "")
+                    }
+                    style={{
+                      left: spread ? spreadLeft : initialLeft,
+                      top: `${topOffset}px`,
+                      transform: spread
+                        ? "translate(-50%, 0) scale(1) rotate(0deg)"
+                        : `translate(-50%, 0) scale(1) rotate(${initialRotate}deg)`,
+                      zIndex: stack.z,
+                    }}
+                  >
+                    <div
+                      className="relative rounded-lg overflow-hidden shadow-lg transition-transform duration-500 ease-in-out hover:scale-105 bg-white"
+                      style={{
+                        width: "200px",
+                        height: "200px",
+                        animation: spread
+                          ? `float ${duration}s ease-in-out infinite`
+                          : undefined,
+                        animationDelay: spread ? `${delay}s` : undefined,
+                      }}
+                    >
+                      <img
+                        src={art.image_url?.[0]}
+                        alt={art.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute left-1/2 bottom-2 transform -translate-x-1/2 bg-white/80 rounded-md px-3 py-2 w-[90%] shadow-md backdrop-blur-sm">
+                        <div className="font-semibold text-[11px] leading-tight text-black -mb-0.5 truncate overflow-hidden whitespace-nowrap w-24">
+                          {art.title}
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="text-[8px] text-gray-700 truncate overflow-hidden whitespace-nowrap max-w-[60%]">
+                            by {art.artist.name}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Heart
+                              size={10}
+                              className="text-red-700 fill-red-700"
+                            />
+                            <span className="text-[10px] font-medium text-black">
+                              {art.likes_count}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
+          </div>
 
-            {/* Featured Artwork */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <motion.div
-                key={currentArtwork.id}
-                initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
-                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-                exit={{ opacity: 0, scale: 0.8, rotateY: 15 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="relative max-w-2xl max-h-[70vh] intense-glow"
-                style={{ perspective: "1000px" }}
-              >
-                <div className="relative overflow-hidden rounded-3xl">
-                  <img
-                    src={currentArtwork.image_url?.[0]}
-                    alt={currentArtwork.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Artwork Info Card */}
-            <ArtworkInfoCard
-            title={currentArtwork.title}
-            artist={currentArtwork.artist.name}
-            tagline={"Featured artwork of the week"} // fallback text
-            isVisible={true}
-            />
-
-          </motion.div>
-        )}
-      </AnimatePresence>
+          <style>{`
+            @keyframes float {
+              0% { transform: translateY(0); }
+              50% { transform: translateY(-8px); }
+              100% { transform: translateY(0); }
+            }
+          `}</style>
+        </div>
+      )}
     </div>
   );
 };
+
+export default ArtVideoShowcase;
