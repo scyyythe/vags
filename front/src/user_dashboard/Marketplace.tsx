@@ -107,7 +107,7 @@ const Marketplace = () => {
 
   const handleCardClick = (artwork: Artwork) => {
     setSelectedArtwork(artwork);
-    navigate(`/viewproduct/${artwork.id}/`);
+    navigate(`/viewproduct/${artwork.id}/`, { state: { artistId: artwork.artistId } });
   };
 
   const handleSellClick = () => navigate("/sell");
@@ -232,7 +232,9 @@ const Marketplace = () => {
                       artist={artwork.artist}
                       artistId={artwork.artist_id}
                       edition={artwork.edition}
+                      description={artwork.description}
                       size={artwork.size}
+                      additionalImages={artwork.image_url?.slice(1) || []}
                       yearCreated={artwork.year_created}
                       medium={artwork.medium}
                       artworkImage={artwork.image_url?.[0] || "/images/placeholder.jpg"}
@@ -244,6 +246,7 @@ const Marketplace = () => {
                       onLike={() => handleLike(artwork.id)}
                       isMarketplace={true}
                       status="active"
+                      quantity={artwork.quantity}
                       isWishlistView={true}
                       onCardClick={() => handleCardClick(artwork)}
                       isReported={reportedArtworks.has(artwork.id)}

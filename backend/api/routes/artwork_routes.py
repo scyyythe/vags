@@ -1,5 +1,5 @@
 from django.urls import path
-from api.views.artwork_views.artwork_views import (ArtCardListView,SellArtworkView,UpdateArtworkView,UserArtCardListView,
+from api.views.artwork_views.artwork_views import (ArtCardListView,SellArtworkView,UpdateArtworkView,DeleteArtworkImageView,UserArtCardListView,
 UpdateArtworkVisibilityView,MyArtCardListView,BulkArtDetailView,PopularLightweightArtView,ArtBulkListView,
 DeletePermanentArtwork,UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,
 UnHideArtworkView,HideArtworkView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, 
@@ -11,6 +11,7 @@ artwork_urlpatterns = [
      # sell
     path("art/sell/",  SellArtworkView.as_view(), name="art-sell"),
     path("art/update/<str:pk>/", UpdateArtworkView.as_view(), name="art-update"),
+    path('art/<str:pk>/images/<int:image_index>/', DeleteArtworkImageView.as_view(), name='delete-art-image'),
        
     path("art/cards/", ArtCardListView.as_view(), name="art-card-list"),
     path("art/cards/my/", MyArtCardListView.as_view(), name="my-art-cards"),

@@ -16,7 +16,10 @@ interface UpdateArtworkInput {
   edition?: string;
   quantity?: string;
   mainImage?: File | null;
+  size?: string;
   additionalImages?: (File | null)[];
+  // optional: keep track of images to remove
+  removeExistingImages?: boolean;
 }
 
 const useUpdateArtwork = () => {
@@ -31,33 +34,49 @@ const useUpdateArtwork = () => {
     try {
       const formData = new FormData();
 
-      Object.entries(data).forEach(([key, value]) => {
-        if (value) {
-          if (key === "height" || key === "width") return;
-          formData.append(key, value as string | Blob);
+      const textFields = ["title", "year_created", "style", "medium", "description", "price", "edition", "quantity"];
+      textFields.forEach((field) => {
+        const value = (data as any)[field];
+        if (value !== undefined && value !== null) {
+          formData.append(field, value);
         }
       });
 
-      // combine height & width into size
+      // Set size from height & width
       if (data.height && data.width) {
+        formData.append("height", data.height);
+        formData.append("width", data.width);
         formData.append("size", `${data.height}x${data.width}`);
       }
 
-      if (data.mainImage) formData.append("images", data.mainImage);
-      data.additionalImages?.forEach((img) => {
-        if (img) formData.append("images", img);
-      });
+      // Handle main image replacement
+      if (data.mainImage) {
+        formData.append("main_image", data.mainImage);
+      }
+
+      // Handle additional images
+      if (data.additionalImages && data.additionalImages.length > 0) {
+        // Optionally remove old images if flagged
+        if (data.removeExistingImages) {
+          formData.append("remove_existing_images", "true");
+        }
+        data.additionalImages.forEach((img) => {
+          if (img) formData.append("additional_images", img);
+        });
+      }
 
       await apiClient.patch(`/art/update/${artworkId}/`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      toast.success("Artwork updated!", { id: "update", closeButton: true });
-
+      toast.success("Artwork updated successfully", { id: "update", closeButton: true });
       queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
       navigate("/marketplace");
     } catch (err: any) {
-      toast.error(err.response?.data?.error || "Failed to update artwork", { id: "update", closeButton: true });
+      toast.error(err.response?.data?.error || "Failed to update artwork", {
+        id: "update",
+        closeButton: true,
+      });
       console.error(err);
     } finally {
       setIsUpdating(false);
