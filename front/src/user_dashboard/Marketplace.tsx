@@ -247,7 +247,7 @@ const Marketplace = () => {
                       isWishlistView={true}
                       onCardClick={() => handleCardClick(artwork)}
                       isReported={reportedArtworks.has(artwork.id)}
-                      isOwner={isOwner} // 👈 pass isOwner here
+                      isOwner={isOwner}
                     />
                   );
                 })}

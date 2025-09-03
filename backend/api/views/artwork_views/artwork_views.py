@@ -73,6 +73,25 @@ class SellArtworkView(APIView):
             return Response(ArtSerializer(art).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class UpdateArtworkView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def patch(self, request, pk):
+        try:
+            art = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            return Response({"error": "Artwork not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if str(art.artist.id) != str(request.user.id):
+            return Response({"error": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = ArtSerializer(art, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_art = serializer.save()
+            return Response(ArtSerializer(updated_art).data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class ArtListView(generics.ListAPIView):
     serializer_class = ArtSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
