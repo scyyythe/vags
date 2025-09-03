@@ -9,7 +9,7 @@ import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/Artw
 import Header from "@/components/user_dashboard/navbar/Header";
 import useUpdateArtwork from "@/hooks/artworks/sell/useUpdateArtwork";
 import { useParams, useLocation } from "react-router-dom";
-
+import apiClient from "@/utils/apiClient";
 interface ArtworkUpdateState {
   id: string;
   title: string;
@@ -81,6 +81,8 @@ const UpdateArtwork = () => {
     toast.loading("Updating artwork...", { id: "upload" });
 
     try {
+      const size = height && width ? `${height}x${width}` : "";
+
       await updateArtwork(artworkData.id, {
         title: artworkTitle,
         year_created: yearCreated,
@@ -94,6 +96,7 @@ const UpdateArtwork = () => {
         quantity,
         mainImage: selectedFile,
         additionalImages: additionalImages.filter((img): img is File => img instanceof File),
+        removeExistingImages: true,
       });
 
       toast.success("Artwork updated successfully!", { id: "upload" });
@@ -109,6 +112,23 @@ const UpdateArtwork = () => {
   const handleEditionChange = (value: string) => {
     setEdition(value);
     if (value === "Original (1 of 1)") setQuantity("1");
+  };
+  const handleRemoveAdditionalImage = async (index: number, isMain = false) => {
+    if (isMain) {
+      setSelectedFile(null);
+      setPreviewUrl(null);
+    } else {
+      try {
+        await apiClient.delete(`/art/${artworkData.id}/images/${index}/`);
+        toast.success("Image removed successfully");
+
+        const newImages = [...additionalImages];
+        newImages[index] = null;
+        setAdditionalImages(newImages);
+      } catch (err: any) {
+        toast.error(err.response?.data?.error || "Failed to delete image");
+      }
+    }
   };
 
   return (
@@ -151,31 +171,53 @@ const UpdateArtwork = () => {
             </div>
 
             {/* Additional Images */}
+
             <div>
-              <h3 className="text-[11px] font-medium text-gray-900 mb-2">Additional Images (Optional)</h3>
-              <div className="grid grid-cols-4 gap-3">
+              <h3 className="text-[11px] font-medium text-gray-900 mb-3">Add more pictures (Optional)</h3>
+              <div className="grid grid-cols-4 gap-4">
                 {additionalImages.map((img, idx) => (
                   <div
                     key={idx}
-                    className="relative w-full h-24 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200 cursor-pointer overflow-hidden"
+                    className="relative w-full h-24 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200 cursor-pointer overflow-hidden group"
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      if (e.dataTransfer.files[0]) handleAdditionalImageChange(idx, e.dataTransfer.files[0]);
+                    }}
+                    onClick={() => document.getElementById(`additionalFileInput-${idx}`)?.click()}
                   >
                     {img ? (
-                      typeof img === "string" ? (
-                        <img src={img} alt={`Additional ${idx}`} className="w-full h-full object-cover" />
-                      ) : (
+                      <>
                         <img
-                          src={URL.createObjectURL(img)}
-                          alt={`Additional ${idx}`}
-                          className="w-full h-full object-cover"
+                          src={typeof img === "string" ? img : URL.createObjectURL(img)}
+                          alt={`Additional ${idx + 1}`}
+                          className="w-full h-full object-cover rounded-lg"
                         />
-                      )
+                        <div
+                          className="absolute inset-0 bg-black bg-opacity-60 text-white text-[11px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveAdditionalImage(idx);
+                          }}
+                        >
+                          Remove
+                        </div>
+                      </>
                     ) : (
-                      <span className="text-gray-400 text-[11px]">+</span>
+                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
+                      </svg>
                     )}
                     <input
+                      id={`additionalFileInput-${idx}`}
                       type="file"
                       accept="image/*"
-                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      className="hidden"
                       onChange={(e) => handleAdditionalImageChange(idx, e.target.files?.[0] || null)}
                     />
                   </div>
