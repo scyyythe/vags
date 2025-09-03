@@ -96,8 +96,12 @@ class ArtSerializer(serializers.Serializer):
 
 
     def update(self, instance, validated_data):
+        # --------------------------
+        # 1. Handle new images
+        # --------------------------
         images = validated_data.pop("images", [])
         if images:
+            uploaded_urls = []
             for img in images:
                 try:
                     result = cloudinary.uploader.unsigned_upload(
@@ -108,10 +112,15 @@ class ArtSerializer(serializers.Serializer):
                     image_url = result.get("secure_url", "")
                     if not moderate_image(image_url):
                         raise ValidationError("One of the images was rejected.")
-                    instance.image_url.append(image_url)
+                    uploaded_urls.append(image_url)
                 except Exception as e:
                     raise ValidationError({"cloudinary": f"Upload failed: {str(e)}"})
+            # Replace old images completely
+            instance.image_url = uploaded_urls
 
+        # --------------------------
+        # 2. Update regular fields
+        # --------------------------
         for field in [
             "title", "category", "medium", "art_status", "price", "discounted_price",
             "size", "description", "visibility", "edition", "year_created"
@@ -119,9 +128,23 @@ class ArtSerializer(serializers.Serializer):
             if field in validated_data:
                 setattr(instance, field, validated_data[field])
 
+        # --------------------------
+        # 3. Compute size from height & width if not explicitly sent
+        # --------------------------
+        if "size" not in validated_data:
+            height = validated_data.get("height")
+            width = validated_data.get("width")
+            if height and width:
+                instance.size = f"{height}x{width}"
+
+        # --------------------------
+        # 4. Save instance
+        # --------------------------
         instance.updated_at = datetime.utcnow()
         instance.save()
         return instance
+
+
 
 
     def get_artist(self, obj):
@@ -200,6 +223,8 @@ class ArtCardSerializer(serializers.Serializer):
     title = serializers.CharField()
     price = serializers.IntegerField()
     discounted_price = serializers.IntegerField(required=False, allow_null=True)
+    description = serializers.SerializerMethodField()
+    quantity= serializers.SerializerMethodField()
     total_ratings = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
@@ -229,12 +254,19 @@ class ArtCardSerializer(serializers.Serializer):
         return str(obj.art_status).lower() if hasattr(obj, "art_status") and obj.art_status else ""
 
     def get_image_url(self, obj):
-        if hasattr(obj, "image_url"):
-            if isinstance(obj.image_url, str):
-                return [obj.image_url]
-            if isinstance(obj.image_url, list):
-                return obj.image_url
-        return []
+      
+        try:
+            if hasattr(obj, "image_url"):
+                if isinstance(obj.image_url, str):
+                    return [obj.image_url]  
+                if isinstance(obj.image_url, list):
+                    return obj.image_url
+            return []
+        except Exception as e:
+            print(f"Error in get_image_url for art {obj.id}: {e}")
+            return []
+
+
     def get_artist(self, obj):
         if obj.artist:
             return f"{obj.artist.first_name} {obj.artist.last_name}"
@@ -278,7 +310,25 @@ class ArtCardSerializer(serializers.Serializer):
         except Exception as e:
             print(f"Error in get_year_created for art {obj.id}: {e}")
             return ""
-
+         
+    def get_description(self, obj):
+        try:
+            if hasattr(obj, "description") and obj.description:
+                return str(obj.description)
+            return ""
+        except Exception as e:
+            print(f"Error in get_description for art {obj.id}: {e}")
+            return ""
+    def get_quantity(self, obj):
+        try:
+            
+            if hasattr(obj, "quantity") and obj.quantity is not None:
+                return obj.quantity
+            
+            return 1
+        except Exception as e:
+            print(f"Error in get_quantity for art {obj.id}: {e}")
+            return 1
     def to_representation(self, instance):
         try:
             rep = super().to_representation(instance)

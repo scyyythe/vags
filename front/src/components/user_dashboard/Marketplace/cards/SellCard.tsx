@@ -20,7 +20,7 @@ export interface SellCardProps {
   artistId?: string;
   price: number;
   medium?: string;
-
+  description?: string;
   profile_picture?: string;
   originalPrice?: number;
   title: string;
@@ -30,6 +30,8 @@ export interface SellCardProps {
   yearCreated?: string;
   rating?: number;
   isLiked?: boolean;
+  additionalImages?: string[];
+  quantity?: number;
   onLike?: () => void;
   isReported?: boolean;
   onReportSuccess?: () => void;
@@ -51,10 +53,11 @@ const SellCard = ({
   artistId,
   originalPrice = 0,
   title,
+  quantity,
   category,
   edition,
   rating,
-
+  description,
   size,
   yearCreated,
   profile_picture,
@@ -63,6 +66,7 @@ const SellCard = ({
   status,
   reason,
   onRelist,
+  additionalImages,
   onReportSuccess,
   isMarketplace = false,
   onCardClick,
@@ -71,7 +75,7 @@ const SellCard = ({
 }: SellCardProps) => {
   const loggedInUserId = getLoggedInUserId();
   const isOwner = String(artistId) === String(loggedInUserId);
-  console.log("SellCard owner check:", { artistId, loggedInUserId, isOwner });
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -79,11 +83,11 @@ const SellCard = ({
   const { mutate: submitReport } = useSubmitReport();
   const markAsSoldMutation = useToggleArtworkStatus();
   const markAsUnlistedMutation = useMarkArtworkAsUnlisted();
+  const [heightValue, widthValue] = size ? size.split("x") : ["", ""];
 
   const { data: reportStatusData } = useArtworkReportStatus(id);
   const isReported = reportStatusData?.reported ?? false;
 
-  // 👇 use context instead of local state
   const { isChatOpen, openChat, closeChat, participantId, participantName } = useChat();
 
   const toggleLike = (e: React.MouseEvent) => {
@@ -232,14 +236,14 @@ const SellCard = ({
                     year_created: yearCreated || "",
                     style: category || "",
                     medium: medium || "",
-                    height: "",
-                    width: "",
-                    description: "",
-                    price: price?.toString() || "0",
+                    height: heightValue,
+                    width: widthValue,
+                    description: description || "",
+                    price: String(price || 0),
                     edition: edition || "Original (1 of 1)",
-                    quantity: "1",
+                    quantity: quantity,
                     mainImageUrl: artworkImage,
-                    additionalImagesUrls: [],
+                    additionalImagesUrls: additionalImages,
                   },
                 });
               }}

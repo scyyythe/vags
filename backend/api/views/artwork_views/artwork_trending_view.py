@@ -1,27 +1,27 @@
 from rest_framework import generics
-from api.models.artwork_model.artwork import Art
-from api.models.review_model.review import Review 
+from api.models.artwork_model.artwork import Art, ArtReview
 from api.serializers.artwork_s.artwork_serializers import ArtCardSerializer
 
 class TrendingArtworksView(generics.ListAPIView):
     serializer_class = ArtCardSerializer
 
     def get_queryset(self):
-        trending_ids = []
         trending_artworks = []
 
+      
         for art in Art.objects.filter(art_status="onSale"):
-            reviews = Review.objects(artwork=art)
-            if not reviews:
-                continue
+            reviews = ArtReview.objects(art=art)
+            review_count = len(reviews)
 
-            avg_rating = sum([r.rating for r in reviews]) / len(reviews)
-            if 3 <= avg_rating <= 5:
-                trending_ids.append(art.id)
-                trending_artworks.append((art, avg_rating))
+            
+            avg_rating = sum([r.score for r in reviews]) / review_count if review_count > 0 else 0
 
+          
+            trending_artworks.append((art, avg_rating, review_count))
 
-        trending_artworks.sort(key=lambda tup: tup[1], reverse=True)
+      
+        trending_artworks.sort(key=lambda tup: (tup[1], tup[2]), reverse=True)
 
-     
-        return [art for art, avg in trending_artworks]
+      
+        top_n = 10
+        return [art for art, avg, count in trending_artworks[:top_n]]
