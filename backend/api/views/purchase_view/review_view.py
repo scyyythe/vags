@@ -5,7 +5,7 @@ from rest_framework import status
 from api.serializers.review_serializer.review_serializer import ReviewSerializer
 from api.models.review_model.review import Review
 from bson import ObjectId
-from api.serializers.review_serializer.review_serializer import ReviewSerializer, ReviewUpdateSerializer
+from api.serializers.review_serializer.review_serializer import ReviewSerializer, ReviewUpdateSerializer,ReviewReadSerializer
 
 class SubmitReviewView(APIView):
     permission_classes = [IsAuthenticated]
@@ -117,3 +117,18 @@ class AllReviewsByPurchaseView(APIView):
             })
 
         return Response(data, status=status.HTTP_200_OK)
+
+class AllReviewsByArtworkView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, artwork_id):
+        try:
+            reviews = Review.objects(artwork=ObjectId(artwork_id))
+        except Exception:
+            return Response({"error": "Invalid artwork ID."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not reviews:
+            return Response({"message": "No reviews found for this artwork."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ReviewReadSerializer(reviews, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
