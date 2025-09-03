@@ -13,10 +13,23 @@ import PreviewModal from "../buying_process/preview/PreviewModal";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { useSellArtworkDetail } from "@/hooks/artworks/sell/useSellArtworkDetail";
 import ProductViewingSkeleton from "@/components/skeletons/ProductViewingSkeleton";
+import { getLoggedInUserId } from "@/auth/decode";
+import SellMenu from "../../own_profile/menu/sell_card/Menu";
+import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";
+import useToggleArtworkStatus from "@/hooks/purchase/useMarkArtworkAsSold";
+import { useLocation } from "react-router-dom";
+
 const ProductViewingContent = () => {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, error } = useSellArtworkDetail(id);
 
+  const loggedInUserId = getLoggedInUserId();
+  const isOwner = product?.artist?.id && String(product.artist.id) === String(loggedInUserId);
+  const location = useLocation();
+  const artistId = location.state?.artistId;
+
+  const markAsSoldMutation = useToggleArtworkStatus();
+  const markAsUnlistedMutation = useMarkArtworkAsUnlisted();
   const [isExpanded, setIsExpanded] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -242,8 +255,12 @@ const ProductViewingContent = () => {
                   onClick={() => navigate(`/userprofile/${product.artist.id}`)}
                 >
                   <Avatar className="w-4 h-4 border">
-                    <AvatarImage src={product.artist.profile_picture || undefined} alt={product.artist.name} />
-                    <AvatarFallback className="text-[10px]">{product.artist.name?.charAt(0)}</AvatarFallback>
+                    <AvatarImage
+                      src={product?.artist?.profile_picture || undefined}
+                      alt={product?.artist?.name || "Artist"}
+                    />
+                    <AvatarFallback>{product?.artist?.name?.charAt(0) || "?"}</AvatarFallback>
+                    <span>{product?.artist?.name || "Unknown Artist"}</span>
                   </Avatar>
                   <span className="text-black text-[10px]">{product.artist.name}</span>
                 </div>
@@ -259,18 +276,54 @@ const ProductViewingContent = () => {
                 >
                   <MoreHorizontal size={15} className="text-gray-500 hover:text-black" />
                 </button>
-
-                <SellCardMenu
-                  isOpen={menuOpen}
-                  isReported={isReported}
-                  onReport={(data) => {
-                    console.log("Report submitted:", data);
-                    toast("Report submitted. Thank you!");
-                    setIsReported(true);
-                    setMenuOpen(false);
-                  }}
-                  className="-left-1 top-7"
-                />
+                {isOwner ? (
+                  <SellMenu
+                    isOpen={menuOpen}
+                    artworkId={id}
+                    onEdit={() => {
+                      navigate(`/sell-update/${id}`, {
+                        state: {
+                          id: product.id,
+                          title: product.title,
+                          year_created: product.year_created || "",
+                          style: product.artwork_style || "",
+                          medium: product.medium || "",
+                          height: product.size?.split("x")?.[0] || "",
+                          width: product.size?.split("x")?.[1] || "",
+                          description: product.description || "",
+                          price: String(product.price || 0),
+                          edition: product.edition || "Original (1 of 1)",
+                          quantity: quantity,
+                          mainImageUrl: product.image_urls?.[0],
+                          additionalImagesUrls: product.image_urls?.slice(1) || [],
+                        },
+                      });
+                    }}
+                    onToggleVisibility={(newVisibility, artworkId) => {
+                      if (newVisibility === "Unlisted") {
+                        markAsUnlistedMutation.mutate(artworkId);
+                      } else {
+                        toast(`Set visibility to ${newVisibility}`, { closeButton: true });
+                      }
+                    }}
+                    onDelete={() => toast("Delete clicked", { closeButton: true })}
+                    onMarkAsSold={() => markAsSoldMutation.mutate(id)}
+                    onViewInsights={() => toast("Viewing insights", { closeButton: true })}
+                    className="-right-1 top-5"
+                  />
+                ) : (
+                  <SellCardMenu
+                    isOpen={menuOpen}
+                    isReported={isReported}
+                    onReport={(data) => {
+                      console.log("Report submitted:", data);
+                      toast("Report submitted. Thank you!");
+                      setIsReported(true);
+                      setMenuOpen(false);
+                    }}
+                    className="-left-1 top-7"
+                  />
+                )}
               </div>
             </div>
 
@@ -408,56 +461,54 @@ const ProductViewingContent = () => {
             </div>
 
             {/* Quantity, Buy Now, Wishlist */}
-    
-<div className="space-y-2">
-  <div className="flex items-center justify-between space-x-3">
 
-    {/* Show quantity selector only if edition is "Open Edition" */}
-    {product.edition === "Open Edition" && (
-      <div className="flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs">
-        <button
-          onClick={() => handleQuantityChange(-1)}
-          className="w-8 h-8 pl-1.5 flex items-center justify-center text-black"
-        >
-          −
-        </button>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between space-x-3">
+                {/* Show quantity selector only if edition is "Open Edition" */}
+                {product.edition === "Open Edition" && (
+                  <div className="flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs">
+                    <button
+                      onClick={() => handleQuantityChange(-1)}
+                      className="w-8 h-8 pl-1.5 flex items-center justify-center text-black"
+                    >
+                      −
+                    </button>
 
-        <div className="w-px h-3 bg-gray-300" />
+                    <div className="w-px h-3 bg-gray-300" />
 
-        <span className="w-8 text-center font-medium text-black">{quantity}</span>
+                    <span className="w-8 text-center font-medium text-black">{quantity}</span>
 
-        <div className="w-px h-3 bg-gray-300" />
+                    <div className="w-px h-3 bg-gray-300" />
 
-        <button
-          onClick={() => handleQuantityChange(1)}
-          className="w-8 h-8 pr-1.5 flex items-center justify-center text-black"
-        >
-          +
-        </button>
-      </div>
-    )}
+                    <button
+                      onClick={() => handleQuantityChange(1)}
+                      className="w-8 h-8 pr-1.5 flex items-center justify-center text-black"
+                    >
+                      +
+                    </button>
+                  </div>
+                )}
 
-    <button
-      className="w-full bg-red-800 hover:bg-red-700 text-white py-2 text-xs font-medium rounded-full"
-      onClick={() => setIsModalOpen(true)}
-    >
-      <i className="bx bx-cart text-[15px] relative top-0.5 mr-3"></i>
-      Buy Now
-    </button>
+                <button
+                  className="w-full bg-red-800 hover:bg-red-700 text-white py-2 text-xs font-medium rounded-full"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  <i className="bx bx-cart text-[15px] relative top-0.5 mr-3"></i>
+                  Buy Now
+                </button>
 
-    <button onClick={handleWishlistToggle} className="py-1.5 px-2.5 border border-gray-300 rounded-full">
-      <img
-        src={
-          likedItems.has(id)
-            ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
-            : "https://img.icons8.com/puffy/32/like.png"
-        }
-        className="w-5 h-5 object-contain"
-      />
-    </button>
-  </div>
-</div>
-
+                <button onClick={handleWishlistToggle} className="py-1.5 px-2.5 border border-gray-300 rounded-full">
+                  <img
+                    src={
+                      likedItems.has(id)
+                        ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
+                        : "https://img.icons8.com/puffy/32/like.png"
+                    }
+                    className="w-5 h-5 object-contain"
+                  />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -107,7 +107,7 @@ const Marketplace = () => {
 
   const handleCardClick = (artwork: Artwork) => {
     setSelectedArtwork(artwork);
-    navigate(`/viewproduct/${artwork.id}/`);
+    navigate(`/viewproduct/${artwork.id}/`, { state: { artistId: artwork.artistId } });
   };
 
   const handleSellClick = () => navigate("/sell");
