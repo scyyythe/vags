@@ -9,7 +9,9 @@ import useArtworkReportStatus from "@/hooks/mutate/report/useArtworkReportStatus
 import { Badge } from "@/components/ui/badge";
 import ChatDropdown from "../../local_components/chat/ChatDropdown";
 import { useChat } from "@/context/ChatContext";
-
+import useToggleArtworkStatus from "@/hooks/purchase/useMarkArtworkAsSold";
+import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";
+import { getLoggedInUserId } from "@/auth/decode";
 export interface SellCardProps {
   id: string;
   artworkImage: string;
@@ -63,14 +65,19 @@ const SellCard = ({
   onReportSuccess,
   isMarketplace = false,
   onCardClick,
-  isOwner = false,
 
   isWishlistView = false,
 }: SellCardProps) => {
+  const loggedInUserId = getLoggedInUserId();
+  const isOwner = String(artistId) === String(loggedInUserId);
+  console.log("SellCard owner check:", { artistId, loggedInUserId, isOwner });
   const [menuOpen, setMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { mutate: submitReport } = useSubmitReport();
+  const markAsSoldMutation = useToggleArtworkStatus();
+  const markAsUnlistedMutation = useMarkArtworkAsUnlisted();
+
   const { data: reportStatusData } = useArtworkReportStatus(id);
   const isReported = reportStatusData?.reported ?? false;
 
@@ -88,11 +95,6 @@ const SellCard = ({
   const handleContact = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    console.log("Contact button clicked");
-    console.log("artistId:", artistId);
-    console.log("artist name:", artist);
-    console.log("profile_picture:", profile_picture);
-
     if (!artistId) {
       console.warn("No artistId provided, cannot open chat");
       return;
@@ -100,11 +102,6 @@ const SellCard = ({
 
     // Pass to context
     openChat(artistId, artist || "Unknown", profile_picture, true);
-
-    console.log("Chat opened via context:", {
-      participantId,
-      participantName,
-    });
 
     toast("Redirecting to contact the artist...", { closeButton: true });
   };
@@ -226,11 +223,15 @@ const SellCard = ({
               isOpen={menuOpen}
               artworkId={id}
               onEdit={(artworkId) => toast(`Edit clicked for ${artworkId}`, { closeButton: true })}
-              onToggleVisibility={(newVisibility, artworkId) =>
-                toast(`Set visibility to ${newVisibility}`, { closeButton: true })
-              }
+              onToggleVisibility={(newVisibility, artworkId) => {
+                if (newVisibility === "Unlisted") {
+                  markAsUnlistedMutation.mutate(artworkId);
+                } else {
+                  toast(`Set visibility to ${newVisibility}`, { closeButton: true });
+                }
+              }}
               onDelete={() => toast("Delete clicked", { closeButton: true })}
-              onMarkAsSold={() => toast("Marked as sold", { closeButton: true })}
+              onMarkAsSold={() => markAsSoldMutation.mutate(id)}
               onViewInsights={() => toast("Viewing insights", { closeButton: true })}
               className="-right-1 top-5"
             />

@@ -32,7 +32,10 @@ import { useEditReview } from "@/hooks/review/useEditReview";
 import { useDeleteReview } from "@/hooks/review/useDeleteReview";
 import useMarkPurchaseCompleted from "@/hooks/purchase/useMarkPurchaseCompleted";
 import useMarkAsShipped from "@/hooks/purchase/useMarkAsShipped";
-const SellTab = () => {
+type SellTabProps = {
+  selectedPriceRange?: string;
+};
+const SellTab = ({ selectedPriceRange }) => {
   const { id: userId } = useParams();
   const loggedInUserId = getLoggedInUserId();
   const navigate = useNavigate();
@@ -417,8 +420,29 @@ const SellTab = () => {
           return { ...sale, status: updatedStatus };
         })
     : [];
+  const filteredSoldArtworksForListings =
+    isOwnProfile && subTab === "sold"
+      ? Array.isArray(soldArtworks)
+        ? formatSoldArtworks(soldArtworks)
+            .filter((sale) => {
+              const status = sale.status?.toLowerCase();
+              return status === "sold" || status === "completed" || status === "reviewed";
+            })
+            .map((sale) => ({
+              id: sale.artwork_id,
+              title: sale.title,
+              artist_id: sale.artist_id,
+              price: sale.price,
+              originalPrice: sale.price,
+              rating: sale.review ? sale.review.rating : 0,
+              category: sale.artwork.style,
+              artworkImage: sale.artworkImage,
+              status: "sold",
+            }))
+        : []
+      : [];
 
-  const filteredArtworks = myArtCards
+  let filteredArtworks = myArtCards
     .filter((art) => {
       const status = art.art_status?.toLowerCase?.();
       const expectedStatus = statusMap[subTab]?.toLowerCase();
@@ -433,6 +457,7 @@ const SellTab = () => {
     .map((art) => ({
       id: art.id,
       title: art.title,
+      artist_id: art.artist_id,
       price: art.discounted_price ?? art.price,
       originalPrice: art.discounted_price ? art.price : 0,
       rating: art.total_ratings,
@@ -440,6 +465,12 @@ const SellTab = () => {
       artworkImage: art.image_url[0] || "",
       status: "active",
     }));
+
+  if (selectedPriceRange === "Low to High") {
+    filteredArtworks = filteredArtworks.slice().sort((a, b) => a.price - b.price);
+  } else if (selectedPriceRange === "High to Low") {
+    filteredArtworks = filteredArtworks.slice().sort((a, b) => b.price - a.price);
+  }
 
   // Seller actions for sold artworks
   const handleContactBuyer = (artwork) => {
@@ -491,22 +522,31 @@ const SellTab = () => {
       <div className="flex justify-between items-center mb-4 text-[11px] font-semibold">
         {/* Left: MY LISTINGS + MY PURCHASE */}
         <div className="flex space-x-4">
-          {["myListings", "myPurchase"].map((tab) => (
+          <button
+            className={`px-3 ${mainTab === "myListings" ? "text-red-800" : "text-gray-600"}`}
+            onClick={() => {
+              setMainTab("myListings");
+              setSubTab("available");
+              setActiveSubGroup("listings");
+              setShowDropdown(false);
+            }}
+          >
+            MY LISTINGS
+          </button>
+          {isOwnProfile && (
             <button
-              key={tab}
-              className={`px-3 ${mainTab === tab ? "text-red-800" : "text-gray-600"}`}
+              className={`px-3 ${mainTab === "myPurchase" ? "text-red-800" : "text-gray-600"}`}
               onClick={() => {
-                setMainTab(tab);
-                setSubTab(tab === "myListings" ? "available" : "paid");
+                setMainTab("myPurchase");
+                setSubTab("paid");
                 setActiveSubGroup("listings");
                 setShowDropdown(false);
               }}
             >
-              {tab === "myListings" ? "MY LISTINGS" : "MY PURCHASE"}
+              MY PURCHASE
             </button>
-          ))}
+          )}
         </div>
-
         {/* Right: SALES SUMMARY */}
         <button
           className={`px-3 ${mainTab === "salesSummary" ? "text-red-800" : "text-gray-600"}`}
@@ -521,45 +561,63 @@ const SellTab = () => {
       {/* DROPDOWN + SUBTABS */}
       {mainTab !== "salesSummary" &&
         (mainTab === "myListings" ? (
-          <div className="relative mb-6 flex flex-wrap items-center gap-4 text-[11px]">
-            <div className="relative">
-              <button
-                className="flex items-center space-x-1 px-3 py-1 border border-gray-300 rounded-full text-gray-700"
-                onClick={() => setShowDropdown(!showDropdown)}
-              >
-                <span>{activeSubGroup === "listings" ? "Listings" : "Sold Artworks"}</span>
-                <svg
-                  className={`w-3 h-3 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`}
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
+          isOwnProfile ? (
+            // Owner: Show dropdown and both Listings/Sold Artworks subtabs
+            <div className="relative mb-6 flex flex-wrap items-center gap-4 text-[11px]">
+              <div className="relative">
+                <button
+                  className="flex items-center space-x-1 px-3 py-1 border border-gray-300 rounded-full text-gray-700"
+                  onClick={() => setShowDropdown(!showDropdown)}
                 >
-                  <path d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {showDropdown && (
-                <div className="absolute z-10 bg-white border mt-2 rounded shadow text-[11px]">
-                  {["listings", "soldArtworks"].map((option) => (
-                    <button
-                      key={option}
-                      className={`block px-4 py-2 w-full text-left ${
-                        activeSubGroup === option ? "text-black font-medium" : "text-gray-600"
-                      }`}
-                      onClick={() => {
-                        setActiveSubGroup(option as "listings" | "soldArtworks");
-                        setSubTab(option === "listings" ? "available" : "awaiting_payment");
-                        setShowDropdown(false);
-                      }}
-                    >
-                      {option === "listings" ? "Listings" : "Sold"}
-                    </button>
-                  ))}
-                </div>
-              )}
+                  <span>{activeSubGroup === "listings" ? "Listings" : "Sold Artworks"}</span>
+                  <svg
+                    className={`w-3 h-3 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`}
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {showDropdown && (
+                  <div className="absolute z-10 bg-white border mt-2 rounded shadow text-[11px]">
+                    {["listings", "soldArtworks"].map((option) => (
+                      <button
+                        key={option}
+                        className={`block px-4 py-2 w-full text-left ${
+                          activeSubGroup === option ? "text-black font-medium" : "text-gray-600"
+                        }`}
+                        onClick={() => {
+                          setActiveSubGroup(option as "listings" | "soldArtworks");
+                          setSubTab(option === "listings" ? "available" : "awaiting_payment");
+                          setShowDropdown(false);
+                        }}
+                      >
+                        {option === "listings" ? "Listings" : "Sold"}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-4">
+                {(activeSubGroup === "listings" ? activeListingTabs : soldArtworksTabs).map((tab) => (
+                  <button
+                    key={tab}
+                    className={`px-3 py-1 border-b-2 ${
+                      subTab === tab ? "border-red-800 text-red-800" : "border-transparent text-gray-600"
+                    }`}
+                    onClick={() => setSubTab(tab)}
+                  >
+                    {tab.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-4">
-              {(activeSubGroup === "listings" ? activeListingTabs : soldArtworksTabs).map((tab) => (
+          ) : (
+            // Not owner: Only show Listings subtabs, no dropdown
+            <div className="flex flex-wrap gap-4 mb-6 text-[11px]">
+              {activeListingTabs.map((tab) => (
                 <button
                   key={tab}
                   className={`px-3 py-1 border-b-2 ${
@@ -571,8 +629,9 @@ const SellTab = () => {
                 </button>
               ))}
             </div>
-          </div>
+          )
         ) : (
+          // MY PURCHASE subtabs (already only visible to owner)
           <div className="flex flex-wrap gap-5 mb-6 text-[11px] font-normal">
             {myPurchaseTabs.map((tab) => (
               <button
@@ -701,27 +760,51 @@ const SellTab = () => {
               />
             ))
           )
+        ) : subTab === "sold" && isOwnProfile ? (
+          filteredSoldArtworksForListings.length === 0 ? (
+            <div className="text-xs text-center py-12">
+              <div className="w-24 h-24 mx-auto mb-4 opacity-50">
+                <svg
+                  className="w-full h-full text-muted-foreground"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1}
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  />
+                </svg>
+              </div>
+              <p className="text-muted-foreground">No sold artworks found.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {filteredSoldArtworksForListings.map((art) => {
+                return (
+                  <SellCard
+                    key={art.id}
+                    id={art.id}
+                    artworkImage={art.artworkImage}
+                    title={art.title}
+                    price={art.price}
+                    originalPrice={art.originalPrice}
+                    rating={art.rating}
+                    category={art.category}
+                    status="sold"
+                    isMarketplace={true}
+                    artistId={art.artist_id}
+                    isOwner={isOwnProfile}
+                    onCardClick={() => onCardClick(art.id)}
+                  />
+                );
+              })}
+            </div>
+          )
         ) : filteredArtworks.length === 0 ? (
           <div className="text-xs text-center py-12">
-            <div className="w-24 h-24 mx-auto mb-4 opacity-50">
-              <svg
-                className="w-full h-full text-muted-foreground"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1}
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
-            </div>
-            <p className="text-muted-foreground">No active artworks found for this user.</p>
-          </div>
-        ) : filteredArtworks.length === 0 ? (
-          <div className="text-center py-12">
             <div className="w-24 h-24 mx-auto mb-4 opacity-50">
               <svg
                 className="w-full h-full text-muted-foreground"
@@ -748,6 +831,7 @@ const SellTab = () => {
                 artworkImage={art.artworkImage}
                 title={art.title}
                 price={art.price}
+                artistId={art.artist_id}
                 originalPrice={art.originalPrice}
                 rating={art.rating}
                 category={art.category}

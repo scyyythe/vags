@@ -1,5 +1,9 @@
 from django.urls import path
-from api.views.artwork_views.artwork_views import  ArtCardListView,SellArtworkView,UserArtCardListView,MyArtCardListView,BulkArtDetailView,PopularLightweightArtView,ArtBulkListView,DeletePermanentArtwork,UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,UnHideArtworkView,HideArtworkView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, ArtListByArtistView,ArtDeleteView,ArtListViewOwner
+from api.views.artwork_views.artwork_views import (ArtCardListView,SellArtworkView,UserArtCardListView,
+UpdateArtworkVisibilityView,MyArtCardListView,BulkArtDetailView,PopularLightweightArtView,ArtBulkListView,
+DeletePermanentArtwork,UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,
+UnHideArtworkView,HideArtworkView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, 
+ArtListByArtistView,ArtDeleteView,ArtListViewOwner)
 from api.views.artwork_views.artwork_detail_view import MarketplaceArtDetailView
 from api.views.artwork_views.wishlist_view import ToggleWishlistView,WishlistArtView,WishlistIDListView,MyWishlistView
 from api.views.artwork_views.artwork_trending_view import TrendingArtworksView
@@ -35,6 +39,8 @@ artwork_urlpatterns = [
     
     path('art/<str:pk>/hide/',HideArtworkView.as_view(), name='hide_art'),
     path('art/<str:pk>/unhide/',UnHideArtworkView.as_view(), name='unhide_art'),
+    
+    path('art/<str:pk>/update-visibility/', UpdateArtworkVisibilityView.as_view(), name='update_art_visibility'),
     
     path('art/<str:pk>/delete-art/',DeleteArtwork.as_view(), name='deleting_art'),
     path('art/<str:pk>/restore/',RestoreArtwork.as_view(), name='restore'),

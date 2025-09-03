@@ -143,7 +143,7 @@ class ArtCardListView(APIView):
             return Response(serializer.data)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
-
+        
 class MyArtCardListView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -152,18 +152,20 @@ class MyArtCardListView(APIView):
             user = request.user
 
             artworks = Art.objects(
-                artist=user.id,
+                artist=user,
                 visibility__iexact="public",
                 art_status__in=["onSale", "on Sale"]  
             ).only(
                 "title", "price", "discounted_price", "total_ratings",
-                "image_url", "category", "visibility", "art_status","artist"
+                "image_url", "category", "visibility", "art_status", "artist"
             ).order_by("-created_at")
 
             serializer = ArtCardSerializer(artworks, many=True)
             return Response(serializer.data, status=200)
         except Exception as e:
+            print("Error fetching my art cards:", e)
             return Response({"error": str(e)}, status=500)
+
 
         
 class UserArtCardListView(APIView):
@@ -216,7 +218,8 @@ class ArtListViewOwner(generics.ListAPIView):
 
     def get_queryset(self):
         user_id = self.request.query_params.get('userId', None)
-        valid_statuses = ["Active", "onBid", "Hidden"]
+       
+        valid_statuses = ["Active", "onBid", "Hidden", "Archived", "Deleted"]
 
         if user_id:
             try:
@@ -232,6 +235,7 @@ class ArtListViewOwner(generics.ListAPIView):
                 artist=self.request.user,
                 art_status__in=valid_statuses
             ).order_by('-created_at')
+
 
 
 class ArtListViewSpecificUser(generics.ListAPIView):
@@ -451,12 +455,20 @@ class ArchivedArtwork(APIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
+        # ✅ normalize image_url if it's not a list
+        if artwork.image_url and not isinstance(artwork.image_url, (list, tuple)):
+            artwork.image_url = [artwork.image_url]
+
         artwork.art_status = "Active"
         artwork.visibility = "Archived"
         artwork.updated_at = datetime.utcnow()
         artwork.save()
 
-        return Response({"message": "Artwork Archived successfully."}, status=status.HTTP_200_OK)
+        return Response(
+            {"message": "Artwork Archived successfully."},
+            status=status.HTTP_200_OK
+        )
+
 
 class UnArchivedArtwork(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -473,3 +485,29 @@ class UnArchivedArtwork(APIView):
         artwork.save()
 
         return Response({"message": "Artwork unarchived successfully."}, status=status.HTTP_200_OK)
+    
+class UpdateArtworkVisibilityView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            artwork = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            raise Http404("Artwork not found")
+
+        new_visibility = request.data.get("visibility")
+
+        if new_visibility not in ["Public", "Private"]:
+            return Response(
+                {"message": "Invalid visibility. Only 'Public' or 'Private' are allowed."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        artwork.visibility = new_visibility
+        artwork.updated_at = datetime.utcnow()
+        artwork.save()
+
+        return Response(
+            {"message": f"Artwork visibility updated to {new_visibility}.", "visibility": new_visibility},
+            status=status.HTTP_200_OK,
+        )

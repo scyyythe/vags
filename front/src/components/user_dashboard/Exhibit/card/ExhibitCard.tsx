@@ -9,6 +9,8 @@ import useExhibitReport from "@/hooks/mutate/report/useExhibitReport";
 import { useDeleteExhibit } from "@/hooks/exhibit/useDeleteExhibit";
 import { getLoggedInUserId } from "@/auth/decode";
 import useExhibitReportStatus from "@/hooks/mutate/report/useExhibitReportStatus";
+import { useToggleHideExhibit } from "@/hooks/exhibit/useToggleHideExhibit";
+import { useToggleVisibilityExhibit } from "@/hooks/exhibit/useToggleVisibilityExhibit";
 interface ExhibitProps {
   exhibit: {
     id: string;
@@ -42,6 +44,8 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
 
   const { mutate: deleteExhibit } = useDeleteExhibit();
   const { mutate: submitExhibitReport } = useExhibitReport();
+  const { mutate: toggleHideExhibit } = useToggleHideExhibit();
+  const { mutate: toggleVisibilityExhibit } = useToggleVisibilityExhibit();
 
   const { data: reportStatusData } = useExhibitReportStatus(exhibit.id);
   const isReported = reportStatusData?.reported;
@@ -170,7 +174,9 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                     const searchParams = new URLSearchParams({ mode: "edit" });
                     navigate(`/edit-exhibit/${id}?${searchParams.toString()}`);
                   }}
-                  onToggleVisibility={(newVisibility, id) => console.log("Toggle visibility:", newVisibility, id)}
+                  onToggleVisibility={(newVisibility, id) => {
+                    toggleVisibilityExhibit(id);
+                  }}
                   onViewInsights={(id) => console.log("View insights for:", id)}
                   onDelete={(id) => {
                     if (confirm("Are you sure you want to delete this exhibit?")) {
@@ -194,8 +200,12 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                   exhibitId={exhibit.id}
                   isOpen={menuOpen}
                   onHide={() => {
-                    setIsHidden(true);
-                    setMenuOpen(false);
+                    toggleHideExhibit(exhibit.id, {
+                      onSuccess: (data) => {
+                        setIsHidden(data.new_visibility === "Hidden");
+                        setMenuOpen(false);
+                      },
+                    });
                   }}
                   onReport={() => {
                     if (reportStatusData?.reported) {
@@ -215,24 +225,6 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                   className="-right-1.5 top-5"
                 />
               ))}
-
-            {/* ) : (
-              <ExhibitMenu
-                isOpen={menuOpen}
-                onHide={() => {
-                  setIsHidden(true);
-                  setMenuOpen(false);
-                }}
-                onReport={() => {
-                  if (reportStatusData?.reported) {
-                    toast.error("You have already reported this exhibit.", { closeButton: true })
-                  }
-                  setMenuOpen(false);
-                }}
-                isShared={exhibit.isShared}
-                isHidden={isHidden}
-              />
-            )} */}
           </div>
         </div>
 
