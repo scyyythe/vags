@@ -781,7 +781,6 @@ const SellTab = ({ selectedPriceRange }) => {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {filteredSoldArtworksForListings.map((art) => {
-                console.log("Sold artwork:", art);
                 return (
                   <SellCard
                     key={art.id}
