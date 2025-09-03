@@ -1,15 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import {
-  Pencil,
-  EyeOff,
-  Eye,
-  BarChart,
-  Trash2,
-  CheckCircle,
-  MoreHorizontal,
-} from "lucide-react";
+import { Pencil, EyeOff, Eye, BarChart, Trash2, CheckCircle, MoreHorizontal } from "lucide-react";
 import DeleteConfirmationPopup from "./DeleteConfirmation";
 import useDeleteArtwork from "@/hooks/mutate/visibility/trash/useDeleteArtwork";
 
@@ -21,7 +13,7 @@ interface SellMenuProps {
   isPublic?: boolean;
   isSold?: boolean;
   onEdit: (id: string) => void;
-  onToggleVisibility: (newVisibility: boolean, id: string) => void;
+  onToggleVisibility: (newVisibility: string, artworkId: string) => void;
   onDelete: () => void;
   onViewInsights: () => void;
   onMarkAsSold: (id: string) => void;
@@ -62,18 +54,17 @@ const SellMenu: React.FC<SellMenuProps> = ({
   const handleToggleVisibility = () => {
     const newStatus = !publicStatus;
     setPublicStatus(newStatus);
-    onToggleVisibility(newStatus, artworkId);
+
+    const visibilityString = newStatus ? "Listed" : "Unlisted";
+    onToggleVisibility(visibilityString, artworkId);
 
     toast.success(
-      newStatus
-        ? `"${artworkTitle ?? "Artwork"}" is now listed.`
-        : `"${artworkTitle ?? "Artwork"}" has been unlisted.`,
-        {
-          closeButton: true,
-        }
+      newStatus ? `"${artworkTitle ?? "Artwork"}" is now listed.` : `"${artworkTitle ?? "Artwork"}" has been unlisted.`,
+      {
+        closeButton: true,
+      }
     );
   };
-
 
   const handleConfirmDelete = () => {
     deleteArtwork.mutate(artworkId, {
@@ -106,7 +97,6 @@ const SellMenu: React.FC<SellMenuProps> = ({
     );
   };
 
-
   return (
     <>
       <div
@@ -115,24 +105,24 @@ const SellMenu: React.FC<SellMenuProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start gap-1 text-[10px]">
-            {/* Mark as Sold */}
-            <div className="flex items-center relative">
-                <button
-                    onClick={handleMarkAsSold}
-                    className={`p-1 rounded-full transition-colors hover:bg-gray-200 ${
-                    isSold ? "text-green-600" : "text-black"
-                    }`}
-                    onMouseEnter={() => setHoveredItem("sold")}
-                    onMouseLeave={() => setHoveredItem(null)}
-                >
-                    <CheckCircle size={11} />
-                </button>
-                {hoveredItem === "sold" && (
-                    <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                        {isSold ? "Mark as Not Sold" : "Mark as Sold"}
-                    </span>
-                )}
-            </div>
+          {/* Mark as Sold */}
+          <div className="flex items-center relative">
+            <button
+              onClick={handleMarkAsSold}
+              className={`p-1 rounded-full transition-colors hover:bg-gray-200 ${
+                isSold ? "text-green-600" : "text-black"
+              }`}
+              onMouseEnter={() => setHoveredItem("sold")}
+              onMouseLeave={() => setHoveredItem(null)}
+            >
+              <CheckCircle size={11} />
+            </button>
+            {hoveredItem === "sold" && (
+              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+                {isSold ? "Mark as Not Sold" : "Mark as Sold"}
+              </span>
+            )}
+          </div>
 
           {/* Toggle Visibility */}
           <div className="flex items-center relative">
@@ -181,10 +171,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
 
             {isMoreOptionsOpen && (
               <div className="absolute left-8 -top-3 bg-black rounded text-[9px] flex flex-col z-20 w-18">
-                <button
-                  onClick={handleEdit}
-                  className="px-3 py-1 text-left text-white hover:bg-gray-800"
-                >
+                <button onClick={handleEdit} className="px-3 py-1 text-left text-white hover:bg-gray-800">
                   Edit
                 </button>
                 <button
