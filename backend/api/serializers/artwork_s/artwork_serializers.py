@@ -224,6 +224,7 @@ class ArtCardSerializer(serializers.Serializer):
     price = serializers.IntegerField()
     discounted_price = serializers.IntegerField(required=False, allow_null=True)
     description = serializers.SerializerMethodField()
+    quantity= serializers.SerializerMethodField()
     total_ratings = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
@@ -318,7 +319,16 @@ class ArtCardSerializer(serializers.Serializer):
         except Exception as e:
             print(f"Error in get_description for art {obj.id}: {e}")
             return ""
-
+    def get_quantity(self, obj):
+        try:
+            
+            if hasattr(obj, "quantity") and obj.quantity is not None:
+                return obj.quantity
+            
+            return 1
+        except Exception as e:
+            print(f"Error in get_quantity for art {obj.id}: {e}")
+            return 1
     def to_representation(self, instance):
         try:
             rep = super().to_representation(instance)

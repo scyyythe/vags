@@ -246,6 +246,7 @@ const Marketplace = () => {
                       onLike={() => handleLike(artwork.id)}
                       isMarketplace={true}
                       status="active"
+                      quantity={artwork.quantity}
                       isWishlistView={true}
                       onCardClick={() => handleCardClick(artwork)}
                       isReported={reportedArtworks.has(artwork.id)}

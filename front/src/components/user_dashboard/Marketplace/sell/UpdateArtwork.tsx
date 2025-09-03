@@ -21,7 +21,7 @@ interface ArtworkUpdateState {
   description: string;
   price: string;
   edition: string;
-  quantity: string;
+  quantity: number;
   mainImageUrl: string;
   additionalImagesUrls?: string[];
 }
@@ -93,7 +93,7 @@ const UpdateArtwork = () => {
         description,
         price,
         edition,
-        quantity,
+        quantity: String(quantity),
         mainImage: selectedFile,
         additionalImages: additionalImages.filter((img): img is File => img instanceof File),
         removeExistingImages: true,

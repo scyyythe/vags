@@ -17,6 +17,8 @@ export interface ArtCard {
   art_status?: string;
   artist_id?: string;
   average_rating: number;
+  quantity?: number;
+  description?: string;
 }
 
 const fetchArtCards = async () => {
