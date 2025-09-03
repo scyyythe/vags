@@ -74,7 +74,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
   };
 
   const handleEdit = () => {
-    navigate("/sell", { state: { artworkId } });
+    navigate("/sell-update", { state: { artworkId } });
     setIsMoreOptionsOpen(false);
   };
 
