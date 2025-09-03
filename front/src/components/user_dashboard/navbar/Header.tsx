@@ -34,7 +34,7 @@ const Header = () => {
 
   const { isChatOpen, openChat, closeChat, participantId, participantName, participantAvatar } = useChat();
 
-  if (!userId) return <p>No user found</p>;
+  if (!userId) return;
 
   const closeAllDropdowns = () => {
     setIsProfileDropdownOpen(false);
