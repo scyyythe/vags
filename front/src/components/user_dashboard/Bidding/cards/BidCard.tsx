@@ -169,7 +169,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
           <div className="absolute bottom-3 left-3 right-3">
             <div className="bg-white bg-opacity-60 backdrop-blur-[3px] h-[69px] px-6 flex items-center justify-between rounded-lg">
               <div className="flex flex-col justify-center">
-                <h2 className="text-xs font-semibold truncate max-w-[150px]" title={data.artwork.title}>
+                <h2 className="text-xs font-semibold truncate max-w-[100px]" title={data.artwork.title}>
                   {data.artwork.title}
                 </h2>
 
