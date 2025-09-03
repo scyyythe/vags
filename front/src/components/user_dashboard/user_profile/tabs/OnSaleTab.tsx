@@ -431,6 +431,7 @@ const SellTab = ({ selectedPriceRange }) => {
             .map((sale) => ({
               id: sale.artwork_id,
               title: sale.title,
+              artist_id: sale.artist_id,
               price: sale.price,
               originalPrice: sale.price,
               rating: sale.review ? sale.review.rating : 0,
@@ -456,6 +457,7 @@ const SellTab = ({ selectedPriceRange }) => {
     .map((art) => ({
       id: art.id,
       title: art.title,
+      artist_id: art.artist_id,
       price: art.discounted_price ?? art.price,
       originalPrice: art.discounted_price ? art.price : 0,
       rating: art.total_ratings,
@@ -793,6 +795,7 @@ const SellTab = ({ selectedPriceRange }) => {
                     category={art.category}
                     status="sold"
                     isMarketplace={true}
+                    artistId={art.artist_id}
                     isOwner={isOwnProfile}
                     onCardClick={() => onCardClick(art.id)}
                   />
@@ -828,6 +831,7 @@ const SellTab = ({ selectedPriceRange }) => {
                 artworkImage={art.artworkImage}
                 title={art.title}
                 price={art.price}
+                artistId={art.artist_id}
                 originalPrice={art.originalPrice}
                 rating={art.rating}
                 category={art.category}
