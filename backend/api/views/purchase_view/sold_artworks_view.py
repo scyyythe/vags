@@ -34,6 +34,7 @@ class MySoldArtworksView(APIView):
                 "artwork_id": str(artwork.id),
                 "artwork_title": artwork.title,
                 "artwork_image": artwork.image_url[0] if artwork.image_url else "",
+                "artist_id": str(artwork.artist.id), 
                 "price": sale.total_price,
                 "quantity": sale.quantity,
                 "payment_method": sale.payment_method,

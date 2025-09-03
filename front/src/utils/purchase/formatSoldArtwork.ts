@@ -12,7 +12,7 @@ export interface RawSoldArtwork {
   shipping_address: any;
   created_at: string;
   updated_at: string;
-
+  artist_id: string;
   artwork_size?: string;
   artwork_medium?: string;
   artwork_style?: string;
@@ -27,11 +27,13 @@ export interface FormattedSoldArtwork {
   title: string;
   buyer: string;
   price: number;
+  artist_id: string;
   status: string;
   saleDate: string;
   completedDate: string;
   paymentMethod: string;
   shippingAddress: any;
+
   artwork: {
     size: string;
     medium: string;
@@ -72,6 +74,8 @@ export function formatSoldArtworks(data: RawSoldArtwork[] = []): FormattedSoldAr
       completedDate: new Date(sale.updated_at).toISOString(),
       paymentMethod: sale.payment_method,
       shippingAddress: sale.shipping_address,
+
+      artist_id: sale.artist_id,
       artwork: {
         size: sale.artwork_size || "Unknown",
         medium: sale.artwork_medium || "Unknown",

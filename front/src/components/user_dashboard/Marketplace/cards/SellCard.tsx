@@ -11,6 +11,7 @@ import ChatDropdown from "../../local_components/chat/ChatDropdown";
 import { useChat } from "@/context/ChatContext";
 import useToggleArtworkStatus from "@/hooks/purchase/useMarkArtworkAsSold";
 import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";
+import { getLoggedInUserId } from "@/auth/decode";
 export interface SellCardProps {
   id: string;
   artworkImage: string;
@@ -64,10 +65,12 @@ const SellCard = ({
   onReportSuccess,
   isMarketplace = false,
   onCardClick,
-  isOwner = false,
 
   isWishlistView = false,
 }: SellCardProps) => {
+  const loggedInUserId = getLoggedInUserId();
+  const isOwner = String(artistId) === String(loggedInUserId);
+  console.log("SellCard owner check:", { artistId, loggedInUserId, isOwner });
   const [menuOpen, setMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

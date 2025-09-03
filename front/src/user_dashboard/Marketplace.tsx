@@ -15,6 +15,7 @@ import useWishlistArtCards from "@/hooks/artworks/wishlist/useWishlistArtCards";
 import { ChevronDown, Grid3X3 } from "lucide-react";
 import { useTrendingArtworks } from "@/hooks/artworks/sell/useTrendingArtworks";
 import { useChat } from "@/context/ChatContext";
+import { getLoggedInUserId } from "@/auth/decode";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +27,7 @@ import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/
 import useFetchArtCards from "@/hooks/artworks/sell/useFetchArtCards";
 import type { SellCardProps as Artwork } from "@/components/user_dashboard/Marketplace/cards/SellCard";
 const Marketplace = () => {
+  const loggedInUserId = getLoggedInUserId();
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
   const [selectedArtCategory, setSelectedArtCategory] = useState("All");
   const [selectedSort, setSelectedSort] = useState("Latest");
@@ -219,31 +221,36 @@ const Marketplace = () => {
                 {selectedCategoryFilter !== "Following" && filteredArtCards.length === 0 && (
                   <p className="col-span-full text-xs text-gray-500 text-center">No artworks found for this filter.</p>
                 )}
-                {filteredArtCards.map((artwork) => (
-                  <SellCard
-                    key={artwork.id}
-                    id={artwork.id}
-                    category={artwork.category}
-                    artist={artwork.artist}
-                    artistId={artwork.artistId}
-                    edition={artwork.edition}
-                    size={artwork.size}
-                    yearCreated={artwork.year_created}
-                    medium={artwork.medium}
-                    artworkImage={artwork.image_url?.[0] || "/images/placeholder.jpg"}
-                    price={artwork.discounted_price ?? artwork.price}
-                    originalPrice={artwork.discounted_price ? artwork.price : undefined}
-                    title={artwork.title}
-                    rating={artwork.average_rating}
-                    isLiked={likedItems.has(artwork.id)}
-                    onLike={() => handleLike(artwork.id)}
-                    isMarketplace={true}
-                    status="active"
-                    isWishlistView={true}
-                    onCardClick={() => handleCardClick(artwork)}
-                    isReported={reportedArtworks.has(artwork.id)}
-                  />
-                ))}
+                {filteredArtCards.map((artwork) => {
+                  const isOwner = artwork.artistId === loggedInUserId;
+
+                  return (
+                    <SellCard
+                      key={artwork.id}
+                      id={artwork.id}
+                      category={artwork.category}
+                      artist={artwork.artist}
+                      artistId={artwork.artist_id}
+                      edition={artwork.edition}
+                      size={artwork.size}
+                      yearCreated={artwork.year_created}
+                      medium={artwork.medium}
+                      artworkImage={artwork.image_url?.[0] || "/images/placeholder.jpg"}
+                      price={artwork.discounted_price ?? artwork.price}
+                      originalPrice={artwork.discounted_price ? artwork.price : undefined}
+                      title={artwork.title}
+                      rating={artwork.average_rating}
+                      isLiked={likedItems.has(artwork.id)}
+                      onLike={() => handleLike(artwork.id)}
+                      isMarketplace={true}
+                      status="active"
+                      isWishlistView={true}
+                      onCardClick={() => handleCardClick(artwork)}
+                      isReported={reportedArtworks.has(artwork.id)}
+                      isOwner={isOwner} // 👈 pass isOwner here
+                    />
+                  );
+                })}
               </>
             )}
           </div>
