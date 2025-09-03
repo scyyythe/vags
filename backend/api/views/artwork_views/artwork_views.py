@@ -23,7 +23,9 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from mongoengine.queryset.visitor import Q
 from rest_framework.exceptions import NotFound
-
+import os
+from django.conf import settings
+import cloudinary.uploader
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
     serializer_class = ArtSerializer
@@ -72,7 +74,6 @@ class SellArtworkView(APIView):
             art = serializer.save(artist=mongo_user)
             return Response(ArtSerializer(art).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 class UpdateArtworkView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
@@ -86,11 +87,55 @@ class UpdateArtworkView(APIView):
         if str(art.artist.id) != str(request.user.id):
             return Response({"error": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
 
+        # ----- MAIN IMAGE -----
+        main_image = request.FILES.get("main_image")
+        if main_image:
+            upload_result = cloudinary.uploader.upload(main_image)
+            main_url = upload_result.get("secure_url")
+            if art.image_url:
+                art.image_url[0] = main_url
+            else:
+                art.image_url.append(main_url)  # Add as first image if empty
+
+        # ----- ADDITIONAL IMAGES -----
+        additional_images = request.FILES.getlist("additional_images")
+        # Keep existing main image intact, append new ones
+        start_index = 1 if art.image_url else 0
+
+        for img_file in additional_images:
+            upload_result = cloudinary.uploader.upload(img_file)
+            img_url = upload_result.get("secure_url")
+            art.image_url.append(img_url)
+
+        # ----- SERIALIZER UPDATE FOR OTHER FIELDS -----
         serializer = ArtSerializer(art, data=request.data, partial=True)
         if serializer.is_valid():
             updated_art = serializer.save()
             return Response(ArtSerializer(updated_art).data, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteArtworkImageView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, pk, image_index):
+        try:
+            art = Art.objects.get(id=ObjectId(pk))
+        except Art.DoesNotExist:
+            return Response({"error": "Artwork not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if str(art.artist.id) != str(request.user.id):
+            return Response({"error": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
+
+        if image_index < 0 or image_index >= len(art.image_url):
+            return Response({"error": "Invalid image index"}, status=status.HTTP_400_BAD_REQUEST)
+
+     
+        art.image_url.pop(image_index)
+        art.save()
+
+        return Response({"message": "Image deleted from database"}, status=status.HTTP_200_OK)
+
 
 class ArtListView(generics.ListAPIView):
     serializer_class = ArtSerializer
