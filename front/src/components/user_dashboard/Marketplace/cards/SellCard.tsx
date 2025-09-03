@@ -31,7 +31,7 @@ export interface SellCardProps {
   rating?: number;
   isLiked?: boolean;
   additionalImages?: string[];
-
+  quantity?: number;
   onLike?: () => void;
   isReported?: boolean;
   onReportSuccess?: () => void;
@@ -53,6 +53,7 @@ const SellCard = ({
   artistId,
   originalPrice = 0,
   title,
+  quantity,
   category,
   edition,
   rating,
@@ -82,6 +83,7 @@ const SellCard = ({
   const { mutate: submitReport } = useSubmitReport();
   const markAsSoldMutation = useToggleArtworkStatus();
   const markAsUnlistedMutation = useMarkArtworkAsUnlisted();
+  const [heightValue, widthValue] = size ? size.split("x") : ["", ""];
 
   const { data: reportStatusData } = useArtworkReportStatus(id);
   const isReported = reportStatusData?.reported ?? false;
@@ -234,12 +236,12 @@ const SellCard = ({
                     year_created: yearCreated || "",
                     style: category || "",
                     medium: medium || "",
-                    height: size || "",
-                    width: size || "",
+                    height: heightValue,
+                    width: widthValue,
                     description: description || "",
                     price: String(price || 0),
                     edition: edition || "Original (1 of 1)",
-                    quantity: "1",
+                    quantity: quantity,
                     mainImageUrl: artworkImage,
                     additionalImagesUrls: additionalImages,
                   },
