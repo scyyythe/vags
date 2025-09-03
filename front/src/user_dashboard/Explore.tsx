@@ -2,10 +2,11 @@ import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
-import ArtGalleryContainer from "@/components/user_dashboard/Explore/gallery/ArtGalleryContainer";
+import ArtGalleryContainer from "@/components/user_dashboard/Explore/gallery/ArtVideoOutro";
 import CategoryFilter from "@/components/user_dashboard/Explore/navigation/CategoryFilter";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import { toast } from "sonner";
+import ArtVideoShowcase from "@/components/user_dashboard/Explore/gallery/ArtworkShowcase";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
@@ -107,7 +108,7 @@ const Explore = () => {
       <div className="container mx-auto px-4 sm:px-6 pt-20">
         <main className="container">
           <section className="mb-8 w-[100%] sm:w-full">
-            <ArtGalleryContainer artworks={popularArtworks || []} />
+            <ArtVideoShowcase artworks={popularArtworks || []} />
           </section>
         </main>
 
