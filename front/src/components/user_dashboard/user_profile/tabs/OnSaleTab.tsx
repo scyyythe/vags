@@ -66,6 +66,7 @@ const SellTab = ({ selectedPriceRange }) => {
   const [selectedRefund, setSelectedRefund] = useState(null);
 
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [reviewOrder, setReviewOrder] = useState<any | null>(null);
   const [selectedArtwork, setSelectedArtwork] = useState<{
     artworkId: string;
     artworkImage: string;
@@ -98,12 +99,13 @@ const SellTab = ({ selectedPriceRange }) => {
       title: string;
       artist: string;
     },
-    order: { id: string }
+    order: any
   ) => {
     setSelectedArtwork(artwork);
     setSelectedOrder(order);
     setReviewModalOpen(true);
   };
+
   const handleSubmitReview = async (reviewData: {
     artworkId: string;
     rating: number;
@@ -124,7 +126,7 @@ const SellTab = ({ selectedPriceRange }) => {
       }
 
       const payload = {
-        artwork_id: reviewData.artworkId,
+        artwork_id: reviewData.artworkId || selectedOrder?.artwork?._id || selectedOrder?.artwork?.id,
         purchase_id: selectedOrder?.id,
         rating: reviewData.rating,
         comment: reviewData.comment,
@@ -133,6 +135,10 @@ const SellTab = ({ selectedPriceRange }) => {
 
       if (!payload.purchase_id) {
         toast.error("Missing purchase ID for review.");
+        return;
+      }
+      if (!payload.artwork_id) {
+        toast.error("Missing artwork ID for review.");
         return;
       }
 
@@ -743,7 +749,7 @@ const SellTab = ({ selectedPriceRange }) => {
                 onReview={() =>
                   handleReviewClick(
                     {
-                      artworkId: order.artwork.id,
+                      artworkId: order.artwork._id,
                       artworkImage: order.artwork.image_url?.[0],
                       title: order.artwork?.title || "Untitled",
                       artist: order.artwork?.artist_name || "Unknown",
@@ -860,6 +866,16 @@ const SellTab = ({ selectedPriceRange }) => {
           onContactBuyer={() => handleContactBuyer(selectedOrder)}
           onViewPayment={() => handleViewPayment(selectedOrder)}
           onMarkAsShipped={() => handleMarkAsShipped(selectedOrder)}
+          onLeaveReview={(order) => {
+            setReviewModalOpen(true);
+            setReviewOrder(order);
+            setSelectedArtwork({
+              artworkId: order.artwork?._id || order.artwork?.id,
+              artworkImage: order.artwork?.image_url?.[0] || order.artworkImage,
+              title: order.artwork?.title || order.title,
+              artist: order.artwork?.artist_name || order.artist || "Unknown",
+            });
+          }}
         />
       )}
 
