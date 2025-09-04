@@ -5,30 +5,43 @@ from api.models.purchase_model.order import PurchasedArtwork
 from api.models.artwork_model.artwork import Art
 from bson import ObjectId
 from rest_framework import status
+from api.models.review_model.review import Review 
 class MySoldArtworksView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-       
         status_filter = request.query_params.get("status")
 
-      
+       
         my_artworks = Art.objects(artist=request.user).only("id")
         my_artwork_ids = [art.id for art in my_artworks]
 
-     
+      
         queryset = PurchasedArtwork.objects(artwork__in=my_artwork_ids)
 
-      
         if status_filter:
             queryset = queryset.filter(status=status_filter)
 
         queryset = queryset.order_by("-created_at")
 
-      
         result = []
         for sale in queryset:
             artwork = sale.artwork
+
+          
+            review = Review.objects(purchase=sale.id).first()
+            review_data = None
+            if review:
+                review_data = {
+                    "id": str(review.id),
+                    "rating": review.rating,
+                    "comment": review.comment,
+                    "photos": review.photos,
+                    "created_at": review.created_at,
+                    "buyer_id": str(sale.buyer.id),
+                    "buyer_name": f"{sale.buyer.first_name} {sale.buyer.last_name}",
+                }
+
             result.append({
                 "id": str(sale.id),
                 "artwork_id": str(artwork.id),
@@ -45,14 +58,15 @@ class MySoldArtworksView(APIView):
                 "created_at": sale.created_at,
                 "updated_at": sale.updated_at,
 
-                
                 "artwork_size": artwork.size or "",
                 "artwork_medium": artwork.medium or "",
                 "artwork_style": artwork.category or "",
                 "artwork_edition": artwork.edition or "",
                 "artwork_year_created": artwork.year_created,
-            })
 
+               
+                "review": review_data,
+            })
 
         return Response(result)
 
