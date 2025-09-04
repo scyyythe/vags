@@ -382,7 +382,7 @@ const SellTab = ({ selectedPriceRange }) => {
     payment_received: "Paid",
     in_progress: "To Receive",
     completed: "Completed",
-    reviews: "reviewed",
+    reviews: "Reviewed",
     cancelled: "Cancelled",
     refunded: "Refunded",
   };
@@ -398,6 +398,9 @@ const SellTab = ({ selectedPriceRange }) => {
         .filter((sale) => {
           const status = sale.status?.toLowerCase();
 
+          if (normalizedTab === "reviews" || normalizedTab === "reviewed") {
+            return status === "reviewed";
+          }
           if (normalizedTab === "completed") {
             return status === "completed" || status === "reviewed";
           }
@@ -426,6 +429,7 @@ const SellTab = ({ selectedPriceRange }) => {
           return { ...sale, status: updatedStatus };
         })
     : [];
+
   const filteredSoldArtworksForListings =
     isOwnProfile && subTab === "sold"
       ? Array.isArray(soldArtworks)
@@ -508,15 +512,20 @@ const SellTab = ({ selectedPriceRange }) => {
   };
 
   const handleViewSellerReview = (artwork) => {
+    if (!artwork.review) {
+      toast.info("No review found for this sale.");
+      return;
+    }
+
     setSelectedReview({
       ...artwork.review,
-      reviewerName: artwork.buyer, // Show buyer's name as reviewer
-      canEdit: false, // Sellers cannot edit buyer reviews
-      canDelete: true, // Sellers can only delete inappropriate reviews
+      reviewerName: artwork.buyer,
+      canEdit: false, // seller cannot edit buyer reviews
+      canDelete: false, // seller usually shouldn’t delete reviews
       artwork: {
         artworkImage: artwork.artworkImage,
         title: artwork.title,
-        artist: "You", // This is the seller's artwork
+        artist: "You",
       },
     });
     setShowReviewDetailsModal(true);
@@ -658,23 +667,42 @@ const SellTab = ({ selectedPriceRange }) => {
         {mainTab === "salesSummary" ? (
           <SalesSummary />
         ) : mainTab === "myListings" && activeSubGroup === "soldArtworks" ? (
+          subTab === "reviews" ? (
+            filteredSoldArtworks.length === 0 ? (
+              <div className="text-xs text-center py-12">
+                <p className="text-muted-foreground">No reviews yet on your sold artworks.</p>
+              </div>
+            ) : (
+              filteredSoldArtworks.map((artwork) => (
+                <SoldArtworkCard
+                  key={artwork.id}
+                  id={artwork.id}
+                  artworkImage={artwork.artworkImage}
+                  title={artwork.title}
+                  buyer={artwork.buyer}
+                  price={artwork.price}
+                  status="reviewed"
+                  saleDate={artwork.saleDate}
+                  completedDate={artwork.completedDate}
+                  paymentMethod={artwork.paymentMethod}
+                  shippingAddress={artwork.shippingAddress}
+                  artwork={artwork.artwork}
+                  review={artwork.review}
+                  onViewReview={() => handleViewSellerReview(artwork)}
+                  onViewDetails={(artwork) => handleViewDetails(artwork)}
+                  onContactBuyer={(artwork) => handleContactBuyer(artwork)}
+                  onMarkAsShipped={(artwork) => handleMarkAsShipped(artwork)}
+                  onViewPayment={(artwork) => handleViewPayment(artwork)}
+                  onProcessRefund={(artwork) => handleProcessRefund(artwork)}
+                  onTrackProgress={(artwork) => handleTrackProgress(artwork)}
+                  onViewSummary={(artwork) => handleViewSummary(artwork)}
+                />
+              ))
+            )
+          ) : // default for other soldArtworks tabs
           filteredSoldArtworks.length === 0 ? (
             <div className="text-xs text-center py-12">
-              <div className="w-24 h-24 mx-auto mb-4 opacity-50">
-                <svg
-                  className="w-full h-full text-muted-foreground"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
-                </svg>
-              </div>
+              <div className="w-24 h-24 mx-auto mb-4 opacity-50">{/* icon svg */}</div>
               <p className="text-muted-foreground">No sold artworks found for this status.</p>
             </div>
           ) : (
