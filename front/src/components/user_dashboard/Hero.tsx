@@ -1,7 +1,7 @@
 interface HeroProps {
     title: string;
     subtitle?: string;
-    imageUrl?: string;
+    imageUrl?: string; 
   }
   
   const Hero = ({ title, subtitle, imageUrl }: HeroProps) => {
