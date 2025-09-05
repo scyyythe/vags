@@ -6,13 +6,8 @@ import {
   Edit,
   Trash2,
   Smile,
-  Check,
-  CheckCheck,
   Paperclip,
   Mic,
-  Plus,
-  Clock,
-  Camera,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -36,7 +31,6 @@ interface MessagesListProps {
   onReplyToMessage: (message: Message) => void;
   onStarMessage: (messageId: string) => void;
   onDeleteMessage: (messageId: string) => void;
-  //   onAddReaction: (messageId: string, emoji: string) => void;
   onSetReactionPicker: (messageId: string | null) => void;
 }
 
@@ -49,23 +43,8 @@ export const MessagesList = ({
   currentUserId,
   onStarMessage,
   onDeleteMessage,
-  //   onAddReaction,
   onSetReactionPicker,
 }: MessagesListProps) => {
-  const formatTime = (date: Date) => {
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffMins < 1) return "now";
-    if (diffMins < 60) return `${diffMins}m`;
-    if (diffHours < 24) return `${diffHours}h`;
-    if (diffDays < 7) return `${diffDays}d`;
-    return date.toLocaleDateString();
-  };
-
   const formatFullDateTime = (date: Date) => {
     return date.toLocaleString("en-US", {
       month: "short",
@@ -81,19 +60,35 @@ export const MessagesList = ({
     return conversation.messages.find((msg) => msg.id === replyToId) || null;
   };
 
-  const renderDeliveryStatus = (message: Message) => {
+  const renderDeliveryText = (message: Message) => {
     if (message.senderId !== currentUserId) return null;
 
+    let statusText = "Sent";
     switch (message.deliveryStatus) {
       case "sent":
-        return <Clock size={12} className="text-gray-400" />;
+        statusText = "Sent";
+        break;
       case "delivered":
-        return <Check size={12} className="text-gray-400" />;
+        statusText = "Delivered";
+        break;
       case "seen":
-        return <CheckCheck size={12} className="text-blue-400" />;
+        statusText = "Seen";
+        break;
       default:
-        return <Clock size={12} className="text-gray-400" />;
+        statusText = "Sent";
     }
+
+    return (
+      <div className="relative flex justify-end items-center group">
+        {/* Sender date-time hovering LEFT outside bubble */}
+        <span className="absolute left-[-60px] top-1/2 -translate-y-1/2 bg-gray-700 text-white text-[8px] px-1 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none">
+          {formatFullDateTime(message.timestamp)}
+        </span>
+
+        {/* Delivery status text */}
+        <span className="text-[9px] text-gray-500 ml-1">{statusText}</span>
+      </div>
+    );
   };
 
   return (
@@ -105,8 +100,10 @@ export const MessagesList = ({
           return (
             <ContextMenu key={message.id}>
               <ContextMenuTrigger>
-                <div className={`flex ${message.senderId === currentUserId ? "justify-end" : "justify-start"} mb-6`}>
-                  <div className="relative group max-w-[80%]">
+                <div
+                  className={`flex ${message.senderId === currentUserId ? "justify-end" : "justify-start"} mb-2 relative group`}
+                >
+                  <div className="relative max-w-[80%]">
                     {message.senderId !== currentUserId && (
                       <div className="flex items-center space-x-2 mb-2">
                         <Avatar className="h-6 w-6">
@@ -122,6 +119,7 @@ export const MessagesList = ({
                       </div>
                     )}
 
+                    {/* Message Bubble */}
                     <div
                       className={`rounded-lg px-4 py-3 ${
                         message.senderId === currentUserId
@@ -150,6 +148,7 @@ export const MessagesList = ({
                           </div>
                         </div>
                       )}
+
                       {message.isStarred && <Star size={12} className="inline mr-1 text-yellow-400 fill-current" />}
 
                       {message.type === "image" && message.imageUrl && (
@@ -170,7 +169,7 @@ export const MessagesList = ({
                         </div>
                       )}
 
-                      {message.type === "voice" && (
+                      {/* {message.type === "voice" && (
                         <div className="flex items-center space-x-2 mb-1">
                           <div className="flex items-center space-x-2 bg-white bg-opacity-20 rounded-full px-3 py-1">
                             <Mic size={13} />
@@ -180,22 +179,9 @@ export const MessagesList = ({
                             </div>
                           </div>
                         </div>
-                      )}
+                      )} */}
 
                       <p className="text-[11px]">{message.content}</p>
-
-                      <div className="flex items-center justify-between mt-2">
-                        <p
-                          className={`text-[9px] ${
-                            message.senderId === currentUserId ? "text-blue-100" : "text-gray-500"
-                          }`}
-                        >
-                          {formatFullDateTime(message.timestamp)}
-                        </p>
-                        {message.senderId === currentUserId && (
-                          <div className="flex items-center space-x-1">{renderDeliveryStatus(message)}</div>
-                        )}
-                      </div>
 
                       {message.reactions && message.reactions.length > 0 && (
                         <div className="flex items-center space-x-1 mt-2">
@@ -204,7 +190,6 @@ export const MessagesList = ({
                               key={idx}
                               variant="outline"
                               className="text-[10px] px-2 py-1 bg-white hover:bg-gray-50 cursor-pointer border-gray-200"
-                              //   onClick={() => onAddReaction(message.id, reaction.emoji)}
                             >
                               <span className="mr-1">{reaction.emoji}</span>
                               <span className="text-gray-600">{reaction.users.length}</span>
@@ -214,6 +199,23 @@ export const MessagesList = ({
                       )}
                     </div>
 
+                    {/* Sender Delivery Status Text */}
+                    {message.senderId === currentUserId && (
+                      <div className="mt-1 flex justify-end">
+                        {renderDeliveryText(message)}
+                      </div>
+                    )}
+
+                    {/* Receiver date-time below bubble */}
+                    {message.senderId !== currentUserId && (
+                      <div className="relative flex justify-start mt-5 group">
+                        <span className="absolute bottom-full mb-1 bg-gray-700 text-white text-[8px] px-1 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none">
+                          {formatFullDateTime(message.timestamp)}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Action Buttons */}
                     <div className="absolute -right-16 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="flex space-x-1">
                         <Button
@@ -237,11 +239,7 @@ export const MessagesList = ({
                           <PopoverContent className="w-auto p-2" align="center">
                             <div className="flex space-x-1">
                               {["👍", "❤️", "😂", "😮", "😢", "😡"].map((emoji) => (
-                                <button
-                                  key={emoji}
-                                  //   onClick={() => onAddReaction(message.id, emoji)}
-                                  className="text-lg hover:bg-gray-100 rounded p-1"
-                                >
+                                <button key={emoji} className="text-lg hover:bg-gray-100 rounded p-1">
                                   {emoji}
                                 </button>
                               ))}
@@ -253,15 +251,9 @@ export const MessagesList = ({
                   </div>
                 </div>
               </ContextMenuTrigger>
+
+              {/* Context Menu Items */}
               <ContextMenuContent>
-                {/* <ContextMenuItem onClick={() => onReplyToMessage(message)} className="text-[10px]">
-                  <Reply className="mr-2 h-3 w-3" />
-                  Reply
-                </ContextMenuItem>
-                <ContextMenuItem onClick={() => onSetReactionPicker(message.id)} className="text-[10px]">
-                  <Smile className="mr-2 h-3 w-3" />
-                  React
-                </ContextMenuItem> */}
                 <ContextMenuItem onClick={() => onStarMessage(message.id)} className="text-[10px]">
                   <Star className="mr-2 h-3 w-3" />
                   {message.isStarred ? "Unstar" : "Star"}
