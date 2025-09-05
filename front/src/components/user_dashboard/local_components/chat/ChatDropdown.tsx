@@ -36,7 +36,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const [isRecording, setIsRecording] = useState(false);
   const [showReactionPicker, setShowReactionPicker] = useState<string | null>(null);
   const [loadingConversation, setLoadingConversation] = useState(false);
-
+  const [conversationsLoaded, setConversationsLoaded] = useState(false);
   const userId = localStorage.getItem("user_id")!;
   const userName = localStorage.getItem("username")!;
   const userAvatarLocal = localStorage.getItem("avatar_url") || undefined;
@@ -44,48 +44,47 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
   const { messages: firebaseMessages, sendMessage: sendFirebaseMessage } = useFirebaseChat(
     selectedConversation || "",
-    userId // must match exactly
+    userId
   );
 
-  // Fetch user conversations on open
   useEffect(() => {
-    if (!isOpen) return;
+    if (isOpen) {
+      setConversationsLoaded(false);
+      const q = query(
+        collection(db, "conversations"),
+        where("participants", "array-contains", userId),
+        orderBy("lastMessageTime", "desc")
+      );
 
-    const q = query(
-      collection(db, "conversations"),
-      where("participants", "array-contains", userId),
-      orderBy("lastMessageTime", "desc")
-    );
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const convs: Conversation[] = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          const members: string[] = data.participants || [];
+          const otherUserId = members.find((m) => m !== userId);
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const convs: Conversation[] = snapshot.docs.map((doc) => {
-        const data = doc.data();
+          return {
+            id: doc.id,
+            participantId: otherUserId || "",
+            participantName: data.participantName || participantName || "Unknown",
+            participantAvatar: data.participantAvatar || participantAvatar,
+            lastMessage: data.lastMessage ?? "",
+            lastMessageTime: data.lastMessageTime?.toDate ? data.lastMessageTime.toDate() : new Date(0),
+            unreadCount: data.unreadCount || 0,
+            isOnline: data.isOnline || false,
+            isArchived: data.isArchived || false,
+            isPinned: data.isPinned || false,
+            isMuted: data.isMuted || false,
+            messages: data.messages || [],
+          };
+        });
 
-        const members: string[] = data.members || [];
-        const otherUserId = members.find((m) => m !== userId);
-
-        return {
-          id: doc.id,
-          participantId: otherUserId || "",
-          participantName: data.participantName || participantName || "Unknown",
-          participantAvatar: data.participantAvatar || participantAvatar,
-          lastMessage: data.lastMessage ?? "",
-          lastMessageTime: data.lastMessageTime?.toDate ? data.lastMessageTime.toDate() : new Date(0), // 👈 fallback instead of null
-
-          unreadCount: data.unreadCount || 0,
-          isOnline: data.isOnline || false,
-          isArchived: data.isArchived || false,
-          isPinned: data.isPinned || false,
-          isMuted: data.isMuted || false,
-          messages: data.messages || [],
-        };
+        setConversations(convs);
+        setConversationsLoaded(true);
       });
 
-      setConversations(convs);
-    });
-
-    return () => unsubscribe();
-  }, [isOpen]);
+      return () => unsubscribe();
+    }
+  }, [isOpen, userId]);
 
   const creatingRef = useRef(false);
   const createConv = async (
@@ -152,38 +151,31 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       return null;
     }
   };
-
   useEffect(() => {
-    if (!isOpen || !participantId || creatingRef.current) return;
-
-    setLoadingConversation(true);
+    if (!isOpen || !participantId || !conversationsLoaded) return; // ✅ wait for snapshot
 
     const targetConv = conversations.find((c) => c.participantId === participantId);
 
     if (targetConv) {
-      console.log("✅ Found conversation from Firestore:", targetConv.id);
       setSelectedConversation(targetConv.id);
       markAsRead(targetConv.id);
-      setLoadingConversation(false);
-      return;
+    } else if (!creatingRef.current) {
+      creatingRef.current = true;
+      setLoadingConversation(true);
+
+      createConv(participantId, participantName || "Unknown", participantAvatar || null)
+        .then((newConv) => {
+          if (newConv) {
+            setSelectedConversation(newConv.id);
+            markAsRead(newConv.id);
+          }
+        })
+        .finally(() => {
+          creatingRef.current = false;
+          setLoadingConversation(false);
+        });
     }
-
-    // Prevent multiple create calls
-    creatingRef.current = true;
-
-    createConv(participantId, participantName || "Unknown", participantAvatar || null)
-      .then((newConv) => {
-        if (newConv) {
-          console.log("🆕 Created new conversation:", newConv.id);
-          setSelectedConversation(newConv.id);
-          markAsRead(newConv.id);
-        }
-      })
-      .finally(() => {
-        creatingRef.current = false; // allow future creates if needed
-        setLoadingConversation(false);
-      });
-  }, [isOpen, participantId, conversations]);
+  }, [isOpen, participantId, conversationsLoaded, conversations]);
 
   const filteredConversations = conversations.filter((conv) => {
     const matchesSearch = conv.participantName?.toLowerCase().includes(searchQuery.toLowerCase());
