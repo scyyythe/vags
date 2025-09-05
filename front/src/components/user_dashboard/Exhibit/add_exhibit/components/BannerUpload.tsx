@@ -16,18 +16,15 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
   isReadOnly,
   viewMode,
 }) => {
-  const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleBannerUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
-      console.log("📂 Selected banner file:", {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-      });
-
-      setBannerFile(file); // ✅ Store file for API
-      setBannerImage(URL.createObjectURL(file)); // ✅ Preview
+      setBannerFile(file);
+      setBannerImage(URL.createObjectURL(file));
+      console.log("📂 Selected banner file:", file);
     }
+
+    event.target.value = "";
   };
 
   const handleClearBanner = () => {
@@ -75,11 +72,13 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
         onChange={handleBannerUpload}
         disabled={viewMode === "collaborator" || isReadOnly}
       />
-      <label
-        htmlFor="banner-upload"
-        className={`absolute inset-0 ${viewMode === "collaborator" || isReadOnly ? "" : "cursor-pointer"}`}
-        aria-label="Upload banner"
-      ></label>
+      {!bannerImage && (
+        <label
+          htmlFor="banner-upload"
+          className={`absolute inset-0 ${viewMode === "collaborator" || isReadOnly ? "" : "cursor-pointer"}`}
+          aria-label="Upload banner"
+        />
+      )}
     </div>
   );
 };
