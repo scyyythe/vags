@@ -100,43 +100,42 @@ const ArtVideoOutro = ({ artworks, onComplete }: ArtVideoOutroProps) => {
       </div>
 
       {/* Artwork info */}
-      {/* Artwork info */}
-<div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-  <div className="max-w-2xl">
-    <h2
-      key={`title-${currentArtworkIndex}`}
-      className="text-xl font-bold mb-2 animate-fade-in"
-      style={{ animationDelay: "0.6s", animationFillMode: "both" }}
-    >
-      {artworks[currentArtworkIndex].title}
-    </h2>
+      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+        <div className="max-w-2xl">
+          <h2
+            key={`title-${currentArtworkIndex}`}
+            className="text-xl font-bold mb-2 animate-fade-in"
+            style={{ animationDelay: "0.6s", animationFillMode: "both" }}
+          >
+            {artworks[currentArtworkIndex].title}
+          </h2>
 
-    <p
-      key={`artist-${currentArtworkIndex}`}
-      className="text-xs text-gray-200 mb-4 animate-fade-in"
-      style={{ animationDelay: "0.9s", animationFillMode: "both" }}
-    >
-      by {artworks[currentArtworkIndex].artist.name}
-    </p>
+          <p
+            key={`artist-${currentArtworkIndex}`}
+            className="text-xs text-gray-200 mb-4 animate-fade-in"
+            style={{ animationDelay: "0.9s", animationFillMode: "both" }}
+          >
+            by {artworks[currentArtworkIndex].artist.name}
+          </p>
 
-    <div
-      key={`info-${currentArtworkIndex}`}
-      className="flex items-center gap-3 animate-fade-in"
-      style={{ animationDelay: "1.2s", animationFillMode: "both" }}
-    >
-      <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1">
-        <Heart size={14} className="text-red-600 fill-red-600" />
-        <span className="text-[10px] font-semibold">
-          {artworks[currentArtworkIndex].likes_count}
-        </span>
+          <div
+            key={`info-${currentArtworkIndex}`}
+            className="flex items-center gap-3 animate-fade-in"
+            style={{ animationDelay: "1.2s", animationFillMode: "both" }}
+          >
+            <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1">
+              <Heart size={14} className="text-red-600 fill-red-600" />
+              <span className="text-[10px] font-semibold">
+                {artworks[currentArtworkIndex].likes_count}
+              </span>
+            </div>
+
+            <div className="text-[10px] text-gray-300 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1">
+              Featured Artwork {currentArtworkIndex + 1} of {artworks.length}
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div className="text-[10px] text-gray-300 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1">
-        Featured Artwork {currentArtworkIndex + 1} of {artworks.length}
-      </div>
-    </div>
-  </div>
-</div>
 
       {/* Fade-in for artwork info (unchanged) */}
       <style>{`
