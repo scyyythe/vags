@@ -80,16 +80,18 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 1 }}
       >
-        <div className="w-full h-full px-6 grid lg:grid-cols-2 gap-8 items-center">
+        <div className="w-full h-full px-4 grid gap-6 lg:grid-cols-2 items-center">
           {/* Left Content - Text Section */}
           <motion.div
-            className="space-y-4 lg:pl-10"
+            className="space-y-3 text-center lg:text-left lg:pl-10 mt-6 lg:mt-0"
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <motion.h1
-              className="text-lg lg:text-2xl font-bold leading-tight bg-gradient-to-r from-red-500 via-red-400 to-red-300 bg-clip-text text-black"
+              className="text-base sm:text-lg lg:text-2xl font-bold leading-tight 
+                        bg-gradient-to-r from-red-500 via-red-400 to-red-300 
+                        bg-clip-text text-black"
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
@@ -98,7 +100,7 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
             </motion.h1>
 
             <motion.p
-              className="text-xs text-gray-700 leading-relaxed max-w-[430px]"
+              className="text-xs sm:text-xs text-gray-700 leading-relaxed max-w-full sm:max-w-[430px] mx-auto lg:mx-0"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.7 }}
@@ -111,7 +113,7 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
 
           {/* Right Content - Vertical Marquee Columns */}
           <motion.div
-            className="grid grid-cols-3 gap-3 pr-10"
+            className="grid grid-cols-3 gap-2 sm:gap-3 w-full lg:pr-10"
             initial={{ x: 100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -119,7 +121,7 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
             {/* Column 1 */}
             <VerticalMarqueeColumn
               images={col1}
-              heights={["h-28", "h-24", "h-48"]}
+              heights={["h-24", "h-20", "h-40"]} // smaller for mobile
               duration={22}
               delay={0}
             />
@@ -127,7 +129,7 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
             {/* Column 2 */}
             <VerticalMarqueeColumn
               images={col2}
-              heights={["h-24", "h-48", "h-32"]}
+              heights={["h-20", "h-40", "h-28"]}
               duration={25}
               delay={-4}
             />
@@ -135,12 +137,13 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
             {/* Column 3 */}
             <VerticalMarqueeColumn
               images={col3}
-              heights={["h-32", "h-20", "h-48"]}
+              heights={["h-28", "h-16", "h-40"]}
               duration={20}
               delay={-8}
             />
           </motion.div>
         </div>
+
 
         {/* Vertical marquee keyframes */}
         <style>{`
