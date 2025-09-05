@@ -10,15 +10,15 @@ interface VerticalScrollImageProps {
 const VerticalScrollImage = ({ src, alt, className, index }: VerticalScrollImageProps) => {
   return (
     <motion.div
-      className={`rounded-2xl overflow-hidden shadow-2xl ${className}`}
-      initial={{ y: 60, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+      className={`rounded-lg overflow-hidden ${className}`}
+      initial={{ scale: 0.85, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
       transition={{
         duration: 0.8,
-        delay: 0.8 + (index * 0.1),
-        ease: [0.22, 1, 0.36, 1]
+        delay: 0.4 + index * 0.15, // stagger
+        ease: [0.25, 0.8, 0.25, 1],
       }}
-      whileHover={{ scale: 1.02 }}
+      whileHover={{ scale: 1.03 }}
     >
       <img
         src={src}
