@@ -48,9 +48,14 @@ export const useSubmitReview = () => {
       }
 
       const finalPayload = {
-        ...rest,
+        artwork_id: rest.artwork_id,
+        purchase_id: rest.purchase_id,
+        rating: rest.rating,
+        comment: rest.comment,
         photos: uploadedUrls,
       };
+
+      console.log("Submitting review payload:", finalPayload);
 
       const response = await apiClient.post("/submit-review/", finalPayload);
       return response.data;
@@ -60,7 +65,8 @@ export const useSubmitReview = () => {
       queryClient.invalidateQueries({ queryKey: ["my-purchases"] });
     },
 
-    onError: () => {
+    onError: (error: any) => {
+      console.error("Review submission failed:", error.response?.data || error.message);
       toast.error("Failed to submit review.");
     },
   });

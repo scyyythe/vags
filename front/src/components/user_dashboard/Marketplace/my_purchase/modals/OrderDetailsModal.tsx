@@ -44,6 +44,7 @@ interface OrderDetailsModalProps {
   onContactBuyer?: (artwork: any) => void;
   onViewPayment?: (artwork: any) => void;
   onMarkAsShipped?: (artwork: any) => void;
+  onLeaveReview?: (order: any) => void;
 }
 
 const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
@@ -54,6 +55,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
   onContactBuyer,
   onViewPayment,
   onMarkAsShipped,
+  onLeaveReview,
 }) => {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -119,11 +121,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   <div className="grid grid-cols-2 gap-2 text-[10px] text-muted-foreground">
                     <div>Size: {order.artwork.size}</div>
                     <div>Medium: {order.artwork.medium}</div>
-                <div>
-  Style:{" "}
-  {order.artwork.style.charAt(0).toUpperCase() + order.artwork.style.slice(1)}
-</div>
-
+                    <div>Style: {order.artwork.style.charAt(0).toUpperCase() + order.artwork.style.slice(1)}</div>
 
                     <div>Edition: {order.artwork.edition}</div>
                     <div>Year: {order.artwork.yearCreated}</div>
@@ -284,7 +282,10 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                       Track Payment
                     </button>
                     {order.status === "Completed" && (
-                      <button className="w-full py-2 rounded-lg text-[11px] text-black font-medium bg-gray-100">
+                      <button
+                        className="w-full py-2 rounded-lg text-[11px] text-black font-medium bg-gray-100"
+                        onClick={() => onLeaveReview?.(order)}
+                      >
                         Leave Review
                       </button>
                     )}

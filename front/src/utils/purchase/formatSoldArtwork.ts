@@ -53,7 +53,7 @@ function normalizeSoldStatus(status: string): string {
   const normalized = status.toLowerCase().replace(/\s+/g, "_");
 
   if (normalized === "to_receive") return "in_progress";
-  if (normalized === "reviewed") return "completed";
+  if (normalized === "reviews") return "completed";
 
   return normalized;
 }

@@ -2,7 +2,7 @@ from django.urls import path
 from api.views.purchase_view.purchase_view import PurchaseArtworkView,MyPurchasesView,MarkPurchaseCompletedView,MarkPurchaseAsShippedView
 from api.views.purchase_view.review_view import SubmitReviewView
 from api.views.purchase_view.sold_artworks_view import MySoldArtworksView,ToggleArtworkStatusView,MarkArtworkAsUnlistedView
-from api.views.purchase_view.review_view import SubmitReviewView, GetReviewByPurchaseView,AllReviewsByPurchaseView,UpdateReviewView,DeleteReviewView
+from api.views.purchase_view.review_view import SubmitReviewView,AllReviewsByArtworkView, GetReviewByPurchaseView,AllReviewsByPurchaseView,UpdateReviewView,DeleteReviewView
 purchase_urlpatterns = [
 
 # purchases
@@ -16,11 +16,16 @@ purchase_urlpatterns = [
     
    #  unlisted
     path(
-        "my-artworks/<str:artwork_id>/mark-unlisted/",MarkArtworkAsUnlistedView.as_view(),name="mark-artwork-unlisted"),
+   "my-artworks/<str:artwork_id>/mark-unlisted/",MarkArtworkAsUnlistedView.as_view(),name="mark-artwork-unlisted"),
    # review
    path("submit-review/", SubmitReviewView.as_view(), name="submit-review"),
    path("get-review-by-purchase/", GetReviewByPurchaseView.as_view(), name="get-review-by-purchase"),
    path("review/<str:review_id>/update/", UpdateReviewView.as_view()),
    path("review/<str:review_id>/delete/", DeleteReviewView.as_view()),
    path("review/all-by-purchase/<str:purchase_id>/", AllReviewsByPurchaseView.as_view(), name="all-reviews-by-purchase"),
+     path(
+        "review/all-by-artwork/<str:artwork_id>/",
+        AllReviewsByArtworkView.as_view(),
+        name="all-reviews-by-artwork"
+    ),
 ]

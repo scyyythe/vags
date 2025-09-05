@@ -4,8 +4,6 @@ const isLocal = window.location.hostname === "localhost" || window.location.host
 
 const API_BASE_URL = isLocal ? import.meta.env.VITE_API_LOCAL : import.meta.env.VITE_API_PROD;
 
-console.log("🌐 API_BASE_URL:", API_BASE_URL);
-
 const createAPIClient = (baseURL = API_BASE_URL) => {
   const apiClient = axios.create({
     baseURL,

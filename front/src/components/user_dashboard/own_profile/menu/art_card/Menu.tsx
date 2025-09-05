@@ -8,6 +8,7 @@ import SellArtworkModal, { SellArtworkData } from "@/components/user_dashboard/o
 import SellConfirmationModal from "@/components/user_dashboard/own_profile/sell_artwork/SellConfirmationModal";
 import useDeleteArtwork from "@/hooks/mutate/visibility/trash/useDeleteArtwork";
 import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork";
+import useUpdateArtworkStatus from "@/hooks/artworks/sell/useUpdateArtworkStatus";
 interface ArtCardMenuProps {
   isOpen: boolean;
   artworkId: string;
@@ -45,6 +46,8 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const deleteArtwork = useDeleteArtwork();
   const { mutate: archiveArtwork } = useArchivedArtwork();
+  const { mutate: updateArtworkStatus } = useUpdateArtworkStatus();
+
   useEffect(() => {
     const shouldHideScroll = showAuctionPopup || showDeletePopup;
 
@@ -101,15 +104,20 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   };
 
   const handleConfirmSell = () => {
-    console.log('Selling artwork with data:', sellArtworkData);
-    toast.success("Artwork successfully listed for sale!", {
-      closeButton: true,
+    if (!sellArtworkData) return;
+
+    updateArtworkStatus({
+      artworkId,
+      price: sellArtworkData.price,
+      quantity: sellArtworkData.quantity,
+      edition: sellArtworkData.edition,
+      additionalImages: sellArtworkData.additionalImages,
     });
+
     setShowSellConfirmation(false);
     setSellArtworkData(null);
-    onSell(); 
+    onSell();
   };
-
   const handleCancelSell = () => {
     setShowSellConfirmation(false);
     setSellArtworkData(null);
@@ -149,7 +157,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
               onMouseLeave={() => setHoveredItem(null)}
             >
               <ShoppingCart size={10} />
-            </button> 
+            </button>
             {hoveredItem === "sell" && (
               <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
                 Sell Artwork
@@ -251,11 +259,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         artworkTitle={artworkTitle}
       />
       {/* Sell Confirmation Modal */}
-      <SellConfirmationModal
-        isOpen={showSellConfirmation}
-        onConfirm={handleConfirmSell}
-        onCancel={handleCancelSell}
-      />
+      <SellConfirmationModal isOpen={showSellConfirmation} onConfirm={handleConfirmSell} onCancel={handleCancelSell} />
     </>
   );
 };
