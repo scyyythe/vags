@@ -243,7 +243,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     setReplyingTo(null);
   };
 
-  const handleFileAttachment = () => {
+  const handleFileAttachment = (file: File) => {
     const input = document.createElement("input");
     input.type = "file";
     input.accept = "image/*,video/*,.pdf,.doc,.docx,.txt";
@@ -466,7 +466,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
               showEmojiPicker={showEmojiPicker}
               onMessageChange={setMessageInput}
               onSendMessage={handleSendMessage}
-              onFileAttachment={handleFileAttachment}
+              onFileSelect={(file) => handleFileAttachment(file)}
               onVoiceRecord={handleVoiceRecord}
               onCameraCapture={handleCameraCapture}
               onEmojiClick={handleEmojiClick}
