@@ -12,9 +12,8 @@ import { toast } from "sonner";
 import SellCardSkeleton from "@/components/skeletons/SellCardSkeleton";
 import useFollowedArtworksOnSale from "@/hooks/artworks/follow_artworks/useFollowedArtworksOnSale";
 import useWishlistArtCards from "@/hooks/artworks/wishlist/useWishlistArtCards";
-import { ChevronDown, Grid3X3 } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useTrendingArtworks } from "@/hooks/artworks/sell/useTrendingArtworks";
-import { useChat } from "@/context/ChatContext";
 import { getLoggedInUserId } from "@/auth/decode";
 import {
   DropdownMenu,
@@ -23,9 +22,9 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { mockArtworks } from "@/components/user_dashboard/Marketplace/mock_data/mockArtworks";
 import useFetchArtCards from "@/hooks/artworks/sell/useFetchArtCards";
 import type { SellCardProps as Artwork } from "@/components/user_dashboard/Marketplace/cards/SellCard";
+
 const Marketplace = () => {
   const loggedInUserId = getLoggedInUserId();
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
@@ -53,9 +52,10 @@ const Marketplace = () => {
 
   const { wishlist, likedItems, removeFromWishlist, toggleWishlist, isLoading: wishlistApiLoading } = useWishlist();
 
-  const handleCategorySelect = (category) => setSelectedCategoryFilter(category);
-  const handleArtCategoryChange = (category) => setSelectedArtCategory(category);
-  const handleSortChange = (option) => setSelectedSort(option);
+  const handleCategorySelect = (category: string) => setSelectedCategoryFilter(category);
+  const handleArtCategoryChange = (category: string) => setSelectedArtCategory(category);
+  const handleSortChange = (option: string) => setSelectedSort(option);
+
   const filteredArtCards =
     selectedCategoryFilter === "Following"
       ? (followedArtworksData?.artworks ?? []).filter((art) => {
@@ -113,7 +113,6 @@ const Marketplace = () => {
   const handleSellClick = () => navigate("/sell");
 
   const handleLike = async (id: string) => {
-    const wasLiked = likedItems.has(id);
     await toggleWishlist(id);
   };
 
@@ -135,8 +134,10 @@ const Marketplace = () => {
 
           {/* Marketplace Filters */}
           <div className="mb-6">
+            {/* Title + Wishlist + Mobile Sell */}
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-md font-bold text-gray-900">Marketplace</h1>
+
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleWishlistClick}
@@ -159,15 +160,31 @@ const Marketplace = () => {
                     </span>
                   )}
                 </div>
+
+                {/* ✅ Mobile Sell button */}
+                <button
+                  className="sm:hidden py-1 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
+                  onClick={handleSellClick}
+                >
+                  <i className="bx bx-plus text-xs"></i> Sell
+                </button>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-between gap-4">
-              <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
-              <div className="flex gap-3">
-                <div className="relative">
-                  <ArtCategorySelect selectedCategory={selectedArtCategory} onChange={handleArtCategoryChange} />
-                </div>
+            {/* SUBHEADER */}
+            <div className="w-full flex items-center justify-between gap-3 overflow-x-auto whitespace-nowrap scrollbar-hide">
+              {/* Left side */}
+              <CategoryFilter
+                categories={categories}
+                onSelectCategory={handleCategorySelect}
+              />
+
+              {/* Right side */}
+              <div className="flex items-center gap-3 ml-auto">
+                <ArtCategorySelect
+                  selectedCategory={selectedArtCategory}
+                  onChange={handleArtCategoryChange}
+                />
 
                 {/* Sort Dropdown */}
                 <DropdownMenu>
@@ -180,21 +197,30 @@ const Marketplace = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-white z-0">
                     {sortOptions.map((option) => (
-                      <DropdownMenuItem key={option} className="text-[10px]" onClick={() => handleSortChange(option)}>
+                      <DropdownMenuItem
+                        key={option}
+                        className="text-[10px]"
+                        onClick={() => handleSortChange(option)}
+                      >
                         {option}
                       </DropdownMenuItem>
                     ))}
                     <DropdownMenuSeparator />
                     {editionOptions.map((option) => (
-                      <DropdownMenuItem key={option} className="text-[10px]" onClick={() => setSelectedEdition(option)}>
+                      <DropdownMenuItem
+                        key={option}
+                        className="text-[10px]"
+                        onClick={() => setSelectedEdition(option)}
+                      >
                         {option}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
 
+                {/* ✅ Desktop Sell button */}
                 <button
-                  className="py-1 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
+                  className="hidden sm:flex py-1 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full items-center gap-1"
                   onClick={handleSellClick}
                 >
                   <i className="bx bx-plus text-xs"></i> Sell
@@ -219,7 +245,9 @@ const Marketplace = () => {
                   </p>
                 )}
                 {selectedCategoryFilter !== "Following" && filteredArtCards.length === 0 && (
-                  <p className="col-span-full text-xs text-gray-500 text-center">No artworks found for this filter.</p>
+                  <p className="col-span-full text-xs text-gray-500 text-center">
+                    No artworks found for this filter.
+                  </p>
                 )}
                 {filteredArtCards.map((artwork) => {
                   const isOwner = artwork.artistId === loggedInUserId;
