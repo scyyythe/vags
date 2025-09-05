@@ -123,7 +123,8 @@ export const ChatHeader = ({
                       .split(" ")
                       .map((n) => n[0])
                       .join("")
-                  : "NA"}
+                      .toUpperCase()
+                  : "?"}
               </AvatarFallback>
             </Avatar>
             {selectedConv.isOnline && (
