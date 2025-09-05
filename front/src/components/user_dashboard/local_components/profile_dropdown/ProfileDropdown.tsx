@@ -74,9 +74,9 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
           <User size={14} /> Edit Profile
         </button>
 
-        <button className="flex items-center gap-3 hover:text-black">
+        {/* <button className="flex items-center gap-3 hover:text-black">
           <Activity size={14} /> Stats
-        </button>
+        </button> */}
 
         <button onClick={handleSettings} className="flex items-center gap-3 hover:text-black">
           <Settings size={14} /> Settings
