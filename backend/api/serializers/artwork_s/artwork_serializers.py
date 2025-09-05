@@ -237,6 +237,8 @@ class ArtCardSerializer(serializers.Serializer):
     size=serializers.SerializerMethodField()
     year_created=serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
+    profile_picture = serializers.SerializerMethodField()
+    
 
     def get_average_rating(self, obj):
             from api.models.review_model.review import Review
@@ -275,6 +277,11 @@ class ArtCardSerializer(serializers.Serializer):
         if obj.artist:
             return str(obj.artist.id) 
         return None
+    
+    def get_profile_picture(self, obj):  
+        if obj.artist and obj.artist.profile_picture:
+            return str(obj.artist.profile_picture)
+        return ""
 
     def get_category(self, obj):
         try:

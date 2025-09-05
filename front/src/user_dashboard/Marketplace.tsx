@@ -235,6 +235,7 @@ const Marketplace = () => {
                       description={artwork.description}
                       size={artwork.size}
                       additionalImages={artwork.image_url?.slice(1) || []}
+                      profile_picture={artwork.profile_picture}
                       yearCreated={artwork.year_created}
                       medium={artwork.medium}
                       artworkImage={artwork.image_url?.[0] || "/images/placeholder.jpg"}
