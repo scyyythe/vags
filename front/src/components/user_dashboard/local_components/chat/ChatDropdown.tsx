@@ -469,7 +469,10 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
               onFileSelect={(file) => handleFileAttachment(file)}
               onVoiceRecord={handleVoiceRecord}
               onCameraCapture={handleCameraCapture}
-              onEmojiClick={handleEmojiClick}
+              onEmojiClick={(emoji) => {
+                setMessageInput(prev => prev + emoji.native);
+                setShowEmojiPicker(false); 
+              }}
               onSetShowEmojiPicker={setShowEmojiPicker}
               onCancelReply={() => setReplyingTo(null)}
             />
