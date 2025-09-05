@@ -43,19 +43,10 @@ const Header = () => {
   };
 
   const handleSearchChange = (value: string) => {
-    // Remove leading/trailing spaces
-    const cleaned = value.trim();
-
-    // Regex: only allow letters, numbers, and spaces, at least 2 chars
-    const validSearch = /^[a-zA-Z0-9\s]{2,}$/;
-
-    if (!validSearch.test(cleaned)) {
-      console.warn("❌ Invalid search input:", value);
-      return; // block filler
-    }
+    if (!value.trim()) return;
 
     const params = new URLSearchParams();
-    params.set("q", cleaned);
+    params.set("q", value);
 
     const isExplorePage = currentPath.includes("/explore");
     const isBiddingPage = currentPath.includes("/bidding");
@@ -67,7 +58,7 @@ const Header = () => {
     else if (isExhibitPage) navigate(`/exhibit?${params.toString()}`);
     else if (isMarketplacePage) navigate(`/marketplace?${params.toString()}`);
 
-    setSearchQuery(cleaned);
+    setSearchQuery(value);
   };
 
   return (
@@ -248,7 +239,7 @@ const Header = () => {
             exit={{ height: 0, opacity: 0 }}
             className="md:hidden bg-white shadow px-4 py-4 space-y-3"
           >
-            {["Explore", "Exhibits", "Auctions", "Marketplace"].map((label) => (
+            {["Explore", "Exhibits", "Bidding", "Marketplace"].map((label) => (
               <NavLink
                 key={label}
                 to={`/${label.toLowerCase()}`}
