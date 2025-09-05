@@ -1,5 +1,4 @@
 import apiClient from "@/utils/apiClient";
-import { toast } from "sonner";
 
 export interface ExhibitPayload {
   title: string;
@@ -16,25 +15,34 @@ export interface ExhibitPayload {
   slot_artwork_map: Record<number, string>;
   slot_owner_map: Record<number, string>;
 }
+
 export const createExhibit = async (data: ExhibitPayload) => {
+  // 📝 Log all raw payload fields before doing anything
+  console.log("📌 Raw ExhibitPayload data:", {
+    title: data.title,
+    description: data.description,
+    category: data.category,
+    exhibit_type: data.exhibit_type,
+    start_time: data.start_time,
+    end_time: data.end_time,
+    collaborators: data.collaborators,
+    chosen_env: data.chosen_env,
+    artworks: data.artworks,
+    owner: data.owner,
+    slot_artwork_map: data.slot_artwork_map,
+    slot_owner_map: data.slot_owner_map,
+    banner: data.banner
+      ? {
+          name: data.banner.name,
+          type: data.banner.type,
+          size: data.banner.size,
+        }
+      : null,
+  });
+
   if (!data.banner) {
-    toast.error("Banner is required.");
+    console.error("❌ Banner is required (still null at this point).");
     throw new Error("Banner is required");
-  }
-
- 
-  const now = new Date();
-  const startTime = new Date(data.start_time);
-  const endTime = new Date(data.end_time);
-
-  if (startTime < now) {
-    toast.error("Start date must not be in the past.");
-    throw new Error("Start date must not be in the past");
-  }
-
-  if (endTime <= startTime) {
-    toast.error("End date must be after start date.");
-    throw new Error("End date must be after start date");
   }
 
   const formData = new FormData();
@@ -44,8 +52,7 @@ export const createExhibit = async (data: ExhibitPayload) => {
   formData.append("category", data.category);
   formData.append("owner", data.owner);
 
-  const formattedType =
-    data.exhibit_type.toLowerCase() === "solo" ? "Solo" : "Collaborative";
+  const formattedType = data.exhibit_type.toLowerCase() === "solo" ? "Solo" : "Collaborative";
   formData.append("exhibit_type", formattedType);
 
   formData.append("start_time", data.start_time);
@@ -58,16 +65,24 @@ export const createExhibit = async (data: ExhibitPayload) => {
   data.artworks.forEach((id) => formData.append("artworks", id));
   formData.append("banner", data.banner);
 
+  // 📝 Debug log — confirm FormData contents
+  console.log("📂 Final FormData contents:");
+  for (const [key, value] of formData.entries()) {
+    console.log(`   ${key}:`, value);
+  }
+
   try {
     const response = await apiClient.post("/exhibits/create/", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
+
+    console.log("🎉 Exhibit created successfully!", response.data);
     return response.data;
   } catch (error: any) {
-    if (error.response) {
-      console.error("Backend validation errors:", error.response.data);
+    if (error.response?.data) {
+      console.error("⚠️ Backend validation errors:", error.response.data);
     } else {
-      console.error("Request error:", error.message);
+      console.error("❌ Request error:", error.message);
     }
     throw error;
   }
