@@ -19,10 +19,12 @@ export interface ArtCard {
   average_rating: number;
   quantity?: number;
   description?: string;
+  profile_picture?: string;
 }
 
 const fetchArtCards = async () => {
   const response = await apiClient.get("/art/cards/");
+
   return response.data as ArtCard[];
 };
 

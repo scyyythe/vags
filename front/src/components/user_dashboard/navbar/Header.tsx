@@ -131,7 +131,7 @@ const Header = () => {
                 if (isChatOpen) closeChat();
                 else {
                   closeAllDropdowns();
-                  openChat("", "");
+                  openChat();
                 }
               }}
             >

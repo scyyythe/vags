@@ -6,8 +6,10 @@ interface ChatContextType {
   participantName: string | null;
   participantAvatar: string | null;
   directMessageMode: boolean;
-  openChat: (id: string, name: string, avatar?: string, direct?: boolean) => void;
+  selectedConversationId: string | null; // ✅ NEW
+  openChat: (id?: string, name?: string, avatar?: string, direct?: boolean) => void;
   closeChat: () => void;
+  setSelectedConversationId: (id: string | null) => void; // ✅ NEW
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -19,11 +21,20 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
   const [participantAvatar, setParticipantAvatar] = useState<string | null>(null);
   const [directMessageMode, setDirectMessageMode] = useState(false);
 
-  const openChat = (id: string, name: string, avatar?: string, direct = false) => {
-    setParticipantId(id);
-    setParticipantName(name);
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
+
+  const openChat = (id?: string, name?: string, avatar?: string, direct = false) => {
+    setParticipantId(id || null);
+    setParticipantName(name || null);
     setParticipantAvatar(avatar || null);
     setDirectMessageMode(direct);
+
+    if (id) {
+      setSelectedConversationId(id);
+    } else {
+      setSelectedConversationId(null);
+    }
+
     setIsChatOpen(true);
   };
 
@@ -32,12 +43,23 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
     setParticipantName(null);
     setParticipantAvatar(null);
     setDirectMessageMode(false);
+    setSelectedConversationId(null);
     setIsChatOpen(false);
   };
 
   return (
     <ChatContext.Provider
-      value={{ isChatOpen, participantId, participantName, participantAvatar, directMessageMode, openChat, closeChat }}
+      value={{
+        isChatOpen,
+        participantId,
+        participantName,
+        participantAvatar,
+        directMessageMode,
+        selectedConversationId,
+        openChat,
+        closeChat,
+        setSelectedConversationId,
+      }}
     >
       {children}
     </ChatContext.Provider>

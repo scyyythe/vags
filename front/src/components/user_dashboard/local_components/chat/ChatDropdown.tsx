@@ -1,6 +1,6 @@
 // ChatDropdown.tsx
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatHeader } from "./ChatHeader";
 import { ConversationList } from "./ConversationList";
@@ -12,6 +12,8 @@ import { db } from "@/firebase/firebaseConfig";
 import { collection, query, orderBy, where, onSnapshot } from "firebase/firestore";
 import { useFirebaseChat } from "@/hooks/messages/useFirebaseChat";
 import { useUserConversations } from "@/hooks/messages/useUserConversations";
+import { useChat } from "@/context/ChatContext";
+import { addDoc, serverTimestamp, getDocs } from "firebase/firestore";
 
 interface ChatDropdownProps {
   isOpen: boolean;
@@ -22,6 +24,8 @@ interface ChatDropdownProps {
 }
 
 const ChatDropdown = ({ isOpen, onClose, participantId, participantName, participantAvatar }: ChatDropdownProps) => {
+  const { directMessageMode } = useChat();
+
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,7 +35,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const [showArchived, setShowArchived] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [showReactionPicker, setShowReactionPicker] = useState<string | null>(null);
-
+  const [loadingConversation, setLoadingConversation] = useState(false);
+  const [conversationsLoaded, setConversationsLoaded] = useState(false);
   const userId = localStorage.getItem("user_id")!;
   const userName = localStorage.getItem("username")!;
   const userAvatarLocal = localStorage.getItem("avatar_url") || undefined;
@@ -39,75 +44,138 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
   const { messages: firebaseMessages, sendMessage: sendFirebaseMessage } = useFirebaseChat(
     selectedConversation || "",
-    userId // must match exactly
+    userId
   );
 
-  // Fetch user conversations on open
   useEffect(() => {
-    if (!isOpen) return;
+    if (isOpen) {
+      setConversationsLoaded(false);
+      const q = query(
+        collection(db, "conversations"),
+        where("participants", "array-contains", userId),
+        orderBy("lastMessageTime", "desc")
+      );
 
-    const q = query(
-      collection(db, "conversations"),
-      where("participants", "array-contains", userId),
-      orderBy("lastMessageTime", "desc")
-    );
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const convs: Conversation[] = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          const members: string[] = data.participants || [];
+          const otherUserId = members.find((m) => m !== userId);
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const convs: Conversation[] = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          participantId: data.participantId || "",
-          participantName: data.participantName || "Unknown",
-          participantAvatar: data.participantAvatar,
-          lastMessage: data.lastMessage || "",
-          lastMessageTime: data.lastMessageTime?.toDate ? data.lastMessageTime.toDate() : new Date(),
-          unreadCount: data.unreadCount || 0,
-          isOnline: data.isOnline || false,
-          isArchived: data.isArchived || false,
-          isPinned: data.isPinned || false,
-          isMuted: data.isMuted || false,
-          messages: data.messages || [], // ✅ default to empty array
-        };
+          return {
+            id: doc.id,
+            participantId: otherUserId || "",
+            participantName: data.participantName || participantName || "Unknown",
+            participantAvatar: data.participantAvatar || participantAvatar,
+            lastMessage: data.lastMessage ?? "",
+            lastMessageTime: data.lastMessageTime?.toDate ? data.lastMessageTime.toDate() : new Date(0),
+            unreadCount: data.unreadCount || 0,
+            isOnline: data.isOnline || false,
+            isArchived: data.isArchived || false,
+            isPinned: data.isPinned || false,
+            isMuted: data.isMuted || false,
+            messages: data.messages || [],
+          };
+        });
+
+        setConversations(convs);
+        setConversationsLoaded(true);
       });
-      setConversations(convs);
-    });
 
-    return () => unsubscribe();
-  }, [isOpen]);
-
-  // Open or create conversation if a participant is passed
-  useEffect(() => {
-    if (isOpen && participantId) {
-      setConversations((prev) => {
-        let targetConv = prev.find((c) => c.participantId === participantId);
-
-        if (targetConv) {
-          setSelectedConversation(targetConv.id);
-          markAsRead(targetConv.id);
-          return prev;
-        }
-
-        const newConv: Conversation = {
-          id: Date.now().toString(),
-          participantId,
-          participantName: participantName || "New Seller",
-          participantAvatar: participantAvatar,
-          lastMessage: "",
-          lastMessageTime: new Date(),
-          unreadCount: 0,
-          isOnline: false,
-          isArchived: false,
-          isPinned: false,
-          isMuted: false,
-          messages: [],
-        };
-
-        setSelectedConversation(newConv.id);
-        return [...prev, newConv];
-      });
+      return () => unsubscribe();
     }
-  }, [isOpen, participantId, participantName, participantAvatar]);
+  }, [isOpen, userId]);
+
+  const creatingRef = useRef(false);
+  const createConv = async (
+    targetId: string,
+    targetName: string,
+    targetAvatar: string | null
+  ): Promise<Conversation | null> => {
+    try {
+      const q = query(collection(db, "conversations"), where("participants", "array-contains", userId));
+      const snapshot = await getDocs(q);
+
+      const existing = snapshot.docs.find((doc) => {
+        const data = doc.data();
+        return (
+          Array.isArray(data.participants) && data.participants.includes(targetId) && data.participants.includes(userId)
+        );
+      });
+
+      if (existing) {
+        console.log("⚡ Conversation already exists:", existing.id);
+        const existingData = existing.data();
+
+        return {
+          id: existing.id,
+          participantId: targetId, // ✅ make sure this is always set
+          participantName: existingData.participantName || targetName,
+          participantAvatar: existingData.participantAvatar || targetAvatar || undefined,
+          lastMessage: existingData.lastMessage ?? "",
+          lastMessageTime: existingData.lastMessageTime?.toDate ? existingData.lastMessageTime.toDate() : new Date(),
+          unreadCount: existingData.unreadCount || 0,
+          isOnline: existingData.isOnline || false,
+          isArchived: existingData.isArchived || false,
+          isPinned: existingData.isPinned || false,
+          isMuted: existingData.isMuted || false,
+          messages: existingData.messages || [], // ✅ fallback
+        };
+      }
+
+      // --- create new if not exists ---
+      const newConv = {
+        participants: [userId, targetId],
+        participantId: targetId, // ✅ required
+        participantName: targetName,
+        participantAvatar: targetAvatar || undefined,
+        lastMessage: "",
+        lastMessageTime: serverTimestamp(),
+        unreadCount: 0,
+        isOnline: false,
+        isArchived: false,
+        isPinned: false,
+        isMuted: false,
+        messages: [] as Message[], // ✅ required
+      };
+
+      const docRef = await addDoc(collection(db, "conversations"), newConv);
+
+      return {
+        ...newConv,
+        id: docRef.id,
+        lastMessageTime: new Date(), // show immediately, Firestore will sync later
+      };
+    } catch (err) {
+      console.error("❌ Error creating conversation:", err);
+      return null;
+    }
+  };
+  useEffect(() => {
+    if (!isOpen || !participantId || !conversationsLoaded) return; // ✅ wait for snapshot
+
+    const targetConv = conversations.find((c) => c.participantId === participantId);
+
+    if (targetConv) {
+      setSelectedConversation(targetConv.id);
+      markAsRead(targetConv.id);
+    } else if (!creatingRef.current) {
+      creatingRef.current = true;
+      setLoadingConversation(true);
+
+      createConv(participantId, participantName || "Unknown", participantAvatar || null)
+        .then((newConv) => {
+          if (newConv) {
+            setSelectedConversation(newConv.id);
+            markAsRead(newConv.id);
+          }
+        })
+        .finally(() => {
+          creatingRef.current = false;
+          setLoadingConversation(false);
+        });
+    }
+  }, [isOpen, participantId, conversationsLoaded, conversations]);
 
   const filteredConversations = conversations.filter((conv) => {
     const matchesSearch = conv.participantName?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -116,6 +184,9 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   });
 
   const selectedConv = conversations.find((conv) => conv.id === selectedConversation);
+  console.log("💬 SelectedConversation ID:", selectedConversation);
+  console.log("📌 Conversations:", conversations);
+  console.log("👉 SelectedConv:", selectedConv);
 
   // Add a message safely
   const addMessageToConversation = (convId: string, message: Partial<Message>) => {
@@ -318,9 +389,10 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
             onMarkAllAsUnread={() => conversations.forEach((c) => markAsUnread(c.id))}
             onSearchChange={setSearchQuery}
           />
-
           <ScrollArea className="flex-1">
-            {selectedConversation && selectedConv ? (
+            {loadingConversation ? (
+              <div className="flex items-center justify-center flex-1 text-gray-500 text-xs">Opening chat...</div>
+            ) : selectedConversation && selectedConv ? (
               <MessagesList
                 conversation={{
                   ...selectedConv,
@@ -328,24 +400,22 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                     ...(selectedConv.messages || []),
                     ...(firebaseMessages || [])
                       .filter((fmsg: any) => !(selectedConv.messages || []).some((m) => m.id === fmsg.id))
-                      .map((msg: any) => {
-                        return {
-                          id: msg.id,
-                          senderId: msg.senderId,
-                          senderName: msg.senderName || msg.participantName || "Unknown",
-                          content: msg.content || msg.text || "",
-                          timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(),
-                          isRead: msg.isRead || false,
-                          isStarred: msg.isStarred || false,
-                          type: msg.type || "text",
-                          deliveryStatus: msg.deliveryStatus || "sent",
-                          reactions: msg.reactions || [],
-                          imageUrl: msg.imageUrl,
-                          fileName: msg.fileName,
-                          voiceDuration: msg.voiceDuration,
-                          isMine: String(msg.senderId) === String(userId),
-                        };
-                      }),
+                      .map((msg: any) => ({
+                        id: msg.id,
+                        senderId: msg.senderId,
+                        senderName: msg.senderName || msg.participantName || "Unknown",
+                        content: msg.content || msg.text || "",
+                        timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(),
+                        isRead: msg.isRead || false,
+                        isStarred: msg.isStarred || false,
+                        type: msg.type || "text",
+                        deliveryStatus: msg.deliveryStatus || "sent",
+                        reactions: msg.reactions || [],
+                        imageUrl: msg.imageUrl,
+                        fileName: msg.fileName,
+                        voiceDuration: msg.voiceDuration,
+                        isMine: String(msg.senderId) === String(userId),
+                      })),
                   ],
                 }}
                 currentUserId={userId}
@@ -357,6 +427,10 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                 onDeleteMessage={deleteMessage}
                 onSetReactionPicker={setShowReactionPicker}
               />
+            ) : directMessageMode ? ( // 👈 force MessagesList when redirecting
+              <div className="flex items-center justify-center flex-1 text-gray-500 text-xs">
+                Loading conversation...
+              </div>
             ) : (
               <div className="flex flex-col h-full">
                 {filteredConversations.length > 0 ? (
@@ -377,7 +451,6 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                 ) : (
                   <div className="flex items-center justify-center flex-1 text-gray-500 text-xs">No messages yet</div>
                 )}
-
                 <div className="mt-auto">
                   <InviteFriends />
                 </div>

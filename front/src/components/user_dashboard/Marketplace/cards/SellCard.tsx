@@ -60,6 +60,7 @@ const SellCard = ({
   description,
   size,
   yearCreated,
+
   profile_picture,
   isLiked = false,
   onLike,
@@ -97,19 +98,18 @@ const SellCard = ({
     });
     onLike?.();
   };
-
+  const participantAvatar = profile_picture ?? undefined;
   const handleContact = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    if (!artistId) {
-      console.warn("No artistId provided, cannot open chat");
+    if (!artistId || !artist) {
+      console.error("❌ Missing artist info", { artistId, artist });
       return;
     }
 
-    // Pass to context
-    openChat(artistId, artist || "Unknown", profile_picture, true);
+    openChat(String(artistId), artist, profile_picture, true);
 
-    toast("Redirecting to contact the artist...", { closeButton: true });
+    toast(`Redirecting to contact ${artist}...`, { closeButton: true });
   };
 
   const handleMenuClick = (e: React.MouseEvent) => {
