@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import ParticleBackground from "./ParticleBg"; 
+import { cn } from "@/lib/utils"; // if you already have cn utility
 
 interface Artwork {
   id: string;
@@ -20,11 +21,18 @@ interface ArtVideoOutroProps {
 const ArtVideoOutro = ({ artworks, onComplete }: ArtVideoOutroProps) => {
   const [currentArtworkIndex, setCurrentArtworkIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
-    const intervalDuration = 2500;
 
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    const intervalDuration = 2500;
     const interval = setInterval(() => {
       setCurrentArtworkIndex((prevIndex) => {
         const nextIndex = prevIndex + 1;
@@ -39,11 +47,13 @@ const ArtVideoOutro = ({ artworks, onComplete }: ArtVideoOutroProps) => {
       });
     }, intervalDuration);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("resize", handleResize);
+    };
   }, [artworks.length, onComplete]);
 
   if (!artworks[currentArtworkIndex]) return null;
-
   const currentArtwork = artworks[currentArtworkIndex];
 
   return (
@@ -56,37 +66,40 @@ const ArtVideoOutro = ({ artworks, onComplete }: ArtVideoOutroProps) => {
         className={`absolute inset-0 transition-all duration-700 ${
           isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
         }`}
-        style={{
-          animation: "fullScreenScale 0.7s ease-out forwards",
-        }}
+        style={{ animation: "fullScreenScale 0.7s ease-out forwards" }}
       >
-        {/* Artwork image fills container */}
         <img
           src={currentArtwork.image_url[0]}
           alt={currentArtwork.title}
           className="w-full h-full object-cover"
         />
 
-        {/* Overlay gradient for readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
 
-        {/* Progress indicator overlay → bottom-right */}
-        <div className="absolute bottom-4 right-4 z-30 flex space-x-2">
+        {/* ✅ Progress indicator */}
+        <div
+          className={cn(
+            "absolute flex z-30",
+            isMobile ? "bottom-4 right-4 space-x-[2px]" : "bottom-6 right-6 space-x-1"
+          )}
+        >
           {artworks.map((_, index) => (
-            <div
+            <button
               key={index}
-              className={`h-1 rounded-full transition-all duration-300 ${
+              onClick={() => setCurrentArtworkIndex(index)}
+              className={cn(
+                "rounded-full transition-all duration-300",
+                isMobile ? "w-1 h-1" : "w-1 h-1",
                 index === currentArtworkIndex
-                  ? "bg-white w-8"
-                  : index < currentArtworkIndex
-                  ? "bg-white/60 w-4"
-                  : "bg-white/20 w-4"
-              }`}
+                  ? "bg-white w-4" // active → expand pill
+                  : "bg-white/40 hover:bg-white/70"
+              )}
+              aria-label={`Go to slide ${index + 1}`}
             />
           ))}
         </div>
 
-        {/* Artwork info at the bottom-left */}
+        {/* Artwork info */}
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
           <div className="max-w-2xl">
             <h2
@@ -107,13 +120,13 @@ const ArtVideoOutro = ({ artworks, onComplete }: ArtVideoOutroProps) => {
               style={{ animationDelay: "0.7s", animationFillMode: "both" }}
             >
               <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1">
-                <Heart size={16} className="text-red-700 fill-red-700" />
-                <span className="text-xs font-semibold">
+                <Heart size={14} className="text-red-600 fill-red-600" />
+                <span className="text-[10px] font-semibold">
                   {currentArtwork.likes_count}
                 </span>
               </div>
 
-              <div className="text-xs text-gray-300 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1">
+              <div className="text-[10px] text-gray-300 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1">
                 Featured Artwork {currentArtworkIndex + 1} of {artworks.length}
               </div>
             </div>
@@ -123,14 +136,8 @@ const ArtVideoOutro = ({ artworks, onComplete }: ArtVideoOutroProps) => {
 
       <style>{`
         @keyframes fade-in {
-          0% {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          0% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in {
           animation: fade-in 0.6s ease-out;
