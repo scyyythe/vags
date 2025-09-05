@@ -179,7 +179,7 @@ const ArtVideoShowcase = ({
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute left-1/2 bottom-2 transform -translate-x-1/2 bg-white/80 rounded-md px-3 py-2 w-[90%] shadow-md backdrop-blur-sm">
-                        <div className="font-semibold text-[11px] leading-tight text-left text-black -mb-0.5 truncate overflow-hidden whitespace-nowrap max-w-28 border">
+                        <div className="font-semibold text-[11px] leading-tight text-left text-black -mb-0.5 truncate overflow-hidden whitespace-nowrap max-w-28">
                           {art.title}
                         </div>
                         <div className="flex items-center justify-between">
