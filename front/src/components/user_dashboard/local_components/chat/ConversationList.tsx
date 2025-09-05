@@ -96,7 +96,7 @@ export const ConversationList = ({
                         {conversation.lastMessage}
                       </p>
                       {conversation.unreadCount > 0 && (
-                        <span className="inline-flex items-center justify-center px-2 py-1 text-[10px] font-semibold leading-none text-white bg-blue-600 rounded-full">
+                        <span className="inline-flex items-center justify-center px-2 py-1 text-[9px] font-medium leading-none text-white bg-blue-600 rounded-full">
                           {conversation.unreadCount}
                         </span>
                       )}
