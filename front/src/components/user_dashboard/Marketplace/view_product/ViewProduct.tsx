@@ -18,10 +18,12 @@ import SellMenu from "../../own_profile/menu/sell_card/Menu";
 import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";
 import useToggleArtworkStatus from "@/hooks/purchase/useMarkArtworkAsSold";
 import { useLocation } from "react-router-dom";
-
+import { useArtworkReviews } from "@/hooks/review/useArtworkReviews";
 const ProductViewingContent = () => {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, error } = useSellArtworkDetail(id);
+
+  const { reviews, loading: reviewsLoading, error: reviewsError } = useArtworkReviews(id || "");
 
   const loggedInUserId = getLoggedInUserId();
   const isOwner = product?.artist?.id && String(product.artist.id) === String(loggedInUserId);
@@ -118,6 +120,19 @@ const ProductViewingContent = () => {
       </span>
     ));
   };
+  // Compute average rating
+  const averageRating = reviews.length
+    ? (reviews.reduce((sum, r) => sum + r.score, 0) / reviews.length).toFixed(1)
+    : "0.0";
+
+  // Count reviews by star
+  const reviewCounts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  reviews.forEach((r) => {
+    const rating = Math.round(r.score);
+    if (rating >= 1 && rating <= 5) {
+      reviewCounts[rating]++;
+    }
+  });
 
   const renderRatingBar = (star: number, count: number, total: number) => {
     const percentage = total > 0 ? (count / total) * 100 : 0;
@@ -424,37 +439,33 @@ const ProductViewingContent = () => {
                     {/* Rating Summary */}
                     <div className="min-w-[120px] mt-6 sm:mt-6">
                       <div className="flex items-end space-x-1 mb-1">
-                        <span className="text-[24px] font-semibold">{product.rating}</span>
+                        <span className="text-[24px] font-semibold">{averageRating}</span>
                         <span className="text-[10px] text-gray-500 mb-1">out of 5</span>
                       </div>
                       <div className="flex items-center space-x-0.5 mb-1">
-                        {renderStars(Math.floor(product.rating))}
+                        {renderStars(Math.round(Number(averageRating)))}
                       </div>
-                      <p className="text-[10px] text-gray-500">({product.total_reviews} reviews)</p>
+                      <p className="text-[10px] text-gray-500">({reviews.length} reviews)</p>
                     </div>
 
                     {/* Rating Breakdown */}
-                    {/* <div className="flex-1 pt-1 sm:mt-6">
-                        <div className="space-y-0.5 text-[9px]">
+                    <div className="flex-1 pt-1 sm:mt-6">
+                      <div className="space-y-0.5 text-[9px]">
                         {[5, 4, 3, 2, 1].map((star) => {
-                            const count = product.reviewBreakdown[star] || 0;
-                            const percent = product.totalReviews
-                            ? (count / product.totalReviews) * 100
-                            : 0;
-                            return (
+                          const count = reviewCounts[star];
+                          const percent = reviews.length ? (count / reviews.length) * 100 : 0;
+                          return (
                             <div key={star} className="flex items-center space-x-2">
-                                <span className="w-2">{star}</span>
-                                <div className="flex-1 h-[6px] bg-gray-200 rounded-full overflow-hidden">
-                                <div
-                                    className="bg-yellow-400 h-full"
-                                    style={{ width: `${percent}%` }}
-                                />
-                                </div>
+                              <span className="w-2">{star}</span>
+                              <div className="flex-1 h-[6px] bg-gray-200 rounded-full overflow-hidden">
+                                <div className="bg-yellow-400 h-full" style={{ width: `${percent}%` }} />
+                              </div>
+                              <span className="w-6 text-right">{count}</span>
                             </div>
-                            );
+                          );
                         })}
-                        </div>
-                    </div> */}
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -555,8 +566,8 @@ const ProductViewingContent = () => {
       <ReviewModal
         isOpen={isReviewModalOpen}
         onClose={() => setIsReviewModalOpen(false)}
-        reviews={mockReviews}
-        totalReviews={product.total_reviews}
+        reviews={reviews}
+        totalReviews={reviews.length}
       />
 
       {/* Preview Modal */}
