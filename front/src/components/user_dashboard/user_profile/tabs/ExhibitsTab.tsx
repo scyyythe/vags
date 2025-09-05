@@ -140,22 +140,25 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
           </div>
           <div className="flex items-center space-x-2">
             {typeTab === "collab" && (
-              <button onClick={() => setShowPending(!showPending)} className="relative group">
-                <div className="relative">
-                  <i
-                    className={`bx ${
-                      hasReadyExhibits ? "bx-time text-yellow-500 mr-4" : ""
-                    } cursor-pointer text-[15px]`}
-                  ></i>
-                  {hasUnreadRequests && (
-                    <span className="absolute -top-1 right-2.5 w-2 h-2 bg-red-600 rounded-full"></span>
-                  )}
-                </div>
-                <span className="absolute top-6 mb-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded px-2 py-1 text-[10px] text-black bg-white border shadow group-hover:opacity-100 opacity-0 transition-opacity pointer-events-none">
-                  {hasReadyExhibits ? "Pending Requests" : ""}
+              <button
+                onClick={() => setShowPending(!showPending)}
+                className="relative group flex items-center"
+              >
+                <i
+                  className={`bx bx-time text-[15px] cursor-pointer ${
+                    hasReadyExhibits ? "text-yellow-500" : "text-yellow-500"
+                  } mr-1`}
+                ></i>
+                {hasUnreadRequests && (
+                  <span className="absolute -top-1 right-0 w-2 h-2 bg-red-600 rounded-full"></span>
+                )}
+                {/* Tooltip */}
+                <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-white text-black text-[10px] px-2 py-1 border shadow opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  {hasReadyExhibits ? "No Pending Requests" : "Pending Requests"}
                 </span>
               </button>
             )}
+
             <select
               className="text-[9px] border rounded-full pr-6 pl-2 py-1 text-gray-700 cursor-pointer"
               value={statusFilter}
