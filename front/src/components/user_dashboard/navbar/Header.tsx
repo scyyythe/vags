@@ -43,10 +43,19 @@ const Header = () => {
   };
 
   const handleSearchChange = (value: string) => {
-    if (!value.trim()) return;
+    // Remove leading/trailing spaces
+    const cleaned = value.trim();
+
+    // Regex: only allow letters, numbers, and spaces, at least 2 chars
+    const validSearch = /^[a-zA-Z0-9\s]{2,}$/;
+
+    if (!validSearch.test(cleaned)) {
+      console.warn("❌ Invalid search input:", value);
+      return; // block filler
+    }
 
     const params = new URLSearchParams();
-    params.set("q", value);
+    params.set("q", cleaned);
 
     const isExplorePage = currentPath.includes("/explore");
     const isBiddingPage = currentPath.includes("/bidding");
@@ -58,7 +67,7 @@ const Header = () => {
     else if (isExhibitPage) navigate(`/exhibit?${params.toString()}`);
     else if (isMarketplacePage) navigate(`/marketplace?${params.toString()}`);
 
-    setSearchQuery(value);
+    setSearchQuery(cleaned);
   };
 
   return (

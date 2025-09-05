@@ -17,29 +17,6 @@ export interface ExhibitPayload {
 }
 
 export const createExhibit = async (data: ExhibitPayload) => {
-  // 📝 Log all raw payload fields before doing anything
-  console.log("📌 Raw ExhibitPayload data:", {
-    title: data.title,
-    description: data.description,
-    category: data.category,
-    exhibit_type: data.exhibit_type,
-    start_time: data.start_time,
-    end_time: data.end_time,
-    collaborators: data.collaborators,
-    chosen_env: data.chosen_env,
-    artworks: data.artworks,
-    owner: data.owner,
-    slot_artwork_map: data.slot_artwork_map,
-    slot_owner_map: data.slot_owner_map,
-    banner: data.banner
-      ? {
-          name: data.banner.name,
-          type: data.banner.type,
-          size: data.banner.size,
-        }
-      : null,
-  });
-
   if (!data.banner) {
     console.error("❌ Banner is required (still null at this point).");
     throw new Error("Banner is required");
@@ -47,6 +24,13 @@ export const createExhibit = async (data: ExhibitPayload) => {
 
   const formData = new FormData();
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const selectedStart = new Date(data.start_time);
+
+  if (selectedStart < today) {
+    throw new Error("Start time cannot be in the past.");
+  }
   formData.append("title", data.title);
   formData.append("description", data.description);
   formData.append("category", data.category);
@@ -65,8 +49,6 @@ export const createExhibit = async (data: ExhibitPayload) => {
   data.artworks.forEach((id) => formData.append("artworks", id));
   formData.append("banner", data.banner);
 
-  // 📝 Debug log — confirm FormData contents
-  console.log("📂 Final FormData contents:");
   for (const [key, value] of formData.entries()) {
     console.log(`   ${key}:`, value);
   }
