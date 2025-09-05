@@ -121,7 +121,7 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
             {/* Column 1 */}
             <VerticalMarqueeColumn
               images={col1}
-              heights={["h-24", "h-20", "h-40"]} // smaller for mobile
+              heights={["h-24", "h-28", "h-40"]} // smaller for mobile
               duration={22}
               delay={0}
             />
@@ -129,7 +129,7 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
             {/* Column 2 */}
             <VerticalMarqueeColumn
               images={col2}
-              heights={["h-20", "h-40", "h-28"]}
+              heights={["h-20", "h-40", "h-72"]}
               duration={25}
               delay={-4}
             />
@@ -137,7 +137,7 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
             {/* Column 3 */}
             <VerticalMarqueeColumn
               images={col3}
-              heights={["h-28", "h-16", "h-40"]}
+              heights={["h-28", "h-16", "h-60"]}
               duration={20}
               delay={-8}
             />

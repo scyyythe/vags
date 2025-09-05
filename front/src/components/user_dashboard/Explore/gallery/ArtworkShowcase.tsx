@@ -22,44 +22,41 @@ interface ArtVideoShowcaseProps {
 
 type ShowcasePhase = "intro" | "main" | "outro";
 
-const ArtVideoShowcase = ({
-  artworks,
-  isLoading = false,
-}: ArtVideoShowcaseProps) => {
+const ArtVideoShowcase = ({ artworks, isLoading = false }: ArtVideoShowcaseProps) => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<ShowcasePhase>("intro");
   const [spread, setSpread] = useState(false);
+  const isMobile = window.innerWidth <= 768; // simple check for mobile
 
-  const handleArtworkClick = (
-    artworkId: string,
-    image_url: string,
-    artistName: string
-  ) => {
+  const handleArtworkClick = (artworkId: string, image_url: string, artistName: string) => {
     navigate(`/artwork/${artworkId}`, { state: { image_url, artistName } });
   };
 
-  // Start flow: intro → outro
+  // After intro → always go to outro
   useEffect(() => {
     if (phase === "intro") {
       const introTimer = setTimeout(() => {
         setPhase("outro");
-      }, 5000); // 5s intro
+      }, 5000);
       return () => clearTimeout(introTimer);
     }
   }, [phase]);
 
   const handleOutroComplete = () => {
-    // After outro, show main
-    setPhase("main");
-    setTimeout(() => setSpread(true), 100);
-
-    // After 3s of main → back to intro
-    setTimeout(() => {
+    if (isMobile) {
+      // mobile: loop intro ↔ outro
       setPhase("intro");
-      setSpread(false);
+    } else {
+      // desktop: go outro → main
+      setPhase("main");
+      setTimeout(() => setSpread(true), 100);
 
-      // Then intro will again transition to outro automatically
-    }, 3000); // main lasts 3s
+      // after main, go back to intro
+      setTimeout(() => {
+        setPhase("intro");
+        setSpread(false);
+      }, 3000);
+    }
   };
 
   if (isLoading || artworks.length === 0) {
@@ -80,14 +77,11 @@ const ArtVideoShowcase = ({
 
       {/* Outro */}
       {phase === "outro" && (
-        <ArtVideoOutro
-          artworks={artworks.slice(0, 5)}
-          onComplete={handleOutroComplete}
-        />
+        <ArtVideoOutro artworks={artworks.slice(0, 5)} onComplete={handleOutroComplete} />
       )}
 
-      {/* Main */}
-      {phase === "main" && (
+      {/* Main (desktop only) */}
+      {!isMobile && phase === "main" && (
         <div className="relative text-center h-full flex flex-col">
           <h2 className="text-md font-bold pb-2 text-gray-900 mt-6">
             Popular this week
@@ -108,9 +102,7 @@ const ArtVideoShowcase = ({
                 const overlap = 80;
                 const cardGap = 220;
 
-                const initialLeft = `calc(50% + ${
-                  (index - centerOffset) * overlap
-                }px)`;
+                const initialLeft = `calc(50% + ${(index - centerOffset) * overlap}px)`;
                 const fanAngles = [-12, -6, 0, 6, 12];
                 const initialRotate = fanAngles[index] || 0;
 
@@ -128,9 +120,7 @@ const ArtVideoShowcase = ({
                 ];
                 const stack = stacked[index] || { left: 0, rotate: 0, z: 1 };
 
-                const spreadLeft = `calc(50% + ${
-                  (index - centerOffset) * cardGap
-                }px)`;
+                const spreadLeft = `calc(50% + ${(index - centerOffset) * cardGap}px)`;
 
                 let topOffset = 0;
                 if (spread && total === 5) {
@@ -141,17 +131,11 @@ const ArtVideoShowcase = ({
                   <div
                     key={art.id}
                     onClick={() =>
-                      handleArtworkClick(
-                        art.id,
-                        art.image_url?.[0],
-                        art.artist.name
-                      )
+                      handleArtworkClick(art.id, art.image_url?.[0], art.artist.name)
                     }
                     className={
                       "absolute transition-all duration-1000 ease-in-out cursor-pointer" +
-                      (spread
-                        ? " hover:rotate-[1.5deg] hover:-translate-y-1"
-                        : "")
+                      (spread ? " hover:rotate-[1.5deg] hover:-translate-y-1" : "")
                     }
                     style={{
                       left: spread ? spreadLeft : initialLeft,
@@ -167,9 +151,7 @@ const ArtVideoShowcase = ({
                       style={{
                         width: "200px",
                         height: "200px",
-                        animation: spread
-                          ? `float ${duration}s ease-in-out infinite`
-                          : undefined,
+                        animation: spread ? `float ${duration}s ease-in-out infinite` : undefined,
                         animationDelay: spread ? `${delay}s` : undefined,
                       }}
                     >
@@ -187,10 +169,7 @@ const ArtVideoShowcase = ({
                             by {art.artist.name}
                           </div>
                           <div className="flex items-center gap-1">
-                            <Heart
-                              size={10}
-                              className="text-red-700 fill-red-700"
-                            />
+                            <Heart size={10} className="text-red-700 fill-red-700" />
                             <span className="text-[10px] font-medium text-black">
                               {art.likes_count}
                             </span>
