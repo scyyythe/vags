@@ -55,7 +55,7 @@ const ArtVideoShowcase = ({ artworks, isLoading = false }: ArtVideoShowcaseProps
       setTimeout(() => {
         setPhase("intro");
         setSpread(false);
-      }, 3000);
+      }, 8000);
     }
   };
 
