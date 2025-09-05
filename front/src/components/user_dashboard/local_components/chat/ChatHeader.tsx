@@ -57,9 +57,9 @@ export const ChatHeader = ({
         <div className="flex items-center space-x-2">
           {selectedConversation && selectedConv && (
             <>
-              <Button variant="ghost" size="sm" onClick={onCall}>
+              {/* <Button variant="ghost" size="sm" onClick={onCall}>
                 <Phone size={16} />
-              </Button>
+              </Button> */}
               <Button
                 variant="ghost"
                 size="sm"
