@@ -1,32 +1,32 @@
-import { useState, useEffect } from "react"
-import { useNavigate, useParams, useLocation } from "react-router-dom"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import AddArtistDialog from "@/components/user_dashboard/Exhibit/add_exhibit/components/AddArtistDialog"
-import Header from "@/components/user_dashboard/navbar/Header"
+import AddArtistDialog from "@/components/user_dashboard/Exhibit/add_exhibit/components/AddArtistDialog";
+import Header from "@/components/user_dashboard/navbar/Header";
 
 // Import new components
-import BannerUpload from "./components/BannerUpload"
-import EnvironmentSelector from "./components/EnvironmentSelector"
-import ExhibitSlots from "./components/ExhibitSlots"
-import ExhibitFormFields from "./components/ExhibitFormFields"
-import ArtworkSelector from "./components/ArtworkSelector"
-import ModeStatusDisplay from "./components/ModeStatusDisplay"
-import CollaboratorNotice from "./components/CollaboratorNotice"
-import ExhibitDialogs from "./components/ExhibitDialogs"
-import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks"
-import { getLoggedInUserId } from "@/auth/decode"
+import BannerUpload from "./components/BannerUpload";
+import EnvironmentSelector from "./components/EnvironmentSelector";
+import ExhibitSlots from "./components/ExhibitSlots";
+import ExhibitFormFields from "./components/ExhibitFormFields";
+import ArtworkSelector from "./components/ArtworkSelector";
+import ModeStatusDisplay from "./components/ModeStatusDisplay";
+import CollaboratorNotice from "./components/CollaboratorNotice";
+import ExhibitDialogs from "./components/ExhibitDialogs";
+import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
+import { getLoggedInUserId } from "@/auth/decode";
 
-import type { ViewMode } from "./components/types"
-import useUserQuery from "@/hooks/users/useUserQuery"
-import type { User } from "@/hooks/users/useUserQuery"
+import type { ViewMode } from "./components/types";
+import useUserQuery from "@/hooks/users/useUserQuery";
+import type { User } from "@/hooks/users/useUserQuery";
 
-import { useCreateExhibit } from "@/hooks/mutate/exhibit/AddExhibit"
+import { useCreateExhibit } from "@/hooks/mutate/exhibit/AddExhibit";
 
 // Import extracted constants and data
-import { slotColorSchemes, colorNames } from "@/components/constants/slot-color-schemes"
-import { mockExhibitData } from "@/components/data/mock-exhibit-data"
-import { environments } from "@/components/data/environments-data"
+import { slotColorSchemes, colorNames } from "@/components/constants/slot-color-schemes";
+import { mockExhibitData } from "@/components/data/mock-exhibit-data";
+import { environments } from "@/components/data/environments-data";
 
 // Import extracted utilities
 import {
@@ -34,122 +34,120 @@ import {
   getUserName,
   canInteractWithSlot,
   getCollaboratorSubmissionStatus,
-} from "@/utils/exhibit-helpers"
+} from "@/utils/exhibit-helpers";
 
 // Import extracted handlers
-import { createSubmitHandler } from "@/components/handlers/submit-handlers"
+import { createSubmitHandler } from "@/components/handlers/submit-handlers";
 
 const EditExhibit = () => {
-  const navigate = useNavigate()
-const { id: exhibitId } = useParams();
+  const navigate = useNavigate();
+  const { id: exhibitId } = useParams();
 
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
-  const mode = queryParams.get("mode") || ""
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const mode = queryParams.get("mode") || "";
 
   // State variables
-  const [title, setTitle] = useState("")
-  const [category, setCategory] = useState("")
-  const [exhibitType, setExhibitType] = useState("solo")
-  const [startDate, setStartDate] = useState("")
-  const [endDate, setEndDate] = useState("")
-  const [description, setDescription] = useState("")
-  const [selectedEnvironment, setSelectedEnvironment] = useState<number | null>(null)
-  const [selectedArtworks, setSelectedArtworks] = useState<string[]>([])
-  const [selectedSlots, setSelectedSlots] = useState<number[]>([])
-  const [slotArtworkMap, setSlotArtworkMap] = useState<Record<number, string>>({})
-  const [isAddArtistDialogOpen, setIsAddArtistDialogOpen] = useState(false)
-  const [collaborators, setCollaborators] = useState<User[]>([])
-  const [slotOwnerMap, setSlotOwnerMap] = useState<Record<number, string>>({})
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [exhibitType, setExhibitType] = useState("solo");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [description, setDescription] = useState("");
+  const [selectedEnvironment, setSelectedEnvironment] = useState<number | null>(null);
+  const [selectedArtworks, setSelectedArtworks] = useState<string[]>([]);
+  const [selectedSlots, setSelectedSlots] = useState<number[]>([]);
+  const [slotArtworkMap, setSlotArtworkMap] = useState<Record<number, string>>({});
+  const [isAddArtistDialogOpen, setIsAddArtistDialogOpen] = useState(false);
+  const [collaborators, setCollaborators] = useState<User[]>([]);
+  const [slotOwnerMap, setSlotOwnerMap] = useState<Record<number, string>>({});
 
-  const [bannerImage, setBannerImage] = useState<string | null>(null)
-  const [bannerFile, setBannerFile] = useState<File | null>(null)
+  const [bannerImage, setBannerImage] = useState<string | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
 
-  const [isRemoveCollaboratorDialogOpen, setIsRemoveCollaboratorDialogOpen] = useState(false)
-  const [collaboratorToRemove, setCollaboratorToRemove] = useState<User | null>(null)
-  const [artworkStyle, setArtworkStyle] = useState("")
+  const [isRemoveCollaboratorDialogOpen, setIsRemoveCollaboratorDialogOpen] = useState(false);
+  const [collaboratorToRemove, setCollaboratorToRemove] = useState<User | null>(null);
+  const [artworkStyle, setArtworkStyle] = useState("");
 
   // View mode state
-  const [viewMode, setViewMode] = useState<ViewMode>("owner")
-  const [currentCollaborator, setCurrentCollaborator] = useState<User | null>(null)
-  const [showNotificationDialog, setShowNotificationDialog] = useState(false)
-  const [isReadOnly, setIsReadOnly] = useState(false)
-  const currentUserId = getLoggedInUserId()
-  
+  const [viewMode, setViewMode] = useState<ViewMode>("owner");
+  const [currentCollaborator, setCurrentCollaborator] = useState<User | null>(null);
+  const [showNotificationDialog, setShowNotificationDialog] = useState(false);
+  const [isReadOnly, setIsReadOnly] = useState(false);
+  const currentUserId = getLoggedInUserId();
+
   const { data: artworks = [] } = useArtworks(
     1,
     currentUserId ?? undefined,
     !!currentUserId,
     "created-by-me",
     "public",
-    true,
-  )
-  const { data: currentUser, isLoading } = useUserQuery(currentUserId ?? "")
-
-
+    true
+  );
+  const { data: currentUser, isLoading } = useUserQuery(currentUserId ?? "");
 
   // Function to distribute slots among participants
   const distributeSlots = () => {
-    if (!selectedEnvironment || !currentUser?.id) return
+    if (!selectedEnvironment || !currentUser?.id) return;
 
-    const currentEnvironment = environments.find((env) => env.id === selectedEnvironment)
-    if (!currentEnvironment) return
+    const currentEnvironment = environments.find((env) => env.id === selectedEnvironment);
+    if (!currentEnvironment) return;
 
-    const totalSlots = currentEnvironment.slots
+    const totalSlots = currentEnvironment.slots;
 
     // Reset all related slot selections
-    setSelectedSlots([])
-    setSelectedArtworks([])
-    setSlotArtworkMap({})
+    setSelectedSlots([]);
+    setSelectedArtworks([]);
+    setSlotArtworkMap({});
 
-    const newSlotOwnerMap: Record<number, string> = {}
+    const newSlotOwnerMap: Record<number, string> = {};
 
     if (exhibitType === "solo") {
       // Solo exhibit: curator gets all slots
       for (let i = 1; i <= totalSlots; i++) {
-        newSlotOwnerMap[i] = currentUser.id.toString()
+        newSlotOwnerMap[i] = currentUser.id.toString();
       }
     } else {
       // Collaborative exhibit: fair distribution
-      const participants = [currentUser, ...collaborators]
-      const totalParticipants = participants.length
+      const participants = [currentUser, ...collaborators];
+      const totalParticipants = participants.length;
 
-      const baseSlots = Math.floor(totalSlots / totalParticipants)
-      let remaining = totalSlots % totalParticipants
+      const baseSlots = Math.floor(totalSlots / totalParticipants);
+      let remaining = totalSlots % totalParticipants;
 
-      let slotId = 1
+      let slotId = 1;
 
       for (const participant of participants) {
-        let slotsForThisUser = baseSlots
+        let slotsForThisUser = baseSlots;
         if (remaining > 0) {
-          slotsForThisUser += 1
-          remaining--
+          slotsForThisUser += 1;
+          remaining--;
         }
 
         for (let j = 0; j < slotsForThisUser; j++) {
           if (slotId <= totalSlots) {
-            newSlotOwnerMap[slotId] = participant.id.toString()
-            slotId++
+            newSlotOwnerMap[slotId] = participant.id.toString();
+            slotId++;
           }
         }
       }
     }
 
-    setSlotOwnerMap(newSlotOwnerMap)
-  }
+    setSlotOwnerMap(newSlotOwnerMap);
+  };
 
   // Handle artwork selection - ORIGINAL LOGIC
   const handleArtworkSelect = (artworkId: string) => {
     const currentUserIdForSelection =
-      currentUserId ?? (viewMode === "owner" ? currentUser?.id : currentCollaborator?.id)
-    if (!currentUserIdForSelection) return
+      currentUserId ?? (viewMode === "owner" ? currentUser?.id : currentCollaborator?.id);
+    if (!currentUserIdForSelection) return;
 
-    const currentUserIdStr = currentUserIdForSelection.toString()
+    const currentUserIdStr = currentUserIdForSelection.toString();
 
     // Filter slots owned by current user that don't have artwork assigned yet
     const availableUserSlots = Object.entries(slotOwnerMap)
       .filter(([slotId, userId]) => userId.toString() === currentUserIdStr && !slotArtworkMap[Number(slotId)])
-      .map(([slotId]) => Number(slotId))
+      .map(([slotId]) => Number(slotId));
 
     if (selectedArtworks.includes(artworkId)) {
       toast.error("Artwork already selected", {
@@ -159,7 +157,7 @@ const { id: exhibitId } = useParams();
       return;
     }
 
-    const availableSlot = availableUserSlots[0]
+    const availableSlot = availableUserSlots[0];
 
     if (!availableSlot) {
       toast.error("No available slots", {
@@ -172,20 +170,20 @@ const { id: exhibitId } = useParams();
     setSlotArtworkMap((prev) => ({
       ...prev,
       [availableSlot]: artworkId,
-    }))
+    }));
 
     if (!selectedSlots.includes(availableSlot)) {
-      setSelectedSlots((prev) => [...prev, availableSlot])
+      setSelectedSlots((prev) => [...prev, availableSlot]);
     }
 
-    setSelectedArtworks((prev) => [...prev, artworkId])
-  }
+    setSelectedArtworks((prev) => [...prev, artworkId]);
+  };
 
   // Handle slot selection - ORIGINAL LOGIC
   const handleSlotSelect = (slotId: number) => {
     const currentUserIdForSelection =
-      currentUserId ?? (viewMode === "owner" ? currentUser?.id : currentCollaborator?.id)
-    if (!currentUserIdForSelection) return
+      currentUserId ?? (viewMode === "owner" ? currentUser?.id : currentCollaborator?.id);
+    if (!currentUserIdForSelection) return;
 
     if (slotOwnerMap[slotId] !== currentUserIdForSelection.toString()) {
       toast.error("Access denied", {
@@ -197,135 +195,132 @@ const { id: exhibitId } = useParams();
 
     // If slot is already selected, toggle it off
     if (selectedSlots.includes(slotId)) {
-      const newSlotArtworkMap = { ...slotArtworkMap }
-      const artworkId = newSlotArtworkMap[slotId]
+      const newSlotArtworkMap = { ...slotArtworkMap };
+      const artworkId = newSlotArtworkMap[slotId];
 
       if (artworkId) {
-        setSelectedArtworks((prev) => prev.filter((id) => id !== artworkId))
-        delete newSlotArtworkMap[slotId]
-        setSlotArtworkMap(newSlotArtworkMap)
+        setSelectedArtworks((prev) => prev.filter((id) => id !== artworkId));
+        delete newSlotArtworkMap[slotId];
+        setSlotArtworkMap(newSlotArtworkMap);
       }
 
-      setSelectedSlots((prev) => prev.filter((id) => id !== slotId))
+      setSelectedSlots((prev) => prev.filter((id) => id !== slotId));
     } else {
-      setSelectedSlots((prev) => [...prev, slotId])
+      setSelectedSlots((prev) => [...prev, slotId]);
     }
-  }
+  };
 
   // Handle clearing a slot - ORIGINAL LOGIC
   const handleClearSlot = (slotId: number) => {
     const currentUserIdForSelection =
-      currentUserId ?? (viewMode === "owner" ? currentUser?.id : currentCollaborator?.id)
-    if (!currentUserIdForSelection) return
+      currentUserId ?? (viewMode === "owner" ? currentUser?.id : currentCollaborator?.id);
+    if (!currentUserIdForSelection) return;
 
     if (slotOwnerMap[slotId] !== currentUserIdForSelection.toString()) {
-      return
-    }
-
-    const artworkId = slotArtworkMap[slotId]
-    if (artworkId) {
-      setSelectedArtworks((prev) => prev.filter((id) => id !== artworkId))
-
-      const newSlotArtworkMap = { ...slotArtworkMap }
-      delete newSlotArtworkMap[slotId]
-      setSlotArtworkMap(newSlotArtworkMap)
-    }
-  }
-
-  // Handle environment change - ORIGINAL LOGIC
-  const handleEnvironmentChange = (envId: number) => {
-    const selectedEnv = environments.find((env) => env.id === envId)
-    const totalParticipants = collaborators.length + 1
-
-    if (!selectedEnv) return
-
-    if (selectedEnv.slots < totalParticipants) {
-      toast.error(
-        "Not enough slots to assign for all collaborators and the owner.",
-        {
-          description: "Please select a virtual environment with more available slots.",
-          duration: 4000,
-          closeButton: true,
-        }
-      );
       return;
     }
 
-    setSelectedEnvironment(envId)
+    const artworkId = slotArtworkMap[slotId];
+    if (artworkId) {
+      setSelectedArtworks((prev) => prev.filter((id) => id !== artworkId));
+
+      const newSlotArtworkMap = { ...slotArtworkMap };
+      delete newSlotArtworkMap[slotId];
+      setSlotArtworkMap(newSlotArtworkMap);
+    }
+  };
+
+  // Handle environment change - ORIGINAL LOGIC
+  const handleEnvironmentChange = (envId: number) => {
+    const selectedEnv = environments.find((env) => env.id === envId);
+    const totalParticipants = collaborators.length + 1;
+
+    if (!selectedEnv) return;
+
+    if (selectedEnv.slots < totalParticipants) {
+      toast.error("Not enough slots to assign for all collaborators and the owner.", {
+        description: "Please select a virtual environment with more available slots.",
+        duration: 4000,
+        closeButton: true,
+      });
+      return;
+    }
+
+    setSelectedEnvironment(envId);
     // setBannerImage(selectedEnv.image)
-    setBannerFile(null)
+    setBannerFile(null);
 
     // Call distributeSlots after state is set
     setTimeout(() => {
-      distributeSlots()
-    }, 0)
-  }
+      distributeSlots();
+    }, 0);
+  };
 
   // Load exhibit data based on exhibitId and mode
   useEffect(() => {
     if (exhibitId && mockExhibitData[Number(exhibitId)]) {
-      const exhibitData = mockExhibitData[Number(exhibitId)]
+      const exhibitData = mockExhibitData[Number(exhibitId)];
 
       if (mode === "review") {
-        setViewMode("review")
-        setIsReadOnly(true)
+        setViewMode("review");
+        setIsReadOnly(true);
       } else if (mode === "monitoring") {
-        setViewMode("monitoring")
-        setIsReadOnly(true)
+        setViewMode("monitoring");
+        setIsReadOnly(true);
       } else if (mode === "preview") {
-        setViewMode("preview")
-        setIsReadOnly(true)
+        setViewMode("preview");
+        setIsReadOnly(true);
       }
 
       // Populate form with exhibit data
-      setTitle(exhibitData.title)
-      setCategory(exhibitData.category)
-      setArtworkStyle(exhibitData.artworkStyle.toLowerCase())
-      setExhibitType(exhibitData.exhibitType)
-      setStartDate(exhibitData.startDate)
-      setEndDate(exhibitData.endDate)
-      setDescription(exhibitData.description)
-      setSelectedEnvironment(exhibitData.selectedEnvironment)
-      setBannerImage(exhibitData.bannerImage)
-      setCollaborators(exhibitData.collaborators)
-      setSlotOwnerMap(exhibitData.slotOwnerMap)
-      setSlotArtworkMap(exhibitData.slotArtworkMap)
+      setTitle(exhibitData.title);
+      setCategory(exhibitData.category);
+      setArtworkStyle(exhibitData.artworkStyle.toLowerCase());
+      setExhibitType(exhibitData.exhibitType);
+      setStartDate(exhibitData.startDate);
+      setEndDate(exhibitData.endDate);
+      setDescription(exhibitData.description);
+      setSelectedEnvironment(exhibitData.selectedEnvironment);
+      setBannerImage(exhibitData.bannerImage);
+      setCollaborators(exhibitData.collaborators);
+      setSlotOwnerMap(exhibitData.slotOwnerMap);
+      setSlotArtworkMap(exhibitData.slotArtworkMap);
 
       // Mark selected artworks
-      const selectedIds = Object.values(exhibitData.slotArtworkMap) as string[]
-      setSelectedArtworks(selectedIds)
+      const selectedIds = Object.values(exhibitData.slotArtworkMap) as string[];
+      setSelectedArtworks(selectedIds);
 
       // Mark selected slots
-      const selectedSlotIds = Object.keys(exhibitData.slotArtworkMap).map(Number)
-      setSelectedSlots(selectedSlotIds)
+      const selectedSlotIds = Object.keys(exhibitData.slotArtworkMap).map(Number);
+      setSelectedSlots(selectedSlotIds);
     } else {
       // For demo purposes: toggle collaborator view
-      const urlParams = new URLSearchParams(window.location.search)
-      const collaboratorId = urlParams.get("collaborator")
+      const urlParams = new URLSearchParams(window.location.search);
+      const collaboratorId = urlParams.get("collaborator");
 
       if (collaboratorId) {
-        const collab = collaborators.find((c) => c.id.toString() === collaboratorId)
+        const collab = collaborators.find((c) => c.id.toString() === collaboratorId);
 
         if (collab) {
-          setViewMode("collaborator")
-          setCurrentCollaborator(collab)
+          setViewMode("collaborator");
+          setCurrentCollaborator(collab);
         }
       }
     }
-  }, [exhibitId, mode, collaborators])
+  }, [exhibitId, mode, collaborators]);
 
   useEffect(() => {
     if (selectedEnvironment) {
-      distributeSlots()
+      distributeSlots();
     }
-  }, [selectedEnvironment, exhibitType, collaborators])
+  }, [selectedEnvironment, exhibitType, collaborators]);
 
-  const createExhibitMutation = useCreateExhibit()
+  const createExhibitMutation = useCreateExhibit();
 
   // Create handlers
   const submitHandlers = createSubmitHandler(
     navigate,
-    toastHook,
+    // toastHook,
     createExhibitMutation,
     viewMode,
     exhibitType,
@@ -341,8 +336,8 @@ const { id: exhibitId } = useParams();
     selectedArtworks,
     bannerFile,
     slotArtworkMap,
-    slotOwnerMap,
-  )
+    slotOwnerMap
+  );
 
   // Handle adding a collaborator - ORIGINAL LOGIC
   const handleAddCollaborator = (artist: User) => {
@@ -354,33 +349,33 @@ const { id: exhibitId } = useParams();
       return;
     }
 
-    setCollaborators((prev) => [...prev, artist])
+    setCollaborators((prev) => [...prev, artist]);
 
     // Call distributeSlots after adding collaborator
     setTimeout(() => {
-      distributeSlots()
-    }, 0)
-  }
+      distributeSlots();
+    }, 0);
+  };
 
   // Handle removing a collaborator - ORIGINAL LOGIC
   const handleRemoveCollaborator = (artist: User) => {
-    setCollaboratorToRemove(artist)
-    setIsRemoveCollaboratorDialogOpen(true)
-  }
+    setCollaboratorToRemove(artist);
+    setIsRemoveCollaboratorDialogOpen(true);
+  };
 
   const confirmRemoveCollaborator = () => {
-    if (!collaboratorToRemove) return
+    if (!collaboratorToRemove) return;
 
-    setCollaborators((prev) => prev.filter((c) => c.id !== collaboratorToRemove.id))
+    setCollaborators((prev) => prev.filter((c) => c.id !== collaboratorToRemove.id));
 
-    setIsRemoveCollaboratorDialogOpen(false)
-    setCollaboratorToRemove(null)
+    setIsRemoveCollaboratorDialogOpen(false);
+    setCollaboratorToRemove(null);
 
     setTimeout(() => {
-      distributeSlots()
-    }, 0)
-  }
-const isUploading = createExhibitMutation.status === "pending"
+      distributeSlots();
+    }, 0);
+  };
+  const isUploading = createExhibitMutation.status === "pending";
 
   return (
     <div className="min-h-screen bg-background">
@@ -460,7 +455,7 @@ const isUploading = createExhibitMutation.status === "pending"
                       type="button"
                       className="bg-gray-900 text-white text-xs px-4 py-1.5 rounded-full hover:bg-gray-800"
                       onClick={() => {
-                        const encodedSlotMap = encodeURIComponent(JSON.stringify(slotArtworkMap))
+                        const encodedSlotMap = encodeURIComponent(JSON.stringify(slotArtworkMap));
                         const encodedArtworks = encodeURIComponent(
                           JSON.stringify(
                             artworks
@@ -470,11 +465,11 @@ const isUploading = createExhibitMutation.status === "pending"
                                 image_url: a.image_url,
                                 title: a.title || "Untitled",
                                 artist: a.artist || "Unknown",
-                              })),
-                          ),
-                        )
+                              }))
+                          )
+                        );
 
-                        navigate(`/gallery3d-preview?slotMap=${encodedSlotMap}&artworks=${encodedArtworks}`)
+                        navigate(`/gallery3d-preview?slotMap=${encodedSlotMap}&artworks=${encodedArtworks}`);
                       }}
                     >
                       Preview in 3D View
@@ -497,14 +492,14 @@ const isUploading = createExhibitMutation.status === "pending"
               setArtworkStyle={setArtworkStyle}
               exhibitType={exhibitType}
               handleExhibitTypeChange={(value) => {
-                setExhibitType(value)
+                setExhibitType(value);
                 if (value === "solo") {
-                  setCollaborators([])
+                  setCollaborators([]);
                 }
                 // Call distributeSlots after state updates
                 setTimeout(() => {
-                  distributeSlots()
-                }, 0)
+                  distributeSlots();
+                }, 0);
               }}
               startDate={startDate}
               setStartDate={setStartDate}
@@ -536,20 +531,19 @@ const isUploading = createExhibitMutation.status === "pending"
           )}
 
           <div className="flex justify-end">
-        <button
-  type="submit"
-  disabled={isUploading}
-  className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
->
-  {isUploading
-    ? "Submitting..."
-    : viewMode === "collaborator"
-    ? "Save Selections"
-    : viewMode === "review" || viewMode === "monitoring" || viewMode === "preview"
-    ? "Back to Exhibits"
-    : "Publish Exhibit"}
-</button>
-
+            <button
+              type="submit"
+              disabled={isUploading}
+              className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isUploading
+                ? "Submitting..."
+                : viewMode === "collaborator"
+                ? "Save Selections"
+                : viewMode === "review" || viewMode === "monitoring" || viewMode === "preview"
+                ? "Back to Exhibits"
+                : "Publish Exhibit"}
+            </button>
           </div>
         </form>
       </div>
@@ -574,7 +568,7 @@ const isUploading = createExhibitMutation.status === "pending"
         collaborators={collaborators}
       />
     </div>
-  )
-}
+  );
+};
 
-export default EditExhibit
+export default EditExhibit;

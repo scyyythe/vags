@@ -19,10 +19,23 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
   const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setBannerFile(file);
-      setBannerImage(URL.createObjectURL(file));
+      console.log("📂 Selected banner file:", {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+      });
+
+      setBannerFile(file); // ✅ Store file for API
+      setBannerImage(URL.createObjectURL(file)); // ✅ Preview
     }
   };
+
+  const handleClearBanner = () => {
+    console.log("🗑 Clearing banner...");
+    setBannerFile(null);
+    setBannerImage(null);
+  };
+
   return (
     <div
       className="w-full bg-gray-100 rounded-lg flex flex-col items-center justify-center h-64 mb-8 relative overflow-hidden"
@@ -35,12 +48,7 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
       {!bannerImage ? (
         <>
           <div className="bg-white p-2 rounded-full inline-block mb-2">
-            <img
-              width="20"
-              height="20"
-              src="./pics/icons8-cloud-upload.gif"
-              alt="external-upload-network-and-cloud-computing-flatart-icons-solid-flatarticons"
-            />
+            <img width="20" height="20" src="./pics/icons8-cloud-upload.gif" alt="Upload" />
           </div>
           <p className="text-xs text-gray-600">Add a banner</p>
         </>
@@ -50,7 +58,7 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
             variant="outline"
             size="sm"
             className="bg-white text-black border-white hover:bg-gray-100"
-            onClick={() => !isReadOnly && setBannerImage(null)}
+            onClick={handleClearBanner}
             disabled={isReadOnly}
           >
             Change banner
