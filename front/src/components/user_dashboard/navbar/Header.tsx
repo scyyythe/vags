@@ -239,7 +239,7 @@ const Header = () => {
             exit={{ height: 0, opacity: 0 }}
             className="md:hidden bg-white shadow px-4 py-4 space-y-3"
           >
-            {["Explore", "Exhibits", "Bidding", "Marketplace"].map((label) => (
+            {["Explore", "Exhibits", "Auctions", "Marketplace"].map((label) => (
               <NavLink
                 key={label}
                 to={`/${label.toLowerCase()}`}
