@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 
 interface BannerUploadProps {
@@ -16,21 +16,28 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
   isReadOnly,
   viewMode,
 }) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const handleBannerUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Set file and preview immediately
       setBannerFile(file);
       setBannerImage(URL.createObjectURL(file));
       console.log("📂 Selected banner file:", file);
-    }
 
-    event.target.value = "";
+      // Clear input safely after React state updates
+      setTimeout(() => {
+        if (inputRef.current) inputRef.current.value = "";
+      }, 0);
+    }
   };
 
   const handleClearBanner = () => {
     console.log("🗑 Clearing banner...");
     setBannerFile(null);
     setBannerImage(null);
+    if (inputRef.current) inputRef.current.value = "";
   };
 
   return (
@@ -63,15 +70,17 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
         </div>
       )}
 
-      {/* Hidden file input for banner upload */}
+      {/* Hidden file input */}
       <input
         type="file"
+        ref={inputRef}
         id="banner-upload"
         className="hidden"
         accept="image/*"
         onChange={handleBannerUpload}
         disabled={viewMode === "collaborator" || isReadOnly}
       />
+
       {!bannerImage && (
         <label
           htmlFor="banner-upload"
