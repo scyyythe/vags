@@ -19,7 +19,7 @@ const CategoryFilter = ({ categories, onSelectCategory }: CategoryFilterProps) =
   return (
     <div className="flex flex-col gap-4">
 
-    <div className="flex flex-wrap gap-2">
+    <div className="flex gap-2">
       {categories.map((category) => (
         <button
           key={category}
