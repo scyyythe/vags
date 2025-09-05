@@ -301,7 +301,7 @@ const getUserName = (userId: string) => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="container mx-auto pt-20 max-w-6xl pb-4">
+      <div className="container mx-auto pt-20 pb-4">
         <div className="mb-3">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-xl mr-2"></i>Go back
