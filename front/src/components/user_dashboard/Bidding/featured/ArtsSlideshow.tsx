@@ -9,9 +9,9 @@ import CountdownDisplay from "./CountdownDisplay";
 import { Artwork } from "@/hooks/artworks/owner/useMyArtworks";
 import { User } from "@/hooks/users/useUserQuery";
 import FeaturedAuctionSkeleton from "@/components/skeletons/FeaturedAuction";
-
+import { formatCurrency } from "@/utils/numberFormat";
 interface ArtSlideshowProps {
-  artworks: Artwork[];
+  artworks?: Artwork[];
   autoPlay?: boolean;
   interval?: number;
   user?: User;
@@ -57,18 +57,6 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
     );
   }
 
-  const formatCurrency = (amount: any) => {
-    if (amount == null) return "No bids";
-
-    const num = parseFloat(amount);
-    if (isNaN(num)) return "Invalid";
-
-    if (num >= 1000000) return `₱${(num / 1000000).toFixed(1)}M`;
-    if (num >= 1000) return `₱${(num / 1000).toFixed(1)}K`;
-
-    return `₱${num.toLocaleString()}`;
-  };
-
   const selectedArtwork = bidArtworkIndex !== null ? auctions[bidArtworkIndex] : null;
 
   return (
@@ -78,20 +66,13 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
           key={artwork.id}
           className={cn(
             "absolute top-0 left-0 w-full h-full transition-opacity duration-[2500ms] ease-in-out",
-            isMobile
-              ? "flex flex-col items-center gap-6"
-              : "flex flex-row items-center gap-20", 
+            isMobile ? "flex flex-col items-center gap-6" : "flex flex-row items-center gap-20",
             index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
           )}
           aria-hidden={index !== currentIndex}
         >
           {/* Left - Artwork Image */}
-          <div
-            className={cn(
-              "overflow-hidden pt-1",
-              isMobile ? "pt-4" : "pl-28"
-            )}
-          >
+          <div className={cn("overflow-hidden pt-1", isMobile ? "pt-4" : "pl-28")}>
             <img
               src={artwork.artwork.image_url}
               alt={artwork.artwork.title}
@@ -101,7 +82,12 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
           </div>
 
           {/* Right - Artwork Info */}
-          <div className={cn("text-white flex flex-col justify-center", isMobile ? "w-[60%] pb-8 gap-1 -ml-28" : "w-[50%] gap-4")}>
+          <div
+            className={cn(
+              "text-white flex flex-col justify-center",
+              isMobile ? "w-[60%] pb-8 gap-1 -ml-28" : "w-[50%] gap-4"
+            )}
+          >
             <h2
               className={cn(
                 "font-semibold",
@@ -128,7 +114,9 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
               </div>
             </div>
 
-            <div className={cn("bg-white rounded-md flex ", isMobile ? "w-[350px] px-6 py-4" : "max-w-[475px] px-16 py-7")}>
+            <div
+              className={cn("bg-white rounded-md flex ", isMobile ? "w-[350px] px-6 py-4" : "max-w-[475px] px-16 py-7")}
+            >
               <div className="flex w-full">
                 <div className="flex-1 text-center pl-1">
                   <p className="text-[11px] text-black mb-3 whitespace-nowrap">Current Bid</p>
@@ -186,7 +174,9 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
       )}
 
       {/* Dots indicator */}
-      <div className={cn("absolute flex z-30", isMobile ? "bottom-4 right-4 space-x-[2px]" : "bottom-6 right-6 space-x-1")}>
+      <div
+        className={cn("absolute flex z-30", isMobile ? "bottom-4 right-4 space-x-[2px]" : "bottom-6 right-6 space-x-1")}
+      >
         {auctions.map((_, index) => (
           <button
             key={index}

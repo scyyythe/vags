@@ -6,7 +6,7 @@ import HotBidsCarouselSkeleton from "@/components/skeletons/HotBidsCarouselSkele
 
 const HotBidsCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-const { data: hotBids, isLoading, isError } = useFetchHotBids();
+  const { data: hotBids, isLoading, isError } = useFetchHotBids();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -18,38 +18,27 @@ const { data: hotBids, isLoading, isError } = useFetchHotBids();
     return () => clearInterval(interval);
   }, [hotBids]);
 
-  if (isLoading) {
-    return <HotBidsCarouselSkeleton />;
-  }
-
-  if (isError || !hotBids) {
-    return <div className="text-center py-10 text-red-500">Failed to load bids.</div>;
-  }
+  if (isLoading) return <HotBidsCarouselSkeleton />;
+  if (isError || !hotBids) return <div className="text-center py-10 text-red-500">Failed to load bids.</div>;
 
   const filteredBids = hotBids
     .filter((auction) => auction.bid_history && auction.bid_history.length > 0)
     .sort((a, b) => b.bid_history.length - a.bid_history.length);
 
   const sortedHotBids = filteredBids.slice(0, Math.min(filteredBids.length, 5));
-
   const itemCount = sortedHotBids.length;
 
   const radius = 250;
 
-  const goToPrevious = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? itemCount - 1 : prevIndex - 1));
-  };
-
-  const goToNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === itemCount - 1 ? 0 : prevIndex + 1));
-  };
+  const goToPrevious = () => setCurrentIndex((prev) => (prev === 0 ? itemCount - 1 : prev - 1));
+  const goToNext = () => setCurrentIndex((prev) => (prev === itemCount - 1 ? 0 : prev + 1));
 
   return (
     <section className="py-20 px-6 md:px-12" id="bids">
       <div className="max-w-screen-xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">Explore Hot Bids</h2>
 
-        <div className=" flex justify-center items-center h-[460px] -mb-20">
+        <div className="flex justify-center items-center h-[460px] -mb-20">
           {sortedHotBids.map((bid, index) => {
             const angle = ((index - currentIndex) * (360 / itemCount)) % 360;
             const radians = (angle * Math.PI) / 180;
@@ -71,8 +60,8 @@ const { data: hotBids, isLoading, isError } = useFetchHotBids();
                     className="w-48 h-48 object-cover rounded-lg"
                   />
 
-                  {/* Profile is only visible on center card */}
-                  {index === currentIndex && (
+                  {/* Profile only visible on center card */}
+                  {angle === 0 && (
                     <img
                       src={bid.artwork.profile_picture}
                       alt="profile"
@@ -81,7 +70,7 @@ const { data: hotBids, isLoading, isError } = useFetchHotBids();
                   )}
                 </div>
 
-                {index === currentIndex && (
+                {angle === 0 && (
                   <div className="text-center mt-6">
                     <p className="text-xs text-gray-500">{bid.artwork.artist}</p>
                     <p className="text-lg font-medium">{bid.artwork.title}</p>
