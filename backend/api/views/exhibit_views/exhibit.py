@@ -24,6 +24,21 @@ class ExhibitCreateView(APIView):
             exhibit = serializer.save()
             return Response(ExhibitSerializer(exhibit).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ExhibitUpdateView(APIView):
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
+
+    def put(self, request, pk):
+        try:
+            exhibit = Exhibit.objects.get(id=pk)
+        except Exhibit.DoesNotExist:
+            return Response({"detail": "Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ExhibitSerializer(instance=exhibit, data=request.data, partial=True, context={"request": request})
+        if serializer.is_valid():
+            updated_exhibit = serializer.save()
+            return Response(ExhibitSerializer(updated_exhibit, context={"request": request}).data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ExhibitListView(APIView):
     def get(self, request):
