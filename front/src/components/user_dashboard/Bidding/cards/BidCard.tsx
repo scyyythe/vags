@@ -7,7 +7,7 @@ import BidPopup from "../place_bid/BidPopup";
 import CountdownTimer from "@/hooks/count/useCountdown";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
-
+import { formatNumber } from "@/utils/numberFormat";
 interface ExtendedArtworkAuction extends ArtworkAuction {
   isPaid?: boolean;
   isHighestBidder?: boolean;
@@ -176,11 +176,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
                 <div className="text-gray-700 text-[9px]">
                   {hasWon ? "Your Bid" : "Current Bid"}{" "}
                   <span className="text-black text-sm font-bold ml-2">
-                    {data.highest_bid?.amount
-                      ? data.highest_bid.amount >= 1000
-                        ? `${(data.highest_bid.amount / 1000).toFixed(data.highest_bid.amount % 1000 === 0 ? 0 : 1)}k`
-                        : data.highest_bid.amount
-                      : "0"}
+                    {data.highest_bid?.amount ? formatNumber(data.highest_bid.amount) : "0"}
                   </span>
                 </div>
               </div>

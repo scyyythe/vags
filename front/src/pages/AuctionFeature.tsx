@@ -2,11 +2,11 @@ import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks";
 import AuctionFeatureSkeleton from "@/components/skeletons/AuctionFeatureSkeleton";
-import { useModal } from '../context/ModalContext'; 
-
+import { useModal } from "../context/ModalContext";
+import { formatCurrency } from "@/utils/numberFormat";
 const AuctionFeature = (initialTime) => {
   const { data: auctions } = useFetchBiddingArtworks();
-  const { showRegisterModal, setShowRegisterModal } = useModal(); 
+  const { showRegisterModal, setShowRegisterModal } = useModal();
 
   const featured = useMemo(() => {
     if (!auctions || auctions.length === 0) return null;
@@ -114,7 +114,7 @@ const AuctionFeature = (initialTime) => {
                 <div className="flex-1 text-center">
                   <p className="text-[11px] text-white mb-3">Current Bid</p>
                   <p className="text-xl md:text-2xl font-semibold whitespace-nowrap">
-                    {featured.highest_bid ? `₱ ${featured.highest_bid.amount.toLocaleString()}` : "No bids yet"}
+                    {formatCurrency(featured.highest_bid?.amount)}
                   </p>
                 </div>
 
@@ -147,13 +147,15 @@ const AuctionFeature = (initialTime) => {
             </div>
 
             <div className="flex space-x-8">
-              <button className="bg-red-700 text-white text-xs flex-1 rounded-full px-4 py-2 hover:bg-red-600" 
-              onClick={() => setShowRegisterModal(true)}>
+              <button
+                className="bg-red-700 text-white text-xs flex-1 rounded-full px-4 py-2 hover:bg-red-600"
+                onClick={() => setShowRegisterModal(true)}
+              >
                 Place a bid
               </button>
-              <button className="btn-secondary flex-1 text-xs rounded-full" 
-              onClick={() => setShowRegisterModal(true)}>
-                View item</button>
+              <button className="btn-secondary flex-1 text-xs rounded-full" onClick={() => setShowRegisterModal(true)}>
+                View item
+              </button>
             </div>
           </motion.div>
         </div>
