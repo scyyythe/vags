@@ -120,6 +120,17 @@ const Gallery3DWrapper = () => {
 
   return <Gallery3D slotArtworkMap={slotArtworkMap} artworks={artworks} />;
 };
+const AppContent = () => {
+  const location = useLocation();
+  const hideHeader = location.pathname.startsWith("/admin") || location.pathname.startsWith("/moderator");
+
+  return (
+    <>
+      {!hideHeader && <Header />}
+      <Routes>{/* all your routes here */}</Routes>
+    </>
+  );
+};
 
 const App = () => {
   return (
@@ -145,9 +156,8 @@ const App = () => {
                       <PurchaseProvider>
                         <ChatProvider>
                           <BrowserRouter>
-                            <Header />
+                            <AppContent />
                             <Routes>
-                              {/* Public & User Dashboard Routes (NO SidebarProvider) */}
                               <Route path="/" element={<Index />} />
                               <Route path="/bid/:id" element={<BidDetails />} />
                               <Route path="/fingerprint-auth" element={<FingerprintAuth />} />
