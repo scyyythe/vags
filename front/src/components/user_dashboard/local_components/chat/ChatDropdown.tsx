@@ -14,7 +14,7 @@ import { useFirebaseChat } from "@/hooks/messages/useFirebaseChat";
 import { useUserConversations } from "@/hooks/messages/useUserConversations";
 import { useChat } from "@/context/ChatContext";
 import { addDoc, serverTimestamp, getDocs } from "firebase/firestore";
-
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 interface ChatDropdownProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,7 +25,7 @@ interface ChatDropdownProps {
 
 const ChatDropdown = ({ isOpen, onClose, participantId, participantName, participantAvatar }: ChatDropdownProps) => {
   const { directMessageMode } = useChat();
-
+  const storage = getStorage();
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -99,34 +99,37 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       const existing = snapshot.docs.find((doc) => {
         const data = doc.data();
         return (
-          Array.isArray(data.participants) && data.participants.includes(targetId) && data.participants.includes(userId)
+          Array.isArray(data.participants) &&
+          data.participants.length === 2 &&
+          data.participants.includes(userId) &&
+          data.participants.includes(targetId)
         );
       });
 
       if (existing) {
-        console.log("⚡ Conversation already exists:", existing.id);
-        const existingData = existing.data();
-
+        // ✅ Always return existing instead of duplicating
         return {
           id: existing.id,
-          participantId: targetId, // ✅ make sure this is always set
-          participantName: existingData.participantName || targetName,
-          participantAvatar: existingData.participantAvatar || targetAvatar || undefined,
-          lastMessage: existingData.lastMessage ?? "",
-          lastMessageTime: existingData.lastMessageTime?.toDate ? existingData.lastMessageTime.toDate() : new Date(),
-          unreadCount: existingData.unreadCount || 0,
-          isOnline: existingData.isOnline || false,
-          isArchived: existingData.isArchived || false,
-          isPinned: existingData.isPinned || false,
-          isMuted: existingData.isMuted || false,
-          messages: existingData.messages || [], // ✅ fallback
+          participantId: targetId,
+          participantName: existing.data().participantName || targetName,
+          participantAvatar: existing.data().participantAvatar || targetAvatar || undefined,
+          lastMessage: existing.data().lastMessage ?? "",
+          lastMessageTime: existing.data().lastMessageTime?.toDate
+            ? existing.data().lastMessageTime.toDate()
+            : new Date(),
+          unreadCount: existing.data().unreadCount || 0,
+          isOnline: existing.data().isOnline || false,
+          isArchived: existing.data().isArchived || false,
+          isPinned: existing.data().isPinned || false,
+          isMuted: existing.data().isMuted || false,
+          messages: existing.data().messages || [],
         };
       }
 
       // --- create new if not exists ---
       const newConv = {
         participants: [userId, targetId],
-        participantId: targetId, // ✅ required
+        participantId: targetId,
         participantName: targetName,
         participantAvatar: targetAvatar || undefined,
         lastMessage: "",
@@ -136,7 +139,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         isArchived: false,
         isPinned: false,
         isMuted: false,
-        messages: [] as Message[], // ✅ required
+        messages: [] as Message[],
       };
 
       const docRef = await addDoc(collection(db, "conversations"), newConv);
@@ -144,22 +147,24 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       return {
         ...newConv,
         id: docRef.id,
-        lastMessageTime: new Date(), // show immediately, Firestore will sync later
+        lastMessageTime: new Date(),
       };
     } catch (err) {
       console.error("❌ Error creating conversation:", err);
       return null;
     }
   };
+
   useEffect(() => {
-    if (!isOpen || !participantId || !conversationsLoaded) return; // ✅ wait for snapshot
+    if (!isOpen || !participantId || !conversationsLoaded) return;
 
     const targetConv = conversations.find((c) => c.participantId === participantId);
 
     if (targetConv) {
       setSelectedConversation(targetConv.id);
       markAsRead(targetConv.id);
-    } else if (!creatingRef.current) {
+    } else if (!creatingRef.current && conversationsLoaded) {
+      // 👈 ensure snapshot is ready
       creatingRef.current = true;
       setLoadingConversation(true);
 
@@ -230,7 +235,10 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     if (!messageInput.trim() || !selectedConversation) return;
 
     await sendFirebaseMessage(
-      messageInput,
+      {
+        text: messageInput,
+        type: "text",
+      },
       participantId || selectedConv?.participantId,
       userName,
       userAvatarLocal,
@@ -244,21 +252,33 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   };
 
   const handleFileAttachment = (file: File) => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*,video/*,.pdf,.doc,.docx,.txt";
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file && selectedConversation) {
-        addMessageToConversation(selectedConversation, {
-          content: file.type.startsWith("image/") ? "Sent an image" : `Sent ${file.name}`,
+    if (!file || !selectedConversation) return;
+
+    const storageRef = ref(storage, `chat_uploads/${selectedConversation}/${Date.now()}_${file.name}`);
+
+    uploadBytes(storageRef, file).then(async (snapshot) => {
+      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      addMessageToConversation(selectedConversation, {
+        content: file.type.startsWith("image/") ? "Sent an image" : `Sent ${file.name}`,
+        type: file.type.startsWith("image/") ? "image" : "file",
+        imageUrl: file.type.startsWith("image/") ? downloadURL : undefined,
+        fileName: file.name,
+      });
+
+      await sendFirebaseMessage(
+        {
+          text: file.type.startsWith("image/") ? "Sent an image" : `Sent ${file.name}`,
           type: file.type.startsWith("image/") ? "image" : "file",
-          imageUrl: file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined,
+          fileUrl: downloadURL,
           fileName: file.name,
-        });
-      }
-    };
-    input.click();
+        },
+        participantId || selectedConv?.participantId,
+        userName,
+        userAvatarLocal,
+        selectedConversation
+      );
+    });
   };
 
   const handleCameraCapture = () => {
@@ -470,8 +490,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
               onVoiceRecord={handleVoiceRecord}
               onCameraCapture={handleCameraCapture}
               onEmojiClick={(emoji) => {
-                setMessageInput(prev => prev + emoji.native);
-                setShowEmojiPicker(false); 
+                setMessageInput((prev) => prev + emoji.native);
+                setShowEmojiPicker(false);
               }}
               onSetShowEmojiPicker={setShowEmojiPicker}
               onCancelReply={() => setReplyingTo(null)}
