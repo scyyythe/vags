@@ -61,6 +61,9 @@ const EditExhibit = () => {
   const [currentCollaborator, setCurrentCollaborator] = useState<User | null>(null);
   const [showNotificationDialog, setShowNotificationDialog] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
+
+  const [artworkFiles, setArtworkFiles] = useState<{ id: string; file?: File; url: string }[]>([]);
+
   const currentUserId = getLoggedInUserId();
   const { data: artworks = [] } = useArtworks(
     1,
@@ -116,24 +119,16 @@ const EditExhibit = () => {
     const fetchExhibit = async () => {
       if (!exhibitId) return;
       try {
-        // Replace mock data with real API call
         const response = await apiClient.get(`/exhibits/${exhibitId}/`);
         const exhibitData = response.data;
 
-        // Set view mode based on query
-        if (mode === "review") setViewMode("review"), setIsReadOnly(true);
-        else if (mode === "monitoring") setViewMode("monitoring"), setIsReadOnly(true);
-        else if (mode === "preview") setViewMode("preview"), setIsReadOnly(true);
-
-        // Populate states
+        // --- Your existing state population ---
         setTitle(exhibitData.title);
         setCategory(exhibitData.category);
         setArtworkStyle(exhibitData.artworkStyle ? exhibitData.artworkStyle.toLowerCase() : "");
-
         setExhibitType(exhibitData.exhibitType);
         setStartDate(exhibitData.startDate?.split("T")[0] || "");
         setEndDate(exhibitData.endDate?.split("T")[0] || "");
-
         setDescription(exhibitData.description);
         setSelectedEnvironment(exhibitData.selectedEnvironment);
         setBannerImage(exhibitData.bannerImage);
@@ -142,6 +137,14 @@ const EditExhibit = () => {
         setSlotArtworkMap(exhibitData.slotArtworkMap);
         setSelectedArtworks(Object.values(exhibitData.slotArtworkMap));
         setSelectedSlots(Object.keys(exhibitData.slotArtworkMap).map(Number));
+
+        // --- NEW: Populate artworks with URL and IDs ---
+        const artworksWithUrl = exhibitData.artworks.map((a: any) => ({
+          id: a.id,
+          url: a.file, // the existing image URL
+          file: undefined, // no new file yet
+        }));
+        setArtworkFiles(artworksWithUrl);
       } catch (err) {
         console.error("Failed to fetch exhibit data", err);
         toast.error("Failed to load exhibit data");
@@ -336,6 +339,7 @@ const EditExhibit = () => {
           {selectedEnvironment && !isReadOnly && (
             <ArtworkSelector
               artworks={artworks}
+              artworkFiles={artworkFiles}
               selectedArtworks={selectedArtworks}
               handleArtworkSelect={(artworkId: string) => {
                 const currentUserIdForSelection =
