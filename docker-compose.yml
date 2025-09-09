@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 services:
   redis:
@@ -8,22 +8,23 @@ services:
 
   backend:
     build: ./backend
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn backend.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - ./backend:/code
+      - ./backend:/app
     ports:
       - "8000:8000"
     depends_on:
       - redis
+    environment:
+      DEBUG: "0"
+      SECRET_KEY: "your_secret_key_here"
+      DATABASE_URL: "postgres://user:password@db:5432/vags"
 
   web:
     build: ./front
-    working_dir: /app
-    volumes:
-      - ./front:/app
-      - /app/node_modules
     ports:
-      - "8080:8080"
-    command: npm run dev -- --host
+      - "80:80"
     depends_on:
       - backend
+    environment:
+      VITE_API_PROD: "http://backend:8000/api/"
