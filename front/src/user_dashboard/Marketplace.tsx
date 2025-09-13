@@ -135,7 +135,7 @@ const Marketplace = () => {
           {/* Marketplace Filters */}
           <div className="mb-6">
             {/* Title + Wishlist + Mobile Sell */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-3">
               <h1 className="text-md font-bold text-gray-900">Marketplace</h1>
 
               <div className="flex items-center gap-2">
@@ -161,7 +161,7 @@ const Marketplace = () => {
                   )}
                 </div>
 
-                {/* ✅ Mobile Sell button */}
+                {/* Mobile Sell button */}
                 <button
                   className="sm:hidden py-1 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
                   onClick={handleSellClick}
