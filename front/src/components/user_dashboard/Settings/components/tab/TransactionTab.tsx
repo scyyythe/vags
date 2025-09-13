@@ -348,7 +348,7 @@ const TransactionsTab: React.FC = () => {
             </div>
         </div>
 
-        <div className="overflow-x-auto max-h-64 overflow-y-auto">
+        <div className="overflow-x-auto max-h-96 overflow-y-auto">
             <table className="w-full text-center text-xs text-gray-500">
                 <thead className="text-[11px] text-gray-700 text-center uppercase bg-gray-50 sticky top-0 z-10">
                     <tr className="text-[11px]">
