@@ -5,18 +5,24 @@ import { User } from "@/hooks/users/useUserQuery";
 interface ArtworkSelectorProps {
   artworks: Artwork[];
   selectedArtworks: string[];
+  artworkFiles?: { id: string; file?: File; url: string }[];
   handleArtworkSelect: (artworkId: string) => void;
   currentCollaborator: User | null;
   viewMode: string;
 }
-
 const ArtworkSelector: React.FC<ArtworkSelectorProps> = ({
   artworks,
+  artworkFiles = [],
   selectedArtworks,
   handleArtworkSelect,
   currentCollaborator,
   viewMode,
 }) => {
+  const combinedArtworks = [
+    ...artworkFiles.map((a) => ({ id: a.id, artworkImage: a.url, key: `file-${a.id}` })),
+    ...artworks.map((a) => ({ ...a, key: `art-${a.id}` })),
+  ];
+
   return (
     <div>
       <h3 className="text-xs font-medium mb-4">
@@ -25,12 +31,11 @@ const ArtworkSelector: React.FC<ArtworkSelectorProps> = ({
 
       <div className="max-h-64 overflow-y-auto pr-1">
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
-          {artworks.map((artwork) => {
+          {combinedArtworks.map((artwork) => {
             const isSelected = selectedArtworks.includes(artwork.id);
-
             return (
               <Card
-                key={artwork.id}
+                key={artwork.key} // ✅ Unique key
                 onClick={() => handleArtworkSelect(artwork.id)}
                 className={`cursor-pointer overflow-hidden ${isSelected ? "opacity-40" : ""}`}
               >

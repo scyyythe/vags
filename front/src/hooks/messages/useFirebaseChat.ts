@@ -17,13 +17,18 @@ import {
 
 export interface Message {
   id?: string;
-  text: string;
+  text?: string;
   senderId: string;
   receiverId: string;
   senderName: string;
   senderAvatar?: string;
   timestamp: any;
   isRead?: boolean;
+  type?: "text" | "image" | "file" | "voice" | "video";
+  fileUrl?: string;
+  fileName?: string;
+  fileSize?: number;
+  voiceDuration?: number;
 }
 
 export const useFirebaseChat = (conversationId: string | null, currentUserId: string) => {
@@ -49,18 +54,25 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
 
   const sendMessage = useCallback(
     async (
-      text: string,
+      payload: {
+        text?: string;
+        type?: "text" | "image" | "file" | "voice" | "video";
+        fileUrl?: string;
+        fileName?: string;
+        fileSize?: number;
+        voiceDuration?: number;
+      },
       receiverId: string,
       senderName: string,
       senderAvatar?: string,
-      existingConvoId?: string // pass existing conversation ID
+      existingConvoId?: string
     ) => {
-      if (!text.trim() || !currentUserId) return null;
+      if ((!payload.text && !payload.fileUrl) || !currentUserId) return null;
 
       try {
         let convoId = existingConvoId || conversationId;
 
-        // If conversation doesn't exist, create it
+        // Create new conversation if missing
         if (!convoId) {
           const newConvoRef = doc(collection(db, "conversations"));
           await setDoc(newConvoRef, {
@@ -68,16 +80,16 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
             lastMessage: "",
             lastMessageTime: serverTimestamp(),
             unread: { [receiverId]: 0 },
+            createdAt: serverTimestamp(),
             isArchived: false,
             isPinned: false,
             isMuted: false,
-            createdAt: serverTimestamp(),
           });
           convoId = newConvoRef.id;
         }
 
         const message: Message = {
-          text,
+          ...payload,
           senderId: currentUserId,
           receiverId,
           senderName,
@@ -90,7 +102,7 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
 
         // Update conversation metadata
         await updateDoc(doc(db, "conversations", convoId), {
-          lastMessage: text,
+          lastMessage: payload.text || payload.fileName || "📎 Attachment",
           lastMessageTime: serverTimestamp(),
           [`unread.${receiverId}`]: increment(1),
           updatedAt: serverTimestamp(),
@@ -98,7 +110,7 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
 
         return { messageId: msgRef.id, conversationId: convoId };
       } catch (err) {
-        console.error("Error sending message:", err);
+        console.error("❌ Error sending message:", err);
         return null;
       }
     },

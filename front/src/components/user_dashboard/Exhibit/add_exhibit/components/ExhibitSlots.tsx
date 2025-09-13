@@ -92,8 +92,8 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
           const assignedArtwork = assignedArtworkId
             ? artworks.find((artwork) => artwork.id === String(assignedArtworkId))
             : null;
-          const slotColor = getSlotColor(slotId);
-          const slotOwner = slotOwnerMap[slotId];
+          const slotColor = getSlotColor(slotId) || "border-gray-200";
+          const slotOwner = slotOwnerMap?.[slotId] || currentUser.id;
           const userCanInteract = canInteractWithSlot(slotId);
 
           return (
