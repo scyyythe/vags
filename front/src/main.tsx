@@ -11,6 +11,6 @@ createRoot(document.getElementById("root")!).render(
         <App />
       {/* </SidebarProvider> */}
     {/* </ThemeProvider> */}
-  </GoogleOAuthProvider>
+  </GoogleOAuthProvider> 
 );
  
