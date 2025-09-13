@@ -106,11 +106,11 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
               </button>
             </div>
 
-            <p className="text-gray-500 text-[10px] mb-6">
-              {hasUsername ? "Use your username for this bid." : "Set a username to bid."}
+            <p className="text-gray-500 text-[10px]">
+              Choose how you want your name to appear on this bid.
             </p>
 
-            <div className="space-y-6 my-11">
+            <div className="space-y-4 my-7">
               {/* Username Option */}
               <div
                 className={`px-4 py-2 border rounded-full cursor-pointer transition-all ${
@@ -144,9 +144,29 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                   </div>
                 </div>
               </div>
+
+              {/* Anonymous Option */}
+              <div
+                className={`px-4 py-2 border rounded-full cursor-pointer transition-all ${
+                  selectedIdentity === "anonymous"
+                    ? "border-red-800 bg-red-50"
+                    : "border-gray-200 hover:border-red-800"
+                }`}
+                onClick={() => setSelectedIdentity("anonymous")}
+              >
+                <div className="flex items-start gap-3">
+                  <i className="bx bx-hide"></i>
+                  <div className="flex-1">
+                    <h3 className="font-medium text-[10px]">Bid Anonymously</h3>
+                    {/* <p className="text-[9px] text-gray-500">
+                      Your identity will be hidden from others
+                    </p> */}
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="text-[8px] text-center -mt-8">
+            <div className="text-[8px] text-left -mt-4 ml-2">
               <a
                 href="#"
                 className="text-red-800 hover:underline"
@@ -159,7 +179,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
               </a>
             </div>
 
-            <div className="flex gap-3 mt-11">
+            <div className="flex gap-3 mt-8">
               <button
                 onClick={onClose}
                 className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-[10px] py-2 rounded-full font-medium transition-colors"
@@ -173,7 +193,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                   selectedIdentity ? "bg-red-800 hover:bg-red-700" : "bg-gray-300 cursor-not-allowed"
                 }`}
               >
-                {selectedIdentity === "username" && !hasUsername ? "Set Username" : "Confirm & Place Bid"}
+                {selectedIdentity === "username" && !hasUsername ? "Set Username" : "Confirm"}
               </button>
             </div>
           </div>
