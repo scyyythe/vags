@@ -62,7 +62,7 @@ const UsernameEditPopup: React.FC<UsernameEditPopupProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-0 flex items-center justify-center z-50" onClick={handleClose}>
       <div className="bg-white rounded-2xl w-full max-w-xs mx-4 relative" onClick={(e) => e.stopPropagation()}>
-        <div className="py-6 px-8">
+        <div className="py-11 px-8">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-sm font-bold">Edit Your Username</h2>
             <button onClick={handleClose} className="text-gray-600 hover:text-black">
