@@ -267,7 +267,7 @@ const SellCard = ({
 
       <div className="flex justify-between mt-1.5 items-center">
         <div className="flex flex-col">
-          <p className="text-[11px] font-medium mt-0.5 truncate" title={title}>
+          <p className="text-[11px] font-medium mt-0.5 truncate max-w-[110px]" title={title}>
             {title}
           </p>
           {status !== "active" && reason && <p className="text-[10px] text-red-600 mt-1">{reason}</p>}
