@@ -98,14 +98,14 @@ const UsernameEditPopup: React.FC<UsernameEditPopupProps> = ({
             </div>
 
             <div className="flex gap-3 pt-4">
-              <button
+              {/* <button
                 type="button"
                 onClick={handleClose}
                 disabled={isLoading}
                 className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-[10px] py-2 rounded-full font-medium transition-colors disabled:opacity-50"
               >
                 Cancel
-              </button>
+              </button> */}
               <button
                 type="submit"
                 disabled={isLoading || !username.trim()}
