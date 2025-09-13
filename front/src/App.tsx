@@ -340,7 +340,7 @@ const App = () => {
           </TooltipProvider>
         </LikedArtworksProvider>
       </WishlistProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 };
