@@ -288,7 +288,7 @@ const TransactionsTab: React.FC = () => {
                         {dayOptions.map(day => (
                         <div
                             key={day}
-                            className={`px-4 py-1 text-[9px] cursor-pointer hover:bg-gray-200 ${
+                            className={`px-4 py-1 text-[10px] cursor-pointer hover:bg-gray-200 ${
                             selectedDay === day ? "font-bold text-blue-700" : ""
                             }`}
                             onClick={() => {
@@ -305,18 +305,18 @@ const TransactionsTab: React.FC = () => {
 
                     {/* Currency filter */}
                     <div
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[9px]"
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[11px]"
                     onClick={() => setShowCurrencyDropdown(v => !v)}
                     >
                     Currency
-                    <FiChevronDown className="ml-2" />
+                    <FiChevronDown className="" />
                     </div>
                     {showCurrencyDropdown && (
                     <div className="mt-1">
                         {currencyOptions.map(opt => (
                         <div
                             key={opt}
-                            className={`px-4 py-1 text-[9px] cursor-pointer hover:bg-gray-200 ${
+                            className={`px-4 py-1 text-[10px] cursor-pointer hover:bg-gray-200 ${
                             selectedCurrency === opt ? "font-bold text-red-700" : ""
                             }`}
                             onClick={() => {
