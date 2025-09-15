@@ -73,22 +73,18 @@ export const MessageInput = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Reply size={14} className="text-blue-600" />
-              <span className="text-[11px] text-blue-600">
-                Replying to {replyingTo.senderName}
-              </span>
+              <span className="text-[11px] text-blue-600">Replying to {replyingTo.senderName}</span>
             </div>
             <button onClick={onCancelReply}>
               <X size={12} className="text-gray-500" />
             </button>
           </div>
-          <p className="text-[10px] text-gray-600 truncate mt-1">{replyingTo.content}</p>
+          <p className="text-[10px] text-gray-600 truncate mt-1">{replyingTo.content || replyingTo.text}</p>
         </div>
       )}
 
       {/* Warning message */}
-      {warning && (
-        <div className="text-[11px] text-red-600 mb-2">{warning}</div>
-      )}
+      {warning && <div className="text-[11px] text-red-600 mb-2">{warning}</div>}
 
       {/* Attached files preview */}
       {attachedFiles.length > 0 && (
@@ -103,7 +99,13 @@ export const MessageInput = ({
               }}
             >
               <span className="truncate max-w-[120px]">{file.name}</span>
-              <button onClick={(e) => { e.stopPropagation(); removeFile(i); }} className="ml-1">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeFile(i);
+                }}
+                className="ml-1"
+              >
                 <X size={12} />
               </button>
             </div>
@@ -117,12 +119,7 @@ export const MessageInput = ({
           <button onClick={handleFileClick}>
             <Paperclip size={13} className="text-gray-500 hover:text-black" />
           </button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            onChange={handleFileChange}
-          />
+          <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
 
           {/* Emoji picker */}
           <div className="relative">

@@ -29,6 +29,16 @@ export interface Message {
   fileName?: string;
   fileSize?: number;
   voiceDuration?: number;
+
+  replyTo?: {
+    messageId: string;
+    text?: string;
+    senderName?: string;
+  } | null;
+
+  reactions?: {
+    [userId: string]: string;
+  };
 }
 
 export const useFirebaseChat = (conversationId: string | null, currentUserId: string) => {
@@ -51,6 +61,12 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
 
     return () => unsubscribe();
   }, [conversationId]);
+  const addReaction = async (convoId: string, messageId: string, userId: string, emoji: string) => {
+    const msgRef = doc(db, "conversations", convoId, "messages", messageId);
+    await updateDoc(msgRef, {
+      [`reactions.${userId}`]: emoji,
+    });
+  };
 
   const sendMessage = useCallback(
     async (
@@ -61,6 +77,12 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
         fileName?: string;
         fileSize?: number;
         voiceDuration?: number;
+
+        replyTo?: {
+          messageId: string;
+          text?: string;
+          senderName?: string;
+        } | null;
       },
       receiverId: string,
       senderName: string,
@@ -96,10 +118,12 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
           senderAvatar: senderAvatar || null,
           timestamp: serverTimestamp(),
           isRead: false,
+          replyTo: payload.replyTo || null,
+          reactions: {},
         };
 
         const msgRef = await addDoc(collection(db, "conversations", convoId, "messages"), message);
-
+        message.id = msgRef.id;
         // Update conversation metadata
         await updateDoc(doc(db, "conversations", convoId), {
           lastMessage: payload.text || payload.fileName || "📎 Attachment",
