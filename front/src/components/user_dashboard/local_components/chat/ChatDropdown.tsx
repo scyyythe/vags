@@ -41,11 +41,26 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const userName = localStorage.getItem("username")!;
   const userAvatarLocal = localStorage.getItem("avatar_url") || undefined;
   const [conversations, setConversations] = useUserConversations(userId);
+  const [headerName, setHeaderName] = useState(participantName || "Unknown");
 
   const { messages: firebaseMessages, sendMessage: sendFirebaseMessage } = useFirebaseChat(
     selectedConversation || "",
     userId
   );
+  const mergeMessages = (local: Message[], remote: Message[]) => {
+    const ids = new Set(remote.map((m) => m.id));
+    return [...local, ...remote.filter((m) => !ids.has(m.id))];
+  };
+  useEffect(() => {
+    if (!isOpen || !participantId || !conversationsLoaded) return;
+
+    const targetConv = conversations.find((c) => c.participantId === participantId);
+
+    if (targetConv && selectedConversation !== targetConv.id) {
+      setSelectedConversation(targetConv.id);
+      markAsRead(targetConv.id);
+    }
+  }, [conversations, participantId, isOpen, conversationsLoaded]);
 
   useEffect(() => {
     if (isOpen) {
@@ -59,22 +74,23 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const convs: Conversation[] = snapshot.docs.map((doc) => {
           const data = doc.data();
-          const members: string[] = data.participants || [];
-          const otherUserId = members.find((m) => m !== userId);
+          const existingConv = conversations.find((c) => c.id === doc.id);
 
           return {
+            ...existingConv,
             id: doc.id,
-            participantId: otherUserId || "",
-            participantName: data.participantName || participantName || "Unknown",
-            participantAvatar: data.participantAvatar || participantAvatar,
-            lastMessage: data.lastMessage ?? "",
-            lastMessageTime: data.lastMessageTime?.toDate ? data.lastMessageTime.toDate() : new Date(0),
-            unreadCount: data.unreadCount || 0,
-            isOnline: data.isOnline || false,
-            isArchived: data.isArchived || false,
-            isPinned: data.isPinned || false,
-            isMuted: data.isMuted || false,
-            messages: data.messages || [],
+            participantId: data.participants.find((m) => m !== userId) || "",
+            participantName: existingConv?.participantName || data.participantName || "Unknown",
+
+            participantAvatar: existingConv?.participantAvatar || data.participantAvatar,
+            lastMessage: data.lastMessage ?? existingConv?.lastMessage ?? "",
+            lastMessageTime: data.lastMessageTime?.toDate ? data.lastMessageTime.toDate() : new Date(),
+            unreadCount: data.unreadCount ?? existingConv?.unreadCount ?? 0,
+            isOnline: data.isOnline ?? existingConv?.isOnline ?? false,
+            isArchived: data.isArchived ?? existingConv?.isArchived ?? false,
+            isPinned: data.isPinned ?? existingConv?.isPinned ?? false,
+            isMuted: data.isMuted ?? existingConv?.isMuted ?? false,
+            messages: mergeMessages(existingConv?.messages || [], data.messages || []),
           };
         });
 
@@ -188,6 +204,11 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   });
 
   const selectedConv = conversations.find((conv) => conv.id === selectedConversation);
+  useEffect(() => {
+    if (selectedConv) {
+      setHeaderName(selectedConv.participantName || participantName || "Unknown");
+    }
+  }, [selectedConv, participantName]);
 
   // Add a message safely
   const addMessageToConversation = (convId: string, message: Partial<Message>) => {
@@ -260,6 +281,9 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       content: messageInput,
       type: "text",
       replyTo: replyData,
+      senderName: userName,
+      senderId: userId,
+      isMine: true,
     });
 
     setMessageInput("");
@@ -414,6 +438,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       <div className="flex h-full">
         <div className="w-full flex flex-col">
           <ChatHeader
+            participantName={headerName}
             selectedConversation={selectedConversation}
             selectedConv={selectedConv}
             showArchived={showArchived}
@@ -441,7 +466,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                       .map((msg: any) => ({
                         id: msg.id,
                         senderId: msg.senderId,
-                        senderName: msg.senderName || msg.participantName || "Unknown",
+                        senderName: msg.senderName || selectedConv.participantName || participantName || "Unknown",
+
                         content: msg.content || msg.text || "",
                         timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(),
                         isRead: msg.isRead || false,
