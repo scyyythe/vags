@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/context-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Message, Conversation } from "./types/types";
-
+import { useEffect, useRef } from "react";
 interface MessagesListProps {
   conversation: Conversation;
   selectedMessage: string | null;
@@ -45,11 +45,16 @@ export const MessagesList = ({
       hour12: true,
     });
   };
-
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+  };
   const findRepliedMessage = (replyToId: string): Message | null => {
     return conversation.messages.find((msg) => msg.id === replyToId) || null;
   };
-
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversation.messages]);
   const renderDeliveryText = (message: Message) => {
     if (message.senderId !== currentUserId) return null;
 
@@ -280,6 +285,7 @@ export const MessagesList = ({
             </ContextMenu>
           );
         })}
+        <div ref={messagesEndRef} />
       </div>
     </div>
   );

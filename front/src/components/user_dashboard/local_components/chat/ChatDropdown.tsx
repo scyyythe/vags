@@ -15,6 +15,7 @@ import { useUserConversations } from "@/hooks/messages/useUserConversations";
 import { useChat } from "@/context/ChatContext";
 import { addDoc, serverTimestamp, getDocs } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 interface ChatDropdownProps {
   isOpen: boolean;
   onClose: () => void;
@@ -51,6 +52,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     const ids = new Set(remote.map((m) => m.id));
     return [...local, ...remote.filter((m) => !ids.has(m.id))];
   };
+
   useEffect(() => {
     if (!isOpen || !participantId || !conversationsLoaded) return;
 
@@ -364,7 +366,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   };
 
   // Conversation utilities
-  const markAsRead = (convId: string) =>
+  const markAsRead = async (convId: string) => {
     setConversations((prev) =>
       prev.map((conv) =>
         conv.id === convId
@@ -373,7 +375,27 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       )
     );
 
-  const markAsUnread = (convId: string) =>
+    try {
+      const convRef = doc(db, "conversations", convId);
+      await updateDoc(convRef, {
+        unreadCount: 0,
+        isArchived: false, // optional
+        lastMessageTime: serverTimestamp(),
+      });
+
+      // Optionally mark all messages as read
+      const msgsRef = collection(db, "conversations", convId, "messages");
+      const snapshot = await getDocs(msgsRef);
+      snapshot.forEach(async (docSnap) => {
+        await updateDoc(doc(db, "conversations", convId, "messages", docSnap.id), { isRead: true });
+      });
+    } catch (err) {
+      console.error("Error marking as read:", err);
+    }
+  };
+
+  // Mark as unread
+  const markAsUnread = async (convId: string) => {
     setConversations((prev) =>
       prev.map((conv) =>
         conv.id === convId
@@ -388,17 +410,66 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       )
     );
 
-  const togglePin = (convId: string) =>
-    setConversations((prev) => prev.map((conv) => (conv.id === convId ? { ...conv, isPinned: !conv.isPinned } : conv)));
-  const toggleMute = (convId: string) =>
-    setConversations((prev) => prev.map((conv) => (conv.id === convId ? { ...conv, isMuted: !conv.isMuted } : conv)));
-  const toggleArchive = (convId: string) =>
-    setConversations((prev) =>
-      prev.map((conv) => (conv.id === convId ? { ...conv, isArchived: !conv.isArchived } : conv))
-    );
-  const deleteConversation = (convId: string) => {
-    setConversations((prev) => prev.filter((conv) => conv.id !== convId));
+    try {
+      const convRef = doc(db, "conversations", convId);
+      await updateDoc(convRef, { unreadCount: 1 });
+    } catch (err) {
+      console.error("Error marking as unread:", err);
+    }
+  };
+
+  // Toggle pin
+  const togglePin = async (convId: string) => {
+    const conv = conversations.find((c) => c.id === convId);
+    if (!conv) return;
+
+    const newVal = !conv.isPinned;
+    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, isPinned: newVal } : c)));
+
+    try {
+      await updateDoc(doc(db, "conversations", convId), { isPinned: newVal });
+    } catch (err) {
+      console.error("Error toggling pin:", err);
+    }
+  };
+  // Toggle mute
+  const toggleMute = async (convId: string) => {
+    const conv = conversations.find((c) => c.id === convId);
+    if (!conv) return;
+
+    const newVal = !conv.isMuted;
+    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, isMuted: newVal } : c)));
+
+    try {
+      await updateDoc(doc(db, "conversations", convId), { isMuted: newVal });
+    } catch (err) {
+      console.error("Error toggling mute:", err);
+    }
+  };
+  // Toggle archive
+  const toggleArchive = async (convId: string) => {
+    const conv = conversations.find((c) => c.id === convId);
+    if (!conv) return;
+
+    const newVal = !conv.isArchived;
+    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, isArchived: newVal } : c)));
+
+    try {
+      await updateDoc(doc(db, "conversations", convId), { isArchived: newVal });
+    } catch (err) {
+      console.error("Error toggling archive:", err);
+    }
+  };
+  // Delete conversation
+  const deleteConversation = async (convId: string) => {
+    setConversations((prev) => prev.filter((c) => c.id !== convId));
     if (selectedConversation === convId) setSelectedConversation(null);
+
+    try {
+      await deleteDoc(doc(db, "conversations", convId));
+    } catch (err) {
+      console.error("Error deleting conversation:", err);
+    }
   };
 
   const starMessage = (messageId: string) => {
