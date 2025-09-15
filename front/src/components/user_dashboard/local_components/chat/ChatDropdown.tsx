@@ -107,7 +107,6 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       });
 
       if (existing) {
-        // ✅ Always return existing instead of duplicating
         return {
           id: existing.id,
           participantId: targetId,
@@ -189,9 +188,6 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   });
 
   const selectedConv = conversations.find((conv) => conv.id === selectedConversation);
-  console.log("💬 SelectedConversation ID:", selectedConversation);
-  console.log("📌 Conversations:", conversations);
-  console.log("👉 SelectedConv:", selectedConv);
 
   // Add a message safely
   const addMessageToConversation = (convId: string, message: Partial<Message>) => {
@@ -210,6 +206,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       deliveryStatus: "sent",
       isMine: true,
       reactions: [],
+      replyTo: message.replyTo || null,
     };
 
     setConversations((prev) =>
@@ -217,7 +214,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         conv.id === convId
           ? {
               ...conv,
-              messages: [...(conv.messages || []), newMessage], // ✅ safeguard
+              messages: [...(conv.messages || []), newMessage],
               lastMessage: newMessage.content,
               lastMessageTime: new Date(),
             }
@@ -234,10 +231,24 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const handleSendMessage = async () => {
     if (!messageInput.trim() || !selectedConversation) return;
 
+    const replyData = replyingTo
+      ? {
+          messageId: replyingTo.id!,
+          senderId: replyingTo.senderId,
+          senderName: replyingTo.senderName,
+          type: replyingTo.type,
+          content: replyingTo.content,
+          ...(replyingTo.fileName && { fileName: replyingTo.fileName }),
+          ...(replyingTo.imageUrl && { imageUrl: replyingTo.imageUrl }),
+          ...(replyingTo.voiceDuration && { voiceDuration: replyingTo.voiceDuration }),
+        }
+      : null;
+
     await sendFirebaseMessage(
       {
         text: messageInput,
         type: "text",
+        replyTo: replyData,
       },
       participantId || selectedConv?.participantId,
       userName,
@@ -245,7 +256,11 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       selectedConversation
     );
 
-    addMessageToConversation(selectedConversation, { content: messageInput, type: "text" });
+    addMessageToConversation(selectedConversation, {
+      content: messageInput,
+      type: "text",
+      replyTo: replyData,
+    });
 
     setMessageInput("");
     setReplyingTo(null);
@@ -389,7 +404,10 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     );
   };
 
-  const replyToMessage = (message: Message) => setReplyingTo(message);
+  const replyToMessage = (message: Message) => {
+    console.log("📨 Setting replyToMessage:", message);
+    setReplyingTo(message);
+  };
 
   return (
     <div className="absolute right-4 md:right-0.5 bg-white rounded-2xl shadow-xl z-50 w-[330px] md:w-[330px] h-[534px]">
@@ -435,6 +453,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                         fileName: msg.fileName,
                         voiceDuration: msg.voiceDuration,
                         isMine: String(msg.senderId) === String(userId),
+                        replyTo: msg.replyTo || null,
                       })),
                   ],
                 }}

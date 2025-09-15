@@ -1,14 +1,4 @@
-import {
-  Reply,
-  Star,
-  Copy,
-  Forward,
-  Edit,
-  Trash2,
-  Smile,
-  Paperclip,
-  Mic,
-} from "lucide-react";
+import { Reply, Star, Copy, Forward, Edit, Trash2, Smile, Paperclip, Mic } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -90,18 +80,28 @@ export const MessagesList = ({
       </div>
     );
   };
+  const uniqueMessages = Array.from(new Map(conversation.messages.map((m) => [m.id, m])).values());
+  const getSenderName = (senderId: string) => {
+    if (senderId === currentUserId) return "You";
+    return conversation?.participantName || "Unknown";
+  };
 
   return (
     <div className="p-4">
       <div className="space-y-6">
         {conversation.messages.map((message) => {
-          const repliedMessage = message.replyTo ? findRepliedMessage(message.replyTo) : null;
+          if (message.replyTo) {
+            console.log("💬 Message has replyTo:", message.id, message.replyTo);
+          }
+          const repliedMessage = message.replyTo ? findRepliedMessage(message.replyTo.messageId) : null;
 
           return (
             <ContextMenu key={message.id}>
               <ContextMenuTrigger>
                 <div
-                  className={`flex ${message.senderId === currentUserId ? "justify-end" : "justify-start"} mb-2 relative group`}
+                  className={`flex ${
+                    message.senderId === currentUserId ? "justify-end" : "justify-start"
+                  } mb-2 relative group`}
                 >
                   <div className="relative max-w-[80%]">
                     {message.senderId !== currentUserId && (
@@ -128,7 +128,7 @@ export const MessagesList = ({
                       } ${selectedMessage === message.id ? "ring-2 ring-blue-300" : ""}`}
                       onClick={() => onSelectMessage(selectedMessage === message.id ? null : message.id)}
                     >
-                      {repliedMessage && (
+                      {message.replyTo && (
                         <div
                           className={`text-[10px] mb-2 border-l-2 pl-2 ${
                             message.senderId === currentUserId
@@ -138,13 +138,12 @@ export const MessagesList = ({
                         >
                           <div className="flex items-center space-x-1 mb-1">
                             <Reply size={10} />
-                            <span className="font-medium">{repliedMessage.senderName}</span>
                           </div>
                           <div className="opacity-80 truncate max-w-[200px] text-[10px]">
-                            {repliedMessage.type === "image" && "Image"}
-                            {repliedMessage.type === "file" && `${repliedMessage.fileName}`}
-                            {repliedMessage.type === "voice" && "Voice message"}
-                            {repliedMessage.type === "text" && repliedMessage.content}
+                            {message.replyTo.type === "image" && "Image"}
+                            {message.replyTo.type === "file" && message.replyTo.fileName}
+                            {message.replyTo.type === "voice" && "Voice message"}
+                            {message.replyTo.type === "text" && message.replyTo.content}
                           </div>
                         </div>
                       )}
@@ -201,9 +200,7 @@ export const MessagesList = ({
 
                     {/* Sender Delivery Status Text */}
                     {message.senderId === currentUserId && (
-                      <div className="mt-1 flex justify-end">
-                        {renderDeliveryText(message)}
-                      </div>
+                      <div className="mt-1 flex justify-end">{renderDeliveryText(message)}</div>
                     )}
 
                     {/* Receiver date-time below bubble */}
