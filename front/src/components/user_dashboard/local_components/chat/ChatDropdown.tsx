@@ -15,6 +15,7 @@ import { useUserConversations } from "@/hooks/messages/useUserConversations";
 import { useChat } from "@/context/ChatContext";
 import { addDoc, serverTimestamp, getDocs } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 interface ChatDropdownProps {
   isOpen: boolean;
   onClose: () => void;
@@ -41,11 +42,27 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const userName = localStorage.getItem("username")!;
   const userAvatarLocal = localStorage.getItem("avatar_url") || undefined;
   const [conversations, setConversations] = useUserConversations(userId);
+  const [headerName, setHeaderName] = useState(participantName || "Unknown");
 
   const { messages: firebaseMessages, sendMessage: sendFirebaseMessage } = useFirebaseChat(
     selectedConversation || "",
     userId
   );
+  const mergeMessages = (local: Message[], remote: Message[]) => {
+    const ids = new Set(remote.map((m) => m.id));
+    return [...local, ...remote.filter((m) => !ids.has(m.id))];
+  };
+
+  useEffect(() => {
+    if (!isOpen || !participantId || !conversationsLoaded) return;
+
+    const targetConv = conversations.find((c) => c.participantId === participantId);
+
+    if (targetConv && selectedConversation !== targetConv.id) {
+      setSelectedConversation(targetConv.id);
+      markAsRead(targetConv.id);
+    }
+  }, [conversations, participantId, isOpen, conversationsLoaded]);
 
   useEffect(() => {
     if (isOpen) {
@@ -59,22 +76,23 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const convs: Conversation[] = snapshot.docs.map((doc) => {
           const data = doc.data();
-          const members: string[] = data.participants || [];
-          const otherUserId = members.find((m) => m !== userId);
+          const existingConv = conversations.find((c) => c.id === doc.id);
 
           return {
+            ...existingConv,
             id: doc.id,
-            participantId: otherUserId || "",
-            participantName: data.participantName || participantName || "Unknown",
-            participantAvatar: data.participantAvatar || participantAvatar,
-            lastMessage: data.lastMessage ?? "",
-            lastMessageTime: data.lastMessageTime?.toDate ? data.lastMessageTime.toDate() : new Date(0),
-            unreadCount: data.unreadCount || 0,
-            isOnline: data.isOnline || false,
-            isArchived: data.isArchived || false,
-            isPinned: data.isPinned || false,
-            isMuted: data.isMuted || false,
-            messages: data.messages || [],
+            participantId: data.participants.find((m) => m !== userId) || "",
+            participantName: existingConv?.participantName || data.participantName || "Unknown",
+
+            participantAvatar: existingConv?.participantAvatar || data.participantAvatar,
+            lastMessage: data.lastMessage ?? existingConv?.lastMessage ?? "",
+            lastMessageTime: data.lastMessageTime?.toDate ? data.lastMessageTime.toDate() : new Date(),
+            unreadCount: data.unreadCount ?? existingConv?.unreadCount ?? 0,
+            isOnline: data.isOnline ?? existingConv?.isOnline ?? false,
+            isArchived: data.isArchived ?? existingConv?.isArchived ?? false,
+            isPinned: data.isPinned ?? existingConv?.isPinned ?? false,
+            isMuted: data.isMuted ?? existingConv?.isMuted ?? false,
+            messages: mergeMessages(existingConv?.messages || [], data.messages || []),
           };
         });
 
@@ -107,7 +125,6 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       });
 
       if (existing) {
-        // ✅ Always return existing instead of duplicating
         return {
           id: existing.id,
           participantId: targetId,
@@ -189,9 +206,11 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   });
 
   const selectedConv = conversations.find((conv) => conv.id === selectedConversation);
-  console.log("💬 SelectedConversation ID:", selectedConversation);
-  console.log("📌 Conversations:", conversations);
-  console.log("👉 SelectedConv:", selectedConv);
+  useEffect(() => {
+    if (selectedConv) {
+      setHeaderName(selectedConv.participantName || participantName || "Unknown");
+    }
+  }, [selectedConv, participantName]);
 
   // Add a message safely
   const addMessageToConversation = (convId: string, message: Partial<Message>) => {
@@ -210,6 +229,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       deliveryStatus: "sent",
       isMine: true,
       reactions: [],
+      replyTo: message.replyTo || null,
     };
 
     setConversations((prev) =>
@@ -217,7 +237,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         conv.id === convId
           ? {
               ...conv,
-              messages: [...(conv.messages || []), newMessage], // ✅ safeguard
+              messages: [...(conv.messages || []), newMessage],
               lastMessage: newMessage.content,
               lastMessageTime: new Date(),
             }
@@ -234,10 +254,24 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const handleSendMessage = async () => {
     if (!messageInput.trim() || !selectedConversation) return;
 
+    const replyData = replyingTo
+      ? {
+          messageId: replyingTo.id!,
+          senderId: replyingTo.senderId,
+          senderName: replyingTo.senderName,
+          type: replyingTo.type,
+          content: replyingTo.content,
+          ...(replyingTo.fileName && { fileName: replyingTo.fileName }),
+          ...(replyingTo.imageUrl && { imageUrl: replyingTo.imageUrl }),
+          ...(replyingTo.voiceDuration && { voiceDuration: replyingTo.voiceDuration }),
+        }
+      : null;
+
     await sendFirebaseMessage(
       {
         text: messageInput,
         type: "text",
+        replyTo: replyData,
       },
       participantId || selectedConv?.participantId,
       userName,
@@ -245,7 +279,14 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       selectedConversation
     );
 
-    addMessageToConversation(selectedConversation, { content: messageInput, type: "text" });
+    addMessageToConversation(selectedConversation, {
+      content: messageInput,
+      type: "text",
+      replyTo: replyData,
+      senderName: userName,
+      senderId: userId,
+      isMine: true,
+    });
 
     setMessageInput("");
     setReplyingTo(null);
@@ -325,7 +366,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   };
 
   // Conversation utilities
-  const markAsRead = (convId: string) =>
+  const markAsRead = async (convId: string) => {
     setConversations((prev) =>
       prev.map((conv) =>
         conv.id === convId
@@ -334,7 +375,27 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       )
     );
 
-  const markAsUnread = (convId: string) =>
+    try {
+      const convRef = doc(db, "conversations", convId);
+      await updateDoc(convRef, {
+        unreadCount: 0,
+        isArchived: false, // optional
+        lastMessageTime: serverTimestamp(),
+      });
+
+      // Optionally mark all messages as read
+      const msgsRef = collection(db, "conversations", convId, "messages");
+      const snapshot = await getDocs(msgsRef);
+      snapshot.forEach(async (docSnap) => {
+        await updateDoc(doc(db, "conversations", convId, "messages", docSnap.id), { isRead: true });
+      });
+    } catch (err) {
+      console.error("Error marking as read:", err);
+    }
+  };
+
+  // Mark as unread
+  const markAsUnread = async (convId: string) => {
     setConversations((prev) =>
       prev.map((conv) =>
         conv.id === convId
@@ -349,17 +410,66 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       )
     );
 
-  const togglePin = (convId: string) =>
-    setConversations((prev) => prev.map((conv) => (conv.id === convId ? { ...conv, isPinned: !conv.isPinned } : conv)));
-  const toggleMute = (convId: string) =>
-    setConversations((prev) => prev.map((conv) => (conv.id === convId ? { ...conv, isMuted: !conv.isMuted } : conv)));
-  const toggleArchive = (convId: string) =>
-    setConversations((prev) =>
-      prev.map((conv) => (conv.id === convId ? { ...conv, isArchived: !conv.isArchived } : conv))
-    );
-  const deleteConversation = (convId: string) => {
-    setConversations((prev) => prev.filter((conv) => conv.id !== convId));
+    try {
+      const convRef = doc(db, "conversations", convId);
+      await updateDoc(convRef, { unreadCount: 1 });
+    } catch (err) {
+      console.error("Error marking as unread:", err);
+    }
+  };
+
+  // Toggle pin
+  const togglePin = async (convId: string) => {
+    const conv = conversations.find((c) => c.id === convId);
+    if (!conv) return;
+
+    const newVal = !conv.isPinned;
+    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, isPinned: newVal } : c)));
+
+    try {
+      await updateDoc(doc(db, "conversations", convId), { isPinned: newVal });
+    } catch (err) {
+      console.error("Error toggling pin:", err);
+    }
+  };
+  // Toggle mute
+  const toggleMute = async (convId: string) => {
+    const conv = conversations.find((c) => c.id === convId);
+    if (!conv) return;
+
+    const newVal = !conv.isMuted;
+    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, isMuted: newVal } : c)));
+
+    try {
+      await updateDoc(doc(db, "conversations", convId), { isMuted: newVal });
+    } catch (err) {
+      console.error("Error toggling mute:", err);
+    }
+  };
+  // Toggle archive
+  const toggleArchive = async (convId: string) => {
+    const conv = conversations.find((c) => c.id === convId);
+    if (!conv) return;
+
+    const newVal = !conv.isArchived;
+    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, isArchived: newVal } : c)));
+
+    try {
+      await updateDoc(doc(db, "conversations", convId), { isArchived: newVal });
+    } catch (err) {
+      console.error("Error toggling archive:", err);
+    }
+  };
+  // Delete conversation
+  const deleteConversation = async (convId: string) => {
+    setConversations((prev) => prev.filter((c) => c.id !== convId));
     if (selectedConversation === convId) setSelectedConversation(null);
+
+    try {
+      await deleteDoc(doc(db, "conversations", convId));
+    } catch (err) {
+      console.error("Error deleting conversation:", err);
+    }
   };
 
   const starMessage = (messageId: string) => {
@@ -389,13 +499,17 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     );
   };
 
-  const replyToMessage = (message: Message) => setReplyingTo(message);
+  const replyToMessage = (message: Message) => {
+    console.log("📨 Setting replyToMessage:", message);
+    setReplyingTo(message);
+  };
 
   return (
     <div className="absolute right-4 md:right-0.5 bg-white rounded-2xl shadow-xl z-50 w-[330px] md:w-[330px] h-[534px]">
       <div className="flex h-full">
         <div className="w-full flex flex-col">
           <ChatHeader
+            participantName={headerName}
             selectedConversation={selectedConversation}
             selectedConv={selectedConv}
             showArchived={showArchived}
@@ -423,7 +537,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                       .map((msg: any) => ({
                         id: msg.id,
                         senderId: msg.senderId,
-                        senderName: msg.senderName || msg.participantName || "Unknown",
+                        senderName: msg.senderName || selectedConv.participantName || participantName || "Unknown",
+
                         content: msg.content || msg.text || "",
                         timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(),
                         isRead: msg.isRead || false,
@@ -435,6 +550,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                         fileName: msg.fileName,
                         voiceDuration: msg.voiceDuration,
                         isMine: String(msg.senderId) === String(userId),
+                        replyTo: msg.replyTo || null,
                       })),
                   ],
                 }}
