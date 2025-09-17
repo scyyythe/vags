@@ -15,6 +15,7 @@ import { Conversation } from "./types/types";
 interface ChatHeaderProps {
   selectedConversation: string | null;
   selectedConv: Conversation | undefined;
+  participantName?: string;
   showArchived: boolean;
   searchQuery: string;
   onBack: () => void;
@@ -29,6 +30,7 @@ interface ChatHeaderProps {
 
 export const ChatHeader = ({
   selectedConversation,
+  participantName,
   selectedConv,
   showArchived,
   searchQuery,

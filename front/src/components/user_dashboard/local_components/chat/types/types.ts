@@ -10,13 +10,30 @@ export interface Message {
   isStarred: boolean;
   type: "text" | "image" | "file" | "voice";
   deliveryStatus: DeliveryStatus;
-  reactions?: { emoji: string; users: string[] }[];
+
   imageUrl?: string;
+  text?: string;
   fileName?: string;
   voiceDuration?: number;
   isMine?: boolean;
   senderAvatar?: string;
-  replyTo?: string;
+
+  replyTo?: {
+    messageId: string;
+    senderId: string;
+    senderName: string;
+    type: "text" | "image" | "file" | "voice";
+    content?: string;
+    fileName?: string;
+    imageUrl?: string;
+    voiceDuration?: number;
+  } | null;
+
+  reactions?: {
+    emoji: string;
+    users: string[];
+  }[];
+
   participantName?: string;
 }
 
