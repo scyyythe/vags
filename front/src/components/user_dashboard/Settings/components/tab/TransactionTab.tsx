@@ -1,6 +1,14 @@
 import React, { useState, useMemo } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { FiArrowDownLeft, FiArrowUpRight, FiRepeat, FiSearch, FiChevronDown, FiCalendar }  from "react-icons/fi";
 
 // Mock data
@@ -347,47 +355,73 @@ const TransactionsTab: React.FC = () => {
             </div>
             </div>
         </div>
+        
+        {/* TABLE */}
+        <div className="border rounded-lg overflow-hidden">
+          <div className="max-h-96 overflow-y-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-gray-100 sticky top-0 z-10">
+                  <TableHead className="text-[11px]">Activity</TableHead>
+                  <TableHead className="text-[11px]">Date</TableHead>
+                  <TableHead className="text-[11px]">Amount</TableHead>
+                  <TableHead className="text-[11px]">Method</TableHead>
+                  <TableHead className="text-[11px] text-right">Status</TableHead>
+                </TableRow>
+              </TableHeader>
 
-        <div className="overflow-x-auto max-h-96 overflow-y-auto">
-            <table className="w-full text-center text-xs text-gray-500">
-                <thead className="text-[11px] text-gray-700 text-center uppercase bg-gray-50 sticky top-0 z-10">
-                    <tr className="text-[11px]">
-                        <th className="py-2">Activity</th>
-                        <th className=" py-2">Date</th>
-                        <th className=" py-2">Amount</th>
-                        <th className=" py-2">Method</th>
-                        <th className="pr-3 py-2">Status</th>
-                    </tr>
-                </thead>
+              <TableBody>
+                {filtered.map((tx) => (
+                  <TableRow key={tx.id} className="hover:bg-gray-50">
+                    {/* Activity + Person */}
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <TypeIcon type={tx.type} />
+                        <div>
+                          <div className="font-medium text-[11px] text-gray-800 whitespace-nowrap">
+                            {tx.activity}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Avatar avatar={tx.people.avatar} initials={tx.people.initials} />
+                            <span className="text-[10px] text-gray-500 whitespace-nowrap">
+                              {tx.people.name}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
 
-                <tbody className="max-h-64 overflow-y-auto">
-                    {filtered.map(tx => (
-                    <tr key={tx.id} className="text-[12px]">
-                        <td className="px-4 py-2 flex items-center gap-2">
-                            <TypeIcon type={tx.type} />
-                            {/* {tx.type} */}
-                            <div>
-                                <div className="font-medium text-gray-800 whitespace-nowrap">{tx.activity}</div>
-                                <div className="flex items-center gap-1">
-                                    <Avatar avatar={tx.people.avatar} initials={tx.people.initials} />
-                                    <span className="text-gray-600 whitespace-nowrap">{tx.people.name}</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td className="px-4 py-2 whitespace-nowrap">{tx.date}</td>
-                        <td className="px-4 py-2 font-semibold text-gray-800 whitespace-nowrap">{tx.amount}</td>
-                        <td className="px-4 py-2">
-                        <div className="text-gray-800 whitespace-nowrap">{tx.method}</div>
-                        <div className="text-gray-500 text-[9px]">{tx.methodDetail}</div>
-                        </td>
-                        <td className="px-4 py-2">
-                        <span className={`px-2 py-1 rounded-full text-[11px] ${statusColors[tx.status]}`}>{tx.status}</span>
-                        </td>
-                    </tr>
-                    ))}
-                </tbody>
-            </table>
+                    {/* Date */}
+                    <TableCell className="text-[11px] text-gray-600 whitespace-nowrap">
+                      {tx.date}
+                    </TableCell>
+
+                    {/* Amount */}
+                    <TableCell className="text-[11px] font-semibold text-gray-800 whitespace-nowrap">
+                      {tx.amount}
+                    </TableCell>
+
+                    {/* Method */}
+                    <TableCell>
+                      <div className="text-[11px] text-gray-800 whitespace-nowrap">{tx.method}</div>
+                      <div className="text-[10px] text-gray-500">{tx.methodDetail}</div>
+                    </TableCell>
+
+                    {/* Status */}
+                    <TableCell className="text-right">
+                      <span
+                        className={`px-2 py-1 rounded-full text-[10px] ${statusColors[tx.status]}`}
+                      >
+                        {tx.status}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
+        
         </div>
     );
 };
