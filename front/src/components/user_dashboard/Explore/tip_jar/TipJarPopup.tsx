@@ -7,6 +7,7 @@ import gcashLogo from "../../../../../public/pics/gcash.png";
 import paypalLogo from "../../../../../public/pics/paypal.png";
 import stripeLogo from "../../../../../public/pics/stripe.png";
 import { usePayPalTip } from "@/hooks/tips/usePayPalTip";
+import { useStripeTip } from "@/hooks/tips/useStripeTip";
 interface TipJarPopupProps {
   isOpen: boolean;
   onClose: () => void;
@@ -34,7 +35,7 @@ const TipJarPopup = ({
   const [customAmount, setCustomAmount] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("PayPal");
   const popupRef = useRef<HTMLDivElement>(null);
-
+  const { createStripeSession } = useStripeTip();
   console.log("TipJarPopup - isOpen:", isOpen);
   console.log("TipJarPopup - artworkTitle:", artworkTitle);
   console.log("TipJarPopup - artistId:", artistId);
@@ -107,7 +108,7 @@ const TipJarPopup = ({
   const handleProceedToDonate = () => {
     const amount = selectedAmount || customAmount;
     if (!amount) {
-      toast.error("Please select or enter an amount", { closeButton: true })
+      toast.error("Please select or enter an amount", { closeButton: true });
       return;
     }
 
@@ -118,30 +119,35 @@ const TipJarPopup = ({
     artistId: artistId,
     id: artId,
     onSuccess: (details) => {
-      toast.success("Thank you for your donation!", { closeButton: true })
+      toast.success("Thank you for your donation!", { closeButton: true });
       onClose();
     },
     onError: (error) => {
-      toast.error("PayPal payment failed. Please try again.", { closeButton: true })
+      toast.error("PayPal payment failed. Please try again.", { closeButton: true });
       console.error(error);
     },
   });
 
-  const handleConfirmDonation = () => {
+  const handleConfirmDonation = async () => {
     const amount = selectedAmount || customAmount;
     if (!amount) {
-      toast.error("Invalid amount.", { closeButton: true })
+      toast.error("Invalid amount.", { closeButton: true });
       return;
     }
 
     if (paymentMethod === "PayPal") {
       setStep("paypal");
+    } else if (paymentMethod === "Stripe") {
+      try {
+        await createStripeSession(amount, artistId, artId);
+      } catch (err) {
+        toast.error("Stripe payment failed. Try again.", { closeButton: true });
+      }
     } else {
-      toast.success(`Donation of ₱${amount} sent via ${paymentMethod}!`, { closeButton: true })
+      toast.success(`Donation of ₱${amount} sent via ${paymentMethod}!`, { closeButton: true });
       onClose();
     }
   };
-
   const handleCancel = () => {
     if (step === "confirm") {
       setStep("amount");
