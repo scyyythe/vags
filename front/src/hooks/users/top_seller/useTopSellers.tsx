@@ -1,18 +1,18 @@
-
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 
 interface TopSeller {
   id: string;
   name: string;
-  avatar: string;
+  profile_picture: string;
   rating: number;
+  sold_count: number;
   art_count: number;
 }
 
 const fetchTopSellers = async (): Promise<TopSeller[]> => {
-  const response = await apiClient.get("/top-sellers/");
-  return response.data;
+  const { data } = await apiClient.get("/top-sellers/");
+  return data;
 };
 
 const useTopSellers = () => {

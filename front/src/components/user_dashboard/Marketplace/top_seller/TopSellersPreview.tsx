@@ -28,10 +28,7 @@ const TopSellers = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xs font-semibold text-gray-900">Top Sellers</h2>
-        <button
-          className="text-[11px] text-gray-600 hover:text-gray-900"
-          onClick={handleViewAll}
-        >
+        <button className="text-[11px] text-gray-600 hover:text-gray-900" onClick={handleViewAll}>
           View all
         </button>
       </div>
@@ -59,22 +56,14 @@ const TopSellers = () => {
               >
                 <div className="flex items-center gap-3">
                   <Avatar className="w-7 h-7 shadow-2xl">
-                    <AvatarImage
-                      src={seller.avatar}
-                      alt={seller.name}
-                      className="object-cover"
-                    />
+                    <AvatarImage src={seller.profile_picture} alt={seller.name} className="object-cover" />
                     <AvatarFallback>{seller.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-[10px] text-gray-900 truncate">
-                      {seller.name}
-                    </h3>
+                    <h3 className="font-medium text-[10px] text-gray-900 truncate">{seller.name}</h3>
                     <div className="flex items-center gap-1">
                       <i className="bx bxs-star text-yellow-400 text-xs"></i>
-                      <span className="relative top-[1px] text-[10px] text-red-600 font-medium">
-                        {seller.rating}
-                      </span>
+                      <span className="relative top-[1px] text-[10px] text-red-600 font-medium">{seller.rating}</span>
                     </div>
                   </div>
                 </div>
