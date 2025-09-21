@@ -41,16 +41,16 @@ const SettingsTabs = () => {
   ];
 
   return (
-    <div className="flex flex-wrap gap-2 md:gap-4  mb-8">
+    <div className="flex flex-wrap gap-2 md:gap-4 mb-8">
       {tabs.map((tab) => (
         <Link
           key={tab.path}
           to={tab.path}
           className={cn(
-            "flex items-center px-3 py-2 text-xs font-medium transition-all relative",
+            "flex items-center px-3 py-2 text-xs font-medium transition-all relative border-b-2",
             pathname === tab.path
-              ? "text-gray-900 border-b-2 border-black -mb-px"
-              : "text-gray-500 hover:text-gray-700"
+              ? "text-gray-900 border-black"
+              : "text-gray-500 hover:text-gray-700 border-transparent"
           )}
         >
           {tab.icon}
