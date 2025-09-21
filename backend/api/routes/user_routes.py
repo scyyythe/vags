@@ -4,12 +4,13 @@ from api.views.user_views.user_views import (
     RetrieveUserView, UpdateUserDetailsView, UpdateUserView,
     DeleteUserView, ListAllUsersView, BlockUserView, UnblockUserView
 )
-from api.views.user_views.top_sellers_view import TopSellersAPIView
+from api.views.user_views.top_sellers_view import TopSellersAPIView,TopArtworksAPIView
 from api.views.user_views.address_view import AddressViewSet,DefaultAddressView,SetDefaultAddressView
 
 user_urlpatterns = [
     path('top-sellers/', TopSellersAPIView.as_view(), name='top-sellers'),
-
+    path("top-artworks/", TopArtworksAPIView.as_view(), name="top-artworks"),
+    
     path('user/<str:pk>/', RetrieveUserView.as_view(), name='retrieve_user'),
     path('user/<str:pk>/update/', UpdateUserView.as_view(), name='update_user'),
     path('user/<str:pk>/delete/', DeleteUserView.as_view(), name='delete_user'),
