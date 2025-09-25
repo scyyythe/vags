@@ -11,6 +11,8 @@ import cloudinary.uploader
 import cloudinary.api
 from django.http import JsonResponse
 from corsheaders.defaults import default_headers
+import stripe
+
 
 load_dotenv() 
 
@@ -25,6 +27,10 @@ connect(
     host=os.getenv("MONGO_DB_URI"),
     alias="default"
 )
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
+
+stripe.api_key = STRIPE_SECRET_KEY
 
 # Optional: test the connection in dev only
 if "runserver" in sys.argv or "shell" in sys.argv:

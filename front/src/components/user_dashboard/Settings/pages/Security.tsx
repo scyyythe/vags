@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -10,41 +10,46 @@ import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import apiClient from "@/utils/apiClient";
+interface Credential {
+  id: string;
+  device: string;
+  date: string;
+  isCurrentSession: boolean;
+}
 const SecuritySettings = () => {
   const userId = getLoggedInUserId();
   const { username, email, password, isLoading, error } = useUserDetails(userId);
   const updateUser = useUpdateUserDetails();
 
+  // Form state
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
     twoFactorEnabled: true,
   });
-
   const [originalData, setOriginalData] = useState({ ...formData });
   const [isEditingPassword, setIsEditingPassword] = useState(false);
-  const [credentials, setCredentials] = useState([
-    {
-      id: 1,
-      device: "Mac OS Safari 15.1",
-      date: "10 Feb 2023 at 5:12PM",
-      isCurrentSession: false,
-    },
-    {
-      id: 2,
-      device: "iOS Safari 15.1",
-      date: "22 Apr 2023 at 7:03AM",
-      isCurrentSession: true,
-    },
-  ]);
 
-  const [originalCredentials, setOriginalCredentials] = useState([...credentials]);
+  const [credentials, setCredentials] = useState<Credential[]>([]);
+  const [originalCredentials, setOriginalCredentials] = useState<Credential[]>([]);
 
-  // Password visibility toggles
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  useEffect(() => {
+    apiClient
+      .get("/sessions/")
+      .then((res) => {
+        setCredentials(res.data);
+        setOriginalCredentials(res.data);
+      })
+      .catch(() => {
+        toast.error("Failed to fetch sessions");
+      });
+  }, []);
 
   const handleChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
@@ -87,10 +92,9 @@ const SecuritySettings = () => {
         return;
       }
 
-  data.append("current_password", currentPassword);
-  data.append("new_password", newPassword);
-}
-
+      data.append("current_password", currentPassword);
+      data.append("new_password", newPassword);
+    }
 
     updateUser.mutate([userId, data], {
       onSuccess: () => {
@@ -135,8 +139,14 @@ const SecuritySettings = () => {
     );
   };
 
-  const removeDevice = (id: number) => {
-    setCredentials(credentials.filter((cred) => cred.id !== id));
+  const removeDevice = async (id: string) => {
+    try {
+      await apiClient.delete(`/sessions/${id}/`);
+      setCredentials((prev) => prev.filter((cred) => cred.id !== id));
+      toast.success("Device removed");
+    } catch {
+      toast.error("Failed to remove device");
+    }
   };
 
   if (isLoading) return <p>Loading...</p>;
@@ -264,7 +274,17 @@ const SecuritySettings = () => {
                   <i className="bx bx-tab"></i>
                 </div>
                 <div>
-                  <p className="text-[10px] text-gray-400">{cred.date}</p>
+                  <p className="text-[10px] text-gray-400">
+                    {new Date(cred.date).toLocaleString("en-PH", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
+                  </p>
+
                   <p className="text-xs font-semibold">{cred.device}</p>
                 </div>
               </div>

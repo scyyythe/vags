@@ -18,8 +18,13 @@ from rest_framework.response import Response
 import firebase_admin
 from firebase_admin import credentials, auth as firebase_auth
 from api.core.firebase_config import initialize_firebase      
-      
-      
+from api.models.user_model.session import UserSession  
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from api.models.user_model.session import UserSession
+
+
 if not firebase_admin._apps:
     cred = credentials.Certificate("path/to/firebase-service-account.json")
     firebase_admin.initialize_app(cred)
@@ -170,7 +175,25 @@ class CustomTokenObtainPairView(APIView):
 
         # Firebase Custom Token
         firebase_token = firebase_auth.create_custom_token(str(user.id)).decode("utf-8")
+        def record_session(user, request):
+            device = request.META.get("HTTP_USER_AGENT", "Unknown device")
+            ip_address = request.META.get("REMOTE_ADDR")
 
+            # mark all previous sessions inactive
+            UserSession.objects(user=user, is_current=True).update(is_current=False)
+
+            session = UserSession(
+                user=user,
+                device=device[:100],
+                ip_address=ip_address,
+                user_agent=device,
+                is_current=True,
+            )
+            session.save()
+            return session
+
+        # inside your login after creating tokens:
+        record_session(user, request)
         return Response({
             "access_token": access_token,
             "refresh_token": refresh_token,
@@ -228,3 +251,30 @@ class CustomTokenRefreshView(APIView):
             return Response({"error": "Refresh token has expired"}, status=status.HTTP_401_UNAUTHORIZED)
         except jwt.InvalidTokenError:
             return Response({"error": "Invalid refresh token"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SessionListView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        sessions = UserSession.objects(user=request.user).order_by("-created_at")
+        return Response([
+            {
+                "id": str(s.id),
+                "device": s.device,
+                "date": s.created_at.isoformat(),
+                "isCurrentSession": s.is_current,
+            }
+            for s in sessions
+        ])
+
+class SessionDeleteView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, session_id):
+        session = UserSession.objects(id=session_id, user=request.user).first()
+        if not session:
+            return Response({"error": "Session not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        session.delete()
+        return Response({"message": "Session removed"}, status=status.HTTP_204_NO_CONTENT)
