@@ -8,7 +8,7 @@ import SalesSummary from "@/components/user_dashboard/Marketplace/sales_summary/
 import useMySellArtCards from "@/hooks/artworks/sell/useMySellArtCards";
 import useUserSellArtCards from "@/hooks/artworks/sell/useUserSellArtCards";
 import { getLoggedInUserId } from "@/auth/decode";
-
+import { memo } from "react";
 import PurchasedArtworkCard from "@/components/user_dashboard/Marketplace/my_purchase/card/PurchasedArtworkCard";
 import OrderDetailsModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/OrderDetailsModal";
 import ReviewModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/ReviewModal";
@@ -44,7 +44,7 @@ const SellTab = ({ selectedPriceRange }) => {
   const mySellArtData = useMySellArtCards();
   const userSellArtData = useUserSellArtCards(userId);
 
-  const { myArtCards, isLoading } = isOwnProfile ? mySellArtData : userSellArtData;
+  const { data: myArtCards = [], isLoading, error } = useMySellArtCards();
 
   const [mainTab, setMainTab] = useState("myListings");
   const [activeSubGroup, setActiveSubGroup] = useState<"listings" | "soldArtworks">("listings");
@@ -453,6 +453,7 @@ const SellTab = ({ selectedPriceRange }) => {
             }))
         : []
       : [];
+
   let filteredArtworks = myArtCards
     .filter((art) => {
       const status = (art.art_status || "").toLowerCase().trim();
@@ -470,7 +471,6 @@ const SellTab = ({ selectedPriceRange }) => {
         mainTab === "myListings" && activeSubGroup === "listings" && status === (statusMap[tab] || "").toLowerCase()
       );
     })
-
     .map((art) => ({
       id: art.id,
       title: art.title,
@@ -480,7 +480,7 @@ const SellTab = ({ selectedPriceRange }) => {
       rating: art.total_ratings,
       category: art.category,
       artworkImage: art.image_url[0] || "",
-      status: (art.art_status || "").toLowerCase().trim(), // keep real normalized status
+      status: (art.art_status || "").toLowerCase().trim(),
     }));
 
   if (selectedPriceRange === "Low to High") {
@@ -801,6 +801,12 @@ const SellTab = ({ selectedPriceRange }) => {
               />
             ))
           )
+        ) : isLoading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {Array.from({ length: 5 }).map((_, idx) => (
+              <SellCardSkeleton key={idx} />
+            ))}
+          </div>
         ) : subTab === "sold" && isOwnProfile ? (
           filteredSoldArtworksForListings.length === 0 ? (
             <div className="text-xs text-center py-12">
