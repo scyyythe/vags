@@ -14,23 +14,25 @@ class MarketplaceArtDetailView(generics.RetrieveAPIView):
 
     def get_object(self):
         art_id = self.kwargs.get("pk")
-       
 
         try:
-            art = Art.objects.get(
-                Q(id=art_id) &
-                Q(visibility__iexact="Public") &
-                (
-                    Q(art_status__iexact="onSale") |
-                    Q(edition__iexact="Open Edition", quantity__gt=0)
-                )
-            )
+            art_obj_id = ObjectId(art_id)
+        except Exception:
+            raise NotFound("Invalid artwork ID.")
+
+        try:
          
+            art = Art.objects.get(id=art_obj_id)
+
+          
+            if art.visibility.lower() != "public":
+                raise NotFound("Artwork not public.")
+
             return art
+
         except Art.DoesNotExist:
-        
-            raise NotFound("Artwork not found or not available for sale.")
+            raise NotFound("Artwork not found.")
         except Exception as e:
-        
             traceback.print_exc()
             raise NotFound("Something went wrong loading artwork.")
+

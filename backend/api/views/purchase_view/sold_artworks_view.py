@@ -93,7 +93,6 @@ class ToggleArtworkStatusView(APIView):
             {"message": message, "artwork_id": str(artwork.id), "new_status": artwork.art_status},
             status=status.HTTP_200_OK
         )
-    
 class MarkArtworkAsUnlistedView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -103,17 +102,26 @@ class MarkArtworkAsUnlistedView(APIView):
         except Art.DoesNotExist:
             return Response({"error": "Artwork not found"}, status=status.HTTP_404_NOT_FOUND)
 
-      
         if artwork.art_status == "Unlisted":
+       
             artwork.art_status = "onSale"
-            message = "Artwork is now on sale"
+            artwork.visibility = "Public"
+            message = "Artwork is now public and on sale"
         else:
+       
             artwork.art_status = "Unlisted"
-            message = "Artwork marked as unlisted"
+            artwork.visibility = "Private"
+            message = "Artwork marked as unlisted (private)"
 
         artwork.save()
 
         return Response(
-            {"message": message, "artwork_id": str(artwork.id), "new_status": artwork.art_status},
-            status=status.HTTP_200_OK
+            {
+                "message": message,
+                "artwork_id": str(artwork.id),
+                "new_status": artwork.art_status,
+                "new_visibility": artwork.visibility,
+            },
+            status=status.HTTP_200_OK,
         )
+

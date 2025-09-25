@@ -1,16 +1,16 @@
 export interface PaymentAccount {
   id: string;
-  type: 'paypal' | 'stripe' | 'bank' | 'gcash' | 'payoneer' | 'card';
+  type: "paypal" | "stripe" | "bank" | "gcash" | "payoneer" | "card";
   name: string;
   accountInfo: string;
   maskedInfo: string;
   isDefault: boolean;
-  status: 'verified' | 'pending' | 'not_verified';
+  status: "verified" | "pending" | "not_verified";
   dateAdded: string;
 }
 
 export interface NewAccountState {
-  type: PaymentAccount['type'];
+  type: PaymentAccount["type"];
   name: string;
   accountInfo: string;
   isDefault: boolean;
@@ -26,4 +26,5 @@ export interface NewAccountState {
     routingNumber: string;
     swiftCode: string;
   };
+  details?: any;
 }

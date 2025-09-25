@@ -1,3 +1,4 @@
+// useMarkArtworkAsUnlisted.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
@@ -10,10 +11,11 @@ const useMarkArtworkAsUnlisted = () => {
       const { data } = await apiClient.patch(`/my-artworks/${artworkId}/mark-unlisted/`);
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
       queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
       queryClient.invalidateQueries({ queryKey: ["my-sold-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
     },
     onError: () => {
       toast.error("Failed to update artwork status.", { closeButton: true });
