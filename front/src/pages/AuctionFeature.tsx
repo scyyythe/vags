@@ -4,9 +4,13 @@ import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks
 import AuctionFeatureSkeleton from "@/components/skeletons/AuctionFeatureSkeleton";
 import { useModal } from "../context/ModalContext";
 import { formatCurrency } from "@/utils/numberFormat";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from '../hooks/autoTranslate/useAutoTranslation';
+
 const AuctionFeature = (initialTime) => {
   const { data: auctions } = useFetchBiddingArtworks();
   const { showRegisterModal, setShowRegisterModal } = useModal();
+  const { language } = useLanguage();
 
   const featured = useMemo(() => {
     if (!auctions || auctions.length === 0) return null;
@@ -52,6 +56,23 @@ const AuctionFeature = (initialTime) => {
     return <AuctionFeatureSkeleton />;
   }
 
+  const translatedTitle = useAutoTranslation(featured.artwork.title, language);
+  const translatedDescription = useAutoTranslation(featured.artwork.description, language);
+
+  // Translations for UI texts
+  const tOwnedBy = useAutoTranslation("Owned by", language);
+  const tCurrentBid = useAutoTranslation("Current Bid", language);
+  const tAuctionEndingIn = useAutoTranslation("Auction ending in", language);
+  const tNoBids = useAutoTranslation("No bids", language);
+  const tHrs = useAutoTranslation("hrs", language);
+  const tMins = useAutoTranslation("mins", language);
+  const tSecs = useAutoTranslation("secs", language);
+  const tPlaceBid = useAutoTranslation("Place a bid", language);
+  const tViewItem = useAutoTranslation("View item", language);
+  const tAmount = useAutoTranslation("amount", language);
+
+  const highestBidAmount = featured.highest_bid?.amount;
+
   return (
     <section className="w-full max-w-7xl mx-auto py-20 px-6 md:px-12 bg-black text-white" id="auctions">
       <div>
@@ -87,16 +108,16 @@ const AuctionFeature = (initialTime) => {
           >
             <div>
               <h2 className="text-2xl md:text-3xl font-semibold mb-4">
-                {featured.artwork.title.split(" ").length > 1 ? (
+                {translatedTitle.split(" ").length > 1 ? (
                   <>
-                    {featured.artwork.title.split(" ").slice(0, -1).join(" ")}{" "}
-                    <span className="text-[#E20B0B]">{featured.artwork.title.split(" ").slice(-1)}</span>
+                    {translatedTitle.split(" ").slice(0, -1).join(" ")}{" "}
+                    <span className="text-[#E20B0B]">{translatedTitle.split(" ").slice(-1)}</span>
                   </>
                 ) : (
-                  featured.artwork.title
+                  translatedTitle
                 )}
               </h2>
-              <p className="text-gray-400 text-xs mb-10">{featured.artwork.description}</p>
+              <p className="text-gray-400 text-xs mb-10">{translatedDescription}</p>
             </div>
 
             <div className="flex items-center space-x-3">
@@ -104,7 +125,7 @@ const AuctionFeature = (initialTime) => {
                 <img src={featured.artwork.profile_picture} alt="Creator" className="w-full h-full object-cover" />
               </div>
               <div className="mb-2">
-                <p className="text-[10px] text-gray-400">Owned by</p>
+                <p className="text-[10px] text-gray-400">{tOwnedBy}</p>
                 <p className="text-xs font-medium">{featured.artwork.artist}</p>
               </div>
             </div>
@@ -112,34 +133,38 @@ const AuctionFeature = (initialTime) => {
             <div className="bg-gray-900 rounded-3xl py-7 flex justify-center items-center max-w-md">
               <div className="flex">
                 <div className="flex-1 text-center">
-                  <p className="text-[11px] text-white mb-3">Current Bid</p>
-                  <p className="text-xl md:text-2xl font-semibold whitespace-nowrap">
-                    {formatCurrency(featured.highest_bid?.amount)}
-                  </p>
+                  <p className="text-[11px] text-white mb-3">{tCurrentBid}</p>
+                  {highestBidAmount ? (
+                    <p className="text-xl md:text-2xl font-semibold whitespace-nowrap">
+                      {formatCurrency(highestBidAmount)} {tAmount}
+                    </p>
+                  ) : (
+                    <p className="text-sm text-gray-400">{tNoBids}</p>
+                  )}
                 </div>
 
                 <div className="border-l border-gray-700 h-19 mx-12"></div>
 
                 <div className="flex-1 text-center">
-                  <p className="text-[11px] text-white mb-3">Auction ending in</p>
+                  <p className="text-[11px] text-white mb-3">{tAuctionEndingIn}</p>
                   <div className="flex text-center space-x-6">
                     <div className="text-center">
                       <p className="text-lg font-semibold mb-1">
                         {featured.timeRemaining.hrs.toString().padStart(2, "0")}
                       </p>
-                      <p className="text-[10px] text-gray-400">hrs</p>
+                      <p className="text-[10px] text-gray-400">{tHrs}</p>
                     </div>
                     <div className="text-center">
                       <p className="text-lg font-semibold mb-1">
                         {featured.timeRemaining.mins.toString().padStart(2, "0")}
                       </p>
-                      <p className="text-[10px] text-gray-400">mins</p>
+                      <p className="text-[10px] text-gray-400">{tMins}</p>
                     </div>
                     <div className="text-center">
                       <p className="text-lg font-semibold mb-1">
                         {featured.timeRemaining.secs.toString().padStart(2, "0")}
                       </p>
-                      <p className="text-[10px] text-gray-400">secs</p>
+                      <p className="text-[10px] text-gray-400">{tSecs}</p>
                     </div>
                   </div>
                 </div>
@@ -151,10 +176,13 @@ const AuctionFeature = (initialTime) => {
                 className="bg-red-700 text-white text-xs flex-1 rounded-full px-4 py-2 hover:bg-red-600"
                 onClick={() => setShowRegisterModal(true)}
               >
-                Place a bid
+                {tPlaceBid}
               </button>
-              <button className="btn-secondary flex-1 text-xs rounded-full" onClick={() => setShowRegisterModal(true)}>
-                View item
+              <button
+                className="btn-secondary flex-1 text-xs rounded-full"
+                onClick={() => setShowRegisterModal(true)}
+              >
+                {tViewItem}
               </button>
             </div>
           </motion.div>
