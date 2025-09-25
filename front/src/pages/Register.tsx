@@ -9,6 +9,10 @@ import SystemMessage from "../components/page/SystemMessage";
 import { toast } from "sonner";
 import { useGoogleLogin } from "@react-oauth/google";
 
+// Auto-translation imports
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLanguage } from "@/context/LanguageContext";
+
 const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -20,6 +24,45 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   const { setShowLoginModal } = useModal();
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
+
+  // Language context
+  const { language } = useLanguage();
+
+  // Translatable texts
+  const alreadyMember = useAutoTranslation("Already a member?", language);
+  const loginText = useAutoTranslation("Log in!", language);
+  const createAccountTitle = useAutoTranslation("Create new account.", language);
+  const signUpWithGoogle = useAutoTranslation("Sign Up with Google", language);
+  const orText = useAutoTranslation("Or", language);
+  const firstNameLabel = useAutoTranslation("First Name", language);
+  const firstNamePlaceholder = useAutoTranslation("First name", language);
+  const lastNameLabel = useAutoTranslation("Last Name", language);
+  const lastNamePlaceholder = useAutoTranslation("Last name", language);
+  const emailLabel = useAutoTranslation("Email Address", language);
+  const emailPlaceholder = useAutoTranslation("Email Address", language);
+  const passwordLabel = useAutoTranslation("Password", language);
+  const passwordPlaceholder = useAutoTranslation("Password", language);
+  const createAccountBtn = useAutoTranslation("Create account", language);
+  const tosAgreement = useAutoTranslation("By signing up, I agree to the", language);
+  const termsOfService = useAutoTranslation("Terms of Service", language);
+  const andText = useAutoTranslation("and", language);
+  const privacyPolicy = useAutoTranslation("Privacy Policy", language);
+
+  // Toast messages (auto-translated)
+  const registrationSuccessful = useAutoTranslation("Registration successful!", language);
+  const registrationFailed = useAutoTranslation("Registration failed", language);
+  const missingInfo = useAutoTranslation("Missing information", language);
+  const missingInfoDesc = useAutoTranslation("Please fill in all required fields.", language);
+  const passwordTooShort = useAutoTranslation("Password too short", language);
+  const passwordTooShortDesc = useAutoTranslation("Password must be at least 8 characters long.", language);
+  const passwordWeak = useAutoTranslation("Password must be stronger", language);
+  const passwordWeakDesc = useAutoTranslation("Password must contain at least one special character (e.g. !, @, #, $).", language);
+  const processingRegistration = useAutoTranslation("Processing registration...", language);
+  const loginNow = useAutoTranslation("You can now log in.", language);
+  const invalidDetails = useAutoTranslation("Please check your details and try again.", language);
+  const unexpectedError = useAutoTranslation("An unexpected error occurred. Please try again later.", language);
+  const googleSignupFailed = useAutoTranslation("Google sign-up failed", language);
+  const googleLoginFailed = useAutoTranslation("Google login failed", language);
 
   interface GoogleSignUpResponse {
     access_token: string;
@@ -38,29 +81,21 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
         if (data.access_token) {
           localStorage.setItem("access_token", data.access_token);
           localStorage.setItem("refresh_token", data.refresh_token);
-          toast.success("Registration successful!", {
-            closeButton: true,
-          });
+          toast.success(registrationSuccessful, { closeButton: true });
 
           closeRegisterModal();
           setShowLoginModal(true);
         } else {
-          toast.error("Google sign-up failed", {
-            closeButton: true,
-          });
+          toast.error(googleSignupFailed, { closeButton: true });
         }
       } catch (error) {
         console.error("Google sign-up error", error);
-        toast.error("Google sign-up failed", {
-          closeButton: true,
-        });
+        toast.error(googleSignupFailed, { closeButton: true });
       }
     },
     onError: (error) => {
       console.error("Google login error", error);
-      toast.error("Google login failed", {
-        closeButton: true,
-      });
+      toast.error(googleLoginFailed, { closeButton: true });
     },
   });
 
@@ -72,33 +107,25 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
-    // Password validation rules
+
     const password = formData.password;
     const hasMinLength = password.length >= 8;
     const hasUniqueChar = /[^A-Za-z0-9]/.test(password);
+
     if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
-      toast.error("Missing information", {
-        description: "Please fill in all required fields.",
-        closeButton: true,
-      });
+      toast.error(missingInfo, { description: missingInfoDesc, closeButton: true });
       return;
     }
     if (!hasMinLength) {
-      toast.error("Password too short", {
-        description: "Password must be at least 8 characters long.",
-        closeButton: true,
-      });
+      toast.error(passwordTooShort, { description: passwordTooShortDesc, closeButton: true });
+      return;
+    }
+    if (!hasUniqueChar) {
+      toast.error(passwordWeak, { description: passwordWeakDesc, closeButton: true });
       return;
     }
 
-    if (!hasUniqueChar) {
-      toast.error("Password must be stronger", {
-        description: "Password must contain at least one special character (e.g. !, @, #, $).",
-        closeButton: true,
-      });
-      return;
-    }
-    const loadingToast = toast.loading("Processing registration...");
+    const loadingToast = toast.loading(processingRegistration);
 
     try {
       const response = await apiClient.post("user/register/", {
@@ -111,26 +138,17 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
       console.log("Registration successful:", response.data);
 
-      toast.success("Registration successful!", {
-        description: "You can now log in.",
-        closeButton: true,
-      });
+      toast.success(registrationSuccessful, { description: loginNow, closeButton: true });
 
       closeRegisterModal();
       setShowLoginModal(true);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error("Registration failed:", error.message);
-        toast.error("Registration failed", {
-          description: "Please check your details and try again.",
-          closeButton: true,
-        });
+        toast.error(registrationFailed, { description: invalidDetails, closeButton: true });
       } else {
         console.error("Unknown error:", error);
-        toast.error("Registration failed", {
-          description: "An unexpected error occurred. Please try again later.",
-          closeButton: true,
-        });
+        toast.error(registrationFailed, { description: unexpectedError, closeButton: true });
       }
     } finally {
       toast.dismiss(loadingToast);
@@ -145,30 +163,16 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
   return (
     <div className="flex flex-col justify-center rounded-2xl py-4 px-14 md:py-4 md:px-14 lg:py-4 lg:px-14 bg-white">
-      <div className="flex justify-between">
-        {/* Fingerprint Icon and Sliding Text Container */}
-        <div className="relative flex items-center gap-2">
-          <div
-            className="border border-gray-300 px-2 rounded-full hover:border-red-800 transition-colors cursor-pointer"
-            onMouseEnter={() => setShowFingerprintText(true)}
-            onMouseLeave={() => setShowFingerprintText(false)}
-            onClick={handleFingerprintClick}
-          >
-            <i className="bx bx-fingerprint text-sm hover:text-red-800 cursor-pointer"></i>
-          </div>
-
-          {/* Sliding Text */}
-          {/* <div
-            className={`overflow-hidden transition-all duration-300 ease-out ${
-              showFingerprintText ? "max-w-[200px] opacity-100" : "max-w-0 opacity-0"
-            }`}
-          >
-            <span className="whitespace-nowrap text-[10px]">Register with fingerprint</span>
-          </div> */}
-        </div>
-
+      <div className="flex justify-end">
+        {/* Fingerprint Icon and Sliding Text Container */} 
+        {/* <div className="relative flex items-center gap-2"> 
+          <div className="border border-gray-300 px-2 rounded-full hover:border-red-800 transition-colors cursor-pointer" 
+          onMouseEnter={() => setShowFingerprintText(true)} onMouseLeave={() => setShowFingerprintText(false)} onClick={handleFingerprintClick} > 
+            <i className="bx bx-fingerprint text-sm hover:text-red-800 cursor-pointer"></i> 
+          </div> 
+        </div> */}
         <p className="relative top-5 text-[10px] text-gray-600 mb-10">
-          Already a member?{" "}
+          {alreadyMember}{" "}
           <button
             onClick={() => {
               closeRegisterModal();
@@ -176,34 +180,28 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
             }}
             className="text-red-800 hover:text-red-600 font-medium"
           >
-            Log in!
+            {loginText}
           </button>
         </p>
       </div>
 
       <div className="mb-4">
-        <h1 className="text-lg text-center font-bold">Create new account.</h1>
+        <h1 className="text-lg text-center font-bold">{createAccountTitle}</h1>
       </div>
 
       <div className="space-y-4">
         <div className="flex flex-col md:flex-row gap-4 text-[9px]">
           <SocialButton
             provider="google"
-            text="Sign Up with Google"
+            text={signUpWithGoogle}
             icon="bx bxl-google"
             onClick={handleGoogleSignUp}
           />
-          {/* <SocialButton
-            onClick={() => toast("Facebook login not implemented")}
-            provider="facebook"
-            text="Sign Up with Facebook"
-            icon="bx bxl-facebook"
-          /> */}
         </div>
 
         <div className="relative flex items-center justify-center">
           <div className="flex-grow border-t border-gray-500"></div>
-          <span className="flex-shrink mx-4 text-gray-500 text-[10px]">Or</span>
+          <span className="flex-shrink mx-4 text-gray-500 text-[10px]">{orText}</span>
           <div className="flex-grow border-t border-gray-500"></div>
         </div>
 
@@ -211,8 +209,8 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField
               type="text"
-              label="First Name"
-              placeholder="First name"
+              label={firstNameLabel}
+              placeholder={firstNamePlaceholder}
               icon="bx bx-user"
               name="firstName"
               value={formData.firstName}
@@ -220,8 +218,8 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
             />
             <InputField
               type="text"
-              label="Last Name"
-              placeholder="Last name"
+              label={lastNameLabel}
+              placeholder={lastNamePlaceholder}
               icon="bx bx-user"
               name="lastName"
               value={formData.lastName}
@@ -231,18 +229,19 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
           <InputField
             type="email"
-            label="Email Address"
-            placeholder="Email Address"
+            label={emailLabel}
+            placeholder={emailPlaceholder}
             icon="bx bx-at"
             name="email"
             value={formData.email}
             onChange={handleChange}
           />
+
           <div className="relative">
             <InputField
               type={showPassword ? "text" : "password"}
-              label="Password"
-              placeholder="Password"
+              label={passwordLabel}
+              placeholder={passwordPlaceholder}
               icon="bx bx-lock-alt"
               name="password"
               value={formData.password}
@@ -261,19 +260,19 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
             type="submit"
             className="relative w-full bg-red-900 text-white text-xs font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
           >
-            Create account
+            {createAccountBtn}
           </button>
 
           {message && <SystemMessage type={message.type} message={message.text} />}
 
           <p className="relative text-[7px] text-center text-gray-500 -top-4">
-            By signing up, I agree to the{" "}
+            {tosAgreement}{" "}
             <a href="#" className="underline">
-              Terms of Service
+              {termsOfService}
             </a>{" "}
-            and{" "}
+            {andText}{" "}
             <a href="#" className="underline">
-              Privacy Policy
+              {privacyPolicy}
             </a>
           </p>
         </form>

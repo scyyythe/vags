@@ -7,9 +7,13 @@ import apiClient from "../utils/apiClient";
 import SystemMessage from "../components/page/SystemMessage";
 import { toast } from "sonner";
 import { useGoogleLogin } from "@react-oauth/google";
-import { AxiosError } from "axios";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase/firebaseConfig";
+
+// Translation hooks
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLanguage } from "@/context/LanguageContext";
+
 const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [formData, setFormData] = useState({
     email: "",
@@ -23,6 +27,36 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
 
   const [showFingerprintText, setShowFingerprintText] = useState(false);
+
+  // language context
+  const { language } = useLanguage();
+
+  // Translate static texts
+  const notMember = useAutoTranslation("Not a member?", language);
+  const signUp = useAutoTranslation("Sign up!", language);
+  const welcomeTitle = useAutoTranslation("Hi, Welcome Back!", language);
+  const welcomeSubtitle = useAutoTranslation("Start your day with us.", language);
+  const signInWithGoogle = useAutoTranslation("Sign In with Google", language);
+  const orText = useAutoTranslation("Or", language);
+  const emailLabel = useAutoTranslation("Email Address", language);
+  const passwordLabel = useAutoTranslation("Password", language);
+  const forgotPassword = useAutoTranslation("Forgot Password?", language);
+  const loginBtn = useAutoTranslation("Login", language);
+
+  // Translate all toast messages
+  const missingInfoTitle = useAutoTranslation("Missing information", language);
+  const missingInfoDesc = useAutoTranslation("Please fill in all required fields.", language);
+  const loginSuccessTitle = useAutoTranslation("Login successful!", language);
+  const loginSuccessDesc = useAutoTranslation("You are now logged in.", language);
+  const firebaseSuccessTitle = useAutoTranslation("Firebase login successful!", language);
+  const firebaseSuccessDesc = useAutoTranslation("Welcome back!", language);
+  const loginFailedTitle = useAutoTranslation("Login failed", language);
+  const loginFailedDesc = useAutoTranslation("Please check your credentials and try again.", language);
+  const googleLoginFailedTitle = useAutoTranslation("Google login failed", language);
+  const googleLoginFailedDesc = useAutoTranslation("Google authentication was unsuccessful.", language);
+  const googleLoginErrorDesc = useAutoTranslation("Please try again later.", language);
+  const googleMissingTokenDesc = useAutoTranslation("Missing tokens in response.", language);
+
   interface GoogleLoginResponse {
     access_token: string;
     refresh_token: string;
@@ -39,20 +73,20 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage(null);
 
     if (!formData.email || !formData.password) {
-      toast.error("Missing information", {
-        description: "Please fill in all required fields.",
+      toast.error(missingInfoTitle, {
+        description: missingInfoDesc,
         closeButton: true,
       });
       return;
     }
 
     try {
-      // ---- 1. Try your existing Django backend login ----
       const response = await apiClient.post<{
         access_token: string;
         refresh_token: string;
@@ -73,8 +107,8 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       localStorage.setItem("email", email);
       localStorage.setItem("role", role);
 
-      toast.success("Login successful!", {
-        description: "You are now logged in.",
+      toast.success(loginSuccessTitle, {
+        description: loginSuccessDesc,
         closeButton: true,
       });
 
@@ -86,7 +120,6 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         navigate("/explore");
       }
     } catch (err) {
-      // ---- 2. If Django login fails, fall back to Firebase ----
       console.warn("Django login failed, trying Firebase...", err);
 
       try {
@@ -95,7 +128,6 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         const user = userCredential.user;
         const firebaseToken = await user.getIdToken();
 
-        // optional: send Firebase token to Django to sync users
         await apiClient.post("user/firebase-login/", {
           firebase_token: firebaseToken,
         });
@@ -103,16 +135,16 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         localStorage.setItem("firebase_uid", user.uid);
         localStorage.setItem("email", user.email || "");
 
-        toast.success("Firebase login successful!", {
-          description: "Welcome back!",
+        toast.success(firebaseSuccessTitle, {
+          description: firebaseSuccessDesc,
           closeButton: true,
         });
 
         navigate("/explore");
       } catch (firebaseError: any) {
         console.error("Firebase login error:", firebaseError);
-        toast.error("Login failed", {
-          description: firebaseError.message || "Please check your credentials and try again.",
+        toast.error(loginFailedTitle, {
+          description: firebaseError.message || loginFailedDesc,
           closeButton: true,
         });
       }
@@ -134,31 +166,31 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
           localStorage.setItem("email", data.user.email);
           localStorage.setItem("user_id", data.user.id);
 
-          toast.success("Login successful!", {
-            description: "Welcome back!",
+          toast.success(loginSuccessTitle, {
+            description: firebaseSuccessDesc,
             closeButton: true,
           });
 
           closeLoginModal();
           navigate("/explore");
         } else {
-          toast.error("Google login failed", {
-            description: "Missing tokens in response.",
+          toast.error(googleLoginFailedTitle, {
+            description: googleMissingTokenDesc,
             closeButton: true,
           });
         }
       } catch (error) {
         console.error("Google login error:", error);
-        toast.error("Google login failed", {
-          description: "Please try again later.",
+        toast.error(googleLoginFailedTitle, {
+          description: googleLoginErrorDesc,
           closeButton: true,
         });
       }
     },
     onError: (error) => {
       console.error("Google login error", error);
-      toast.error("Google login failed", {
-        description: "Google authentication was unsuccessful.",
+      toast.error(googleLoginFailedTitle, {
+        description: googleLoginFailedDesc,
         closeButton: true,
       });
     },
@@ -170,9 +202,8 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
 
   return (
     <div className="w-full flex flex-col justify-center py-8 px-14 md:py-8 md:px-14 lg:py-8 lg:px-14 bg-white rounded-2xl">
-      <div className="flex justify-between">
-        {/* Fingerprint Icon and Sliding Text Container */}
-        <div className="relative bottom-2 flex items-center gap-2">
+      <div className="flex justify-end">
+        {/* <div className="relative bottom-2 flex items-center gap-2">
           <div
             className="border border-gray-300 px-2 rounded-full mb-1 hover:border-red-800 transition-colors cursor-pointer"
             onMouseEnter={() => setShowFingerprintText(true)}
@@ -181,20 +212,11 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
           >
             <i className="bx bx-fingerprint text-sm hover:text-red-800 cursor-pointer"></i>
           </div>
-
-          {/* Sliding Text */}
-          {/* <div
-            className={`overflow-hidden transition-all duration-300 ease-out ${
-              showFingerprintText ? "max-w-[200px] opacity-100" : "max-w-0 opacity-0"
-            }`}
-          >
-            <span className="whitespace-nowrap text-[10px] relative bottom-1">Sign in with fingerprint</span>
-          </div> */}
-        </div>
+        </div> */}
 
         {/* Not a Member Text */}
         <p className="text-[10px] text-gray-600 mb-6">
-          Not a member?{" "}
+          {notMember}{" "}
           <button
             onClick={() => {
               closeLoginModal();
@@ -202,51 +224,40 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
             }}
             className="text-red-800 hover:text-red-600 font-medium"
           >
-            Sign up!
+            {signUp}
           </button>
         </p>
       </div>
 
       {/* Welcome Text */}
       <div className="text-center mb-4">
-        <h1 className="text-lg font-bold mb-2">Hi, Welcome Back!</h1>
-        <p className="text-gray-600 text-[11px]">Start your day with us.</p>
+        <h1 className="text-lg font-bold mb-2">{welcomeTitle}</h1>
+        <p className="text-gray-600 text-[11px]">{welcomeSubtitle}</p>
       </div>
 
-      {/* Error Message */}
       {error && <p className="text-red-600 text-xs text-center mb-4">{error}</p>}
 
-      {/* Social Buttons and Form */}
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row gap-4 text-[9px]">
           <SocialButton
             provider="google"
-            text="Sign In with Google"
+            text={signInWithGoogle}
             icon="bx bxl-google"
             onClick={() => handleGoogleLogin()}
           />
-
-          {/* <SocialButton
-            provider="facebook"
-            text="Sign Up with Facebook"
-            icon="bx bxl-facebook"
-            onClick={() => toast("Facebook login not implemented")}
-          /> */}
         </div>
 
-        {/* Divider */}
         <div className="relative flex items-center justify-center">
           <div className="flex-grow border-t border-gray-500"></div>
-          <span className="flex-shrink mx-4 text-gray-500 text-[10px]">Or</span>
+          <span className="flex-shrink mx-4 text-gray-500 text-[10px]">{orText}</span>
           <div className="flex-grow border-t border-gray-500"></div>
         </div>
 
-        {/* Login Form */}
         <form className="space-y-5" onSubmit={handleSubmit}>
           <InputField
             type="email"
-            label="Email Address"
-            placeholder="Email Address"
+            label={emailLabel}
+            placeholder={emailLabel}
             icon="bx bx-at"
             name="email"
             value={formData.email}
@@ -256,8 +267,8 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
           <div className="relative">
             <InputField
               type={showPassword ? "text" : "password"}
-              label="Password"
-              placeholder="Password"
+              label={passwordLabel}
+              placeholder={passwordLabel}
               icon="bx bx-lock-alt"
               name="password"
               value={formData.password}
@@ -280,19 +291,16 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
                 }}
                 className="text-black hover:text-red-700"
               >
-                Forgot Password?
+                {forgotPassword}
               </button>
             </div>
           </div>
 
-          {/* Forgot Password Link */}
-
-          {/* Login Button */}
           <button
             type="submit"
             className="w-full bg-red-900 text-white text-xs font-medium rounded-full px-5 py-2 transition-all hover:bg-red-800"
           >
-            Login
+            {loginBtn}
           </button>
           {message && <SystemMessage type={message.type} message={message.text} />}
         </form>
