@@ -4,10 +4,12 @@ import { MoreHorizontal, Heart } from "lucide-react";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
 import { useModal } from "../context/ModalContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLanguage } from "@/context/LanguageContext";
 
 const ExploreArtworks = () => {
   const { data: artworks, isLoading } = useArtworks(1, undefined, true, "all", "public", true);
-  const { showRegisterModal, setShowRegisterModal } = useModal();
+  const { setShowRegisterModal } = useModal();
 
   const container = {
     hidden: { opacity: 0 },
@@ -23,6 +25,14 @@ const ExploreArtworks = () => {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
   };
+
+  // Get current language
+  const { language } = useLanguage();
+
+  // Translate UI texts
+  const heading = useAutoTranslation("Explore New Artworks", language);
+  const seeAll = useAutoTranslation("See All", language);
+
   if (isLoading) return <ArtCardSkeleton />;
 
   return (
@@ -36,18 +46,18 @@ const ExploreArtworks = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            Explore New Artworks
+            {heading}
           </motion.h2>
 
           <motion.a
             onClick={() => setShowRegisterModal(true)}
-            className="bg-black text-white text-xs font-small rounded-full px-4 py-2 hover:bg-gray-800 transition-colors"
+            className="bg-black text-white text-xs font-small rounded-full px-4 py-2 hover:bg-gray-800 transition-colors cursor-pointer"
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            See All
+            {seeAll}
           </motion.a>
         </div>
 
@@ -58,48 +68,57 @@ const ExploreArtworks = () => {
           whileInView="show"
           viewport={{ once: true }}
         >
-          {artworks.slice(0, 10).map((artwork) => (
-            <motion.div key={artwork.id} variants={item} className="card-hover">
-              <div className="bg-white px-5 py-3 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                <div className="relative group">
-                  <div className="flex justify-between items-center pt-2 px-2 pb-4">
-                    <div className="flex items-center space-x-1">
-                      <div className="w-5 h-5 rounded-full overflow-hidden mr-2">
-                        <img
-                          src={artwork.artistImage}
-                          alt={artwork.artistName}
-                          className="w-full h-full object-cover"
-                        />
+          {artworks.slice(0, 10).map((artwork) => {
+            // Translate artwork title per language
+            const translatedTitle = useAutoTranslation(artwork.title, language);
+
+            return (
+              <motion.div key={artwork.id} variants={item} className="card-hover">
+                <div className="bg-white px-5 py-3 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="relative group">
+                    <div className="flex justify-between items-center pt-2 px-2 pb-4">
+                      <div className="flex items-center space-x-1">
+                        <div className="w-5 h-5 rounded-full overflow-hidden mr-2">
+                          <img
+                            src={artwork.artistImage}
+                            alt={artwork.artistName}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        {/* Artist name stays original */}
+                        <span className="text-[10px] text-gray-700">{artwork.artistName}</span>
                       </div>
-                      <span className="text-[10px] text-gray-700">{artwork.artistName}</span>
-                    </div>
-                    <button className="text-gray-500 hover:text-gray-700">
-                      <MoreHorizontal className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  <img
-                    src={artwork.artworkImage}
-                    alt={artwork.title}
-                    className="w-full aspect-square object-cover rounded-xl transition-transform duration-300"
-                  />
-
-                  <div className="pt-4 px-2 pb-2">
-                    <div className="flex justify-between items-center mb-1">
-                      <h3 className="text-sm font-medium relative top-1 truncate max-w-[120px]">{artwork.title}</h3>
-
-                      <button
-                        className="text-gray-500 hover:text-red-500 transition-colors relative top-1"
-                        onClick={() => setShowRegisterModal(true)}
-                      >
-                        <Heart className="w-4 h-4" />
+                      <button className="text-gray-500 hover:text-gray-700">
+                        <MoreHorizontal className="w-4 h-4" />
                       </button>
+                    </div>
+
+                    <img
+                      src={artwork.artworkImage}
+                      alt={artwork.title}
+                      className="w-full aspect-square object-cover rounded-xl transition-transform duration-300"
+                    />
+
+                    <div className="pt-4 px-2 pb-2">
+                      <div className="flex justify-between items-center mb-1">
+                        {/* Artwork title is translated */}
+                        <h3 className="text-sm font-medium relative top-1 truncate max-w-[120px]">
+                          {translatedTitle}
+                        </h3>
+
+                        <button
+                          className="text-gray-500 hover:text-red-500 transition-colors relative top-1"
+                          onClick={() => setShowRegisterModal(true)}
+                        >
+                          <Heart className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </section>
