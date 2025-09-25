@@ -4,12 +4,37 @@ import { motion } from "framer-motion";
 import { useFetchHotBids } from "@/hooks/auction/featured/useFetchHotBids";
 import HotBidsCarouselSkeleton from "@/components/skeletons/HotBidsCarouselSkeleton";
 import { useLanguage } from "@/context/LanguageContext";
-import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { autoTranslate } from "@/utils/autoTranslate"; // ✅ use raw function here
 
 const HotBidsCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { data: hotBids, isLoading, isError } = useFetchHotBids();
   const { language } = useLanguage();
+
+  // store translated titles
+  const [translatedTitles, setTranslatedTitles] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!hotBids) return;
+
+    const filteredBids = hotBids
+      .filter((auction) => auction.bid_history && auction.bid_history.length > 0)
+      .sort((a, b) => b.bid_history.length - a.bid_history.length);
+
+    const sortedHotBids = filteredBids.slice(
+      0,
+      Math.min(filteredBids.length, 5)
+    );
+
+    // async translate all titles
+    Promise.all(
+      sortedHotBids.map((bid) =>
+        language.toLowerCase() === "en"
+          ? Promise.resolve(bid.artwork.title)
+          : autoTranslate(bid.artwork.title, language.toLowerCase())
+      )
+    ).then(setTranslatedTitles);
+  }, [hotBids, language]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -23,11 +48,12 @@ const HotBidsCarousel = () => {
 
   if (isLoading) return <HotBidsCarouselSkeleton />;
 
-  const tExploreHotBids = useAutoTranslation("Explore Hot Bids", language);
-  const tFailed = useAutoTranslation("Failed to load bids.", language);
-
   if (isError || !hotBids)
-    return <div className="text-center py-10 text-red-500">{tFailed}</div>;
+    return (
+      <div className="text-center py-10 text-red-500">
+        Failed to load bids.
+      </div>
+    );
 
   const filteredBids = hotBids
     .filter((auction) => auction.bid_history && auction.bid_history.length > 0)
@@ -47,7 +73,7 @@ const HotBidsCarousel = () => {
     <section className="py-20 px-6 md:px-12" id="bids">
       <div className="max-w-screen-xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
-          {tExploreHotBids}
+          {language.toLowerCase() === "en" ? "Explore Hot Bids" : translatedTitles[0] ?? "Explore Hot Bids"}
         </h2>
 
         <div className="flex justify-center items-center h-[460px] -mb-20 relative overflow-hidden">
@@ -59,12 +85,9 @@ const HotBidsCarousel = () => {
             const scale = 0.7 + Math.cos(radians) * 0.3;
             const opacity = 0.5 + Math.cos(radians) * 0.5;
 
-            const translatedTitle = useAutoTranslation(
-              bid.artwork.title,
-              language
-            );
-
             if (opacity < 0.2) return null;
+
+            const translatedTitle = translatedTitles[index] ?? bid.artwork.title;
 
             return (
               <motion.div

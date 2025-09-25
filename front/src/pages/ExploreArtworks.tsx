@@ -7,6 +7,62 @@ import { useModal } from "../context/ModalContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLanguage } from "@/context/LanguageContext";
 
+// ✅ Subcomponent for one artwork card
+const ArtworkCard = ({ artwork, item }: { artwork: any; item: any }) => {
+  const { setShowRegisterModal } = useModal();
+  const { language } = useLanguage();
+
+  // Translate artwork title here safely
+  const translatedTitle = useAutoTranslation(artwork.title, language);
+
+  return (
+    <motion.div key={artwork.id} variants={item} className="card-hover">
+      <div className="bg-white px-5 py-3 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="relative group">
+          <div className="flex justify-between items-center pt-2 px-2 pb-4">
+            <div className="flex items-center space-x-1">
+              <div className="w-5 h-5 rounded-full overflow-hidden mr-2">
+                <img
+                  src={artwork.artistImage}
+                  alt={artwork.artistName}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {/* Artist name stays original */}
+              <span className="text-[10px] text-gray-700">{artwork.artistName}</span>
+            </div>
+            <button className="text-gray-500 hover:text-gray-700">
+              <MoreHorizontal className="w-4 h-4" />
+            </button>
+          </div>
+
+          <img
+            src={artwork.artworkImage}
+            alt={artwork.title}
+            className="w-full aspect-square object-cover rounded-xl transition-transform duration-300"
+          />
+
+          <div className="pt-4 px-2 pb-2">
+            <div className="flex justify-between items-center mb-1">
+              {/* Translated title */}
+              <h3 className="text-sm font-medium relative top-1 truncate max-w-[120px]">
+                {translatedTitle}
+              </h3>
+
+              <button
+                className="text-gray-500 hover:text-red-500 transition-colors relative top-1"
+                onClick={() => setShowRegisterModal(true)}
+              >
+                <Heart className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 const ExploreArtworks = () => {
   const { data: artworks, isLoading } = useArtworks(1, undefined, true, "all", "public", true);
   const { setShowRegisterModal } = useModal();
@@ -15,9 +71,7 @@ const ExploreArtworks = () => {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
@@ -26,10 +80,10 @@ const ExploreArtworks = () => {
     show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
   };
 
-  // Get current language
+  // Current language
   const { language } = useLanguage();
 
-  // Translate UI texts
+  // Static translations
   const heading = useAutoTranslation("Explore New Artworks", language);
   const seeAll = useAutoTranslation("See All", language);
 
@@ -68,57 +122,9 @@ const ExploreArtworks = () => {
           whileInView="show"
           viewport={{ once: true }}
         >
-          {artworks.slice(0, 10).map((artwork) => {
-            // Translate artwork title per language
-            const translatedTitle = useAutoTranslation(artwork.title, language);
-
-            return (
-              <motion.div key={artwork.id} variants={item} className="card-hover">
-                <div className="bg-white px-5 py-3 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                  <div className="relative group">
-                    <div className="flex justify-between items-center pt-2 px-2 pb-4">
-                      <div className="flex items-center space-x-1">
-                        <div className="w-5 h-5 rounded-full overflow-hidden mr-2">
-                          <img
-                            src={artwork.artistImage}
-                            alt={artwork.artistName}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        {/* Artist name stays original */}
-                        <span className="text-[10px] text-gray-700">{artwork.artistName}</span>
-                      </div>
-                      <button className="text-gray-500 hover:text-gray-700">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <img
-                      src={artwork.artworkImage}
-                      alt={artwork.title}
-                      className="w-full aspect-square object-cover rounded-xl transition-transform duration-300"
-                    />
-
-                    <div className="pt-4 px-2 pb-2">
-                      <div className="flex justify-between items-center mb-1">
-                        {/* Artwork title is translated */}
-                        <h3 className="text-sm font-medium relative top-1 truncate max-w-[120px]">
-                          {translatedTitle}
-                        </h3>
-
-                        <button
-                          className="text-gray-500 hover:text-red-500 transition-colors relative top-1"
-                          onClick={() => setShowRegisterModal(true)}
-                        >
-                          <Heart className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
+          {artworks.slice(0, 10).map((artwork) => (
+            <ArtworkCard key={artwork.id} artwork={artwork} item={item} />
+          ))}
         </motion.div>
       </div>
     </section>
