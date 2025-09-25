@@ -3,10 +3,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useFetchHotBids } from "@/hooks/auction/featured/useFetchHotBids";
 import HotBidsCarouselSkeleton from "@/components/skeletons/HotBidsCarouselSkeleton";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const HotBidsCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { data: hotBids, isLoading, isError } = useFetchHotBids();
+  const { language } = useLanguage();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -19,7 +22,12 @@ const HotBidsCarousel = () => {
   }, [hotBids]);
 
   if (isLoading) return <HotBidsCarouselSkeleton />;
-  if (isError || !hotBids) return <div className="text-center py-10 text-red-500">Failed to load bids.</div>;
+
+  const tExploreHotBids = useAutoTranslation("Explore Hot Bids", language);
+  const tFailed = useAutoTranslation("Failed to load bids.", language);
+
+  if (isError || !hotBids)
+    return <div className="text-center py-10 text-red-500">{tFailed}</div>;
 
   const filteredBids = hotBids
     .filter((auction) => auction.bid_history && auction.bid_history.length > 0)
@@ -30,15 +38,19 @@ const HotBidsCarousel = () => {
 
   const radius = 250;
 
-  const goToPrevious = () => setCurrentIndex((prev) => (prev === 0 ? itemCount - 1 : prev - 1));
-  const goToNext = () => setCurrentIndex((prev) => (prev === itemCount - 1 ? 0 : prev + 1));
+  const goToPrevious = () =>
+    setCurrentIndex((prev) => (prev === 0 ? itemCount - 1 : prev - 1));
+  const goToNext = () =>
+    setCurrentIndex((prev) => (prev === itemCount - 1 ? 0 : prev + 1));
 
   return (
     <section className="py-20 px-6 md:px-12" id="bids">
       <div className="max-w-screen-xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">Explore Hot Bids</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+          {tExploreHotBids}
+        </h2>
 
-        <div className="flex justify-center items-center h-[460px] -mb-20">
+        <div className="flex justify-center items-center h-[460px] -mb-20 relative overflow-hidden">
           {sortedHotBids.map((bid, index) => {
             const angle = ((index - currentIndex) * (360 / itemCount)) % 360;
             const radians = (angle * Math.PI) / 180;
@@ -47,11 +59,21 @@ const HotBidsCarousel = () => {
             const scale = 0.7 + Math.cos(radians) * 0.3;
             const opacity = 0.5 + Math.cos(radians) * 0.5;
 
+            const translatedTitle = useAutoTranslation(
+              bid.artwork.title,
+              language
+            );
+
+            if (opacity < 0.2) return null;
+
             return (
               <motion.div
                 key={bid.id}
                 className="absolute transition-all duration-700"
-                animate={{ transform: `translate(${x}px, ${y}px) scale(${scale})`, opacity }}
+                animate={{
+                  transform: `translate(${x}px, ${y}px) scale(${scale})`,
+                  opacity,
+                }}
               >
                 <div className="rounded-xl shadow-xl relative">
                   <img
@@ -72,8 +94,12 @@ const HotBidsCarousel = () => {
 
                 {angle === 0 && (
                   <div className="text-center mt-6">
-                    <p className="text-xs text-gray-500">{bid.artwork.artist}</p>
-                    <p className="text-lg font-medium">{bid.artwork.title}</p>
+                    {/* Artist name is NOT translated */}
+                    <p className="text-xs text-gray-500">
+                      {bid.artwork.artist}
+                    </p>
+                    {/* Artwork title is translated */}
+                    <p className="text-lg font-medium">{translatedTitle}</p>
                   </div>
                 )}
               </motion.div>
@@ -81,10 +107,16 @@ const HotBidsCarousel = () => {
           })}
 
           <div className="flex justify-center -mb-60 space-x-4">
-            <button onClick={goToPrevious} className="p-2 rounded-full bg-black text-white">
+            <button
+              onClick={goToPrevious}
+              className="p-2 rounded-full bg-black text-white"
+            >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <button onClick={goToNext} className="p-2 rounded-full bg-black text-white">
+            <button
+              onClick={goToNext}
+              className="p-2 rounded-full bg-black text-white"
+            >
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
