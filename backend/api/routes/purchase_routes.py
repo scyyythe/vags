@@ -3,6 +3,7 @@ from api.views.purchase_view.purchase_view import PurchaseArtworkView,MyPurchase
 from api.views.purchase_view.review_view import SubmitReviewView
 from api.views.purchase_view.sold_artworks_view import MySoldArtworksView,ToggleArtworkStatusView,MarkArtworkAsUnlistedView
 from api.views.purchase_view.review_view import SubmitReviewView,AllReviewsByArtworkView, GetReviewByPurchaseView,AllReviewsByPurchaseView,UpdateReviewView,DeleteReviewView
+from api.views.payment_views.payment_accounts import ListPaymentAccounts,AddOrUpdatePaymentAccount,DeletePaymentAccount
 purchase_urlpatterns = [
 
 # purchases
@@ -28,4 +29,10 @@ purchase_urlpatterns = [
         AllReviewsByArtworkView.as_view(),
         name="all-reviews-by-artwork"
     ),
+     
+     
+   # payment account roiutes
+   path("accounts/", ListPaymentAccounts.as_view(), name="list-payment-accounts"),
+    path("accounts/save/", AddOrUpdatePaymentAccount.as_view(), name="add-update-account"),
+    path("accounts/<str:account_id>/delete/", DeletePaymentAccount.as_view(), name="delete-account"),
 ]

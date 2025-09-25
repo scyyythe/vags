@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
 from api.serializers.review_serializer.review_serializer import ReviewSerializer
@@ -119,7 +119,7 @@ class AllReviewsByPurchaseView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 class AllReviewsByArtworkView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly] 
 
     def get(self, request, artwork_id):
         try:
@@ -128,7 +128,7 @@ class AllReviewsByArtworkView(APIView):
             return Response({"error": "Invalid artwork ID."}, status=status.HTTP_400_BAD_REQUEST)
 
         if not reviews:
-            return Response({"message": "No reviews found for this artwork."}, status=status.HTTP_404_NOT_FOUND)
+            return Response([], status=status.HTTP_200_OK) 
 
         serializer = ReviewReadSerializer(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

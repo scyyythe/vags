@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 
 export interface ArtCard {
@@ -15,26 +15,13 @@ export interface ArtCard {
 }
 
 const useMySellArtCards = () => {
-  const [myArtCards, setMyArtCards] = useState<ArtCard[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchMyArtCards = async () => {
-    try {
-      const response = await apiClient.get("/art/cards/my/");
-      setMyArtCards(response.data);
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to load your artworks");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMyArtCards();
-  }, []);
-
-  return { myArtCards, isLoading, error, refetch: fetchMyArtCards };
+  return useQuery<ArtCard[], Error>({
+    queryKey: ["my-sell-art-cards"],
+    queryFn: async () => {
+      const { data } = await apiClient.get("/art/cards/my/");
+      return data;
+    },
+  });
 };
 
 export default useMySellArtCards;
