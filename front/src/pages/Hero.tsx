@@ -9,25 +9,27 @@ const Hero = () => {
   const { data: artworksRaw, isLoading } = useFetchPopularArtworks();
   const artworks = artworksRaw?.slice(0, 3) ?? [];
 
-  // Use language context
   const { language } = useLanguage();
 
-  // Translatable texts
+  // Top-level translations for static texts
   const discoverTitle = useAutoTranslation("Discover, Collect & Sell", language);
   const artworksTitle = useAutoTranslation("Artworks", language);
   const subtitle = useAutoTranslation("Step inside and let the art speak to you.", language);
 
-  // Stats labels
   const products = useAutoTranslation("Products", language);
   const biddings = useAutoTranslation("Biddings", language);
   const exhibits = useAutoTranslation("Exhibits", language);
   const artists = useAutoTranslation("Artists", language);
 
-  // Stats numbers
   const productsCount = useAutoTranslation("30k+", language);
   const biddingsCount = useAutoTranslation("10k+", language);
   const exhibitsCount = useAutoTranslation("12k+", language);
   const artistsCount = useAutoTranslation("20k+", language);
+
+  // ✅ Pre-translate artwork titles BEFORE JSX
+  const translatedArtworkTitles = artworks.map((artwork) =>
+    useAutoTranslation(artwork.title, language)
+  );
 
   return (
     <section className="relative pt-24 px-6 pb-40 md:pb-0 md:px-12" id="discover">
@@ -39,10 +41,7 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1
-            className="text-6xl md:text-7xl font-extrabold mb-6"
-            style={{ lineHeight: "1.3" }}
-          >
+          <h1 className="text-6xl md:text-7xl font-extrabold mb-6" style={{ lineHeight: "1.3" }}>
             {discoverTitle}
             <br />
             {artworksTitle}
@@ -66,7 +65,7 @@ const Hero = () => {
               <PopularArtworksSkeleton />
             ) : (
               <div className="relative grid grid-cols-1 md:grid-cols-3 md:gap-16 w-[65%] md:w-[80%] top-10 md:-top-40">
-                {artworks?.map((artwork, index) => {
+                {artworks.map((artwork, index) => {
                   let initialY, animateY;
                   if (index % 3 === 0) {
                     initialY = 10;
@@ -78,9 +77,6 @@ const Hero = () => {
                     initialY = 10;
                     animateY = [30, 10, 30];
                   }
-
-                  // ✅ Translate only the title
-                  const translatedTitle = useAutoTranslation(artwork.title, language);
 
                   return (
                     <motion.div
@@ -105,13 +101,10 @@ const Hero = () => {
                           alt={artwork.title}
                           className="h-40 rounded-2xl"
                         />
-
                         <div className="p-2 flex justify-between items-center">
                           <div>
-                            <p className="text-sm font-medium">{translatedTitle}</p>
-                            <p className="text-xs text-gray-500">
-                              {artwork.artist.name /* 👈 Keep original */}
-                            </p>
+                            <p className="text-sm font-medium">{translatedArtworkTitles[index]}</p>
+                            <p className="text-xs text-gray-500">{artwork.artist.name}</p>
                           </div>
                           <div className="w-6 h-6 rounded-full overflow-hidden">
                             <img
@@ -131,36 +124,20 @@ const Hero = () => {
             {/* Stats */}
             <div className="relative bottom-72 md:bottom-14 flex justify-center space-x-12 md:space-x-48">
               <div className="text-center">
-                <p className="text-lg md:text-3xl font-semibold text-white">
-                  {productsCount}
-                </p>
-                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
-                  {products}
-                </p>
+                <p className="text-lg md:text-3xl font-semibold text-white">{productsCount}</p>
+                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>{products}</p>
               </div>
               <div className="text-center">
-                <p className="text-xl md:text-3xl font-semibold text-white">
-                  {biddingsCount}
-                </p>
-                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
-                  {biddings}
-                </p>
+                <p className="text-xl md:text-3xl font-semibold text-white">{biddingsCount}</p>
+                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>{biddings}</p>
               </div>
               <div className="text-center">
-                <p className="text-xl md:text-3xl font-semibold text-white">
-                  {exhibitsCount}
-                </p>
-                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
-                  {exhibits}
-                </p>
+                <p className="text-xl md:text-3xl font-semibold text-white">{exhibitsCount}</p>
+                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>{exhibits}</p>
               </div>
               <div className="text-center">
-                <p className="text-lg md:text-3xl font-semibold text-white">
-                  {artistsCount}
-                </p>
-                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
-                  {artists}
-                </p>
+                <p className="text-lg md:text-3xl font-semibold text-white">{artistsCount}</p>
+                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>{artists}</p>
               </div>
             </div>
           </div>
