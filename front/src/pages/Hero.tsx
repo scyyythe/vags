@@ -5,6 +5,59 @@ import PopularArtworksSkeleton from "@/components/skeletons/PopularArtworksSkele
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLanguage } from "@/context/LanguageContext";
 
+// ✅ Subcomponent for an artwork card (handles translation inside safely)
+const ArtworkCard = ({ artwork, index }: { artwork: any; index: number }) => {
+  const { language } = useLanguage();
+  const translatedTitle = useAutoTranslation(artwork.title, language);
+
+  let initialY, animateY;
+  if (index % 3 === 0) {
+    initialY = 10;
+    animateY = [30, 10, 30];
+  } else if (index % 3 === 1) {
+    initialY = -20;
+    animateY = [-40, -20, -40];
+  } else {
+    initialY = 10;
+    animateY = [30, 10, 30];
+  }
+
+  return (
+    <motion.div
+      className="artwork-card"
+      initial={{ y: initialY }}
+      animate={{ y: animateY }}
+      transition={{
+        duration: 3,
+        repeat: Infinity,
+        repeatType: "reverse",
+        ease: "easeInOut",
+      }}
+    >
+      <div className="relative w-full bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
+        <img
+          src={Array.isArray(artwork.image_url) ? artwork.image_url[0] : artwork.image_url}
+          alt={artwork.title}
+          className="h-40 rounded-2xl"
+        />
+        <div className="p-2 flex justify-between items-center">
+          <div>
+            <p className="text-sm font-medium">{translatedTitle}</p>
+            <p className="text-xs text-gray-500">{artwork.artist.name}</p>
+          </div>
+          <div className="w-6 h-6 rounded-full overflow-hidden">
+            <img
+              src={artwork.artist.profile_picture}
+              alt={artwork.artist.name}
+              className="w-full h-full object-cover rounded-full"
+            />
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 const Hero = () => {
   const { data: artworksRaw, isLoading } = useFetchPopularArtworks();
   const artworks = artworksRaw?.slice(0, 3) ?? [];
@@ -25,11 +78,6 @@ const Hero = () => {
   const biddingsCount = useAutoTranslation("10k+", language);
   const exhibitsCount = useAutoTranslation("12k+", language);
   const artistsCount = useAutoTranslation("20k+", language);
-
-  // ✅ Pre-translate artwork titles BEFORE JSX
-  const translatedArtworkTitles = artworks.map((artwork) =>
-    useAutoTranslation(artwork.title, language)
-  );
 
   return (
     <section className="relative pt-24 px-6 pb-40 md:pb-0 md:px-12" id="discover">
@@ -65,59 +113,9 @@ const Hero = () => {
               <PopularArtworksSkeleton />
             ) : (
               <div className="relative grid grid-cols-1 md:grid-cols-3 md:gap-16 w-[65%] md:w-[80%] top-10 md:-top-40">
-                {artworks.map((artwork, index) => {
-                  let initialY, animateY;
-                  if (index % 3 === 0) {
-                    initialY = 10;
-                    animateY = [30, 10, 30];
-                  } else if (index % 3 === 1) {
-                    initialY = -20;
-                    animateY = [-40, -20, -40];
-                  } else {
-                    initialY = 10;
-                    animateY = [30, 10, 30];
-                  }
-
-                  return (
-                    <motion.div
-                      key={artwork.id}
-                      className="artwork-card"
-                      initial={{ y: initialY }}
-                      animate={{ y: animateY }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                        ease: "easeInOut",
-                      }}
-                    >
-                      <div className="relative w-full bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
-                        <img
-                          src={
-                            Array.isArray(artwork.image_url)
-                              ? artwork.image_url[0]
-                              : artwork.image_url
-                          }
-                          alt={artwork.title}
-                          className="h-40 rounded-2xl"
-                        />
-                        <div className="p-2 flex justify-between items-center">
-                          <div>
-                            <p className="text-sm font-medium">{translatedArtworkTitles[index]}</p>
-                            <p className="text-xs text-gray-500">{artwork.artist.name}</p>
-                          </div>
-                          <div className="w-6 h-6 rounded-full overflow-hidden">
-                            <img
-                              src={artwork.artist.profile_picture}
-                              alt={artwork.artist.name}
-                              className="w-full h-full object-cover rounded-full"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                {artworks.map((artwork, index) => (
+                  <ArtworkCard key={artwork.id} artwork={artwork} index={index} />
+                ))}
               </div>
             )}
 
