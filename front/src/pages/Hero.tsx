@@ -2,9 +2,32 @@ import React from "react";
 import { motion } from "framer-motion";
 import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
 import PopularArtworksSkeleton from "@/components/skeletons/PopularArtworksSkeleton";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLanguage } from "@/context/LanguageContext";
+
 const Hero = () => {
-const { data: artworksRaw, isLoading } = useFetchPopularArtworks();
-const artworks = artworksRaw?.slice(0, 3) ?? [];
+  const { data: artworksRaw, isLoading } = useFetchPopularArtworks();
+  const artworks = artworksRaw?.slice(0, 3) ?? [];
+
+  // Use language context
+  const { language } = useLanguage();
+
+  // Translatable texts
+  const discoverTitle = useAutoTranslation("Discover, Collect & Sell", language);
+  const artworksTitle = useAutoTranslation("Artworks", language);
+  const subtitle = useAutoTranslation("Step inside and let the art speak to you.", language);
+
+  // Stats labels
+  const products = useAutoTranslation("Products", language);
+  const biddings = useAutoTranslation("Biddings", language);
+  const exhibits = useAutoTranslation("Exhibits", language);
+  const artists = useAutoTranslation("Artists", language);
+
+  // Stats numbers
+  const productsCount = useAutoTranslation("30k+", language);
+  const biddingsCount = useAutoTranslation("10k+", language);
+  const exhibitsCount = useAutoTranslation("12k+", language);
+  const artistsCount = useAutoTranslation("20k+", language);
 
   return (
     <section className="relative pt-24 px-6 pb-40 md:pb-0 md:px-12" id="discover">
@@ -16,12 +39,15 @@ const artworks = artworksRaw?.slice(0, 3) ?? [];
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-6xl md:text-7xl font-extrabold mb-6" style={{ lineHeight: "1.3" }}>
-            Discover, Collect & Sell
+          <h1
+            className="text-6xl md:text-7xl font-extrabold mb-6"
+            style={{ lineHeight: "1.3" }}
+          >
+            {discoverTitle}
             <br />
-            Artworks
+            {artworksTitle}
           </h1>
-          <p className="text-black max-w-2xl mx-auto">Step inside and let the art speak to you.</p>
+          <p className="text-black max-w-2xl mx-auto">{subtitle}</p>
         </motion.div>
 
         {/* Background Gradient */}
@@ -53,65 +79,87 @@ const artworks = artworksRaw?.slice(0, 3) ?? [];
                     animateY = [30, 10, 30];
                   }
 
+                  // ✅ Translate only the title
+                  const translatedTitle = useAutoTranslation(artwork.title, language);
+
                   return (
                     <motion.div
                       key={artwork.id}
                       className="artwork-card"
                       initial={{ y: initialY }}
                       animate={{ y: animateY }}
-                      transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        ease: "easeInOut",
+                      }}
                     >
                       <div className="relative w-full bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
-                      <img
-  src={Array.isArray(artwork.image_url) ? artwork.image_url[0] : artwork.image_url}
-  alt={artwork.title}
-  className="h-40 rounded-2xl"
-/>
+                        <img
+                          src={
+                            Array.isArray(artwork.image_url)
+                              ? artwork.image_url[0]
+                              : artwork.image_url
+                          }
+                          alt={artwork.title}
+                          className="h-40 rounded-2xl"
+                        />
 
-                  <div className="p-2 flex justify-between items-center">
-  <div>
-    <p className="text-sm font-medium">{artwork.title}</p>
-    <p className="text-xs text-gray-500">{artwork.artist.name}</p> 
-  </div>
-  <div className="w-6 h-6 rounded-full overflow-hidden">
-    <img
-      src={artwork.artist.profile_picture} 
-      alt={artwork.artist.name}
-      className="w-full h-full object-cover rounded-full"
-    />
-  </div>
-</div>
-
+                        <div className="p-2 flex justify-between items-center">
+                          <div>
+                            <p className="text-sm font-medium">{translatedTitle}</p>
+                            <p className="text-xs text-gray-500">
+                              {artwork.artist.name /* 👈 Keep original */}
+                            </p>
+                          </div>
+                          <div className="w-6 h-6 rounded-full overflow-hidden">
+                            <img
+                              src={artwork.artist.profile_picture}
+                              alt={artwork.artist.name}
+                              className="w-full h-full object-cover rounded-full"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </motion.div>
                   );
                 })}
               </div>
             )}
+
             {/* Stats */}
             <div className="relative bottom-72 md:bottom-14 flex justify-center space-x-12 md:space-x-48">
               <div className="text-center">
-                <p className="text-lg md:text-3xl font-semibold text-white">30k+</p>
+                <p className="text-lg md:text-3xl font-semibold text-white">
+                  {productsCount}
+                </p>
                 <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
-                  Products
+                  {products}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xl md:text-3xl font-semibold text-white">10k+</p>
+                <p className="text-xl md:text-3xl font-semibold text-white">
+                  {biddingsCount}
+                </p>
                 <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
-                  Biddings
+                  {biddings}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xl md:text-3xl font-semibold text-white">12k+</p>
+                <p className="text-xl md:text-3xl font-semibold text-white">
+                  {exhibitsCount}
+                </p>
                 <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
-                  Exhibits
+                  {exhibits}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-lg md:text-3xl font-semibold text-white">20k+</p>
+                <p className="text-lg md:text-3xl font-semibold text-white">
+                  {artistsCount}
+                </p>
                 <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
-                  Artists
+                  {artists}
                 </p>
               </div>
             </div>
