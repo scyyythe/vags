@@ -6,10 +6,9 @@ import { cn } from '@/lib/utils';
 import { useModal } from '../context/ModalContext'; 
 import { useAutoTranslation } from '../hooks/autoTranslate/useAutoTranslation';
 import { languages } from '../components/constants/languages'; 
+import { useLanguage } from "@/context/LanguageContext";
 
-// ✅ Helper component for translated language options
 const LanguageOption = ({ lang, selectedLanguage, onSelect }) => {
-  const translatedName = useAutoTranslation(lang.name, selectedLanguage);
   return (
     <li
       key={lang.code}
@@ -18,7 +17,7 @@ const LanguageOption = ({ lang, selectedLanguage, onSelect }) => {
       }`}
       onClick={() => onSelect(lang.code)}
     >
-      {translatedName}
+      {lang.name} {/* shows native name */}
     </li>
   );
 };
@@ -26,12 +25,14 @@ const LanguageOption = ({ lang, selectedLanguage, onSelect }) => {
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [showLanguages, setShowLanguages] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [showMenu, setShowMenu] = useState(false);
   const { setShowRegisterModal } = useModal(); 
   const [showMobileSearch, setShowMobileSearch] = useState(false);
 
-  // ✅ Translatable navbar texts
+  // Use LanguageContext
+  const { language: selectedLanguage, setLanguage } = useLanguage();
+
+  // Translatable navbar texts
   const discover = useAutoTranslation('Discover', selectedLanguage);
   const artists = useAutoTranslation('Artists', selectedLanguage);
   const artworks = useAutoTranslation('Artworks', selectedLanguage);
@@ -60,7 +61,7 @@ const Navbar = () => {
   }, []);
 
   const handleLanguageSelect = (code) => {
-    setSelectedLanguage(code);
+    setLanguage(code); // update global context
     setShowLanguages(false);
   };
 
