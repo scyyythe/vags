@@ -7,7 +7,7 @@ const ErrorPage = () => {
   const errorState = location.state || {};
 
   const errorCode = errorState.code || 404;
-  let errorMessage = errorState.message || "Not Found";
+  let errorMessage = errorState.message || "Not Found"; 
 
   if (errorCode === 401) {
     errorMessage = "You are unauthorized. Please login to access this page.";
