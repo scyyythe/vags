@@ -263,6 +263,8 @@ const SellTab = ({ selectedPriceRange }) => {
     unlisted: "unlisted",
     sold: "sold",
     deleted: "deleted",
+    draft: "unlisted",
+    inactive: "unlisted",
   };
 
   const activeListingTabs = ["available", "unlisted", "sold"];
@@ -451,19 +453,24 @@ const SellTab = ({ selectedPriceRange }) => {
             }))
         : []
       : [];
-
   let filteredArtworks = myArtCards
     .filter((art) => {
-      const status = art.art_status?.toLowerCase?.();
-      const expectedStatus = statusMap[subTab]?.toLowerCase();
+      const status = (art.art_status || "").toLowerCase().trim();
+      const tab = (subTab || "").toLowerCase().trim();
+
+      if (tab === "unlisted") {
+        return (
+          mainTab === "myListings" &&
+          activeSubGroup === "listings" &&
+          ["unlisted", "draft", "inactive"].includes(status)
+        );
+      }
+
       return (
-        mainTab === "myListings" &&
-        activeSubGroup === "listings" &&
-        expectedStatus === "onsale" &&
-        status === expectedStatus &&
-        art.visibility !== "hidden"
+        mainTab === "myListings" && activeSubGroup === "listings" && status === (statusMap[tab] || "").toLowerCase()
       );
     })
+
     .map((art) => ({
       id: art.id,
       title: art.title,
@@ -473,7 +480,7 @@ const SellTab = ({ selectedPriceRange }) => {
       rating: art.total_ratings,
       category: art.category,
       artworkImage: art.image_url[0] || "",
-      status: "active",
+      status: (art.art_status || "").toLowerCase().trim(), // keep real normalized status
     }));
 
   if (selectedPriceRange === "Low to High") {

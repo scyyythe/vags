@@ -207,7 +207,6 @@ class ArtCardListView(APIView):
             return Response(serializer.data)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
-        
 class MyArtCardListView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -217,8 +216,7 @@ class MyArtCardListView(APIView):
 
             artworks = Art.objects(
                 artist=user,
-                visibility__iexact="public",
-                art_status__in=["onSale", "on Sale"]  
+                art_status__in=["onSale", "on Sale", "Unlisted", "Sold"]  
             ).only(
                 "title", "price", "discounted_price", "total_ratings",
                 "image_url", "category", "visibility", "art_status", "artist"
@@ -229,6 +227,7 @@ class MyArtCardListView(APIView):
         except Exception as e:
             print("Error fetching my art cards:", e)
             return Response({"error": str(e)}, status=500)
+
 
 
         
