@@ -2,90 +2,99 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Plus, CheckCircle2, Lock } from "lucide-react";
 import { PaymentAccount, NewAccountState } from "./accounts_setup/types/payment";
 import { PaymentAccountForm } from "./accounts_setup/PaymentAccountForm";
 import { PaymentAccountTable } from "./accounts_setup/PaymentAccountTable";
-import { usePaymentAccounts } from "@/hooks/paymentAccounts/usePaymentAccounts";
-
+import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
 const PaymentAccountsTab = () => {
   const { accounts, addOrUpdateAccount, deleteAccount, setDefaultAccount } = usePaymentAccounts();
+
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState<PaymentAccount | null>(null);
   const [newAccount, setNewAccount] = useState<NewAccountState>({
-    type: 'paypal',
-    name: '',
-    accountInfo: '',
+    type: "paypal",
+    name: "",
+    accountInfo: "",
     isDefault: false,
     cardDetails: {
-      cardNumber: '',
-      expiryDate: '',
-      cvv: '',
-      cardholderName: ''
+      cardNumber: "",
+      expiryDate: "",
+      cvv: "",
+      cardholderName: "",
     },
     bankDetails: {
-      bankName: '',
-      accountNumber: '',
-      routingNumber: '',
-      swiftCode: ''
-    }
+      bankName: "",
+      accountNumber: "",
+      routingNumber: "",
+      swiftCode: "",
+    },
   });
 
   const resetForm = () => {
     setEditingAccount(null);
     setNewAccount({
-      type: 'paypal',
-      name: '',
-      accountInfo: '',
+      type: "paypal",
+      name: "",
+      accountInfo: "",
       isDefault: false,
       cardDetails: {
-        cardNumber: '',
-        expiryDate: '',
-        cvv: '',
-        cardholderName: ''
+        cardNumber: "",
+        expiryDate: "",
+        cvv: "",
+        cardholderName: "",
       },
       bankDetails: {
-        bankName: '',
-        accountNumber: '',
-        routingNumber: '',
-        swiftCode: ''
-      }
+        bankName: "",
+        accountNumber: "",
+        routingNumber: "",
+        swiftCode: "",
+      },
     });
   };
-
-  const handleAddOrUpdateAccount = () => {
-    const success = addOrUpdateAccount(newAccount, editingAccount);
+  const handleAddOrUpdateAccount = async () => {
+    const success = await addOrUpdateAccount(newAccount, editingAccount);
     if (success) {
       resetForm();
       setShowAddForm(false);
     }
   };
-
-  const handleEditAccount = (account: PaymentAccount) => {
+  const handleEditAccount = (account: PaymentAccount & { details: any }) => {
     setEditingAccount(account);
-    
-    // Pre-populate the add form with existing account data
+
     setNewAccount({
       type: account.type,
       name: account.name,
       accountInfo: account.accountInfo,
       isDefault: account.isDefault,
-      cardDetails: {
-        cardNumber: account.type === 'card' ? account.accountInfo : '',
-        expiryDate: '',
-        cvv: '',
-        cardholderName: ''
-      },
-      bankDetails: {
-        bankName: '',
-        accountNumber: account.type === 'bank' ? account.accountInfo : '',
-        routingNumber: '',
-        swiftCode: ''
-      }
+      cardDetails:
+        account.type === "card"
+          ? {
+              cardNumber: account.details?.cardNumber || "",
+              expiryDate: account.details?.expiryDate || "",
+              cvv: account.details?.cvv || "",
+              cardholderName: account.details?.cardholderName || "",
+            }
+          : { cardNumber: "", expiryDate: "", cvv: "", cardholderName: "" },
+      bankDetails:
+        account.type === "bank"
+          ? {
+              bankName: account.details?.bankName || "",
+              accountNumber: account.details?.accountNumber || "",
+              routingNumber: account.details?.routingNumber || "",
+              swiftCode: account.details?.swiftCode || "",
+            }
+          : { bankName: "", accountNumber: "", routingNumber: "", swiftCode: "" },
     });
-    
-    // Show the add form instead of edit form
+
     setShowAddForm(true);
   };
 
@@ -96,15 +105,19 @@ const PaymentAccountsTab = () => {
         <div>
           <h3 className="text-xs font-semibold text-foreground">My Payment Accounts</h3>
           <p className="text-[11px] text-muted-foreground mt-1">
-            Set up and manage your payout accounts. Donations, bids, and purchases will be sent directly to your preferred account.
+            Set up and manage your payout accounts. Donations, bids, and purchases will be sent directly to your
+            preferred account.
           </p>
         </div>
-        <Dialog open={showAddForm} onOpenChange={(open) => {
-          setShowAddForm(open);
-          if (!open) {
-            resetForm();
-          }
-        }}>
+        <Dialog
+          open={showAddForm}
+          onOpenChange={(open) => {
+            setShowAddForm(open);
+            if (!open) {
+              resetForm();
+            }
+          }}
+        >
           <DialogTrigger asChild>
             <button className="flex py-2 px-4 gap-2 text-[11px] text-white bg-red-700 rounded-full">
               <Plus className="relative w-3 h-3 top-0.5" />
@@ -113,24 +126,24 @@ const PaymentAccountsTab = () => {
           </DialogTrigger>
           <DialogContent className="max-w-md" onInteractOutside={(e) => e.preventDefault()}>
             <DialogHeader>
-              <DialogTitle className="text-[15px]">{editingAccount ? 'Edit Payment Method' : 'Add New Payment Method'}</DialogTitle>
+              <DialogTitle className="text-[15px]">
+                {editingAccount ? "Edit Payment Method" : "Add New Payment Method"}
+              </DialogTitle>
               <DialogDescription className="text-[11px]">
-                {editingAccount ? 'Update your payment account details' : 'Connect a new payment account to receive funds'}
+                {editingAccount
+                  ? "Update your payment account details"
+                  : "Connect a new payment account to receive funds"}
               </DialogDescription>
             </DialogHeader>
-            
-            <PaymentAccountForm
-              newAccount={newAccount}
-              setNewAccount={setNewAccount}
-              editingAccount={editingAccount}
-            />
+
+            <PaymentAccountForm newAccount={newAccount} setNewAccount={setNewAccount} editingAccount={editingAccount} />
 
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
                 id="isDefault"
                 checked={newAccount.isDefault}
-                onChange={(e) => setNewAccount(prev => ({ ...prev, isDefault: e.target.checked }))}
+                onChange={(e) => setNewAccount((prev) => ({ ...prev, isDefault: e.target.checked }))}
                 className="rounded border border-input"
               />
               <label htmlFor="isDefault" className="text-[11px]">
@@ -143,7 +156,7 @@ const PaymentAccountsTab = () => {
                 className="flex-1 text-xs text-white rounded-full bg-red-700 hover:bg-red-800 px-4 py-2"
                 onClick={handleAddOrUpdateAccount}
               >
-                {editingAccount ? 'Update Account' : 'Add Account'}
+                {editingAccount ? "Update Account" : "Add Account"}
               </button>
             </div>
           </DialogContent>
@@ -163,8 +176,8 @@ const PaymentAccountsTab = () => {
         <CardContent className="p-0">
           {accounts.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <p>No payment accounts configured</p>
-              <p className="text-sm">Add your first payment method to get started</p>
+              <p className="text-sm">No payment accounts configured</p>
+              <p className="text-xs">Add your first payment method to get started</p>
             </div>
           ) : (
             <PaymentAccountTable
@@ -194,8 +207,8 @@ const PaymentAccountsTab = () => {
                   Verification Process
                 </h4>
                 <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  New payment accounts require verification before they can receive funds. 
-                  This typically takes 1-3 business days.
+                  New payment accounts require verification before they can receive funds. This typically takes 1-3
+                  business days.
                 </p>
               </div>
             </div>
@@ -210,8 +223,8 @@ const PaymentAccountsTab = () => {
                   Security
                 </h4>
                 <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  Your payment information is encrypted and stored securely. 
-                  We only display masked account details for your privacy.
+                  Your payment information is encrypted and stored securely. We only display masked account details for
+                  your privacy.
                 </p>
               </div>
             </div>
