@@ -4,13 +4,15 @@ from api.views.user_views.user_views import (
     RetrieveUserView, UpdateUserDetailsView, UpdateUserView,
     DeleteUserView, ListAllUsersView, BlockUserView, UnblockUserView
 )
-from api.views.user_views.top_sellers_view import TopSellersAPIView,TopArtworksAPIView
+from api.views.user_views.top_sellers_view import TopSellersAPIView,TopArtworksAPIView,PopularArtistsAPIView
 from api.views.user_views.address_view import AddressViewSet,DefaultAddressView,SetDefaultAddressView
 from api.views.user_views.user_views import SessionListView, SessionDeleteView
 user_urlpatterns = [
     path('top-sellers/', TopSellersAPIView.as_view(), name='top-sellers'),
     path("top-artworks/", TopArtworksAPIView.as_view(), name="top-artworks"),
-    
+    path("popular-artists/", PopularArtistsAPIView.as_view(), name="popular-artists"),
+
+
     path("sessions/", SessionListView.as_view(), name="sessions"),
     path("sessions/<str:session_id>/", SessionDeleteView.as_view(), name="session-delete"),
     

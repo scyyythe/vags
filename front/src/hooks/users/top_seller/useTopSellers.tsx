@@ -19,6 +19,8 @@ const useTopSellers = () => {
   return useQuery<TopSeller[]>({
     queryKey: ["top-sellers"],
     queryFn: fetchTopSellers,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 };
 

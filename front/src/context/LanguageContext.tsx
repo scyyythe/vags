@@ -23,11 +23,7 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
     localStorage.setItem("language", language);
   }, [language]);
 
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
-      {children}
-    </LanguageContext.Provider>
-  );
+  return <LanguageContext.Provider value={{ language, setLanguage }}>{children}</LanguageContext.Provider>;
 };
 
 export const useLanguage = () => {

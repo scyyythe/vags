@@ -7,9 +7,10 @@ from api.models.user_model.users import User
 from api.models.artwork_model.artwork import Art
 from api.models.purchase_model.order import PurchasedArtwork
 from api.models.review_model.review import Review
-
-
+from rest_framework.permissions import AllowAny
+from api.models.interaction_model.follows import Follower
 class TopSellersAPIView(APIView):
+    permission_classes = [AllowAny] 
     def get(self, request):
         users = User.objects(role="User", user_status="Active")
         seller_data = []
@@ -126,3 +127,35 @@ class TopArtworksAPIView(APIView):
         )
 
         return Response(sorted_artworks[:10], status=status.HTTP_200_OK)
+
+class PopularArtistsAPIView(APIView):
+    permission_classes = [AllowAny]  
+
+    def get(self, request):
+        artists = User.objects(role="User", user_status="Active")
+
+        artist_data = []
+        for artist in artists:
+          
+            followers_count = Follower.objects(following=artist).count()
+
+
+            artworks_count = Art.objects(artist=artist).count()
+            reviews_count = Review.objects(artist=artist).count() if hasattr(Review, "artist") else 0
+
+            artist_data.append({
+                "id": str(artist.id),
+                "name": f"{artist.first_name or ''} {artist.last_name or ''}".strip() or artist.username,
+                "profile_picture": getattr(artist, "profile_picture", ""),
+                "followers": followers_count,
+                "artworks_count": artworks_count,
+                "reviews_count": reviews_count,
+            })
+
+        sorted_artists = sorted(
+            artist_data,
+            key=lambda x: (x["followers"], x["reviews_count"]),
+            reverse=True,
+        )
+
+        return Response(sorted_artists[:12], status=status.HTTP_200_OK)
