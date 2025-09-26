@@ -17,6 +17,7 @@ import useFollowCounts from "@/hooks/follow/useFollowCount";
 import EditProfile from "../../own_profile/edit_profile/EditButton";
 import FollowModals from "@/components/user_dashboard/own_profile/following_&_followers/owners/profile/FollowModals";
 import ProfileHeaderSkeleton from "@/components/skeletons/ProfileHeaderSkeleton";
+import { useSocials } from "@/hooks/users/social/useSocials";
 interface ProfileHeaderProps {
   profileImage: string;
   name: string;
@@ -36,6 +37,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
   const unfollowMutation = useUnfollowUser();
   const { id } = useParams<{ id: string }>();
   const { data: followCounts, error } = useFollowCounts(id || "");
+  const { data: socials = [], isLoading: isSocialsLoading } = useSocials(profileUserId);
+
   const [showReportOptions, setShowReportOptions] = useState(false);
 
   const [contactOpen, setContactOpen] = useState(false);
@@ -97,33 +100,15 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
     console.log("Reason:", reason);
     setShowReportOptions(false);
   };
+  const socialIcons: Record<string, string> = {
+    website: "https://img.icons8.com/fluency-systems-regular/48/globe--v1.png",
+    twitter: "https://img.icons8.com/color/48/twitter--v1.png",
+    facebook: "https://img.icons8.com/color/48/facebook-new.png",
+    instagram: "https://img.icons8.com/fluency/48/instagram-new.png",
+    linkedin: "https://img.icons8.com/color/48/linkedin--v1.png",
 
-  const socials = [
-    {
-      name: "Website",
-      icon: "https://img.icons8.com/fluency-systems-regular/48/globe--v1.png",
-      username: "mywebsite.com",
-      link: "https://mywebsite.com",
-    },
-    {
-      name: "Twitter",
-      icon: "https://img.icons8.com/color/48/twitter--v1.png",
-      username: "@jam_anuba",
-      link: "https://twitter.com/jam_anuba",
-    },
-    {
-      name: "Facebook",
-      icon: "https://img.icons8.com/color/48/facebook-new.png",
-      username: "Jamaica Anuba",
-      link: "https://facebook.com/jamaica.anuba",
-    },
-    {
-      name: "Instagram",
-      icon: "https://img.icons8.com/fluency/48/instagram-new.png",
-      username: "@jam_art",
-      link: "https://instagram.com/jam_art",
-    },
-  ];
+    // add more platforms as needed
+  };
 
   return (
     <div className="w-full px-4">
@@ -132,22 +117,33 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
         <img src={cover} className="w-full h-full object-cover" />
         {/* Social Links */}
         <div className="absolute top-4 right-5 flex space-x-2 z-30">
-          {socials.map((social, index) => (
-            <a
-              key={index}
-              href={social.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative flex items-center justify-start"
-            >
-              <div className="flex items-center opacity-90 bg-white  rounded-full px-[10px] py-[7px] w-9 group-hover:w-36 overflow-hidden transition-all duration-300 ease-in-out shadow-md">
-                <img src={social.icon} alt={social.name} className="w-4 h-4 object-contain" />
-                <span className="ml-2 text-[10px] text-gray-800 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-                  {social.username}
-                </span>
-              </div>
-            </a>
-          ))}
+          {!isSocialsLoading &&
+            socials.length > 0 &&
+            socials.map((social) => {
+              const urlParts = social.url.split("/");
+              const usernameFromUrl = urlParts[urlParts.length - 1] || social.platform;
+
+              return (
+                <a
+                  key={social.id}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative flex items-center justify-start"
+                >
+                  <div className="flex items-center opacity-90 bg-white rounded-full px-[10px] py-[7px] w-9 group-hover:w-36 overflow-hidden transition-all duration-300 ease-in-out shadow-md">
+                    <img
+                      src={socialIcons[social.platform.toLowerCase()] || socialIcons.website}
+                      alt={social.platform}
+                      className="w-4 h-4 object-contain"
+                    />
+                    <span className="ml-2 text-[10px] text-gray-800 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                      {usernameFromUrl}
+                    </span>
+                  </div>
+                </a>
+              );
+            })}
         </div>
       </div>
 
