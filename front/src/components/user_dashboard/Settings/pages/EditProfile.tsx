@@ -8,6 +8,13 @@ import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useSocials } from "@/hooks/users/social/useSocials";
+import { useAddSocial } from "@/hooks/users/social/useSocials";
+import { useDeleteSocial } from "@/hooks/users/social/useSocials";
+type Social = {
+  platform: string;
+  url: string;
+};
 
 const EditProfile = () => {
   const userId = getLoggedInUserId();
@@ -15,6 +22,9 @@ const EditProfile = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
   const { mutate: updateUser } = useUpdateUserDetails();
+  const { data: socials = [] } = useSocials(userId);
+  const { mutate: addSocial } = useAddSocial(userId);
+  const { mutate: deleteSocial } = useDeleteSocial(userId);
 
   const [formData, setFormData] = useState<{
     fullName: string;
@@ -66,7 +76,10 @@ const EditProfile = () => {
   const userUpdateFailed = useAutoTranslation("Failed to update user details.", selectedLanguage);
   const invalidEmailText = useAutoTranslation("Please enter a valid email address.", selectedLanguage);
   const removeText = useAutoTranslation("Remove", selectedLanguage);
-  const uploadValidImageText = useAutoTranslation("Please upload a valid image file (JPG, JPEG, PNG).", selectedLanguage);
+  const uploadValidImageText = useAutoTranslation(
+    "Please upload a valid image file (JPG, JPEG, PNG).",
+    selectedLanguage
+  );
 
   useEffect(() => {
     if (!isLoading && !error && firstName && lastName && username) {
@@ -181,8 +194,7 @@ const EditProfile = () => {
   };
 
   const [socialInput, setSocialInput] = useState("");
-  const [socials, setSocials] = useState<{ [platform: string]: string }>({});
-
+  const [localSocials, setLocalSocials] = useState<{ [platform: string]: string }>({});
   const extractPlatform = (url: string) => {
     try {
       const domain = new URL(url).hostname;
@@ -204,14 +216,28 @@ const EditProfile = () => {
       return;
     }
 
-    if (socials[platform]) {
+    const existing = socials.find((s) => s.platform === platform);
+    if (existing) {
       toast.error(`${alreadyAddedText} ${platform} account.`, { closeButton: true });
       return;
     }
 
-    setSocials((prev) => ({ ...prev, [platform]: socialInput }));
-    setSocialInput("");
-    toast.success(`${platform} ${accountAddedText}`, { closeButton: true });
+    addSocial(
+      { platform, url: socialInput },
+      {
+        onSuccess: () => {
+          toast.success(`${platform.charAt(0).toUpperCase() + platform.slice(1)} ${accountAddedText}`, {
+            closeButton: true,
+          });
+
+          setSocialInput("");
+        },
+        onError: (err: any) => {
+          console.error(err);
+          toast.error("Failed to add social account", { closeButton: true });
+        },
+      }
+    );
   };
 
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -246,16 +272,12 @@ const EditProfile = () => {
         <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
           {coverPreviewUrl || cover_photo ? (
             <div className="relative w-full max-w-4xl">
-              <img
-                src={coverPreviewUrl || cover_photo}
-                alt="Cover"
-                className="w-full h-48 object-cover rounded-md"
-              />
+              <img src={coverPreviewUrl || cover_photo} alt="Cover" className="w-full h-48 object-cover rounded-md" />
               <button
                 onClick={triggerCoverFileInput}
                 className="absolute bottom-2 right-2 bg-white p-2 shadow hover:bg-gray-100 text-[10px] font-medium py-1 px-2 rounded-full text-gray-800"
               >
-                <i className='bx bx-camera text-sm'></i>
+                <i className="bx bx-camera text-sm"></i>
               </button>
             </div>
           ) : (
@@ -265,12 +287,18 @@ const EditProfile = () => {
                 onClick={triggerCoverFileInput}
                 className="absolute bottom-2 right-2 bg-white p-2 shadow hover:bg-gray-100 text-[10px] font-medium py-1 px-2 rounded-full text-gray-800"
               >
-                <i className='bx bx-camera text-sm'></i>
+                <i className="bx bx-camera text-sm"></i>
               </button>
             </div>
           )}
 
-          <input type="file" ref={coverFileInputRef} onChange={handleCoverPhotoChange} accept="image/*" className="hidden" />
+          <input
+            type="file"
+            ref={coverFileInputRef}
+            onChange={handleCoverPhotoChange}
+            accept="image/*"
+            className="hidden"
+          />
           {(coverPreviewUrl || cover_photo) && (
             <button
               onClick={handleRemoveCoverPhoto}
@@ -297,7 +325,7 @@ const EditProfile = () => {
                 onClick={triggerFileInput}
                 className="absolute bottom-2 right-2 bg-white p-2 shadow hover:bg-gray-100 text-[10px] font-medium py-1 px-2 rounded-full text-gray-800"
               >
-                <i className='bx bx-camera text-sm'></i>
+                <i className="bx bx-camera text-sm"></i>
               </button>
             </div>
           ) : (
@@ -307,7 +335,7 @@ const EditProfile = () => {
                 onClick={triggerFileInput}
                 className="absolute bottom-2 right-2 bg-white shadow hover:bg-gray-100 text-[10px] font-medium px-2 rounded-full text-gray-800"
               >
-                <i className='bx bx-camera text-sm'></i>
+                <i className="bx bx-camera text-sm"></i>
               </button>
             </div>
           )}
@@ -329,7 +357,7 @@ const EditProfile = () => {
         <div className="bg-white border border-gray-200 rounded-md px-4 py-4 mb-2">
           <label className="block text-[10px] text-gray-500 pl-3">{fullNameLabel}</label>
           <Input
-            value={translatedFullName}  
+            value={translatedFullName}
             disabled
             onChange={(e) => handleChange("fullName", e.target.value)}
             className="w-full font-semibold -mb-2 p-none border-none focus:ring-0 shadow-none"
@@ -340,7 +368,7 @@ const EditProfile = () => {
         <div className="bg-white border border-gray-200 rounded-md px-4 py-4 mb-2">
           <label className="block text-[10px] text-gray-500 pl-3">{usernameLabel}</label>
           <Input
-            value={translatedUsername} 
+            value={translatedUsername}
             onChange={(e) => handleChange("username", e.target.value)}
             className="w-full font-semibold -mb-2 p-none border-none focus:ring-0 shadow-none"
             style={{ border: "none", fontSize: "12px", boxShadow: "none", outline: "none" }}
@@ -359,15 +387,24 @@ const EditProfile = () => {
               className="w-full h-8 rounded-full ring-0 focus:outline-none focus:ring-0"
               style={{ fontSize: "11px" }}
             />
-            <Button onClick={handleAddSocial} className="h-8 text-[11px] rounded-full">{addButtonText}</Button>
+            <Button onClick={handleAddSocial} className="h-8 text-[11px] rounded-full">
+              {addButtonText}
+            </Button>
           </div>
 
-          {Object.keys(socials).length > 0 && (
+          {socials.length > 0 && (
             <ul className="text-[11px] mt-3">
-              {Object.entries(socials).map(([platform, link]) => (
-                <li key={platform} className="flex space-x-2 w-full max-w-xs">
-                  <span className="text-gray-600 font-medium capitalize">{platform}:</span>
-                  <a href={link} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline truncate max-w-[200px]">{link}</a>
+              {socials.map((social: Social) => (
+                <li key={social.platform} className="flex space-x-2 w-full max-w-xs">
+                  <span className="text-gray-600 font-medium capitalize">{social.platform}:</span>
+                  <a
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline truncate max-w-[200px]"
+                  >
+                    {social.url}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -376,7 +413,9 @@ const EditProfile = () => {
 
         {/* Contact Email */}
         <div className="mb-4">
-          <label className="block text-[11px] text-gray-500 mb-2" htmlFor="email">{contactEmailLabel}</label>
+          <label className="block text-[11px] text-gray-500 mb-2" htmlFor="email">
+            {contactEmailLabel}
+          </label>
           <Input
             id="email"
             type="email"
