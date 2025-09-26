@@ -46,6 +46,8 @@ const EditProfile = () => {
   const profilePicLabel = useAutoTranslation("Profile Picture", selectedLanguage);
   const fullNameLabel = useAutoTranslation("Full name", selectedLanguage);
   const usernameLabel = useAutoTranslation("Username", selectedLanguage);
+  const translatedFullName = useAutoTranslation(formData.fullName || "", selectedLanguage);
+  const translatedUsername = useAutoTranslation(formData.username || "", selectedLanguage);
   const socialMediaLabel = useAutoTranslation("Social Media", selectedLanguage);
   const socialInputPlaceholder = useAutoTranslation("Enter your social media link", selectedLanguage);
   const addButtonText = useAutoTranslation("Add", selectedLanguage);
@@ -327,7 +329,7 @@ const EditProfile = () => {
         <div className="bg-white border border-gray-200 rounded-md px-4 py-4 mb-2">
           <label className="block text-[10px] text-gray-500 pl-3">{fullNameLabel}</label>
           <Input
-            value={formData.fullName}
+            value={translatedFullName}  
             disabled
             onChange={(e) => handleChange("fullName", e.target.value)}
             className="w-full font-semibold -mb-2 p-none border-none focus:ring-0 shadow-none"
@@ -338,7 +340,7 @@ const EditProfile = () => {
         <div className="bg-white border border-gray-200 rounded-md px-4 py-4 mb-2">
           <label className="block text-[10px] text-gray-500 pl-3">{usernameLabel}</label>
           <Input
-            value={formData.username}
+            value={translatedUsername} 
             onChange={(e) => handleChange("username", e.target.value)}
             className="w-full font-semibold -mb-2 p-none border-none focus:ring-0 shadow-none"
             style={{ border: "none", fontSize: "12px", boxShadow: "none", outline: "none" }}

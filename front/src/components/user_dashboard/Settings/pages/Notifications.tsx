@@ -14,46 +14,17 @@ interface NotificationSetting {
 
 const NotificationsSettings = () => {
   const { language: selectedLanguage } = useLanguage();
+  const translate = useAutoTranslation;
 
-  // Auto-translated heading
-  const notificationsLabel = useAutoTranslation("Notifications", selectedLanguage);
+  // Heading translation
+  const notificationsLabel = translate("Notifications", selectedLanguage);
 
   const [notifications, setNotifications] = useState<NotificationSetting[]>([
-    {
-      id: "product-updates",
-      category: useAutoTranslation("Product updates", selectedLanguage),
-      title: useAutoTranslation("Receive messages from our platform", selectedLanguage),
-      description: "",
-      enabled: true,
-    },
-    {
-      id: "reminders",
-      category: useAutoTranslation("Reminders", selectedLanguage),
-      title: useAutoTranslation("Receive booking reminders, pricing notices", selectedLanguage),
-      description: "",
-      enabled: false,
-    },
-    {
-      id: "promotions",
-      category: useAutoTranslation("Promotions and tips", selectedLanguage),
-      title: useAutoTranslation("Receive coupons, promotions, surveys", selectedLanguage),
-      description: "",
-      enabled: true,
-    },
-    {
-      id: "policy",
-      category: useAutoTranslation("Policy and Community", selectedLanguage),
-      title: useAutoTranslation("Receive updates on ...?", selectedLanguage),
-      description: "",
-      enabled: true,
-    },
-    {
-      id: "account",
-      category: useAutoTranslation("Account support", selectedLanguage),
-      title: useAutoTranslation("Receive messages about your account, your trips, legal alerts", selectedLanguage),
-      description: "",
-      enabled: false,
-    },
+    { id: "product-updates", category: "", title: "", description: "", enabled: true },
+    { id: "reminders", category: "", title: "", description: "", enabled: false },
+    { id: "promotions", category: "", title: "", description: "", enabled: true },
+    { id: "policy", category: "", title: "", description: "", enabled: true },
+    { id: "account", category: "", title: "", description: "", enabled: false },
   ]);
 
   const [originalNotifications, setOriginalNotifications] = useState([...notifications]);
@@ -68,17 +39,9 @@ const NotificationsSettings = () => {
     );
   };
 
-  const handleSave = () => {
-    setOriginalNotifications([...notifications]);
-  };
-
-  const handleReset = () => {
-    setNotifications([...originalNotifications]);
-  };
-
-  const hasChanges = () => {
-    return JSON.stringify(notifications) !== JSON.stringify(originalNotifications);
-  };
+  const handleSave = () => setOriginalNotifications([...notifications]);
+  const handleReset = () => setNotifications([...originalNotifications]);
+  const hasChanges = () => JSON.stringify(notifications) !== JSON.stringify(originalNotifications);
 
   return (
     <div>
@@ -89,8 +52,20 @@ const NotificationsSettings = () => {
           {notifications.map((notification) => (
             <div key={notification.id} className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] text-gray-500">{notification.category}</p>
-                <h3 className="font-medium text-xs">{notification.title}</h3>
+                <p className="text-[10px] text-gray-500">
+                  {notification.id === "product-updates" && translate("Product updates", selectedLanguage)}
+                  {notification.id === "reminders" && translate("Reminders", selectedLanguage)}
+                  {notification.id === "promotions" && translate("Promotions and tips", selectedLanguage)}
+                  {notification.id === "policy" && translate("Policy and Community", selectedLanguage)}
+                  {notification.id === "account" && translate("Account support", selectedLanguage)}
+                </p>
+                <h3 className="font-medium text-xs">
+                  {notification.id === "product-updates" && translate("Receive messages from our platform", selectedLanguage)}
+                  {notification.id === "reminders" && translate("Receive booking reminders, pricing notices", selectedLanguage)}
+                  {notification.id === "promotions" && translate("Receive coupons, promotions, surveys", selectedLanguage)}
+                  {notification.id === "policy" && translate("Receive updates on ...?", selectedLanguage)}
+                  {notification.id === "account" && translate("Receive messages about your account, your trips, legal alerts", selectedLanguage)}
+                </h3>
               </div>
               <div className="transform scale-50 origin-left">
                 <Switch
