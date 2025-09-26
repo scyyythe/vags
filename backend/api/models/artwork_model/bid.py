@@ -39,7 +39,7 @@ class Auction(Document):
     
     bid_history = ListField(ReferenceField(Bid))
     viewed_by = ListField(ReferenceField(User, reverse_delete_rule=CASCADE), default=[])
-
+    updated_at = DateTimeField(default=datetime.utcnow)
     def close_auction(self):
         from api.models.interaction_model.notification import Notification
         from django.utils.timezone import now as dj_now
