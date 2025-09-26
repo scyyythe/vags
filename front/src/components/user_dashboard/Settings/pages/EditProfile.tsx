@@ -18,7 +18,8 @@ type Social = {
 
 const EditProfile = () => {
   const userId = getLoggedInUserId();
-  const { username, firstName, lastName, profilePicture, cover_photo, isLoading, error } = useUserDetails(userId);
+  const { username, firstName, email, lastName, profilePicture, cover_photo, isLoading, error } =
+    useUserDetails(userId);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
   const { mutate: updateUser } = useUpdateUserDetails();
@@ -87,7 +88,7 @@ const EditProfile = () => {
       const updatedForm = {
         fullName,
         username,
-        email: "",
+        email: email || "",
         profile_picture: null,
         cover_photo: null,
       };
@@ -95,7 +96,7 @@ const EditProfile = () => {
       setFormData(updatedForm);
       setOriginalData(updatedForm);
     }
-  }, [firstName, lastName, username, isLoading, error]);
+  }, [firstName, lastName, username, email, isLoading, error]);
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({
@@ -146,8 +147,12 @@ const EditProfile = () => {
 
   const triggerFileInput = () => fileInputRef.current?.click();
   const triggerCoverFileInput = () => coverFileInputRef.current?.click();
-
   const handleSave = () => {
+    if (!isValidEmail(formData.email)) {
+      toast.error(invalidEmailText, { closeButton: true });
+      return;
+    }
+
     const loadingToast = toast(updatingDetailsText, {
       description: updatingDetailsDesc,
     });
@@ -159,6 +164,7 @@ const EditProfile = () => {
     updatedUser.append("first_name", firstName);
     updatedUser.append("last_name", lastName);
     updatedUser.append("username", formData.username);
+    updatedUser.append("email", formData.email);
 
     if (formData.profile_picture) updatedUser.append("profile_picture", formData.profile_picture);
     if (formData.cover_photo) updatedUser.append("cover_photo", formData.cover_photo);
