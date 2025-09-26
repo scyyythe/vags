@@ -12,7 +12,7 @@ export interface PopularArtist {
 
 const fetchPopularArtists = async (): Promise<PopularArtist[]> => {
   const { data } = await apiClient.get("/popular-artists/");
-  console.log("Popular artists response:", data);
+ 
   return data.map((artist: any) => ({
     id: artist.id || artist._id,
     name: artist.name,
