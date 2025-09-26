@@ -33,6 +33,12 @@ const AccountDetails = () => {
   const languageLabel = useAutoTranslation("Language", selectedLanguage);
   const dobLabel = useAutoTranslation("Date of Birth", selectedLanguage);
   const emailLabel = useAutoTranslation("Email Address", selectedLanguage);
+  const translatedFullName = useAutoTranslation(formData.fullName || "Unknown", selectedLanguage);
+  const translatedDateOfBirth = useAutoTranslation(formData.date_of_birth || "N/A", selectedLanguage);
+  const translatedCountry = useAutoTranslation(formData.country || "Philippines", selectedLanguage);
+  const translatedEmail = useAutoTranslation(formData.email || "Unknown", selectedLanguage);
+  const translatedGender = useAutoTranslation(formData.gender || "Unknown", selectedLanguage);
+  const translatedLanguage = useAutoTranslation(formData.language || "English", selectedLanguage);
   const deactivationDeletionLabel = useAutoTranslation("Deactivation and Deletion", selectedLanguage);
   const deactivateAccountLabel = useAutoTranslation("Deactivate account", selectedLanguage);
   const deactivateDesc = useAutoTranslation(
@@ -65,7 +71,7 @@ const AccountDetails = () => {
         date_of_birth: formattedDob || "",
         email: email || "Unknown",
         country: "Philippines",
-        language: selectedLanguage || "English",
+        language: selectedLanguage,
       };
 
       setFormData(newFormData);
@@ -121,42 +127,42 @@ const AccountDetails = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
           <EditableField
             label={fullNameLabel}
-            value={formData.fullName}
+            value={translatedFullName} 
             type="text"
             onChange={(value) => handleChange("fullName", value)}
           />
 
           <EditableField
             label={countryLabel}
-            value={formData.country}
+            value={translatedCountry}  
             type="country"
             onChange={(value) => handleChange("country", value)}
           />
 
           <EditableField
             label={genderLabel}
-            value={formData.gender}
+            value={translatedGender} 
             type="gender"
             onChange={(value) => handleChange("gender", value)}
           />
 
           <EditableField
             label={languageLabel}
-            value={formData.language}
+            value={translatedLanguage} 
             type="language"
             onChange={(value) => handleChange("language", value)}
           />
 
           <EditableField
             label={dobLabel}
-            value={formData.date_of_birth}
+            value={translatedDateOfBirth}  
             type="date"
             onChange={(value) => handleChange("date_of_birth", value)}
           />
 
           <EditableField
             label={emailLabel}
-            value={formData.email}
+            value={translatedEmail} 
             type="email"
             onChange={(value) => handleChange("email", value)}
           />

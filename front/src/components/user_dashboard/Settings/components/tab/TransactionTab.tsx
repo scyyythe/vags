@@ -10,6 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { FiArrowDownLeft, FiArrowUpRight, FiRepeat, FiSearch, FiChevronDown, FiCalendar }  from "react-icons/fi";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 // Mock data
 const mockTransactions = [
@@ -27,111 +29,27 @@ const mockTransactions = [
   },
   {
     id: 2,
-    type: "Sent",
-    amount: "- 200.00 IDR",
+    type: "Received",
+    amount: "+ 1,200.00 IDR",
     currency: "IDR",
-    method: "Wire Transfer",
-    methodDetail: "**** 9830",
+    method: "Bank Transfer",
+    methodDetail: "BNI **** 2345",
     status: "Success",
-    activity: "Sending money to Bani Zulhimin",
-    people: { name: "Bani Zulhimin", avatar: null, initials: "B" },
-    date: "Aug 28, 2023 3:40 PM",
+    activity: "Received payment from Angela",
+    people: { name: "Angela Tan", avatar: null, initials: "A" },
+    date: "Aug 27, 2023 10:15 AM",
   },
   {
     id: 3,
-    type: "Received",
-    amount: "+ 1,500 USD",
-    currency: "USD",
-    method: "Bank Transfer",
-    methodDetail: "**** 9683",
-    status: "Success",
-    activity: "Received money from Andrew",
-    people: { name: "Andrew Top G", avatar: "https://randomuser.me/api/portraits/men/32.jpg", initials: "A" },
-    date: "Aug 28, 2023 3:40 PM",
-  },
-  {
-    id: 4,
-    type: "Received",
-    amount: "+ 2,500 USD",
-    currency: "USD",
-    method: "PayPal",
-    methodDetail: "(clarista)",
-    status: "Success",
-    activity: "Payment for product",
-    people: { name: "Clarista Jawl", avatar: "https://randomuser.me/api/portraits/women/44.jpg", initials: "C" },
-    date: "Aug 28, 2023 3:40 PM",
-  },
-  {
-    id: 5,
-    type: "Received",
-    amount: "+ 1,500 USD",
-    currency: "USD",
-    method: "Payoneer",
-    methodDetail: "**** 1083",
-    status: "Incomplete",
-    activity: "Payment for invoice",
-    people: { name: "Andrew Top G", avatar: "https://randomuser.me/api/portraits/men/32.jpg", initials: "A" },
-    date: "Aug 28, 2023 5:30 PM",
-  },
-  {
-    id: 6,
     type: "Converted",
-    amount: "400.00 IDR",
-    currency: "IDR",
-    method: "Debit Card",
-    methodDetail: "**** 2938",
-    status: "Failed",
-    activity: "Convert money from USD to IDR",
-    people: { name: "Bagus Fikri", avatar: null, initials: "B" },
-    date: "Aug 27, 2023 3:35 PM",
-  },
-  {
-    id: 7,
-    type: "Received",
-    amount: "+ 500 USD",
+    amount: "- 200.00 USD",
     currency: "USD",
-    method: "Credit Card",
-    methodDetail: "**** 2938",
-    status: "Success",
-    activity: "Received money from Bani Zulhimin",
-    people: { name: "Bani Zulhimin", avatar: null, initials: "B" },
-    date: "Aug 27, 2023 2:15 PM",
-  },
-  {
-    id: 8,
-    type: "Received",
-    amount: "+ 1,000 USD",
-    currency: "USD",
-    method: "PayPal",
-    methodDetail: "(basiliskelvin)",
-    status: "Success",
-    activity: "Received money from Basilisk Kelvin",
-    people: { name: "Basilisk Kelvin", avatar: null, initials: "B" },
-    date: "Aug 27, 2023 11:10 AM",
-  },
-  {
-    id: 9,
-    type: "Sent",
-    amount: "- 1,500.00 IDR",
-    currency: "IDR",
-    method: "Wire Transfer",
-    methodDetail: "**** 2314",
-    status: "Failed",
-    activity: "Sending money to Raihan Fikri",
-    people: { name: "Raihan Zulhimin", avatar: null, initials: "R" },
-    date: "Aug 27, 2023 9:40 AM",
-  },
-  {
-    id: 10,
-    type: "Sent",
-    amount: "- 500.00 IDR",
-    currency: "IDR",
-    method: "Credit Card",
-    methodDetail: "**** 8969",
-    status: "Success",
-    activity: "Sending money to Raihan Fikri",
-    people: { name: "Raihan Zulhimin", avatar: null, initials: "R" },
-    date: "Aug 27, 2023 8:40 AM",
+    method: "Currency Exchange",
+    methodDetail: "USD → IDR",
+    status: "Incomplete",
+    activity: "Currency conversion",
+    people: { name: "You", avatar: null, initials: "Y" },
+    date: "Aug 26, 2023 5:00 PM",
   },
 ];
 
@@ -142,16 +60,8 @@ const statusColors: Record<string, string> = {
   Failed: "bg-red-100 text-red-800",
 };
 
-const currencyOptions = [
-  "All",
-  "USD",
-  "EUR",
-  "PHP",
-  "GBP",
-  "IDR"
-];
+const currencyOptions = ["All", "USD", "EUR", "PHP", "GBP", "IDR"];
 
-// Icon by type
 function TypeIcon({ type }: { type: string }) {
   if (type === "Sent")
     return <FiArrowUpRight className="text-red-800 bg-red-100 rounded-full w-5 h-5 p-1" />;
@@ -174,256 +84,261 @@ const filterOptions = [
   { key: "all", label: "All", count: mockTransactions.length },
   { key: "received", label: "Received", count: mockTransactions.filter(t => t.type === "Received").length },
   { key: "sent", label: "Sent", count: mockTransactions.filter(t => t.type === "Sent").length },
-//   { key: "converted", label: "Convert", count: mockTransactions.filter(t => t.type === "Converted").length },
+  { key: "converted", label: "Convert", count: mockTransactions.filter(t => t.type === "Converted").length },
 ];
 
 const TransactionsTab: React.FC = () => {
-    const [filter, setFilter] = useState<string>("all");
-    const [search, setSearch] = useState<string>("");
-    const [showFilterDropdown, setShowFilterDropdown] = useState(false);
-    const [showDaysDropdown, setShowDaysDropdown] = useState(false);
-    const [selectedDay, setSelectedDay] = useState("Today"); 
-    const dayOptions = ["Today", "Last 7 Days", "Last 30 Days", "All Time"];
-    const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
-    const [selectedCurrency, setSelectedCurrency] = useState("All");
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [dateRange, setDateRange] = useState([null, null]);
-    const [startDate, endDate] = dateRange;
+  const { language: selectedLanguage } = useLanguage();
 
-    // Filtering logic
-    const filtered = useMemo(() => {
-        let txs = [...mockTransactions];
-        if (filter !== "all") {
-        const type = filter === "converted" ? "Converted" : filter.charAt(0).toUpperCase() + filter.slice(1);
-        txs = txs.filter(t => t.type === type);
-        }
-        if (selectedCurrency !== "All") {
-        txs = txs.filter(t => t.currency === selectedCurrency);
-        }
-        if (startDate && endDate) {
-        txs = txs.filter(t => {
-            const txDate = new Date(t.date);
-            return txDate >= startDate && txDate <= endDate;
-        });
-        }
-        if (search.trim()) {
-        txs = txs.filter(
-            t =>
-            t.activity.toLowerCase().includes(search.toLowerCase()) ||
-            t.people.name.toLowerCase().includes(search.toLowerCase())
-        );
-        }
-        return txs;
-    }, [filter, search, selectedCurrency, startDate, endDate]);
+  // Auto-translated static labels
+  const searchPlaceholder = useAutoTranslation("Search", selectedLanguage);
+  const pickDateLabel = useAutoTranslation("Pick Date", selectedLanguage);
+  const applyLabel = useAutoTranslation("Apply", selectedLanguage);
+  const applyFilterLabel = useAutoTranslation("Apply filter", selectedLanguage);
+  const daysLabel = useAutoTranslation("Days", selectedLanguage);
+  const currencyLabel = useAutoTranslation("Currency", selectedLanguage);
+  const todayLabel = useAutoTranslation("Today", selectedLanguage);
+  const last7DaysLabel = useAutoTranslation("Last 7 Days", selectedLanguage);
+  const last30DaysLabel = useAutoTranslation("Last 30 Days", selectedLanguage);
+  const allTimeLabel = useAutoTranslation("All Time", selectedLanguage);
+  const activityLabel = useAutoTranslation("Activity", selectedLanguage);
+  const dateLabel = useAutoTranslation("Date", selectedLanguage);
+  const amountLabel = useAutoTranslation("Amount", selectedLanguage);
+  const methodLabel = useAutoTranslation("Method", selectedLanguage);
+  const statusLabel = useAutoTranslation("Status", selectedLanguage);
 
-    return (
-        <div className="w-full bg-white border-gray-200">
-        {/* FILTERS & SEARCH BAR */}
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
-            {/* Left: Filter Buttons */}
-            <div className="flex items-center gap-2 mb-1.5 md:mb-0">
-            {filterOptions.map(opt => (
-                <button
-                key={opt.key}
-                onClick={() => setFilter(opt.key)}
-                className={`px-3 py-1 text-[11px] rounded-full border ${
-                    filter === opt.key ? "bg-red-800 text-white border-red-800" : "bg-white text-gray-600 border-gray-200 hover:bg-red-50"
-                }`}
-                >
-                {opt.label} <span className="ml-1">{opt.count}</span>
-                </button>
-            ))}
-            </div>
+  const [filter, setFilter] = useState<string>("all");
+  const [search, setSearch] = useState<string>("");
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [showDaysDropdown, setShowDaysDropdown] = useState(false);
+  const [selectedDay, setSelectedDay] = useState(todayLabel); 
+  const dayOptions = [todayLabel, last7DaysLabel, last30DaysLabel, allTimeLabel];
+  const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState(currencyOptions[0]);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [startDate, endDate] = dateRange;
 
-            {/* Right: Search, Date Picker, Apply Filter */}
-            <div className="flex items-center gap-2">
-            {/* Date Picker Button */}
-            <div className="relative">
-                <button
-                className="flex items-center border rounded-full px-3 py-1 text-[11px] text-gray-700 bg-white hover:bg-gray-50"
-                onClick={() => setShowDatePicker(v => !v)}
-                >
-                <FiCalendar className="mr-1" />
-                {startDate && endDate
-                    ? `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`
-                    : "Pick Date"}
-                </button>
-                {showDatePicker && (
-                <div className="absolute right-0 mt-2 z-20">
-                    <DatePicker
-                        selectsRange
-                        startDate={startDate}
-                        endDate={endDate}
-                        onChange={(update) => {
-                            setDateRange(update);
-                        }}
-                        inline
-                        onCalendarClose={() => setShowDatePicker(false)}
-                        />
-                    <button
-                        className="mt-2 w-full px-3 py-1 bg-red-800 text-white text-[10px] rounded-full"
-                        onClick={() => setShowDatePicker(false)}
-                    >
-                    Apply
-                    </button>
-                </div>
-                )}
-            </div>
+  const filtered = useMemo(() => {
+    let txs = [...mockTransactions];
+    if (filter !== "all") {
+      const type = filter === "converted" ? "Converted" : filter.charAt(0).toUpperCase() + filter.slice(1);
+      txs = txs.filter(t => t.type === type);
+    }
+    if (selectedCurrency !== "All") {
+      txs = txs.filter(t => t.currency === selectedCurrency);
+    }
+    if (startDate && endDate) {
+      txs = txs.filter(t => {
+        const txDate = new Date(t.date);
+        return txDate >= startDate && txDate <= endDate;
+      });
+    }
+    if (search.trim()) {
+      txs = txs.filter(
+        t =>
+        t.activity.toLowerCase().includes(search.toLowerCase()) ||
+        t.people.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    return txs;
+  }, [filter, search, selectedCurrency, startDate, endDate]);
 
-            {/* Apply Filter Button with Currency Dropdown */}
-            <div className="relative">
-                <button
-                    className="flex items-center border rounded-full px-3 py-1 text-[11px] text-gray-700 bg-white hover:bg-gray-50"
-                    onClick={() => setShowFilterDropdown(v => !v)}
-                >
-                <FiChevronDown className="mr-1" />
-                Apply filter
-                </button>
-                
-                {showFilterDropdown && (
-                <div className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg z-20">
-                    
-                    {/* Days filter */}
-                    <div
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[11px]"
-                        onClick={() => setShowDaysDropdown(v => !v)}
-                        >
-                        Days
-                        <FiChevronDown className="ml-2" />
-                    </div>
-                    {showDaysDropdown && (
-                    <div className="mt-1">
-                        {dayOptions.map(day => (
-                        <div
-                            key={day}
-                            className={`px-4 py-1 text-[10px] cursor-pointer hover:bg-gray-200 ${
-                            selectedDay === day ? "font-bold text-blue-700" : ""
-                            }`}
-                            onClick={() => {
-                            setSelectedDay(day);
-                            setShowDaysDropdown(false);
-                            setShowFilterDropdown(false);
-                            }}
-                        >
-                            {day}
-                        </div>
-                        ))}
-                    </div>
-                    )}
-
-                    {/* Currency filter */}
-                    <div
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[11px]"
-                    onClick={() => setShowCurrencyDropdown(v => !v)}
-                    >
-                    Currency
-                    <FiChevronDown className="" />
-                    </div>
-                    {showCurrencyDropdown && (
-                    <div className="mt-1">
-                        {currencyOptions.map(opt => (
-                        <div
-                            key={opt}
-                            className={`px-4 py-1 text-[10px] cursor-pointer hover:bg-gray-200 ${
-                            selectedCurrency === opt ? "font-bold text-red-700" : ""
-                            }`}
-                            onClick={() => {
-                            setSelectedCurrency(opt);
-                            setShowCurrencyDropdown(false);
-                            setShowFilterDropdown(false);
-                            }}
-                        >
-                            {opt}
-                        </div>
-                        ))}
-                    </div>
-                    )}
-                </div>
-                )}
-            </div>
-
-            {/* Search Bar */}
-            <div className="relative w-[200px] text-gray-700">
-                <FiSearch className="h-3 w-3 absolute left-3 top-2 transform text-gray-400 text-sm" />
-                <input
-                    type="text"
-                    placeholder="Search"
-                    className="w-full pl-8 pr-2 py-1 border rounded-full text-[11px] focus:outline-none"
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                />
-            </div>
-            </div>
+  return (
+    <div className="w-full bg-white border-gray-200">
+      {/* FILTERS & SEARCH BAR */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
+        <div className="flex items-center gap-2 mb-1.5 md:mb-0">
+          {filterOptions.map(opt => (
+            <button
+              key={opt.key}
+              onClick={() => setFilter(opt.key)}
+              className={`px-3 py-1 text-[11px] rounded-full border ${
+                filter === opt.key ? "bg-red-800 text-white border-red-800" : "bg-white text-gray-600 border-gray-200 hover:bg-red-50"
+              }`}
+            >
+              {useAutoTranslation(opt.label, selectedLanguage)} <span className="ml-1">{opt.count}</span>
+            </button>
+          ))}
         </div>
-        
-        {/* TABLE */}
-        <div className="border rounded-lg overflow-hidden">
-          <div className="max-h-96 overflow-y-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-gray-100 sticky top-0 z-10">
-                  <TableHead className="text-[11px]">Activity</TableHead>
-                  <TableHead className="text-[11px]">Date</TableHead>
-                  <TableHead className="text-[11px]">Amount</TableHead>
-                  <TableHead className="text-[11px]">Method</TableHead>
-                  <TableHead className="text-[11px] text-right">Status</TableHead>
-                </TableRow>
-              </TableHeader>
 
-              <TableBody>
-                {filtered.map((tx) => (
-                  <TableRow key={tx.id} className="hover:bg-gray-50">
-                    {/* Activity + Person */}
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <TypeIcon type={tx.type} />
-                        <div>
-                          <div className="font-medium text-[11px] text-gray-800 whitespace-nowrap">
-                            {tx.activity}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Avatar avatar={tx.people.avatar} initials={tx.people.initials} />
-                            <span className="text-[10px] text-gray-500 whitespace-nowrap">
-                              {tx.people.name}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </TableCell>
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <button
+              className="flex items-center border rounded-full px-3 py-1 text-[11px] text-gray-700 bg-white hover:bg-gray-50"
+              onClick={() => setShowDatePicker(v => !v)}
+            >
+              <FiCalendar className="mr-1" />
+              {startDate && endDate
+                  ? `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`
+                  : pickDateLabel}
+            </button>
+            {showDatePicker && (
+              <div className="absolute right-0 mt-2 z-20">
+                <DatePicker
+                  selectsRange
+                  startDate={startDate}
+                  endDate={endDate}
+                  onChange={(update) => setDateRange(update)}
+                  inline
+                  onCalendarClose={() => setShowDatePicker(false)}
+                />
+                <button
+                  className="mt-2 w-full px-3 py-1 bg-red-800 text-white text-[10px] rounded-full"
+                  onClick={() => setShowDatePicker(false)}
+                >
+                  {applyLabel}
+                </button>
+              </div>
+            )}
+          </div>
 
-                    {/* Date */}
-                    <TableCell className="text-[11px] text-gray-600 whitespace-nowrap">
-                      {tx.date}
-                    </TableCell>
-
-                    {/* Amount */}
-                    <TableCell className="text-[11px] font-semibold text-gray-800 whitespace-nowrap">
-                      {tx.amount}
-                    </TableCell>
-
-                    {/* Method */}
-                    <TableCell>
-                      <div className="text-[11px] text-gray-800 whitespace-nowrap">{tx.method}</div>
-                      <div className="text-[10px] text-gray-500">{tx.methodDetail}</div>
-                    </TableCell>
-
-                    {/* Status */}
-                    <TableCell className="text-right">
-                      <span
-                        className={`px-2 py-1 rounded-full text-[10px] ${statusColors[tx.status]}`}
+          <div className="relative">
+            <button
+              className="flex items-center border rounded-full px-3 py-1 text-[11px] text-gray-700 bg-white hover:bg-gray-50"
+              onClick={() => setShowFilterDropdown(v => !v)}
+            >
+              <FiChevronDown className="mr-1" />
+              {applyFilterLabel}
+            </button>
+            
+            {showFilterDropdown && (
+              <div className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg z-20">
+                <div
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[11px]"
+                    onClick={() => setShowDaysDropdown(v => !v)}
+                >
+                  {daysLabel}
+                  <FiChevronDown className="ml-2" />
+                </div>
+                {showDaysDropdown && (
+                  <div className="mt-1">
+                    {dayOptions.map(day => (
+                      <div
+                        key={day}
+                        className={`px-4 py-1 text-[10px] cursor-pointer hover:bg-gray-200 ${
+                          selectedDay === day ? "font-bold text-blue-700" : ""
+                        }`}
+                        onClick={() => {
+                          setSelectedDay(day);
+                          setShowDaysDropdown(false);
+                          setShowFilterDropdown(false);
+                        }}
                       >
-                        {tx.status}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[11px]"
+                  onClick={() => setShowCurrencyDropdown(v => !v)}
+                >
+                  {currencyLabel}
+                  <FiChevronDown className="" />
+                </div>
+                {showCurrencyDropdown && (
+                  <div className="mt-1">
+                    {currencyOptions.map(opt => (
+                      <div
+                        key={opt}
+                        className={`px-4 py-1 text-[10px] cursor-pointer hover:bg-gray-200 ${
+                          selectedCurrency === opt ? "font-bold text-red-700" : ""
+                        }`}
+                        onClick={() => {
+                          setSelectedCurrency(opt);
+                          setShowCurrencyDropdown(false);
+                          setShowFilterDropdown(false);
+                        }}
+                      >
+                        {useAutoTranslation(opt, selectedLanguage)}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="relative w-[200px] text-gray-700">
+            <FiSearch className="h-3 w-3 absolute left-3 top-2 transform text-gray-400 text-sm" />
+            <input
+              type="text"
+              placeholder={searchPlaceholder}
+              className="w-full pl-8 pr-2 py-1 border rounded-full text-[11px] focus:outline-none"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
           </div>
         </div>
-        
+      </div>
+      
+      <div className="border rounded-lg overflow-hidden">
+        <div className="max-h-96 overflow-y-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-gray-100 sticky top-0 z-10">
+                <TableHead className="text-[11px]">{activityLabel}</TableHead>
+                <TableHead className="text-[11px]">{dateLabel}</TableHead>
+                <TableHead className="text-[11px]">{amountLabel}</TableHead>
+                <TableHead className="text-[11px]">{methodLabel}</TableHead>
+                <TableHead className="text-[11px] text-right">{statusLabel}</TableHead>
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {filtered.map((tx) => (
+                <TableRow key={tx.id} className="hover:bg-gray-50">
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <TypeIcon type={tx.type} />
+                      <div>
+                        <div className="font-medium text-[11px] text-gray-800 whitespace-nowrap">
+                          {useAutoTranslation(tx.activity, selectedLanguage)}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Avatar avatar={tx.people.avatar} initials={tx.people.initials} />
+                          <span className="text-[10px] text-gray-500 whitespace-nowrap">
+                            {useAutoTranslation(tx.people.name, selectedLanguage)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </TableCell>
+
+                  <TableCell className="text-[11px] text-gray-600 whitespace-nowrap">
+                    {useAutoTranslation(tx.date, selectedLanguage)}
+                  </TableCell>
+
+                  <TableCell className="text-[11px] font-semibold text-gray-800 whitespace-nowrap">
+                    {useAutoTranslation(tx.amount, selectedLanguage)}
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="text-[11px] text-gray-800 whitespace-nowrap">
+                      {useAutoTranslation(tx.method, selectedLanguage)}
+                    </div>
+                    <div className="text-[10px] text-gray-500">
+                      {useAutoTranslation(tx.methodDetail, selectedLanguage)}
+                    </div>
+                  </TableCell>
+
+                  <TableCell className="text-right">
+                    <span
+                      className={`px-2 py-1 rounded-full text-[10px] ${statusColors[tx.status]}`}
+                    >
+                      {useAutoTranslation(tx.status, selectedLanguage)}
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default TransactionsTab;
