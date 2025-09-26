@@ -37,9 +37,15 @@ const Index = () => {
   useEffect(() => {
     toggleBodyScroll();
     return () => {
-      document.body.classList.remove('overflow-x-hidden', 'h-screen');
+      document.body.classList.remove('overflow-hidden', 'overflow-x-hidden', 'h-screen');
     };
   }, [showRegisterModal, showLoginModal, showForgotPasswordModal]);
+
+  // Add overflow-x-hidden to <body> for entire page
+  useEffect(() => {
+    document.body.classList.add('overflow-x-hidden');
+    return () => document.body.classList.remove('overflow-x-hidden');
+  }, []);
 
   const modalContent = showRegisterModal ? (
     <Register closeRegisterModal={() => setShowRegisterModal(false)} />
@@ -50,7 +56,7 @@ const Index = () => {
   ) : null;
 
   return (
-    <>
+    <div className='relative w-full'>
       <Navbar />
       <Hero />
       <PopularArtists />
@@ -62,7 +68,7 @@ const Index = () => {
       {/* Combined Modal */}
       {(showRegisterModal || showLoginModal || showForgotPasswordModal) && (  
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-2xl shadow-lg w-full max-w-sm relative botton-9">
+          <div className="bg-white rounded-2xl shadow-lg w-full max-w-sm relative">
             <button
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
               onClick={() => {
@@ -77,7 +83,7 @@ const Index = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
