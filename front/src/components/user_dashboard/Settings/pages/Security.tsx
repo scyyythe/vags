@@ -11,16 +11,46 @@ import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import apiClient from "@/utils/apiClient";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
 interface Credential {
   id: string;
   device: string;
   date: string;
   isCurrentSession: boolean;
 }
+
 const SecuritySettings = () => {
   const userId = getLoggedInUserId();
   const { username, email, password, isLoading, error } = useUserDetails(userId);
   const updateUser = useUpdateUserDetails();
+  const { language: selectedLanguage } = useLanguage();
+
+  // Auto-translated labels
+  const loginDetailsLabel = useAutoTranslation("Login Details", selectedLanguage);
+  const currentPasswordLabel = useAutoTranslation("Current Password", selectedLanguage);
+  const newPasswordLabel = useAutoTranslation("New Password", selectedLanguage);
+  const confirmPasswordLabel = useAutoTranslation("Confirm Password", selectedLanguage);
+  const enterCurrentDesc = useAutoTranslation("Enter your current password to make changes.", selectedLanguage);
+  const twoFactorLabel = useAutoTranslation("2-Step Verification", selectedLanguage);
+  const enabledText = useAutoTranslation("Enabled", selectedLanguage);
+  const disabledText = useAutoTranslation("Disabled", selectedLanguage);
+  const securityCredentialsLabel = useAutoTranslation("Security Credentials", selectedLanguage);
+  const currentSessionText = useAutoTranslation("Current session", selectedLanguage);
+  const removeDeviceText = useAutoTranslation("Remove device", selectedLanguage);
+  const loadingText = useAutoTranslation("Loading...", selectedLanguage);
+  const fetchErrorText = useAutoTranslation("Error fetching user data", selectedLanguage);
+  const fetchSessionsError = useAutoTranslation("Failed to fetch sessions", selectedLanguage);
+  const deviceRemovedText = useAutoTranslation("Device removed", selectedLanguage);
+  const removeDeviceFailedText = useAutoTranslation("Failed to remove device", selectedLanguage);
+
+  const allPasswordRequired = useAutoTranslation("All password fields are required.", selectedLanguage);
+  const newPasswordLengthError = useAutoTranslation("New password must be at least 8 characters long.", selectedLanguage);
+  const newPasswordSameError = useAutoTranslation("New password must be different from the current password.", selectedLanguage);
+  const newPasswordMismatchError = useAutoTranslation("New passwords do not match.", selectedLanguage);
+  const userUpdateSuccess = useAutoTranslation("User updated successfully.", selectedLanguage);
+  const userUpdateFailed = useAutoTranslation("Failed to update user.", selectedLanguage);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -47,7 +77,7 @@ const SecuritySettings = () => {
         setOriginalCredentials(res.data);
       })
       .catch(() => {
-        toast.error("Failed to fetch sessions");
+        toast.error(fetchSessionsError);
       });
   }, []);
 
@@ -57,6 +87,7 @@ const SecuritySettings = () => {
       [field]: value,
     }));
   };
+
   const handleSave = () => {
     const data = new FormData();
     const { currentPassword, newPassword, confirmPassword } = formData;
@@ -65,30 +96,22 @@ const SecuritySettings = () => {
 
     if (wantsToChangePassword) {
       if (!currentPassword || !newPassword || !confirmPassword) {
-        toast.error("All password fields are required.", {
-          closeButton: true,
-        });
+        toast.error(allPasswordRequired, { closeButton: true });
         return;
       }
 
       if (newPassword.length < 8) {
-        toast.error("New password must be at least 8 characters long.", {
-          closeButton: true,
-        });
+        toast.error(newPasswordLengthError, { closeButton: true });
         return;
       }
 
       if (newPassword === currentPassword) {
-        toast.error("New password must be different from the current password.", {
-          closeButton: true,
-        });
+        toast.error(newPasswordSameError, { closeButton: true });
         return;
       }
 
       if (newPassword !== confirmPassword) {
-        toast.error("New passwords do not match.", {
-          closeButton: true,
-        });
+        toast.error(newPasswordMismatchError, { closeButton: true });
         return;
       }
 
@@ -98,9 +121,7 @@ const SecuritySettings = () => {
 
     updateUser.mutate([userId, data], {
       onSuccess: () => {
-        toast.success("User updated successfully.", {
-          closeButton: true,
-        });
+        toast.success(userUpdateSuccess, { closeButton: true });
         setOriginalData({ ...formData });
         setOriginalCredentials([...credentials]);
         setIsEditingPassword(false);
@@ -112,13 +133,9 @@ const SecuritySettings = () => {
           const message = Array.isArray(responseData[firstKey])
             ? (responseData[firstKey] as string[])[0]
             : (responseData[firstKey] as string);
-          toast.error(message || "Failed to update user.", {
-            closeButton: true,
-          });
+          toast.error(message || userUpdateFailed, { closeButton: true });
         } else {
-          toast.error("Failed to update user.", {
-            closeButton: true,
-          });
+          toast.error(userUpdateFailed, { closeButton: true });
         }
       },
     });
@@ -143,26 +160,26 @@ const SecuritySettings = () => {
     try {
       await apiClient.delete(`/sessions/${id}/`);
       setCredentials((prev) => prev.filter((cred) => cred.id !== id));
-      toast.success("Device removed");
+      toast.success(deviceRemovedText);
     } catch {
-      toast.error("Failed to remove device");
+      toast.error(removeDeviceFailedText);
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error fetching user data</p>;
+  if (isLoading) return <p>{loadingText}</p>;
+  if (error) return <p>{fetchErrorText}</p>;
 
   return (
     <div>
-      <h2 className="text-sm font-bold mb-6">Login Details</h2>
+      <h2 className="text-sm font-bold mb-6">{loginDetailsLabel}</h2>
 
       <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8">
         <div className="mb-6">
           <div className="flex justify-between items-center">
             <div>
-              <p className="text-[10px] text-gray-500 mb-1">Current Password</p>
+              <p className="text-[10px] text-gray-500 mb-1">{currentPasswordLabel}</p>
               <p className="font-medium text-xs">
-                {isEditingPassword ? "" : "Enter your current password to make changes."}
+                {isEditingPassword ? "" : enterCurrentDesc}
               </p>
             </div>
             <button
@@ -177,7 +194,7 @@ const SecuritySettings = () => {
             <div className="mt-4 space-y-4">
               {/* Current Password */}
               <div>
-                <label className="block text-[10px] text-gray-500 mb-1">Current Password</label>
+                <label className="block text-[10px] text-gray-500 mb-1">{currentPasswordLabel}</label>
                 <div className="relative">
                   <Input
                     type={showCurrentPassword ? "text" : "password"}
@@ -186,7 +203,7 @@ const SecuritySettings = () => {
                     onChange={(e) => handleChange("currentPassword", e.target.value)}
                     className="w-full pr-10"
                     style={{ fontSize: "11px" }}
-                    placeholder={formData.currentPassword ? "" : "Enter current password"}
+                    placeholder={formData.currentPassword ? "" : currentPasswordLabel}
                   />
                   <button
                     type="button"
@@ -200,7 +217,7 @@ const SecuritySettings = () => {
 
               {/* New Password */}
               <div>
-                <label className="block text-[10px] text-gray-500 mb-1">New Password</label>
+                <label className="block text-[10px] text-gray-500 mb-1">{newPasswordLabel}</label>
                 <div className="relative">
                   <Input
                     type={showNewPassword ? "text" : "password"}
@@ -208,7 +225,7 @@ const SecuritySettings = () => {
                     onChange={(e) => handleChange("newPassword", e.target.value)}
                     className="w-full pr-10"
                     style={{ fontSize: "11px" }}
-                    placeholder="Enter new password"
+                    placeholder={newPasswordLabel}
                   />
                   <button
                     type="button"
@@ -222,7 +239,7 @@ const SecuritySettings = () => {
 
               {/* Confirm Password */}
               <div>
-                <label className="block text-[10px] text-gray-500 mb-1">Confirm Password</label>
+                <label className="block text-[10px] text-gray-500 mb-1">{confirmPasswordLabel}</label>
                 <div className="relative">
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
@@ -230,7 +247,7 @@ const SecuritySettings = () => {
                     onChange={(e) => handleChange("confirmPassword", e.target.value)}
                     className="w-full pr-10"
                     style={{ fontSize: "11px" }}
-                    placeholder="Confirm new password"
+                    placeholder={confirmPasswordLabel}
                   />
                   <button
                     type="button"
@@ -249,8 +266,8 @@ const SecuritySettings = () => {
         <div>
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-[10px] text-gray-500">2-Step Verification</p>
-              <p className="font-medium text-[11px]">{formData.twoFactorEnabled ? "Enabled" : "Disabled"}</p>
+              <p className="text-[10px] text-gray-500">{twoFactorLabel}</p>
+              <p className="font-medium text-[11px]">{formData.twoFactorEnabled ? enabledText : disabledText}</p>
             </div>
             <div className="transform scale-50 origin-left">
               <Switch
@@ -263,7 +280,7 @@ const SecuritySettings = () => {
       </div>
 
       {/* Security Credentials */}
-      <h2 className="text-sm font-bold mb-6">Security Credentials</h2>
+      <h2 className="text-sm font-bold mb-6">{securityCredentialsLabel}</h2>
 
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <div className="space-y-6">
@@ -284,16 +301,18 @@ const SecuritySettings = () => {
                       hour12: true,
                     })}
                   </p>
-
                   <p className="text-xs font-semibold">{cred.device}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 {cred.isCurrentSession ? (
-                  <span className="bg-black text-white text-[10px] px-3 py-1.5 rounded-full">Current session</span>
+                  <span className="bg-black text-white text-[10px] px-3 py-1.5 rounded-full">{currentSessionText}</span>
                 ) : (
-                  <button onClick={() => removeDevice(cred.id)} className="text-red-500 text-[10px] hover:text-red-700">
-                    Remove device
+                  <button
+                    onClick={() => removeDevice(cred.id)}
+                    className="text-red-500 text-[10px] hover:text-red-700"
+                  >
+                    {removeDeviceText}
                   </button>
                 )}
               </div>

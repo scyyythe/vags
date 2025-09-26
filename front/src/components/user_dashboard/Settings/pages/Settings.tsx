@@ -1,25 +1,31 @@
 import React from "react"; 
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import ProfileHeader from "../components/ProfileHeader";
 import SettingsTabs from "../components/SettingsTabs";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const Settings = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { language: selectedLanguage } = useLanguage();
+  const profileSettingsLabel = useAutoTranslation("Profile Settings", selectedLanguage);
 
   React.useEffect(() => {
     if (location.pathname === "/settings") {
       navigate("/settings/account-details");
     }
-  }, [navigate]);
+  }, [navigate, location.pathname]);
 
   return (
     <div className="h-screen flex flex-col bg-white">
       <Header />
 
       <main className="flex-grow w-full px-4 sm:px-6 lg:px-8 py-6 md:py-10 mt-10">
-        <h1 className="text-lg font-bold mb-4 text-left">Profile Settings</h1>
+        <h1 className="text-lg font-bold mb-4 text-left">{profileSettingsLabel}</h1>
 
         <ProfileHeader
           name="Angel Canete"

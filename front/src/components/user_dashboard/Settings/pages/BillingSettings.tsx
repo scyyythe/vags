@@ -1,9 +1,17 @@
 import React, { useState } from "react";
 import PaymentAccountsTab from "../components/tab/PaymentAccountsTab";
 import TransactionsTab from "../components/tab/TransactionTab";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const BillingSettings = () => {
   const [activeTab, setActiveTab] = useState<"transactions" | "payment-accounts">("payment-accounts");
+
+  const { language: selectedLanguage } = useLanguage();
+
+  // Auto-translated tab labels
+  const paymentAccountsLabel = useAutoTranslation("Payment Accounts", selectedLanguage);
+  const transactionsLabel = useAutoTranslation("Transaction History", selectedLanguage);
 
   return (
     <div className="w-full max-w-full mx-auto px-4">
@@ -17,7 +25,7 @@ const BillingSettings = () => {
           }`}
           onClick={() => setActiveTab("payment-accounts")}
         >
-          Payment Accounts
+          {paymentAccountsLabel}
         </button>
 
         <button
@@ -28,7 +36,7 @@ const BillingSettings = () => {
           }`}
           onClick={() => setActiveTab("transactions")}
         >
-          Transaction History
+          {transactionsLabel}
         </button>
       </div>
 

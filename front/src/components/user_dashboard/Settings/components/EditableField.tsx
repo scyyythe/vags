@@ -8,6 +8,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useLanguage } from "@/context/LanguageContext";
+import { languages as allLanguages } from '@/components/constants/languages'; // use your full LANGUAGES.TS
 
 interface EditableFieldProps {
   label: string;
@@ -29,10 +31,9 @@ const countries = [
   "Brazil",
 ];
 
-const languages = ["English", "Spanish", "French", "Chinese", "Japanese", "Filipino"];
-
 const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const { language: currentLang, setLanguage } = useLanguage(); // Language context
 
   const handleEdit = () => {
     if (type !== "readonly") {
@@ -140,14 +141,20 @@ const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => 
             </div>
           ) : type === "language" ? (
             <div className="space-y-2">
-              <Select defaultValue={value as string} onValueChange={(value) => handleChange(value)}>
+              <Select
+                value={currentLang} // use context value
+                onValueChange={(value) => {
+                  handleChange(value); // update formData
+                  setLanguage(value); // update global language
+                }}
+              >
                 <SelectTrigger className="w-full text-[12px]">
                   <SelectValue placeholder="Select a language" />
                 </SelectTrigger>
                 <SelectContent>
-                  {languages.map((language) => (
-                    <SelectItem key={language} value={language}>
-                      {language}
+                  {allLanguages.map((lang) => (
+                    <SelectItem key={lang.code} value={lang.code}>
+                      {lang.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
