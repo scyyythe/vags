@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface ProfileHeaderProps {
   name?: string;
@@ -11,23 +13,29 @@ interface ProfileHeaderProps {
 const ProfileHeader = ({ name, email, imageUrl }: ProfileHeaderProps) => {
   const userId = getLoggedInUserId();
   const { firstName, lastName, profilePicture, email: fetchedEmail, isLoading, error } = useUserDetails(userId);
-  const fullName = `${firstName} ${lastName}`;
+
+  const { language: selectedLanguage } = useLanguage();
+
+  const fullName = `${firstName || ""} ${lastName || ""}`.trim();
   const [userData, setUserData] = useState({
-    name: `${firstName} ${lastName}`,
-    email: fetchedEmail,
+    name: fullName || "",
+    email: fetchedEmail || "",
   });
 
   useEffect(() => {
     if (!isLoading && !error) {
       setUserData({
-        name: `${firstName} ${lastName}`,
-        email: fetchedEmail,
+        name: fullName || "",
+        email: fetchedEmail || "",
       });
     }
   }, [firstName, lastName, fetchedEmail, isLoading, error]);
 
+  // Translate fallback initial (like "U" for Unknown)
+  const fallbackInitial = useAutoTranslation("U", selectedLanguage);
+
   const getAvatarText = (firstName: string) => {
-    return firstName.charAt(0).toUpperCase();
+    return firstName ? firstName.charAt(0).toUpperCase() : fallbackInitial;
   };
 
   return (
@@ -36,7 +44,7 @@ const ProfileHeader = ({ name, email, imageUrl }: ProfileHeaderProps) => {
         {profilePicture ? (
           <img src={profilePicture} alt={name} className="w-14 h-14 rounded-full object-cover" />
         ) : (
-          <span> {fullName.charAt(0).toUpperCase() || "U"}</span>
+          <span>{getAvatarText(firstName || "U")}</span>
         )}
       </div>
       <div>

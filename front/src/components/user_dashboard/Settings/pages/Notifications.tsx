@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import ActionButtons from "../components/ActionButtons";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface NotificationSetting {
   id: string;
@@ -11,44 +13,49 @@ interface NotificationSetting {
 }
 
 const NotificationsSettings = () => {
+  const { language: selectedLanguage } = useLanguage();
+
+  // Auto-translated heading
+  const notificationsLabel = useAutoTranslation("Notifications", selectedLanguage);
+
   const [notifications, setNotifications] = useState<NotificationSetting[]>([
     {
       id: "product-updates",
-      category: "Product updates",
-      title: "Receive messages from our platform",
+      category: useAutoTranslation("Product updates", selectedLanguage),
+      title: useAutoTranslation("Receive messages from our platform", selectedLanguage),
       description: "",
       enabled: true,
     },
     {
       id: "reminders",
-      category: "Reminders",
-      title: "Receive booking reminders, pricing notices",
+      category: useAutoTranslation("Reminders", selectedLanguage),
+      title: useAutoTranslation("Receive booking reminders, pricing notices", selectedLanguage),
       description: "",
       enabled: false,
     },
     {
       id: "promotions",
-      category: "Promotions and tips",
-      title: "Receive coupons, promotions, surveys",
+      category: useAutoTranslation("Promotions and tips", selectedLanguage),
+      title: useAutoTranslation("Receive coupons, promotions, surveys", selectedLanguage),
       description: "",
       enabled: true,
     },
     {
       id: "policy",
-      category: "Policy and Community",
-      title: "Receive updates on ...?",
+      category: useAutoTranslation("Policy and Community", selectedLanguage),
+      title: useAutoTranslation("Receive updates on ...?", selectedLanguage),
       description: "",
       enabled: true,
     },
     {
       id: "account",
-      category: "Account support",
-      title: "Receive messages about your account, your trips, legal alerts",
+      category: useAutoTranslation("Account support", selectedLanguage),
+      title: useAutoTranslation("Receive messages about your account, your trips, legal alerts", selectedLanguage),
       description: "",
       enabled: false,
     },
   ]);
-  
+
   const [originalNotifications, setOriginalNotifications] = useState([...notifications]);
 
   const toggleNotification = (id: string) => {
@@ -75,7 +82,7 @@ const NotificationsSettings = () => {
 
   return (
     <div>
-      <h2 className="text-sm font-bold mb-6">Notifications</h2>
+      <h2 className="text-sm font-bold mb-6">{notificationsLabel}</h2>
       
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <div className="space-y-8">
