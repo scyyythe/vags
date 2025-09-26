@@ -162,6 +162,7 @@ const EditProfile = () => {
 
     if (formData.profile_picture) updatedUser.append("profile_picture", formData.profile_picture);
     if (formData.cover_photo) updatedUser.append("cover_photo", formData.cover_photo);
+
     if (removeProfilePic) updatedUser.append("remove_profile_picture", "true");
     if (removeCoverPhoto) updatedUser.append("remove_cover_photo", "true");
 
@@ -181,16 +182,33 @@ const EditProfile = () => {
   };
 
   const handleReset = () => setFormData({ ...originalData });
-  const hasChanges = () => JSON.stringify(formData) !== JSON.stringify(originalData);
+  const hasChanges = () => {
+    return JSON.stringify(formData) !== JSON.stringify(originalData) || removeProfilePic || removeCoverPhoto;
+  };
+
   const handleRemoveProfilePicture = () => {
     setFormData((prev) => ({ ...prev, profile_picture: null }));
     setPreviewUrl(null);
     setRemoveProfilePic(true);
+
+    // Show toast for removal
+    const removalToast = toast.success("Profile picture removed. Save to apply changes.", {
+      closeButton: true,
+    });
+
+    setTimeout(() => toast.dismiss(removalToast), 3000);
   };
+
   const handleRemoveCoverPhoto = () => {
     setFormData((prev) => ({ ...prev, cover_photo: null }));
     setCoverPreviewUrl(null);
     setRemoveCoverPhoto(true);
+
+    const removalToast = toast.success("Cover photo removed. Save to apply changes.", {
+      closeButton: true,
+    });
+
+    setTimeout(() => toast.dismiss(removalToast), 3000);
   };
 
   const [socialInput, setSocialInput] = useState("");
