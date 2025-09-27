@@ -14,10 +14,11 @@ from django.utils import timezone
 from api.models.interaction_model.notification import Notification
 import os
 from api.models.transaction_model.transaction import Transaction
-
+import logging
+logger = logging.getLogger(__name__)
 PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
 PAYPAL_SECRET = os.getenv("PAYPAL_SECRET")
-PAYPAL_API_BASE = os.getenv("PAYPAL_API_BASE", "https://api-m.sandbox.paypal.com")
+PAYPAL_API_BASE = os.getenv("PAYPAL_API_BASE", "https://api-m.paypal.com")
 
 def get_paypal_access_token():
     try:
@@ -36,9 +37,11 @@ class PayPalVerifyPaymentView(APIView):
     def post(self, request):
         serializer = PayPalVerifySerializer(data=request.data)
         if not serializer.is_valid():
+            logger.error(f"Serializer errors: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         data = serializer.validated_data
+        logger.info(f"Incoming PayPal verify: {data}")
         order_id = data["orderID"]
         sender_id = data["sender_id"]
         receiver_id = data["receiver_id"]
