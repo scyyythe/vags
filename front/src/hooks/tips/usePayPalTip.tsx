@@ -61,8 +61,6 @@ export function usePayPalTip({
               art_id: id,
             };
 
-            console.log("💰 PayPal Tip Payload:", payload);
-
             await apiClient.post("paypal/verify/", payload);
 
             onSuccess(details);
@@ -80,6 +78,7 @@ export function usePayPalTip({
 
             if (onError) onError(err);
           }
+          console.log("🟡 Created PayPal Order:", data.orderID);
         },
         onError: (err) => {
           console.error("PayPal button error:", err);
