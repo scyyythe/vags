@@ -13,6 +13,7 @@ from django.utils.timesince import timesince
 from django.utils import timezone
 from api.models.interaction_model.notification import Notification
 import os
+from api.models.transaction_model.transaction import Transaction
 
 PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
 PAYPAL_SECRET = os.getenv("PAYPAL_SECRET")
@@ -107,8 +108,26 @@ class PayPalVerifyPaymentView(APIView):
             timestamp=timezone.now()
         )
         tip.save()
+        
+        transaction = Transaction(
+            sender=sender,
+            receiver=receiver,
+            art=art,
+            transaction_type="Tip",
+            amount=paypal_amount,
+            currency=currency_code,
+            payment_method="PayPal",
+            payment_status="Completed",
+            transaction_id=order_id,
+            timestamp=timezone.now(),
+            extra_data={
+                "art_title": art.title,
+                "paypal_order": order_id
+            }
+        )
+        transaction.save()
 
-        # --- Create Notification ---
+                # --- Create Notification ---
         link = f"/artwork/{str(art.id)}"
         Notification.objects.create(
             user=receiver,
