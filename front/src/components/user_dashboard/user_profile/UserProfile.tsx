@@ -12,7 +12,7 @@ import useOwnedArtworksCount from "@/hooks/artworks/fetch_artworks/useOwnedArtwo
 const Index = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("created");
-  const { firstName, lastName, profilePicture, cover_photo } = useUserDetails(id);
+  const { firstName, lastName, profilePicture, cover_photo, email } = useUserDetails(id);
 
   const userName = `${firstName} ${lastName}`;
   const ownedArtworksCount = useOwnedArtworksCount(id!);
@@ -34,6 +34,7 @@ const Index = () => {
             cover={cover_photo}
             profileImage={profilePicture}
             name={userName}
+            email={email}
             items={ownedArtworksCount}
             profileUserId={id}
           />
