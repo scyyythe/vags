@@ -6,14 +6,29 @@ from api.models.artwork_model.tip import Tip
 from api.models.user_model.users import User
 from api.serializers.artwork_s.tip_serializers import TipSerializer
 from datetime import datetime
-
+from api.models.transaction_model.transaction import Transaction
 # give a tip
 class TipCreateView(generics.CreateAPIView):
     serializer_class = TipSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_serializer_context(self):
-        return {"request": self.request} 
+    def perform_create(self, serializer):
+        tip = serializer.save()  # this still saves Tip
+
+        # also log in transactions
+        Transaction.objects.create(
+            sender=tip.sender,
+            receiver=tip.receiver,
+            transaction_type="Tip",
+            amount=tip.amount,
+            currency=tip.currency,
+            payment_method=tip.payment_method,
+            payment_status=tip.payment_status,
+            transaction_id=tip.transaction_id or None,
+            timestamp=tip.timestamp,
+            extra_data={"manual_tip": True}
+        )
+
 
 #  all tips
 class TipListView(generics.ListAPIView):
