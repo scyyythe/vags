@@ -66,10 +66,6 @@ export function usePayPalTip({
             onSuccess(details);
           } catch (err: any) {
             if (err.response) {
-              console.error("🔴 PayPal verification failed:");
-              console.error("Status:", err.response.status);
-              console.error("Data:", err.response.data);
-              console.error("Headers:", err.response.headers);
             } else if (err.request) {
               console.error("❗ No response received:", err.request);
             } else {
