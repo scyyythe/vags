@@ -1,17 +1,11 @@
 import React, { useState, useMemo } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { FiArrowDownLeft, FiArrowUpRight, FiRepeat, FiSearch, FiChevronDown, FiCalendar }  from "react-icons/fi";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FiArrowDownLeft, FiArrowUpRight, FiRepeat, FiSearch, FiChevronDown, FiCalendar } from "react-icons/fi";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import useTransactionsQuery from "@/hooks/transaction/useTransactions";
 
 // Mock data
 const mockTransactions = [
@@ -62,17 +56,14 @@ const statusColors: Record<string, string> = {
 
 const currencyOptions = ["All", "USD", "EUR", "PHP", "GBP", "IDR"];
 
-function TypeIcon({ type }: { type: string }) {
-  if (type === "Sent")
-    return <FiArrowUpRight className="text-red-800 bg-red-100 rounded-full w-5 h-5 p-1" />;
-  if (type === "Received")
-    return <FiArrowDownLeft className="text-green-700 bg-green-100 rounded-full w-5 h-5 p-1" />;
-  return <FiRepeat className="text-blue-700 bg-blue-100 rounded-full w-5 h-5 p-1" />;
+function TypeIcon({ type }: { type?: string }) {
+  if (type === "Received") return <FiArrowDownLeft className="text-green-700 bg-green-100 rounded-full w-5 h-5 p-1" />;
+  if (type === "Converted") return <FiRepeat className="text-blue-700 bg-blue-100 rounded-full w-5 h-5 p-1" />;
+  return <FiArrowUpRight className="text-red-800 bg-red-100 rounded-full w-5 h-5 p-1" />;
 }
 
 function Avatar({ avatar, initials }: { avatar?: string | null; initials: string }) {
-  if (avatar)
-    return <img src={avatar} alt={initials} className="w-3 h-3 rounded-full object-cover" />;
+  if (avatar) return <img src={avatar} alt={initials} className="w-3 h-3 rounded-full object-cover" />;
   return (
     <div className="w-3 h-3 rounded-full flex items-center justify-center bg-gray-200 text-gray-600 font-bold text-xs">
       {initials}
@@ -82,15 +73,17 @@ function Avatar({ avatar, initials }: { avatar?: string | null; initials: string
 
 const filterOptions = [
   { key: "all", label: "All", count: mockTransactions.length },
-  { key: "received", label: "Received", count: mockTransactions.filter(t => t.type === "Received").length },
-  { key: "sent", label: "Sent", count: mockTransactions.filter(t => t.type === "Sent").length },
-  { key: "converted", label: "Convert", count: mockTransactions.filter(t => t.type === "Converted").length },
+  { key: "received", label: "Received", count: mockTransactions.filter((t) => t.type === "Received").length },
+  { key: "sent", label: "Sent", count: mockTransactions.filter((t) => t.type === "Sent").length },
+  { key: "converted", label: "Convert", count: mockTransactions.filter((t) => t.type === "Converted").length },
 ];
 
 const TransactionsTab: React.FC = () => {
   const { language: selectedLanguage } = useLanguage();
 
-  // Auto-translated static labels
+  // -------------------------
+  // Hooks for static labels only
+  // -------------------------
   const searchPlaceholder = useAutoTranslation("Search", selectedLanguage);
   const pickDateLabel = useAutoTranslation("Pick Date", selectedLanguage);
   const applyLabel = useAutoTranslation("Apply", selectedLanguage);
@@ -107,71 +100,111 @@ const TransactionsTab: React.FC = () => {
   const methodLabel = useAutoTranslation("Method", selectedLanguage);
   const statusLabel = useAutoTranslation("Status", selectedLanguage);
 
+  // -------------------------
+  // Local state
+  // -------------------------
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState<string>("");
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [showDaysDropdown, setShowDaysDropdown] = useState(false);
-  const [selectedDay, setSelectedDay] = useState(todayLabel); 
+  const [selectedDay, setSelectedDay] = useState(todayLabel);
   const dayOptions = [todayLabel, last7DaysLabel, last30DaysLabel, allTimeLabel];
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState(currencyOptions[0]);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [dateRange, setDateRange] = useState([null, null]);
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const [startDate, endDate] = dateRange;
 
+  const { data: transactionsData } = useTransactionsQuery();
+
+  const getFullName = (first?: string | null, last?: string | null) => {
+    return `${first ?? ""} ${last ?? ""}`.trim();
+  };
+
+  function formatTransaction(tx: any) {
+    const date = new Date(tx.timestamp);
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+    const sign = tx.transaction_type === "Received" ? "+" : "-";
+    const formattedAmount = `${sign} ${tx.amount.toLocaleString()} ${tx.currency}`;
+    return { formattedDate, formattedAmount };
+  }
+
   const filtered = useMemo(() => {
-    let txs = [...mockTransactions];
+    let txs = [...(transactionsData || [])];
     if (filter !== "all") {
       const type = filter === "converted" ? "Converted" : filter.charAt(0).toUpperCase() + filter.slice(1);
-      txs = txs.filter(t => t.type === type);
+      txs = txs.filter((t) => t.transaction_type === type);
     }
     if (selectedCurrency !== "All") {
-      txs = txs.filter(t => t.currency === selectedCurrency);
+      txs = txs.filter((t) => t.currency === selectedCurrency);
     }
     if (startDate && endDate) {
-      txs = txs.filter(t => {
-        const txDate = new Date(t.date);
+      txs = txs.filter((t) => {
+        const txDate = new Date(t.timestamp);
         return txDate >= startDate && txDate <= endDate;
       });
     }
     if (search.trim()) {
       txs = txs.filter(
-        t =>
-        t.activity.toLowerCase().includes(search.toLowerCase()) ||
-        t.people.name.toLowerCase().includes(search.toLowerCase())
+        (t) =>
+          t.activity.toLowerCase().includes(search.toLowerCase()) ||
+          getFullName(t.sender_first_name, t.sender_last_name).toLowerCase().includes(search.toLowerCase())
       );
     }
     return txs;
-  }, [filter, search, selectedCurrency, startDate, endDate]);
+  }, [filter, search, selectedCurrency, startDate, endDate, transactionsData]);
+
+  // -------------------------
+  // Helper for translating dynamic text
+  // -------------------------
+  const translate = (text: string | undefined | null) => {
+    if (!text) return "";
+    return text;
+  };
+
+  const translatedFilterOptions = filterOptions.map((opt) => ({
+    ...opt,
+    label: translate(opt.label),
+  }));
 
   return (
     <div className="w-full bg-white border-gray-200">
       {/* FILTERS & SEARCH BAR */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
         <div className="flex items-center gap-2 mb-1.5 md:mb-0">
-          {filterOptions.map(opt => (
+          {translatedFilterOptions.map((opt) => (
             <button
               key={opt.key}
               onClick={() => setFilter(opt.key)}
               className={`px-3 py-1 text-[11px] rounded-full border ${
-                filter === opt.key ? "bg-red-800 text-white border-red-800" : "bg-white text-gray-600 border-gray-200 hover:bg-red-50"
+                filter === opt.key
+                  ? "bg-red-800 text-white border-red-800"
+                  : "bg-white text-gray-600 border-gray-200 hover:bg-red-50"
               }`}
             >
-              {useAutoTranslation(opt.label, selectedLanguage)} <span className="ml-1">{opt.count}</span>
+              {translate(opt.label)} <span className="ml-1">{opt.count}</span>
             </button>
           ))}
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Date picker */}
           <div className="relative">
             <button
               className="flex items-center border rounded-full px-3 py-1 text-[11px] text-gray-700 bg-white hover:bg-gray-50"
-              onClick={() => setShowDatePicker(v => !v)}
+              onClick={() => setShowDatePicker((v) => !v)}
             >
               <FiCalendar className="mr-1" />
               {startDate && endDate
-                  ? `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`
-                  : pickDateLabel}
+                ? `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`
+                : pickDateLabel}
             </button>
             {showDatePicker && (
               <div className="absolute right-0 mt-2 z-20">
@@ -193,27 +226,29 @@ const TransactionsTab: React.FC = () => {
             )}
           </div>
 
+          {/* Filters dropdown */}
           <div className="relative">
             <button
               className="flex items-center border rounded-full px-3 py-1 text-[11px] text-gray-700 bg-white hover:bg-gray-50"
-              onClick={() => setShowFilterDropdown(v => !v)}
+              onClick={() => setShowFilterDropdown((v) => !v)}
             >
               <FiChevronDown className="mr-1" />
               {applyFilterLabel}
             </button>
-            
+
             {showFilterDropdown && (
               <div className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg z-20">
+                {/* Days */}
                 <div
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[11px]"
-                    onClick={() => setShowDaysDropdown(v => !v)}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[11px]"
+                  onClick={() => setShowDaysDropdown((v) => !v)}
                 >
                   {daysLabel}
                   <FiChevronDown className="ml-2" />
                 </div>
                 {showDaysDropdown && (
                   <div className="mt-1">
-                    {dayOptions.map(day => (
+                    {dayOptions.map((day) => (
                       <div
                         key={day}
                         className={`px-4 py-1 text-[10px] cursor-pointer hover:bg-gray-200 ${
@@ -231,16 +266,17 @@ const TransactionsTab: React.FC = () => {
                   </div>
                 )}
 
+                {/* Currency */}
                 <div
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center text-[11px]"
-                  onClick={() => setShowCurrencyDropdown(v => !v)}
+                  onClick={() => setShowCurrencyDropdown((v) => !v)}
                 >
                   {currencyLabel}
                   <FiChevronDown className="" />
                 </div>
                 {showCurrencyDropdown && (
                   <div className="mt-1">
-                    {currencyOptions.map(opt => (
+                    {currencyOptions.map((opt) => (
                       <div
                         key={opt}
                         className={`px-4 py-1 text-[10px] cursor-pointer hover:bg-gray-200 ${
@@ -252,7 +288,7 @@ const TransactionsTab: React.FC = () => {
                           setShowFilterDropdown(false);
                         }}
                       >
-                        {useAutoTranslation(opt, selectedLanguage)}
+                        {translate(opt)}
                       </div>
                     ))}
                   </div>
@@ -261,6 +297,7 @@ const TransactionsTab: React.FC = () => {
             )}
           </div>
 
+          {/* Search input */}
           <div className="relative w-[200px] text-gray-700">
             <FiSearch className="h-3 w-3 absolute left-3 top-2 transform text-gray-400 text-sm" />
             <input
@@ -268,12 +305,13 @@ const TransactionsTab: React.FC = () => {
               placeholder={searchPlaceholder}
               className="w-full pl-8 pr-2 py-1 border rounded-full text-[11px] focus:outline-none"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </div>
       </div>
-      
+
+      {/* Transactions table */}
       <div className="border rounded-lg overflow-hidden">
         <div className="max-h-96 overflow-y-auto">
           <Table>
@@ -292,15 +330,15 @@ const TransactionsTab: React.FC = () => {
                 <TableRow key={tx.id} className="hover:bg-gray-50">
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <TypeIcon type={tx.type} />
+                      <TypeIcon type={tx.transaction_type} />
                       <div>
                         <div className="font-medium text-[11px] text-gray-800 whitespace-nowrap">
-                          {useAutoTranslation(tx.activity, selectedLanguage)}
+                          {translate(tx.activity)}
                         </div>
                         <div className="flex items-center gap-1">
-                          <Avatar avatar={tx.people.avatar} initials={tx.people.initials} />
+                          <Avatar avatar={tx.sender_profile_picture} initials={tx.sender_first_name?.[0] ?? "?"} />
                           <span className="text-[10px] text-gray-500 whitespace-nowrap">
-                            {useAutoTranslation(tx.people.name, selectedLanguage)}
+                            {translate(getFullName(tx.sender_first_name, tx.sender_last_name))}
                           </span>
                         </div>
                       </div>
@@ -308,27 +346,21 @@ const TransactionsTab: React.FC = () => {
                   </TableCell>
 
                   <TableCell className="text-[11px] text-gray-600 whitespace-nowrap">
-                    {useAutoTranslation(tx.date, selectedLanguage)}
+                    {translate(formatTransaction(tx).formattedDate)}
                   </TableCell>
 
                   <TableCell className="text-[11px] font-semibold text-gray-800 whitespace-nowrap">
-                    {useAutoTranslation(tx.amount, selectedLanguage)}
+                    {translate(formatTransaction(tx).formattedAmount)}
                   </TableCell>
 
                   <TableCell>
-                    <div className="text-[11px] text-gray-800 whitespace-nowrap">
-                      {useAutoTranslation(tx.method, selectedLanguage)}
-                    </div>
-                    <div className="text-[10px] text-gray-500">
-                      {useAutoTranslation(tx.methodDetail, selectedLanguage)}
-                    </div>
+                    <div className="text-[11px] text-gray-800 whitespace-nowrap">{translate(tx.payment_method)}</div>
+                    <div className="text-[10px] text-gray-500">{translate(tx.transaction_id)}</div>
                   </TableCell>
 
                   <TableCell className="text-right">
-                    <span
-                      className={`px-2 py-1 rounded-full text-[10px] ${statusColors[tx.status]}`}
-                    >
-                      {useAutoTranslation(tx.status, selectedLanguage)}
+                    <span className={`px-2 py-1 rounded-full text-[10px] ${statusColors[tx.payment_status]}`}>
+                      {translate(tx.payment_status)}
                     </span>
                   </TableCell>
                 </TableRow>
