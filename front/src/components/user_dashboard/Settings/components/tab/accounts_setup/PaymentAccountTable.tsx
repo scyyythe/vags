@@ -111,7 +111,7 @@ export const PaymentAccountTable: React.FC<PaymentAccountTableProps> = ({
               <TableCell className="text-gray-500 text-[11px]">{account.dateAdded || "N/A"}</TableCell>
 
               <TableCell className="text-right">
-                <div className="flex items-center justify-end gap-2">
+                <div className="flex items-center justify-end gap-6">
                   {!account.isDefault && (
                     <button
                       onClick={() => onSetDefault(account.id)}
@@ -136,22 +136,22 @@ export const PaymentAccountTable: React.FC<PaymentAccountTableProps> = ({
                         Delete
                       </button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle className="text-[13px]">Delete Payment Account</AlertDialogTitle>
-                        <AlertDialogDescription className="text-[11px]">
+                    <AlertDialogContent className="sm:max-w-[350px] bg-opacity-60">
+                      <AlertDialogHeader className="mb-2">
+                        <AlertDialogTitle className="text-[13px] text-center">Delete Payment Account</AlertDialogTitle>
+                        <AlertDialogDescription className="text-[11px] text-center">
                           Are you sure you want to delete "{account.name}"? This action cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
 
                       {/* Centered Buttons */}
                       <div className="flex items-center justify-center gap-4">
-                        <AlertDialogCancel className="rounded-full px-5 py-1 text-[11px] bg-gray-300">
+                        <AlertDialogCancel className="w-full rounded-full text-[11px] bg-gray-300">
                           Cancel
                         </AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() => onDeleteAccount(account.id)}
-                          className="rounded-full px-5 py-1 bg-red-700 text-white hover:bg-red-600 text-[11px]"
+                          className="w-full rounded-full bg-red-700 text-white hover:bg-red-600 text-[11px]"
                         >
                           Delete
                         </AlertDialogAction>
