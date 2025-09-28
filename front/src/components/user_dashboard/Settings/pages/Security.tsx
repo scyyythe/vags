@@ -46,8 +46,14 @@ const SecuritySettings = () => {
   const removeDeviceFailedText = useAutoTranslation("Failed to remove device", selectedLanguage);
 
   const allPasswordRequired = useAutoTranslation("All password fields are required.", selectedLanguage);
-  const newPasswordLengthError = useAutoTranslation("New password must be at least 8 characters long.", selectedLanguage);
-  const newPasswordSameError = useAutoTranslation("New password must be different from the current password.", selectedLanguage);
+  const newPasswordLengthError = useAutoTranslation(
+    "New password must be at least 8 characters long.",
+    selectedLanguage
+  );
+  const newPasswordSameError = useAutoTranslation(
+    "New password must be different from the current password.",
+    selectedLanguage
+  );
   const newPasswordMismatchError = useAutoTranslation("New passwords do not match.", selectedLanguage);
   const userUpdateSuccess = useAutoTranslation("User updated successfully.", selectedLanguage);
   const userUpdateFailed = useAutoTranslation("Failed to update user.", selectedLanguage);
@@ -69,14 +75,32 @@ const SecuritySettings = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const mockCredentials: Credential[] = [
+    {
+      id: "mock-1",
+      device: "Chrome on Windows",
+      date: new Date().toISOString(),
+      isCurrentSession: true,
+    },
+  ];
+
   useEffect(() => {
     apiClient
       .get("/sessions/")
       .then((res) => {
-        setCredentials(res.data);
-        setOriginalCredentials(res.data);
+        const fetched = res.data;
+        if (fetched.length === 0) {
+          setCredentials(mockCredentials);
+          setOriginalCredentials(mockCredentials);
+        } else {
+          setCredentials(fetched);
+          setOriginalCredentials(fetched);
+        }
       })
       .catch(() => {
+        // If fetch fails, show mock sessions
+        setCredentials(mockCredentials);
+        setOriginalCredentials(mockCredentials);
         toast.error(fetchSessionsError);
       });
   }, []);
@@ -178,9 +202,7 @@ const SecuritySettings = () => {
           <div className="flex justify-between items-center">
             <div>
               <p className="text-[10px] text-gray-500 mb-1">{currentPasswordLabel}</p>
-              <p className="font-medium text-xs">
-                {isEditingPassword ? "" : enterCurrentDesc}
-              </p>
+              <p className="font-medium text-xs">{isEditingPassword ? "" : enterCurrentDesc}</p>
             </div>
             <button
               onClick={() => setIsEditingPassword(!isEditingPassword)}
@@ -308,10 +330,7 @@ const SecuritySettings = () => {
                 {cred.isCurrentSession ? (
                   <span className="bg-black text-white text-[10px] px-3 py-1.5 rounded-full">{currentSessionText}</span>
                 ) : (
-                  <button
-                    onClick={() => removeDevice(cred.id)}
-                    className="text-red-500 text-[10px] hover:text-red-700"
-                  >
+                  <button onClick={() => removeDevice(cred.id)} className="text-red-500 text-[10px] hover:text-red-700">
                     {removeDeviceText}
                   </button>
                 )}
