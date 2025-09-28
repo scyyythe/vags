@@ -6,7 +6,7 @@ import { FiArrowDownLeft, FiArrowUpRight, FiRepeat, FiSearch, FiChevronDown, FiC
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import useTransactionsQuery from "@/hooks/transaction/useTransactions";
-
+import { getLoggedInUserId } from "@/auth/decode";
 // Mock data
 const mockTransactions = [
   {
@@ -80,6 +80,7 @@ const filterOptions = [
 
 const TransactionsTab: React.FC = () => {
   const { language: selectedLanguage } = useLanguage();
+  const userId = getLoggedInUserId();
 
   // -------------------------
   // Hooks for static labels only
@@ -138,9 +139,20 @@ const TransactionsTab: React.FC = () => {
 
   const filtered = useMemo(() => {
     let txs = [...(transactionsData || [])];
+
+    txs = txs.map((tx) => {
+      if (tx.receiver_id === userId) {
+        return { ...tx, transaction_type: "Received" };
+      } else if (tx.sender_id === userId) {
+        return { ...tx, transaction_type: "Sent" };
+      }
+      return tx;
+    });
+
     if (filter !== "all") {
-      const type = filter === "converted" ? "Converted" : filter.charAt(0).toUpperCase() + filter.slice(1);
-      txs = txs.filter((t) => t.transaction_type === type);
+      txs = txs.filter(
+        (t) => t.type === (filter === "converted" ? "Converted" : filter.charAt(0).toUpperCase() + filter.slice(1))
+      );
     }
     if (selectedCurrency !== "All") {
       txs = txs.filter((t) => t.currency === selectedCurrency);
@@ -155,7 +167,7 @@ const TransactionsTab: React.FC = () => {
       txs = txs.filter(
         (t) =>
           t.activity.toLowerCase().includes(search.toLowerCase()) ||
-          getFullName(t.sender_first_name, t.sender_last_name).toLowerCase().includes(search.toLowerCase())
+          `${t.sender_first_name} ${t.sender_last_name}`.toLowerCase().includes(search.toLowerCase())
       );
     }
     return txs;
