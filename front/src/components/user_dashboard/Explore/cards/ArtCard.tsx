@@ -56,7 +56,7 @@ const ArtCard = ({
   status = { isLiked: false, isSaved: false },
   report,
 }: ArtCardProps) => {
-  const { id, artistId, artistName, artistImage, artworkImage, title, likesCount = 0 } = artwork;
+  const { id, artistId, artistName, artistImage, default_paypal_email, artworkImage, title, likesCount = 0 } = artwork;
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
@@ -148,6 +148,7 @@ const ArtCard = ({
       artistName,
       artworkImage,
       artistId,
+      default_paypal_email,
     });
   };
 

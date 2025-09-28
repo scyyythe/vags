@@ -99,6 +99,15 @@ class PayPalVerifyPaymentView(APIView):
         except Exception:
             return Response({"error": "User not found or invalid ID"}, status=status.HTTP_404_NOT_FOUND)
 
+        # --- Get receiver's default PayPal account ---
+        from api.models.payment_model.payment_accounts import PaymentAccount  
+        payment_account = PaymentAccount.objects(user=receiver, type="paypal", is_default=True).first()
+        if not payment_account:
+            return Response({"error": "Receiver does not have a PayPal account set up."}, status=status.HTTP_400_BAD_REQUEST)
+
+        artist_paypal_email = payment_account.account_info  
+
+
         # --- Save Tip ---
         tip = Tip(
             sender=sender,
