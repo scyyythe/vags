@@ -1,13 +1,13 @@
-import type React from "react"
-import { useState } from "react"
+import type React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { PaymentFormData, PaymentMethodProps } from "@/components/types/payment"
-import { validatePaymentForm } from "@/utils/paymentUtils"
-import PaymentMethodSelector from "./payment/PaymentMethodSelector"
-import PayPalForm from "./payment/PayPalForm"
-import GCashForm from "./payment/GCashForm"
-import StripeForm from "./payment/StripeForm"
-import CreditCardForm from "./payment/CreditCardForm"
+import type { PaymentFormData, PaymentMethodProps } from "@/components/types/payment";
+import { validatePaymentForm } from "@/utils/paymentUtils";
+import PaymentMethodSelector from "./payment/PaymentMethodSelector";
+import PayPalForm from "./payment/PayPalForm";
+import GCashForm from "./payment/GCashForm";
+import StripeForm from "./payment/StripeForm";
+import CreditCardForm from "./payment/CreditCardForm";
 import Header from "@/components/user_dashboard/navbar/Header";
 
 const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => {
@@ -30,19 +30,37 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
     gcashNumber: "",
     gcashPin: "",
     stripeEmail: "",
-  })
+  });
 
   const navigate = useNavigate();
+  const selectedPaymentMethod = {
+    type:
+      formData.paymentMethod === "paypal"
+        ? "PayPal"
+        : formData.paymentMethod === "gcash"
+        ? "GCash"
+        : formData.paymentMethod === "stripe"
+        ? "Stripe"
+        : "Credit Card",
+    details:
+      formData.paymentMethod === "paypal"
+        ? formData.paypalEmail
+        : formData.paymentMethod === "gcash"
+        ? formData.gcashNumber
+        : formData.paymentMethod === "stripe"
+        ? formData.stripeEmail
+        : formData.cardNumber,
+  };
 
   const handleInputChange = (field: keyof PaymentFormData, value: string | boolean) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onContinue(formData)
-    navigate("/reviewpurchase")  
-  }
+    e.preventDefault();
+    onContinue(formData);
+    navigate("/reviewpurchase", { state: { selectedPaymentMethod } });
+  };
 
   const renderPaymentForm = () => {
     switch (formData.paymentMethod) {
@@ -56,7 +74,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
             onPasswordChange={(value) => handleInputChange("paypalPassword", value)}
             onRememberMeChange={(value) => handleInputChange("rememberPayPal", value)}
           />
-        )
+        );
       case "gcash":
         return (
           <GCashForm
@@ -65,11 +83,11 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
             onNumberChange={(value) => handleInputChange("gcashNumber", value)}
             onPinChange={(value) => handleInputChange("gcashPin", value)}
           />
-        )
+        );
       case "stripe":
         return (
           <StripeForm email={formData.stripeEmail} onEmailChange={(value) => handleInputChange("stripeEmail", value)} />
-        )
+        );
       case "credit-card":
         return (
           <CreditCardForm
@@ -86,11 +104,11 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
             saveCard={formData.saveCard}
             onFieldChange={handleInputChange}
           />
-        )
+        );
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
     <div className="min-h-screen overflow-y-auto bg-white">
@@ -99,7 +117,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
         <div className="mb-8">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
-              Payment Method
+            Payment Method
           </button>
         </div>
 
@@ -132,7 +150,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PaymentMethod
+export default PaymentMethod;

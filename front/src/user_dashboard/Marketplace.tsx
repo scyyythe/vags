@@ -174,17 +174,11 @@ const Marketplace = () => {
             {/* SUBHEADER */}
             <div className="w-full flex items-center justify-between gap-3 overflow-x-auto whitespace-nowrap scrollbar-hide">
               {/* Left side */}
-              <CategoryFilter
-                categories={categories}
-                onSelectCategory={handleCategorySelect}
-              />
+              <CategoryFilter categories={categories} onSelectCategory={handleCategorySelect} />
 
               {/* Right side */}
               <div className="flex items-center gap-3 ml-auto">
-                <ArtCategorySelect
-                  selectedCategory={selectedArtCategory}
-                  onChange={handleArtCategoryChange}
-                />
+                <ArtCategorySelect selectedCategory={selectedArtCategory} onChange={handleArtCategoryChange} />
 
                 {/* Sort Dropdown */}
                 <DropdownMenu>
@@ -197,21 +191,13 @@ const Marketplace = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-white z-0">
                     {sortOptions.map((option) => (
-                      <DropdownMenuItem
-                        key={option}
-                        className="text-[10px]"
-                        onClick={() => handleSortChange(option)}
-                      >
+                      <DropdownMenuItem key={option} className="text-[10px]" onClick={() => handleSortChange(option)}>
                         {option}
                       </DropdownMenuItem>
                     ))}
                     <DropdownMenuSeparator />
                     {editionOptions.map((option) => (
-                      <DropdownMenuItem
-                        key={option}
-                        className="text-[10px]"
-                        onClick={() => setSelectedEdition(option)}
-                      >
+                      <DropdownMenuItem key={option} className="text-[10px]" onClick={() => setSelectedEdition(option)}>
                         {option}
                       </DropdownMenuItem>
                     ))}
@@ -245,9 +231,7 @@ const Marketplace = () => {
                   </p>
                 )}
                 {selectedCategoryFilter !== "Following" && filteredArtCards.length === 0 && (
-                  <p className="col-span-full text-xs text-gray-500 text-center">
-                    No artworks found for this filter.
-                  </p>
+                  <p className="col-span-full text-xs text-gray-500 text-center">No artworks found for this filter.</p>
                 )}
                 {filteredArtCards.map((artwork) => {
                   const isOwner = artwork.artistId === loggedInUserId;
@@ -262,6 +246,7 @@ const Marketplace = () => {
                       edition={artwork.edition}
                       description={artwork.description}
                       size={artwork.size}
+                      default_paypal_email={artwork.default_paypal_email}
                       additionalImages={artwork.image_url?.slice(1) || []}
                       profile_picture={artwork.profile_picture}
                       yearCreated={artwork.year_created}
