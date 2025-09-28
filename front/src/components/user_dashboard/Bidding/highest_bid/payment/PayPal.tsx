@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,47 +19,30 @@ export const PayPalPayment = ({
   default_paypal_email: string;
 }) => {
   const [success, setSuccess] = useState(false);
-  const [paypalEmail, setPaypalEmail] = useState("");
 
-  useEffect(() => {
-    if (default_paypal_email) {
-      setPaypalEmail(default_paypal_email);
-    }
-  }, [default_paypal_email]);
-
-  const paypalRef = usePayPalAuction({
+  const { paypalRef, startPayment } = usePayPalAuction({
     amount,
     default_paypal_email,
     artistId,
     artId,
     auctionId,
-    onSuccess: (details) => {
+    onSuccess: () => {
       setSuccess(true);
-      toast("Payment successful!");
+      toast.success("Payment successful!");
     },
-    onError: (err) => {
-      console.error(err);
-      toast("Payment failed. Please try again.");
+    onError: () => {
+      toast.error("Payment failed. Please try again.");
     },
   });
-
-  const handlePayClick = () => {
-    // Trigger the hidden PayPal button programmatically
-    const btn = paypalRef.current?.querySelector<HTMLButtonElement>("button");
-    if (btn) {
-      btn.click();
-    } else {
-      toast("PayPal button not ready yet. Please wait a moment.");
-    }
-  };
 
   if (success) return <div className="text-center p-4 text-green-600 text-[11px]">Payment successful!</div>;
 
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden relative">
       <div className="p-4 text-center text-xs text-gray-900 font-semibold border-none -mb-6">PayPal Payment</div>
 
       <div className="p-6 space-y-5">
+        {/* PayPal Email Display */}
         <div className="space-y-2">
           <Label htmlFor="paypalEmail" className="text-gray-700 text-[11px]">
             PayPal Email
@@ -83,17 +66,18 @@ export const PayPalPayment = ({
           </div>
         </div>
 
+        {/* Custom Pay Button */}
         <Button
           type="button"
-          onClick={handlePayClick}
+          onClick={startPayment}
           className="w-full h-9 bg-blue-700 hover:bg-blue-600 rounded-full text-[11px]"
         >
           Pay with PayPal
         </Button>
       </div>
 
-      {/* Hidden PayPal button container */}
-      <div ref={paypalRef} style={{ minHeight: "40px", opacity: 0, pointerEvents: "none" }} />
+      {/* Hidden PayPal container (needed for SDK) */}
+      <div ref={paypalRef} />
     </div>
   );
 };
