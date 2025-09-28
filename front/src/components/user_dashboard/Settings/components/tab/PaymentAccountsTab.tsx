@@ -136,7 +136,7 @@ const PaymentAccountsTab = () => {
   return (
     <div className="space-y-6">
       {/* Header Section */}
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-start mt-8">
         <div>
           <h3 className="text-xs font-semibold text-foreground">{myPaymentAccountsLabel}</h3>
           <p className="text-[11px] text-muted-foreground mt-1">
