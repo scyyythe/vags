@@ -1,4 +1,4 @@
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -35,10 +35,7 @@ const PaymentAccountsTab = () => {
   const updateAccountLabel = useAutoTranslation("Update Account", selectedLanguage);
   const addAccountLabel = useAutoTranslation("Add Account", selectedLanguage);
   const noAccountsLabel = useAutoTranslation("No payment accounts configured", selectedLanguage);
-  const addFirstAccountLabel = useAutoTranslation(
-    "Add your first payment method to get started",
-    selectedLanguage
-  );
+  const addFirstAccountLabel = useAutoTranslation("Add your first payment method to get started", selectedLanguage);
   const paymentInfoLabel = useAutoTranslation("Payment Information", selectedLanguage);
   const verificationProcessLabel = useAutoTranslation("Verification Process", selectedLanguage);
   const verificationDescLabel = useAutoTranslation(
@@ -169,11 +166,7 @@ const PaymentAccountsTab = () => {
               </DialogDescription>
             </DialogHeader>
 
-            <PaymentAccountForm
-              newAccount={newAccount}
-              setNewAccount={setNewAccount}
-              editingAccount={editingAccount}
-            />
+            <PaymentAccountForm newAccount={newAccount} setNewAccount={setNewAccount} editingAccount={editingAccount} />
 
             <div className="flex items-center gap-2">
               <input
