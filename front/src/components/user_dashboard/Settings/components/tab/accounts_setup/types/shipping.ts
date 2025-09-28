@@ -9,7 +9,7 @@ export interface ShippingAddress {
   country: string;
   phone: string;
   isDefault: boolean;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface NewShippingAddressState {
