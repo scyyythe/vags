@@ -5,6 +5,7 @@ from api.views.purchase_view.sold_artworks_view import MySoldArtworksView,Toggle
 from api.views.purchase_view.review_view import SubmitReviewView,AllReviewsByArtworkView, GetReviewByPurchaseView,AllReviewsByPurchaseView,UpdateReviewView,DeleteReviewView
 from api.views.payment_views.payment_accounts import ListPaymentAccounts,AddOrUpdatePaymentAccount,DeletePaymentAccount
 from api.views.transaction.auction_payment import PayPalVerifyAuctionPaymentView
+from api.views.transaction.marketplace_payment import PayPalPurchaseVerifyView
 purchase_urlpatterns = [
 
 # purchases
@@ -38,6 +39,8 @@ purchase_urlpatterns = [
     path("accounts/<str:account_id>/delete/", DeletePaymentAccount.as_view(), name="delete-account"),
     
     #payment acution payppal
-    
      path('paypal/verify-auction/', PayPalVerifyAuctionPaymentView.as_view(), name='paypal-verify-auction'),
+     
+   #paypal marketpkace
+   path("paypal/verify-purchase/", PayPalPurchaseVerifyView.as_view(), name="paypal-verify-purchase"),
 ]

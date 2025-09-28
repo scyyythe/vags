@@ -1,10 +1,14 @@
 import type React from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import useDefaultAddress from "@/hooks/users/address/useDefaultAddress";
 import { usePurchase } from "@/context/PurchaseContext";
 import usePurchaseArtwork from "@/hooks/purchase/usePurchaseArtwork";
 import useUpdateArtwork from "@/hooks/mutate/artwork/useArtworkMutate";
+import { usePayPalPurchase } from "@/hooks/paypal/usePayPalPurchase";
+import { useLocation } from "react-router-dom";
+
 import { toast } from "sonner";
 interface ReviewPurchaseProps {
   onBack: () => void;
@@ -29,6 +33,7 @@ interface ReviewPurchaseProps {
     edition: string;
     yearCreated: number;
     price: number;
+    default_paypal_email?: string;
   };
 }
 
@@ -44,6 +49,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   const { artwork: purchasedArtwork } = usePurchase();
   const purchaseMutation = usePurchaseArtwork();
   const updateArtworkMutation = useUpdateArtwork(1, true, "All", "Public");
+  const [step, setStep] = useState<"review" | "paypal">("review");
 
   const handleAddressChange = () => {
     navigate("/shipping");
@@ -61,22 +67,27 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
         defaultAddress,
         defaultArtwork,
       });
+      toast.error("Missing required information.");
+      return;
+    }
+    if (defaultPaymentMethod.type === "PayPal") {
+      setStep("paypal");
       return;
     }
 
     const payload = {
       artwork_id: defaultArtwork.id,
-      payment_method: selectedPaymentMethod?.type || "PayPal",
+      payment_method: selectedPaymentMethod?.type,
       is_paid: true,
       quantity: 1,
       shipping_address: {
-        name: defaultAddress.name,
-        address: defaultAddress.address,
-        city: defaultAddress.city,
-        state: defaultAddress.state || "N/A",
+        name: finalAddress.name,
+        address: finalAddress.address,
+        city: finalAddress.city,
+        state: finalAddress.state || "N/A",
         country: "Philippines",
-        postal_code: defaultAddress.postal_code || "0000",
-        phone: defaultAddress.phone || "0000-000-0000",
+        postal_code: finalAddress.postalCode || "0000",
+        phone: finalAddress.phone || "0000-000-0000",
       },
     };
 
@@ -113,10 +124,14 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   };
 
   const displayAddress = defaultAddress || fallbackAddress;
-  const defaultPaymentMethod = selectedPaymentMethod || {
-    type: "PayPal",
-    details: "(display the major short details of the payment method)",
-  };
+  const location = useLocation();
+  const passedPaymentMethod = location.state?.selectedPaymentMethod;
+
+  const defaultPaymentMethod = passedPaymentMethod ||
+    selectedPaymentMethod || {
+      type: "PayPal",
+      details: "(display the major short details of the payment method)",
+    };
 
   const defaultArtwork = artwork ||
     purchasedArtwork || {
@@ -130,7 +145,30 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       edition: "Limited Edition",
       yearCreated: 2025,
       price: 100000,
+      default_paypal_email: "no email provided",
     };
+  const { paypalRef, startPayment } = usePayPalPurchase({
+    amount: defaultArtwork?.price || 0,
+    buyerId: localStorage.getItem("user_id")!,
+    artworkId: defaultArtwork?.id || "",
+    defaultPayPalEmail: defaultArtwork?.default_paypal_email || "",
+    onSuccess: (details) => {
+      toast.success("Payment completed successfully!");
+      navigate("/marketplace");
+    },
+    onError: (err) => {
+      toast.error("Payment failed, try again.");
+      console.error(err);
+    },
+  });
+  const selectedAddressFromState = location.state?.selectedAddress;
+
+  const finalAddress = selectedAddressFromState || defaultAddress;
+  useEffect(() => {
+    if (step === "paypal" && paypalRef.current) {
+      startPayment();
+    }
+  }, [step]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -210,7 +248,14 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
                 <span className="text-xs font-medium">{defaultPaymentMethod.type}</span>
               </div>
 
-              <p className="text-[11px] text-gray-600">{defaultPaymentMethod.details}</p>
+              <p className="text-[11px] text-gray-600">
+                {defaultPaymentMethod.type.toLowerCase() === "paypal"
+                  ? `Send money to: ${
+                      (defaultArtwork as { default_paypal_email?: string }).default_paypal_email ||
+                      "No PayPal email set"
+                    }`
+                  : defaultPaymentMethod.details}
+              </p>
             </div>
 
             {/* Buyer Protection */}
@@ -298,6 +343,17 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
           </div>
         </div>
       </div>
+      {step === "paypal" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
+            <h2 className="text-xs font-small mb-4">Pay with PayPal</h2>
+            <div ref={paypalRef} className="mx-auto" />
+            <button onClick={() => setStep("review")} className="mt-4 text-xs text-gray-500 underline">
+              Cancel and go back
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

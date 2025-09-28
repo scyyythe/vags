@@ -32,6 +32,7 @@ export interface SellCardProps {
   isLiked?: boolean;
   additionalImages?: string[];
   quantity?: number;
+  default_paypal_email?: string;
   onLike?: () => void;
   isReported?: boolean;
   onReportSuccess?: () => void;
@@ -60,7 +61,7 @@ const SellCard = ({
   description,
   size,
   yearCreated,
-
+  default_paypal_email,
   profile_picture,
   isLiked = false,
   onLike,
@@ -309,6 +310,7 @@ const SellCard = ({
             size,
             yearCreated,
             price,
+            default_paypal_email,
           }}
         />
       )}
