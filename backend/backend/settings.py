@@ -36,7 +36,7 @@ stripe.api_key = STRIPE_SECRET_KEY
 if "runserver" in sys.argv or "shell" in sys.argv:
     print("✅ MongoDB Connected in Dev Mode")
 
-        
+    
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -272,11 +272,16 @@ SOCIALACCOUNT_PROVIDERS = {
 
 DEBUT=False
 
+# settings.py
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
+# Email settings for real Gmail delivery
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.mailtrap.io"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "52cba4e6377381"  
-EMAIL_HOST_PASSWORD = "4ffe0c89c35ce9" 
-DEFAULT_FROM_EMAIL = "worxist_gallery@example.com"  
+
+EMAIL_HOST_USER = "caneteangel327@gmail.com"  # Replace with your Gmail
+EMAIL_HOST_PASSWORD = "wwkb edfo uvst gfqz"  # Replace with the 16-char App Password
+DEFAULT_FROM_EMAIL = "caneteangel327@gmail.com"
