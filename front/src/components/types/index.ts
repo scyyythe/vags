@@ -27,9 +27,10 @@ export type SubmissionStatus = {
   total: number;
   filled: number;
   percentage: number;
-}
+};
 
 export interface ShippingInfo {
+  id?: string;
   fullName: string;
   address: string;
   city: string;
@@ -45,16 +46,11 @@ export interface PaymentState {
   isEditingShipping: boolean;
 }
 
-export type ViewMode = 
-  | "owner"
-  | "review"
-  | "monitoring"
-  | "preview"
-  | "collaborator";
+export type ViewMode = "owner" | "review" | "monitoring" | "preview" | "collaborator";
 
 export interface Environment {
   id: number;
-  name?: string; 
+  name?: string;
   slots: number;
   image: string;
 }
