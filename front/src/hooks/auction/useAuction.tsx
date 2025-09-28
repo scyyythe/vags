@@ -45,6 +45,7 @@ export interface AuctionArtwork {
   visibility: string;
   created_at: string;
   updated_at: string;
+  default_paypal_email?: string;
 }
 
 export interface ArtworkAuction {
@@ -64,7 +65,7 @@ export interface ArtworkAuction {
     secs: number;
   };
   viewers: string[];
-  
+
   isShared: boolean;
 
   joinedByCurrentUser?: boolean;
@@ -116,7 +117,7 @@ const useAuctions = (
     queryKey: ["auctions", currentPage, userId, endpointType],
     queryFn: () => fetchAuctions(currentPage, userId, endpointType),
     staleTime: 1000 * 60 * 5,
-   gcTime: 1000 * 60 * 15, 
+    gcTime: 1000 * 60 * 15,
   });
 };
 

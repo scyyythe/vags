@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { PaymentProvider } from "@/context/PaymentContext";
 import { usePayment } from "@/context/PaymentContext";
 import { ArtworkSummary } from "@/components/user_dashboard/Bidding/highest_bid/preview/ArtworkSummary";
@@ -14,10 +15,16 @@ import { GCashPayment } from "@/components/user_dashboard/Bidding/highest_bid/pa
 import { StripePayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/Stripe";
 import { PayPalPayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/PayPal";
 import { toast } from "sonner";
-
+import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 const BidWinnerPageContent = () => {
   const { selectedPaymentMethod } = usePayment();
   const [showModal, setShowModal] = useState(false);
+  const { id: auctionId } = useParams<{ id: string }>();
+  const { data: auctionData, isLoading, error } = useFetchBiddingArtworkById(auctionId || "");
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-600">Error: {error.message}</div>;
+  if (!auctionData) return <div>No auction found.</div>;
 
   const renderSelectedPaymentComponent = () => {
     switch (selectedPaymentMethod) {
@@ -26,7 +33,15 @@ const BidWinnerPageContent = () => {
       case "gcash":
         return <GCashPayment />;
       case "paypal":
-        return <PayPalPayment />;
+        return (
+          <PayPalPayment
+            artId={auctionData.artwork.id}
+            auctionId={auctionData.id}
+            artistId={auctionData.artwork.artist_id}
+            default_paypal_email={auctionData.artwork.default_paypal_email}
+            amount={auctionData.highest_bid.amount.toString()}
+          />
+        );
       case "stripe":
         return <StripePayment />;
       default:
@@ -80,7 +95,7 @@ const BidWinnerPageContent = () => {
             <div
               onClick={() => {
                 if (!selectedPaymentMethod) {
-                  toast("Please select a payment method before proceeding.", { closeButton: true })
+                  toast("Please select a payment method before proceeding.", { closeButton: true });
                 } else {
                   setShowModal(true);
                 }
