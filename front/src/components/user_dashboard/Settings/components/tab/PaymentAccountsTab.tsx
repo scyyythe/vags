@@ -220,7 +220,7 @@ const PaymentAccountsTab = () => {
       </div>
 
       {/* Information Section */}
-      <Card>
+      <Card className="border-none shadow-none">
         <CardHeader>
           <CardTitle className="text-xs font-semibold">{paymentInfoLabel}</CardTitle>
         </CardHeader>
