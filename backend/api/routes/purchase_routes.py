@@ -4,6 +4,7 @@ from api.views.purchase_view.review_view import SubmitReviewView
 from api.views.purchase_view.sold_artworks_view import MySoldArtworksView,ToggleArtworkStatusView,MarkArtworkAsUnlistedView
 from api.views.purchase_view.review_view import SubmitReviewView,AllReviewsByArtworkView, GetReviewByPurchaseView,AllReviewsByPurchaseView,UpdateReviewView,DeleteReviewView
 from api.views.payment_views.payment_accounts import ListPaymentAccounts,AddOrUpdatePaymentAccount,DeletePaymentAccount
+from api.views.transaction.auction_payment import PayPalVerifyAuctionPaymentView
 purchase_urlpatterns = [
 
 # purchases
@@ -35,4 +36,8 @@ purchase_urlpatterns = [
    path("accounts/", ListPaymentAccounts.as_view(), name="list-payment-accounts"),
     path("accounts/save/", AddOrUpdatePaymentAccount.as_view(), name="add-update-account"),
     path("accounts/<str:account_id>/delete/", DeletePaymentAccount.as_view(), name="delete-account"),
+    
+    #payment acution payppal
+    
+     path('paypal/verify-auction/', PayPalVerifyAuctionPaymentView.as_view(), name='paypal-verify-auction'),
 ]
