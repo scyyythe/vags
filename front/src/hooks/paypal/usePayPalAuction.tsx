@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import apiClient from "@/utils/apiClient";
 
 declare global {
@@ -27,13 +27,25 @@ export function usePayPalAuction({
   onError?: (error: unknown) => void;
 }) {
   const paypalRef = useRef<HTMLDivElement | null>(null);
+  const isRendered = useRef(false);
 
-  useEffect(() => {
-    const paypalElement = paypalRef.current;
-    if (!window.paypal || !paypalElement) return;
+  const startPayment = () => {
+    if (!window.paypal || !paypalRef.current) {
+      console.error("❌ PayPal SDK not loaded or container missing");
+      return;
+    }
+
+    if (isRendered.current) return; // already rendered
 
     const parsedAmount = parseFloat(amount);
-    if (!parsedAmount || !default_paypal_email) return;
+    if (!parsedAmount) {
+      console.error("❌ Invalid amount:", amount);
+      return;
+    }
+    if (!default_paypal_email) {
+      console.error("❌ Receiver has no default PayPal email!");
+      return;
+    }
 
     window.paypal
       .Buttons({
@@ -51,8 +63,7 @@ export function usePayPalAuction({
         onApprove: async (data: any, actions: any) => {
           try {
             const details = await actions.order.capture();
-
-            const payload = {
+            await apiClient.post("paypal/verify-auction/", {
               orderID: data.orderID,
               amount: parsedAmount,
               sender_id: localStorage.getItem("user_id"),
@@ -60,27 +71,20 @@ export function usePayPalAuction({
               receiver_id: artistId,
               art_id: artId,
               auction_id: auctionId,
-            };
-
-            await apiClient.post("paypal/verify-auction//", payload);
-
+            });
             onSuccess(details);
           } catch (err: any) {
-            console.error("❌ Auction PayPal Error:", err);
             if (onError) onError(err);
           }
         },
         onError: (err: any) => {
-          console.error("PayPal Button Error:", err);
           if (onError) onError(err);
         },
       })
-      .render(paypalElement);
+      .render(paypalRef.current);
 
-    return () => {
-      paypalElement.innerHTML = "";
-    };
-  }, [amount, default_paypal_email, artistId, artId, auctionId, onSuccess, onError]);
+    isRendered.current = true;
+  };
 
-  return paypalRef;
+  return { paypalRef, startPayment };
 }
