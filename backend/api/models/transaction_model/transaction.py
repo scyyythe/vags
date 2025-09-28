@@ -12,7 +12,7 @@ class Transaction(Document):
 
     transaction_type = StringField(
         required=True,
-        choices=["Tip", "Donation", "Purchase", "AuctionBid", "CurrencyConversion"]
+        choices=["Tip", "Donation", "Purchase", "Auction", "CurrencyConversion"]
     )
     
     amount = FloatField(required=True, min_value=0.1)
