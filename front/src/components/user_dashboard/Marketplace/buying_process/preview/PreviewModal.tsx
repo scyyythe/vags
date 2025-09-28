@@ -17,6 +17,7 @@ interface PreviewModalProps {
     size: string;
     yearCreated: string;
     price: number;
+    default_paypal_email?: string;
   };
   onProceedToCheckout: () => void;
 }
