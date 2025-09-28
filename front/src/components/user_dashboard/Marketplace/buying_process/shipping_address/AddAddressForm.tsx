@@ -1,7 +1,7 @@
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, Shield } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import Header from "@/components/user_dashboard/navbar/Header";
 import countries from "@/components/data/countries";
 
@@ -20,7 +20,9 @@ interface AddressFormData {
 interface AddAddressFormProps {
   onBack: () => void
   onSave: (addressData: AddressFormData) => void
+  onDelete?: (addressId: string) => void
   initialData?: Partial<AddressFormData>
+  addressId?: string
   isEditing?: boolean
   loading?: boolean         
   error?: string | null    
@@ -29,7 +31,9 @@ interface AddAddressFormProps {
 const AddAddressForm: React.FC<AddAddressFormProps> = ({
   onBack,
   onSave,
+  onDelete,
   initialData,
+  addressId,
   isEditing = false,
   loading = false,
   error = null,
@@ -50,6 +54,21 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
   const navigate = useNavigate();
 
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false)
+  const [showDeletePopup, setShowDeletePopup] = useState(false)
+
+  // Disable scrollbar when delete popup is visible
+  useEffect(() => {
+    if (showDeletePopup) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+
+    // Cleanup function to restore scrolling when component unmounts
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [showDeletePopup])
 
   const handleInputChange = (field: keyof AddressFormData, value: string | boolean) => {
     setFormData((prev) => ({
@@ -63,11 +82,19 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
     onSave(formData)
   }
 
+  const handleDelete = () => {
+    if (addressId && onDelete) {
+      onDelete(addressId)
+    }
+    setShowDeletePopup(false)
+    navigate(-1)
+  }
+
   const isFormValid =
     formData.fullName && formData.address && formData.city && formData.postalCode && formData.phoneNumber
 
   return (
-    <div className="min-h-screen overflow-y-auto bg-white">
+    <div className="min-h-screen bg-white relative">
       <Header />
       <div className="container mx-auto px-4 pt-20 max-w-6xl">
         <div className="mb-4">
@@ -78,7 +105,18 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
         </div>
 
         <div className="px-6 py-3 mx-auto">
-          <h2 className="text-xs font-medium text-gray-900 mb-6">{isEditing ? "Edit Address" : "Add Address"}</h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xs font-medium text-gray-900">{isEditing ? "Edit Address" : "Add Address"}</h2>
+            {isEditing && (
+              <button
+                type="button"
+                onClick={() => setShowDeletePopup(true)}
+                className="text-xs text-red-600 font-medium hover:text-red-800"
+              >
+                Delete
+              </button>
+            )}
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Full Name and Country Row */}
@@ -232,18 +270,42 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
               {/* Save Button */}
               <div className="flex justify-end">
                <button
-  type="submit"
-  disabled={!isFormValid || loading}
-  className="bg-red-800 text-white text-[11px] px-10 py-1.5 rounded-full font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
->
-  {loading ? "Saving..." : "Save"}
-</button>
+                type="submit"
+                disabled={!isFormValid || loading}
+                className="bg-red-800 text-white text-[11px] px-10 py-1.5 rounded-full font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              >
+                {loading ? "Saving..." : "Save"}
+              </button>
 
               </div>
            
           </form>
         </div>
       </div>
+
+      {/* Delete Popup - Fixed overlay that prevents scrolling */}
+      {showDeletePopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-80">
+            <p className="text-center text-sm font-semibold text-gray-800 mb-2">Delete Address?</p>
+            <p className="text-center text-xs text-gray-600 mb-5">Deleted address can't be recovered.</p>
+            <div className="flex justify-between space-x-3">
+              <button
+                className="w-full px-4 py-1.5 text-[11px] rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100"
+                onClick={() => setShowDeletePopup(false)}
+              >
+                Keep
+              </button>
+              <button
+                className="w-full px-4 py-1.5 text-[11px] rounded-full bg-red-800 text-white hover:bg-red-700"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
