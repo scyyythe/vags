@@ -7,9 +7,6 @@ from api.serializers.transaction.transaction import TransactionSerializer
 from bson import ObjectId
 
 class TransactionListView(APIView):
-    """
-    Retrieve all transactions or filter by user.
-    """
     def get(self, request):
         user_id = request.query_params.get("user_id")
         try:
@@ -22,5 +19,6 @@ class TransactionListView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = TransactionSerializer(transactions, many=True)
+        serializer = TransactionSerializer(transactions, many=True, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+

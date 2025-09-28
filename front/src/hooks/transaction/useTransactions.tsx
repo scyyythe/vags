@@ -5,28 +5,26 @@ import apiClient from "@/utils/apiClient";
 export interface Transaction {
   id: string;
   transaction_type: string;
-
+  sender_id: string;
+  receiver_id: string;
   sender_first_name: string | null;
   sender_last_name: string | null;
   sender_profile_picture: string | null;
-
   receiver_first_name: string | null;
   receiver_last_name: string | null;
   receiver_profile_picture: string | null;
-
   amount: string;
   currency: string;
   payment_method: string;
-  payment_status: string; // now "Success" if Completed
+  payment_status: string;
   transaction_id: string;
   extra_data: Record<string, any>;
   timestamp: string;
-
   activity: string;
+  type?: string;
 }
 
 interface TransactionFilters {
-  userId?: string;
   type?: string;
   currency?: string;
   startDate?: string;
@@ -35,9 +33,10 @@ interface TransactionFilters {
 
 const fetchTransactions = async (filters?: TransactionFilters): Promise<Transaction[]> => {
   try {
+    const userId = localStorage.getItem("user_id");
     const response = await apiClient.get<Transaction[]>("/transactions/", {
       params: {
-        user_id: filters?.userId,
+        user_id: userId,
         type: filters?.type,
         currency: filters?.currency,
         start_date: filters?.startDate,
