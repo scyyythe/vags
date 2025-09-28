@@ -11,6 +11,7 @@ interface Artwork {
   edition: string;
   yearCreated: number;
   price: number;
+  default_paypal_email?: string;
 }
 
 interface PurchaseContextType {
