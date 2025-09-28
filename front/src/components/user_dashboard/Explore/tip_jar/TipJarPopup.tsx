@@ -190,7 +190,7 @@ const TipJarPopup = ({
             {/* If NO PayPal account */}
             {!default_paypal_email ? (
               <div>
-                <p className="text-md font-semibold text-red-700 mb-3">Payment Method Unavailable</p>
+                <p className="text-md font-semibold text-red-700 mb-3">Unavailable</p>
                 <p className="text-xs font-medium text-gray-800">
                   Owner has not provided a PayPal account.
                 </p>
