@@ -16,6 +16,7 @@ interface TipJarPopupProps {
   artistName?: string;
   artistId: string;
   artId: string;
+  default_paypal_email: string;
 }
 
 type PaymentMethod = "PayPal" | "GCash" | "Stripe";
@@ -27,6 +28,7 @@ const TipJarPopup = ({
   artworkImage = "",
   artistName = "",
   artistId = "",
+  default_paypal_email = "",
   artId = "",
 }: TipJarPopupProps) => {
   const [step, setStep] = useState<"amount" | "confirm" | "paypal">("amount");
@@ -36,10 +38,6 @@ const TipJarPopup = ({
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("PayPal");
   const popupRef = useRef<HTMLDivElement>(null);
   const { createStripeSession } = useStripeTip();
-  console.log("TipJarPopup - isOpen:", isOpen);
-  console.log("TipJarPopup - artworkTitle:", artworkTitle);
-  console.log("TipJarPopup - artistId:", artistId);
-  console.log("TipJarPopup - artworkid:", artId);
 
   const predefinedAmounts = [
     { value: "250", label: "₱250" },
@@ -116,6 +114,7 @@ const TipJarPopup = ({
   };
   const paypalRef = usePayPalTip({
     amount: selectedAmount || customAmount,
+    default_paypal_email: default_paypal_email,
     artistId: artistId,
     id: artId,
     onSuccess: (details) => {
@@ -176,7 +175,12 @@ const TipJarPopup = ({
 
         {step === "confirm" ? (
           <div className="p-8 text-center">
-            <h2 className="text-sm font-small mb-6">Are you sure you want to send a donation?</h2>
+            <h2 className="text-sm font-small mb-4">Are you sure you want to send a donation?</h2>
+            <p className="text-xs text-gray-600 mb-4">
+              To: <span className="font-medium">{artistName}</span> ({default_paypal_email})
+            </p>
+            <p className="text-xs text-gray-600 mb-6">Amount: ₱{selectedAmount || customAmount}</p>
+
             <div className="flex gap-4 justify-center">
               <Button
                 onClick={handleConfirmDonation}

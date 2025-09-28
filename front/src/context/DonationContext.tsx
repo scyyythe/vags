@@ -13,6 +13,7 @@ interface ArtworkInfo {
   artistName: string;
   artworkImage: string;
   artistId: string;
+  default_paypal_email?: string;
 }
 
 const DonationContext = createContext<DonationContextProps>({
@@ -33,8 +34,11 @@ export const DonationProvider = ({ children }: DonationProviderProps) => {
   const [currentArtwork, setCurrentArtwork] = useState<ArtworkInfo | null>(null);
 
   const openPopup = (artworkInfo: ArtworkInfo) => {
-    console.log("Opening popup with artwork info:", artworkInfo);
-    setCurrentArtwork(artworkInfo);
+    // console.log("Opening popup with artwork info:", artworkInfo);
+    setCurrentArtwork({
+      ...artworkInfo,
+      default_paypal_email: artworkInfo.default_paypal_email || "",
+    });
     setIsPopupOpen(true);
   };
 
