@@ -276,12 +276,12 @@ DEBUT=False
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-# Email settings for real Gmail delivery
+# Email settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = "caneteangel327@gmail.com"  # Replace with your Gmail
-EMAIL_HOST_PASSWORD = "wwkb edfo uvst gfqz"  # Replace with the 16-char App Password
-DEFAULT_FROM_EMAIL = "caneteangel327@gmail.com"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
