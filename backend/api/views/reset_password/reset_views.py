@@ -26,10 +26,6 @@ class RequestResetEmailView(APIView):
 
             html_content = f"""
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-                <div style="text-align: center; margin-bottom: 20px;">
-                  <img src="http://localhost:8080/static/images/worxist_logo.png" alt="Worxist Logo" style="width: 120px; height: auto;" />
-
-                </div>
 
                 <h2 style="color: #b91c1c; text-align: center;">Password Reset OTP</h2>
                 <p style="font-size: 14px; color: #333;">
@@ -57,7 +53,7 @@ class RequestResetEmailView(APIView):
             send_mail(
                 subject='Worxist Website | Password Reset Request',
                 message='',
-                from_email='Worxist Website <noreply@worxist.com>',
+                from_email='Worxist Website <caneteangel327@gmail.com>',
                 recipient_list=[email],
                 html_message=html_content,
                 fail_silently=False,
@@ -95,10 +91,6 @@ class ResendOTPView(APIView):
 
         html_content = f"""
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-            <div style="text-align: center; margin-bottom: 20px;">
-           <img src="http://localhost:8080/static/images/worxist_logo.png" alt="Worxist Logo" style="width: 120px; height: auto;" />
-
-            </div>
 
             <h2 style="color: #b91c1c; text-align: center;">Resent OTP Code</h2>
             <p style="font-size: 14px; color: #333;">
@@ -125,7 +117,7 @@ class ResendOTPView(APIView):
         send_mail(
             subject='Worxist Website | Resent OTP Code',
             message='',
-            from_email='Worxist Website <noreply@worxist.com>',
+            from_email='Worxist Website <caneteangel327@gmail.com>',
             recipient_list=[email],
             html_message=html_content,
             fail_silently=False,

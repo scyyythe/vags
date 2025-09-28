@@ -81,32 +81,35 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       return;
     }
 
+    const toastId = toast.loading("Sending OTP...", { description: "Please wait..." });
+
     try {
       await apiClient.post("request-reset-email/", { email });
       setError("");
       toast.success("Email sent successfully!", {
         description: "Please check your inbox for the OTP.",
         closeButton: true,
+        id: toastId, // update the existing toast
       });
       setCurrentStep("verification");
     } catch (err: unknown) {
-
       if (axios.isAxiosError(err)) {
         toast.error(err.response?.data?.error || "Failed to send reset email", {
           description: "There was an issue sending the reset email. Please try again.",
           closeButton: true,
+          id: toastId,
         });
         setError(err.response?.data?.error || "Failed to send reset email");
       } else {
         toast.error("An unexpected error occurred", {
           description: "Something went wrong. Please try again later.",
           closeButton: true,
+          id: toastId,
         });
         setError("An unexpected error occurred");
       }
     }
   };
-
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     const otpValue = otp.join("");
@@ -119,6 +122,9 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       return;
     }
 
+    // Show loading toast
+    const toastId = toast.loading("Verifying OTP...", { description: "Please wait..." });
+
     try {
       await apiClient.post("/verify-otp/", {
         email,
@@ -128,6 +134,7 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       toast.success("OTP verified successfully!", {
         description: "You can now proceed to reset your password.",
         closeButton: true,
+        id: toastId,
       });
       setCurrentStep("newPassword");
     } catch (err: unknown) {
@@ -136,12 +143,14 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
         toast.error(err.response?.data?.detail || "OTP verification failed", {
           description: "The OTP you entered is incorrect or expired. Please try again.",
           closeButton: true,
+          id: toastId,
         });
         setError(err.response?.data?.detail || "OTP verification failed");
       } else {
         toast.error("An unexpected error occurred", {
           description: "There was an issue verifying the OTP. Please try again later.",
           closeButton: true,
+          id: toastId,
         });
         setError("An unexpected error occurred");
       }
