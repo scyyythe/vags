@@ -3,15 +3,55 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Truck, Pencil } from "lucide-react";
+import { Truck } from "lucide-react";
+import useDefaultAddress from "@/hooks/users/address/useDefaultAddress";
+import { useAddress } from "@/hooks/users/address/useAddress";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const ShippingInfo = () => {
-  const {
-    shippingInfo,
-    updateShippingInfo,
-    isEditingShipping,
-    toggleEditShipping,
-  } = usePayment();
+  const { shippingInfo, updateShippingInfo, isEditingShipping, toggleEditShipping } = usePayment();
+  const { address, saveAddress, loading } = useAddress(shippingInfo?.id);
+  const [saving, setSaving] = useState(false);
+  const { data: defaultAddress, isLoading } = useDefaultAddress();
+  const queryClient = useQueryClient();
+
+  // Load default address
+  useEffect(() => {
+    if (defaultAddress && !isEditingShipping) {
+      updateShippingInfo({
+        fullName: defaultAddress.name,
+        phoneNumber: defaultAddress.phone,
+        address: defaultAddress.address,
+        city: defaultAddress.city,
+        state: defaultAddress.state,
+        postalCode: defaultAddress.postal_code,
+        country: defaultAddress.country,
+        id: defaultAddress.id, // save ID for updates
+      });
+    }
+  }, [defaultAddress, isEditingShipping]);
+
+  // Handle saving
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      const savedId = await saveAddress({ ...shippingInfo, setAsDefault: true });
+
+      updateShippingInfo({ id: savedId || shippingInfo.id });
+
+      queryClient.invalidateQueries({ queryKey: ["defaultAddress"] });
+
+      toast.success("Shipping info saved and set as default!", { closeButton: true });
+      toggleEditShipping();
+    } catch (err) {
+      toast.error("Failed to save shipping info.", { closeButton: true });
+      console.error(err);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <Card>
@@ -26,7 +66,7 @@ export const ShippingInfo = () => {
           onClick={toggleEditShipping}
           className="h-6 flex items-center text-[10px] rounded-full"
         >
-          <i className='bx bx-pencil text-[11px]'></i>
+          <i className="bx bx-pencil text-[11px]"></i>
           {isEditingShipping ? "Cancel" : "Edit"}
         </Button>
       </CardHeader>
@@ -34,105 +74,112 @@ export const ShippingInfo = () => {
         {isEditingShipping ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="fullName" className="text-[11px]">Full Name</Label>
+              <Label htmlFor="fullName" className="text-[11px]">
+                Full Name
+              </Label>
               <Input
                 id="fullName"
                 value={shippingInfo.fullName}
-                onChange={(e) =>
-                  updateShippingInfo({ fullName: e.target.value })
-                }
+                onChange={(e) => updateShippingInfo({ fullName: e.target.value })}
                 placeholder="Enter your full name"
-                style={{fontSize:"10px"}}
+                style={{ fontSize: "10px" }}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phoneNumber" className="text-[11px]">Phone Number</Label>
+              <Label htmlFor="phoneNumber" className="text-[11px]">
+                Phone Number
+              </Label>
               <Input
                 id="phoneNumber"
                 value={shippingInfo.phoneNumber}
-                onChange={(e) =>
-                  updateShippingInfo({ phoneNumber: e.target.value })
-                }
+                onChange={(e) => updateShippingInfo({ phoneNumber: e.target.value })}
                 placeholder="Enter your phone number"
-                style={{fontSize:"10px"}}
+                style={{ fontSize: "10px" }}
               />
             </div>
 
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="address" className="text-[11px]">Address</Label>
+              <Label htmlFor="address" className="text-[11px]">
+                Address
+              </Label>
               <Input
                 id="address"
                 value={shippingInfo.address}
-                onChange={(e) =>
-                  updateShippingInfo({ address: e.target.value })
-                }
+                onChange={(e) => updateShippingInfo({ address: e.target.value })}
                 placeholder="Enter your street address"
-                style={{fontSize:"10px"}}
+                style={{ fontSize: "10px" }}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="city" className="text-[11px]">City</Label>
+              <Label htmlFor="city" className="text-[11px]">
+                City
+              </Label>
               <Input
                 id="city"
                 value={shippingInfo.city}
                 onChange={(e) => updateShippingInfo({ city: e.target.value })}
                 placeholder="Enter your city"
-                style={{fontSize:"10px"}}
+                style={{ fontSize: "10px" }}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="state" className="text-[11px]">State/Province</Label>
+              <Label htmlFor="state" className="text-[11px]">
+                State/Province
+              </Label>
               <Input
                 id="state"
                 value={shippingInfo.state}
                 onChange={(e) => updateShippingInfo({ state: e.target.value })}
                 placeholder="Enter your state/province"
-                style={{fontSize:"10px"}}
+                style={{ fontSize: "10px" }}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="postalCode" className="text-[11px]">Postal Code</Label>
+              <Label htmlFor="postalCode" className="text-[11px]">
+                Postal Code
+              </Label>
               <Input
                 id="postalCode"
                 value={shippingInfo.postalCode}
-                onChange={(e) =>
-                  updateShippingInfo({ postalCode: e.target.value })
-                }
+                onChange={(e) => updateShippingInfo({ postalCode: e.target.value })}
                 placeholder="Enter your postal code"
-                style={{fontSize:"10px"}}
+                style={{ fontSize: "10px" }}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="country" className="text-[11px]">Country</Label>
+              <Label htmlFor="country" className="text-[11px]">
+                Country
+              </Label>
               <Input
                 id="country"
                 value={shippingInfo.country}
-                onChange={(e) =>
-                  updateShippingInfo({ country: e.target.value })
-                }
+                onChange={(e) => updateShippingInfo({ country: e.target.value })}
                 placeholder="Enter your country"
-                style={{fontSize:"10px"}}
+                style={{ fontSize: "10px" }}
               />
             </div>
 
             <div className="md:col-span-2 pt-4">
-              <Button 
-                onClick={toggleEditShipping}
+              <Button
+                onClick={handleSave}
+                disabled={saving}
                 className="h-7 text-white text-[10px] bg-red-700 rounded-full"
               >
-                Save Shipping Information
+                {saving ? "Saving..." : "Save Shipping Information"}
               </Button>
             </div>
           </div>
         ) : (
           <div className="space-y-2">
             {!shippingInfo.fullName ? (
-              <p className="text-muted-foreground text-[11px] italic">No shipping information provided yet. Click "Edit" to add your details.</p>
+              <p className="text-muted-foreground text-[11px] italic">
+                No shipping information provided yet. Click "Edit" to add your details.
+              </p>
             ) : (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -142,9 +189,7 @@ export const ShippingInfo = () => {
                   </div>
                   <div>
                     <p className="text-[10px] text-muted-foreground">Phone Number</p>
-                    <p className="font-medium text-[11px]">
-                      {shippingInfo.phoneNumber || "Not provided"}
-                    </p>
+                    <p className="font-medium text-[11px]">{shippingInfo.phoneNumber || "Not provided"}</p>
                   </div>
                 </div>
 
@@ -159,26 +204,18 @@ export const ShippingInfo = () => {
                     <p className="font-medium text-[11px]">{shippingInfo.city}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-muted-foreground">
-                      State/Province
-                    </p>
-                    <p className="font-medium text-[11px]">
-                      {shippingInfo.state || "Not provided"}
-                    </p>
+                    <p className="text-[10px] text-muted-foreground">State/Province</p>
+                    <p className="font-medium text-[11px]">{shippingInfo.state || "Not provided"}</p>
                   </div>
                   <div>
                     <p className="text-[10px] text-muted-foreground">Postal Code</p>
-                    <p className="font-medium text-[11px]">
-                      {shippingInfo.postalCode || "Not provided"}
-                    </p>
+                    <p className="font-medium text-[11px]">{shippingInfo.postalCode || "Not provided"}</p>
                   </div>
                   <div>
                     <p className="text-[10px] text-muted-foreground">Country</p>
                     <p className="font-medium text-[11px]">{shippingInfo.country}</p>
                   </div>
                 </div>
-
-                
 
                 <div className="pt-2">
                   <p className="text-artwork-secondary text-[11px] font-medium">

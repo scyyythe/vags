@@ -9,12 +9,14 @@ declare global {
 type PaypalDetails = Record<string, unknown>;
 export function usePayPalTip({
   amount,
+  default_paypal_email,
   artistId,
   id,
   onSuccess,
   onError,
 }: {
   amount: string;
+  default_paypal_email: string;
   artistId: string;
   id: string;
   onSuccess: (details: PaypalDetails) => void;
@@ -27,24 +29,17 @@ export function usePayPalTip({
     if (!window.paypal || !paypalElement) return;
 
     const parsedAmount = parseFloat(amount);
-    if (!parsedAmount || parsedAmount <= 0) return;
+    if (!parsedAmount || !default_paypal_email) return;
 
     window.paypal
       .Buttons({
-        style: {
-          layout: "vertical",
-          color: "gold",
-          shape: "rect",
-          label: "paypal",
-        },
+        style: { layout: "vertical", color: "gold", shape: "rect", label: "paypal" },
         createOrder: (data, actions) => {
           return actions.order.create({
             purchase_units: [
               {
-                amount: {
-                  value: amount,
-                  currency_code: "PHP",
-                },
+                amount: { value: amount, currency_code: "PHP" },
+                payee: { email_address: default_paypal_email },
               },
             ],
           });
@@ -57,29 +52,19 @@ export function usePayPalTip({
               orderID: data.orderID,
               amount: parseFloat(amount),
               sender_id: localStorage.getItem("user_id"),
+              receiver_email: default_paypal_email,
               receiver_id: artistId,
               art_id: id,
             };
-
-            console.log("💰 PayPal Tip Payload:", payload);
 
             await apiClient.post("paypal/verify/", payload);
 
             onSuccess(details);
           } catch (err: any) {
-            if (err.response) {
-              console.error("🔴 PayPal verification failed:");
-              console.error("Status:", err.response.status);
-              console.error("Data:", err.response.data);
-              console.error("Headers:", err.response.headers);
-            } else if (err.request) {
-              console.error("❗ No response received:", err.request);
-            } else {
-              console.error("❌ Error:", err.message);
-            }
-
+            console.error("❌ Error:", err);
             if (onError) onError(err);
           }
+          console.log("🟡 Created PayPal Order:", data.orderID);
         },
         onError: (err) => {
           console.error("PayPal button error:", err);
@@ -91,7 +76,7 @@ export function usePayPalTip({
     return () => {
       paypalElement.innerHTML = "";
     };
-  }, [amount, artistId, id, onSuccess, onError]);
+  }, [amount, default_paypal_email, artistId, id, onSuccess, onError]);
 
   return paypalRef;
 }

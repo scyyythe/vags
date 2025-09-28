@@ -18,8 +18,11 @@ import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 import useFollowedArtworks from "@/hooks/artworks/follow_artworks/useFollowedArtworks";
 import { getLoggedInUserId } from "@/auth/decode";
+import { useDonation } from "@/context/DonationContext";
 const Explore = () => {
   const navigate = useNavigate();
+  const { openPopup } = useDonation();
+
   const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFilter, setSelectedFilter] = useState("All");
@@ -86,8 +89,21 @@ const Explore = () => {
     return filtered;
   }, [artworks, searchQuery, selectedCategory, followedArtworksData]);
 
-  const handleTipJar = () => {
-    toast("Opening tip jar", {
+  const handleTipJar = (artwork: (typeof filteredArtworksMemo)[0]) => {
+    console.log("Opening tip jar for artwork:", artwork);
+
+    // Ensure email is not undefined
+    const artworkInfo = {
+      id: artwork.id,
+      title: artwork.title,
+      artistName: artwork.artistName || artwork.artist,
+      artworkImage: Array.isArray(artwork.artworkImage) ? artwork.artworkImage[0] : artwork.artworkImage || "",
+      artistId: artwork.artistId,
+      default_paypal_email: artwork.default_paypal_email || artwork.default_paypal_email || "", // fallback
+    };
+
+    openPopup(artworkInfo);
+    toast(`Opening tip jar for ${artwork.title}`, {
       closeButton: true,
     });
   };
@@ -162,6 +178,7 @@ const Explore = () => {
                       artistImage: card.artistImage || card.profile_picture || "",
                       artistName: card.artistName || card.artist || "Unknown Artist",
                       likesCount: card.likesCount || card.likes_count || 0,
+                      default_paypal_email: card.default_paypal_email,
                     };
 
                     const status = bulkStatusLookup[String(card.id)];
@@ -173,7 +190,7 @@ const Explore = () => {
                         artwork={transformedArtwork}
                         status={status}
                         report={report}
-                        onButtonClick={handleTipJar}
+                        onButtonClick={() => handleTipJar(transformedArtwork)}
                         isExplore={true}
                       />
                     );

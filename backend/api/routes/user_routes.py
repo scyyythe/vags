@@ -7,6 +7,7 @@ from api.views.user_views.user_views import (
 from api.views.user_views.top_sellers_view import TopSellersAPIView,TopArtworksAPIView,PopularArtistsAPIView
 from api.views.user_views.address_view import AddressViewSet,DefaultAddressView,SetDefaultAddressView
 from api.views.user_views.user_views import SessionListView, SessionDeleteView
+from api.views.user_views.social_views import  DeleteSocialView,SocialsView
 user_urlpatterns = [
     path('top-sellers/', TopSellersAPIView.as_view(), name='top-sellers'),
     path("top-artworks/", TopArtworksAPIView.as_view(), name="top-artworks"),
@@ -31,4 +32,9 @@ user_urlpatterns = [
     path('address/<str:pk>/edit/', AddressViewSet.as_view({'patch': 'partial_update'}), name='address-edit'),
     path('address/<str:address_id>/set-default/', SetDefaultAddressView.as_view(), name='set-default-address'),
     path('address-default/', DefaultAddressView.as_view(), name='default-address'),
+    
+    # social routes 
+    path("users/<str:user_id>/socials/", SocialsView.as_view(), name="socials"),
+    path("socials/<str:social_id>/delete/", DeleteSocialView.as_view(), name="delete-social"),
+
 ]

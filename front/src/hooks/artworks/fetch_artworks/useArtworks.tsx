@@ -13,7 +13,7 @@ export interface Artwork {
   category: string;
   medium: string;
   size: string;
-  status: string; 
+  status: string;
   art_status: string;
   price: number;
   visibility: string;
@@ -26,6 +26,7 @@ export interface Artwork {
   artworkImage: string;
   likesCount: number;
   isShared: boolean;
+  default_paypal_email?: string;
 }
 const fetchArtworks = async (
   currentPage: number,
@@ -58,32 +59,39 @@ const fetchArtworks = async (
     }
 
     const response = await apiClient.get(url, { params });
+    // console.log("API response data:", response.data);
 
-    let artworks = response.data.map((artwork: Artwork) => ({
-      id: artwork.id,
-      title: artwork.title,
-      artistName: artwork.artist,
-      artistId: artwork.artist_id,
-      artistImage: artwork.profile_picture,
-      description: artwork.description,
-      style: artwork.category,
-      category: artwork.category,
-      medium: artwork.medium,
-      size: artwork.size,
-      status: artwork.art_status,
-      price: artwork.price,
-      visibility: artwork.visibility,
-      datePosted: new Date(artwork.created_at).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      artworkImage: artwork.image_url,
-      likesCount: artwork.likes_count,
-    }));
+    let artworks = response.data.map((artwork: any) => {
+      const mapped = {
+        id: artwork.id,
+        title: artwork.title,
+        artistName: artwork.artist,
+        artistId: artwork.artist_id,
+        artistImage: artwork.profile_picture,
+        description: artwork.description,
+        style: artwork.category,
+        category: artwork.category,
+        medium: artwork.medium,
+        size: artwork.size,
+        status: artwork.art_status,
+        price: artwork.price,
+        visibility: artwork.visibility,
+        datePosted: new Date(artwork.created_at).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        artworkImage: artwork.image_url,
+        likesCount: artwork.likes_count,
+        default_paypal_email: artwork.default_paypal_email,
+      };
+      // console.log("Mapped artwork:", mapped);
+      return mapped;
+    });
 
     if (onlyActivePublic) {
       artworks = artworks.filter((art) => art.status === "Active" && art.visibility === "Public");
+      // console.log("Filtered onlyActivePublic artworks:", artworks);
     }
 
     return artworks;
@@ -109,8 +117,7 @@ const useArtworks = (
     queryFn: () => fetchArtworks(currentPage, userId, endpointType, filterVisibility, onlyActivePublic),
     staleTime: 1000 * 60 * 5,
     enabled: enabled,
-    gcTime: 1000 * 60 * 5 
-
+    gcTime: 1000 * 60 * 5,
   });
 };
 
