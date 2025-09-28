@@ -6,6 +6,7 @@ import cloudinary.uploader
 from api.utils.content_moderation import moderate_image
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
+from api.models.payment_model.payment_accounts import PaymentAccount
 
 class ArtSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
@@ -40,7 +41,24 @@ class ArtSerializer(serializers.Serializer):
     )
 
     likes_count = serializers.SerializerMethodField()
-
+    default_paypal_email = serializers.SerializerMethodField() 
+    
+    def get_default_paypal_email(self, obj):
+        """
+        Returns the default PayPal account email for the artist, if exists
+        """
+        if not obj.artist:
+            return None
+        try:
+            account = PaymentAccount.objects.get(
+                user=obj.artist,
+                type="paypal",
+                is_default=True
+            )
+            return account.account_info
+        except PaymentAccount.DoesNotExist:
+            return None
+        
     def get_likes_count(self, obj):
         return Like.objects.filter(art=obj).count()
 
@@ -179,9 +197,9 @@ class ArtSerializer(serializers.Serializer):
             "likes_count": self.get_likes_count(instance),
             "edition": instance.edition,
             "year_created": instance.year_created,
+            "default_paypal_email": self.get_default_paypal_email(instance),
             **({"quantity": instance.quantity} if instance.edition == "Open Edition" else {}),
         }
-
 
 
 
@@ -191,6 +209,7 @@ class LightweightArtSerializer(serializers.Serializer):
     artist = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
+    default_paypal_email = serializers.SerializerMethodField()
 
     def get_artist(self, obj):
         if obj.artist:
@@ -218,6 +237,20 @@ class LightweightArtSerializer(serializers.Serializer):
     def get_likes_count(self, obj):
         return Like.objects.filter(art=obj).count()
 
+    def get_default_paypal_email(self, obj):
+        if not obj.artist:
+            return None
+        try:
+            account = PaymentAccount.objects.get(
+                user=obj.artist,
+                type="paypal",
+                is_default=True
+            )
+            return account.account_info
+        except PaymentAccount.DoesNotExist:
+            return None
+
+
 class ArtCardSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField()
@@ -238,7 +271,7 @@ class ArtCardSerializer(serializers.Serializer):
     year_created=serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
     profile_picture = serializers.SerializerMethodField()
-    
+    default_paypal_email = serializers.SerializerMethodField() 
 
     def get_average_rating(self, obj):
             from api.models.review_model.review import Review
@@ -336,6 +369,20 @@ class ArtCardSerializer(serializers.Serializer):
         except Exception as e:
             print(f"Error in get_quantity for art {obj.id}: {e}")
             return 1
+    
+    def get_default_paypal_email(self, obj):
+        if not obj.artist:
+            return None
+        try:
+            account = PaymentAccount.objects.get(
+                user=obj.artist,
+                type="paypal",
+                is_default=True
+            )
+            return account.account_info
+        except PaymentAccount.DoesNotExist:
+            return None
+        
     def to_representation(self, instance):
         try:
             rep = super().to_representation(instance)

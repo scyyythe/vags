@@ -7,7 +7,7 @@ import apiClient from "../utils/apiClient";
 import SystemMessage from "../components/page/SystemMessage";
 import { toast } from "sonner";
 import { useGoogleLogin } from "@react-oauth/google";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithCustomToken } from "firebase/auth";
 import { auth } from "@/firebase/firebaseConfig";
 
 // Translation hooks
@@ -74,82 +74,73 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setMessage(null);
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setMessage(null);
 
-    if (!formData.email || !formData.password) {
-      toast.error(missingInfoTitle, {
-        description: missingInfoDesc,
-        closeButton: true,
-      });
-      return;
+  if (!formData.email || !formData.password) {
+    toast.error(missingInfoTitle, {
+      description: missingInfoDesc,
+      closeButton: true,
+    });
+    return;
+  }
+
+  try {
+    const response = await apiClient.post<{
+      access_token: string;
+      refresh_token: string;
+      user_id: string;
+      email: string;
+      role: string;
+      firebase_token: string;
+    }>("token/", formData);
+
+    const {
+      access_token,
+      refresh_token,
+      user_id,
+      email,
+      role,
+      firebase_token,
+    } = response.data;
+
+    if (!access_token || !refresh_token || !firebase_token) {
+      throw new Error("Missing tokens from backend");
     }
 
-    try {
-      const response = await apiClient.post<{
-        access_token: string;
-        refresh_token: string;
-        user_id: string;
-        email: string;
-        role: string;
-      }>("token/", formData);
+    // Save Django tokens
+    localStorage.setItem("access_token", access_token);
+    localStorage.setItem("refresh_token", refresh_token);
+    localStorage.setItem("user_id", user_id);
+    localStorage.setItem("email", email);
+    localStorage.setItem("role", role);
 
-      const { access_token, refresh_token, user_id, email, role } = response.data;
+    // Sign in to Firebase with the custom token
+    await signInWithCustomToken(auth, firebase_token);
 
-      if (!access_token || !refresh_token) {
-        throw new Error("Missing tokens");
-      }
+    toast.success(loginSuccessTitle, {
+      description: loginSuccessDesc,
+      closeButton: true,
+    });
 
-      localStorage.setItem("access_token", access_token);
-      localStorage.setItem("refresh_token", refresh_token);
-      localStorage.setItem("user_id", user_id);
-      localStorage.setItem("email", email);
-      localStorage.setItem("role", role);
-
-      toast.success(loginSuccessTitle, {
-        description: loginSuccessDesc,
-        closeButton: true,
-      });
-
-      if (role === "Admin") {
-        navigate("/admin");
-      } else if (role === "Moderator") {
-        navigate("/moderator");
-      } else {
-        navigate("/explore");
-      }
-    } catch (err) {
-      console.warn("Django login failed, trying Firebase...", err);
-
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
-
-        const user = userCredential.user;
-        const firebaseToken = await user.getIdToken();
-
-        await apiClient.post("user/firebase-login/", {
-          firebase_token: firebaseToken,
-        });
-
-        localStorage.setItem("firebase_uid", user.uid);
-        localStorage.setItem("email", user.email || "");
-
-        toast.success(firebaseSuccessTitle, {
-          description: firebaseSuccessDesc,
-          closeButton: true,
-        });
-
-        navigate("/explore");
-      } catch (firebaseError: any) {
-        console.error("Firebase login error:", firebaseError);
-        toast.error(loginFailedTitle, {
-          description: firebaseError.message || loginFailedDesc,
-          closeButton: true,
-        });
-      }
+    // Redirect based on role
+    if (role === "Admin") {
+      navigate("/admin");
+    } else if (role === "Moderator") {
+      navigate("/moderator");
+    } else {
+      navigate("/explore");
     }
-  };
+
+  } catch (err: any) {
+    console.error("Login failed:", err);
+    toast.error(loginFailedTitle, {
+      description: err.message || loginFailedDesc,
+      closeButton: true,
+    });
+  }
+};
 
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (response) => {

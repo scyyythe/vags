@@ -13,10 +13,12 @@ from django.utils.timesince import timesince
 from django.utils import timezone
 from api.models.interaction_model.notification import Notification
 import os
-
+from api.models.transaction_model.transaction import Transaction
+import logging
+logger = logging.getLogger(__name__)
 PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
 PAYPAL_SECRET = os.getenv("PAYPAL_SECRET")
-PAYPAL_API_BASE = os.getenv("PAYPAL_API_BASE", "https://api-m.sandbox.paypal.com")
+PAYPAL_API_BASE = os.getenv("PAYPAL_API_BASE", "https://api-m.paypal.com")
 
 def get_paypal_access_token():
     try:
@@ -35,9 +37,11 @@ class PayPalVerifyPaymentView(APIView):
     def post(self, request):
         serializer = PayPalVerifySerializer(data=request.data)
         if not serializer.is_valid():
+            logger.error(f"Serializer errors: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         data = serializer.validated_data
+        logger.info(f"Incoming PayPal verify: {data}")
         order_id = data["orderID"]
         sender_id = data["sender_id"]
         receiver_id = data["receiver_id"]
@@ -95,6 +99,15 @@ class PayPalVerifyPaymentView(APIView):
         except Exception:
             return Response({"error": "User not found or invalid ID"}, status=status.HTTP_404_NOT_FOUND)
 
+        # --- Get receiver's default PayPal account ---
+        from api.models.payment_model.payment_accounts import PaymentAccount  
+        payment_account = PaymentAccount.objects(user=receiver, type="paypal", is_default=True).first()
+        if not payment_account:
+            return Response({"error": "Receiver does not have a PayPal account set up."}, status=status.HTTP_400_BAD_REQUEST)
+
+        artist_paypal_email = payment_account.account_info  
+
+
         # --- Save Tip ---
         tip = Tip(
             sender=sender,
@@ -107,8 +120,26 @@ class PayPalVerifyPaymentView(APIView):
             timestamp=timezone.now()
         )
         tip.save()
+        
+        transaction = Transaction(
+            sender=sender,
+            receiver=receiver,
+            art=art,
+            transaction_type="Tip",
+            amount=paypal_amount,
+            currency=currency_code,
+            payment_method="PayPal",
+            payment_status="Completed",
+            transaction_id=order_id,
+            timestamp=timezone.now(),
+            extra_data={
+                "art_title": art.title,
+                "paypal_order": order_id
+            }
+        )
+        transaction.save()
 
-        # --- Create Notification ---
+                # --- Create Notification ---
         link = f"/artwork/{str(art.id)}"
         Notification.objects.create(
             user=receiver,

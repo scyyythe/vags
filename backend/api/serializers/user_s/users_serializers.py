@@ -125,11 +125,10 @@ class UserSerializer(serializers.Serializer):
 
     
         if self.context['request'].data.get("remove_profile_picture") == "true":
-            instance.profile_picture = ""
+            instance.profile_picture = None
 
-     
         if self.context['request'].data.get("remove_cover_photo") == "true":
-            instance.cover_photo = ""
+            instance.cover_photo = None
 
       
         for field in [
