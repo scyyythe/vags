@@ -176,15 +176,23 @@ const TipJarPopup = ({
         {step === "confirm" ? (
           <div className="p-8 text-center">
             <h2 className="text-sm font-small mb-4">Are you sure you want to send a donation?</h2>
+
             <p className="text-xs text-gray-600 mb-4">
-              To: <span className="font-medium">{artistName}</span> ({default_paypal_email})
+              To: <span className="font-medium">{artistName}</span>{" "}
+              {default_paypal_email ? (
+                `(${default_paypal_email})`
+              ) : (
+                <span className="text-red-600 font-medium">Owner has not provided a PayPal account</span>
+              )}
             </p>
+
             <p className="text-xs text-gray-600 mb-6">Amount: ₱{selectedAmount || customAmount}</p>
 
             <div className="flex gap-4 justify-center">
               <Button
                 onClick={handleConfirmDonation}
                 className="w-[35%] bg-[#B5191D] hover:bg-[#9b1518] text-white text-xs font-medium rounded-full py-1 px-4"
+                disabled={!default_paypal_email}
               >
                 Yes
               </Button>
