@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import gcashLogo from "../../../../../public/pics/gcash.png";
 import paypalLogo from "../../../../../public/pics/paypal.png";
 import stripeLogo from "../../../../../public/pics/stripe.png";
-import { usePayPalTip } from "@/hooks/tips/usePayPalTip";
+import { usePayPalTip } from "@/hooks/paypal/usePayPalTip";
 import { useStripeTip } from "@/hooks/tips/useStripeTip";
 interface TipJarPopupProps {
   isOpen: boolean;
