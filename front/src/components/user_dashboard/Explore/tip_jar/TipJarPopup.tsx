@@ -161,7 +161,10 @@ const TipJarPopup = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-6">
       <div
         ref={popupRef}
-        className="bg-white rounded-sm max-w-md w-full shadow-xl overflow-hidden animate-fadeIn relative"
+        className={cn(
+          "bg-white rounded-lg w-full shadow-xl overflow-hidden animate-fadeIn relative",
+          step === "confirm" ? "max-w-[350px]" : "max-w-sm"
+        )}
       >
         {step === "amount" && (
           <button
@@ -174,36 +177,85 @@ const TipJarPopup = ({
         )}
 
         {step === "confirm" ? (
-          <div className="p-8 text-center">
-            <h2 className="text-sm font-small mb-4">Are you sure you want to send a donation?</h2>
+          <div className="p-8 text-center relative">
+            {/* Close Button */}
+            <button
+              onClick={handleCancel}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              aria-label="Close"
+            >
+              <X size={14} />
+            </button>
 
-            <p className="text-xs text-gray-600 mb-4">
-              To: <span className="font-medium">{artistName}</span>{" "}
-              {default_paypal_email ? (
-                `(${default_paypal_email})`
-              ) : (
-                <span className="text-red-600 font-medium">Owner has not provided a PayPal account</span>
-              )}
-            </p>
+            {/* If NO PayPal account */}
+            {!default_paypal_email ? (
+              <div>
+                <p className="text-md font-semibold text-red-700 mb-3">Payment Method Unavailable</p>
+                <p className="text-xs font-medium text-gray-800">
+                  Owner has not provided a PayPal account.
+                </p>
+                <p className="text-[10px] text-gray-500 mt-2">Please try a different payment method.</p>
+              </div>
+            ) : (
+              <>
+                {/* If account EXISTS */}
+                <h2 className="text-md font-bold mb-1">Confirm Your Donation</h2>
+                <p className="text-xs text-gray-500 mb-8">You're about to make someone's day!</p>
 
-            <p className="text-xs text-gray-600 mb-6">Amount: ₱{selectedAmount || customAmount}</p>
+                <div className="p-4 rounded-md mb-8 space-y-4">
+                  {/* Artist */}
+                  <div className="flex justify-between items-center">
+                    <p className="text-[11px] text-black">To:</p>
+                    <p className="text-[12px] font-medium text-right">{artistName}</p>
+                  </div>
 
-            <div className="flex gap-4 justify-center">
-              <Button
-                onClick={handleConfirmDonation}
-                className="w-[35%] bg-[#B5191D] hover:bg-[#9b1518] text-white text-xs font-medium rounded-full py-1 px-4"
-                disabled={!default_paypal_email}
-              >
-                Yes
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleCancel}
-                className="w-[35%] bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-medium rounded-full py-1 px-4"
-              >
-                No
-              </Button>
-            </div>
+                  <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+                  {/* Amount */}
+                  <div className="flex justify-between items-center">
+                    <p className="text-[11px] text-black">Amount:</p>
+                    <p className="text-lg font-bold text-red-700 text-right">₱{selectedAmount || customAmount}</p>
+                  </div>
+
+                  <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+                  {/* Payment Method + Detail */}
+                  <div className="flex justify-between items-start">
+                    <p className="text-[11px] text-black mt-1">Payment Method:</p>
+                    <div className="flex flex-col items-end">
+                      <div className="flex items-center gap-2">
+                        {paymentMethod === "PayPal" && <img src={paypalLogo} className="w-4 h-4" />}
+                        {paymentMethod === "GCash" && <img src={gcashLogo} className="w-4 h-4" />}
+                        {paymentMethod === "Stripe" && <img src={stripeLogo} className="w-4 h-4" />}
+                        <span className="text-xs font-medium">{paymentMethod}</span>
+                      </div>
+                      <p className="text-[10px] text-gray-600 mt-4">
+                        {paymentMethod === "PayPal" && default_paypal_email}
+                        {paymentMethod === "GCash" && "09XX-XXX-XXXX"}
+                        {paymentMethod === "Stripe" && "stripe_account@example.com"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-4 justify-between">
+                  <Button
+                    onClick={handleConfirmDonation}
+                    className="w-full bg-[#B5191D] hover:bg-[#9b1518] text-white text-xs font-medium rounded-full py-1 px-4"
+                    disabled={!default_paypal_email}
+                  >
+                    Donate
+                  </Button>
+                  {/* <Button
+                    variant="outline"
+                    onClick={handleCancel}
+                    className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-medium rounded-full py-1 px-4"
+                  >
+                    No
+                  </Button> */}
+                </div>
+              </>
+            )}
           </div>
         ) : (
           <div className="py-6 px-16">
