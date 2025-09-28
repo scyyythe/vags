@@ -189,7 +189,7 @@ const TransactionsTab: React.FC = () => {
   return (
     <div className="w-full bg-white border-gray-200">
       {/* FILTERS & SEARCH BAR */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6 mt-8">
         <div className="flex items-center gap-2 mb-1.5 md:mb-0">
           {translatedFilterOptions.map((opt) => (
             <button
