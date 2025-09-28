@@ -338,45 +338,53 @@ const TransactionsTab: React.FC = () => {
             </TableHeader>
 
             <TableBody>
-              {filtered.map((tx) => (
-                <TableRow key={tx.id} className="hover:bg-gray-50">
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <TypeIcon type={tx.transaction_type} />
-                      <div>
-                        <div className="font-medium text-[11px] text-gray-800 whitespace-nowrap">
-                          {translate(tx.activity)}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Avatar avatar={tx.sender_profile_picture} initials={tx.sender_first_name?.[0] ?? "?"} />
-                          <span className="text-[10px] text-gray-500 whitespace-nowrap">
-                            {translate(getFullName(tx.sender_first_name, tx.sender_last_name))}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </TableCell>
-
-                  <TableCell className="text-[11px] text-gray-600 whitespace-nowrap">
-                    {translate(formatTransaction(tx).formattedDate)}
-                  </TableCell>
-
-                  <TableCell className="text-[11px] font-semibold text-gray-800 whitespace-nowrap">
-                    {translate(formatTransaction(tx).formattedAmount)}
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="text-[11px] text-gray-800 whitespace-nowrap">{translate(tx.payment_method)}</div>
-                    <div className="text-[10px] text-gray-500">{translate(tx.transaction_id)}</div>
-                  </TableCell>
-
-                  <TableCell className="text-right">
-                    <span className={`px-2 py-1 rounded-full text-[10px] ${statusColors[tx.payment_status]}`}>
-                      {translate(tx.payment_status)}
-                    </span>
+              {filtered.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-gray-500 py-8 text-xs">
+                    You have no transactions yet.
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                filtered.map((tx) => (
+                  <TableRow key={tx.id} className="hover:bg-gray-50">
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <TypeIcon type={tx.transaction_type} />
+                        <div>
+                          <div className="font-medium text-[11px] text-gray-800 whitespace-nowrap">
+                            {translate(tx.activity)}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Avatar avatar={tx.sender_profile_picture} initials={tx.sender_first_name?.[0] ?? "?"} />
+                            <span className="text-[10px] text-gray-500 whitespace-nowrap">
+                              {translate(getFullName(tx.sender_first_name, tx.sender_last_name))}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="text-[11px] text-gray-600 whitespace-nowrap">
+                      {translate(formatTransaction(tx).formattedDate)}
+                    </TableCell>
+
+                    <TableCell className="text-[11px] font-semibold text-gray-800 whitespace-nowrap">
+                      {translate(formatTransaction(tx).formattedAmount)}
+                    </TableCell>
+
+                    <TableCell>
+                      <div className="text-[11px] text-gray-800 whitespace-nowrap">{translate(tx.payment_method)}</div>
+                      <div className="text-[10px] text-gray-500">{translate(tx.transaction_id)}</div>
+                    </TableCell>
+
+                    <TableCell className="text-right">
+                      <span className={`px-2 py-1 rounded-full text-[10px] ${statusColors[tx.payment_status]}`}>
+                        {translate(tx.payment_status)}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
