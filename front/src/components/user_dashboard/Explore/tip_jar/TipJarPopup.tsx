@@ -199,8 +199,7 @@ const TipJarPopup = ({
             ) : (
               <>
                 {/* If account EXISTS */}
-                <h2 className="text-md font-bold mb-1">Confirm Your Donation</h2>
-                <p className="text-xs text-gray-500 mb-8">You're about to make someone's day!</p>
+                <h2 className="text-md font-bold mb-6">Confirm Your Donation</h2>
 
                 <div className="p-4 rounded-md mb-8 space-y-4">
                   {/* Artist */}
