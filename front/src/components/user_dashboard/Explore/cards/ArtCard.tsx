@@ -20,6 +20,7 @@ import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateArtworkVisibility from "@/hooks/mutate/visibility/private/useUpdateArtworkVisibility";
 import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork";
+
 export interface ArtCardProps {
   artwork: Artwork;
   isExplore?: boolean;
