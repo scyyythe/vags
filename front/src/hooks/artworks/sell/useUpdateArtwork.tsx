@@ -18,7 +18,6 @@ interface UpdateArtworkInput {
   mainImage?: File | null;
   size?: string;
   additionalImages?: (File | null)[];
-  // optional: keep track of images to remove
   removeExistingImages?: boolean;
 }
 
@@ -35,6 +34,7 @@ const useUpdateArtwork = () => {
       const formData = new FormData();
 
       const textFields = ["title", "year_created", "style", "medium", "description", "price", "edition", "quantity"];
+
       textFields.forEach((field) => {
         const value = (data as any)[field];
         if (value !== undefined && value !== null) {
@@ -42,24 +42,16 @@ const useUpdateArtwork = () => {
         }
       });
 
-      // Set size from height & width
       if (data.height && data.width) {
         formData.append("height", data.height);
         formData.append("width", data.width);
         formData.append("size", `${data.height}x${data.width}`);
       }
 
-      // Handle main image replacement
-      if (data.mainImage) {
-        formData.append("main_image", data.mainImage);
-      }
+      if (data.mainImage) formData.append("main_image", data.mainImage);
 
-      // Handle additional images
       if (data.additionalImages && data.additionalImages.length > 0) {
-        // Optionally remove old images if flagged
-        if (data.removeExistingImages) {
-          formData.append("remove_existing_images", "true");
-        }
+        if (data.removeExistingImages) formData.append("remove_existing_images", "true");
         data.additionalImages.forEach((img) => {
           if (img) formData.append("additional_images", img);
         });
@@ -70,7 +62,11 @@ const useUpdateArtwork = () => {
       });
 
       toast.success("Artwork updated successfully", { id: "update", closeButton: true });
+
       queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["my-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["artworks"], exact: false });
+
       navigate("/marketplace");
     } catch (err: any) {
       toast.error(err.response?.data?.error || "Failed to update artwork", {
