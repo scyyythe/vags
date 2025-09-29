@@ -142,6 +142,7 @@ class UnblockUserView(APIView):
 
 initialize_firebase()
 
+
 class CustomTokenObtainPairView(APIView):
     permission_classes = [AllowAny]
 
@@ -149,23 +150,29 @@ class CustomTokenObtainPairView(APIView):
         email = request.data.get("email")
         password = request.data.get("password").encode("utf-8")
 
+        # Verify user credentials
         user = User.objects(email=email).first()
         if not user or not user.password or not bcrypt.checkpw(password, user.password.encode("utf-8")):
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        # Local JWT tokens
+        # Token generator helper
         def generate_token(payload, exp_delta):
-            payload.update({"exp": datetime.utcnow() + exp_delta, "iat": datetime.utcnow()})
+            payload.update({
+                "exp": datetime.utcnow() + exp_delta,
+                "iat": datetime.utcnow()
+            })
             return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
 
+        # Access token (60 minutes)
         access_token = generate_token({
             "user_id": str(user.id),
             "email": user.email,
             "role": user.role,
             "jti": f"{user.id}_access",
             "token_type": "access"
-        }, timedelta(hours=8))
+        }, timedelta(minutes=60))
 
+        # Refresh token (7 days)
         refresh_token = generate_token({
             "user_id": str(user.id),
             "role": user.role,
@@ -173,13 +180,15 @@ class CustomTokenObtainPairView(APIView):
             "token_type": "refresh"
         }, timedelta(days=7))
 
-        # Firebase Custom Token
+        # Firebase custom token
         firebase_token = firebase_auth.create_custom_token(str(user.id)).decode("utf-8")
+
+        # Save user session
         def record_session(user, request):
             device = request.META.get("HTTP_USER_AGENT", "Unknown device")
             ip_address = request.META.get("REMOTE_ADDR")
 
-            # mark all previous sessions inactive
+            # Mark all previous sessions inactive
             UserSession.objects(user=user, is_current=True).update(is_current=False)
 
             session = UserSession(
@@ -192,8 +201,8 @@ class CustomTokenObtainPairView(APIView):
             session.save()
             return session
 
-        # inside your login after creating tokens:
         record_session(user, request)
+
         return Response({
             "access_token": access_token,
             "refresh_token": refresh_token,
@@ -203,9 +212,11 @@ class CustomTokenObtainPairView(APIView):
             "role": user.role
         }, status=status.HTTP_200_OK)
 
+
 class CustomTokenRefreshView(APIView):
     """Handles JWT token refresh"""
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
+
     def post(self, request):
         refresh_token = request.data.get("refresh_token")
         if not refresh_token:
@@ -213,36 +224,43 @@ class CustomTokenRefreshView(APIView):
 
         try:
             # Decode the refresh token
-            decoded_refresh_token = jwt.decode(refresh_token, settings.SECRET_KEY, algorithms=["HS256"], options={"verify_exp": True})
+            decoded_refresh = jwt.decode(
+                refresh_token,
+                settings.SECRET_KEY,
+                algorithms=["HS256"],
+                options={"verify_exp": True}
+            )
 
-            # Retrieve user from database
-            user = User.objects(id=decoded_refresh_token["user_id"]).first()
+            # Retrieve user
+            user = User.objects(id=decoded_refresh["user_id"]).first()
             if not user:
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
-            # Generate token helper function
             def generate_token(payload, exp_delta):
-                payload.update({"exp": datetime.utcnow() + exp_delta, "iat": datetime.utcnow()})
+                payload.update({
+                    "exp": datetime.utcnow() + exp_delta,
+                    "iat": datetime.utcnow()
+                })
                 return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
 
-            # Generate new access token
+            # Issue new access token (60 minutes)
             access_token = generate_token({
                 "user_id": str(user.id),
                 "email": user.email,
                 "jti": f"{user.id}_access",
                 "token_type": "access"
-            }, timedelta(hours=8))  # Correct usage of timedelta
+            }, timedelta(minutes=60))
 
-            # Optionally rotate the refresh token
-            refresh_token = generate_token({
+            # Rotate refresh token (7 days)
+            new_refresh_token = generate_token({
                 "user_id": str(user.id),
                 "jti": f"{user.id}_refresh",
                 "token_type": "refresh"
-            }, timedelta(days=7))  # Correct usage of timedelta
+            }, timedelta(days=7))
 
             return Response({
                 "access_token": access_token,
-                "refresh_token": refresh_token,
+                "refresh_token": new_refresh_token,
                 "user_id": str(user.id),
                 "email": user.email
             }, status=status.HTTP_200_OK)
@@ -251,6 +269,7 @@ class CustomTokenRefreshView(APIView):
             return Response({"error": "Refresh token has expired"}, status=status.HTTP_401_UNAUTHORIZED)
         except jwt.InvalidTokenError:
             return Response({"error": "Invalid refresh token"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class SessionListView(APIView):

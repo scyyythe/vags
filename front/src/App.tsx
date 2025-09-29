@@ -124,7 +124,10 @@ const Gallery3DWrapper = () => {
 };
 const AppContent = () => {
   const location = useLocation();
-  const hideHeader = location.pathname.startsWith("/admin") || location.pathname.startsWith("/moderator");
+  const hideHeader =
+    location.pathname.startsWith("/admin") ||
+    location.pathname.startsWith("/moderator") ||
+    location.pathname.startsWith("/");
 
   return (
     <>
