@@ -5,7 +5,6 @@ import PopularArtworksSkeleton from "@/components/skeletons/PopularArtworksSkele
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLanguage } from "@/context/LanguageContext";
 
-// ✅ Subcomponent for an artwork card (handles translation inside safely)
 const ArtworkCard = ({ artwork, index }: { artwork: any; index: number }) => {
   const { language } = useLanguage();
   const translatedTitle = useAutoTranslation(artwork.title, language);
@@ -123,19 +122,27 @@ const Hero = () => {
             <div className="relative bottom-72 md:bottom-14 flex justify-center space-x-12 md:space-x-48">
               <div className="text-center">
                 <p className="text-lg md:text-3xl font-semibold text-white">{productsCount}</p>
-                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>{products}</p>
+                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
+                  {products}
+                </p>
               </div>
               <div className="text-center">
                 <p className="text-xl md:text-3xl font-semibold text-white">{biddingsCount}</p>
-                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>{biddings}</p>
+                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
+                  {biddings}
+                </p>
               </div>
               <div className="text-center">
                 <p className="text-xl md:text-3xl font-semibold text-white">{exhibitsCount}</p>
-                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>{exhibits}</p>
+                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
+                  {exhibits}
+                </p>
               </div>
               <div className="text-center">
                 <p className="text-lg md:text-3xl font-semibold text-white">{artistsCount}</p>
-                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>{artists}</p>
+                <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
+                  {artists}
+                </p>
               </div>
             </div>
           </div>
