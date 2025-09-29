@@ -1,31 +1,33 @@
-import type React from "react"
-import { useState, useEffect } from "react"
+import type React from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown } from "lucide-react"
+import { ChevronDown } from "lucide-react";
 import Header from "@/components/user_dashboard/navbar/Header";
 import countries from "@/components/data/countries";
-
+import { useShippingAddresses } from "@/hooks/shipping/useShippingAddresses";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 interface AddressFormData {
-  fullName: string
-  country: string
-  address: string
-  apartment: string
-  city: string
-  state: string
-  postalCode: string
-  phoneNumber: string
-  setAsDefault: boolean
+  fullName: string;
+  country: string;
+  address: string;
+  apartment: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  phoneNumber: string;
+  setAsDefault: boolean;
 }
 
 interface AddAddressFormProps {
-  onBack: () => void
-  onSave: (addressData: AddressFormData) => void
-  onDelete?: (addressId: string) => void
-  initialData?: Partial<AddressFormData>
-  addressId?: string
-  isEditing?: boolean
-  loading?: boolean         
-  error?: string | null    
+  onBack: () => void;
+  onSave: (addressData: AddressFormData) => void;
+  onDelete?: (addressId: string) => void;
+  initialData?: Partial<AddressFormData>;
+  addressId?: string;
+  isEditing?: boolean;
+  loading?: boolean;
+  error?: string | null;
 }
 
 const AddAddressForm: React.FC<AddAddressFormProps> = ({
@@ -38,7 +40,8 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
   loading = false,
   error = null,
 }) => {
-
+  const { deleteAddress } = useShippingAddresses();
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState<AddressFormData>({
     fullName: initialData?.fullName || "",
     country: initialData?.country || "Philippines",
@@ -49,49 +52,109 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
     postalCode: initialData?.postalCode || "",
     phoneNumber: initialData?.phoneNumber || "",
     setAsDefault: initialData?.setAsDefault || false,
-  })
+  });
+
+  const validateForm = (): boolean => {
+    const nameRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/;
+    const cityRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/;
+    const stateRegex = /^(?=.*[A-Za-z])[A-Z][A-Za-z0-9 ]*$/;
+    const postalCodeRegex = /^\d{4,10}$/;
+    const phoneRegex = /^(\+63|0)9\d{9}$/;
+    const addressRegex = /^[A-Za-z\s.,'-]{3,}[0-9A-Za-z\s.,'-]*$/;
+    const apartmentRegex = /^[A-Za-z\s.,'-]{3,}[0-9A-Za-z\s.,'-]*$/;
+
+    if (!nameRegex.test(formData.fullName.trim())) {
+      toast.error("Full name must start with capital letters and contain only letters and spaces.");
+      return false;
+    }
+
+    if (!addressRegex.test(formData.address.trim())) {
+      toast.error("Address must include a number and a valid street name.");
+      return false;
+    }
+
+    if (formData.apartment && !apartmentRegex.test(formData.apartment.trim())) {
+      toast.error("Apartment/floor/suite must be valid.");
+      return false;
+    }
+
+    if (!cityRegex.test(formData.city.trim())) {
+      toast.error("City must start with a capital letter and contain only letters and spaces.");
+      return false;
+    }
+
+    if (!stateRegex.test(formData.state.trim())) {
+      toast.error("State/Region must start with a capital letter and can contain letters, numbers, and spaces.");
+      return false;
+    }
+
+    if (!postalCodeRegex.test(formData.postalCode.trim())) {
+      toast.error("Postal code must contain only numbers and be 4-10 digits long.");
+      return false;
+    }
+
+    if (!phoneRegex.test(formData.phoneNumber.trim())) {
+      toast.error("Phone number must be a valid Philippine number, e.g., +639XXXXXXXXX or 09XXXXXXXXX.");
+      return false;
+    }
+
+    return true;
+  };
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData((prev) => ({
+        ...prev,
+        ...initialData,
+      }));
+    }
+  }, [initialData]);
 
   const navigate = useNavigate();
 
-  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false)
-  const [showDeletePopup, setShowDeletePopup] = useState(false)
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
 
   // Disable scrollbar when delete popup is visible
   useEffect(() => {
     if (showDeletePopup) {
-      document.body.style.overflow = 'hidden'
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset'
+      document.body.style.overflow = "unset";
     }
 
     // Cleanup function to restore scrolling when component unmounts
     return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [showDeletePopup])
+      document.body.style.overflow = "unset";
+    };
+  }, [showDeletePopup]);
 
   const handleInputChange = (field: keyof AddressFormData, value: string | boolean) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSave(formData)
-  }
+    e.preventDefault();
 
-  const handleDelete = () => {
-    if (addressId && onDelete) {
-      onDelete(addressId)
+    if (!validateForm()) return;
+
+    onSave(formData);
+  };
+
+  const handleDelete = async (addressId: string) => {
+    try {
+      deleteAddress(addressId);
+      queryClient.invalidateQueries({ queryKey: ["shippingAddresses"] });
+      navigate("/shipping");
+    } catch (err) {
+      alert("Failed to delete address.");
     }
-    setShowDeletePopup(false)
-    navigate(-1)
-  }
-
+  };
   const isFormValid =
-    formData.fullName && formData.address && formData.city && formData.postalCode && formData.phoneNumber
+    formData.fullName && formData.address && formData.city && formData.postalCode && formData.phoneNumber;
 
   return (
     <div className="min-h-screen bg-white relative">
@@ -100,7 +163,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
         <div className="mb-4">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
-              Shipping Details
+            Shipping Details
           </button>
         </div>
 
@@ -151,8 +214,8 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
                           key={country}
                           type="button"
                           onClick={() => {
-                            handleInputChange("country", country)
-                            setIsCountryDropdownOpen(false)
+                            handleInputChange("country", country);
+                            setIsCountryDropdownOpen(false);
                           }}
                           className="w-full px-3 py-2 text-left text-[10px] hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg"
                         >
@@ -257,28 +320,25 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
               </label>
             </div>
 
-            
-              {/* Buyer Protection */}
-              <div className="flex items-center space-x-2 text-[10px] text-gray-600">
-                <i className='bx bxs-check-circle text-black text-sm'></i>
-                <span>Your purchase is protected.</span>
-                <button type="button" className="text-blue-600 underline hover:text-blue-700">
-                  Learn more about Worxist's buyer protection
-                </button>
-              </div>
+            {/* Buyer Protection */}
+            <div className="flex items-center space-x-2 text-[10px] text-gray-600">
+              <i className="bx bxs-check-circle text-black text-sm"></i>
+              <span>Your purchase is protected.</span>
+              <button type="button" className="text-blue-600 underline hover:text-blue-700">
+                Learn more about Worxist's buyer protection
+              </button>
+            </div>
 
-              {/* Save Button */}
-              <div className="flex justify-end">
-               <button
+            {/* Save Button */}
+            <div className="flex justify-end">
+              <button
                 type="submit"
                 disabled={!isFormValid || loading}
                 className="bg-red-800 text-white text-[11px] px-10 py-1.5 rounded-full font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? "Saving..." : "Save"}
               </button>
-
-              </div>
-           
+            </div>
           </form>
         </div>
       </div>
@@ -298,7 +358,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
               </button>
               <button
                 className="w-full px-4 py-1.5 text-[11px] rounded-full bg-red-800 text-white hover:bg-red-700"
-                onClick={handleDelete}
+                onClick={() => addressId && handleDelete(addressId)}
               >
                 Delete
               </button>
@@ -307,7 +367,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default AddAddressForm
+export default AddAddressForm;

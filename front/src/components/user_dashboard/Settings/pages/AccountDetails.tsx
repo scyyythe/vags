@@ -6,9 +6,12 @@ import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
-
+import { toast } from "sonner";
 const AccountDetails = () => {
   const userId = getLoggedInUserId();
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const isValidFullName = (fullName: string) => /^[a-zA-Z]+(?: [a-zA-Z]+)+$/.test(fullName.trim());
   const { firstName, lastName, gender, address, dateOfBirth, email, isLoading, error } = useUserDetails(userId);
   const { mutate: updateUser } = useUpdateUserDetails();
 
@@ -16,7 +19,7 @@ const AccountDetails = () => {
 
   const [formData, setFormData] = useState({
     fullName: "",
-    gender: "", 
+    gender: "",
     country: "Philippines",
     date_of_birth: "",
     language: "English",
@@ -89,9 +92,18 @@ const AccountDetails = () => {
       [field]: value,
     }));
   };
-
   const handleSave = () => {
-    if (!formData) return;
+    // Validate Full Name
+    if (!isValidFullName(formData.fullName)) {
+      toast.error("Please enter a valid full name!", { closeButton: true });
+      return;
+    }
+
+    // Validate Email
+    if (!isValidEmail(formData.email)) {
+      toast.error("Please enter a valid email address.", { closeButton: true });
+      return;
+    }
 
     const [updatedFirstName, ...rest] = formData.fullName.split(" ");
     const updatedLastName = rest.join(" ");
@@ -105,9 +117,21 @@ const AccountDetails = () => {
     form.append("email", formData.email);
     form.append("date_of_birth", formattedDob);
 
-    updateUser([userId, form]);
+    const loadingToast = toast("Updating your details...", {
+      description: "Please wait while we process your update.",
+    });
 
-    setOriginalData({ ...formData });
+    updateUser([userId, form], {
+      onSuccess: () => {
+        setOriginalData({ ...formData });
+        toast.success("User details updated successfully!", { closeButton: true });
+        toast.dismiss(loadingToast);
+      },
+      onError: () => {
+        toast.error("Failed to update user details.", { closeButton: true });
+        toast.dismiss(loadingToast);
+      },
+    });
   };
 
   const handleReset = () => {
@@ -127,42 +151,42 @@ const AccountDetails = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
           <EditableField
             label={fullNameLabel}
-            value={translatedFullName} 
+            value={translatedFullName}
             type="text"
             onChange={(value) => handleChange("fullName", value)}
           />
 
           <EditableField
             label={countryLabel}
-            value={translatedCountry}  
+            value={translatedCountry}
             type="country"
             onChange={(value) => handleChange("country", value)}
           />
 
           <EditableField
             label={genderLabel}
-            value={translatedGender} 
+            value={translatedGender}
             type="gender"
             onChange={(value) => handleChange("gender", value)}
           />
 
           <EditableField
             label={languageLabel}
-            value={translatedLanguage} 
+            value={translatedLanguage}
             type="language"
             onChange={(value) => handleChange("language", value)}
           />
 
           <EditableField
             label={dobLabel}
-            value={translatedDateOfBirth}  
+            value={translatedDateOfBirth}
             type="date"
             onChange={(value) => handleChange("date_of_birth", value)}
           />
 
           <EditableField
             label={emailLabel}
-            value={translatedEmail} 
+            value={translatedEmail}
             type="email"
             onChange={(value) => handleChange("email", value)}
           />

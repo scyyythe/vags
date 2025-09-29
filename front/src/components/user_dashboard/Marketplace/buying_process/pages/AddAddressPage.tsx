@@ -9,18 +9,17 @@ const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
   const queryClient = useQueryClient();
   const parseInitialData = () => {
     if (!address) return undefined;
-    const addressParts = address.address?.split(", ") || [];
-    const cityParts = address.city?.split(", ") || [];
+
     return {
-      fullName: address.name,
-      country: cityParts[2] || "Philippines",
-      address: addressParts[0] || "",
-      apartment: addressParts[1] || "",
-      city: cityParts[0] || "",
-      state: cityParts[1] || "",
-      postalCode: cityParts[3] || "",
-      phoneNumber: address.phone,
-      setAsDefault: address.is_default || false,
+      fullName: address.name || "",
+      country: address.country || "Philippines",
+      address: address.address || "",
+      apartment: address.addressLine2 || "",
+      city: address.city || "",
+      state: address.state || "",
+      postalCode: address.postal_code || "",
+      phoneNumber: address.phone || "",
+      setAsDefault: !!address.is_default,
     };
   };
 
@@ -28,7 +27,6 @@ const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
     try {
       await saveAddress(formData);
 
-     
       queryClient.invalidateQueries({ queryKey: ["allAddresses"] });
 
       navigate("/shipping");
@@ -36,7 +34,6 @@ const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
       alert("Failed to save address.");
     }
   };
-
 
   return (
     <AddAddressForm
@@ -46,6 +43,7 @@ const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
       isEditing={isEditing}
       loading={loading}
       error={error}
+      addressId={id}
     />
   );
 };
