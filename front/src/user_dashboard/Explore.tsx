@@ -91,7 +91,6 @@ const Explore = () => {
   const handleTipJar = (artwork: (typeof filteredArtworksMemo)[0]) => {
     console.log("Opening tip jar for artwork:", artwork);
 
-    // Ensure email is not undefined
     const artworkInfo = {
       id: artwork.id,
       title: artwork.title,

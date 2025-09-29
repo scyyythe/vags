@@ -19,10 +19,14 @@ import { useLocation } from "react-router-dom";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import useHideArtwork from "@/hooks/mutate/visibility/private/useHideArtwork";
-
+import { getLoggedInUserId } from "@/auth/decode";
+import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork";
+import useUpdateArtworkVisibility from "@/hooks/mutate/visibility/private/useUpdateArtworkVisibility";
+import OwnerMenu from "@/components/user_dashboard/own_profile/menu/art_card/Menu";
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
+  const loggedInUserId = getLoggedInUserId();
 
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
 
@@ -58,8 +62,11 @@ const ArtworkDetails = () => {
   const { data: artwork } = useFetchArtworkById(id);
   const { data: bulkStatus, isLoading: statusLoading } = useBulkArtworkStatus([id]);
   const { data: report_status } = useBulkReportStatus([id]);
-  const { isLikedFromBulk, isSavedFromBulk, isReportedFromBulk, reportStatusFromBulk } = location.state || {};
+  const { mutate: updateVisibility } = useUpdateArtworkVisibility();
+  const { mutate: archiveArtwork } = useArchivedArtwork();
 
+  const { isLikedFromBulk, isSavedFromBulk, isReportedFromBulk, reportStatusFromBulk } = location.state || {};
+  const isOwner = String(loggedInUserId) === String(artwork?.artist_id);
   const isLiked = typeof isLikedFromBulk === "boolean" ? isLikedFromBulk : likedArtworks[id] ?? false;
   const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id, isSavedFromBulk ?? false);
   const { mutate: hideArtwork } = useHideArtwork();
@@ -103,7 +110,7 @@ const ArtworkDetails = () => {
         ...prev,
         [newComment.id]: 0,
       }));
-      toast("Comment posted", { closeButton: true })
+      toast("Comment posted", { closeButton: true });
       setComment("");
     }
   };
@@ -116,7 +123,7 @@ const ArtworkDetails = () => {
 
   const handleReport = () => {
     setIsReported(!isReported);
-    toast(isReported ? "Artwork report removed" : "Artwork reported", { closeButton: true })
+    toast(isReported ? "Artwork report removed" : "Artwork reported", { closeButton: true });
     setMenuOpen(false);
   };
 
@@ -156,6 +163,10 @@ const ArtworkDetails = () => {
       ...prev,
       [commentId]: !prev[commentId],
     }));
+  };
+  const handleArchive = () => {
+    archiveArtwork(id);
+    setMenuOpen(false);
   };
 
   const handleReply = (commentId: string) => {
@@ -238,7 +249,7 @@ const ArtworkDetails = () => {
                     <button
                       className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[8px]"} hover:bg-gray-100`}
                       onClick={() => {
-                        toast.success(`Blocked user ${commentItem.user}`, { closeButton: true })
+                        toast.success(`Blocked user ${commentItem.user}`, { closeButton: true });
                         toggleCommentMenu(commentItem.id);
                       }}
                     >
@@ -247,7 +258,7 @@ const ArtworkDetails = () => {
                     <button
                       className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[9px]"} hover:bg-gray-100`}
                       onClick={() => {
-                        toast.success("Content reported", { closeButton: true })
+                        toast.success("Content reported", { closeButton: true });
                         toggleCommentMenu(commentItem.id);
                       }}
                     >
@@ -302,20 +313,13 @@ const ArtworkDetails = () => {
           </div>
 
           <div className={` ${isMobile ? "flex flex-col" : "flex justify-center items-start space-x-2 mt-2"}`}>
-            <div
-              className={`${
-                isMobile ? "w-full" : "flex justify-center items-start ml-[260px]"
-              }`}
-            >
+            <div className={`${isMobile ? "w-full" : "flex justify-center items-start ml-[260px]"}`}>
               {/* Artwork container */}
               <div className={`mr-8 ${isMobile ? "w-full mt-3" : "w-full"}`}>
                 {/* Artwork Sidebar */}
                 <div className="relative w-full">
                   {!isMobile && (
-                    <aside
-                      className="absolute top-3 z-20 left-[-250px] hidden lg:block"
-                      style={{width: "150px" }}
-                    >
+                    <aside className="absolute top-3 z-20 left-[-250px] hidden lg:block" style={{ width: "150px" }}>
                       <div className="px-3 py-6 text-left">
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
@@ -341,12 +345,7 @@ const ArtworkDetails = () => {
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">Dimensions</h3>
                           <p className="text-[9px] text-gray-700">
-                            {artwork?.size
-                              ? artwork?.size
-                                  .split(" x ")
-                                  .join(" x ")
-                              : "20 x 20"}{" "}
-                            cm
+                            {artwork?.size ? artwork?.size.split(" x ").join(" x ") : "20 x 20"} cm
                           </p>
                         </div>
 
@@ -363,7 +362,9 @@ const ArtworkDetails = () => {
 
                 {/* Center - Artwork Image */}
                 <div className={`relative z-0 ${isMobile ? "pl-5 mt-9" : "mt-8 w-[400px]"}`}>
-                  <div className={`inline-block transform scale-[1.10] -mb-6 relative ${isMobile ? "" : "left-[-55px]"}`}>
+                  <div
+                    className={`inline-block transform scale-[1.10] -mb-6 relative ${isMobile ? "" : "left-[-55px]"}`}
+                  >
                     <div className="w-[420px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                       <img
                         src={artwork?.image_url}
@@ -403,7 +404,11 @@ const ArtworkDetails = () => {
               </div>
 
               {/* Right side - Title, artist, description, comments */}
-              <div className={` ${isMobile ? "w-full mt-10 px-4 h-[580px]" : "w-[700px] -ml-[235px] mt-4 h-[450px]"}  overflow-y-auto`}>
+              <div
+                className={` ${
+                  isMobile ? "w-full mt-10 px-4 h-[580px]" : "w-[700px] -ml-[235px] mt-4 h-[450px]"
+                }  overflow-y-auto`}
+              >
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center space-x-4">
@@ -429,16 +434,34 @@ const ArtworkDetails = () => {
                         <MoreHorizontal size={isMobile ? 14 : 14} />
                       </button>
 
-                      <ArtCardMenu
-                        isOpen={menuOpen}
-                        onFavorite={handleFavorite}
-                        onHide={handleHide}
-                        onReport={handleReport}
-                        isFavorite={isFavorite}
-                        isReported={isReportedFromBulk}
-                        isShared = {artwork?.isShared}
-                        className="right-[65px] top-[163px]"
-                      />
+                      {isOwner ? (
+                        <OwnerMenu
+                          isOpen={menuOpen}
+                          artworkId={id}
+                          artworkTitle={artwork.title}
+                          onRequestBid={() => console.log("Request to bid", id)}
+                          onSell={() => console.log("Sell artwork", id)}
+                          onEdit={() => console.log("Edit artwork", id)}
+                          onToggleVisibility={(newStatus: boolean) => {
+                            updateVisibility({ id, visibility: newStatus ? "Public" : "Private" });
+                            setMenuOpen(false);
+                          }}
+                          onArchive={handleArchive}
+                          isPublic={artwork.visibility === "Public"}
+                          className="right-[65px] top-[163px]"
+                        />
+                      ) : (
+                        <ArtCardMenu
+                          isOpen={menuOpen}
+                          onFavorite={handleFavorite}
+                          onHide={handleHide}
+                          onReport={handleReport}
+                          isFavorite={isFavorite}
+                          isReported={isReportedFromBulk}
+                          isShared={artwork?.isShared}
+                          className="right-[65px] top-[163px]"
+                        />
+                      )}
                     </div>
                   </div>
 
@@ -473,9 +496,9 @@ const ArtworkDetails = () => {
                     )} */}
                   </div>
 
-                {/* Mobile Sidebar Panel */}
-                {isMobile && (
-                <div className="w-full py-3 mb-4 grid grid-cols-4 text-center gap-4">
+                  {/* Mobile Sidebar Panel */}
+                  {isMobile && (
+                    <div className="w-full py-3 mb-4 grid grid-cols-4 text-center gap-4">
                       <div>
                         <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
                         <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
@@ -499,8 +522,8 @@ const ArtworkDetails = () => {
                             : "20 x 20″"}
                         </p>
                       </div>
-                </div>
-                )}
+                    </div>
+                  )}
 
                   <Separator className="my-6" />
 
@@ -522,7 +545,9 @@ const ArtworkDetails = () => {
             related &&
             related.length > 0 && (
               <div className="container md:px-6 mb-4">
-                <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"}`}>Related Artworks</h2>
+                <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"}`}>
+                  Related Artworks
+                </h2>
                 {filteredRelated && filteredRelated.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                     {filteredRelated.map((card) => {
@@ -554,10 +579,10 @@ const ArtworkDetails = () => {
         {isExpanded && (
           <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
             <button
-            onClick={closeExpandedView}
-            className="absolute top-4 right-6 z-[60] bg-white rounded-full px-1 shadow-md transition-colors duration-200"
+              onClick={closeExpandedView}
+              className="absolute top-4 right-6 z-[60] bg-white rounded-full px-1 shadow-md transition-colors duration-200"
             >
-            <i className="bx bx-x text-xl text-black"></i>
+              <i className="bx bx-x text-xl text-black"></i>
             </button>
 
             <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
