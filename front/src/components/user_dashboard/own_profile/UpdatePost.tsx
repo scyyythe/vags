@@ -98,41 +98,63 @@ const UpdatePost = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!artworkTitle) {
-      toast.error("Please enter an artwork title", {
-        closeButton: true,
-      });
+    // Artwork title validation: first letter capital, letters/numbers allowed
+    const titleRegex = /^[A-Z][A-Za-z0-9\s]*$/;
+    if (!artworkTitle.trim()) {
+      toast.error("Please enter an artwork title", { closeButton: true });
+      return;
+    }
+    if (!titleRegex.test(artworkTitle)) {
+      toast.error("Artwork title invalid. Must start with a capital letter", { closeButton: true });
+      return;
+    }
+
+    // Artwork style validation
+    if (!artworkStyle) {
+      toast.error("Please select an artwork style", { closeButton: true });
+      return;
+    }
+
+    // Medium validation: letters and spaces only
+    const mediumRegex = /^[A-Za-z\s]+$/;
+    if (!medium.trim()) {
+      toast.error("Please enter the medium used", { closeButton: true });
+      return;
+    }
+    if (!mediumRegex.test(medium)) {
+      toast.error("Medium invalid. Must contain letters only", { closeButton: true });
+      return;
+    }
+
+    // Optional file validation
+    if (selectedFile && selectedFile.size > 20 * 1024 * 1024) {
+      toast.error("File size must be less than 20MB", { closeButton: true });
       return;
     }
 
     const formData = new FormData();
-    formData.append("title", artworkTitle);
+    formData.append("title", artworkTitle.trim());
     formData.append("category", artworkStyle);
-    formData.append("medium", medium);
-    formData.append("description", description);
+    formData.append("medium", medium.trim());
+    formData.append("description", description.trim());
     formData.append("visibility", visibility);
 
     if (selectedFile) {
       formData.append("image", selectedFile);
     }
 
-    console.log("Form Data before submitting:", formData); // Check form data
-
     setIsUploading(true);
+
     updateArtwork(
       { id, formData },
       {
         onSuccess: () => {
-          toast.error("Artwork updated successfully!", {
-            closeButton: true,
-          });
+          toast.success("Artwork updated successfully!", { closeButton: true });
           navigate("/explore");
         },
         onError: (error) => {
           console.error("Error during update:", error);
-          toast.error("Failed to update artwork.", {
-            closeButton: true,
-          });
+          toast.error("Failed to update artwork.", { closeButton: true });
         },
         onSettled: () => {
           setIsUploading(false);
@@ -140,7 +162,6 @@ const UpdatePost = () => {
       }
     );
   };
-
   return (
     <div className="min-h-screen bg-background">
       <Header />

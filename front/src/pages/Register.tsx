@@ -56,7 +56,10 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   const passwordTooShort = useAutoTranslation("Password too short", language);
   const passwordTooShortDesc = useAutoTranslation("Password must be at least 8 characters long.", language);
   const passwordWeak = useAutoTranslation("Password must be stronger", language);
-  const passwordWeakDesc = useAutoTranslation("Password must contain at least one special character (e.g. !, @, #, $).", language);
+  const passwordWeakDesc = useAutoTranslation(
+    "Password must contain at least one special character (e.g. !, @, #, $).",
+    language
+  );
   const processingRegistration = useAutoTranslation("Processing registration...", language);
   const loginNow = useAutoTranslation("You can now log in.", language);
   const invalidDetails = useAutoTranslation("Please check your details and try again.", language);
@@ -98,7 +101,6 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
       toast.error(googleLoginFailed, { closeButton: true });
     },
   });
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -108,19 +110,44 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
     e.preventDefault();
     setMessage(null);
 
-    const password = formData.password;
-    const hasMinLength = password.length >= 8;
-    const hasUniqueChar = /[^A-Za-z0-9]/.test(password);
+    const { firstName, lastName, email, password } = formData;
 
-    if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
+    // Validate required fields
+    if (!firstName.trim() || !lastName.trim() || !email.trim() || !password) {
       toast.error(missingInfo, { description: missingInfoDesc, closeButton: true });
       return;
     }
-    if (!hasMinLength) {
+
+    // Validate names
+    const nameRegex = /^[A-Z][a-zA-Z]*$/;
+    if (!nameRegex.test(firstName)) {
+      toast.error("First name invalid", {
+        description: "Must start with a capital letter and contain only letters",
+        closeButton: true,
+      });
+      return;
+    }
+    if (!nameRegex.test(lastName)) {
+      toast.error("Last name invalid", {
+        description: "Must start with a capital letter and contain only letters",
+        closeButton: true,
+      });
+      return;
+    }
+
+    // Validate email
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Invalid email format", { closeButton: true });
+      return;
+    }
+
+    // Validate password
+    if (password.length < 8) {
       toast.error(passwordTooShort, { description: passwordTooShortDesc, closeButton: true });
       return;
     }
-    if (!hasUniqueChar) {
+    if (!/[^A-Za-z0-9]/.test(password)) {
       toast.error(passwordWeak, { description: passwordWeakDesc, closeButton: true });
       return;
     }
@@ -129,27 +156,19 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
     try {
       const response = await apiClient.post("user/register/", {
-        username: formData.email.split("@")[0],
-        email: formData.email,
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        password: formData.password,
+        username: email.split("@")[0],
+        email,
+        first_name: firstName,
+        last_name: lastName,
+        password,
       });
 
-      console.log("Registration successful:", response.data);
-
       toast.success(registrationSuccessful, { description: loginNow, closeButton: true });
-
       closeRegisterModal();
       setShowLoginModal(true);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Registration failed:", error.message);
-        toast.error(registrationFailed, { description: invalidDetails, closeButton: true });
-      } else {
-        console.error("Unknown error:", error);
-        toast.error(registrationFailed, { description: unexpectedError, closeButton: true });
-      }
+      console.error("Registration failed:", error);
+      toast.error(registrationFailed, { description: invalidDetails, closeButton: true });
     } finally {
       toast.dismiss(loadingToast);
     }
@@ -164,7 +183,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   return (
     <div className="flex flex-col justify-center rounded-2xl py-4 px-14 md:py-4 md:px-14 lg:py-4 lg:px-14 bg-white">
       <div className="flex justify-end">
-        {/* Fingerprint Icon and Sliding Text Container */} 
+        {/* Fingerprint Icon and Sliding Text Container */}
         {/* <div className="relative flex items-center gap-2"> 
           <div className="border border-gray-300 px-2 rounded-full hover:border-red-800 transition-colors cursor-pointer" 
           onMouseEnter={() => setShowFingerprintText(true)} onMouseLeave={() => setShowFingerprintText(false)} onClick={handleFingerprintClick} > 
@@ -191,12 +210,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
       <div className="space-y-4">
         <div className="flex flex-col md:flex-row gap-4 text-[9px]">
-          <SocialButton
-            provider="google"
-            text={signUpWithGoogle}
-            icon="bx bxl-google"
-            onClick={handleGoogleSignUp}
-          />
+          <SocialButton provider="google" text={signUpWithGoogle} icon="bx bxl-google" onClick={handleGoogleSignUp} />
         </div>
 
         <div className="relative flex items-center justify-center">
