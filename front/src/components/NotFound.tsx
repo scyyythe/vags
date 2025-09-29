@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const NotFound = () => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
