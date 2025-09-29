@@ -22,7 +22,6 @@ import { useDonation } from "@/context/DonationContext";
 const Explore = () => {
   const navigate = useNavigate();
   const { openPopup } = useDonation();
-
   const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFilter, setSelectedFilter] = useState("All");

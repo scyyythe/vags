@@ -133,12 +133,10 @@ class ArtSerializer(serializers.Serializer):
                     uploaded_urls.append(image_url)
                 except Exception as e:
                     raise ValidationError({"cloudinary": f"Upload failed: {str(e)}"})
-            # Replace old images completely
+  
             instance.image_url = uploaded_urls
 
-        # --------------------------
-        # 2. Update regular fields
-        # --------------------------
+
         for field in [
             "title", "category", "medium", "art_status", "price", "discounted_price",
             "size", "description", "visibility", "edition", "year_created"
@@ -146,24 +144,23 @@ class ArtSerializer(serializers.Serializer):
             if field in validated_data:
                 setattr(instance, field, validated_data[field])
 
-        # --------------------------
-        # 3. Compute size from height & width if not explicitly sent
-        # --------------------------
+        if instance.art_status.lower() == "active":
+            if any(validated_data.get(f) is not None for f in ["price", "quantity", "edition"]):
+                instance.art_status = "onSale"
+ 
+        elif instance.art_status.lower() == "onsale":
+            pass
+
+
         if "size" not in validated_data:
             height = validated_data.get("height")
             width = validated_data.get("width")
             if height and width:
                 instance.size = f"{height}x{width}"
 
-        # --------------------------
-        # 4. Save instance
-        # --------------------------
         instance.updated_at = datetime.utcnow()
         instance.save()
         return instance
-
-
-
 
     def get_artist(self, obj):
         if obj.artist:
