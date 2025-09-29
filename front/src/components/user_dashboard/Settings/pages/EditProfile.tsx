@@ -147,15 +147,22 @@ const EditProfile = () => {
 
   const triggerFileInput = () => fileInputRef.current?.click();
   const triggerCoverFileInput = () => coverFileInputRef.current?.click();
+
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidUsername = (username: string) => /^[a-zA-Z0-9_]{3,20}$/.test(username);
+
   const handleSave = () => {
     if (!isValidEmail(formData.email)) {
       toast.error(invalidEmailText, { closeButton: true });
       return;
     }
 
-    const loadingToast = toast(updatingDetailsText, {
-      description: updatingDetailsDesc,
-    });
+    if (!isValidUsername(formData.username)) {
+      toast.error("Username must be 3-20 characters, letters/numbers/underscores only.", { closeButton: true });
+      return;
+    }
+
+    const loadingToast = toast(updatingDetailsText, { description: updatingDetailsDesc });
 
     const [firstName, ...rest] = formData.fullName.trim().split(" ");
     const lastName = rest.join(" ");
@@ -168,7 +175,6 @@ const EditProfile = () => {
 
     if (formData.profile_picture) updatedUser.append("profile_picture", formData.profile_picture);
     if (formData.cover_photo) updatedUser.append("cover_photo", formData.cover_photo);
-
     if (removeProfilePic) updatedUser.append("remove_profile_picture", "true");
     if (removeCoverPhoto) updatedUser.append("remove_cover_photo", "true");
 
@@ -186,7 +192,6 @@ const EditProfile = () => {
       },
     });
   };
-
   const handleReset = () => setFormData({ ...originalData });
   const hasChanges = () => {
     return JSON.stringify(formData) !== JSON.stringify(originalData) || removeProfilePic || removeCoverPhoto;
@@ -263,8 +268,6 @@ const EditProfile = () => {
       }
     );
   };
-
-  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleSaveEmail = () => {
     if (!isValidEmail(formData.email)) {

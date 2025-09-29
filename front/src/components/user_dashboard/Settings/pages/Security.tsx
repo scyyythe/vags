@@ -112,6 +112,11 @@ const SecuritySettings = () => {
     }));
   };
 
+  const passwordStrengthError = useAutoTranslation(
+    "Password must have at least 8 characters, including uppercase, lowercase, number, and special character.",
+    selectedLanguage
+  );
+
   const handleSave = () => {
     const data = new FormData();
     const { currentPassword, newPassword, confirmPassword } = formData;
@@ -124,16 +129,32 @@ const SecuritySettings = () => {
         return;
       }
 
+      // 1. Check password length
       if (newPassword.length < 8) {
         toast.error(newPasswordLengthError, { closeButton: true });
         return;
       }
 
+      // 2. Check password strength using regex
+      const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+      if (!strongPasswordRegex.test(newPassword)) {
+        toast.error(passwordStrengthError, { closeButton: true });
+        return;
+      }
+
+      // 3. New password must be different from current
       if (newPassword === currentPassword) {
         toast.error(newPasswordSameError, { closeButton: true });
         return;
       }
 
+      // 4. Unique check against previous password (optional)
+      if (newPassword === password) {
+        toast.error("New password must be unique and not match previous passwords.", { closeButton: true });
+        return;
+      }
+
+      // 5. Confirm password
       if (newPassword !== confirmPassword) {
         toast.error(newPasswordMismatchError, { closeButton: true });
         return;

@@ -6,6 +6,7 @@ import Header from "@/components/user_dashboard/navbar/Header";
 import countries from "@/components/data/countries";
 import { useShippingAddresses } from "@/hooks/shipping/useShippingAddresses";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 interface AddressFormData {
   fullName: string;
   country: string;
@@ -53,6 +54,53 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
     setAsDefault: initialData?.setAsDefault || false,
   });
 
+  const validateForm = (): boolean => {
+    const nameRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/;
+    const cityRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/;
+    const stateRegex = /^(?=.*[A-Za-z])[A-Z][A-Za-z0-9 ]*$/;
+    const postalCodeRegex = /^\d{4,10}$/;
+    const phoneRegex = /^(\+63|0)9\d{9}$/;
+    const addressRegex = /^[A-Za-z\s.,'-]{3,}[0-9A-Za-z\s.,'-]*$/;
+    const apartmentRegex = /^[A-Za-z\s.,'-]{3,}[0-9A-Za-z\s.,'-]*$/;
+
+    if (!nameRegex.test(formData.fullName.trim())) {
+      toast.error("Full name must start with capital letters and contain only letters and spaces.");
+      return false;
+    }
+
+    if (!addressRegex.test(formData.address.trim())) {
+      toast.error("Address must include a number and a valid street name.");
+      return false;
+    }
+
+    if (formData.apartment && !apartmentRegex.test(formData.apartment.trim())) {
+      toast.error("Apartment/floor/suite must be valid.");
+      return false;
+    }
+
+    if (!cityRegex.test(formData.city.trim())) {
+      toast.error("City must start with a capital letter and contain only letters and spaces.");
+      return false;
+    }
+
+    if (!stateRegex.test(formData.state.trim())) {
+      toast.error("State/Region must start with a capital letter and can contain letters, numbers, and spaces.");
+      return false;
+    }
+
+    if (!postalCodeRegex.test(formData.postalCode.trim())) {
+      toast.error("Postal code must contain only numbers and be 4-10 digits long.");
+      return false;
+    }
+
+    if (!phoneRegex.test(formData.phoneNumber.trim())) {
+      toast.error("Phone number must be a valid Philippine number, e.g., +639XXXXXXXXX or 09XXXXXXXXX.");
+      return false;
+    }
+
+    return true;
+  };
+
   useEffect(() => {
     if (initialData) {
       setFormData((prev) => ({
@@ -90,6 +138,9 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
+
     onSave(formData);
   };
 
