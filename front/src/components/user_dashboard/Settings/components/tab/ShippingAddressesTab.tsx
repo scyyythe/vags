@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Plus, Truck, Shield } from "lucide-react";
 import { ShippingAddress, NewShippingAddressState } from "./accounts_setup/types/shipping";
 import { ShippingAddressTable } from "./shipping/ShippingAddressTable";
@@ -15,7 +9,7 @@ import { useShippingAddresses } from "@/hooks/shipping/useShippingAddresses";
 
 const ShippingAddressesTab = () => {
   const navigate = useNavigate();
-  const { addresses, addOrUpdateAddress, deleteAddress, setDefaultAddress } = useShippingAddresses();
+  const { addresses, isLoading, addOrUpdateAddress, deleteAddress, setDefaultAddress } = useShippingAddresses();
 
   // Static labels (no translation)
   const myShippingAddressesLabel = "My Shipping Addresses";
@@ -66,15 +60,14 @@ const ShippingAddressesTab = () => {
   };
 
   const handleAddOrUpdateAddress = async () => {
-    const success = await addOrUpdateAddress(newAddress, editingAddress);
-    if (success) {
-      resetForm();
-      setShowAddForm(false);
-    }
+    addOrUpdateAddress({ newAddress, editing: editingAddress });
+    resetForm();
+    setShowAddForm(false);
   };
 
   // Navigate to edit page instead of opening modal
   const handleEditAddress = (address: ShippingAddress) => {
+    console.log("Editing address:", address);
     navigate(`/edit-address/${address.id}`);
   };
 
@@ -121,9 +114,7 @@ const ShippingAddressesTab = () => {
                 type="checkbox"
                 id="isDefault"
                 checked={newAddress.isDefault}
-                onChange={(e) =>
-                  setNewAddress((prev) => ({ ...prev, isDefault: e.target.checked }))
-                }
+                onChange={(e) => setNewAddress((prev) => ({ ...prev, isDefault: e.target.checked }))}
                 className="rounded border border-input"
               />
               <label htmlFor="isDefault" className="text-[11px]">
@@ -146,21 +137,21 @@ const ShippingAddressesTab = () => {
       {/* Addresses Table */}
       <div className="">
         <CardContent className="p-0">
-            {addresses.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                    <p className="text-sm">{noAddressesLabel}</p>
-                    <p className="text-xs">{addFirstAddressLabel}</p>
-                </div>
-            ) : (
-                <div className="max-h-80 overflow-y-auto pr-2">
-                    <ShippingAddressTable
-                        addresses={addresses}
-                        onEditAddress={handleEditAddress}
-                        onDeleteAddress={deleteAddress}
-                        onSetDefault={setDefaultAddress}
-                    />
-                </div>
-            )}
+          {addresses.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <p className="text-sm">{noAddressesLabel}</p>
+              <p className="text-xs">{addFirstAddressLabel}</p>
+            </div>
+          ) : (
+            <div className="max-h-80 overflow-y-auto pr-2">
+              <ShippingAddressTable
+                addresses={addresses}
+                onEditAddress={handleEditAddress}
+                onDeleteAddress={deleteAddress}
+                onSetDefault={setDefaultAddress}
+              />
+            </div>
+          )}
         </CardContent>
       </div>
 
@@ -180,9 +171,7 @@ const ShippingAddressesTab = () => {
                 <h4 className="font-medium text-xs" style={{ fontSize: "11px" }}>
                   {deliveryProcessLabel}
                 </h4>
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  {deliveryDescLabel}
-                </p>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">{deliveryDescLabel}</p>
               </div>
             </div>
 
@@ -195,9 +184,7 @@ const ShippingAddressesTab = () => {
                 <h4 className="font-medium text-xs" style={{ fontSize: "11px" }}>
                   {addressSecurityLabel}
                 </h4>
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  {addressSecurityDescLabel}
-                </p>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">{addressSecurityDescLabel}</p>
               </div>
             </div>
           </div>
