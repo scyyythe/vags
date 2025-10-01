@@ -52,7 +52,12 @@ const useSubmitReport = () => {
     onSuccess: (_, { art_id }) => {
       toast.success("Auction reported successfully!");
       queryClient.invalidateQueries({ queryKey: ["reportStatus", art_id] });
+      queryClient.invalidateQueries({ queryKey: ["artworkReportStatus", art_id] });
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["my-sold-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {

@@ -47,14 +47,13 @@ export const LikedArtworksProvider = ({ children }: { children: ReactNode }) => 
         });
       }
 
-
       queryClient.setQueryData(["bulkArtworkStatus", id], (oldData: any) => ({
         ...oldData,
         isLiked: is_liked,
- 
+
         likeCount: like_count !== undefined ? like_count : oldData?.likeCount,
       }));
-
+      queryClient.invalidateQueries({ queryKey: ["artworks"] });
       toast(detail || (is_liked ? "You liked this artwork." : "You unliked this artwork."), {
         closeButton: true,
       });

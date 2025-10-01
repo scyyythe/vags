@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,9 +19,13 @@ import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted"
 import useToggleArtworkStatus from "@/hooks/purchase/useMarkArtworkAsSold";
 import { useLocation } from "react-router-dom";
 import { useArtworkReviews } from "@/hooks/review/useArtworkReviews";
+import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
+import useArtworkReportStatus from "@/hooks/mutate/report/useArtworkReportStatus";
 const ProductViewingContent = () => {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, error } = useSellArtworkDetail(id);
+  const submitReportMutation = useSubmitReport();
+  const { data: reportStatus, isLoading: reportLoading, error: reportError } = useArtworkReportStatus(id || "");
 
   const { reviews, loading: reviewsLoading, error: reviewsError } = useArtworkReviews(id || "");
 
@@ -50,6 +54,12 @@ const ProductViewingContent = () => {
     toggleWishlist(id);
     toast(likedItems.has(id) ? "Removed from wishlist" : "Added to wishlist");
   };
+
+  useEffect(() => {
+    if (reportStatus) {
+      setIsReported(reportStatus.reported);
+    }
+  }, [reportStatus]);
 
   // Mock reviews data
   const mockReviews = [
@@ -343,12 +353,24 @@ const ProductViewingContent = () => {
                     isOpen={menuOpen}
                     isReported={isReported}
                     onReport={(data) => {
-                      console.log("Report submitted:", data);
-                      toast("Report submitted. Thank you!");
-                      setIsReported(true);
-                      setMenuOpen(false);
+                      if (!id) return;
+
+                      submitReportMutation.mutate(
+                        {
+                          art_id: id,
+                          category: data.category,
+                          option: data.option,
+                          description: data.description,
+                          additionalInfo: data.additionalInfo,
+                        },
+                        {
+                          onSuccess: () => {
+                            setIsReported(true);
+                            setMenuOpen(false);
+                          },
+                        }
+                      );
                     }}
-                    className="-left-1 top-7"
                   />
                 )}
               </div>
