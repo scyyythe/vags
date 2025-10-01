@@ -61,23 +61,28 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
 
   const handleSubmit = async () => {
     const defaultArtwork = artwork || purchasedArtwork;
+    const paymentMethod = defaultPaymentMethod?.type; // e.g. "Stripe", "GCash", etc.
 
-    if (!defaultAddress || !defaultArtwork?.id) {
+    if (!finalAddress || !defaultArtwork?.id || !paymentMethod) {
       console.error("Missing required information.", {
-        defaultAddress,
+        finalAddress,
         defaultArtwork,
+        paymentMethod,
       });
       toast.error("Missing required information.");
       return;
     }
-    if (defaultPaymentMethod.type === "PayPal") {
+
+    // If PayPal → go to PayPal flow
+    if (paymentMethod === "PayPal") {
       setStep("paypal");
       return;
     }
 
+    // Otherwise (Stripe, GCash, Credit Card) → normal purchase API
     const payload = {
       artwork_id: defaultArtwork.id,
-      payment_method: selectedPaymentMethod?.type,
+      payment_method: paymentMethod,
       is_paid: true,
       quantity: 1,
       shipping_address: {
@@ -92,6 +97,8 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
     };
 
     try {
+      console.log("Submitting purchase payload:", payload);
+
       await purchaseMutation.mutateAsync(payload);
 
       const formData = new FormData();
@@ -105,14 +112,9 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       toast.success("Your purchase has been successfully completed!");
       navigate("/marketplace");
     } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.response?.data?.detail ||
-        error?.message ||
-        "Failed to complete purchase.";
-
+      console.error("Purchase Error Full:", error?.response?.data || error);
+      const errorMessage = JSON.stringify(error?.response?.data) || error?.message || "Failed to complete purchase.";
       toast.error(errorMessage);
-      console.error("Purchase Error:", error);
     }
   };
 
