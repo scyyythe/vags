@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { X, Calendar, Package, MapPin, CreditCard, Palette } from "lucide-react";
+import { X, Calendar, Package, MapPin, CreditCard, Palette, Clock, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-
 interface OrderDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -37,8 +36,10 @@ interface OrderDetailsModalProps {
     timeline: Array<{
       status: string;
       date: string;
+      time?: string;
       description: string;
       completed: boolean;
+      icon?: React.ReactNode;
     }>;
   };
   onContactBuyer?: (artwork: any) => void;
@@ -57,6 +58,48 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
   onMarkAsShipped,
   onLeaveReview,
 }) => {
+  const computedOrder = {
+    ...order,
+    paymentMethod: order.paymentMethod,
+    amount: order.price,
+    processingFee: +(order.price * 0.05).toFixed(2),
+    netAmount: +(order.price * 0.95).toFixed(2),
+    timeline: [
+      {
+        status: "Payment Initiated",
+        date: order.orderDate,
+        time: "10:30 AM",
+        description: "Payment request sent to payment gateway",
+        completed: true,
+        icon: <CreditCard className="w-3 h-3" />,
+      },
+      {
+        status: "Payment Processing",
+        date: order.orderDate,
+        time: "10:31 AM",
+        description: "Payment being processed by bank",
+        completed: order.status.toLowerCase() !== "pending_payment",
+        icon: <Clock className="w-3 h-3" />,
+      },
+      {
+        status: "Payment Verified",
+        date: order.orderDate,
+        time: "10:35 AM",
+        description: "Payment verification completed",
+        completed: ["paid", "completed", "reviewed"].includes(order.status.toLowerCase()),
+        icon: <CheckCircle className="w-3 h-3" />,
+      },
+      {
+        status: "Order Confirmed",
+        date: order.orderDate,
+        time: "10:36 AM",
+        description: "Order confirmed and sent to seller",
+        completed: ["paid", "completed", "reviewed"].includes(order.status.toLowerCase()),
+        icon: <Package className="w-3 h-3" />,
+      },
+    ],
+  };
+
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "pending_payment":
@@ -175,30 +218,35 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
             </div>
 
             {/* Order Timeline */}
-            {viewType === "buyer" && order.timeline && order.timeline.length > 0 && (
-              <div className="border border-border rounded-lg p-4">
-                <h3 className="font-semibold text-sm mb-4 flex items-center gap-2">
-                  <Package className="w-2.5 h-2.5" />
-                  Payment Timeline
-                </h3>
-                <div className="space-y-3">
-                  {order.timeline.map((item, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <div className={`w-3 h-3 rounded-full mt-1 ${item.completed ? "bg-green-600" : "bg-gray-300"}`} />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-[11px] font-medium">{item.status}</p>
-                            <p className="text-[10px] text-muted-foreground">{item.description}</p>
-                          </div>
-                          <p className="text-[10px] text-muted-foreground">{item.date}</p>
-                        </div>
+
+            {viewType === "buyer" &&
+              computedOrder.timeline.map((item, index) => (
+                <div key={index} className="flex items-start gap-3">
+                  <div
+                    className={`w-6 h-6 rounded-full flex items-center justify-center mt-0.5 ${
+                      item.completed ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-400"
+                    }`}
+                  >
+                    {item.icon || <Clock className="w-3 h-3" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-start mb-1">
+                      <p
+                        className={`text-xs font-medium ${
+                          item.completed ? "text-foreground" : "text-muted-foreground"
+                        }`}
+                      >
+                        {item.status}
+                      </p>
+                      <div className="text-right">
+                        <p className="text-[10px] text-muted-foreground">{item.date}</p>
+                        {item.time && <p className="text-[10px] text-muted-foreground">{item.time}</p>}
                       </div>
                     </div>
-                  ))}
+                    <p className="text-[10px] text-muted-foreground">{item.description}</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
           </div>
 
           {/* Right Column - Summary */}

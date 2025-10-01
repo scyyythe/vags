@@ -41,8 +41,6 @@ const SellTab = ({ selectedPriceRange }) => {
   const navigate = useNavigate();
   const isOwnProfile = String(userId) === String(loggedInUserId);
   const { data: myPurchases, isLoading: isMyPurchasesLoading } = useMyPurchases();
-  const mySellArtData = useMySellArtCards();
-  const userSellArtData = useUserSellArtCards(userId);
 
   const { data: myArtCards = [], isLoading, error } = useMySellArtCards();
 
@@ -947,7 +945,7 @@ const SellTab = ({ selectedPriceRange }) => {
             orderDate: selectedOrderForTracking.created_at
               ? new Date(selectedOrderForTracking.created_at).toLocaleDateString()
               : "Unknown",
-            paymentMethod: "GCash", // Mock payment method
+            paymentMethod: selectedOrderForTracking.payment_method || "Unknown",
           }}
         />
       )}
