@@ -86,6 +86,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
       >
         <div className="flex flex-col items-start">
           {/* Favorite */}
+
           <div className="flex items-center relative">
             <button
               onClick={onFavorite}
@@ -94,7 +95,11 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
               onMouseEnter={() => setHoveredItem("favorite")}
               onMouseLeave={() => setHoveredItem(null)}
             >
-              <Bookmark size={10} fill={isFavorite ? YELLOW : "none"} stroke={isFavorite ? YELLOW : "currentColor"} />
+              <Bookmark
+                size={10}
+                fill={isFavorite ? "#ffc107" : "none"}
+                stroke={isFavorite ? "#ffc107" : "currentColor"}
+              />
             </button>
             {hoveredItem === "favorite" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
@@ -114,19 +119,15 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             >
               <Share2 size={10} fill={isShared ? "#ea384c" : "none"} stroke={isShared ? "#ea384c" : "currentColor"} />
             </button>
-              {hoveredItem === "share" && (
+            {hoveredItem === "share" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
                 Share
               </span>
-              )}
+            )}
           </div>
-        
+
           {/* Share Modal */}
-          <ShareModal
-            isOpen={showShareModal}
-            onClose={() => setShowShareModal(false)}
-            linkToShare={shareUrl}
-          />
+          <ShareModal isOpen={showShareModal} onClose={() => setShowShareModal(false)} linkToShare={shareUrl} />
 
           {/* Hide / Unhide */}
           <div className="flex items-center relative">

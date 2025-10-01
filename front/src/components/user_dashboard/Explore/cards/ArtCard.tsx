@@ -62,8 +62,6 @@ const ArtCard = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
-  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id, isSavedFromBulk ?? false);
-
   const { likedArtworks, likeCounts, setLikedArtworks, toggleLike } = useContext(LikedArtworksContext);
 
   const { openPopup } = useDonation();
@@ -77,6 +75,7 @@ const ArtCard = ({
   const { mutate: updateVisibility } = useUpdateArtworkVisibility();
   const { mutate: archiveArtwork } = useArchivedArtwork();
   const [localIsLiked, setLocalIsLiked] = useState(status?.isLiked ?? isLikedFromBulk ?? false);
+  const { isFavorite: localIsFavorite, handleFavorite } = useFavorite(id, status?.isSaved ?? isSavedFromBulk ?? false);
 
   useEffect(() => {
     setLocalIsLiked(status?.isLiked ?? isLikedFromBulk ?? false);
@@ -134,11 +133,6 @@ const ArtCard = ({
       additionalInfo,
     });
 
-    setMenuOpen(false);
-  };
-
-  const handleFavorite = () => {
-    toggleFavorite();
     setMenuOpen(false);
   };
 
@@ -222,10 +216,13 @@ const ArtCard = ({
           ) : (
             <ArtCardMenu
               isOpen={menuOpen}
-              onFavorite={handleFavorite}
+              onFavorite={() => {
+                handleFavorite();
+                setMenuOpen(false);
+              }}
               onHide={handleHide}
               onReport={handleReport}
-              isFavorite={status.isSaved}
+              isFavorite={localIsFavorite}
               isReported={report?.reported}
               isShared={false}
               className="-right-1 top-7"
