@@ -6,6 +6,7 @@ class PaymentAccount(Document):
     type = StringField(required=True, choices=['paypal', 'bank', 'gcash', 'payoneer', 'stripe', 'card'])
     name = StringField(required=True) 
     account_info = StringField(required=True) 
+    stripe_account_id = StringField()   
     is_default = BooleanField(default=False)
     details = DictField() 
     created_at = DateTimeField(default=datetime.utcnow)
