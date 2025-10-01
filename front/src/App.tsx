@@ -144,7 +144,7 @@ const App = () => {
         <WishlistProvider>
           <LikedArtworksProvider>
             <TooltipProvider>
-              <DonationProvider>
+              <DonationProvider>``
                 <DonationWrapper>
                   <Toaster
                     position="bottom-right"

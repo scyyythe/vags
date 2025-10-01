@@ -76,6 +76,9 @@ export const usePaymentAccounts = () => {
       account_info: newAccount.type === "card" ? newAccount.cardDetails.cardNumber : newAccount.accountInfo,
       is_default: newAccount.isDefault,
       details: newAccount.type === "card" ? newAccount.cardDetails : newAccount.bankDetails,
+      ...(newAccount.type === "stripe" && newAccount.stripeAccountId
+        ? { stripe_account_id: newAccount.stripeAccountId }
+        : {}),
       ...(editing ? { id: editing.id } : {}),
     };
 
