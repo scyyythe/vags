@@ -76,14 +76,14 @@ const ArtCard = ({
   const { mutate: submitReport } = useSubmitReport();
   const { mutate: updateVisibility } = useUpdateArtworkVisibility();
   const { mutate: archiveArtwork } = useArchivedArtwork();
-
-  const isLiked = typeof isLikedFromBulk === "boolean" ? isLikedFromBulk : likedArtworks[id] ?? false;
+  const [localIsLiked, setLocalIsLiked] = useState(status?.isLiked ?? isLikedFromBulk ?? false);
 
   useEffect(() => {
-    setLikedArtworks((prev) => ({ ...prev, [id]: isLiked }));
-  }, [isLiked, id, setLikedArtworks]);
+    setLocalIsLiked(status?.isLiked ?? isLikedFromBulk ?? false);
+  }, [status?.isLiked, isLikedFromBulk]);
 
   const handleLike = () => {
+    setLocalIsLiked((prev) => !prev);
     if (id) toggleLike(id);
   };
 
@@ -264,14 +264,14 @@ const ArtCard = ({
             <button
               onClick={handleLike}
               className={`p-1 rounded-full transition-colors ${
-                status.isLiked ? "text-red-600" : "text-gray-400 hover:text-red-600"
+                localIsLiked ? "text-red-600" : "text-gray-400 hover:text-red-600"
               }`}
-              aria-label={status.isLiked ? "Unlike" : "Like"}
+              aria-label={localIsLiked ? "Unlike" : "Like"}
             >
               <Heart
                 size={15}
-                className={status.isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
-                fill={status.isLiked ? "currentColor" : "none"}
+                className={localIsLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
+                fill={localIsLiked ? "currentColor" : "none"}
               />
             </button>
 
