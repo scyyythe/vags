@@ -22,6 +22,7 @@ import { useCreateExhibit } from "@/hooks/mutate/exhibit/AddExhibit";
 import { slotColorSchemes, colorNames } from "@/components/constants/slot-color-schemes";
 import { mockExhibitData } from "@/components/data/mock-exhibit-data";
 import { environments } from "@/components/data/environments-data";
+import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import {
   getSlotColor,
   getUserName,
@@ -30,6 +31,7 @@ import {
 } from "@/utils/exhibit-helpers";
 import { createSubmitHandler } from "@/components/handlers/submit-handlers";
 import apiClient from "@/utils/apiClient";
+import { useExhibitCardDetail } from "@/hooks/exhibit/useCardDetail";
 const EditExhibit = () => {
   const navigate = useNavigate();
   const { id: exhibitId } = useParams();
@@ -37,7 +39,7 @@ const EditExhibit = () => {
   const queryParams = new URLSearchParams(location.search);
   const mode = queryParams.get("mode") || "";
   const updateExhibitMutation = useUpdateExhibit(exhibitId!);
-
+  const { data: exhibitData, isError } = useExhibitCardDetail(exhibitId);
   // --- States ---
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -62,7 +64,7 @@ const EditExhibit = () => {
   const [showNotificationDialog, setShowNotificationDialog] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
 
-  const [artworkFiles, setArtworkFiles] = useState<{ id: string; file?: File; url: string }[]>([]);
+  const [artworkFiles, setArtworkFiles] = useState<{ id: string; url: string; file?: File }[]>([]);
 
   const currentUserId = getLoggedInUserId();
   const { data: artworks = [] } = useArtworks(
@@ -114,45 +116,89 @@ const EditExhibit = () => {
     setSlotOwnerMap(newSlotOwnerMap);
   };
 
-  // --- Fetch existing exhibit data ---
   useEffect(() => {
-    const fetchExhibit = async () => {
-      if (!exhibitId) return;
-      try {
-        const response = await apiClient.get(`/exhibits/${exhibitId}/`);
-        const exhibitData = response.data;
+    if (!exhibitData) return;
 
-        // --- Your existing state population ---
-        setTitle(exhibitData.title);
-        setCategory(exhibitData.category);
-        setArtworkStyle(exhibitData.artworkStyle ? exhibitData.artworkStyle.toLowerCase() : "");
-        setExhibitType(exhibitData.exhibitType);
-        setStartDate(exhibitData.startDate?.split("T")[0] || "");
-        setEndDate(exhibitData.endDate?.split("T")[0] || "");
-        setDescription(exhibitData.description);
-        setSelectedEnvironment(exhibitData.selectedEnvironment);
-        setBannerImage(exhibitData.bannerImage);
-        setCollaborators(exhibitData.collaborators);
-        setSlotOwnerMap(exhibitData.slotOwnerMap);
-        setSlotArtworkMap(exhibitData.slotArtworkMap);
-        setSelectedArtworks(Object.values(exhibitData.slotArtworkMap));
-        setSelectedSlots(Object.keys(exhibitData.slotArtworkMap).map(Number));
+    console.log("🎨 Exhibit Data received:", exhibitData);
 
-        // --- NEW: Populate artworks with URL and IDs ---
-        const artworksWithUrl = exhibitData.artworks.map((a: any) => ({
-          id: a.id,
-          url: a.file, // the existing image URL
-          file: undefined, // no new file yet
-        }));
-        setArtworkFiles(artworksWithUrl);
-      } catch (err) {
-        console.error("Failed to fetch exhibit data", err);
-        toast.error("Failed to load exhibit data");
+    // Basic fields
+    setTitle(exhibitData.title);
+    setCategory(exhibitData.category);
+    setExhibitType(exhibitData.isSolo ? "solo" : "collaborative");
+    setStartDate(exhibitData.startDate?.split("T")[0] || "");
+    setEndDate(exhibitData.endDate?.split("T")[0] || "");
+    setDescription(exhibitData.description);
+    setBannerImage(exhibitData.image);
+
+    // ✅ Use slotArtworkMap from backend
+    const mapFromBackend: Record<number, string> = exhibitData.slotArtworkMap || {};
+    setSlotArtworkMap(mapFromBackend);
+    setSelectedSlots(Object.keys(mapFromBackend).map(Number));
+    setSelectedArtworks(Object.values(mapFromBackend) as string[]);
+
+    // ✅ Auto-determine environment by slot count
+    if (exhibitData.environmentId) {
+      setSelectedEnvironment(exhibitData.environmentId);
+      console.log("✅ Restored environment from backend:", exhibitData.environmentId);
+    } else {
+      const slotCount = Object.keys(mapFromBackend).length;
+      const matchedEnv = environments.find((env) => env.slots === slotCount);
+      if (matchedEnv) {
+        setSelectedEnvironment(matchedEnv.id);
+        console.log("✅ Auto-matched environment by slot count:", matchedEnv.id);
       }
-    };
+    }
 
-    fetchExhibit();
-  }, [exhibitId, mode]);
+    // ✅ Set readonly mode
+    if (mode === "review" || mode === "monitoring" || mode === "preview") {
+      setIsReadOnly(true);
+    } else {
+      setIsReadOnly(false);
+    }
+    if (exhibitData.artworks && exhibitData.artworks.length > 0) {
+      const artworksWithUrl = exhibitData.artworks.map((a: any) => ({
+        id: a.id.toString(),
+        url: a.image_url || a.file || a.image || a.url || "",
+      }));
+      setArtworkFiles(artworksWithUrl);
+    }
+  }, [exhibitData, mode]);
+
+  const artworkFileObjects: Artwork[] = artworkFiles.map((a) => ({
+    id: a.id.toString(),
+    artworkImage: a.url,
+    image_url: a.url, // alias if ExhibitSlots uses it
+    title: "Untitled",
+    artistName: currentUser?.first_name + " " + (currentUser?.last_name || ""),
+    profile_picture: currentUser?.profile_picture || "",
+    artist_id: currentUser?.id?.toString() || "",
+    artistId: currentUser?.id?.toString() || "",
+    artist: currentUser?.first_name || "Unknown",
+    description: "",
+    category: "",
+    medium: "",
+    size: "",
+    status: "Draft",
+    art_status: "Draft",
+    price: 0,
+    visibility: "Public",
+    created_at: new Date().toISOString(),
+    likes_count: 0,
+    likesCount: 0,
+    artistImage: currentUser?.profile_picture || "",
+    style: "",
+    datePosted: new Date().toLocaleDateString("en-US"),
+    isShared: false,
+    default_paypal_email: "",
+  }));
+
+  // Put exhibit artworks first so they never get lost when `artworks` refetches
+  const mergedArtworks: Artwork[] = [...artworkFileObjects, ...artworks];
+
+  // Deduplicate
+  const uniqueMergedArtworks: Artwork[] = mergedArtworks.filter(
+    (a, index, self) => index === self.findIndex((b) => b.id === a.id)
+  );
 
   // --- Redistribute slots if environment or collaborators change ---
   useEffect(() => {
@@ -254,9 +300,10 @@ const EditExhibit = () => {
                   <ExhibitSlots
                     selectedEnvironment={selectedEnvironment}
                     environments={environments}
+                    exhibitArtworks={exhibitData.artworks}
                     slotOwnerMap={slotOwnerMap}
                     slotArtworkMap={slotArtworkMap}
-                    artworks={artworks}
+                    artworks={uniqueMergedArtworks}
                     exhibitType={exhibitType}
                     selectedSlots={selectedSlots}
                     handleSlotSelect={(id) => {
@@ -339,7 +386,6 @@ const EditExhibit = () => {
           {selectedEnvironment && !isReadOnly && (
             <ArtworkSelector
               artworks={artworks}
-              artworkFiles={artworkFiles}
               selectedArtworks={selectedArtworks}
               handleArtworkSelect={(artworkId: string) => {
                 const currentUserIdForSelection =
