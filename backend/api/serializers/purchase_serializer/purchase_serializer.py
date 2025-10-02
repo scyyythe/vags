@@ -3,6 +3,7 @@ from api.models.purchase_model.order import PurchasedArtwork, ShippingSnapshot
 from api.models.artwork_model.artwork import Art
 from api.models.user_model.users import User
 from api.models.interaction_model.notification import Notification
+from api.models.transaction_model.transaction import Transaction
 from datetime import datetime
 from bson import ObjectId
 
@@ -22,7 +23,6 @@ class PurchaseArtworkSerializer(serializers.Serializer):
     quantity = serializers.IntegerField(default=1)
     shipping_address = ShippingSnapshotSerializer()
 
-      
     def create(self, validated_data):
         request = self.context["request"]
         try:
@@ -44,6 +44,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
 
         total_price = artwork.price * quantity
 
+        # Create purchase record
         purchase = PurchasedArtwork.objects.create(
             buyer=mongo_user,
             artwork=artwork,
@@ -55,7 +56,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             status="Paid",
         )
 
- 
+        # Update artwork quantity/status
         if artwork.edition == "Open Edition" and artwork.quantity is not None:
             artwork.quantity -= quantity
             if artwork.quantity == 0:
@@ -64,10 +65,11 @@ class PurchaseArtworkSerializer(serializers.Serializer):
                 artwork.art_status = "To Receive"
         else:
             artwork.art_status = "To Receive"
-
         artwork.save()
 
-        # Notifications
+        now = datetime.now()
+
+        # Create notifications
         Notification.objects.create(
             user=artwork.artist,
             actor=mongo_user,
@@ -76,7 +78,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             action="purchased your artwork",
             target=artwork.title,
             icon="purchase",
-            created_at=datetime.now(),
+            created_at=now,
             link=f"/artwork/{artwork.id}/"
         )
 
@@ -88,8 +90,23 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             action="purchased an artwork",
             target=artwork.title,
             icon="purchase",
-            created_at=datetime.now(),
+            created_at=now,
             link=f"/viewproduct/{purchase.id}/"
         )
+
+        # Insert Transaction record
+        Transaction(
+            sender=mongo_user,
+            receiver=artwork.artist,
+            art=artwork,
+            transaction_type="Purchase",
+            amount=total_price,
+            currency="PHP",
+            payment_method=validated_data["payment_method"],
+            payment_status="Completed" if validated_data.get("is_paid", False) else "Pending",
+            transaction_id=str(ObjectId()),  # generate unique id
+            extra_data={"purchase_id": str(purchase.id)},
+            timestamp=now
+        ).save()
 
         return purchase
