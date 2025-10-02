@@ -29,6 +29,7 @@ interface ExhibitFormFieldsProps {
   onRemoveCollaborator: (artist: User) => void;
   getCollaboratorSubmissionStatus: (id: string) => SubmissionStatus;
   currentCollaborator: User | null;
+  exhibitData?: any;
 }
 
 const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
@@ -43,6 +44,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
   startDate,
   setStartDate,
   endDate,
+  exhibitData,
   setEndDate,
   description,
   setDescription,
@@ -54,6 +56,9 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
   getCollaboratorSubmissionStatus,
   currentCollaborator,
 }) => {
+  const isEditMode = !!exhibitData;
+  const isSoloOriginal = exhibitData?.isSolo ?? false;
+
   return (
     <div className="space-y-6">
       <div>
@@ -77,13 +82,27 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
           <ToggleGroup
             type="single"
             value={exhibitType}
-            onValueChange={handleExhibitTypeChange}
+            onValueChange={(value) => {
+              // Prevent switching if in edit mode:
+              if (isEditMode && isSoloOriginal && value === "collab") return;
+              if (isEditMode && !isSoloOriginal && value === "solo") return;
+
+              handleExhibitTypeChange(value);
+            }}
             className="mt-1.5 gap-9"
           >
-            <ToggleGroupItem value="solo" className="w-full text-[10px] border rounded-md h-8">
+            <ToggleGroupItem
+              value="solo"
+              className="w-full text-[10px] border rounded-md h-8"
+              disabled={isEditMode && !isSoloOriginal}
+            >
               Solo
             </ToggleGroupItem>
-            <ToggleGroupItem value="collab" className="w-full text-[10px] border rounded-md h-8">
+            <ToggleGroupItem
+              value="collab"
+              className="w-full text-[10px] border rounded-md h-8"
+              disabled={isEditMode && isSoloOriginal}
+            >
               Collaborative
             </ToggleGroupItem>
           </ToggleGroup>

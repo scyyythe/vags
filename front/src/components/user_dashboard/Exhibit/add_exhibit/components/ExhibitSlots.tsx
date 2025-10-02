@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Artist } from "../components/types";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
@@ -21,6 +21,7 @@ interface ExhibitSlotsProps {
   currentUser: User;
   colorNames: string[];
   slotColorSchemes: string[];
+  mode?: "edit" | "create";
 }
 
 const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
@@ -41,6 +42,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
   currentUser,
   colorNames,
   slotColorSchemes,
+  mode,
 }) => {
   if (!selectedEnvironment) return null;
 
@@ -92,8 +94,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
         {availableSlots.map((slotId) => {
           const assignedArtworkId = slotArtworkMap[slotId];
           const assignedArtwork = assignedArtworkId
-            ? exhibitArtworks?.find((a) => a.id === String(assignedArtworkId)) ||
-              artworks.find((a) => a.id === String(assignedArtworkId))
+            ? artworks.find((artwork) => String(artwork.id) === String(assignedArtworkId))
             : null;
 
           const slotColor = getSlotColor(slotId) || "border-gray-200";
@@ -125,7 +126,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
                     alt={`Artwork ${assignedArtworkId}`}
                     className="w-full h-full object-cover"
                   />
-                  {userCanInteract && (
+                  {(mode === "edit" || mode === "create") && userCanInteract && (
                     <div
                       className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity"
                       onClick={(e) => {
