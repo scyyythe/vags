@@ -111,7 +111,9 @@ class ExhibitSerializer(serializers.Serializer):
 
         if "artworks" in validated_data:
             artworks_ids = validated_data.pop("artworks")
-            instance.artworks = [Art.objects.get(id=aid) for aid in artworks_ids]
+   
+            instance.artworks.clear() 
+            instance.artworks.extend([Art.objects.get(id=aid) for aid in artworks_ids])
 
         if "viewed_by" in validated_data:
             viewed_by_ids = validated_data.pop("viewed_by")
@@ -123,6 +125,7 @@ class ExhibitSerializer(serializers.Serializer):
         instance.updated_at = datetime.utcnow()
         instance.save()
         return instance
+
 
     def to_representation(self, instance):
         return {
