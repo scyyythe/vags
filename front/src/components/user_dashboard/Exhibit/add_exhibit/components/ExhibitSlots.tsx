@@ -9,6 +9,7 @@ interface ExhibitSlotsProps {
   slotOwnerMap: Record<number, string>;
   slotArtworkMap: Record<number, string>;
   artworks: Artwork[];
+  exhibitArtworks?: Artwork[];
   exhibitType: string;
   selectedSlots: number[];
   handleSlotSelect: (slotId: number) => void;
@@ -28,6 +29,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
   slotOwnerMap,
   slotArtworkMap,
   artworks,
+  exhibitArtworks,
   exhibitType,
   selectedSlots,
   handleSlotSelect,
@@ -90,8 +92,10 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
         {availableSlots.map((slotId) => {
           const assignedArtworkId = slotArtworkMap[slotId];
           const assignedArtwork = assignedArtworkId
-            ? artworks.find((artwork) => artwork.id === String(assignedArtworkId))
+            ? exhibitArtworks?.find((a) => a.id === String(assignedArtworkId)) ||
+              artworks.find((a) => a.id === String(assignedArtworkId))
             : null;
+
           const slotColor = getSlotColor(slotId) || "border-gray-200";
           const slotOwner = slotOwnerMap?.[slotId] || currentUser.id;
           const userCanInteract = canInteractWithSlot(slotId);
