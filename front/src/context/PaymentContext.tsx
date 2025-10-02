@@ -6,6 +6,8 @@ import { useClaimArtwork } from "@/hooks/auction/useClaimArtwork";
 import { getLoggedInUserId } from "@/auth/decode";
 import { useParams } from "react-router-dom";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
+import { v4 as uuidv4 } from "uuid";
+
 interface PaymentContextProps {
   selectedPaymentMethod: PaymentMethod | null;
   shippingInfo: ShippingInfo;
@@ -81,13 +83,6 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return;
     }
 
-    console.log("Confirm Purchase Called");
-    console.log("artId:", artId);
-    console.log("amount:", amount);
-    console.log("receiverId:", receiverId);
-    console.log("transactionId:", transactionId);
-    console.log("selectedPaymentMethod:", state.selectedPaymentMethod);
-
     if (!state.selectedPaymentMethod) {
       toast.error("Payment method required", { closeButton: true });
       return;
@@ -117,12 +112,13 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         artId,
         amount,
         receiverId,
-        transactionId,
+        transactionId: uuidv4(),
         senderId: getLoggedInUserId(),
         paymentMethod: mappedMethod,
       });
 
       toast.success("Payment Successful!", { closeButton: true });
+      navigate("/auctions");
     } catch (err) {
       toast.error("Failed to complete purchase", { closeButton: true });
       console.error(err);

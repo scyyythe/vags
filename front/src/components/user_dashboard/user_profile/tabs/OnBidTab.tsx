@@ -38,20 +38,22 @@ const OnBidTab = () => {
   );
 
   const participatedAuctionsWithFlags = useMemo(() => {
-    return participatedAuctions.map((auction) => {
-      const isHighestBidder = auction.highest_bid?.user?.id === loggedInUserId;
-      const joinedByCurrentUser = auction.bid_history?.some((bid) => bid.user?.id === loggedInUserId) ?? false;
-      const isPaid = auction.status === "sold" && isHighestBidder;
-      const isLost = !isHighestBidder && (auction.status === "sold" || auction.status === "closed");
+    return participatedAuctions
+      .filter((auction) => auction.artwork.art_status !== "Claimed") // remove claimed artworks
+      .map((auction) => {
+        const isHighestBidder = auction.highest_bid?.user?.id === loggedInUserId;
+        const joinedByCurrentUser = auction.bid_history?.some((bid) => bid.user?.id === loggedInUserId) ?? false;
+        const isPaid = auction.status === "sold" && isHighestBidder;
+        const isLost = !isHighestBidder && (auction.status === "sold" || auction.status === "closed");
 
-      return {
-        ...auction,
-        isHighestBidder,
-        joinedByCurrentUser,
-        isPaid,
-        isLost,
-      };
-    });
+        return {
+          ...auction,
+          isHighestBidder,
+          joinedByCurrentUser,
+          isPaid,
+          isLost,
+        };
+      });
   }, [participatedAuctions, loggedInUserId]);
 
   const auctionsToDisplay: ExtendedAuction[] =

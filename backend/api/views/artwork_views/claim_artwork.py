@@ -6,6 +6,23 @@ from api.models.artwork_model.artwork import Art
 from api.models.transaction_model.transaction import Transaction
 from api.models.interaction_model.notification import Notification
 from api.models.user_model.users import User
+from django.utils import timezone
+
+def get_relative_time(dt):
+    now = timezone.now()
+    diff = now - dt
+    seconds = diff.total_seconds()
+
+    if seconds < 60:
+        return "Just now"
+    elif seconds < 3600:
+        mins = int(seconds // 60)
+        return f"{mins} min{'s' if mins > 1 else ''} ago"
+    elif seconds < 86400:
+        hours = int(seconds // 3600)
+        return f"{hours} hour{'s' if hours > 1 else ''} ago"
+    else:
+        return dt.strftime("%b %d, %Y, %I:%M %p")
 
 class ClaimArtworkPaymentView(APIView):
 
@@ -77,37 +94,38 @@ class ClaimArtworkPaymentView(APIView):
                 timestamp=timezone.now()
             )
             transaction.save()
-
+            now = timezone.now()
+                  
             Notification.objects.create(
-                user=sender,
-                actor=receiver,
-                message=f"You received ₱{amount} because '{art.title}' was claimed",
+                user=receiver,
+                actor=sender,
+                message=f"You received ₱{amount} from {sender.first_name} because '{art.title}' was claimed",
                 art=art,
-                name=f"{sender.first_name} {sender.last_name}",
+                name=f"{receiver.first_name} {receiver.last_name}",
                 action="auction payment received",
                 target=art.title,
                 icon="🏆",
                 amount=str(amount),
                 money=True,
                 link=f"/artwork/{art.id}",
-                created_at=timezone.now()
+                created_at=now,
             )
 
+           
             Notification.objects.create(
-                user=receiver,
-                actor=sender,
+                user=sender,
+                actor=receiver,
                 message=f"You successfully claimed '{art.title}' and paid ₱{amount}",
                 art=art,
-                name=f"{receiver.first_name} {receiver.last_name}",
+                name=f"{sender.first_name} {sender.last_name}",
                 action="auction claimed",
                 target=art.title,
                 icon="🎉",
                 amount=str(amount),
                 money=True,
                 link=f"/artwork/{art.id}",
-                created_at=timezone.now()
+                created_at=now,
             )
-
             return Response({"message": "Artwork claimed, payment completed, and notifications sent."}, status=status.HTTP_201_CREATED)
 
         except Art.DoesNotExist:
