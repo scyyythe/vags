@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,9 +19,13 @@ import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted"
 import useToggleArtworkStatus from "@/hooks/purchase/useMarkArtworkAsSold";
 import { useLocation } from "react-router-dom";
 import { useArtworkReviews } from "@/hooks/review/useArtworkReviews";
+import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
+import useArtworkReportStatus from "@/hooks/mutate/report/useArtworkReportStatus";
 const ProductViewingContent = () => {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, error } = useSellArtworkDetail(id);
+  const submitReportMutation = useSubmitReport();
+  const { data: reportStatus, isLoading: reportLoading, error: reportError } = useArtworkReportStatus(id || "");
 
   const { reviews, loading: reviewsLoading, error: reviewsError } = useArtworkReviews(id || "");
 
@@ -50,6 +54,12 @@ const ProductViewingContent = () => {
     toggleWishlist(id);
     toast(likedItems.has(id) ? "Removed from wishlist" : "Added to wishlist");
   };
+
+  useEffect(() => {
+    if (reportStatus) {
+      setIsReported(reportStatus.reported);
+    }
+  }, [reportStatus]);
 
   // Mock reviews data
   const mockReviews = [
@@ -133,6 +143,18 @@ const ProductViewingContent = () => {
       reviewCounts[rating]++;
     }
   });
+  const formatPrice = (price: number) => {
+    if (price >= 1_000_000) {
+      return `₱${(price / 1_000_000).toFixed(1)}M`;
+    } else if (price >= 10_000) {
+      return `₱${(price / 1_000).toFixed(1)}k`;
+    } else {
+      return `₱${price.toLocaleString()}`;
+    }
+  };
+  const capitalizeWords = (text: string) => {
+    return text.replace(/\b\w/g, (char) => char.toUpperCase());
+  };
 
   const renderRatingBar = (star: number, count: number, total: number) => {
     const percentage = total > 0 ? (count / total) * 100 : 0;
@@ -331,12 +353,24 @@ const ProductViewingContent = () => {
                     isOpen={menuOpen}
                     isReported={isReported}
                     onReport={(data) => {
-                      console.log("Report submitted:", data);
-                      toast("Report submitted. Thank you!");
-                      setIsReported(true);
-                      setMenuOpen(false);
+                      if (!id) return;
+
+                      submitReportMutation.mutate(
+                        {
+                          art_id: id,
+                          category: data.category,
+                          option: data.option,
+                          description: data.description,
+                          additionalInfo: data.additionalInfo,
+                        },
+                        {
+                          onSuccess: () => {
+                            setIsReported(true);
+                            setMenuOpen(false);
+                          },
+                        }
+                      );
                     }}
-                    className="-left-1 top-7"
                   />
                 )}
               </div>
@@ -345,17 +379,10 @@ const ProductViewingContent = () => {
             {/* Price */}
             <div className="flex items-center space-x-4">
               {product.price > 0 && (
-                <div className="text-2xl font-bold text-gray-900">
-                  ₱ {product.price >= 10000 ? `${(product.price / 1000).toFixed(1)}k` : product.price.toLocaleString()}
-                </div>
+                <div className="text-2xl font-bold text-gray-900">{formatPrice(product.price)}</div>
               )}
               {product.discounted_price > 0 && product.discounted_price !== product.price && (
-                <div className="text-lg text-gray-400 line-through">
-                  ₱{" "}
-                  {product.discounted_price >= 10000
-                    ? `${(product.discounted_price / 1000).toFixed(1)}k`
-                    : product.discounted_price.toLocaleString()}
-                </div>
+                <div className="text-lg text-gray-400 line-through">{formatPrice(product.discounted_price)}</div>
               )}
             </div>
 
@@ -363,7 +390,7 @@ const ProductViewingContent = () => {
             <div className="grid grid-cols-4 gap-4 text-center border py-[18px] rounded-md">
               <div>
                 <h3 className="text-[10px] font-medium text-gray-500 mb-1">Artwork Style</h3>
-                <p className="text-[10px] text-gray-900">{product.artwork_style}</p>
+                <p className="text-[10px] text-gray-900">{capitalizeWords(product.artwork_style)}</p>
               </div>
 
               <div className="border-l border-gray-300 pl-4">

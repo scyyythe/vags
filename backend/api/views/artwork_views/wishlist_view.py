@@ -1,4 +1,4 @@
-
+from mongoengine.errors import DoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -56,15 +56,25 @@ class WishlistIDListView(APIView):
 
         return Response(serializer.data)
 
-
 class MyWishlistView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
         wishlist_items = Wishlist.objects(user=user)
-        art_ids = [item.art.id for item in wishlist_items if item.art is not None]
-        arts = Art.objects(id__in=art_ids)
+        valid_art_ids = []
+
+        for item in wishlist_items:
+            try:
+                
+                if item.art is not None:
+                    valid_art_ids.append(item.art.id)
+            except DoesNotExist:
+           
+                item.delete()
+                print(f"Removed broken wishlist item {item.id} for user {user.id}")
+
+        arts = Art.objects(id__in=valid_art_ids)
         serializer = ArtCardSerializer(arts, many=True)
         return Response(serializer.data)
 
@@ -74,5 +84,7 @@ class MyWishlistView(APIView):
         if not art_id:
             return Response({"detail": "art_id is required"}, status=400)
 
-        Wishlist.objects(user=user, art=art_id).delete()
-        return Response({"detail": "Removed from wishlist"})
+        deleted_count = Wishlist.objects(user=user, art=art_id).delete()
+        if deleted_count:
+            return Response({"detail": "Removed from wishlist"})
+        return Response({"detail": "Wishlist item not found"}, status=404)

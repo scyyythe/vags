@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { NewAccountState, PaymentAccount } from "../accounts_setup/types/payment";
 import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
+import { useStripeConnect } from "@/hooks/tips/useStripeConnect";
 interface PaymentAccountFormProps {
   newAccount: NewAccountState;
   setNewAccount: React.Dispatch<React.SetStateAction<NewAccountState>>;
@@ -15,6 +16,7 @@ export const PaymentAccountForm: React.FC<PaymentAccountFormProps> = ({
   setNewAccount,
   editingAccount,
 }) => {
+  const { connectStripe } = useStripeConnect();
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -308,23 +310,23 @@ export const PaymentAccountForm: React.FC<PaymentAccountFormProps> = ({
       ) : (
         <div className="space-y-2">
           <p className="text-[11px] font-medium">Account Information</p>
-          <Input
-            id="accountInfo"
-            value={newAccount.accountInfo}
-            onChange={(e) => setNewAccount((prev) => ({ ...prev, accountInfo: e.target.value }))}
-            placeholder="Account details"
-            disabled={newAccount.type === "stripe"}
-            style={{
-              fontSize: "10px",
-              borderRadius: "9999px",
-              outline: "none",
-              boxShadow: "none",
-            }}
-          />
           {newAccount.type === "stripe" && (
-            <p className="text-[10px] text-muted-foreground">
-              Stripe connection will be handled automatically via OAuth
-            </p>
+            <div className="space-y-2">
+              {newAccount.stripeAccountId ? (
+                <p className="text-[10px] text-green-600">✅ Connected (ID: {newAccount.stripeAccountId})</p>
+              ) : (
+                <button
+                  type="button"
+                  className="px-3 py-1 text-[10px] rounded-full bg-blue-600 text-white"
+                  onClick={connectStripe}
+                >
+                  Connect with Stripe
+                </button>
+              )}
+              <p className="text-[10px] text-muted-foreground">
+                Stripe connection will be handled automatically via OAuth
+              </p>
+            </div>
           )}
         </div>
       )}

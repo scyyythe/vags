@@ -16,13 +16,35 @@ import { StripePayment } from "@/components/user_dashboard/Bidding/highest_bid/p
 import { PayPalPayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/PayPal";
 import { toast } from "sonner";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
+import ArtworkSummarySkeleton from "@/components/skeletons/ArtworkSummarySkeleton";
+import BidDetailsSkeleton from "@/components/skeletons/BidDetailsSkeleton";
 const BidWinnerPageContent = () => {
   const { selectedPaymentMethod } = usePayment();
   const [showModal, setShowModal] = useState(false);
   const { id: auctionId } = useParams<{ id: string }>();
   const { data: auctionData, isLoading, error } = useFetchBiddingArtworkById(auctionId || "");
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="min-h-screen container px-10 max-w-7xl space-y-8">
+        <div className="bg-white rounded-xl overflow-hidden">
+          <ArtworkSummarySkeleton />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-1">
+            <div className="bg-white rounded-xl border overflow-hidden">
+              <BidDetailsSkeleton />
+            </div>
+          </div>
+          <div className="md:col-span-2 space-y-6">
+            <div className="bg-white rounded-xl border overflow-hidden h-48 animate-pulse" />
+            <div className="bg-white rounded-xl overflow-hidden h-48 animate-pulse" />
+          </div>
+        </div>
+      </div>
+    );
+
   if (error) return <div className="text-red-600">Error: {error.message}</div>;
   if (!auctionData) return <div>No auction found.</div>;
 

@@ -17,12 +17,20 @@ import ExhibitCardDetailSkeleton from "@/components/skeletons/ExhibitCardDetail"
 import Gallery3D from "@/components/gallery/Gallery3D";
 import { useExhibitLike } from "@/hooks/interactions/exhibit_like/useExhibitLike";
 import { useExhibitCards } from "@/hooks/exhibit/useCardExihibit";
+import { getLoggedInUserId } from "@/auth/decode";
+import Menu from "@/components/user_dashboard/own_profile/menu/exhibit_card/Menu";
+import { useDeleteExhibit } from "@/hooks/exhibit/useDeleteExhibit";
+import useExhibitReport from "@/hooks/mutate/report/useExhibitReport";
+import useExhibitReportStatus from "@/hooks/mutate/report/useExhibitReportStatus";
+import { useToggleHideExhibit } from "@/hooks/exhibit/useToggleHideExhibit";
+import { useToggleVisibilityExhibit } from "@/hooks/exhibit/useToggleVisibilityExhibit";
 const ExhibitViewing = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data: exhibit, isLoading } = useExhibitCardDetail(id);
   const { data: exhibits = [] } = useExhibitCards();
-
+  const loggedInUserId = getLoggedInUserId();
+  const isOwner = loggedInUserId === exhibit?.ownerId;
   const isExhibitEnded = exhibit?.endDate ? new Date() > new Date(exhibit.endDate) : false;
 
   const { isLiked, likeCount, toggleLike } = useExhibitLike(
@@ -30,7 +38,10 @@ const ExhibitViewing = () => {
     exhibit?.user_has_liked_exhibit ?? false,
     exhibit?.exhibit_likes_count ?? 0
   );
-
+  const { mutate: deleteExhibit } = useDeleteExhibit();
+  const { mutate: submitExhibitReport } = useExhibitReport();
+  const { mutate: toggleHideExhibit } = useToggleHideExhibit();
+  const { mutate: toggleVisibilityExhibit } = useToggleVisibilityExhibit();
   // const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
   // const isLiked = likedArtworks[id] || false;
   const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id);
@@ -248,197 +259,6 @@ const ExhibitViewing = () => {
     </div>
   );
 
-  // Mock data for exhibits
-  const mockExhibits = [
-    {
-      id: "1",
-      title: "Code and Canvas",
-      description:
-        "Blending technology and creativity, the modern balance between digital algorithms — how AI can enhance and digital creativity.",
-      image:
-        "https://images.unsplash.com/photo-1533158307587-828f0a76ef46?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      category: "Digital Art",
-      likes: 125,
-      views: 1.5,
-      isSolo: true,
-      isShared: false,
-    },
-    {
-      id: "2",
-      title: "Beyond the Frame",
-      description:
-        "A collection of modern works that defy traditions, challenge norms, and break outside of the frame. Three pieces.",
-      image:
-        "https://images.unsplash.com/photo-1580136579312-94651dfd596d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      category: "Contemporary Art",
-      likes: 118,
-      views: 1.4,
-      isSolo: false,
-      isShared: false,
-      collaborators: [
-        {
-          id: "1",
-          name: "Mark Johnson",
-          avatar:
-            "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        },
-        {
-          id: "2",
-          name: "Sara Williams",
-          avatar:
-            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        },
-        {
-          id: "3",
-          name: "John Parker",
-          avatar:
-            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        },
-      ],
-    },
-    {
-      id: "3",
-      title: "Through the Lens of Now",
-      description:
-        "A visual journey of fleeting moments, raw emotions, and untold stories. These photographs freeze time and light.",
-      image:
-        "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      category: "Photography",
-      likes: 94,
-      views: 1.3,
-      isSolo: true,
-      isShared: false,
-    },
-    {
-      id: "4",
-      title: "Words in Motion",
-      description:
-        "This segment celebrates the power of the written word — poems, short stories, and excerpts that provoke thought.",
-      image:
-        "https://images.unsplash.com/photo-1594122230689-45899d9e6f69?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      category: "Literature",
-      likes: 85,
-      views: 1.1,
-      isSolo: false,
-      isShared: false,
-      collaborators: [
-        {
-          id: "4",
-          name: "Emily Chen",
-          avatar:
-            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        },
-        {
-          id: "5",
-          name: "David Lee",
-          avatar:
-            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        },
-        {
-          id: "6",
-          name: "Alice Wong",
-          avatar:
-            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        },
-      ],
-    },
-    {
-      id: "5",
-      title: "Urban Expressions",
-      description:
-        "Street art and urban culture collide in this vibrant collection of works from city artists around the world.",
-      image: "https://images.unsplash.com/photo-1551913902-c92207136625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      category: "Street Art",
-      likes: 132,
-      views: 1.7,
-      isSolo: true,
-      isShared: false,
-    },
-    {
-      id: "6",
-      title: "Abstract Realities",
-      description:
-        "Exploring the boundary between perception and reality through abstract forms and experimental techniques.",
-      image: "https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      category: "Abstract Art",
-      likes: 107,
-      views: 1.2,
-      isSolo: false,
-      isShared: false,
-      collaborators: [
-        {
-          id: "7",
-          name: "Thomas White",
-          avatar:
-            "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        },
-        {
-          id: "8",
-          name: "Rebecca Smith",
-          avatar:
-            "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        },
-        {
-          id: "9",
-          name: "Michael Brown",
-          avatar:
-            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        },
-      ],
-    },
-    {
-      id: "7",
-      title: "Cultural Heritage",
-      description: "A celebration of traditional art forms and techniques passed down through generations of artisans.",
-      image: "https://i.pinimg.com/736x/a1/a8/42/a1a842b4254e1c79b2491caa0f5520e1.jpg",
-      category: "Traditional Art",
-      likes: 99,
-      views: 1.0,
-      isSolo: true,
-      isShared: false,
-    },
-    {
-      id: "8",
-      title: "Nature's Canvas",
-      description:
-        "Environmental art that showcases the beauty of natural landscapes and raises awareness about conservation.",
-      image:
-        "https://images.unsplash.com/photo-1518998053901-5348d3961a04?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      category: "Environmental Art",
-      likes: 114,
-      views: 1.3,
-      isSolo: false,
-      isShared: false,
-      collaborators: [
-        {
-          id: "10",
-          name: "Jennifer Kim",
-          avatar:
-            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        },
-        {
-          id: "11",
-          name: "Robert Davis",
-          avatar:
-            "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        },
-        {
-          id: "12",
-          name: "Sophie Miller",
-          avatar:
-            "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        },
-      ],
-    },
-  ];
-
-  // useEffect(() => {
-  //   const found = mockExhibits.find((exhibit) => exhibit.id === id);
-  //   if (found) {
-  //     setExhibit(found);
-  //   }
-  // }, [id]);
-
   if (!exhibit) {
     return <ExhibitCardDetailSkeleton />;
   }
@@ -534,19 +354,47 @@ const ExhibitViewing = () => {
                         <MoreHorizontal size={isMobile ? 14 : 14} />
                       </button>
 
-                      <div className="pt-2">
-                        <ExhibitMenu
-                          exhibitId={exhibit.id}
-                          isOpen={menuOpen}
-                          onHide={handleHide}
-                          onReport={handleReport}
-                          onUndoReport={handleReport}
-                          isReported={isReported}
-                          isShared={exhibit.isShared}
-                          isHidden={isHidden}
-                          className="-left-[10px] top-7"
-                        />
-                      </div>
+                      {menuOpen && (
+                        <>
+                          {isOwner ? (
+                            <Menu
+                              isOpen={menuOpen}
+                              artworkId={exhibit.id}
+                              artworkTitle={exhibit.title}
+                              isShared={exhibit.isShared}
+                              isPublic={true}
+                              onEdit={(id) => {
+                                const searchParams = new URLSearchParams({ mode: "edit" });
+                                navigate(`/edit-exhibit/${id}?${searchParams.toString()}`);
+                              }}
+                              onToggleVisibility={(newVisibility, id) => toggleVisibilityExhibit(id)}
+                              onViewInsights={(id) => console.log("View insights for:", id)}
+                              onDelete={(id) => {
+                                if (confirm("Are you sure you want to delete this exhibit?")) {
+                                  deleteExhibit(id, {
+                                    onSuccess: (data) => {
+                                      toast.success("Exhibit deleted successfully");
+                                    },
+                                  });
+                                }
+                              }}
+                              className="-left-1.5 top-5"
+                            />
+                          ) : (
+                            <ExhibitMenu
+                              exhibitId={exhibit.id}
+                              isOpen={menuOpen}
+                              onHide={handleHide}
+                              onReport={handleReport}
+                              onUndoReport={handleReport}
+                              isReported={isReported}
+                              isShared={exhibit.isShared}
+                              isHidden={isHidden}
+                              className="-left-[10px] top-7"
+                            />
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
 

@@ -8,7 +8,7 @@ import SellArtworkModal, { SellArtworkData } from "@/components/user_dashboard/o
 import SellConfirmationModal from "@/components/user_dashboard/own_profile/sell_artwork/SellConfirmationModal";
 import useDeleteArtwork from "@/hooks/mutate/visibility/trash/useDeleteArtwork";
 import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork";
-import useUpdateArtworkStatus from "@/hooks/artworks/sell/useUpdateArtworkStatus";
+import useUpdateArtwork from "@/hooks/artworks/sell/useUpdateArtwork";
 interface ArtCardMenuProps {
   isOpen: boolean;
   artworkId: string;
@@ -46,7 +46,8 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const deleteArtwork = useDeleteArtwork();
   const { mutate: archiveArtwork } = useArchivedArtwork();
-  const { mutate: updateArtworkStatus } = useUpdateArtworkStatus();
+
+  const { updateArtwork, isUpdating } = useUpdateArtwork();
 
   useEffect(() => {
     const shouldHideScroll = showAuctionPopup || showDeletePopup;
@@ -103,21 +104,25 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     setShowSellConfirmation(true);
   };
 
-  const handleConfirmSell = () => {
+  const handleConfirmSell = async () => {
     if (!sellArtworkData) return;
 
-    updateArtworkStatus({
-      artworkId,
-      price: sellArtworkData.price,
-      quantity: sellArtworkData.quantity,
-      edition: sellArtworkData.edition,
-      additionalImages: sellArtworkData.additionalImages,
-    });
+    try {
+      await updateArtwork(artworkId, {
+        price: sellArtworkData.price,
+        quantity: sellArtworkData.quantity,
+        edition: sellArtworkData.edition,
+        additionalImages: sellArtworkData.additionalImages,
+        year_created: sellArtworkData.yearCreated,
+      });
 
-    setShowSellConfirmation(false);
-    setSellArtworkData(null);
-    onSell();
+      toast.success("Artwork listed for sale successfully");
+      setShowSellConfirmation(false);
+      setSellArtworkData(null);
+      onSell();
+    } catch (err) {}
   };
+
   const handleCancelSell = () => {
     setShowSellConfirmation(false);
     setSellArtworkData(null);

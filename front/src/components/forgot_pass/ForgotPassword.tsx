@@ -182,17 +182,31 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
       }
     }
   };
+  const isStrongPassword = (pwd: string) => {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(pwd);
+    const hasLowerCase = /[a-z]/.test(pwd);
+    const hasNumber = /\d/.test(pwd);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
+
+    return pwd.length >= minLength && hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
+  };
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters");
-      toast.error("Password too short", {
-        description: "Your password must be at least 8 characters long.",
+
+    if (!isStrongPassword(password)) {
+      setError(
+        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character"
+      );
+      toast.error("Weak password", {
+        description:
+          "Your password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
         closeButton: true,
       });
       return;
     }
+
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       toast.error("Passwords mismatch", {

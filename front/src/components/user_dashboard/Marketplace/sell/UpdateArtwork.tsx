@@ -50,6 +50,93 @@ const UpdateArtwork = () => {
   const [height, setHeight] = useState(artworkData?.height || "");
   const [width, setWidth] = useState(artworkData?.width || "");
   const [isUploading, setIsUploading] = useState(false);
+  const validateForm = (): boolean => {
+    const titleRegex = /^[A-Z][A-Za-z0-9\s.,'-]{2,99}$/; // Proper title
+    const mediumRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/; // Proper medium names
+    const currentYear = new Date().getFullYear();
+
+    // Title
+    if (!artworkTitle.trim() || !titleRegex.test(artworkTitle.trim())) {
+      toast.error("Title must start with a capital letter and be 3-100 characters.");
+      return false;
+    }
+
+    // Year
+    const year = Number(yearCreated);
+    if (!yearCreated || isNaN(year) || year > currentYear || year < 1000) {
+      toast.error(`Year must be a valid number not in the future (≤ ${currentYear}).`);
+      return false;
+    }
+
+    // Style
+    if (!artworkStyle) {
+      toast.error("Artwork style is required.");
+      return false;
+    }
+
+    // Medium
+    if (!medium.trim() || !mediumRegex.test(medium.trim())) {
+      toast.error("Medium must be proper name(s), start with a capital letter, letters only.");
+      return false;
+    }
+
+    // Dimensions
+    const h = Number(height);
+    const w = Number(width);
+    if ((height && (isNaN(h) || h <= 0 || h > 1000)) || (width && (isNaN(w) || w <= 0 || w > 1000))) {
+      toast.error("Dimensions must be positive numbers ≤ 1000 cm.");
+      return false;
+    }
+
+    // Price
+    const p = Number(price);
+    if (!price || isNaN(p) || p <= 0 || price.length > 10) {
+      toast.error("Price must be a valid number up to 10 digits.");
+      return false;
+    }
+
+    // Quantity
+    if (edition !== "Original (1 of 1)") {
+      const q = Number(quantity);
+      if (!quantity || isNaN(q) || q <= 0 || q > 1000) {
+        toast.error("Quantity must be a positive number ≤ 1000.");
+        return false;
+      }
+    }
+
+    // Description
+    if (description && description.length > 500) {
+      toast.error("Description must be less than 500 characters.");
+      return false;
+    }
+
+    // Main image
+    if (!selectedFile && !previewUrl) {
+      toast.error("Please upload a main artwork image.");
+      return false;
+    }
+    if (selectedFile && selectedFile.size > 20 * 1024 * 1024) {
+      toast.error("Main image must be ≤ 20MB.");
+      return false;
+    }
+
+    // Additional images
+    for (let i = 0; i < additionalImages.length; i++) {
+      const file = additionalImages[i];
+      if (file instanceof File) {
+        if (!file.type.startsWith("image/")) {
+          toast.error(`Additional image ${i + 1} must be an image file.`);
+          return false;
+        }
+        if (file.size > 20 * 1024 * 1024) {
+          toast.error(`Additional image ${i + 1} must be ≤ 20MB.`);
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
 
   useEffect(() => {
     if (edition === "Original (1 of 1)") setQuantity("1");
@@ -74,6 +161,7 @@ const UpdateArtwork = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm()) return;
     if (!artworkTitle.trim()) return toast.error("Please enter an artwork title");
     if (!price) return toast.error("Please enter a price");
 

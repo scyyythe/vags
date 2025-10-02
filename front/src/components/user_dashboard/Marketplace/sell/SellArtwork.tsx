@@ -101,7 +101,9 @@ const SellArtwork = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    if (!validateForm()) {
+      return;
+    }
     if (!artworkTitle.trim()) {
       toast.error("Please enter an artwork title", {
         closeButton: true,
@@ -128,20 +130,20 @@ const SellArtwork = () => {
 
     try {
       // Simulate API call
-     await sellArtwork({
-    title: artworkTitle,
-    year_created: yearCreated,
-    style: artworkStyle,
-    medium,
-    height,
-    width,
-    description,
-    price,
-    edition,
-    quantity,
-    mainImage: selectedFile,
-    additionalImages,
-  });
+      await sellArtwork({
+        title: artworkTitle,
+        year_created: yearCreated,
+        style: artworkStyle,
+        medium,
+        height,
+        width,
+        description,
+        price,
+        edition,
+        quantity,
+        mainImage: selectedFile,
+        additionalImages,
+      });
       toast.success("Artwork listed successfully!", {
         id: "upload",
         closeButton: true,
@@ -156,18 +158,114 @@ const SellArtwork = () => {
       setIsUploading(false);
     }
   };
+  const validateForm = (): boolean => {
+    const titleRegex = /^[A-Z][A-Za-z0-9\s.,'-]{2,99}$/;
+    const mediumRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/;
+
+    const currentYear = new Date().getFullYear();
+
+    // Title
+    if (!artworkTitle.trim() || !titleRegex.test(artworkTitle.trim())) {
+      toast.error("Title must start with a capital letter and be 3-100 characters.");
+      return false;
+    }
+
+    // Year
+    const year = Number(yearCreated);
+    if (!yearCreated || isNaN(year) || year > currentYear || year < 1000) {
+      toast.error(`Year must be a valid number.`);
+      return false;
+    }
+
+    // Style
+    if (!artworkStyle) {
+      toast.error("Artwork style is required.");
+      return false;
+    }
+
+    // Medium
+    if (!medium.trim() || !mediumRegex.test(medium.trim())) {
+      toast.error("Medium must contain letters only, 2-30 characters.");
+      return false;
+    }
+
+    // Dimensions
+    const h = Number(height);
+    const w = Number(width);
+    if ((height && (isNaN(h) || h <= 0 || h > 1000)) || (width && (isNaN(w) || w <= 0 || w > 1000))) {
+      toast.error("Dimensions must be positive numbers ≤ 1000 cm.");
+      return false;
+    }
+
+    // Price
+    const p = Number(price);
+    if (!price || isNaN(p) || p <= 0 || price.length > 10) {
+      toast.error("Price must be a valid number up to 10 digits.");
+      return false;
+    }
+
+    // Quantity
+    if (edition !== "Original (1 of 1)") {
+      const q = Number(quantity);
+      if (!quantity || isNaN(q) || q <= 0 || q > 1000) {
+        toast.error("Quantity must be a positive number ≤ 1000.");
+        return false;
+      }
+    }
+
+    // Description
+    if (description && description.length > 500) {
+      toast.error("Description must be less than 500 characters.");
+      return false;
+    }
+
+    // Main image
+    if (!selectedFile) {
+      toast.error("Please upload a main artwork image.");
+      return false;
+    }
+    if (selectedFile.size > 20 * 1024 * 1024) {
+      toast.error("Main image must be ≤ 20MB.");
+      return false;
+    }
+
+    // Additional images
+    for (let i = 0; i < additionalImages.length; i++) {
+      const file = additionalImages[i];
+      if (file) {
+        if (!file.type.startsWith("image/")) {
+          toast.error(`Additional image ${i + 1} must be an image file.`);
+          return false;
+        }
+        if (file.size > 20 * 1024 * 1024) {
+          toast.error(`Additional image ${i + 1} must be ≤ 20MB.`);
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
 
   const artworkStyles = [
-    "Abstract", "Realism", "Impressionism", "Modern", "Contemporary", 
-    "Pop Art", "Surrealism", "Minimalism", "Expressionism", "Cubism"
+    "Abstract",
+    "Realism",
+    "Impressionism",
+    "Modern",
+    "Contemporary",
+    "Pop Art",
+    "Surrealism",
+    "Minimalism",
+    "Expressionism",
+    "Cubism",
   ];
 
-  const isQuantityVisible = edition !== 'Original (1 of 1)';
+  const isQuantityVisible = edition !== "Original (1 of 1)";
 
   const handleEditionChange = (value: string) => {
     setEdition(value);
-    if (value === 'Original (1 of 1)') {
-      setQuantity('1');
+    if (value === "Original (1 of 1)") {
+      setQuantity("1");
     }
   };
 
@@ -209,27 +307,27 @@ const SellArtwork = () => {
                 </div>
               ) : (
                 <div className="text-center">
-                    <div>
-                        <div className="bg-white p-4 rounded-full inline-block">
-                            <img
-                            width="30"
-                            height="30"
-                            src="./pics/icons8-cloud-upload.gif"
-                            alt="external-upload-network-and-cloud-computing-flatart-icons-solid-flatarticons"
-                            />
-                        </div>
+                  <div>
+                    <div className="bg-white p-4 rounded-full inline-block">
+                      <img
+                        width="30"
+                        height="30"
+                        src="./pics/icons8-cloud-upload.gif"
+                        alt="external-upload-network-and-cloud-computing-flatart-icons-solid-flatarticons"
+                      />
                     </div>
-                    <p className="mb-2 text-xs font-medium">Choose a file or drag and drop it here</p>
-                    <label
-                        htmlFor="fileInput"
-                        className="cursor-pointer hover:bg-white inline-block mb-6 border border-gray-300 rounded-[6px] px-2 py-1 text-[11px]"
-                    >
-                        Choose File
-                        <input type="file" id="fileInput" className="hidden" accept="image/*" onChange={handleFileChange} />
-                    </label>
-                    <p className="relative top-10 text-[11px] text-gray-500">
-                        We recommend using high quality .jpg files less than 20MB
-                    </p>
+                  </div>
+                  <p className="mb-2 text-xs font-medium">Choose a file or drag and drop it here</p>
+                  <label
+                    htmlFor="fileInput"
+                    className="cursor-pointer hover:bg-white inline-block mb-6 border border-gray-300 rounded-[6px] px-2 py-1 text-[11px]"
+                  >
+                    Choose File
+                    <input type="file" id="fileInput" className="hidden" accept="image/*" onChange={handleFileChange} />
+                  </label>
+                  <p className="relative top-10 text-[11px] text-gray-500">
+                    We recommend using high quality .jpg files less than 20MB
+                  </p>
                 </div>
               )}
             </div>
@@ -239,8 +337,8 @@ const SellArtwork = () => {
               <h3 className="text-[11px] font-medium text-gray-900 mb-3">Add more pictures (Optional)</h3>
               <div className="grid grid-cols-4 gap-4">
                 {additionalImages.map((image, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className="relative w-full h-24 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200 cursor-pointer overflow-hidden group"
                     onDragOver={handleAdditionalImageDragOver}
                     onDrop={(e) => handleAdditionalImageDrop(index, e)}
@@ -248,10 +346,10 @@ const SellArtwork = () => {
                   >
                     {image ? (
                       <>
-                        <img 
-                          src={URL.createObjectURL(image)} 
-                          alt={`Additional ${index + 1}`} 
-                          className="w-full h-full object-cover rounded-lg" 
+                        <img
+                          src={URL.createObjectURL(image)}
+                          alt={`Additional ${index + 1}`}
+                          className="w-full h-full object-cover rounded-lg"
                         />
                         <div
                           className="absolute inset-0 bg-black bg-opacity-60 text-white text-[11px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
@@ -265,14 +363,19 @@ const SellArtwork = () => {
                       </>
                     ) : (
                       <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
                       </svg>
                     )}
-                    <input 
+                    <input
                       id={`additionalFileInput-${index}`}
-                      type="file" 
-                      className="hidden" 
-                      accept="image/*" 
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
                       onChange={(e) => {
                         const file = e.target.files?.[0] || null;
                         handleAdditionalImageChange(index, file);
@@ -293,154 +396,143 @@ const SellArtwork = () => {
                 {/* Title and Year */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">
-                      Artwork Title
-                    </label>
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">Artwork Title</label>
                     <Input
                       placeholder="Enter artwork title"
                       value={artworkTitle}
                       onChange={(e) => setArtworkTitle(e.target.value)}
                       className="h-9"
-                      style={{fontSize:"10px"}}
+                      style={{ fontSize: "10px" }}
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">
-                      Year Created
-                    </label>
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">Year Created</label>
                     <Input
                       placeholder="Enter year"
                       value={yearCreated}
                       onChange={(e) => setYearCreated(e.target.value)}
                       className="h-9"
-                      style={{fontSize:"10px"}}
+                      style={{ fontSize: "10px" }}
                     />
                   </div>
                 </div>
 
                 {/* Style, Medium, Size */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
-                    <div>
-                        <label htmlFor="style" className="block mb-2 text-[11px]">
-                        Artwork Style
-                        </label>
-                        <div className="relative">
-                        <select
-                            id="style"
-                            value={artworkStyle}
-                            onChange={(e) => setArtworkStyle(e.target.value)}
-                            className="w-full h-9 p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs cursor-pointer"
-                            style={{fontSize:"10px"}}
-                        >
-                            <option value="" disabled>
-                            Select artwork style
-                            </option>
-                            {ART_STYLES.map((style) => (
-                            <option key={style} value={style.toLowerCase()}>
-                                {style}
-                            </option>
-                            ))}
-                        </select>
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M4 6L8 10L12 6"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                            </svg>
-                        </div>
-                        </div>
+                  <div>
+                    <label htmlFor="style" className="block mb-2 text-[11px]">
+                      Artwork Style
+                    </label>
+                    <div className="relative">
+                      <select
+                        id="style"
+                        value={artworkStyle}
+                        onChange={(e) => setArtworkStyle(e.target.value)}
+                        className="w-full h-9 p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs cursor-pointer"
+                        style={{ fontSize: "10px" }}
+                      >
+                        <option value="" disabled>
+                          Select artwork style
+                        </option>
+                        {ART_STYLES.map((style) => (
+                          <option key={style} value={style.toLowerCase()}>
+                            {style}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M4 6L8 10L12 6"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
                     </div>
+                  </div>
 
-                    <div>
-                        <label className="block text-[11px] font-medium text-gray-700 mb-2">
-                            Medium
-                        </label>
-                        <Input
-                            placeholder="Enter medium used"
-                            value={medium}
-                            onChange={(e) => setMedium(e.target.value)}
-                            className="h-9"
-                            style={{fontSize:"10px"}}
-                        />
+                  <div>
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">Medium</label>
+                    <Input
+                      placeholder="Enter medium used"
+                      value={medium}
+                      onChange={(e) => setMedium(e.target.value)}
+                      className="h-9"
+                      style={{ fontSize: "10px" }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">Dimensions (cm)</label>
+                    <div className="flex items-center space-x-2">
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        value={height}
+                        onChange={(e) => setHeight(e.target.value)}
+                        className="h-9"
+                        style={{ fontSize: "10px" }}
+                      />
+                      <span className="text-sm font-medium">×</span>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        value={width}
+                        onChange={(e) => setWidth(e.target.value)}
+                        className="h-9"
+                        style={{ fontSize: "10px" }}
+                      />
                     </div>
-                    <div>
-                        <label className="block text-[11px] font-medium text-gray-700 mb-2">
-                        Dimensions (cm)
-                        </label>
-                        <div className="flex items-center space-x-2">
-                        <Input
-                            type="number"
-                            placeholder="0"
-                            value={height}
-                            onChange={(e) => setHeight(e.target.value)}
-                            className="h-9"
-                            style={{fontSize:"10px"}}
-                        />
-                        <span className="text-sm font-medium">×</span>
-                        <Input
-                            type="number"
-                            placeholder="0"
-                            value={width}
-                            onChange={(e) => setWidth(e.target.value)}
-                            className="h-9"
-                            style={{fontSize:"10px"}}
-                        />
-                        </div>
-                        <div className="flex justify-between px-6 pt-2">
-                            <span className="text-[10px] text-gray-500">Height</span>
-                            <span className="text-[10px] text-gray-500">Width</span>
-                        </div>
+                    <div className="flex justify-between px-6 pt-2">
+                      <span className="text-[10px] text-gray-500">Height</span>
+                      <span className="text-[10px] text-gray-500">Width</span>
                     </div>
+                  </div>
                 </div>
 
                 {/* Price, Edition, Quantity */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">
-                      Price
-                    </label>
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">Price</label>
                     <Input
                       type="number"
                       placeholder="Enter price for artwork"
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
                       className="h-9"
-                      style={{fontSize:"10px"}}
+                      style={{ fontSize: "10px" }}
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">
-                      Edition
-                    </label>
-                    <Select
-                      value={edition}
-                      onValueChange={handleEditionChange}
-                    >
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">Edition</label>
+                    <Select value={edition} onValueChange={handleEditionChange}>
                       <SelectTrigger className="w-full text-[10px] h-9">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Original (1 of 1)" className="text-[10px]">Original (1 of 1)</SelectItem>
-                        <SelectItem value="Limited Edition" className="text-[10px]">Limited Edition</SelectItem>
-                        <SelectItem value="Open Edition" className="text-[10px]">Open Edition</SelectItem>
+                        <SelectItem value="Original (1 of 1)" className="text-[10px]">
+                          Original (1 of 1)
+                        </SelectItem>
+                        <SelectItem value="Limited Edition" className="text-[10px]">
+                          Limited Edition
+                        </SelectItem>
+                        <SelectItem value="Open Edition" className="text-[10px]">
+                          Open Edition
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   {isQuantityVisible && (
                     <div>
-                      <label className="block text-[11px] font-medium text-gray-700 mb-2">
-                        Quantity
-                      </label>
+                      <label className="block text-[11px] font-medium text-gray-700 mb-2">Quantity</label>
                       <Input
                         type="number"
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
                         className="h-9"
-                        style={{fontSize:"10px"}}
+                        style={{ fontSize: "10px" }}
                         min="1"
                       />
                     </div>
@@ -449,15 +541,13 @@ const SellArtwork = () => {
 
                 {/* Description */}
                 <div className="mb-8">
-                  <label className="block text-[11px] font-medium text-gray-700 mb-2">
-                    About this Artwork
-                  </label>
+                  <label className="block text-[11px] font-medium text-gray-700 mb-2">About this Artwork</label>
                   <Textarea
                     placeholder="Add a description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="min-h-[120px] h-9"
-                    style={{fontSize:"10px"}}
+                    style={{ fontSize: "10px" }}
                   />
                 </div>
 

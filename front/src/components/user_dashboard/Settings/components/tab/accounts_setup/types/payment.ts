@@ -7,6 +7,7 @@ export interface PaymentAccount {
   isDefault: boolean;
   status: "verified" | "pending" | "not_verified";
   dateAdded: string;
+  stripeAccountId?: string;
 }
 
 export interface NewAccountState {
@@ -27,4 +28,5 @@ export interface NewAccountState {
     swiftCode: string;
   };
   details?: any;
+  stripeAccountId?: string;
 }
