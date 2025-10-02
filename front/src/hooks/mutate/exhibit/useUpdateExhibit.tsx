@@ -8,11 +8,11 @@ export const useUpdateExhibit = (exhibitId: string) => {
   return useMutation({
     mutationFn: (data: any) => updateExhibit(exhibitId, data),
     onSuccess: (updatedExhibit) => {
-      console.log("✅ Exhibit updated response:", updatedExhibit);
-      console.log("🎨 Artworks after update:", updatedExhibit.artworks);
-      console.log("👥 Collaborators after update:", updatedExhibit.collaborators);
+      // console.log("✅ Exhibit updated response:", updatedExhibit);
+      // console.log("🎨 Artworks after update:", updatedExhibit.artworks);
+      // console.log("👥 Collaborators after update:", updatedExhibit.collaborators);
+      queryClient.invalidateQueries({ queryKey: ["exhibit-card", exhibitId] });
 
-      toast.success("Exhibit updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["exhibit-cards"] });
       queryClient.invalidateQueries({ queryKey: ["exhibit", exhibitId] });
     },

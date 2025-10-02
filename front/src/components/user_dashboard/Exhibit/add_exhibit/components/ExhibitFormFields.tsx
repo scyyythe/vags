@@ -256,7 +256,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
                           </div>
                         </div>
                       )}
-                      {viewMode === "owner" && !isReadOnly && (
+                      {viewMode === "owner" && !isReadOnly && !isEditMode && (
                         <Button
                           size="sm"
                           variant="ghost"

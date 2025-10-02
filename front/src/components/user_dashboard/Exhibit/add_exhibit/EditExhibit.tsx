@@ -284,7 +284,7 @@ const EditExhibit = () => {
     setTimeout(distributeSlots, 0);
   };
 
-  const isUploading = createExhibitMutation.status === "pending";
+  const isUploading = updateExhibitMutation.status === "pending";
 
   // --- The rest of your component stays 100% intact ---
   return (
