@@ -45,12 +45,14 @@ export interface AuctionArtwork {
   visibility: string;
   created_at: string;
   updated_at: string;
+  art_status?: string;
   default_paypal_email?: string;
 }
 
 export interface ArtworkAuction {
   id: string;
   auction_likes_count: number;
+
   artwork: AuctionArtwork;
   highest_bid: Bid | null;
   bid_history: Bid[];

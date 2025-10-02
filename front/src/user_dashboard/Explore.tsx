@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
@@ -19,10 +19,12 @@ import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 import useFollowedArtworks from "@/hooks/artworks/follow_artworks/useFollowedArtworks";
 import { getLoggedInUserId } from "@/auth/decode";
 import { useDonation } from "@/context/DonationContext";
+import { useStripeTip } from "@/hooks/tips/useStripeTip";
 const Explore = () => {
   const navigate = useNavigate();
   const { openPopup } = useDonation();
-
+  const { verifyStripePayment } = useStripeTip();
+  const [status, setStatus] = useState<string>("");
   const categories = ["All", "Trending", "Following"];
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFilter, setSelectedFilter] = useState("All");
@@ -43,7 +45,15 @@ const Explore = () => {
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
-
+  useEffect(() => {
+    async function runVerify() {
+      const result = await verifyStripePayment();
+      if (result) {
+        setStatus("Tip successful ✅");
+      }
+    }
+    runVerify();
+  }, []);
   const bulkStatusLookup = React.useMemo(() => {
     if (!bulkStatus) return {};
     return bulkStatus.reduce((acc, item) => {
@@ -92,7 +102,6 @@ const Explore = () => {
   const handleTipJar = (artwork: (typeof filteredArtworksMemo)[0]) => {
     console.log("Opening tip jar for artwork:", artwork);
 
-    // Ensure email is not undefined
     const artworkInfo = {
       id: artwork.id,
       title: artwork.title,

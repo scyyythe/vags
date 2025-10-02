@@ -20,6 +20,7 @@ import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateArtworkVisibility from "@/hooks/mutate/visibility/private/useUpdateArtworkVisibility";
 import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork";
+
 export interface ArtCardProps {
   artwork: Artwork;
   isExplore?: boolean;
@@ -61,8 +62,6 @@ const ArtCard = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
-  const { isFavorite, handleFavorite: toggleFavorite } = useFavorite(id, isSavedFromBulk ?? false);
-
   const { likedArtworks, likeCounts, setLikedArtworks, toggleLike } = useContext(LikedArtworksContext);
 
   const { openPopup } = useDonation();
@@ -75,14 +74,15 @@ const ArtCard = ({
   const { mutate: submitReport } = useSubmitReport();
   const { mutate: updateVisibility } = useUpdateArtworkVisibility();
   const { mutate: archiveArtwork } = useArchivedArtwork();
-
-  const isLiked = typeof isLikedFromBulk === "boolean" ? isLikedFromBulk : likedArtworks[id] ?? false;
+  const [localIsLiked, setLocalIsLiked] = useState(status?.isLiked ?? isLikedFromBulk ?? false);
+  const { isFavorite: localIsFavorite, handleFavorite } = useFavorite(id, status?.isSaved ?? isSavedFromBulk ?? false);
 
   useEffect(() => {
-    setLikedArtworks((prev) => ({ ...prev, [id]: isLiked }));
-  }, [isLiked, id, setLikedArtworks]);
+    setLocalIsLiked(status?.isLiked ?? isLikedFromBulk ?? false);
+  }, [status?.isLiked, isLikedFromBulk]);
 
   const handleLike = () => {
+    setLocalIsLiked((prev) => !prev);
     if (id) toggleLike(id);
   };
 
@@ -133,11 +133,6 @@ const ArtCard = ({
       additionalInfo,
     });
 
-    setMenuOpen(false);
-  };
-
-  const handleFavorite = () => {
-    toggleFavorite();
     setMenuOpen(false);
   };
 
@@ -221,10 +216,13 @@ const ArtCard = ({
           ) : (
             <ArtCardMenu
               isOpen={menuOpen}
-              onFavorite={handleFavorite}
+              onFavorite={() => {
+                handleFavorite();
+                setMenuOpen(false);
+              }}
               onHide={handleHide}
               onReport={handleReport}
-              isFavorite={status.isSaved}
+              isFavorite={localIsFavorite}
               isReported={report?.reported}
               isShared={false}
               className="-right-1 top-7"
@@ -263,14 +261,14 @@ const ArtCard = ({
             <button
               onClick={handleLike}
               className={`p-1 rounded-full transition-colors ${
-                status.isLiked ? "text-red-600" : "text-gray-400 hover:text-red-600"
+                localIsLiked ? "text-red-600" : "text-gray-400 hover:text-red-600"
               }`}
-              aria-label={status.isLiked ? "Unlike" : "Like"}
+              aria-label={localIsLiked ? "Unlike" : "Like"}
             >
               <Heart
                 size={15}
-                className={status.isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
-                fill={status.isLiked ? "currentColor" : "none"}
+                className={localIsLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
+                fill={localIsLiked ? "currentColor" : "none"}
               />
             </button>
 

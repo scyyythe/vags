@@ -89,6 +89,11 @@ const SellCard = ({
 
   const { data: reportStatusData } = useArtworkReportStatus(id);
   const isReported = reportStatusData?.reported ?? false;
+  const formatPrice = (amount: number) => {
+    if (amount >= 1_000_000) return `₱${(amount / 1_000_000).toFixed(1)}M`;
+    if (amount >= 10_000) return `₱${(amount / 1_000).toFixed(1)}k`;
+    return `₱${amount.toLocaleString()}`;
+  };
 
   const { isChatOpen, openChat, closeChat, participantId, participantName } = useChat();
 
@@ -205,15 +210,9 @@ const SellCard = ({
 
       <div className="flex justify-between mt-3 items-center">
         <div className="flex items-center gap-2">
-          {price > 0 && (
-            <p className="text-sm font-bold text-gray-900">
-              ₱{price >= 10000 ? `${(price / 10000).toFixed(1)}k` : price}
-            </p>
-          )}
+          {price > 0 && <p className="text-sm font-bold text-gray-900">{formatPrice(price)}</p>}
           {originalPrice > 0 && originalPrice !== price && (
-            <p className="text-xs line-through text-gray-400">
-              ₱{originalPrice >= 10000 ? `${(originalPrice / 10000).toFixed(1)}k` : originalPrice}
-            </p>
+            <p className="text-xs line-through text-gray-400">{formatPrice(originalPrice)}</p>
           )}
         </div>
 

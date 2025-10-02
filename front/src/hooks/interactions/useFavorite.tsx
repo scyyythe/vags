@@ -1,30 +1,32 @@
 import { useState, useEffect } from "react";
 import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
-const useFavorite = (id, initialIsFavorite = false) => {
+const useFavorite = (id: string, initialIsFavorite = false) => {
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     setIsFavorite(initialIsFavorite);
   }, [initialIsFavorite]);
 
-  const handleFavorite = async () => {
-    try {
-      const response = await apiClient.post(`saved/${id}/`);
-      const { detail } = response.data;
+  const handleFavorite = () => {
+    setIsFavorite((prev) => !prev);
 
-      if (detail === "You have unsaved this artwork.") {
-        setIsFavorite(false);
-        toast.success("Artwork favorite removed");
-      } else {
-        setIsFavorite(true);
-        toast.success("Artwork added to favorites");
-      }
-    } catch (error) {
-      console.error("Failed to save artwork:", error);
-      toast.error("Failed to save artwork");
-    }
+    apiClient
+      .post(`saved/${id}/`)
+      .then((response) => {
+        const { detail } = response.data;
+
+        setIsFavorite(detail !== "You have unsaved this artwork.");
+        queryClient.invalidateQueries({ queryKey: ["artworks"] });
+        toast(detail || (isFavorite ? "Unsaved artwork." : "You have saved this artwork!"), { closeButton: true });
+      })
+      .catch(() => {
+        setIsFavorite((prev) => !prev);
+        toast.error("Failed to save artwork");
+      });
   };
 
   return { isFavorite, handleFavorite };
