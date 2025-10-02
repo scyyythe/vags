@@ -72,7 +72,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
           : true;
       let visibilityMatch = true;
       if (selectedStatus === "Deleted") visibilityMatch = exhibit.visibility?.toLowerCase() === "deleted";
-      else if (selectedStatus === "Hidden") visibilityMatch = exhibit.visibility?.toLowerCase() === "hidden";
+      else if (selectedStatus === "Hidden") visibilityMatch = exhibit.visibility?.toLowerCase() === "private";
       else if (selectedStatus === "Archived") visibilityMatch = exhibit.visibility?.toLowerCase() === "archived";
       else visibilityMatch = exhibit.visibility?.toLowerCase() === "public";
 
@@ -140,18 +140,13 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
           </div>
           <div className="flex items-center space-x-2">
             {typeTab === "collab" && (
-              <button
-                onClick={() => setShowPending(!showPending)}
-                className="relative group flex items-center"
-              >
+              <button onClick={() => setShowPending(!showPending)} className="relative group flex items-center">
                 <i
                   className={`bx bx-time text-[15px] cursor-pointer ${
                     hasReadyExhibits ? "text-yellow-500" : "text-yellow-500"
                   } mr-1`}
                 ></i>
-                {hasUnreadRequests && (
-                  <span className="absolute -top-1 right-0 w-2 h-2 bg-red-600 rounded-full"></span>
-                )}
+                {hasUnreadRequests && <span className="absolute -top-1 right-0 w-2 h-2 bg-red-600 rounded-full"></span>}
                 {/* Tooltip */}
                 <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-white text-black text-[10px] px-2 py-1 border shadow opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                   {hasReadyExhibits ? "No Pending Requests" : "Pending Requests"}
