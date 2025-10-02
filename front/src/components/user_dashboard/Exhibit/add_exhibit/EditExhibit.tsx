@@ -79,9 +79,11 @@ const EditExhibit = () => {
 
   const createExhibitMutation = useCreateExhibit();
 
-  // --- Slot distribution logic (same as your existing) ---
   const distributeSlots = () => {
     if (!selectedEnvironment || !currentUser?.id) return;
+
+    if (mode === "edit") return;
+
     const currentEnvironment = environments.find((env) => env.id === selectedEnvironment);
     if (!currentEnvironment) return;
     const totalSlots = currentEnvironment.slots;
@@ -118,47 +120,81 @@ const EditExhibit = () => {
 
   useEffect(() => {
     if (!exhibitData) return;
-
-    console.log("🎨 Exhibit Data received:", exhibitData);
-
-    // Basic fields
+    console.log("Exhibit Data Loaded:", exhibitData);
+    // --- Basic exhibit info ---
     setTitle(exhibitData.title);
     setCategory(exhibitData.category);
-    setExhibitType(exhibitData.isSolo ? "solo" : "collaborative");
+    setExhibitType(exhibitData.isSolo ? "solo" : "collab");
     setStartDate(exhibitData.startDate?.split("T")[0] || "");
     setEndDate(exhibitData.endDate?.split("T")[0] || "");
     setDescription(exhibitData.description);
     setBannerImage(exhibitData.image);
+    if (exhibitData.category) setArtworkStyle(exhibitData.artworkStyle);
 
-    // ✅ Use slotArtworkMap from backend
+    // --- Populate collaborators if not solo ---
+    if (!exhibitData.isSolo && exhibitData.collaborators?.length) {
+      setCollaborators(
+        exhibitData.collaborators.map((c: any) => ({
+          id: c.id,
+          first_name: c.name.split(" ")[0] || "",
+          last_name: c.name.split(" ").slice(1).join(" ") || "",
+          profile_picture: c.avatar || "",
+        }))
+      );
+    } else {
+      setCollaborators([]);
+    }
+
+    // --- Artworks & slots ---
     const mapFromBackend: Record<number, string> = exhibitData.slotArtworkMap || {};
     setSlotArtworkMap(mapFromBackend);
     setSelectedSlots(Object.keys(mapFromBackend).map(Number));
-    setSelectedArtworks(Object.values(mapFromBackend) as string[]);
+    setSelectedArtworks(Object.values(mapFromBackend));
 
-    // ✅ Auto-determine environment by slot count
-    if (exhibitData.environmentId) {
-      setSelectedEnvironment(exhibitData.environmentId);
-      console.log("✅ Restored environment from backend:", exhibitData.environmentId);
-    } else {
-      const slotCount = Object.keys(mapFromBackend).length;
-      const matchedEnv = environments.find((env) => env.slots === slotCount);
-      if (matchedEnv) {
-        setSelectedEnvironment(matchedEnv.id);
-        console.log("✅ Auto-matched environment by slot count:", matchedEnv.id);
+    // --- Determine slot owners ---
+    const totalSlots = Object.keys(mapFromBackend).length;
+    const newSlotOwnerMap: Record<number, string> = {};
+
+    if (exhibitData.isSolo && exhibitData.ownerId) {
+      // Solo: all slots belong to owner
+      Object.keys(mapFromBackend).forEach((slotId) => {
+        newSlotOwnerMap[Number(slotId)] = exhibitData.ownerId!;
+      });
+    } else if (!exhibitData.isSolo) {
+      // Collaborative: distribute slots among owner + collaborators
+      const participants = [exhibitData.owner, ...(exhibitData.collaborators || [])];
+      const totalParticipants = participants.length;
+      const baseSlots = Math.floor(totalSlots / totalParticipants);
+      let remaining = totalSlots % totalParticipants;
+      let slotId = 1;
+
+      for (const participant of participants) {
+        let slotsForThisUser = baseSlots + (remaining > 0 ? 1 : 0);
+        if (remaining > 0) remaining--;
+        for (let j = 0; j < slotsForThisUser; j++) {
+          if (slotId <= totalSlots) newSlotOwnerMap[slotId++] = participant.id.toString();
+        }
       }
     }
 
-    // ✅ Set readonly mode
-    if (mode === "review" || mode === "monitoring" || mode === "preview") {
-      setIsReadOnly(true);
+    setSlotOwnerMap(newSlotOwnerMap);
+
+    // --- Environment ---
+    if (exhibitData.environmentId) {
+      setSelectedEnvironment(exhibitData.environmentId);
     } else {
-      setIsReadOnly(false);
+      const matchedEnv = environments.find((env) => env.slots === totalSlots);
+      if (matchedEnv) setSelectedEnvironment(matchedEnv.id);
     }
+
+    // --- Read-only mode ---
+    setIsReadOnly(["review", "monitoring", "preview"].includes(mode));
+
+    // --- Populate artwork files ---
     if (exhibitData.artworks && exhibitData.artworks.length > 0) {
       const artworksWithUrl = exhibitData.artworks.map((a: any) => ({
         id: a.id.toString(),
-        url: a.image_url || a.file || a.image || a.url || "",
+        url: Array.isArray(a.image_url) ? a.image_url[0] : a.image_url || a.file || a.image || "",
       }));
       setArtworkFiles(artworksWithUrl);
     }
@@ -328,12 +364,37 @@ const EditExhibit = () => {
                       }
                     }}
                     handleClearSlot={(id) => {
+                      console.log("🔹 Attempting to clear slot:", id);
+                      console.log("Current slotArtworkMap:", slotArtworkMap);
+                      console.log("slotOwnerMap:", slotOwnerMap);
+                      console.log("currentUser.id:", currentUser?.id);
+                      console.log("currentCollaborator:", currentCollaborator);
+
                       const artworkId = slotArtworkMap[id];
-                      if (!artworkId) return;
-                      setSelectedArtworks((prev) => prev.filter((a) => a !== artworkId));
-                      const newMap = { ...slotArtworkMap };
-                      delete newMap[id];
-                      setSlotArtworkMap(newMap);
+                      if (!artworkId) {
+                        console.log("❌ No artwork assigned to this slot");
+                        return;
+                      }
+
+                      setSelectedArtworks((prev) => {
+                        console.log("Before removing artwork:", prev);
+                        const filtered = prev.filter((a) => a !== artworkId);
+                        console.log("After removing artwork:", filtered);
+                        return filtered;
+                      });
+
+                      setSlotArtworkMap((prev) => {
+                        const newMap = { ...prev };
+                        delete newMap[id];
+                        console.log("Updated slotArtworkMap:", newMap);
+                        return newMap;
+                      });
+
+                      setSelectedSlots((prev) => {
+                        const filteredSlots = prev.filter((s) => s !== id);
+                        console.log("Updated selectedSlots:", filteredSlots);
+                        return filteredSlots;
+                      });
                     }}
                     canInteractWithSlot={(slotId: number) =>
                       canInteractWithSlot(slotId, isReadOnly, slotOwnerMap, viewMode, currentUser, currentCollaborator)
@@ -346,6 +407,7 @@ const EditExhibit = () => {
                     currentUser={currentUser}
                     colorNames={colorNames}
                     slotColorSchemes={slotColorSchemes}
+                    mode={exhibitData ? "edit" : "create"}
                   />
                 )}
               </div>
@@ -365,6 +427,7 @@ const EditExhibit = () => {
                 if (value === "solo") setCollaborators([]);
                 setTimeout(distributeSlots, 0);
               }}
+              exhibitData={exhibitData}
               startDate={startDate}
               setStartDate={setStartDate}
               endDate={endDate}
