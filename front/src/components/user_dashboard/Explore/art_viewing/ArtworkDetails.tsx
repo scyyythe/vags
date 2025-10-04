@@ -101,7 +101,8 @@ const ArtworkDetails = () => {
         userImage: "https://i.pravatar.cc/150?img=5",
         text: comment,
         likes: 0,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date(),
+
         replies: [],
       };
 

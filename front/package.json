@@ -55,6 +55,7 @@
     "cmdk": "^1.0.0",
     "color.js": "^1.2.0",
     "date-fns": "^3.6.0",
+    "date-fns-tz": "^3.2.0",
     "embla-carousel-react": "^8.3.0",
     "firebase": "^12.1.0",
     "framer-motion": "^12.5.0",

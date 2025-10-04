@@ -2,9 +2,10 @@ from django.urls import path
 from api.views.interaction_views.interaction import ArtworkBulkStatusView,SavedArtworksListView,CommentCreateView,LikeStatusView,ArtworkStatusView,LikeCreateView,SavedStatusView, CartItemCreateView, CartItemDeleteView, CartRetrieveView,SavedCreateView,LikeListView, SavedListView,CommentListView
 from api.views.interaction_views.follow import RemoveFollowerView,FollowedArtworksView,FollowedArtworksViewOnSale,FollowingListView,FollowCreateView,UnfollowView,FollowerListView,FollowStatsView,CheckFollowStatusView,FollowCountsView
 from api.views.interaction_views.notifications import NotificationDeleteView,NotificationListView, NotificationDetailView,NotificationDeleteAllView
-from api.views.interaction_views.comment_views import CommentListCreateView,CommentRepliesView
+from api.views.interaction_views.comment_views import CommentListCreateView,CommentRepliesView,CommentReactionView,CommentLikeView
+
 interaction_urlpatterns = [
-    path('comments/', CommentCreateView.as_view(), name='comment-create'),
+    
     path('likes/<str:art_id>/', LikeCreateView.as_view(), name='like-create'),
     path('auction-likes/<str:auction_id>/', LikeCreateView.as_view(), name='like-create-auction'),
     path('exhibit-likes/<str:exhibit_id>/', LikeCreateView.as_view(), name="exhibit-create-like"),
@@ -46,5 +47,12 @@ interaction_urlpatterns = [
     path('notifications/', NotificationListView.as_view(), name='notification-list'),  
     path('notifications/<int:pk>/', NotificationDetailView.as_view(), name='notification-detail'),
     path('notifications/<str:pk>/delete/', NotificationDeleteView.as_view(), name='notification-delete'),
-    path('notifications/delete-all/', NotificationDeleteAllView.as_view(), name='notifications-delete-all')
+    path('notifications/delete-all/', NotificationDeleteAllView.as_view(), name='notifications-delete-all'),
+    
+    path("<str:content_type>/<str:object_id>/comments/", CommentListCreateView.as_view(), name="comments-list-create"),
+    path("comments/<str:comment_id>/replies/", CommentRepliesView.as_view(), name="comment-replies"),
+    path("comments/<str:pk>/react/", CommentReactionView.as_view(), name="comment-react"),
+    path("comments/<str:pk>/like/", CommentLikeView.as_view(), name="comment-like"),
+
+    
 ]

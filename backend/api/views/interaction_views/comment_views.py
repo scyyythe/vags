@@ -1,36 +1,116 @@
-# views/comment_views.py
-from rest_framework import generics
+
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from api.models.interaction_model.comment import Comment
-from api.models.artwork_model.artwork import Art
 from api.serializers.interaction_s.comment_serializer import CommentSerializer
-
-class CommentListCreateView(generics.ListCreateAPIView):
-    serializer_class = CommentSerializer
+from bson import ObjectId
+from rest_framework.views import APIView
+from django.utils.timezone import localtime
+class CommentListCreateView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get_queryset(self):
-        artwork_id = self.kwargs['artwork_id']
-        return Comment.objects(artwork=artwork_id, parent=None)
+    def get(self, request, content_type, object_id):
+        comments = Comment.objects(content_type=content_type, object_id=object_id)
+        data = []
+        for c in comments:
+            user = c.user
+            data.append({
+                "id": str(c.id),
+                "user": {
+                    "id": str(user.id),
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "profile_picture": user.profile_picture if user.profile_picture else None,
+                },
+                "text": c.text,
+                "likes": c.likes,
+                "emoji_reactions": c.emoji_reactions,
+                "created_at": c.created_at.isoformat().replace("+00:00", "Z"),
 
-    def perform_create(self, serializer):
-        artwork = Art.objects.get(id=self.kwargs['artwork_id'])
+                "parent": str(c.parent.id) if c.parent else None,   
+            })
+        return Response(data)
+
+
+    def post(self, request, content_type, object_id):
         parent = None
-        if self.request.data.get("parentId"):
-            parent = Comment.objects.get(id=self.request.data["parentId"])
+        if request.data.get("parentId"):
+            parent = Comment.objects.get(id=request.data["parentId"])
+
         comment = Comment(
-            artwork=artwork,
-            user=self.request.user,
-            text=self.request.data["text"],
+            user=request.user,
+            text=request.data.get("text"),
+            content_type=content_type,
+            object_id=object_id,
             parent=parent
         )
         comment.save()
-        serializer.instance = comment
+
+        user = request.user
+
+        return Response({
+            "id": str(comment.id),
+            "user": {
+                "id": str(user.id),
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "profile_picture": user.profile_picture if user.profile_picture else None,
+            },
+            "text": comment.text,
+            "likes": comment.likes,
+            "emoji_reactions": comment.emoji_reactions,
+            "created_at": comment.created_at.isoformat().replace("+00:00", "Z")
+
+        }, status=status.HTTP_201_CREATED)
+
+
 
 class CommentRepliesView(generics.ListAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return Comment.objects(parent=self.kwargs['comment_id'])
+        return Comment.objects(parent=self.kwargs["comment_id"])
+
+
+class CommentReactionView(generics.UpdateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    lookup_field = "pk"
+
+    def update(self, request, *args, **kwargs):
+        comment = Comment.objects.get(id=kwargs["pk"])
+        emoji = request.data.get("emoji")
+
+        if not emoji:
+            return Response({"error": "Emoji is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+     
+        comment.emoji_reactions[emoji] = comment.emoji_reactions.get(emoji, 0) + 1
+        comment.save()
+
+   
+        sorted_reactions = dict(
+            sorted(comment.emoji_reactions.items(), key=lambda x: x[1], reverse=True)
+        )
+
+
+        data = CommentSerializer(comment).data
+        data["emoji_reactions"] = sorted_reactions  
+
+        return Response(data, status=status.HTTP_200_OK)
+class CommentLikeView(generics.UpdateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    lookup_field = "pk"
+
+    def update(self, request, *args, **kwargs):
+        comment = Comment.objects.get(id=kwargs["pk"])
+        comment.likes += 1
+        comment.save()
+
+        return Response(
+            CommentSerializer(comment).data,
+            status=status.HTTP_200_OK
+        )
