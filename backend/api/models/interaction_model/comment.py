@@ -1,17 +1,27 @@
 
-from mongoengine import Document, ReferenceField, StringField, DateTimeField, IntField, ListField
+
 from datetime import datetime
 from api.models.artwork_model.artwork import Art
 from api.models.user_model.users import User
 
+from mongoengine import (
+    Document, StringField, DateTimeField, ReferenceField,
+    IntField, ListField,MapField
+)
+from datetime import datetime
+from django.utils.timezone import now
 class Comment(Document):
-    artwork = ReferenceField(Art, required=True)
     user = ReferenceField(User, required=True)
-    text = StringField(required=True)
+    text = StringField(required=True, max_length=2000)
     likes = IntField(default=0)
-    parent = ReferenceField('self', null=True)
-    timestamp = DateTimeField(default=datetime.utcnow)
 
-    meta = {
-        'ordering': ['-timestamp']
-    }
+    emoji_reactions = MapField(field=IntField(), default=dict)
+    content_type = StringField(choices=["artwork", "auction", "exhibit"], required=True)
+    object_id = StringField(required=True)  
+
+    parent = ReferenceField('self', null=True)  
+    replies = ListField(ReferenceField('self'))
+
+    created_at = DateTimeField(default=now)
+
+    meta = {"collection": "comments"}
