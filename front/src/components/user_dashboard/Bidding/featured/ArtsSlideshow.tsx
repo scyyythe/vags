@@ -66,7 +66,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
           key={artwork.id}
           className={cn(
             "absolute top-0 left-0 w-full h-full transition-opacity duration-[2500ms] ease-in-out",
-            isMobile ? "flex flex-col items-center gap-6" : "flex flex-row items-center gap-20",
+            isMobile ? "flex flex-col items-center gap-6" : "flex flex-row items-center gap-20 pl-12",
             index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
           )}
           aria-hidden={index !== currentIndex}

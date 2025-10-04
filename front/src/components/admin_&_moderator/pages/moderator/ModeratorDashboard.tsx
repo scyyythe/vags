@@ -115,9 +115,9 @@ const ModeratorDashboard = () => {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:inline-grid sm:grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2 sm:w-auto sm:inline-grid sm:grid-cols-2">
           <TabsTrigger value="overview" className="text-[10px]">Overview</TabsTrigger>
-          <TabsTrigger value="reports" className="text-[10px]">Active Reports</TabsTrigger>
+          {/* <TabsTrigger value="reports" className="text-[10px]">Active Reports</TabsTrigger> */}
           <TabsTrigger value="content" className="text-[10px]">Flagged Content</TabsTrigger>
         </TabsList>
 
