@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, FileCheck, Cog, Calendar, ArrowUp, Search } from "lucide-react";
 import { toast } from "sonner";
 import { User } from "@/hooks/users/useUserQuery";
-import useAllUsersQuery from "@/hooks/users/useAllUsersQuery";
+import useAllUsersQuery from "@/hooks/users/useAllUsersQuery"; 
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const mockLogs: SystemLog[] = [
@@ -117,13 +117,13 @@ const AdminDashboard = () => {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4" onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:inline-grid sm:grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2 sm:w-auto sm:inline-grid sm:grid-cols-2">
           <TabsTrigger value="overview" className="text-[10px]">
             Overview
           </TabsTrigger>
-          <TabsTrigger value="users" className="text-[10px]">
+          {/* <TabsTrigger value="users" className="text-[10px]">
             User Management
-          </TabsTrigger>
+          </TabsTrigger> */}
           <TabsTrigger value="logs" className="text-[10px]">
             System Logs
           </TabsTrigger>
