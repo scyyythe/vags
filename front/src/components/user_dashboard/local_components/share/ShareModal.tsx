@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { toast } from "sonner";
 import { X } from "lucide-react";
@@ -17,14 +17,27 @@ interface ShareModalProps {
 }
 
 const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, linkToShare }) => {
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(linkToShare);
-      toast.success("Link copied to clipboard!", { closeButton: true })
+      toast.success("Link copied to clipboard!", { closeButton: true });
     } catch (err) {
-      toast.error("Failed to copy link", { closeButton: true })
+      toast.error("Failed to copy link", { closeButton: true });
     }
   };
 
@@ -46,7 +59,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, linkToShare })
   ];
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 z-[100] bg-black bg-opacity-60 flex items-center justify-center">
+    <div className="fixed inset-0 z-[100] bg-black bg-opacity-60 flex items-center justify-center overflow-hidden">
       <div className="bg-white p-6 rounded-xl max-w-xs shadow-xl relative">
         <button onClick={onClose} className="absolute top-3 right-3">
           <X className="w-4 h-4 text-gray-500 hover:text-black" />
@@ -62,7 +75,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, linkToShare })
           <div className="w-full mb-4 flex items-center justify-between bg-gray-100 rounded-lg px-3 py-2">
             <span className="text-[10px] text-gray-600 truncate">{linkToShare}</span>
             <button onClick={copyToClipboard}>
-              <i className='bx bx-copy text-xs text-gray-600 hover:text-black'></i>
+              <i className="bx bx-copy text-xs text-gray-600 hover:text-black"></i>
             </button>
           </div>
 
