@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 
 interface SellConfirmationModalProps {
@@ -12,10 +12,23 @@ const SellConfirmationModal: React.FC<SellConfirmationModalProps> = ({
   onConfirm,
   onCancel
 }) => {
+  // Disable background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-8 w-96 max-w-md mx-4 text-center">
         <h2 className="text-sm font-semibold text-gray-900 mb-2">
           Confirm Artwork Listing
