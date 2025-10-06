@@ -59,6 +59,7 @@
     "embla-carousel-react": "^8.3.0",
     "firebase": "^12.1.0",
     "framer-motion": "^12.5.0",
+    "html2canvas": "^1.4.1",
     "input-otp": "^1.2.4",
     "jspdf": "^3.0.3",
     "jspdf-autotable": "^5.0.2",

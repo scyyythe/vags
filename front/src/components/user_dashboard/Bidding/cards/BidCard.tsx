@@ -8,6 +8,8 @@ import CountdownTimer from "@/hooks/count/useCountdown";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
 import { formatNumber } from "@/utils/numberFormat";
+import OwnerBidMenu from "../../own_profile/menu/bid_card/Menu";
+import { getLoggedInUserId } from "@/auth/decode";
 interface ExtendedArtworkAuction extends ArtworkAuction {
   isPaid?: boolean;
   isHighestBidder?: boolean;
@@ -34,6 +36,8 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
+  const loggedInUserId = getLoggedInUserId();
+  const isOwner = data?.artwork?.artist_id === loggedInUserId;
 
   const navigate = useNavigate();
   const { mutate: submitAuctionReport } = useAuctionSubmitReport();
@@ -155,14 +159,36 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
             >
               <MoreHorizontal size={13} />
             </button>
-            <BidMenu
-              isOpen={menuOpen}
-              onHide={handleHide}
-              onReport={handleReport}
-              isReported={isReported}
-              auctionId={data.id}
-              className="top-8 -left-[12px]"
-            />
+            {isOwner ? (
+              <OwnerBidMenu
+                isOpen={menuOpen}
+                onDelete={() => {
+                  console.log("Delete auction", data.id);
+                  toast.success("Auction deleted");
+                  setMenuOpen(false);
+                }}
+                onCloseBid={() => {
+                  console.log("Close bid for", data.id);
+                  toast.success("Bidding closed");
+                  setMenuOpen(false);
+                }}
+                onViewBids={() => {
+                  console.log("Viewing bids for", data.id);
+                  setMenuOpen(false);
+                }}
+                bids={data.bid_history || []}
+                className="top-8 -left-[12px]"
+              />
+            ) : (
+              <BidMenu
+                isOpen={menuOpen}
+                onHide={handleHide}
+                onReport={handleReport}
+                isReported={isReported}
+                auctionId={data.id}
+                className="top-8 -left-[12px]"
+              />
+            )}
           </div>
 
           {/* Bottom overlay with title, current bid and button */}

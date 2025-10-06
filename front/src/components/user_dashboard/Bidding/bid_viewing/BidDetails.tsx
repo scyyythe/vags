@@ -26,7 +26,11 @@ import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
 import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 
 function formatAmount(amount: number): string {
-  if (amount >= 1_000_000_000_000) {
+  if (amount >= 1_000_000_000_000_000_000) {
+    return (amount / 1_000_000_000_000_000_000).toFixed(2).replace(/\.?0+$/, "") + "Q";
+  } else if (amount >= 1_000_000_000_000_000) {
+    return (amount / 1_000_000_000_000_000).toFixed(2).replace(/\.?0+$/, "") + "q";
+  } else if (amount >= 1_000_000_000_000) {
     return (amount / 1_000_000_000_000).toFixed(2).replace(/\.?0+$/, "") + "T";
   } else if (amount >= 1_000_000_000) {
     return (amount / 1_000_000_000).toFixed(2).replace(/\.?0+$/, "") + "B";
@@ -236,106 +240,103 @@ const BidDetails = () => {
           </div>
 
           <div className={` ${isMobile ? "flex flex-col" : "flex justify-center items-start space-x-2 mt-2"}`}>
-            <div
-              className={`${
-                isMobile ? "w-full" : "flex justify-center items-start ml-[260px]"
-              }`}
-            >
-                {/* Artwork container */}
-                <div className={`mr-8 ${isMobile ? "w-full mt-3" : "w-full"}`}>
-                  {/* Sidebar (desktop) */}
-                  <div className="relative w-full">
-                    {!isMobile && (
-                      <div
-                        className="absolute top-3 z-20 left-[-250px] hidden lg:block"
-                        style={{ width: "150px" }}
-                      >
-                        {/* Left Side - Bids Sidebar */}
-                        <div className="p-3 text-left rounded-sm">
-                          <h2 className="font-semibold text-xs mb-2">Bids</h2>
-                          <div className="max-h-[440px] overflow-y-auto pr-1 flex flex-col gap-2">
-                            {bids.length > 0 ? (
-                              bids.map((bid: any) => {
-                                const isAnonymous = bid.identity_type === "anonymous";
-                                const profilePicture =
-                                  !isAnonymous && bid.user?.profile_picture
-                                    ? bid.user.profile_picture
-                                    : null;
-                                const avatarLetter = (bid.bidderFullName?.charAt(0) || "A").toUpperCase();
+            <div className={`${isMobile ? "w-full" : "flex justify-center items-start ml-[260px]"}`}>
+              {/* Artwork container */}
+              <div className={`mr-8 ${isMobile ? "w-full mt-3" : "w-full"}`}>
+                {/* Sidebar (desktop) */}
+                <div className="relative w-full">
+                  {!isMobile && (
+                    <div className="absolute top-3 z-20 left-[-250px] hidden lg:block" style={{ width: "150px" }}>
+                      {/* Left Side - Bids Sidebar */}
+                      <div className="p-3 text-left rounded-sm">
+                        <h2 className="font-semibold text-xs mb-2">Bids</h2>
+                        <div className="max-h-[440px] overflow-y-auto pr-1 flex flex-col gap-2">
+                          {bids.length > 0 ? (
+                            bids.map((bid: any) => {
+                              const isAnonymous = bid.identity_type === "anonymous";
+                              const profilePicture =
+                                !isAnonymous && bid.user?.profile_picture ? bid.user.profile_picture : null;
+                              const avatarLetter = (bid.bidderFullName?.charAt(0) || "A").toUpperCase();
 
-                                return (
-                                  <div key={bid.id || bid.timestamp} className="flex items-center gap-2">
-                                    {profilePicture ? (
-                                      <img
-                                        src={profilePicture}
-                                        alt={bid.bidderFullName || "Bidder"}
-                                        className="w-4 h-4 rounded-full object-cover border"
-                                      />
-                                    ) : (
-                                      <div className="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center text-[8px] font-semibold text-gray-700 border">
-                                        {avatarLetter}
-                                      </div>
-                                    )}
-                                    <div>
-                                      <span className="font-semibold text-[11px] mr-1">
-                                        <i className="bx bx-money text-[8px] text-gray-400"></i>{" "}
-                                        {formatAmount(bid.amount)}
-                                      </span>
-                                      <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
-                                        by <p className="font-medium text-gray-700">{bid.bidderFullName}</p>
-                                        {/* {isOwner && (
+                              return (
+                                <div key={bid.id || bid.timestamp} className="flex items-center gap-2">
+                                  {profilePicture ? (
+                                    <img
+                                      src={profilePicture}
+                                      alt={bid.bidderFullName || "Bidder"}
+                                      className="w-4 h-4 rounded-full object-cover border"
+                                    />
+                                  ) : (
+                                    <div className="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center text-[8px] font-semibold text-gray-700 border">
+                                      {avatarLetter}
+                                    </div>
+                                  )}
+                                  <div>
+                                    <span className="font-semibold text-[11px] mr-1">
+                                      <i className="bx bx-money text-[8px] text-gray-400"></i>{" "}
+                                      {formatAmount(bid.amount)}
+                                    </span>
+                                    <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
+                                      by <p className="font-medium text-gray-700">{bid.bidderFullName}</p>
+                                      {/* {isOwner && (
                                           <span className="ml-1 text-[9px] text-gray-400">
                                             {formatBidDate(bid.timestamp)}
                                           </span>
                                         )} */}
-                                      </span>
-                                    </div>
+                                    </span>
                                   </div>
-                                );
-                              })
-                            ) : (
-                              <div className="text-[11px] text-gray-400">No bids yet.</div>
-                            )}
-                          </div>
+                                </div>
+                              );
+                            })
+                          ) : (
+                            <div className="text-[11px] text-gray-400">No bids yet.</div>
+                          )}
                         </div>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
+                </div>
 
-                  {/* Center - Artwork Image */}
-                  <div className={`relative z-0 ${isMobile ? "pl-5 mt-9" : "mt-8 w-[400px]"}`}>
-                    <div className={`inline-block transform scale-[1.10] -mb-6 relative ${isMobile ? "pl-4" : "left-[-60px]"}`}>
-                      <div className="w-[420px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
-                        <img
-                          src={item.artwork.image_url}
-                          alt={item.artwork.title}
-                          className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
-                        />
+                {/* Center - Artwork Image */}
+                <div className={`relative z-0 ${isMobile ? "pl-5 mt-9" : "mt-8 w-[400px]"}`}>
+                  <div
+                    className={`inline-block transform scale-[1.10] -mb-6 relative ${
+                      isMobile ? "pl-4" : "left-[-60px]"
+                    }`}
+                  >
+                    <div className="w-[420px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
+                      <img
+                        src={item.artwork.image_url}
+                        alt={item.artwork.title}
+                        className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
+                      />
 
-                        {/* Expand Button Container */}
+                      {/* Expand Button Container */}
+                      <div
+                        className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}
+                      >
+                        {/* Expand Icon */}
                         <div
-                          className={`absolute bottom-3 right-3 ${
-                            isMobile ? "" : "z-10"
-                          } flex flex-col items-end gap-3`}
+                          className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
+                          onClick={() => setIsExpanded(true)}
                         >
-                          {/* Expand Icon */}
-                          <div
-                            className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
-                            onClick={() => setIsExpanded(true)}
-                          >
-                            <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
-                            <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
-                              Expand
-                            </span>
-                          </div>
+                          <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
+                          <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
+                            Expand
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
 
               {/* Right side - Title, artist, description*/}
-              <div className={` ${isMobile ? "w-full mt-10 px-4 h-[540px]" : "w-[730px] -ml-[250px] mt-3 h-[450px]"}border`}>
+              <div
+                className={` ${
+                  isMobile ? "w-full mt-10 px-4 h-[540px]" : "w-[730px] -ml-[250px] mt-3 h-[450px]"
+                }border`}
+              >
                 <div>
                   <div className="flex justify-between items-start">
                     <div className="flex items-center space-x-4">
@@ -473,58 +474,55 @@ const BidDetails = () => {
                     Place A Bid
                   </button>
                 </div>
-                
+
                 {/* Mobile Sidebar - Bids Section */}
                 {isMobile && (
-                <div className="mt-6 w-full px-1">
-                  <div className="border rounded-lg p-3 text-left">
-                    <h2 className="font-semibold text-xs mb-2">Bids</h2>
-                    <div className="max-h-[300px] overflow-y-auto pr-1 flex flex-col gap-2">
-                      {bids.length > 0 ? (
-                        bids.map((bid: any) => {
-                          const isAnonymous = bid.identity_type === "anonymous";
-                          const profilePicture =
-                            !isAnonymous && bid.user?.profile_picture
-                              ? bid.user.profile_picture
-                              : null;
-                          const avatarLetter = (bid.bidderFullName?.charAt(0) || "A").toUpperCase();
+                  <div className="mt-6 w-full px-1">
+                    <div className="border rounded-lg p-3 text-left">
+                      <h2 className="font-semibold text-xs mb-2">Bids</h2>
+                      <div className="max-h-[300px] overflow-y-auto pr-1 flex flex-col gap-2">
+                        {bids.length > 0 ? (
+                          bids.map((bid: any) => {
+                            const isAnonymous = bid.identity_type === "anonymous";
+                            const profilePicture =
+                              !isAnonymous && bid.user?.profile_picture ? bid.user.profile_picture : null;
+                            const avatarLetter = (bid.bidderFullName?.charAt(0) || "A").toUpperCase();
 
-                          return (
-                            <div key={bid.id || bid.timestamp} className="flex items-center gap-2">
-                              {profilePicture ? (
-                                <img
-                                  src={profilePicture}
-                                  alt={bid.bidderFullName || "Bidder"}
-                                  className="w-5 h-5 rounded-full object-cover border"
-                                />
-                              ) : (
-                                <div className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center text-[10px] font-semibold text-gray-700 border">
-                                  {avatarLetter}
+                            return (
+                              <div key={bid.id || bid.timestamp} className="flex items-center gap-2">
+                                {profilePicture ? (
+                                  <img
+                                    src={profilePicture}
+                                    alt={bid.bidderFullName || "Bidder"}
+                                    className="w-5 h-5 rounded-full object-cover border"
+                                  />
+                                ) : (
+                                  <div className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center text-[10px] font-semibold text-gray-700 border">
+                                    {avatarLetter}
+                                  </div>
+                                )}
+                                <div>
+                                  <span className="font-semibold text-[11px] mr-1">
+                                    <i className="bx bx-money text-[8px] text-gray-400"></i> {formatAmount(bid.amount)}
+                                  </span>
+                                  <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
+                                    by <p className="font-medium text-gray-700">{bid.bidderFullName}</p>
+                                    {isOwner && (
+                                      <span className="ml-1 text-[9px] text-gray-400">
+                                        {formatBidDate(bid.timestamp)}
+                                      </span>
+                                    )}
+                                  </span>
                                 </div>
-                              )}
-                              <div>
-                                <span className="font-semibold text-[11px] mr-1">
-                                  <i className="bx bx-money text-[8px] text-gray-400"></i>{" "}
-                                  {formatAmount(bid.amount)}
-                                </span>
-                                <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
-                                  by <p className="font-medium text-gray-700">{bid.bidderFullName}</p>
-                                  {isOwner && (
-                                    <span className="ml-1 text-[9px] text-gray-400">
-                                      {formatBidDate(bid.timestamp)}
-                                    </span>
-                                  )}
-                                </span>
                               </div>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <div className="text-[11px] text-gray-400">No bids yet.</div>
-                      )}
+                            );
+                          })
+                        ) : (
+                          <div className="text-[11px] text-gray-400">No bids yet.</div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
                 )}
               </div>
             </div>
@@ -533,7 +531,9 @@ const BidDetails = () => {
           {/* Related Bids Section */}
           {relatedBids.length > 0 ? (
             <div className="container md:px-6 mt-2 mb-2">
-              <h2 className={`font-medium ${isMobile ? "text-xs mt-8 mb-4 -ml-3" : "text-xs mt-6 mb-6"}`}>Related Bids</h2>
+              <h2 className={`font-medium ${isMobile ? "text-xs mt-8 mb-4 -ml-3" : "text-xs mt-6 mb-6"}`}>
+                Related Bids
+              </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {relatedBids.map((art) => (
                   <div key={art.id} className="min-w-[200px] flex-shrink-0">
