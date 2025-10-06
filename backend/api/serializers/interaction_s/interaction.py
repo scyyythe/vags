@@ -8,7 +8,7 @@ from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from api.serializers.artwork_s.bid_serializers import AuctionSerializer
 from api.serializers.exhibit_s.exhibit_seriliazers import ExhibitSerializer
 from api.serializers.user_s.users_serializers import UserSerializer
-
+from api.models.artwork_model.bid import Auction
 class CommentSerializer(serializers.Serializer):
     id = serializers.CharField()
     content = serializers.CharField()
