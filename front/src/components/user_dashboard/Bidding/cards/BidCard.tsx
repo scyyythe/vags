@@ -10,6 +10,7 @@ import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
 import { formatNumber } from "@/utils/numberFormat";
 import OwnerBidMenu from "../../own_profile/menu/bid_card/Menu";
 import { getLoggedInUserId } from "@/auth/decode";
+import { useAuctionActions } from "@/hooks/auction/useAuctionActions";
 interface ExtendedArtworkAuction extends ArtworkAuction {
   isPaid?: boolean;
   isHighestBidder?: boolean;
@@ -38,7 +39,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
   const [showBidPopup, setShowBidPopup] = useState(false);
   const loggedInUserId = getLoggedInUserId();
   const isOwner = data?.artwork?.artist_id === loggedInUserId;
-
+  const { closeAuction, deleteAuction } = useAuctionActions();
   const navigate = useNavigate();
   const { mutate: submitAuctionReport } = useAuctionSubmitReport();
 
@@ -162,18 +163,24 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
             {isOwner ? (
               <OwnerBidMenu
                 isOpen={menuOpen}
-                onDelete={() => {
-                  console.log("Delete auction", data.id);
-                  toast.success("Auction deleted");
-                  setMenuOpen(false);
+                onDelete={async () => {
+                  try {
+                    await deleteAuction.mutateAsync(data.id);
+                  } catch {
+                  } finally {
+                    setMenuOpen(false);
+                  }
                 }}
-                onCloseBid={() => {
-                  console.log("Close bid for", data.id);
-                  toast.success("Bidding closed");
-                  setMenuOpen(false);
+                onCloseBid={async () => {
+                  try {
+                    await closeAuction.mutateAsync(data.id);
+                  } catch {
+                    toast.error("Failed to close bidding");
+                  } finally {
+                    setMenuOpen(false);
+                  }
                 }}
                 onViewBids={() => {
-                  console.log("Viewing bids for", data.id);
                   setMenuOpen(false);
                 }}
                 bids={data.bid_history || []}

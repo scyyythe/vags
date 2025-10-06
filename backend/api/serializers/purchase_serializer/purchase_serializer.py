@@ -78,7 +78,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             action="purchased your artwork",
             target=artwork.title,
             icon="purchase",
-            created_at=now,
+            created_at=datetime.now(),
             link=f"/artwork/{artwork.id}/"
         )
 
@@ -90,7 +90,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             action="purchased an artwork",
             target=artwork.title,
             icon="purchase",
-            created_at=now,
+            created_at=datetime.now(),
             link=f"/viewproduct/{purchase.id}/"
         )
 

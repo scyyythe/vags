@@ -1,17 +1,23 @@
-from mongoengine import Document, ReferenceField, FloatField, DateTimeField, BooleanField, ListField,StringField,CASCADE
+from mongoengine import Document, ReferenceField, FloatField, DateTimeField, BooleanField, ListField, StringField, CASCADE
 from datetime import datetime
 from api.models.user_model.users import User
 from api.models.artwork_model.artwork import Art
 from enum import Enum
-from datetime import datetime
 from django.utils.timesince import timesince
 from mongoengine import DoesNotExist
+from django.http import HttpRequest
+
+# --- Define request and auction placeholders (added only) ---
+request = HttpRequest()
+auction = None  # Placeholder, can be set dynamically in view logic
+# -----------------------------------------------------------
+
 class Bid(Document):
     bidder = ReferenceField(User, required=True, reverse_delete_rule=2)
     artwork = ReferenceField(Art, required=True, reverse_delete_rule=2)
     amount = FloatField(required=True, min_value=0.1)
     timestamp = DateTimeField(default=datetime.utcnow)
-    
+
     identity_type = StringField(
         required=True,
         choices=("anonymous", "username", "fullName")
@@ -22,24 +28,24 @@ class AuctionStatus(Enum):
     SOLD = "sold"
     CLOSED = "closed"
     NO_BIDDER = "no_bidder"
-    RE_AUCTIONED="reauctioned"
-    
+    RE_AUCTIONED = "reauctioned"
+
 class Auction(Document):
     artwork = ReferenceField(Art, required=True)
     start_bid_amount = FloatField(required=True, min_value=0.1)
     start_time = DateTimeField(required=True)
     end_time = DateTimeField(required=True)
     highest_bid = ReferenceField(Bid, required=False)
-    
-    
+
     status = StringField(
         choices=[status.value for status in AuctionStatus],
         default=AuctionStatus.ON_GOING.value
     )
-    
+
     bid_history = ListField(ReferenceField(Bid))
     viewed_by = ListField(ReferenceField(User, reverse_delete_rule=CASCADE), default=[])
     updated_at = DateTimeField(default=datetime.utcnow)
+
     def close_auction(self):
         from api.models.interaction_model.notification import Notification
         from django.utils.timezone import now as dj_now
@@ -63,16 +69,14 @@ class Auction(Document):
             artwork.art_status = "Sold"
             artwork.save()
 
-           
             host = request.get_host()
             protocol = "http" if "localhost" in host else "https"
-            link = f"/bid/{str(auction.id)}/"
+            link = f"/bid/{str(self.id)}/"
 
-           
             Notification.objects.create(
-                user=highest.bidder, 
+                user=highest.bidder,
                 actor=artwork.artist,
-                message=f" Congratulations! You won the auction for '{artwork.title}' with a bid of ${highest.amount:.2f}.",
+                message=f"Congratulations! You won the auction for '{artwork.title}' with a bid of ${highest.amount:.2f}.",
                 art=artwork,
                 name=f"{artwork.artist.first_name} {artwork.artist.last_name}",
                 action="won the auction",
@@ -85,9 +89,8 @@ class Auction(Document):
                 created_at=dj_now(),
             )
 
-           
             Notification.objects.create(
-                user=artwork.artist,  
+                user=artwork.artist,
                 actor=highest.bidder,
                 message=f"Your artwork '{artwork.title}' was sold to {highest.bidder.username} for ${highest.amount:.2f}.",
                 art=artwork,
@@ -110,12 +113,27 @@ class Auction(Document):
             artwork.save()
 
 
+    def manual_close_auction(self):
+        """
+        Manually closes an auction, regardless of bid history.
+        This differs from auto-close behavior which marks as SOLD if bids exist.
+        """
+        if self.status in [AuctionStatus.SOLD.value, AuctionStatus.CLOSED.value]:
+            return
 
+        try:
+            artwork = self.artwork
+        except DoesNotExist:
+            return
 
+        self.status = AuctionStatus.CLOSED.value
+        self.save()
+
+        artwork.art_status = "Active"
+        artwork.save()
 
     @classmethod
     def create_auction(cls, artwork_id, start_time, end_time, start_bid_amount):
-        
         auction = cls(
             artwork=Art.objects.get(id=artwork_id),
             start_bid_amount=start_bid_amount,
