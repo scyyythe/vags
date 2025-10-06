@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useRef } from "react";
 import { CreditCard, DollarSign, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { format } from "date-fns";
+import html2canvas from "html2canvas";
 
 const PaymentDetailsModal = ({ isOpen, onClose, payment }) => {
+  const receiptRef = useRef<HTMLDivElement>(null);
+
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "completed":
@@ -20,6 +21,21 @@ const PaymentDetailsModal = ({ isOpen, onClose, payment }) => {
     }
   };
 
+  // download as picture
+  const handleDownloadReceipt = async () => {
+    if (!receiptRef.current) return;
+    try {
+      const canvas = await html2canvas(receiptRef.current, { scale: 2 });
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = `Receipt_${payment.transactionId}.png`;
+      link.click();
+    } catch (error) {
+      console.error("Error downloading receipt:", error);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl" onInteractOutside={(e) => e.preventDefault()}>
@@ -29,7 +45,7 @@ const PaymentDetailsModal = ({ isOpen, onClose, payment }) => {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6 text-[11px]">
+        <div ref={receiptRef} className="space-y-6 text-[11px]">
           {/* Payment Summary */}
           <div className="border border-border rounded-lg p-4">
             <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
@@ -44,20 +60,29 @@ const PaymentDetailsModal = ({ isOpen, onClose, payment }) => {
               <div className="flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Amount Paid</span>
                 <span className="text-xs font-semibold">
-                  ₱{payment.amount >= 1000 ? `${(payment.amount / 1000).toFixed(1)}k` : payment.amount.toLocaleString()}
+                  ₱
+                  {payment.amount >= 1000
+                    ? `${(payment.amount / 1000).toFixed(1)}k`
+                    : payment.amount.toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Processing Fee</span>
                 <span className="text-xs">
-                  -₱{payment.processingFee >= 1000 ? `${(payment.processingFee / 1000).toFixed(1)}k` : payment.processingFee.toLocaleString()}
+                  -₱
+                  {payment.processingFee >= 1000
+                    ? `${(payment.processingFee / 1000).toFixed(1)}k`
+                    : payment.processingFee.toLocaleString()}
                 </span>
               </div>
               <div className="border-t pt-2">
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-semibold">Net Amount</span>
                   <span className="text-sm font-bold text-green-600">
-                    ₱{payment.netAmount >= 1000 ? `${(payment.netAmount / 1000).toFixed(1)}k` : payment.netAmount.toLocaleString()}
+                    ₱
+                    {payment.netAmount >= 1000
+                      ? `${(payment.netAmount / 1000).toFixed(1)}k`
+                      : payment.netAmount.toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -65,57 +90,59 @@ const PaymentDetailsModal = ({ isOpen, onClose, payment }) => {
           </div>
 
           {/* Payment Method + Buyer Info side-by-side with scroll */}
-            <div className="flex flex-col md:flex-row gap-4 max-h-[260px] overflow-x-auto">
+          <div className="flex flex-col md:flex-row gap-4 max-h-[260px] overflow-x-auto">
             {/* Payment Method */}
             <div className="border border-border rounded-lg p-4 min-w-[300px] overflow-auto">
-                <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
+              <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
                 <CreditCard className="w-2.5 h-2.5" />
                 Payment Method
-                </h3>
-                <div className="flex items-center gap-3">
+              </h3>
+              <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-                    <CreditCard className="w-2.5 h-2.5 text-primary-foreground" />
+                  <CreditCard className="w-2.5 h-2.5 text-primary-foreground" />
                 </div>
                 <div>
-                    <p className="text-xs font-medium">{payment.paymentMethod}</p>
-                    <p className="text-[11px] text-muted-foreground">
+                  <p className="text-xs font-medium">{payment.paymentMethod}</p>
+                  <p className="text-[11px] text-muted-foreground">
                     {format(new Date(payment.paymentDate), "MMM dd, yyyy 'at' h:mm a")}
-                    </p>
+                  </p>
                 </div>
-                </div>
+              </div>
             </div>
 
             {/* Buyer Information */}
             <div className="border border-border rounded-lg p-4 min-w-[300px] overflow-auto">
-                <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
+              <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
                 <User className="w-2.5 h-2.5" />
                 Buyer Information
-                </h3>
-                <div className="space-y-2">
+              </h3>
+              <div className="space-y-2">
                 <div>
-                    <p className="text-xs font-medium">{payment.buyer.name}</p>
-                    <p className="text-[11px] text-muted-foreground">{payment.buyer.email}</p>
+                  <p className="text-xs font-medium">{payment.buyer.name}</p>
+                  <p className="text-[11px] text-muted-foreground">{payment.buyer.email}</p>
                 </div>
                 {payment.billing && (
-                    <div className="pt-2 border-t">
+                  <div className="pt-2 border-t">
                     <p className="text-[11px] text-muted-foreground">Billing Address:</p>
                     <p className="text-xs">{payment.billing.address}</p>
                     <p className="text-xs">
-                        {payment.billing.city}, {payment.billing.postalCode}
+                      {payment.billing.city}, {payment.billing.postalCode}
                     </p>
                     <p className="text-xs">{payment.billing.country}</p>
-                    </div>
+                  </div>
                 )}
-                </div>
+              </div>
             </div>
-            </div>
-
-          {/* Actions */}
-          <div className="flex justify-end">
-            <button className="px-6 py-2 rounded-lg text-[11px] text-white font-medium bg-black">
-              Download Receipt
-            </button>
           </div>
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            onClick={handleDownloadReceipt}
+            className="px-6 py-2 rounded-lg text-[11px] text-white font-medium bg-black"
+          >
+            Download Receipt
+          </button>
         </div>
       </DialogContent>
     </Dialog>
