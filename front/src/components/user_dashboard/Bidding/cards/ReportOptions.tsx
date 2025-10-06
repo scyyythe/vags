@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { X, MessageSquare } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { X } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -9,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 
 type ReportCategory = {
   id: string;
@@ -130,6 +129,18 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [customReason, setCustomReason] = useState<string>("");
+
+  // Disable page scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
