@@ -24,7 +24,7 @@ const Settings = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <div className="container mx-auto px-4 sm:px-6 pt-20 pb-6">
+      <div className="pt-20 pb-6 border">
 
         <main className="container">
           <h1 className="text-lg font-bold mb-4 text-left">{profileSettingsLabel}</h1>
