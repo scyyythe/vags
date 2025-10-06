@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,6 +44,18 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
   const [imageSlots, setImageSlots] = useState<(File | null)[]>([null, null, null, null]);
   const [errors, setErrors] = useState<ValidationErrors>({});
 
+  // Disable background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const isQuantityVisible = formData.edition !== "Original (1 of 1)";
@@ -52,7 +64,6 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
     const newErrors: ValidationErrors = {};
 
     // Price validation
-
     if (!formData.price.trim()) {
       newErrors.price = "Price is required";
     } else {
@@ -135,7 +146,7 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg px-10 py-6 w-ful max-w-sm relative">
         {/* Close Button */}
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">

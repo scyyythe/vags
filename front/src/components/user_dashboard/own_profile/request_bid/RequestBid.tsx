@@ -128,7 +128,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
   return (
     <div>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-sm pr-10 pl-8 py-6 rounded-md">
+        <DialogContent className="max-w-sm pr-10 pl-8 py-6 rounded-md" onInteractOutside={(e) => e.preventDefault()}>
           <DialogHeader className="text-center">
             <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
               <X className="h-4 w-4" />
