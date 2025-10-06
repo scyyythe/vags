@@ -27,7 +27,7 @@ const DeleteConfirmationPopup: React.FC<DeleteConfirmationPopupProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 overflow-hidden">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-hidden">
       <div className="bg-white rounded-lg py-7 px-10 shadow-xl max-w-sm w-full text-center relative">
         <h2 className="text-xs font-semibold text-gray-900 mb-2">
           You are about to delete this auction
