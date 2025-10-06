@@ -7,7 +7,7 @@ from api.models.transaction_model.transaction import Transaction
 from api.models.interaction_model.notification import Notification
 from api.models.user_model.users import User
 from django.utils import timezone
-
+from datetime import datetime
 def get_relative_time(dt):
     now = timezone.now()
     diff = now - dt
@@ -108,7 +108,7 @@ class ClaimArtworkPaymentView(APIView):
                 amount=str(amount),
                 money=True,
                 link=f"/artwork/{art.id}",
-                created_at=now,
+                created_at=datetime.now(),
             )
 
            
@@ -124,7 +124,7 @@ class ClaimArtworkPaymentView(APIView):
                 amount=str(amount),
                 money=True,
                 link=f"/artwork/{art.id}",
-                created_at=now,
+                created_at=datetime.now(),
             )
             return Response({"message": "Artwork claimed, payment completed, and notifications sent."}, status=status.HTTP_201_CREATED)
 

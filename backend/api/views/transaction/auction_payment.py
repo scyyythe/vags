@@ -11,6 +11,7 @@ from api.models.payment_model.payment_accounts import PaymentAccount
 from api.serializers.transaction.auction_payment import PayPalAuctionVerifySerializer
 from django.utils import timezone
 import os, logging
+from datetime import datetime
 logger = logging.getLogger(__name__)
 
 PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
@@ -130,7 +131,7 @@ class PayPalVerifyAuctionPaymentView(APIView):
             amount=str(paypal_amount),
             money=True,
             link=f"/artwork/{art.id}",
-            created_at=timezone.now()
+            created_at=datetime.now()
         )
 
         return Response({"message": "Auction payment verified successfully"}, status=status.HTTP_201_CREATED)
