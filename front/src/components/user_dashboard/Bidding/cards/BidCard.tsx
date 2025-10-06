@@ -2,14 +2,12 @@ import React, { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
-import OwnerBidMenu from "@/components/user_dashboard/own_profile/menu/bid_card/Menu";
+import BidMenu from "./BidMenu";
 import BidPopup from "../place_bid/BidPopup";
 import CountdownTimer from "@/hooks/count/useCountdown";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
 import { formatNumber } from "@/utils/numberFormat";
-import ViewBidsModal from "@/components/user_dashboard/own_profile/menu/bid_card/ViewBidsModal";
-
 interface ExtendedArtworkAuction extends ArtworkAuction {
   isPaid?: boolean;
   isHighestBidder?: boolean;
@@ -32,18 +30,10 @@ interface BidCardProps {
   };
 }
 
-const BidCard: React.FC<BidCardProps> = ({
-  data,
-  reportInfo,
-  isLoading = false,
-  onPlaceBid,
-  onClick,
-  user,
-}) => {
+const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, onPlaceBid, onClick, user }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
-  const [showBidsModal, setShowBidsModal] = useState(false); // ✅ Added for ViewBidsModal
 
   const navigate = useNavigate();
   const { mutate: submitAuctionReport } = useAuctionSubmitReport();
@@ -65,44 +55,58 @@ const BidCard: React.FC<BidCardProps> = ({
     );
   }
 
-  // ✅ Handlers for owner menu actions
-  const handleDelete = () => {
-    toast("Bid deleted successfully", { closeButton: true });
+  const handleHide = () => {
+    setIsHidden(true);
+    toast("Artwork hidden", { closeButton: true });
     setMenuOpen(false);
   };
 
-  const handleCloseBid = () => {
-    toast("Bidding has been closed", { closeButton: true });
+  const handleReport = ({
+    category,
+    option,
+    description,
+    additionalInfo,
+  }: {
+    category: string;
+    option?: string;
+    description?: string;
+    additionalInfo?: string;
+  }) => {
+    if (reportInfo?.reported) {
+      toast.error("You have already reported this auction.", { closeButton: true });
+      setMenuOpen(false);
+      return;
+    }
+
+    console.log("Submitting auction report with data:", {
+      auction_id: data.id,
+      category,
+      option,
+      description,
+      additionalInfo,
+    });
+
+    submitAuctionReport({
+      auction_id: data.id,
+      category,
+      option,
+      description,
+      additionalInfo,
+    });
+
     setMenuOpen(false);
   };
 
-  const handleViewBids = () => {
-    setShowBidsModal(true); // ✅ Opens modal instead of navigating
-    setMenuOpen(false);
+  const isReported = reportInfo?.reported || false;
+
+  const handleBidSubmit = (amount: number) => {
+    onPlaceBid?.(data.id, amount);
+    toast(`Bid of ${amount}K placed successfully!`, { closeButton: true });
   };
 
   if (isHidden) return null;
 
   const hasWon = data.isHighestBidder && data.isPaid;
-
-  // ✅ Sample bids (replace with actual API data)
-  const sampleBids = [
-    {
-      id: "1",
-      amount: 4500,
-      bidderFullName: "John Doe",
-      timestamp: new Date(),
-      identity_type: "public",
-      user: { profile_picture: "https://i.pravatar.cc/40?img=3" },
-    },
-    {
-      id: "2",
-      amount: 4000,
-      bidderFullName: "Anonymous",
-      timestamp: new Date(),
-      identity_type: "anonymous",
-    },
-  ];
 
   return (
     <>
@@ -111,16 +115,13 @@ const BidCard: React.FC<BidCardProps> = ({
         className="w-full rounded-xl bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
       >
         <div className="relative">
-          <img
-            src={data.artwork.image_url}
-            alt={data.artwork.title}
-            className="w-full h-56 object-cover rounded-xl"
-          />
+          <img src={data.artwork.image_url} alt={data.artwork.title} className="w-full h-56 object-cover rounded-xl" />
 
           {/* Auction Timer Display */}
           <div className="absolute top-0.5 left-4">
             {new Date() < new Date(data.start_time) ? (
               <div className="absolute top-3.5 left-0 whitespace-nowrap">
+                {/* Incoming auction timer only */}
                 <div className="text-gray-600 text-left bg-white bg-opacity-60 text-[9px] px-3 py-1 rounded-[5px]">
                   <p className="text-[9px]">Auction will start on</p>
                   <p className="text-[10px] font-semibold text-black mt-0.5">
@@ -137,19 +138,14 @@ const BidCard: React.FC<BidCardProps> = ({
               </div>
             ) : (
               <div className="absolute top-1 left-24 whitespace-nowrap">
-                <CountdownTimer
-                  startTime={data.start_time}
-                  targetTime={data.end_time}
-                />
+                {/* Active auction countdown */}
+                <CountdownTimer startTime={data.start_time} targetTime={data.end_time} />
               </div>
             )}
           </div>
 
-          {/* Three dots (Owner Menu) */}
-          <div
-            className="absolute top-4 right-3"
-            onClick={(e) => e.stopPropagation()}
-          >
+          {/* Three dots menu */}
+          <div className="absolute top-4 right-3" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -159,34 +155,28 @@ const BidCard: React.FC<BidCardProps> = ({
             >
               <MoreHorizontal size={13} />
             </button>
-
-            {/* ✅ Owner Menu Integrated */}
-            <OwnerBidMenu
+            <BidMenu
               isOpen={menuOpen}
-              onDelete={handleDelete}
-              onViewBids={handleViewBids}
-              onCloseBid={handleCloseBid}
+              onHide={handleHide}
+              onReport={handleReport}
+              isReported={isReported}
+              auctionId={data.id}
               className="top-8 -left-[12px]"
             />
           </div>
 
-          {/* Bottom overlay with title, bid, and button */}
+          {/* Bottom overlay with title, current bid and button */}
           <div className="absolute bottom-3 left-3 right-3">
             <div className="bg-white bg-opacity-60 backdrop-blur-[3px] h-[69px] px-6 flex items-center justify-between rounded-lg">
               <div className="flex flex-col justify-center">
-                <h2
-                  className="text-xs font-semibold truncate max-w-[100px]"
-                  title={data.artwork.title}
-                >
+                <h2 className="text-xs font-semibold truncate max-w-[100px]" title={data.artwork.title}>
                   {data.artwork.title}
                 </h2>
 
                 <div className="text-gray-700 text-[9px]">
                   {hasWon ? "Your Bid" : "Current Bid"}{" "}
                   <span className="text-black text-sm font-bold ml-2">
-                    {data.highest_bid?.amount
-                      ? formatNumber(data.highest_bid.amount)
-                      : "0"}
+                    {data.highest_bid?.amount ? formatNumber(data.highest_bid.amount) : "0"}
                   </span>
                 </div>
               </div>
@@ -209,7 +199,6 @@ const BidCard: React.FC<BidCardProps> = ({
         </div>
       </div>
 
-      {/* Bid Popup */}
       <BidPopup
         isOpen={showBidPopup}
         onClose={() => setShowBidPopup(false)}
@@ -219,14 +208,6 @@ const BidCard: React.FC<BidCardProps> = ({
         username={user?.username || "Unknown"}
         fullName={`${user?.first_name || "Unknown"} ${user?.last_name || ""}`}
         start_bid_amount={data.start_bid_amount}
-      />
-
-      {/* ✅ View Bids Modal */}
-      <ViewBidsModal
-        isOpen={showBidsModal}
-        onClose={() => setShowBidsModal(false)}
-        bids={sampleBids}
-        isOwner={true}
       />
     </>
   );
