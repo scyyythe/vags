@@ -141,6 +141,18 @@ const BidDetails = () => {
   }, [item, allAuctions]);
 
   useEffect(() => {
+      if (isExpanded) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "auto";
+      }
+  
+      return () => {
+        document.body.style.overflow = "auto";
+      };
+  }, [isExpanded]);
+
+  useEffect(() => {
     if (descriptionRef.current) {
       const isOver = descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight;
       setIsOverflowing(isOver);
