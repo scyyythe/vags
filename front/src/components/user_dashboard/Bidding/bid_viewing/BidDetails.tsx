@@ -25,6 +25,20 @@ import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
 import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
 import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 
+function formatAmount(amount: number): string {
+  if (amount >= 1_000_000_000_000) {
+    return (amount / 1_000_000_000_000).toFixed(2).replace(/\.?0+$/, "") + "T";
+  } else if (amount >= 1_000_000_000) {
+    return (amount / 1_000_000_000).toFixed(2).replace(/\.?0+$/, "") + "B";
+  } else if (amount >= 1_000_000) {
+    return (amount / 1_000_000).toFixed(2).replace(/\.?0+$/, "") + "M";
+  } else if (amount >= 1_000) {
+    return (amount / 1_000).toFixed(2).replace(/\.?0+$/, "") + "K";
+  } else {
+    return amount.toString();
+  }
+}
+
 export interface BidCardData {
   id: string;
   title: string;
@@ -265,15 +279,15 @@ const BidDetails = () => {
                                     <div>
                                       <span className="font-semibold text-[11px] mr-1">
                                         <i className="bx bx-money text-[8px] text-gray-400"></i>{" "}
-                                        {bid.amount.toLocaleString()}
+                                        {formatAmount(bid.amount)}
                                       </span>
                                       <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
                                         by <p className="font-medium text-gray-700">{bid.bidderFullName}</p>
-                                        {isOwner && (
+                                        {/* {isOwner && (
                                           <span className="ml-1 text-[9px] text-gray-400">
                                             {formatBidDate(bid.timestamp)}
                                           </span>
-                                        )}
+                                        )} */}
                                       </span>
                                     </div>
                                   </div>
@@ -436,7 +450,7 @@ const BidDetails = () => {
                       <p className="text-[10px] text-gray-500 mb-2 -mt-2">Highest Bid</p>
                       <p className="text-lg font-semibold">
                         {item.highest_bid && item.highest_bid.amount != null
-                          ? `₱${item.highest_bid.amount.toLocaleString()}`
+                          ? `₱${formatAmount(item.highest_bid.amount)}`
                           : "No bids yet"}
                       </p>
                     </div>
@@ -491,7 +505,7 @@ const BidDetails = () => {
                               <div>
                                 <span className="font-semibold text-[11px] mr-1">
                                   <i className="bx bx-money text-[8px] text-gray-400"></i>{" "}
-                                  {bid.amount.toLocaleString()}
+                                  {formatAmount(bid.amount)}
                                 </span>
                                 <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
                                   by <p className="font-medium text-gray-700">{bid.bidderFullName}</p>
