@@ -156,7 +156,7 @@ const PaymentAccountsTab = () => {
               {addNewPaymentMethodLabel}
             </button>
           </DialogTrigger>
-          <DialogContent className="max-w-md" onInteractOutside={(e) => e.preventDefault()}>
+          <DialogContent  className="max-w-md sm:rounded-md rounded-lg" onInteractOutside={(e) => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle className="text-[15px]">
                 {editingAccount ? editPaymentMethodLabel : addNewPaymentMethodLabel}
