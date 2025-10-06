@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAddressContext } from "../shipping_address/AddressContext";
 import useAllAddresses from "@/hooks/users/address/useAllAddresses";
 import { usePurchase } from "@/context/PurchaseContext";
+
 interface PreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -23,6 +24,18 @@ interface PreviewModalProps {
 }
 
 const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, onProceedToCheckout }) => {
+  // Disable scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
   const navigate = useNavigate();
   const { data: addresses, isLoading } = useAllAddresses();
