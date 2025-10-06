@@ -45,7 +45,7 @@ const ViewBidsModal: React.FC<ViewBidsModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
     >
       <div
         className="bg-white rounded-lg shadow-xl w-full max-w-xs max-h-md flex flex-col overflow-hidden"
