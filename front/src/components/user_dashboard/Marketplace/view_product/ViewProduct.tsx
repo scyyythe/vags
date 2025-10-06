@@ -56,6 +56,18 @@ const ProductViewingContent = () => {
   };
 
   useEffect(() => {
+      if (isExpanded) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "auto";
+      }
+  
+      return () => {
+        document.body.style.overflow = "auto";
+      };
+  }, [isExpanded]);
+
+  useEffect(() => {
     if (reportStatus) {
       setIsReported(reportStatus.reported);
     }
@@ -262,7 +274,7 @@ const ProductViewingContent = () => {
                     </>
                   )}
 
-                  {/* ✅ Expand Button (always visible, not affected by hover) */}
+                  {/* Expand Button */}
                   <div className={`absolute bottom-3 right-3 ${isMobile ? "" : "z-10"} flex flex-col items-end gap-3`}>
                     <div
                       className="group/expand flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
