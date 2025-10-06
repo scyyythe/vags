@@ -1,4 +1,3 @@
-// ChatDropdown.tsx
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -7,6 +6,7 @@ import { ConversationList } from "./ConversationList";
 import { MessagesList } from "./MessagesList";
 import { MessageInput } from "./MessageInput";
 import { Conversation, Message } from "./types/types";
+import ShareModal from "@/components/user_dashboard/local_components/share/ShareModal";
 import { InviteFriends } from "./InviteFriends";
 import { db } from "@/firebase/firebaseConfig";
 import { collection, query, orderBy, where, onSnapshot } from "firebase/firestore";
@@ -43,6 +43,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const userAvatarLocal = localStorage.getItem("avatar_url") || undefined;
   const [conversations, setConversations] = useUserConversations(userId);
   const [headerName, setHeaderName] = useState(participantName || "Unknown");
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const { messages: firebaseMessages, sendMessage: sendFirebaseMessage } = useFirebaseChat(
     selectedConversation || "",
@@ -563,7 +564,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                 onDeleteMessage={deleteMessage}
                 onSetReactionPicker={setShowReactionPicker}
               />
-            ) : directMessageMode ? ( // 👈 force MessagesList when redirecting
+            ) : directMessageMode ? ( 
               <div className="flex items-center justify-center flex-1 text-gray-500 text-xs">
                 Loading conversation...
               </div>
@@ -587,8 +588,22 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                 ) : (
                   <div className="flex items-center justify-center flex-1 text-gray-500 text-xs">No messages yet</div>
                 )}
-                <div className="mt-auto">
+                {/* <div className="mt-auto">
                   <InviteFriends />
+                </div> */}
+                <div className="mt-auto mb-4 px-4 space-y-2">
+                  <button
+                    onClick={() => setShareModalOpen(true)}
+                    className="w-full bg-black text-white py-2 rounded-lg text-[10px] hover:bg-gray-800 transition"
+                  >
+                    Share with Friends
+                  </button>
+
+                  <ShareModal
+                    isOpen={shareModalOpen}
+                    onClose={() => setShareModalOpen(false)}
+                    linkToShare={window.location.href}
+                  />
                 </div>
               </div>
             )}
