@@ -564,44 +564,11 @@ const ProductViewingContent = () => {
       </div>
 
       {/* Related Artworks Section */}
-              {/* {(() => {
-                const filteredRelated = related?.filter(
-                  (card) => card.id !== id && card.category?.trim().toLowerCase() === artwork?.category?.trim().toLowerCase()
-                );
-      
-                return (
-                  related &&
-                  related.length > 0 && ( */}
-                    <div className="container md:px-6 mb-4">
-                      <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-2"}`}>
-                        Related Artworks
-                      </h2>
-                      {/* {filteredRelated && filteredRelated.length > 0 ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                          {filteredRelated.map((card) => {
-                            const status = bulkStatusLookup[card.id];
-                            const report = reportStatusLookup[card.id];
-                            return (
-                              <ArtCard
-                                key={card.id}
-                                artwork={card}
-                                status={status}
-                                report={report}
-                                onButtonClick={handleTipJar}
-                                isExplore={true}
-                              />
-                            );
-                          })}
-                        </div>
-                      ) : (
-                        <div className="flex flex-col justify-center items-center h-32 w-full">
-                          <p className="text-gray-500 text-xs mb-2">No related artworks found.</p>
-                        </div>
-                      )} */}
-                    </div>
-                  {/* )
-                );
-              })()} */}
+      <div className="container md:px-6 mb-4">
+        <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-2"}`}>
+            Related Artworks
+        </h2>
+      </div>
 
       {/* Expanded artwork view */}
       {isExpanded && (
