@@ -27,7 +27,7 @@ const ViewBidsModal: React.FC<ViewBidsModalProps> = ({
   isOwner = true,
   formatBidDate = (date) => new Date(date).toLocaleString(),
 }) => {
-  // ✅ Prevent background scrolling when modal is open
+  // Prevent background scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -46,10 +46,9 @@ const ViewBidsModal: React.FC<ViewBidsModalProps> = ({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-      // ❌ Removed onClick={onClose} — clicking outside won’t close it
     >
       <div
-        className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden"
+        className="bg-white rounded-lg shadow-xl w-full max-w-xs max-h-md flex flex-col overflow-hidden"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 flex-shrink-0">
