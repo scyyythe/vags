@@ -80,6 +80,18 @@ const ArtworkDetails = () => {
   const reportStatusLookup = report_status || {};
 
   useEffect(() => {
+        if (isExpanded) {
+          document.body.style.overflow = "hidden";
+        } else {
+          document.body.style.overflow = "auto";
+        }
+    
+        return () => {
+          document.body.style.overflow = "auto";
+        };
+  }, [isExpanded]);
+
+  useEffect(() => {
     if (!artwork || !descriptionRef.current) return;
 
     const isOver = descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight;
