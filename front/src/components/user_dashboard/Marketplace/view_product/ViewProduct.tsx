@@ -565,7 +565,7 @@ const ProductViewingContent = () => {
 
       {/* Related Artworks Section */}
       <div className="container md:px-6 mb-4">
-        <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-2"}`}>
+        <h2 className={`font-medium ${isMobile ? "text-sm -ml-6 mb-4 mt-4" : "text-xs mb-4 -mt-2"}`}>
             Related Artworks
         </h2>
       </div>
