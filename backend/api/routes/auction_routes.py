@@ -12,7 +12,7 @@ from api.views.artwork_views.bid_views import (
     AuctionDetailView,
     MyAuctionListView,
 )
-from api.views.artwork_views.auction_views import LightweightAuctionListView  #
+from api.views.artwork_views.auction_views import LightweightAuctionListView ,DeleteAuctionView,CloseAuctionViewNew
 
 auction_urlpatterns = [
     path('auction/create/', AuctionCreateView.as_view(), name='create_auction'),
@@ -29,5 +29,8 @@ auction_urlpatterns = [
 
     path("auctions/following", FollowedAuctionsView.as_view(), name="followed-auctions"),
 
-    path("auction/light-cards/", LightweightAuctionListView.as_view(), name="light-auctions"),  # ✅ Fixed route
+    path("auction/light-cards/", LightweightAuctionListView.as_view(), name="light-auctions"), 
+    
+    path('auction/close_new/<str:auction_id>/', CloseAuctionViewNew.as_view(), name='close_auction'),
+    path('auction/delete/<str:auction_id>/', DeleteAuctionView.as_view(), name='delete_auction'),
 ]

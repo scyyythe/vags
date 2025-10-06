@@ -154,7 +154,7 @@ class PayPalVerifyPaymentView(APIView):
             donation="Tip",
             money=True,
             link=link,
-            created_at=timezone.now(),
+            created_at=datetime.now(),
         )
 
         return Response({"message": "Payment verified and tip recorded successfully"}, status=status.HTTP_201_CREATED)
