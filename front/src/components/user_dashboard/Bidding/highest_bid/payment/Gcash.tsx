@@ -57,7 +57,7 @@ export const GCashPayment: React.FC<GCashPaymentProps> = ({ onClosePreviousModal
             </div>
 
             <div>
-              <p className="text-[13px] font-medium text-black">{gcashNumber}</p>
+              <p className="text-[13px] font-semibold text-black">{gcashNumber}</p>
               <p className="text-gray-700 text-[10px]">GCash Mobile Number</p>
             </div>
           </div>
