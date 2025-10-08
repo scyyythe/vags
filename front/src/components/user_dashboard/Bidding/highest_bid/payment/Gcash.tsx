@@ -1,56 +1,54 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { usePayment } from "@/context/PaymentContext";
-import { ArrowLeft } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export const GCashPayment = () => {
-  const { confirmPurchase } = usePayment();
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    confirmPurchase();
+  // Example data — replace with actual data if needed
+  const gcashNumber = "09XX XXX XXXX";
+  const qrCodeUrl = "/path-to-your-qr-code-image.png"; 
+
+  const gcashLink = "https://www.gcash.com/"; 
+
+  const handlePayNow = () => {
+    window.open(gcashLink, "_blank"); // Opens GCash in a new tab/window
   };
 
   return (
-    <div className="overflow-hidden">
-        <div className="p-4 text-center text-xs text-gray-900 font-semibold border-none -mb-6">
+    <Card className="border-none shadow-none">
+      <CardContent className="p-4 space-y-3 text-center">
+        <div className="text-sm font-semibold text-gray-900">
           GCash Payment
         </div>
-      <div className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-2">
-            <Label htmlFor="gcashNumber" className="text-gray-700 text-[11px]">GCash Mobile Number</Label>
-            <Input 
-              id="gcashNumber" 
-              placeholder="09XX XXX XXXX" 
-              required 
-              className="border-gray-300 rounded-full h-8"
-              style={{fontSize:"10px"}}
+
+        <div className="pb-2.5">
+          <p className="text-gray-700 text-[11px] mb-2">
+            Scan to Pay via QR Code
+          </p>
+          <div className="flex justify-center mb-2.5">
+            <img
+              src={qrCodeUrl}
+              alt="GCash QR Code"
+              className="w-48 h-48 object-cover rounded-md border border-gray-200 text-xs"
             />
           </div>
-              
-          <div className="space-y-2">
-            <Label htmlFor="gcashName" className="text-gray-700 text-[11px]">Account Name</Label>
-            <Input 
-              id="gcashName" 
-              placeholder="Full Name" 
-              required 
-              className="border-gray-300 rounded-full h-8"
-              style={{fontSize:"10px"}}
-            />
+
+          <div>
+            <p className="text-[13px] font-medium text-black">{gcashNumber}</p>
+            <p className="text-gray-700 text-[10px]">
+              GCash Mobile Number
+            </p>
           </div>
-          
-          <Button 
-            type="submit" 
-            className="w-full h-9 bg-blue-700 hover:bg-blue-600 rounded-full text-[11px]"
-          >
-            Pay ₱5,000.00
-          </Button>
-        </form>
-      </div>
-    </div>
+
+        </div>
+
+        <Button
+          onClick={handlePayNow}
+          className="w-full h-9 bg-blue-700 hover:bg-blue-600 rounded-full text-[11px]"
+        >
+          Pay Now
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
