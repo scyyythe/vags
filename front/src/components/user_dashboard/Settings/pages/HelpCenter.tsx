@@ -61,7 +61,7 @@ const HelpCenter = () => {
         <h3 className="text-xs font-medium mb-2">{needHelpLabel}</h3>
         <p className="text-gray-600 text-[11px] mb-5">{helpDescription}</p>
         
-        <button className="bg-red-800 hover:bg-red-700 text-white text-[11px] py-1 px-2 rounded-sm">
+        <button className="bg-red-800 hover:bg-red-700 text-white text-[11px] py-1.5 px-4 rounded-full">
           {contactSupportLabel}
         </button>
       </div>

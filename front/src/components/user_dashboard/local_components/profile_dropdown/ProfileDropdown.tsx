@@ -28,6 +28,11 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
     onClose();
   };
 
+  const handleHelpCenter = () => {
+    navigate("/settings/help-center");
+    onClose();
+  };
+
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
@@ -82,7 +87,7 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
           <Settings size={14} /> Settings
         </button>
 
-        <button className="flex items-center gap-3 hover:text-black">
+        <button onClick={handleHelpCenter} className="flex items-center gap-3 hover:text-black">
           <Headphones size={14} /> Help Center
         </button>
       </div>
@@ -100,7 +105,7 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
         </button>
 
       </div>
-    </div>
+    </div> 
 
     {showLogoutConfirm && (
       <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50 z-[9999]">
