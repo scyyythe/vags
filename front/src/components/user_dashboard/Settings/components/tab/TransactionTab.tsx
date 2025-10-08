@@ -7,45 +7,6 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import useTransactionsQuery from "@/hooks/transaction/useTransactions";
 import { getLoggedInUserId } from "@/auth/decode";
-// Mock data
-const mockTransactions = [
-  {
-    id: 1,
-    type: "Sent",
-    amount: "- 500.00 IDR",
-    currency: "IDR",
-    method: "Credit Card",
-    methodDetail: "**** 8969",
-    status: "Success",
-    activity: "Sending money to Raihan Fikri",
-    people: { name: "Raihan Zulhimin", avatar: null, initials: "R" },
-    date: "Aug 28, 2023 3:40 PM",
-  },
-  {
-    id: 2,
-    type: "Received",
-    amount: "+ 1,200.00 IDR",
-    currency: "IDR",
-    method: "Bank Transfer",
-    methodDetail: "BNI **** 2345",
-    status: "Success",
-    activity: "Received payment from Angela",
-    people: { name: "Angela Tan", avatar: null, initials: "A" },
-    date: "Aug 27, 2023 10:15 AM",
-  },
-  {
-    id: 3,
-    type: "Converted",
-    amount: "- 200.00 USD",
-    currency: "USD",
-    method: "Currency Exchange",
-    methodDetail: "USD → IDR",
-    status: "Incomplete",
-    activity: "Currency conversion",
-    people: { name: "You", avatar: null, initials: "Y" },
-    date: "Aug 26, 2023 5:00 PM",
-  },
-];
 
 // Status colors
 const statusColors: Record<string, string> = {
@@ -72,10 +33,9 @@ function Avatar({ avatar, initials }: { avatar?: string | null; initials: string
 }
 
 const filterOptions = [
-  { key: "all", label: "All", count: mockTransactions.length },
-  { key: "received", label: "Received", count: mockTransactions.filter((t) => t.type === "Received").length },
-  { key: "sent", label: "Sent", count: mockTransactions.filter((t) => t.type === "Sent").length },
-  { key: "converted", label: "Convert", count: mockTransactions.filter((t) => t.type === "Converted").length },
+  { key: "all", label: "All", count: length },
+  { key: "received", label: "Received", count: length },
+  { key: "sent", label: "Sent", count: length },
 ];
 
 const TransactionsTab: React.FC = () => {
