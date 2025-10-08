@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,7 @@ import paypalLogo from "../../../../../public/pics/paypal.png";
 import stripeLogo from "../../../../../public/pics/stripe.png";
 import { usePayPalTip } from "@/hooks/paypal/usePayPalTip";
 import { useStripeTip } from "@/hooks/tips/useStripeTip";
+
 interface TipJarPopupProps {
   isOpen: boolean;
   onClose: () => void;
@@ -32,12 +33,15 @@ const TipJarPopup = ({
   artId = "",
 }: TipJarPopupProps) => {
   const [step, setStep] = useState<"amount" | "confirm" | "paypal">("amount");
-
   const [selectedAmount, setSelectedAmount] = useState<string | null>(null);
   const [customAmount, setCustomAmount] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("PayPal");
   const popupRef = useRef<HTMLDivElement>(null);
   const { createStripeSession } = useStripeTip();
+  const [isQrExpanded, setIsQrExpanded] = useState(false);
+  const [showReceiptPopup, setShowReceiptPopup] = useState(false);
+
+  const qrCodeUrl = "/pics/qr.jpg"; 
 
   const predefinedAmounts = [
     { value: "250", label: "₱250" },
@@ -48,10 +52,11 @@ const TipJarPopup = ({
     { value: "3000", label: "₱3000" },
   ];
 
+  //Disable modal closing when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-        onClose();
+        // Do nothing (prevent closing)
       }
     };
 
@@ -62,8 +67,9 @@ const TipJarPopup = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
+  // Lock scroll when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -112,6 +118,7 @@ const TipJarPopup = ({
 
     setStep("confirm");
   };
+
   const paypalRef = usePayPalTip({
     amount: selectedAmount || customAmount,
     default_paypal_email: default_paypal_email,
@@ -147,6 +154,7 @@ const TipJarPopup = ({
       onClose();
     }
   };
+
   const handleCancel = () => {
     if (step === "confirm") {
       setStep("amount");
@@ -199,7 +207,7 @@ const TipJarPopup = ({
                 {/* If account EXISTS */}
                 <h2 className="text-md font-bold mb-6">Confirm Your Donation</h2>
 
-                <div className="p-4 rounded-md mb-8 space-y-4">
+                <div className="p-4 rounded-md mb-2 space-y-4">
                   {/* Artist */}
                   <div className="flex justify-between items-center">
                     <p className="text-[11px] text-black">To:</p>
@@ -226,30 +234,56 @@ const TipJarPopup = ({
                         {paymentMethod === "Stripe" && <img src={stripeLogo} className="w-4 h-4" />}
                         <span className="text-xs font-medium">{paymentMethod}</span>
                       </div>
-                      <p className="text-[10px] text-gray-600 mt-4">
+                    </div>
+                  </div>
+
+                  {/* Centered GCash number and QR code */}
+                  {paymentMethod === "GCash" ? (
+                    <div className="flex flex-col items-center justify-center mt-4 w-full">
+                      <p className="text-[11px] text-gray-700 mt-1">Scan this QR to donate</p>
+
+                      {/* QR container with hover expand button */}
+                      <div className="relative group mt-2">
+                        <img
+                          src={qrCodeUrl}
+                          alt="GCash QR Code"
+                          className="w-48 h-48 text-xs rounded-md border border-gray-200 object-cover"
+                        />
+
+                        {/* Hidden by default, appears on hover */}
+                        <button
+                          onClick={() => setIsQrExpanded(true)}
+                          aria-label="Expand QR"
+                          className={
+                            "absolute bottom-2 right-2 rounded-full p-2 bg-black shadow-xl text-white " +
+                            "opacity-0 scale-95 pointer-events-none transition-all duration-200 " +
+                            "group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto"
+                          }
+                        >
+                          <Maximize2 className="w-3 h-3" />
+                        </button>
+                      </div>
+
+                      <p className="text-xs text-black text-center font-medium mt-2">09XX-XXX-XXXX</p>
+                    </div>
+                  ) : (
+                    <div className="flex items-end justify-end">
+                      <p className="text-[11px] text-gray-700">
                         {paymentMethod === "PayPal" && default_paypal_email}
-                        {paymentMethod === "GCash" && "09XX-XXX-XXXX"}
                         {paymentMethod === "Stripe" && "stripe_account@example.com"}
                       </p>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 <div className="flex gap-4 justify-between">
                   <Button
                     onClick={handleConfirmDonation}
                     className="w-full bg-[#B5191D] hover:bg-[#9b1518] text-white text-xs font-medium rounded-full py-1 px-4"
-                    disabled={!default_paypal_email}
+                    disabled={paymentMethod === "PayPal" && !default_paypal_email}
                   >
-                    Donate
+                    {paymentMethod === "GCash" ? "Donated" : "Donate"}
                   </Button>
-                  {/* <Button
-                    variant="outline"
-                    onClick={handleCancel}
-                    className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-medium rounded-full py-1 px-4"
-                  >
-                    No
-                  </Button> */}
                 </div>
               </>
             )}
@@ -374,20 +408,40 @@ const TipJarPopup = ({
           </div>
         )}
       </div>
+
       {/* PayPal payment step */}
       {step === "paypal" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
             <h2 className="text-xs font-small mb-4">Pay with PayPal</h2>
-
             <div ref={paypalRef} className="mx-auto" />
-
             <button onClick={() => setStep("amount")} className="mt-4 text-xs text-gray-500 underline">
               Cancel and go back
             </button>
           </div>
         </div>
       )}
+
+      {isQrExpanded && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center overflow-hidden">
+          <button
+            onClick={() => setIsQrExpanded(false)}
+            className="absolute top-4 right-6 z-[60] bg-white rounded-full p-1.5 shadow-md transition-colors duration-200"
+            aria-label="Close expanded QR"
+          >
+            <X className="w-4 h-4 text-gray-900" />
+          </button>
+        
+          <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
+            <img
+              src={qrCodeUrl}
+              alt="Expanded QR Code"
+              className="max-h-[80vh] max-w-[90vw] object-contain"
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { PaymentProvider } from "@/context/PaymentContext";
 import { usePayment } from "@/context/PaymentContext";
@@ -7,7 +7,6 @@ import { BidDetails } from "@/components/user_dashboard/Bidding/highest_bid/prev
 import { PaymentMethods } from "@/components/user_dashboard/Bidding/highest_bid/payment/PaymentMethods";
 import { ShippingInfo } from "@/components/user_dashboard/Bidding/highest_bid/preview/ShippingInfo";
 import { TermsReminder } from "@/components/user_dashboard/Bidding/highest_bid/preview/TermsReminder";
-import { mockArtwork, mockBid } from "@/components/user_dashboard/Bidding/highest_bid/data/mockData";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
 import { CreditCardPayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/CreditCard";
@@ -15,14 +14,29 @@ import { GCashPayment } from "@/components/user_dashboard/Bidding/highest_bid/pa
 import { StripePayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/Stripe";
 import { PayPalPayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/PayPal";
 import { toast } from "sonner";
+import { X } from "lucide-react";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 import ArtworkSummarySkeleton from "@/components/skeletons/ArtworkSummarySkeleton";
 import BidDetailsSkeleton from "@/components/skeletons/BidDetailsSkeleton";
+
 const BidWinnerPageContent = () => {
   const { selectedPaymentMethod } = usePayment();
   const [showModal, setShowModal] = useState(false);
+  const [showReceiptPopup, setShowReceiptPopup] = useState(false);
   const { id: auctionId } = useParams<{ id: string }>();
   const { data: auctionData, isLoading, error } = useFetchBiddingArtworkById(auctionId || "");
+
+  // Disable scrolling when modal OR receipt popup is open
+  useEffect(() => {
+    if (showModal || showReceiptPopup) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showModal, showReceiptPopup]);
 
   if (isLoading)
     return (
@@ -30,7 +44,6 @@ const BidWinnerPageContent = () => {
         <div className="bg-white rounded-xl overflow-hidden">
           <ArtworkSummarySkeleton />
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-1">
             <div className="bg-white rounded-xl border overflow-hidden">
@@ -53,7 +66,15 @@ const BidWinnerPageContent = () => {
       case "creditCard":
         return <CreditCardPayment />;
       case "gcash":
-        return <GCashPayment />;
+        return (
+          <GCashPayment
+            onClosePreviousModal={() => {
+              setShowModal(false); // close payment modal
+              setShowReceiptPopup(true); // show receipt popup
+              setTimeout(() => setShowReceiptPopup(false), 2000); // auto-close after 2s
+            }}
+          />
+        );
       case "paypal":
         return (
           <PayPalPayment
@@ -86,8 +107,12 @@ const BidWinnerPageContent = () => {
 
       <div className="container px-10 max-w-7xl">
         <div className="text-center mb-8">
-          <h1 className="text-sm md:text-md font-bold text-gray-900">Congratulations! You're the highest bidder</h1>
-          <p className="text-[11px] text-gray-600 mt-2">Complete your purchase to claim this artwork</p>
+          <h1 className="text-sm md:text-md font-bold text-gray-900">
+            Congratulations! You're the highest bidder
+          </h1>
+          <p className="text-[11px] text-gray-600 mt-2">
+            Complete your purchase to claim this artwork
+          </p>
         </div>
 
         <div className="space-y-8">
@@ -113,7 +138,11 @@ const BidWinnerPageContent = () => {
             </div>
           </div>
 
-          <div className="flex justify-end mt-4">
+          <div className="bg-white overflow-hidden">
+            <TermsReminder />
+          </div>
+
+          <div className="flex justify-end -mt-4">
             <div
               onClick={() => {
                 if (!selectedPaymentMethod) {
@@ -127,24 +156,32 @@ const BidWinnerPageContent = () => {
               Confirm Purchase
             </div>
           </div>
-
-          <div className="bg-white overflow-hidden">
-            <TermsReminder />
-          </div>
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Payment Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4">
           <div className="bg-white max-w-xs w-full rounded-xl shadow-lg p-4 relative">
             <button
-              className="absolute top-2 right-3 text-gray-400 hover:text-gray-600 text-lg"
+              className="absolute top-5 right-3 text-gray-600 hover:text-black text-lg"
               onClick={() => setShowModal(false)}
             >
-              ×
+              <X className="w-4 h-4" />
             </button>
             {renderSelectedPaymentComponent()}
+          </div>
+        </div>
+      )}
+
+      {/* Receipt Popup */}
+      {showReceiptPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 animate-fadeIn">
+          <div className="bg-white rounded-lg shadow-xl p-6 text-center max-w-xs mx-auto">
+            <h2 className="text-sm font-semibold text-gray-800 mb-2">Payment Complete!</h2>
+            <p className="text-xs text-gray-600">
+              You can now send your receipt to the owner as proof.
+            </p>
           </div>
         </div>
       )}
