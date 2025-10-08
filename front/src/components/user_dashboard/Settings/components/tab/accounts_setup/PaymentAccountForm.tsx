@@ -5,6 +5,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { NewAccountState, PaymentAccount } from "../accounts_setup/types/payment";
 import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
 import { useStripeConnect } from "@/hooks/tips/useStripeConnect";
+import { X } from "lucide-react";
+
 interface PaymentAccountFormProps {
   newAccount: NewAccountState;
   setNewAccount: React.Dispatch<React.SetStateAction<NewAccountState>>;
@@ -17,6 +19,7 @@ export const PaymentAccountForm: React.FC<PaymentAccountFormProps> = ({
   editingAccount,
 }) => {
   const { connectStripe } = useStripeConnect();
+  
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -51,21 +54,25 @@ export const PaymentAccountForm: React.FC<PaymentAccountFormProps> = ({
         </Select>
       </div>
 
-      <div className="space-y-2">
-        <p className="text-[11px] font-medium">Account Name</p>
-        <Input
-          id="name"
-          value={newAccount.name}
-          onChange={(e) => setNewAccount((prev) => ({ ...prev, name: e.target.value }))}
-          placeholder="e.g., Personal PayPal, Primary Bank"
-          style={{
-            fontSize: "10px",
-            borderRadius: "9999px",
-            outline: "none",
-            boxShadow: "none",
-          }}
-        />
-      </div>
+      {newAccount.type !== "gcash" && (
+        <div className="space-y-2">
+          <p className="text-[11px] font-medium">Account Name</p>
+          <Input
+            id="name"
+            value={newAccount.name}
+            onChange={(e) =>
+              setNewAccount((prev) => ({ ...prev, name: e.target.value }))
+            }
+            placeholder="e.g., Personal PayPal, Primary Bank"
+            style={{
+              fontSize: "10px",
+              borderRadius: "9999px",
+              outline: "none",
+              boxShadow: "none",
+            }}
+          />
+        </div>
+      )}
 
       {newAccount.type === "card" ? (
         <div
@@ -276,20 +283,127 @@ export const PaymentAccountForm: React.FC<PaymentAccountFormProps> = ({
           </div>
         </div>
       ) : newAccount.type === "gcash" ? (
-        <div className="space-y-2">
-          <p className="text-[11px] font-medium">GCash Mobile Number</p>
-          <Input
-            id="accountInfo"
-            value={newAccount.accountInfo}
-            onChange={(e) => setNewAccount((prev) => ({ ...prev, accountInfo: e.target.value }))}
-            placeholder="09XXXXXXXXX"
-            style={{
-              fontSize: "10px",
-              borderRadius: "9999px",
-              outline: "none",
-              boxShadow: "none",
-            }}
-          />
+        <div className="space-y-4">
+          <div className="flex gap-2">
+            <div className="w-1/2 space-y-1">
+              <p className="text-[11px] font-medium">Account Name</p>
+              <Input
+                id="name"
+                value={newAccount.name}
+                onChange={(e) =>
+                  setNewAccount((prev) => ({ ...prev, name: e.target.value }))
+                }
+                placeholder="e.g., Your Account Name"
+                style={{
+                  fontSize: "10px",
+                  borderRadius: "9999px",
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+              />
+            </div>
+            <div className="w-1/2 space-y-1">
+              <p className="text-[11px] font-medium">GCash Mobile Number</p>
+              <Input
+                id="accountInfo"
+                value={newAccount.accountInfo}
+                onChange={(e) =>
+                  setNewAccount((prev) => ({
+                    ...prev,
+                    accountInfo: e.target.value,
+                  }))
+                }
+                placeholder="09XXXXXXXXX"
+                style={{
+                  fontSize: "10px",
+                  borderRadius: "9999px",
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <p className="text-[11px] font-medium">GCash QR Code</p>
+            <div className="space-y-2">
+              {!newAccount.qrCodeUrl ? (
+                <Input
+                  id="qrCode"
+                  type="file"
+                  accept="image/*"
+                  title=""
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setNewAccount((prev) => ({
+                          ...prev,
+                          qrCodeUrl: reader.result as string,
+                        }));
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  style={{
+                    fontSize: "10px",
+                    borderRadius: "9999px",
+                    outline: "none",
+                    boxShadow: "none",
+                  }}
+                />
+              ) : (
+                <div className="mt-2 p-3 border rounded-lg space-y-2 relative">
+                  <button
+                    type="button"
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors flex items-center justify-center shadow-md z-10"
+                    onClick={() => {
+                      setNewAccount((prev) => ({
+                        ...prev,
+                        qrCodeUrl: undefined,
+                      }));
+                    }}
+                    aria-label="Delete QR Code"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                  <p className="text-[10px] text-muted-foreground">QR Code Preview:</p>
+                  <label htmlFor="qrCodeChange" className="block relative mx-auto w-40 h-40 cursor-pointer group">
+                    <img
+                      src={newAccount.qrCodeUrl}
+                      alt="GCash QR Code"
+                      className="w-full h-full object-contain border rounded transition-opacity group-hover:opacity-50"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <span className="text-[10px] font-medium text-foreground bg-background/90 px-3 py-1.5 rounded-full shadow-lg">
+                        Change Image
+                      </span>
+                    </div>
+                    <Input
+                      id="qrCodeChange"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setNewAccount((prev) => ({
+                              ...prev,
+                              qrCodeUrl: reader.result as string,
+                            }));
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       ) : newAccount.type === "payoneer" ? (
         <div className="space-y-2">
@@ -313,7 +427,7 @@ export const PaymentAccountForm: React.FC<PaymentAccountFormProps> = ({
           {newAccount.type === "stripe" && (
             <div className="space-y-2">
               {newAccount.stripeAccountId ? (
-                <p className="text-[10px] text-green-600">✅ Connected (ID: {newAccount.stripeAccountId})</p>
+                <p className="text-[10px] text-green-600">Connected (ID: {newAccount.stripeAccountId})</p>
               ) : (
                 <button
                   type="button"
