@@ -345,7 +345,7 @@ const EditProfile = () => {
             <div className="relative w-32 h-32">
               <img
                 src={formData.profile_picture ? URL.createObjectURL(formData.profile_picture) : profilePicture}
-                alt="Profile"
+                alt="Profile" 
                 className="w-32 h-32 rounded-full object-cover"
               />
               <button
