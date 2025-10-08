@@ -15,4 +15,5 @@ tip_urlpatterns = [
     path('stripe/create-session/', StripeCreateCheckoutSessionView.as_view(), name='stripe-create-checkout-session'),
      path('stripe/verify-payment/', StripeVerifyPaymentView.as_view(), name='stripe-verify-checkout-session'),
     
+
     ]

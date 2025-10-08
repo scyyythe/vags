@@ -21,6 +21,8 @@ import { useLocation } from "react-router-dom";
 import { useArtworkReviews } from "@/hooks/review/useArtworkReviews";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import useArtworkReportStatus from "@/hooks/mutate/report/useArtworkReportStatus";
+import SellCard from "../cards/SellCard";
+import useFetchArtCards from "@/hooks/artworks/sell/useFetchArtCards";
 const ProductViewingContent = () => {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, error } = useSellArtworkDetail(id);
@@ -28,6 +30,10 @@ const ProductViewingContent = () => {
   const { data: reportStatus, isLoading: reportLoading, error: reportError } = useArtworkReportStatus(id || "");
 
   const { reviews, loading: reviewsLoading, error: reviewsError } = useArtworkReviews(id || "");
+  const { data: allArtworks = [] } = useFetchArtCards();
+  const relatedArtworks = allArtworks.filter(
+    (art) => art.category === product?.artwork_style && art.id !== product?.id
+  );
 
   const loggedInUserId = getLoggedInUserId();
   const isOwner = product?.artist?.id && String(product.artist.id) === String(loggedInUserId);
@@ -56,15 +62,15 @@ const ProductViewingContent = () => {
   };
 
   useEffect(() => {
-      if (isExpanded) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "auto";
-      }
-  
-      return () => {
-        document.body.style.overflow = "auto";
-      };
+    if (isExpanded) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, [isExpanded]);
 
   useEffect(() => {
@@ -566,8 +572,35 @@ const ProductViewingContent = () => {
       {/* Related Artworks Section */}
       <div className="container md:px-6 mb-4">
         <h2 className={`font-medium ${isMobile ? "text-sm -ml-6 mb-4 mt-4" : "text-xs mb-4 -mt-2"}`}>
-            Related Artworks
+          Related Artworks
         </h2>
+        {isLoading ? (
+          <p className="text-sm text-gray-400">Loading...</p>
+        ) : relatedArtworks.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {relatedArtworks.slice(0, 8).map((art) => (
+              <SellCard
+                key={art.id}
+                id={art.id}
+                artworkImage={art.image_url?.[0]}
+                title={art.title}
+                artist={art.artist}
+                artistId={art.artist_id}
+                price={art.price}
+                edition={art.edition}
+                size={art.size}
+                yearCreated={art.year_created}
+                medium={art.medium}
+                category={art.category}
+                onCardClick={() => navigate(`/viewproduct/${art.id}`)}
+                isMarketplace={true}
+                status="active"
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-gray-400">No other artworks in this style.</p>
+        )}
       </div>
 
       {/* Expanded artwork view */}
@@ -607,7 +640,6 @@ const ProductViewingContent = () => {
           </div>
         </div>
       )}
-      
 
       {/* Review Modal */}
       <ReviewModal
