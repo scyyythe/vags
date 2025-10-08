@@ -71,7 +71,7 @@ const BidWinnerPageContent = () => {
             onClosePreviousModal={() => {
               setShowModal(false); // close payment modal
               setShowReceiptPopup(true); // show receipt popup
-              setTimeout(() => setShowReceiptPopup(false), 2000); // auto-close after 2s
+              setTimeout(() => setShowReceiptPopup(false), 10000);
             }}
           />
         );
@@ -178,8 +178,8 @@ const BidWinnerPageContent = () => {
       {showReceiptPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 animate-fadeIn">
           <div className="bg-white rounded-lg shadow-xl p-6 text-center max-w-xs mx-auto">
-            <h2 className="text-sm font-semibold text-gray-800 mb-2">Payment Complete!</h2>
-            <p className="text-xs text-gray-600">
+            <h2 className="text-sm font-semibold text-red-700 mb-2">Payment Complete!</h2>
+            <p className="text-xs text-black">
               You can now send your receipt to the owner as proof.
             </p>
           </div>

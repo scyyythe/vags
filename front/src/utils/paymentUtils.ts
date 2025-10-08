@@ -37,25 +37,23 @@ export const handleThirdPartyPayment = (method: string): void => {
   }
 }
 
-export const validatePaymentForm = (formData: any): boolean => {
-  switch (formData.paymentMethod) {
-    case "paypal":
-      return formData.paypalEmail.length > 0 && formData.paypalPassword.length > 0
-    case "gcash":
-      return formData.gcashNumber.length > 0 && formData.gcashPin.length > 0
-    case "stripe":
-      return formData.stripeEmail.length > 0
-    case "credit-card":
-      return (
-        formData.cardNumber.length > 0 &&
-        formData.expiryDate.length > 0 &&
-        formData.cvc.length > 0 &&
-        formData.nameOnCard.length > 0 &&
-        formData.addressLine1.length > 0 &&
-        formData.city.length > 0 &&
-        formData.postalCode.length > 0
-      )
-    default:
-      return false
-  }
-}
+// export const validatePaymentForm = (formData: any): boolean => {
+//   switch (formData.paymentMethod) {
+//     case "paypal":
+//       return formData.paypalEmail.length > 0 && formData.paypalPassword.length > 0
+//     case "stripe":
+//       return formData.stripeEmail.length > 0
+//     case "credit-card":
+//       return (
+//         formData.cardNumber.length > 0 &&
+//         formData.expiryDate.length > 0 &&
+//         formData.cvc.length > 0 &&
+//         formData.nameOnCard.length > 0 &&
+//         formData.addressLine1.length > 0 &&
+//         formData.city.length > 0 &&
+//         formData.postalCode.length > 0
+//       )
+//     default:
+//       return false
+//   }
+// }

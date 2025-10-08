@@ -50,6 +50,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   const purchaseMutation = usePurchaseArtwork();
   const updateArtworkMutation = useUpdateArtwork(1, true, "All", "Public");
   const [step, setStep] = useState<"review" | "paypal">("review");
+  const [showReceiptPopup, setShowReceiptPopup] = useState(false);
 
   const handleAddressChange = () => {
     navigate("/shipping");
@@ -79,7 +80,15 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       return;
     }
 
-    // Otherwise (Stripe, GCash, Credit Card) → normal purchase API
+    // If GCash → show receipt popup
+    if (paymentMethod === "GCash") {
+      setShowReceiptPopup(true);
+      setTimeout(() => {
+        setShowReceiptPopup(false);
+      }, 10000);
+    }
+
+    // Otherwise (Stripe, Credit Card) → normal purchase API
     const payload = {
       artwork_id: defaultArtwork.id,
       payment_method: paymentMethod,
@@ -171,6 +180,19 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       startPayment();
     }
   }, [step]);
+
+
+  // Disable scrolling when modal OR receipt popup is open
+  useEffect(() => {
+    if (showReceiptPopup) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showReceiptPopup]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -345,6 +367,19 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Receipt Popup */}
+      {showReceiptPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 animate-fadeIn">
+          <div className="bg-white rounded-lg shadow-xl p-6 text-center max-w-xs mx-auto">
+            <h2 className="text-sm font-semibold text-red-700 mb-2">Payment Complete!</h2>
+            <p className="text-xs text-black">
+              You can now send your receipt to the owner as proof.
+            </p>
+          </div>
+        </div>
+      )}
+
       {step === "paypal" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">

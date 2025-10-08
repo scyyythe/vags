@@ -2,7 +2,6 @@ import type React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { PaymentFormData, PaymentMethodProps } from "@/components/types/payment";
-import { validatePaymentForm } from "@/utils/paymentUtils";
 import PaymentMethodSelector from "./payment/PaymentMethodSelector";
 import PayPalForm from "./payment/PayPalForm";
 import GCashForm from "./payment/GCashForm";
@@ -79,9 +78,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
         return (
           <GCashForm
             number={formData.gcashNumber}
-            pin={formData.gcashPin}
             onNumberChange={(value) => handleInputChange("gcashNumber", value)}
-            onPinChange={(value) => handleInputChange("gcashPin", value)}
           />
         );
       case "stripe":
@@ -141,7 +138,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
             </p>
             <button
               type="submit"
-              disabled={!validatePaymentForm(formData)}
+              disabled={formData.paymentMethod !== "gcash"}
               className="bg-red-800 text-white px-10 py-2.5 rounded-full text-[11px] font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
             >
               Save and Continue
