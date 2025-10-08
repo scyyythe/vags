@@ -3,6 +3,7 @@ export interface PaymentAccount {
   type: "paypal" | "stripe" | "bank" | "gcash" | "payoneer" | "card";
   name: string;
   accountInfo: string;
+  qrCodeUrl?: string;
   maskedInfo: string;
   isDefault: boolean;
   status: "verified" | "pending" | "not_verified";
@@ -14,6 +15,7 @@ export interface NewAccountState {
   type: PaymentAccount["type"];
   name: string;
   accountInfo: string;
+  qrCodeUrl?: string;
   isDefault: boolean;
   cardDetails: {
     cardNumber: string;
