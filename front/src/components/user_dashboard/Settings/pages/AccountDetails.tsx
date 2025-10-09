@@ -209,13 +209,43 @@ const AccountDetails = () => {
 
       {/* Popups */}
       <DeactivateConfirmationPopup
-        isOpen={showDeactivatePopup}
-        onCancel={() => setShowDeactivatePopup(false)}
-        onConfirm={() => {
-          toast.success("Your account has been deactivated successfully.", { closeButton: true });
+  isOpen={showDeactivatePopup}
+  onCancel={() => setShowDeactivatePopup(false)}
+  onConfirm={() => {
+    const form = new FormData();
+    form.append("status", "deactivated");
+    form.append("deactivated_at", new Date().toISOString());
+
+    updateUser([userId, form], {
+      onSuccess: () => {
+        toast.success("Your account has been deactivated successfully.", { closeButton: true });
+        setShowDeactivatePopup(false);
+      },
+      onError: () => {
+        toast.error("Failed to deactivate your account.", { closeButton: true });
+      },
+    });
+  }}
+  user={{ userStatus: status }}
+  setUser={(updatedUser) => {
+    if (updatedUser.userStatus === "active") {
+      const form = new FormData();
+      form.append("status", "active");
+      form.append("deactivated_at", "");
+
+      updateUser([userId, form], {
+        onSuccess: () => {
+          toast.success("Your account has been reactivated successfully!", { closeButton: true });
           setShowDeactivatePopup(false);
-        }}
-      />
+        },
+        onError: () => {
+          toast.error("Failed to reactivate account.", { closeButton: true });
+        },
+      });
+    }
+  }}
+/>
+
 
       <DeleteConfirmationPopup
         isOpen={showDeletePopup}
