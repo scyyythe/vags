@@ -8,29 +8,29 @@ export const PaymentMethods = () => {
   const { selectedPaymentMethod, selectPaymentMethod } = usePayment();
 
   const paymentMethods: { id: PaymentMethod; label: string; icon: React.ReactNode; color: string }[] = [
-    { 
-      id: "gcash", 
+    {
+      id: "gcash",
       label: "GCash",
       icon: <img src="/pics/gcash.png" className="h-4 w-4" />,
-      color: "bg-blue-500 hover:bg-blue-600"
+      color: "bg-blue-500 hover:bg-blue-600",
     },
-    { 
-      id: "paypal", 
+    {
+      id: "paypal",
       label: "PayPal",
       icon: <img src="/pics/paypal.png" className="h-4 w-4" />,
-      color: "bg-blue-700 hover:bg-blue-800"
+      color: "bg-blue-700 hover:bg-blue-800",
     },
-    { 
-      id: "creditCard", 
+    {
+      id: "creditCard",
       label: "Credit/Debit Card",
-      icon: <i className='bx bx-credit-card-alt text-blue-700'></i>,
-      color: "bg-red-500 hover:bg-red-600"
+      icon: <i className="bx bx-credit-card-alt text-blue-700"></i>,
+      color: "bg-red-500 hover:bg-red-600",
     },
-    { 
-      id: "stripe", 
+    {
+      id: "stripe",
       label: "Stripe",
       icon: <img src="/pics/stripe.png" className="h-4 w-4" />,
-      color: "bg-blue-700 hover:bg-blue-800"
+      color: "bg-blue-700 hover:bg-blue-800",
     },
   ];
 
@@ -63,9 +63,10 @@ export const PaymentMethods = () => {
         </div>
         <div className="mt-6">
           <div className="flex items-center">
-            <i className='bx bx-shield text-sm text-gray-500 mr-2 pb-0.5'></i>
+            <i className="bx bx-shield text-sm text-gray-500 mr-2 pb-0.5"></i>
             <p className="text-[10px] text-gray-600">
-              All payment methods are secured with end-to-end encryption. Your financial information is never stored on our servers.
+              All payment methods are secured with end-to-end encryption. Your financial information is never stored on
+              our servers.
             </p>
           </div>
         </div>

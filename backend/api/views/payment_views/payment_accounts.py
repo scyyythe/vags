@@ -105,7 +105,8 @@ class GetArtistPaymentAccounts(APIView):
     def get(self, request, artist_id):
         accounts = PaymentAccount.objects(user=artist_id)
         data = [
-            {
+            {   
+                "name": acc.name,
                 "type": acc.type,
                 "account_info": acc.account_info,
                 "is_default": acc.is_default,
