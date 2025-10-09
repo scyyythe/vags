@@ -18,14 +18,15 @@ import { X } from "lucide-react";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 import ArtworkSummarySkeleton from "@/components/skeletons/ArtworkSummarySkeleton";
 import BidDetailsSkeleton from "@/components/skeletons/BidDetailsSkeleton";
-
+import { useArtistPaymentAccounts } from "@/hooks/accounts/useArtistPaymentAccounts";
 const BidWinnerPageContent = () => {
   const { selectedPaymentMethod } = usePayment();
   const [showModal, setShowModal] = useState(false);
   const [showReceiptPopup, setShowReceiptPopup] = useState(false);
   const { id: auctionId } = useParams<{ id: string }>();
   const { data: auctionData, isLoading, error } = useFetchBiddingArtworkById(auctionId || "");
-
+  const artistId = auctionData?.artwork?.artist_id;
+  const { accounts, loading: accountsLoading, error: accountsError } = useArtistPaymentAccounts(artistId ?? null);
   // Disable scrolling when modal OR receipt popup is open
   useEffect(() => {
     if (showModal || showReceiptPopup) {
@@ -68,6 +69,7 @@ const BidWinnerPageContent = () => {
       case "gcash":
         return (
           <GCashPayment
+            artistId={auctionData.artwork.artist_id}
             onClosePreviousModal={() => {
               setShowModal(false); // close payment modal
               setShowReceiptPopup(true); // show receipt popup
@@ -107,12 +109,8 @@ const BidWinnerPageContent = () => {
 
       <div className="container px-10 max-w-7xl">
         <div className="text-center mb-8">
-          <h1 className="text-sm md:text-md font-bold text-gray-900">
-            Congratulations! You're the highest bidder
-          </h1>
-          <p className="text-[11px] text-gray-600 mt-2">
-            Complete your purchase to claim this artwork
-          </p>
+          <h1 className="text-sm md:text-md font-bold text-gray-900">Congratulations! You're the highest bidder</h1>
+          <p className="text-[11px] text-gray-600 mt-2">Complete your purchase to claim this artwork</p>
         </div>
 
         <div className="space-y-8">
@@ -179,9 +177,7 @@ const BidWinnerPageContent = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 animate-fadeIn">
           <div className="bg-white rounded-lg shadow-xl p-6 text-center max-w-xs mx-auto">
             <h2 className="text-sm font-semibold text-red-700 mb-2">Payment Complete!</h2>
-            <p className="text-xs text-black">
-              You can now send your receipt to the owner as proof.
-            </p>
+            <p className="text-xs text-black">You can now send your receipt to the owner as proof.</p>
           </div>
         </div>
       )}

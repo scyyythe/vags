@@ -35,7 +35,6 @@ purchase_urlpatterns = [
      
    # payment account roiutes
    path("accounts/", ListPaymentAccounts.as_view(), name="list-payment-accounts"),
-   
     path("accounts/save/", AddOrUpdatePaymentAccount.as_view(), name="add-update-account"),
     path("accounts/<str:account_id>/delete/", DeletePaymentAccount.as_view(), name="delete-account"),
    path("payment/accounts/artist/<str:artist_id>/", GetArtistPaymentAccounts.as_view(), name="artist-payment-accounts"),
