@@ -7,11 +7,14 @@ import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { toast } from "sonner";
+import DeleteConfirmationPopup from "../components/delete_deact_modals/DeleteConfirmationPopup";
+import DeactivateConfirmationPopup from "../components/delete_deact_modals/DeactivateConfirmationPopup";
+
 const AccountDetails = () => {
   const userId = getLoggedInUserId();
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
   const isValidFullName = (fullName: string) => /^[a-zA-Z]+(?: [a-zA-Z]+)+$/.test(fullName.trim());
+
   const { firstName, lastName, gender, address, dateOfBirth, email, isLoading, error } = useUserDetails(userId);
   const { mutate: updateUser } = useUpdateUserDetails();
 
@@ -27,6 +30,10 @@ const AccountDetails = () => {
   });
 
   const [originalData, setOriginalData] = useState({ ...formData });
+
+  // Popups
+  const [showDeactivatePopup, setShowDeactivatePopup] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
 
   // Auto-translated labels
   const accountInfoLabel = useAutoTranslation("Account Information", selectedLanguage);
@@ -92,14 +99,13 @@ const AccountDetails = () => {
       [field]: value,
     }));
   };
+
   const handleSave = () => {
-    // Validate Full Name
     if (!isValidFullName(formData.fullName)) {
       toast.error("Please enter a valid full name!", { closeButton: true });
       return;
     }
 
-    // Validate Email
     if (!isValidEmail(formData.email)) {
       toast.error("Please enter a valid email address.", { closeButton: true });
       return;
@@ -107,7 +113,6 @@ const AccountDetails = () => {
 
     const [updatedFirstName, ...rest] = formData.fullName.split(" ");
     const updatedLastName = rest.join(" ");
-
     const formattedDob = formData.date_of_birth;
 
     const form = new FormData();
@@ -149,67 +154,41 @@ const AccountDetails = () => {
 
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
-          <EditableField
-            label={fullNameLabel}
-            value={translatedFullName}
-            type="text"
-            onChange={(value) => handleChange("fullName", value)}
-          />
-
-          <EditableField
-            label={countryLabel}
-            value={translatedCountry}
-            type="country"
-            onChange={(value) => handleChange("country", value)}
-          />
-
-          <EditableField
-            label={genderLabel}
-            value={translatedGender}
-            type="gender"
-            onChange={(value) => handleChange("gender", value)}
-          />
-
-          <EditableField
-            label={languageLabel}
-            value={translatedLanguage}
-            type="language"
-            onChange={(value) => handleChange("language", value)}
-          />
-
-          <EditableField
-            label={dobLabel}
-            value={translatedDateOfBirth}
-            type="date"
-            onChange={(value) => handleChange("date_of_birth", value)}
-          />
-
-          <EditableField
-            label={emailLabel}
-            value={translatedEmail}
-            type="email"
-            onChange={(value) => handleChange("email", value)}
-          />
+          <EditableField label={fullNameLabel} value={translatedFullName} type="text" onChange={(value) => handleChange("fullName", value)} />
+          <EditableField label={countryLabel} value={translatedCountry} type="country" onChange={(value) => handleChange("country", value)} />
+          <EditableField label={genderLabel} value={translatedGender} type="gender" onChange={(value) => handleChange("gender", value)} />
+          <EditableField label={languageLabel} value={translatedLanguage} type="language" onChange={(value) => handleChange("language", value)} />
+          <EditableField label={dobLabel} value={translatedDateOfBirth} type="date" onChange={(value) => handleChange("date_of_birth", value)} />
+          <EditableField label={emailLabel} value={translatedEmail} type="email" onChange={(value) => handleChange("email", value)} />
         </div>
       </div>
 
+      {/* Deactivation and Deletion */}
       <div className="mt-12">
         <h2 className="text-sm font-bold mb-6">{deactivationDeletionLabel}</h2>
 
         <div className="bg-white border border-gray-200 rounded-lg p-6">
+          {/* Deactivate Section */}
           <h3 className="text-xs font-semibold mb-2">{deactivateAccountLabel}</h3>
           <div className="grid grid-cols-2 gap-10">
             <p className="text-gray-600 mb-4 text-[11px]">{deactivateDesc}</p>
-            <button className="bg-gray-200 font-medium text-[10px] hover:bg-gray-300 text-gray-800 p-none rounded-sm w-32 h-9">
+            <button
+              onClick={() => setShowDeactivatePopup(true)}
+              className="bg-gray-200 font-medium text-[10px] hover:bg-gray-300 text-gray-800 p-none rounded-sm w-32 h-9"
+            >
               {deactivateBtn}
             </button>
           </div>
 
+          {/* Delete Section */}
           <div>
             <h3 className="text-xs font-semibold mb-2">{deleteAccountLabel}</h3>
             <div className="grid grid-cols-2 gap-10">
               <p className="text-gray-600 mb-4 text-[11px]">{deleteDesc}</p>
-              <button className="bg-gray-200 font-medium text-[10px] hover:bg-gray-300 text-gray-800 rounded-sm w-32 h-9">
+              <button
+                onClick={() => setShowDeletePopup(true)}
+                className="bg-gray-200 font-medium text-[10px] hover:bg-gray-300 text-gray-800 rounded-sm w-32 h-9"
+              >
                 {deleteBtn}
               </button>
             </div>
@@ -218,6 +197,25 @@ const AccountDetails = () => {
       </div>
 
       <ActionButtons hasChanges={hasChanges()} onSave={handleSave} onReset={handleReset} />
+
+      {/* Popups */}
+      <DeactivateConfirmationPopup
+        isOpen={showDeactivatePopup}
+        onCancel={() => setShowDeactivatePopup(false)}
+        onConfirm={() => {
+          toast.success("Your account has been deactivated successfully.", { closeButton: true });
+          setShowDeactivatePopup(false);
+        }}
+      />
+
+      <DeleteConfirmationPopup
+        isOpen={showDeletePopup}
+        onCancel={() => setShowDeletePopup(false)}
+        onConfirm={() => {
+          toast.success("Your account has been deleted successfully.", { closeButton: true });
+          setShowDeletePopup(false);
+        }}
+      />
     </div>
   );
 };
