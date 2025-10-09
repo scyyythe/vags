@@ -35,7 +35,7 @@ const AccountDetails = () => {
   const [showDeactivatePopup, setShowDeactivatePopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
 
-  // Auto-translated labels
+  // Translations
   const accountInfoLabel = useAutoTranslation("Account Information", selectedLanguage);
   const fullNameLabel = useAutoTranslation("Full name", selectedLanguage);
   const countryLabel = useAutoTranslation("Country", selectedLanguage);
@@ -49,12 +49,18 @@ const AccountDetails = () => {
   const translatedEmail = useAutoTranslation(formData.email || "Unknown", selectedLanguage);
   const translatedGender = useAutoTranslation(formData.gender || "Unknown", selectedLanguage);
   const translatedLanguage = useAutoTranslation(formData.language || "English", selectedLanguage);
+
   const deactivationDeletionLabel = useAutoTranslation("Deactivation and Deletion", selectedLanguage);
   const deactivateAccountLabel = useAutoTranslation("Deactivate account", selectedLanguage);
   const deactivateDesc = useAutoTranslation(
     "Temporarily hide your profile, uploaded artworks, and activity within the gallery. While deactivated, your content won't be visible to other users, but your data will be saved and can be restored at any time by reactivating your account.",
     selectedLanguage
   );
+  const deactivateNote = useAutoTranslation(
+    "Note: You can cancel deactivation within 30 days. After that, only reactivation is allowed.",
+    selectedLanguage
+  );
+
   const deactivateBtn = useAutoTranslation("Deactivate Account", selectedLanguage);
   const deleteAccountLabel = useAutoTranslation("Delete your data and account", selectedLanguage);
   const deleteDesc = useAutoTranslation(
@@ -171,17 +177,20 @@ const AccountDetails = () => {
           {/* Deactivate Section */}
           <h3 className="text-xs font-semibold mb-2">{deactivateAccountLabel}</h3>
           <div className="grid grid-cols-2 gap-10">
-            <p className="text-gray-600 mb-4 text-[11px]">{deactivateDesc}</p>
+            <div>
+              <p className="text-gray-600 text-[11px] mb-2">{deactivateDesc}</p>
+              <p className="text-[10px] text-gray-400 italic">{deactivateNote}</p>
+            </div>
             <button
               onClick={() => setShowDeactivatePopup(true)}
-              className="bg-gray-200 font-medium text-[10px] hover:bg-gray-300 text-gray-800 p-none rounded-sm w-32 h-9"
+              className="bg-gray-200 font-medium text-[10px] hover:bg-gray-300 text-gray-800 rounded-sm w-32 h-9"
             >
               {deactivateBtn}
             </button>
           </div>
 
           {/* Delete Section */}
-          <div>
+          <div className="mt-8">
             <h3 className="text-xs font-semibold mb-2">{deleteAccountLabel}</h3>
             <div className="grid grid-cols-2 gap-10">
               <p className="text-gray-600 mb-4 text-[11px]">{deleteDesc}</p>
