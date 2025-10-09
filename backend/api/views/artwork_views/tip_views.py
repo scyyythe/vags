@@ -11,24 +11,29 @@ from django.utils import timezone
 from datetime import datetime
 from api.models.interaction_model.notification import Notification
 
-
 class TipCreateView(generics.CreateAPIView):
     serializer_class = TipSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-      
+ 
         tip = serializer.save(
             payment_method="GCash",
             payment_status="Completed",
             currency="PHP"
         )
 
-     
+    
+        art = getattr(tip, "art", None)
+        art_title = getattr(art, "title", None)
+        art_id = str(getattr(art, "id", "")) if art else None
+        link = f"/artwork/{art_id}" if art_id else ""  
+
+       
         Transaction.objects.create(
             sender=tip.sender,
             receiver=tip.receiver,
-            art=getattr(tip, "art", None),
+            art=art,
             transaction_type="Tip",
             amount=tip.amount,
             currency=tip.currency,
@@ -36,19 +41,17 @@ class TipCreateView(generics.CreateAPIView):
             payment_status=tip.payment_status,
             transaction_id=tip.transaction_id or None,
             timestamp=tip.timestamp or timezone.now(),
-            extra_data={"manual_tip": True},
+            extra_data={
+                "art_title": art_title,
+                "manual_tip": True,
+            },
         )
 
        
-        art = getattr(tip, "art", None)
-        art_title = art.title if art else None
-        art_id = str(art.id) if art else None
-        link = f"/artwork/{art_id}" if art_id else "/notifications"
-
         Notification.objects.create(
             user=tip.receiver,
             actor=tip.sender,
-            message=f"tipped you ₱{tip.amount}{f' for your artwork {art_title!r}' if art_title else ''}",
+            message=f" tipped you ₱{tip.amount} for your artwork '{art_title}'" if art_title else f" tipped you ₱{tip.amount}",
             art=art,
             name=f"{tip.sender.first_name} {tip.sender.last_name}",
             action="tipped you",
@@ -57,15 +60,15 @@ class TipCreateView(generics.CreateAPIView):
             amount=str(tip.amount),
             donation="Tip",
             money=True,
-            link=link,
+            link=link, 
             created_at=datetime.now(),
         )
 
     def create(self, request, *args, **kwargs):
-        """Custom response for front-end feedback"""
-        response = super().create(request, *args, **kwargs)
+        """Custom success response"""
+        super().create(request, *args, **kwargs)
         return Response(
-            {"message": "Tip and transaction recorded successfully."},
+            {"message": "GCash tip recorded and notification sent successfully."},
             status=status.HTTP_201_CREATED,
         )
 

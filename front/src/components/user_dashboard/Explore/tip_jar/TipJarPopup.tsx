@@ -312,10 +312,18 @@ const TipJarPopup = ({
                 <div className="flex gap-4 justify-between">
                   <Button
                     onClick={handleConfirmDonation}
-                    className="w-full bg-[#B5191D] hover:bg-[#9b1518] text-white text-xs font-medium rounded-full py-1 px-4"
-                    disabled={paymentMethod === "PayPal" && !default_paypal_email}
+                    className={cn(
+                      "w-full text-white text-xs font-medium rounded-full py-1 px-4",
+                      paymentMethod === "GCash" && !gcashAccount
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-[#B5191D] hover:bg-[#9b1518]"
+                    )}
+                    disabled={
+                      (paymentMethod === "PayPal" && !default_paypal_email) ||
+                      (paymentMethod === "GCash" && !gcashAccount)
+                    }
                   >
-                    {paymentMethod === "GCash" ? "Donated" : "Donate"}
+                    Donate
                   </Button>
                 </div>
               </>
