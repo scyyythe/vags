@@ -7,28 +7,67 @@ from api.models.user_model.users import User
 from api.serializers.artwork_s.tip_serializers import TipSerializer
 from datetime import datetime
 from api.models.transaction_model.transaction import Transaction
-# give a tip
+from django.utils import timezone
+from datetime import datetime
+from api.models.interaction_model.notification import Notification
+
+
 class TipCreateView(generics.CreateAPIView):
     serializer_class = TipSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        tip = serializer.save()  # this still saves Tip
+      
+        tip = serializer.save(
+            payment_method="GCash",
+            payment_status="Completed",
+            currency="PHP"
+        )
 
-        # also log in transactions
+     
         Transaction.objects.create(
             sender=tip.sender,
             receiver=tip.receiver,
+            art=getattr(tip, "art", None),
             transaction_type="Tip",
             amount=tip.amount,
             currency=tip.currency,
             payment_method=tip.payment_method,
             payment_status=tip.payment_status,
             transaction_id=tip.transaction_id or None,
-            timestamp=tip.timestamp,
-            extra_data={"manual_tip": True}
+            timestamp=tip.timestamp or timezone.now(),
+            extra_data={"manual_tip": True},
         )
 
+       
+        art = getattr(tip, "art", None)
+        art_title = art.title if art else None
+        art_id = str(art.id) if art else None
+        link = f"/artwork/{art_id}" if art_id else "/notifications"
+
+        Notification.objects.create(
+            user=tip.receiver,
+            actor=tip.sender,
+            message=f"tipped you ₱{tip.amount}{f' for your artwork {art_title!r}' if art_title else ''}",
+            art=art,
+            name=f"{tip.sender.first_name} {tip.sender.last_name}",
+            action="tipped you",
+            target=art_title or "",
+            icon="💰",
+            amount=str(tip.amount),
+            donation="Tip",
+            money=True,
+            link=link,
+            created_at=datetime.now(),
+        )
+
+    def create(self, request, *args, **kwargs):
+        """Custom response for front-end feedback"""
+        response = super().create(request, *args, **kwargs)
+        return Response(
+            {"message": "Tip and transaction recorded successfully."},
+            status=status.HTTP_201_CREATED,
+        )
 
 #  all tips
 class TipListView(generics.ListAPIView):

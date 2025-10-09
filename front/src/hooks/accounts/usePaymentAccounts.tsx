@@ -40,7 +40,8 @@ export const usePaymentAccounts = () => {
           accountInfo: acc.account_info,
           maskedInfo: maskAccountInfo(acc.account_info, acc.type),
           isDefault: acc.is_default,
-          status: "pending", // default if backend doesn't provide
+          status: "pending",
+          qrImageUrl: acc.qr_image_url || null,
           dateAdded,
           details: acc.details || {},
         } as PaymentAccount;
@@ -56,46 +57,52 @@ export const usePaymentAccounts = () => {
       });
     }
   };
-
   const addOrUpdateAccount = async (newAccount: NewAccountState, editing?: PaymentAccount) => {
-    // Validation
-    if (newAccount.type === "card") {
-      const { cardNumber, expiryDate, cvv, cardholderName } = newAccount.cardDetails;
-      if (!newAccount.name || !cardNumber || !expiryDate || !cvv || !cardholderName) {
-        toast({ title: "Error", description: "Please fill in all required card fields", variant: "destructive" });
-        return false;
-      }
-    } else if (!newAccount.name || !newAccount.accountInfo) {
-      toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
-      return false;
+    const formData = new FormData();
+
+    formData.append("type", newAccount.type);
+    formData.append("name", newAccount.name);
+    formData.append(
+      "account_info",
+      newAccount.type === "card" ? newAccount.cardDetails.cardNumber : newAccount.accountInfo
+    );
+    formData.append("is_default", newAccount.isDefault ? "true" : "false");
+
+    if (newAccount.type === "stripe" && newAccount.stripeAccountId) {
+      formData.append("stripe_account_id", newAccount.stripeAccountId);
+    }
+    if (editing) {
+      formData.append("id", editing.id);
     }
 
-    const payload = {
-      type: newAccount.type,
-      name: newAccount.name,
-      account_info: newAccount.type === "card" ? newAccount.cardDetails.cardNumber : newAccount.accountInfo,
-      is_default: newAccount.isDefault,
-      details: newAccount.type === "card" ? newAccount.cardDetails : newAccount.bankDetails,
-      ...(newAccount.type === "stripe" && newAccount.stripeAccountId
-        ? { stripe_account_id: newAccount.stripeAccountId }
-        : {}),
-      ...(editing ? { id: editing.id } : {}),
-    };
+    if (newAccount.qrCodeUrl) {
+      const response = await fetch(newAccount.qrCodeUrl);
+      const blob = await response.blob();
+      formData.append("qr_image", blob, "qr_image.png");
+    }
 
     try {
-      await apiClient.post("/accounts/save/", payload);
+      await apiClient.post("/accounts/save/", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       await fetchAccounts();
+
       toast({
         title: editing ? "Updated" : "Added",
         description: editing
           ? "Payment account updated successfully"
           : "Payment account added successfully. Verification pending.",
-        variant: "default",
       });
+
       return true;
     } catch (err) {
       console.error("Failed to save account:", err);
-      toast({ title: "Error", description: "Failed to save payment account", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: "Failed to save payment account",
+        variant: "destructive",
+      });
       return false;
     }
   };
@@ -144,5 +151,5 @@ export const usePaymentAccounts = () => {
     fetchAccounts();
   }, []);
 
-  return { accounts, addOrUpdateAccount, deleteAccount, setDefaultAccount };
+  return { accounts, addOrUpdateAccount, deleteAccount, setDefaultAccount, fetchAccounts };
 };
