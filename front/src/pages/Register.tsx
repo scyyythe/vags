@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../components/page/Logo";
 import InputField from "../components/page/InputField";
@@ -24,6 +24,17 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   const { setShowLoginModal } = useModal();
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
+
+  useEffect(() => {
+    // Disable scrolling when the Register modal opens
+    document.body.style.overflow = "hidden";
+
+    // Re-enable scrolling when the modal closes or unmounts
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
 
   // Language context
   const { language } = useLanguage();
