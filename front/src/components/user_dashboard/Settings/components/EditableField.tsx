@@ -100,27 +100,40 @@ const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => 
               </button>
             </div>
           ) : type === "date" ? (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left text-[12px]">
-                  {value instanceof Date ? format(value, "PP") : value}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={value instanceof Date ? value : new Date(value)}
-                  onSelect={(date) => {
-                    if (date) {
+            <div className="relative">
+              {/* Editable input field */}
+              <Input
+                type="text"
+                placeholder="MM/DD/YYYY"
+                value={value instanceof Date ? format(value, "MM/dd/yyyy") : value}
+                onChange={(e) => handleChange(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onBlur={handleClickOutside}
+                className="border-gray-300 !text-[12px] pr-8"
+              />
+
+              {/* Calendar Popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 flex items-center pr-2 text-gray-500 hover:text-gray-700"
+                  >
+                    <i className='bx bx-calendar-alt'></i>
+                  </button>
+                </PopoverTrigger>
+
+                <PopoverContent className="w-auto p-2" align="start">
+                  <CalendarWithDropdown
+                    value={value}
+                    onChange={(date) => {
                       handleChange(date);
                       setIsEditing(false);
-                    }
-                  }}
-                  initialFocus
-                  className="pointer-events-auto"
-                />
-              </PopoverContent>
-            </Popover>
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
           ) : type === "country" ? (
             <div className="space-y-2">
               <Select defaultValue={value as string} onValueChange={(value) => handleChange(value)}>
@@ -178,5 +191,57 @@ const EditableField = ({ label, value, type, onChange }: EditableFieldProps) => 
     </div>
   );
 };
+
+const CalendarWithDropdown = ({ value, onChange }: { value: string | Date; onChange: (date: Date) => void }) => {
+  const [selectedMonth, setSelectedMonth] = useState(
+    value instanceof Date ? value.getMonth() : new Date().getMonth()
+  );
+  const [selectedYear, setSelectedYear] = useState(
+    value instanceof Date ? value.getFullYear() : new Date().getFullYear()
+  );
+
+  const currentMonth = new Date(selectedYear, selectedMonth, 1);
+
+  return (
+    <div>
+      {/* Month + Year dropdown */}
+      <div className="flex items-center justify-center gap-12 pt-4">
+        <select
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(Number(e.target.value))}
+          className="text-md focus:outline-none focus:ring-0 focus:border-none"
+        >
+          {Array.from({ length: 12 }, (_, i) => (
+            <option key={i} value={i}>
+              {new Date(0, i).toLocaleString("default", { month: "long" })}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(Number(e.target.value))}
+          className="text-md focus:outline-none focus:ring-0 focus:border-none"
+        >
+          {Array.from({ length: new Date().getFullYear() - 1899 }, (_, i) => 1900 + i).map((y) => (
+            <option key={y} value={y}>
+              {y}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Calendar display */}
+      <Calendar
+        mode="single"
+        month={currentMonth}
+        selected={value instanceof Date ? value : new Date(value)}
+        onSelect={(date) => date && onChange(date)}
+        className="pointer-events-auto"
+      />
+    </div>
+  );
+};
+
 
 export default EditableField;
