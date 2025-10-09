@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import InputField from "../components/page/InputField";
 import SocialButton from "../components/page/SocialButton";
@@ -25,6 +25,17 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const { setShowRegisterModal, setShowForgotPasswordModal } = useModal();
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
+
+  useEffect(() => {
+    // Disable scrolling when the modal opens
+    document.body.style.overflow = "hidden";
+
+    // Re-enable scrolling when the modal unmounts (closes)
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
 
   const [showFingerprintText, setShowFingerprintText] = useState(false);
 
