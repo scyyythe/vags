@@ -8,7 +8,7 @@ type LanguageContextType = {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("EN");
 
   // Load from localStorage on mount
   useEffect(() => {

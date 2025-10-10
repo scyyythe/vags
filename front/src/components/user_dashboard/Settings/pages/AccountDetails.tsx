@@ -125,7 +125,7 @@ const AccountDetails = () => {
     form.append("first_name", updatedFirstName);
     form.append("last_name", updatedLastName);
     form.append("gender", formData.gender);
-    form.append("email", formData.email);
+    form.append("email", formData.email); 
     form.append("date_of_birth", formattedDob);
 
     const loadingToast = toast("Updating your details...", {
