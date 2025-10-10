@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { StatCard } from "@/components/admin_&_moderator/admin/StatCard";
 import { UserTable } from "@/components/admin_&_moderator/admin/UserTable";
 import { SystemLogs, SystemLog } from "@/components/admin_&_moderator/admin/SystemLogs";
+import { TransactionLogs, TransactionLog } from "@/components/admin_&_moderator/admin/TransactionLogs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, FileCheck, Cog, Calendar, ArrowUp, Search } from "lucide-react";
@@ -73,6 +74,133 @@ const mockLogs: SystemLog[] = [
   },
 ];
 
+const mockTransactions: TransactionLog[] = [
+  {
+    id: "TXN-001",
+    timestamp: "2023-06-15 14:25:30",
+    type: "donation",
+    amount: 50.00,
+    from: {
+      id: "U-123",
+      name: "Alice Johnson",
+    },
+    to: {
+      id: "A-456",
+      name: "Bob Artist",
+    },
+    artworkId: "ART-789",
+    artworkTitle: "Sunset Dreams",
+    status: "completed",
+    details: "User donation to artist for their work. Payment processed via Stripe.",
+  },
+  {
+    id: "TXN-002",
+    timestamp: "2023-06-15 15:10:45",
+    type: "purchase",
+    amount: 250.00,
+    from: {
+      id: "U-234",
+      name: "Charlie Smith",
+    },
+    to: {
+      id: "A-567",
+      name: "Diana Creator",
+    },
+    artworkId: "ART-890",
+    artworkTitle: "Abstract Thoughts",
+    status: "completed",
+    details: "Marketplace purchase. Artwork ownership transferred successfully.",
+  },
+  {
+    id: "TXN-003",
+    timestamp: "2023-06-15 16:30:20",
+    type: "auction_claim",
+    amount: 1200.00,
+    from: {
+      id: "A-678",
+      name: "Emily Painter",
+    },
+    to: {
+      id: "U-345",
+      name: "Frank Collector",
+    },
+    artworkId: "ART-901",
+    artworkTitle: "Mountain Majesty",
+    status: "completed",
+    details: "Artist claimed winning artwork from auction. Final bid amount transferred.",
+  },
+  {
+    id: "TXN-004",
+    timestamp: "2023-06-15 17:45:15",
+    type: "bid",
+    amount: 800.00,
+    from: {
+      id: "U-456",
+      name: "Grace Williams",
+    },
+    to: {
+      id: "A-789",
+      name: "Henry Sculptor",
+    },
+    artworkId: "ART-012",
+    artworkTitle: "Bronze Guardian",
+    status: "pending",
+    details: "Bid placed on auction item. Awaiting auction end to process.",
+  },
+  {
+    id: "TXN-005",
+    timestamp: "2023-06-15 18:20:40",
+    type: "commission",
+    amount: 500.00,
+    from: {
+      id: "U-567",
+      name: "Ivy Brown",
+    },
+    to: {
+      id: "A-890",
+      name: "Jack Designer",
+    },
+    status: "completed",
+    details: "Commission payment for custom artwork. Project milestone completed.",
+  },
+  {
+    id: "TXN-006",
+    timestamp: "2023-06-15 19:05:55",
+    type: "purchase",
+    amount: 75.00,
+    from: {
+      id: "U-678",
+      name: "Kelly Davis",
+    },
+    to: {
+      id: "A-901",
+      name: "Liam Photographer",
+    },
+    artworkId: "ART-123",
+    artworkTitle: "City Lights",
+    status: "failed",
+    details: "Marketplace purchase failed. Payment declined by payment processor.",
+  },
+  {
+    id: "TXN-007",
+    timestamp: "2023-06-15 20:15:30",
+    type: "donation",
+    amount: 100.00,
+    from: {
+      id: "U-789",
+      name: "Mason Taylor",
+    },
+    to: {
+      id: "A-012",
+      name: "Nina Illustrator",
+    },
+    artworkId: "ART-234",
+    artworkTitle: "Whimsical Garden",
+    status: "completed",
+    details: "Generous donation from supporter. Artist notified via email.",
+  },
+];
+
 const activityData = [
   { date: "Mon", users: 4000, artworks: 2400, bids: 1200 },
   { date: "Tue", users: 3000, artworks: 1398, bids: 900 },
@@ -117,7 +245,7 @@ const AdminDashboard = () => {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4" onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2 sm:w-auto sm:inline-grid sm:grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:inline-grid sm:grid-cols-3">
           <TabsTrigger value="overview" className="text-[10px]">
             Overview
           </TabsTrigger>
@@ -125,7 +253,10 @@ const AdminDashboard = () => {
             User Management
           </TabsTrigger> */}
           <TabsTrigger value="logs" className="text-[10px]">
-            System Logs
+            Security Logs
+          </TabsTrigger>
+          <TabsTrigger value="transactions" className="text-[10px]">
+            Transaction Logs
           </TabsTrigger>
         </TabsList>
 
@@ -223,6 +354,17 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <SystemLogs logs={mockLogs} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="transactions">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Transaction Logs</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TransactionLogs transactions={mockTransactions} />
             </CardContent>
           </Card>
         </TabsContent>

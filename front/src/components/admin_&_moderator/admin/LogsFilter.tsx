@@ -111,7 +111,6 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
         </Select>
       </div>
 
-      <div className="flex justify-between">
         {/* <Button 
           variant="outline" 
           size="sm" 
@@ -121,7 +120,7 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
           <RefreshCw className="h-2 w-2" />
           Clear Filters
         </Button> */}
-        <Button 
+        {/* <Button 
           variant="outline" 
           size="sm" 
           className="text-[10px] flex items-center gap-1 h-8"
@@ -130,8 +129,7 @@ export function LogsFilter({ filter, onChange, onSearch }: LogsFilterProps) {
         >
           <Download className="h-2 w-2" />
           {isExporting ? "Exporting..." : "Export Logs"}
-        </Button>
-      </div>
+        </Button> */}
     </div>
   );
 }

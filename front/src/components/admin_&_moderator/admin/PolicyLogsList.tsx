@@ -12,7 +12,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export interface PolicyLog {
   id: string;
@@ -39,16 +45,16 @@ export const PolicyLogsList = ({ logs, onView, onDelete, onEdit, onDownloadPDF }
 
   // Filter logs based on status and search query
   const filteredLogs = logs.filter(log => {
-    const matchesStatus = 
-      filterStatus === "all" || 
+    const matchesStatus =
+      filterStatus === "all" ||
       log.status === filterStatus;
-    
-    const matchesSearch = 
+
+    const matchesSearch =
       searchQuery === "" ||
       log.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       log.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
       log.content.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     return matchesStatus && matchesSearch;
   });
 
@@ -64,10 +70,12 @@ export const PolicyLogsList = ({ logs, onView, onDelete, onEdit, onDownloadPDF }
       <CardHeader>
         <CardTitle className="text-sm">Policy Logs</CardTitle>
       </CardHeader>
+
       <CardContent className="space-y-4">
         {/* Filters and Search */}
-        <div className="space-y-3">
-          <div className="relative">
+        <div className="flex justify-between items-center gap-3">
+          {/* Search bar */}
+          <div className="relative w-full">
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
             <Input
               placeholder="Search by title, type, or content..."
@@ -76,20 +84,21 @@ export const PolicyLogsList = ({ logs, onView, onDelete, onEdit, onDownloadPDF }
               className="pl-7 h-8 text-xs"
             />
           </div>
-          
-          <Tabs value={filterStatus} onValueChange={(value) => setFilterStatus(value as "all" | "draft" | "saved")}>
-            <TabsList className="grid w-full grid-cols-3 h-8">
-              <TabsTrigger value="all" className="text-[10px]">
-                All ({logs.length})
-              </TabsTrigger>
-              <TabsTrigger value="draft" className="text-[10px]">
-                Drafts ({logs.filter(l => l.status === "draft").length})
-              </TabsTrigger>
-              <TabsTrigger value="saved" className="text-[10px]">
-                Published ({logs.filter(l => l.status === "saved").length})
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+
+          {/* Dropdown filter */}
+          <Select
+            value={filterStatus}
+            onValueChange={(value) => setFilterStatus(value as "all" | "draft" | "saved")}
+          >
+            <SelectTrigger className="w-[130px] h-8 text-xs">
+              <SelectValue placeholder="Filter by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All ({logs.length})</SelectItem>
+              <SelectItem value="draft">Drafts ({logs.filter(l => l.status === "draft").length})</SelectItem>
+              <SelectItem value="saved">Published ({logs.filter(l => l.status === "saved").length})</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Results */}
@@ -99,81 +108,81 @@ export const PolicyLogsList = ({ logs, onView, onDelete, onEdit, onDownloadPDF }
           </p>
         ) : (
           <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-xs">Type</TableHead>
-              <TableHead className="text-xs">Title</TableHead>
-              <TableHead className="text-xs">Status</TableHead>
-              <TableHead className="text-xs">Version</TableHead>
-              <TableHead className="text-xs">Updated</TableHead>
-              <TableHead className="text-xs text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {sortedLogs.map((log) => (
-              <TableRow key={log.id}>
-                <TableCell className="text-[10px] font-medium">{log.type}</TableCell>
-                <TableCell className="text-[10px]">{log.title}</TableCell>
-                <TableCell>
-                  <Badge
-                    variant={log.status === "saved" ? "default" : "secondary"}
-                    className="text-[9px]"
-                  >
-                    {log.status}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-[10px]">
-                  {log.status === "saved" ? `v${log.version || 1}` : "-"}
-                </TableCell>
-                <TableCell className="text-[10px]">{log.updatedAt}</TableCell>
-                <TableCell className="text-right">
-                  <div className="flex gap-1 justify-end">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 w-7 p-0"
-                      onClick={() => onView(log)}
-                      title="View"
-                    >
-                      <Eye className="h-3 w-3" />
-                    </Button>
-                    {log.status === "draft" && onEdit && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0"
-                        onClick={() => onEdit(log)}
-                        title="Edit Draft"
-                      >
-                        <Edit className="h-3 w-3" />
-                      </Button>
-                    )}
-                    {log.status === "saved" && onDownloadPDF && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0"
-                        onClick={() => onDownloadPDF(log)}
-                        title="Download PDF"
-                      >
-                        <Download className="h-3 w-3" />
-                      </Button>
-                    )}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 w-7 p-0 text-destructive"
-                      onClick={() => onDelete(log.id)}
-                      title="Delete"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </TableCell>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-xs">Type</TableHead>
+                <TableHead className="text-xs">Title</TableHead>
+                <TableHead className="text-xs">Status</TableHead>
+                <TableHead className="text-xs">Version</TableHead>
+                <TableHead className="text-xs">Updated</TableHead>
+                <TableHead className="text-xs text-right">Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {sortedLogs.map((log) => (
+                <TableRow key={log.id}>
+                  <TableCell className="text-[10px] font-medium">{log.type}</TableCell>
+                  <TableCell className="text-[10px]">{log.title}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={log.status === "saved" ? "default" : "secondary"}
+                      className="text-[9px]"
+                    >
+                      {log.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-[10px]">
+                    {log.status === "saved" ? `v${log.version || 1}` : "-"}
+                  </TableCell>
+                  <TableCell className="text-[10px]">{log.updatedAt}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex gap-1 justify-end">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0"
+                        onClick={() => onView(log)}
+                        title="View"
+                      >
+                        <Eye className="h-3 w-3" />
+                      </Button>
+                      {log.status === "draft" && onEdit && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 w-7 p-0"
+                          onClick={() => onEdit(log)}
+                          title="Edit Draft"
+                        >
+                          <Edit className="h-3 w-3" />
+                        </Button>
+                      )}
+                      {log.status === "saved" && onDownloadPDF && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 w-7 p-0"
+                          onClick={() => onDownloadPDF(log)}
+                          title="Download PDF"
+                        >
+                          <Download className="h-3 w-3" />
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0 text-destructive"
+                        onClick={() => onDelete(log.id)}
+                        title="Delete"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
       </CardContent>
     </Card>
