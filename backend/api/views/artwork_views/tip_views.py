@@ -1,33 +1,93 @@
+import random
+import string
 from bson import ObjectId
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from rest_framework import status
 from api.models.artwork_model.tip import Tip
 from api.models.user_model.users import User
-from api.serializers.artwork_s.tip_serializers import TipSerializer
-from datetime import datetime
+from api.models.artwork_model.artwork import Art
 from api.models.transaction_model.transaction import Transaction
-# give a tip
+from api.models.interaction_model.notification import Notification
+from api.serializers.artwork_s.tip_serializers import TipSerializer
+from django.utils import timezone
+from datetime import datetime
+
+
+def generate_reference():
+    """Generate random GCash reference number (used as transaction_id)"""
+    prefix = "GC"
+    random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    return f"{prefix}-{random_part}"
+
+
 class TipCreateView(generics.CreateAPIView):
     serializer_class = TipSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        tip = serializer.save()  # this still saves Tip
+      
+        gcash_ref = generate_reference()
 
-        # also log in transactions
+       
+        tip = serializer.save(
+            payment_method="GCash",
+            payment_status="Completed",
+            currency="PHP",
+            transaction_id=gcash_ref,
+        )
+
+     
+        art = getattr(tip, "art", None)
+        art_title = getattr(art, "title", None)
+        art_id = str(getattr(art, "id", "")) if art else None
+        link = f"/artwork/{art_id}" if art_id else ""
+
+    
         Transaction.objects.create(
             sender=tip.sender,
             receiver=tip.receiver,
+            art=art,
             transaction_type="Tip",
             amount=tip.amount,
             currency=tip.currency,
             payment_method=tip.payment_method,
             payment_status=tip.payment_status,
-            transaction_id=tip.transaction_id or None,
-            timestamp=tip.timestamp,
-            extra_data={"manual_tip": True}
+            transaction_id=gcash_ref,
+            timestamp=tip.timestamp or timezone.now(),
+            extra_data={
+                "art_title": art_title,
+                "art_id": art_id,
+                "manual_tip": True,
+            },
         )
+
+        # Send Notification
+        Notification.objects.create(
+            user=tip.receiver,
+            actor=tip.sender,
+            message=(
+                f" tipped you ₱{tip.amount} for your artwork '{art_title}'"
+                if art_title else f" tipped you ₱{tip.amount}"
+            ),
+            art=art,
+            name=f"{tip.sender.first_name} {tip.sender.last_name}",
+            action="tipped you",
+            target=art_title or "",
+            icon="💰",
+            amount=str(tip.amount),
+            donation="Tip",
+            money=True,
+            link=link,  # clean link
+            created_at=datetime.now(),
+        )
+
+    def create(self, request, *args, **kwargs):
+        super().create(request, *args, **kwargs)
+        return Response(
+            {"message": "GCash tip recorded and notification sent successfully."},
+            status=status.HTTP_201_CREATED,
+        )
+
 
 
 #  all tips
