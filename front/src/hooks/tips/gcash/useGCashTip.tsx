@@ -1,82 +1,40 @@
 import apiClient from "@/utils/apiClient";
-import { useState } from "react";
 import { toast } from "sonner";
 
-interface UseGCashTipProps {
-  onSuccess?: () => void;
-  onError?: (error: any) => void;
-}
-
-export const useGCashTip = ({ onSuccess, onError }: UseGCashTipProps = {}) => {
-  const [loading, setLoading] = useState(false);
-  const [artistGCash, setArtistGCash] = useState<any>(null);
-
+export function useGcashTip() {
   /**
-   * Step 1: Fetch artist GCash details (to show QR / number)
+   * Sends a GCash tip to an artist
+   * @param amount - Donation amount
+   * @param artistId - Artist's user ID
+   * @param artId - (Optional) Artwork ID
    */
-  const getArtistGCashInfo = async (artistId: string) => {
+  const sendGcashTip = async (amount: string, artistId: string, artId?: string) => {
     try {
-      setLoading(true);
-      const response = await apiClient.get(`/payment/gcash/${artistId}/`);
-      setArtistGCash(response.data);
-      return response.data;
-    } catch (error: any) {
-      toast.error("Failed to load artist GCash info.");
-      if (onError) onError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /**
-   * Step 2: User submits manual proof after sending payment
-   */
-  const submitGCashProof = async ({
-    amount,
-    artistId,
-    artId,
-    proofImage,
-    referenceNumber,
-    note,
-  }: {
-    amount: string;
-    artistId: string;
-    artId: string;
-    proofImage?: string; // base64 or URL
-    referenceNumber?: string;
-    note?: string;
-  }) => {
-    try {
-      setLoading(true);
       const senderId = localStorage.getItem("user_id");
+      if (!senderId) {
+        toast.error("Please log in before sending a tip.");
+        return;
+      }
 
-      const payload = {
+      const { data } = await apiClient.post("/tip/", {
+        sender: senderId,
+        receiver: artistId,
+        art: artId || null,
         amount,
-        artist_id: artistId,
-        art_id: artId,
-        sender_id: senderId,
-        proof_image: proofImage || "",
-        reference_number: referenceNumber || "",
-        note: note || "",
-      };
+        currency: "PHP",
+        payment_method: "GCash",
+        payment_status: "Completed",
+      });
 
-      const response = await apiClient.post("/payment/gcash/submit/", payload);
-      toast.success("Proof submitted successfully! Awaiting verification.");
-      if (onSuccess) onSuccess();
-      return response.data;
-    } catch (error: any) {
-      console.error("GCash proof submission failed:", error);
-      toast.error("Failed to submit GCash proof.");
-      if (onError) onError(error);
-    } finally {
-      setLoading(false);
+      toast.success(`You successfully sent ₱${amount} to the artist!`);
+      return data;
+    } catch (err: any) {
+      console.error("GCash tip failed:", err);
+      console.error("Response data:", err.response?.data);
+      toast.error(err.response?.data?.error || "❌ Failed to send GCash tip. Please try again.");
+      throw err;
     }
   };
 
-  return {
-    loading,
-    artistGCash,
-    getArtistGCashInfo,
-    submitGCashProof,
-  };
-};
+  return { sendGcashTip };
+}

@@ -3,7 +3,7 @@ from api.views.purchase_view.purchase_view import PurchaseArtworkView,MyPurchase
 from api.views.purchase_view.review_view import SubmitReviewView
 from api.views.purchase_view.sold_artworks_view import MySoldArtworksView,ToggleArtworkStatusView,MarkArtworkAsUnlistedView
 from api.views.purchase_view.review_view import SubmitReviewView,AllReviewsByArtworkView, GetReviewByPurchaseView,AllReviewsByPurchaseView,UpdateReviewView,DeleteReviewView
-from api.views.payment_views.payment_accounts import ListPaymentAccounts,AddOrUpdatePaymentAccount,DeletePaymentAccount
+from api.views.payment_views.payment_accounts import ListPaymentAccounts,AddOrUpdatePaymentAccount,DeletePaymentAccount,GetArtistPaymentAccounts
 from api.views.transaction.auction_payment import PayPalVerifyAuctionPaymentView
 from api.views.transaction.marketplace_payment import PayPalPurchaseVerifyView
 purchase_urlpatterns = [
@@ -37,6 +37,8 @@ purchase_urlpatterns = [
    path("accounts/", ListPaymentAccounts.as_view(), name="list-payment-accounts"),
     path("accounts/save/", AddOrUpdatePaymentAccount.as_view(), name="add-update-account"),
     path("accounts/<str:account_id>/delete/", DeletePaymentAccount.as_view(), name="delete-account"),
+   path("payment/accounts/artist/<str:artist_id>/", GetArtistPaymentAccounts.as_view(), name="artist-payment-accounts"),
+
     
     #payment acution payppal
      path('paypal/verify-auction/', PayPalVerifyAuctionPaymentView.as_view(), name='paypal-verify-auction'),

@@ -1,29 +1,54 @@
-import React, { useState } from "react"; 
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Maximize2, X } from "lucide-react";
-
+import { useArtistPaymentAccounts } from "@/hooks/accounts/useArtistPaymentAccounts";
+import { usePayment } from "@/context/PaymentContext";
+import { toast } from "sonner";
 interface GCashPaymentProps {
-  onClosePreviousModal: () => void; // function to close the parent modal
+  artistId: string;
+  onClosePreviousModal: () => void;
 }
 
-export const GCashPayment: React.FC<GCashPaymentProps> = ({ onClosePreviousModal }) => {
+export const GCashPayment: React.FC<GCashPaymentProps> = ({ artistId, onClosePreviousModal }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showReceiptPopup, setShowReceiptPopup] = useState(false);
+  const { confirmPurchase } = usePayment();
+  const { accounts, loading, error } = useArtistPaymentAccounts(artistId);
 
-  const gcashNumber = "09XX XXX XXXX";
-  const qrCodeUrl = "/pics/qr.jpg";
+  const gcashAccount = accounts.find((acc) => acc?.type?.toLowerCase() === "gcash");
 
-  const handlePaidClick = () => {
-    // Close the parent modal
-    onClosePreviousModal();
+  const handlePaidClick = async () => {
+    try {
+      onClosePreviousModal();
+      await confirmPurchase("gcash");
 
-    // Show the receipt popup
-    setShowReceiptPopup(true);
-
-    // Auto-close after
-    setTimeout(() => setShowReceiptPopup(false), 8000);
+      setShowReceiptPopup(true);
+      setTimeout(() => setShowReceiptPopup(false), 8000);
+    } catch (error) {
+      console.error("GCash payment failed:", error);
+    }
   };
+
+  if (loading) return <p className="text-center text-xs text-gray-500">Loading GCash info...</p>;
+
+  if (error) return <p className="text-center text-xs text-red-500">{error}</p>;
+
+  if (!gcashAccount)
+    return (
+      <Card className="border-none shadow-none">
+        <CardContent className="p-4 text-center text-gray-500 text-sm">
+          No GCash account linked for this artist.
+        </CardContent>
+      </Card>
+    );
+
+  const accountInfo = gcashAccount.account_info;
+  const accountNumber = typeof accountInfo === "string" ? accountInfo : accountInfo?.accountNumber || "N/A";
+
+  const accountName = gcashAccount.name || "Unknown";
+
+  const qrCodeUrl = gcashAccount.qr_image_url || "/placeholder-qr.png";
 
   return (
     <>
@@ -41,7 +66,6 @@ export const GCashPayment: React.FC<GCashPaymentProps> = ({ onClosePreviousModal
                   alt="GCash QR Code"
                   className="w-48 h-48 object-cover rounded-md border border-gray-200 text-xs"
                 />
-
                 <button
                   onClick={() => setIsExpanded(true)}
                   aria-label="Expand QR"
@@ -57,8 +81,8 @@ export const GCashPayment: React.FC<GCashPaymentProps> = ({ onClosePreviousModal
             </div>
 
             <div>
-              <p className="text-[13px] font-semibold text-black">{gcashNumber}</p>
-              <p className="text-gray-700 text-[10px]">GCash Mobile Number</p>
+              <p className="text-[13px] font-semibold text-black">{accountNumber}</p>
+              <p className="text-gray-700 text-[10px]">{accountName}</p>
             </div>
           </div>
 
@@ -73,7 +97,7 @@ export const GCashPayment: React.FC<GCashPaymentProps> = ({ onClosePreviousModal
 
       {/* Expanded QR */}
       {isExpanded && (
-        <div className="fixed inset-0 bg-black bg-opacity-0 z-50 flex justify-center items-center overflow-hidden">
+        <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
           <button
             onClick={() => setIsExpanded(false)}
             className="absolute top-4 right-6 z-[60] bg-white rounded-full p-1.5 shadow-md transition-colors duration-200"
@@ -81,14 +105,7 @@ export const GCashPayment: React.FC<GCashPaymentProps> = ({ onClosePreviousModal
           >
             <X className="w-4 h-4 text-gray-900" />
           </button>
-
-          <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
-            <img
-              src={qrCodeUrl}
-              alt="Expanded QR Code"
-              className="max-h-[80vh] max-w-[90vw] object-contain"
-            />
-          </div>
+          <img src={qrCodeUrl} alt="Expanded QR Code" className="max-h-[80vh] max-w-[90vw] object-contain" />
         </div>
       )}
     </>

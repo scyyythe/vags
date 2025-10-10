@@ -8,7 +8,8 @@ import paypalLogo from "../../../../../public/pics/paypal.png";
 import stripeLogo from "../../../../../public/pics/stripe.png";
 import { usePayPalTip } from "@/hooks/paypal/usePayPalTip";
 import { useStripeTip } from "@/hooks/tips/useStripeTip";
-
+import { useGcashTip } from "@/hooks/tips/gcash/useGCashTip";
+import apiClient from "@/utils/apiClient";
 interface TipJarPopupProps {
   isOpen: boolean;
   onClose: () => void;
@@ -40,8 +41,11 @@ const TipJarPopup = ({
   const { createStripeSession } = useStripeTip();
   const [isQrExpanded, setIsQrExpanded] = useState(false);
   const [showReceiptPopup, setShowReceiptPopup] = useState(false);
-
-  const qrCodeUrl = "/pics/qr.jpg"; 
+  const [artistAccounts, setArtistAccounts] = useState<any[]>([]);
+  const gcashAccount = artistAccounts.find((acc) => acc.type === "gcash");
+  const qrCodeUrl = gcashAccount?.qr_image_url || "/pics/qr.png";
+  const [refreshKey, setRefreshKey] = useState(0);
+  const { sendGcashTip } = useGcashTip();
 
   const predefinedAmounts = [
     { value: "250", label: "₱250" },
@@ -51,7 +55,21 @@ const TipJarPopup = ({
     { value: "2500", label: "₱2500" },
     { value: "3000", label: "₱3000" },
   ];
+  useEffect(() => {
+    if (!artistId) return;
 
+    const fetchArtistAccounts = async () => {
+      try {
+        const res = await apiClient.get(`/payment/accounts/artist/${artistId}/`);
+        setArtistAccounts(res.data);
+      } catch (err) {
+        console.error("Failed to fetch artist accounts:", err);
+        toast.error("Failed to load artist payment accounts");
+      }
+    };
+
+    fetchArtistAccounts();
+  }, [artistId, refreshKey]);
   //Disable modal closing when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -137,7 +155,7 @@ const TipJarPopup = ({
   const handleConfirmDonation = async () => {
     const amount = selectedAmount || customAmount;
     if (!amount) {
-      toast.error("Invalid amount.", { closeButton: true });
+      toast.error("Invalid amount.");
       return;
     }
 
@@ -147,11 +165,15 @@ const TipJarPopup = ({
       try {
         await createStripeSession(amount, artistId, artId);
       } catch (err) {
-        toast.error("Stripe payment failed. Try again.", { closeButton: true });
+        toast.error("Stripe payment failed. Try again.");
       }
-    } else {
-      toast.success(`Donation of ₱${amount} sent via ${paymentMethod}!`, { closeButton: true });
-      onClose();
+    } else if (paymentMethod === "GCash") {
+      try {
+        await sendGcashTip(amount, artistId, artId);
+        onClose();
+      } catch {
+        toast.error("Gcash payment failed. Try again.", { closeButton: true });
+      }
     }
   };
 
@@ -239,38 +261,49 @@ const TipJarPopup = ({
 
                   {/* Centered GCash number and QR code */}
                   {paymentMethod === "GCash" ? (
-                    <div className="flex flex-col items-center justify-center mt-4 w-full">
-                      <p className="text-[11px] text-gray-700 mt-1">Scan this QR to donate</p>
+                    gcashAccount ? (
+                      <div className="flex flex-col items-center justify-center mt-4 w-full">
+                        <p className="text-[11px] text-gray-700 mt-1">Scan this QR to donate</p>
 
-                      {/* QR container with hover expand button */}
-                      <div className="relative group mt-2">
-                        <img
-                          src={qrCodeUrl}
-                          alt="GCash QR Code"
-                          className="w-48 h-48 text-xs rounded-md border border-gray-200 object-cover"
-                        />
+                        {/* QR container with hover expand button */}
+                        <div className="relative group mt-2">
+                          <img
+                            src={qrCodeUrl}
+                            alt="GCash QR Code"
+                            className="w-48 h-48 text-xs rounded-md border border-gray-200 object-cover"
+                          />
 
-                        {/* Hidden by default, appears on hover */}
-                        <button
-                          onClick={() => setIsQrExpanded(true)}
-                          aria-label="Expand QR"
-                          className={
-                            "absolute bottom-2 right-2 rounded-full p-2 bg-black shadow-xl text-white " +
-                            "opacity-0 scale-95 pointer-events-none transition-all duration-200 " +
-                            "group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto"
-                          }
-                        >
-                          <Maximize2 className="w-3 h-3" />
-                        </button>
+                          {/* Hidden by default, appears on hover */}
+                          <button
+                            onClick={() => setIsQrExpanded(true)}
+                            aria-label="Expand QR"
+                            className={
+                              "absolute bottom-2 right-2 rounded-full p-2 bg-black shadow-xl text-white " +
+                              "opacity-0 scale-95 pointer-events-none transition-all duration-200 " +
+                              "group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto"
+                            }
+                          >
+                            <Maximize2 className="w-3 h-3" />
+                          </button>
+                        </div>
+
+                        <p className="text-xs text-black text-center font-medium mt-2">
+                          {" "}
+                          {gcashAccount?.account_info || "09XX-XXX-XXXX"}
+                        </p>
                       </div>
-
-                      <p className="text-xs text-black text-center font-medium mt-2">09XX-XXX-XXXX</p>
-                    </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center mt-6 text-center text-gray-600">
+                        <p className="text-md font-semibold text-red-700 mb-2">Unavailable</p>
+                        <p className="text-xs font-medium">No GCash details available from this user.</p>
+                        <p className="text-[10px] text-gray-500 mt-1">Try using PayPal or Stripe instead.</p>
+                      </div>
+                    )
                   ) : (
                     <div className="flex items-end justify-end">
                       <p className="text-[11px] text-gray-700">
                         {paymentMethod === "PayPal" && default_paypal_email}
-                        {paymentMethod === "Stripe" && "stripe_account@example.com"}
+                        {paymentMethod === "Stripe" && "********@gmail.com"}
                       </p>
                     </div>
                   )}
@@ -279,10 +312,18 @@ const TipJarPopup = ({
                 <div className="flex gap-4 justify-between">
                   <Button
                     onClick={handleConfirmDonation}
-                    className="w-full bg-[#B5191D] hover:bg-[#9b1518] text-white text-xs font-medium rounded-full py-1 px-4"
-                    disabled={paymentMethod === "PayPal" && !default_paypal_email}
+                    className={cn(
+                      "w-full text-white text-xs font-medium rounded-full py-1 px-4",
+                      paymentMethod === "GCash" && !gcashAccount
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-[#B5191D] hover:bg-[#9b1518]"
+                    )}
+                    disabled={
+                      (paymentMethod === "PayPal" && !default_paypal_email) ||
+                      (paymentMethod === "GCash" && !gcashAccount)
+                    }
                   >
-                    {paymentMethod === "GCash" ? "Donated" : "Donate"}
+                    Donate
                   </Button>
                 </div>
               </>
@@ -431,17 +472,12 @@ const TipJarPopup = ({
           >
             <X className="w-4 h-4 text-gray-900" />
           </button>
-        
+
           <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
-            <img
-              src={qrCodeUrl}
-              alt="Expanded QR Code"
-              className="max-h-[80vh] max-w-[90vw] object-contain"
-            />
+            <img src={qrCodeUrl} alt="Expanded QR Code" className="max-h-[80vh] max-w-[90vw] object-contain" />
           </div>
         </div>
       )}
-
     </div>
   );
 };

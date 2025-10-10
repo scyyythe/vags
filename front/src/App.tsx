@@ -88,9 +88,31 @@ import EditExhibit from "./components/user_dashboard/Exhibit/add_exhibit/EditExh
 
 import { ChatProvider } from "./context/ChatContext";
 import Header from "./components/user_dashboard/navbar/Header";
+import { useState, useEffect } from "react";
 import UpdateArtwork from "./components/user_dashboard/Marketplace/sell/UpdateArtwork";
+import apiClient from "./utils/apiClient";
+import { toast } from "sonner";
 const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isPopupOpen, closePopup, currentArtwork } = useDonation();
+  const [artistAccounts, setArtistAccounts] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!currentArtwork?.artistId) return;
+
+    const fetchAccounts = async () => {
+      try {
+        const response = await apiClient.get(`/payment/accounts/artist/${currentArtwork.artistId}/`);
+        setArtistAccounts(response.data);
+      } catch (error) {
+        console.error("Error fetching artist accounts:", error);
+        toast.error("Failed to load artist payment accounts");
+      }
+    };
+
+    fetchAccounts();
+  }, [currentArtwork?.artistId]);
+
+  const paypalEmail = artistAccounts.find((acc) => acc.type === "paypal")?.account_info || "";
 
   return (
     <>
@@ -103,7 +125,7 @@ const DonationWrapper = ({ children }: { children: React.ReactNode }) => {
         artistId={currentArtwork?.artistId}
         artistName={currentArtwork?.artistName}
         artId={currentArtwork?.id}
-        default_paypal_email={currentArtwork?.default_paypal_email || ""}
+        default_paypal_email={paypalEmail}
       />
     </>
   );
