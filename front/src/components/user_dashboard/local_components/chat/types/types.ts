@@ -50,4 +50,5 @@ export interface Conversation {
   isPinned: boolean;
   isMuted: boolean;
   messages: Message[];
+  deletedBy?: string[]; // Array of user IDs who have deleted this conversation
 }
