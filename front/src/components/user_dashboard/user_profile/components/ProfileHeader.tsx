@@ -17,6 +17,8 @@ import useFollowCounts from "@/hooks/follow/useFollowCount";
 import EditProfile from "../../own_profile/edit_profile/EditButton";
 import FollowModals from "@/components/user_dashboard/own_profile/following_&_followers/owners/profile/FollowModals";
 import ProfileHeaderSkeleton from "@/components/skeletons/ProfileHeaderSkeleton";
+import { useChat } from "@/context/ChatContext";
+import { toast } from "sonner";
 import { useSocials } from "@/hooks/users/social/useSocials";
 interface ProfileHeaderProps {
   profileImage: string;
@@ -38,10 +40,24 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
   const { id } = useParams<{ id: string }>();
   const { data: followCounts, error } = useFollowCounts(id || "");
   const { data: socials = [], isLoading: isSocialsLoading } = useSocials(profileUserId);
+  const { openChat } = useChat();
 
   const [showReportOptions, setShowReportOptions] = useState(false);
 
   const [contactOpen, setContactOpen] = useState(false);
+
+  // Handle contact button click - open direct conversation
+  const handleContact = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!profileUserId || !name) {
+      console.error("❌ Missing profile info", { profileUserId, name });
+      return;
+    }
+
+    openChat(String(profileUserId), name, profileImage, true);
+    toast(`Opening conversation with ${name}...`, { closeButton: true });
+  };
 
   if (error) {
     console.error("Error fetching follow counts:", error.message);
@@ -201,7 +217,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
                 className="z-50 bg-white p-2 shadow-lg rounded-md min-w-[140px] animate-fade-in"
                 forceMount
               >
-                <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
+                <DropdownMenuItem
+                  className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1"
+                  onClick={handleContact}
+                >
                   Message
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">

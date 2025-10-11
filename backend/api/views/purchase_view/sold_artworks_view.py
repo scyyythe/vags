@@ -6,6 +6,7 @@ from api.models.artwork_model.artwork import Art
 from bson import ObjectId
 from rest_framework import status
 from api.models.review_model.review import Review 
+
 class MySoldArtworksView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -53,6 +54,7 @@ class MySoldArtworksView(APIView):
                 "payment_method": sale.payment_method,
                 "is_paid": sale.is_paid,
                 "status": sale.status,
+                "buyer_id": str(sale.buyer.id),
                 "buyer_name": f"{sale.buyer.first_name} {sale.buyer.last_name}",
                 "shipping_address": sale.shipping_address.to_mongo(),
                 "created_at": sale.created_at,

@@ -15,6 +15,7 @@ class ArtworkDetailSerializer(serializers.Serializer):
     edition = serializers.CharField()
     year_created = serializers.CharField(required=False, allow_blank=True)
     quantity = serializers.IntegerField(required=False)
+    artist_id = serializers.SerializerMethodField()
     artist_name = serializers.SerializerMethodField()
     default_paypal_email = serializers.SerializerMethodField() 
     
@@ -33,6 +34,9 @@ class ArtworkDetailSerializer(serializers.Serializer):
             return account.account_info
         except PaymentAccount.DoesNotExist:
             return None
+    def get_artist_id(self, obj):
+        return str(obj.artist.id) if obj.artist else None
+        
     def get_artist_name(self, obj):
         return f"{obj.artist.first_name} {obj.artist.last_name}" if obj.artist else "Unknown"
 
