@@ -11,6 +11,7 @@ interface MessageInputProps {
   messageInput: string;
   replyingTo: Message | null;
   isRecording: boolean;
+  uploadingFile?: boolean;
   onMessageChange: (message: string) => void;
   onSendMessage: () => void;
   onFileSelect: (file: File) => void;
@@ -26,6 +27,7 @@ export const MessageInput = ({
   messageInput,
   replyingTo,
   isRecording,
+  uploadingFile = false,
   onMessageChange,
   onSendMessage,
   onFileSelect,
@@ -159,10 +161,14 @@ export const MessageInput = ({
         <Button
           onClick={onSendMessage}
           size="sm"
-          disabled={(!messageInput.trim() && attachedFiles.length === 0) || isRecording}
+          disabled={(!messageInput.trim() && attachedFiles.length === 0) || isRecording || uploadingFile}
           className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
         >
-          <Send size={15} />
+          {uploadingFile ? (
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          ) : (
+            <Send size={15} />
+          )}
         </Button>
       </div>
     </div>
