@@ -8,6 +8,7 @@ export interface RawSoldArtwork {
   payment_method: string;
   is_paid: boolean;
   status: string;
+  buyer_id: string;
   buyer_name: string;
   shipping_address: any;
   created_at: string;
@@ -26,6 +27,7 @@ export interface FormattedSoldArtwork {
   artworkImage: string;
   title: string;
   buyer: string;
+  buyer_id: string;
   price: number;
   artist_id: string;
   status: string;
@@ -62,12 +64,13 @@ export function formatSoldArtworks(data: RawSoldArtwork[] = []): FormattedSoldAr
   return data.map((sale) => {
     const normalizedStatus = normalizeSoldStatus(sale.status);
 
-    return {
+    const formattedArtwork = {
       id: sale.id,
       artwork_id: sale.artwork_id,
       artworkImage: sale.artwork_image,
       title: sale.artwork_title,
       buyer: sale.buyer_name,
+      buyer_id: sale.buyer_id,
       price: sale.price,
       status: normalizedStatus,
       saleDate: new Date(sale.created_at).toLocaleDateString(),
@@ -93,5 +96,7 @@ export function formatSoldArtworks(data: RawSoldArtwork[] = []): FormattedSoldAr
             }
           : undefined,
     };
+
+    return formattedArtwork;
   });
 }

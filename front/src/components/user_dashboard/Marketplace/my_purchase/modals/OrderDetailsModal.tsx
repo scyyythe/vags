@@ -13,6 +13,7 @@ interface OrderDetailsModalProps {
     title: string;
     artist?: string;
     buyer?: string;
+    buyer_id?: string;
     price: number;
     status: string;
     orderDate?: string;

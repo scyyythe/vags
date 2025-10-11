@@ -17,6 +17,8 @@ import EditReviewModal from "@/components/user_dashboard/Marketplace/my_purchase
 import PaymentDetailsModal from "@/components/user_dashboard/Marketplace/my_listings/PaymentDetailsModal";
 import RefundDetailsModal from "@/components/user_dashboard/Marketplace/my_listings/RefundDetailsModal";
 import TrackPaymentModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/TrackPaymentModal";
+import { useChat } from "@/context/ChatContext";
+import apiClient from "@/utils/apiClient";
 
 import SoldArtworkCard from "@/components/user_dashboard/Marketplace/sold_artworks/card/SoldArtworksCard";
 import { useMyPurchases } from "@/hooks/purchase/useMyPurchases";
@@ -41,6 +43,7 @@ const SellTab = ({ selectedPriceRange }) => {
   const navigate = useNavigate();
   const isOwnProfile = String(userId) === String(loggedInUserId);
   const { data: myPurchases, isLoading: isMyPurchasesLoading } = useMyPurchases();
+  const { openChat } = useChat();
 
   const { data: myArtCards = [], isLoading, error } = useMySellArtCards();
 
@@ -151,10 +154,23 @@ const SellTab = ({ selectedPriceRange }) => {
     }
   };
 
-  const handleContact = () =>
-    toast.info("Redirecting to contact seller...", {
-      closeButton: true,
-    });
+  const handleContact = (order) => {
+    const sellerId = order.artwork?.artist_id;
+    const sellerName = order.artwork?.artist_name;
+
+    if (!sellerId) {
+      toast.error("Unable to contact seller - seller ID not found");
+      return;
+    }
+
+    if (!sellerName) {
+      toast.error("Unable to contact seller - seller name not found");
+      return;
+    }
+
+    openChat(String(sellerId), sellerName, undefined, true);
+    toast(`Opening conversation with ${sellerName}...`, { closeButton: true });
+  };
 
   const handleTrackOrder = (order) => {
     setSelectedOrderForTracking(order);
@@ -489,7 +505,22 @@ const SellTab = ({ selectedPriceRange }) => {
 
   // Seller actions for sold artworks
   const handleContactBuyer = (artwork) => {
-    toast.info("Redirecting to contact buyer...");
+    const buyerId = artwork.buyer_id;
+    const buyerName = artwork.buyer;
+
+    if (!buyerId) {
+      toast.error("Unable to contact buyer - buyer ID not found");
+      return;
+    }
+
+    if (!buyerName) {
+      toast.error("Unable to contact buyer - buyer name not found");
+      return;
+    }
+
+    // Open direct conversation with buyer
+    openChat(String(buyerId), buyerName, undefined, true);
+    toast(`Opening conversation with ${buyerName}...`, { closeButton: true });
   };
 
   const handleMarkAsShipped = (artwork) => {
@@ -685,6 +716,7 @@ const SellTab = ({ selectedPriceRange }) => {
                   artworkImage={artwork.artworkImage}
                   title={artwork.title}
                   buyer={artwork.buyer}
+                  buyer_id={artwork.buyer_id}
                   price={artwork.price}
                   status="reviewed"
                   saleDate={artwork.saleDate}
@@ -718,6 +750,7 @@ const SellTab = ({ selectedPriceRange }) => {
                 artworkImage={artwork.artworkImage}
                 title={artwork.title}
                 buyer={artwork.buyer}
+                buyer_id={artwork.buyer_id}
                 price={artwork.price}
                 status={artwork.status}
                 saleDate={artwork.saleDate}
@@ -791,7 +824,7 @@ const SellTab = ({ selectedPriceRange }) => {
                   )
                 }
                 onViewReview={() => handleViewReview(order)}
-                onContact={handleContact}
+                onContact={() => handleContact(order)}
                 onTrackOrder={() => handleTrackOrder(order)}
                 onRequestRefund={handleRequestRefund}
                 onCancelOrder={handleCancelOrder}
