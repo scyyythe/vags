@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { X, Link as LinkIcon } from "lucide-react";
+import { X, Link as LinkIcon, Package } from "lucide-react";
 
 interface AutomaticMessageDialogProps {
   open: boolean;
@@ -50,6 +50,7 @@ const AutomaticMessageDialog: React.FC<AutomaticMessageDialogProps> = ({
                 <div className="bg-card border rounded-2xl rounded-tl-sm shadow-sm p-4 space-y-3">
                   {/* Message Header */}
                   <div className="flex items-center gap-2 pb-2 border-b">
+                    <Package className="w-4 h-4" />
                     <span className="font-bold text-xs">New Order Received!</span>
                   </div>
                   
