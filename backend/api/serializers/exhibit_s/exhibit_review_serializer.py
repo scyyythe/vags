@@ -29,6 +29,15 @@ class ExhibitReviewSerializer(serializers.Serializer):
 
     def get_collaborators(self, obj):
         collaborators = []
+        
+        # Add owner first
+        collaborators.append({
+            "id": str(obj.owner.id),
+            "name": f"{obj.owner.first_name} {obj.owner.last_name}".strip(),
+            "profile_picture": obj.owner.profile_picture if getattr(obj.owner, "profile_picture", None) else ""
+        })
+        
+        # Add collaborators
         for user in obj.collaborators:
             collaborators.append({
                 "id": str(user.id),
@@ -39,20 +48,47 @@ class ExhibitReviewSerializer(serializers.Serializer):
 
     def get_slots(self, obj):
         slots = []
+        
+        # Add owner's artworks first
+        if hasattr(obj, 'artworks') and obj.artworks:
+            for i, artwork in enumerate(obj.artworks):
+                if artwork:  # Check if artwork exists
+                    try:
+                        artwork_data = ArtSerializer(artwork, context=self.context).data
+                        slots.append({
+                            "contributor": {
+                                "id": str(obj.owner.id),
+                                "name": f"{obj.owner.first_name} {obj.owner.last_name}".strip(),
+                                "profile_picture": obj.owner.profile_picture if getattr(obj.owner, "profile_picture", None) else ""
+                            },
+                            "artwork": artwork_data,
+                            "slot_number": i + 1,  # Owner's slots start from 1
+                            "contributed_at": obj.created_at
+                        })
+                    except Exception as e:
+                        # Skip this artwork if it can't be serialized
+                        continue
+        
+        # Add collaborators' contributions
         contributions = ExhibitContribution.objects(exhibit=obj)
         for contribution in contributions:
             contributor = contribution.contributor
             for artwork_entry in contribution.artworks:
-                slots.append({
-                    "contributor": {
-                        "id": str(contributor.id),
-                        "name": f"{contributor.first_name} {contributor.last_name}".strip(),
-                        "profile_picture": contributor.profile_picture if getattr(contributor, "profile_picture", None) else ""
-                    },
-                    "artwork": ArtSerializer(artwork_entry.artwork, context=self.context).data,
-                    "slot_number": artwork_entry.slot_number,
-                    "contributed_at": artwork_entry.contributed_at
-                })
+                try:
+                    artwork_data = ArtSerializer(artwork_entry.artwork, context=self.context).data
+                    slots.append({
+                        "contributor": {
+                            "id": str(contributor.id),
+                            "name": f"{contributor.first_name} {contributor.last_name}".strip(),
+                            "profile_picture": contributor.profile_picture if getattr(contributor, "profile_picture", None) else ""
+                        },
+                        "artwork": artwork_data,
+                        "slot_number": artwork_entry.slot_number,
+                        "contributed_at": artwork_entry.contributed_at
+                    })
+                except Exception as e:
+                    # Skip this artwork if it can't be serialized
+                    continue
         return slots
 
 

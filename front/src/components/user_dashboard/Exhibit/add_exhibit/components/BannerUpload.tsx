@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface BannerUploadProps {
   bannerImage: string | null;
@@ -21,15 +22,35 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
   const handleBannerUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      console.log("📂 Selected banner file:", file);
+
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        toast.error("Invalid file type", {
+          description: "Please select an image file for the banner.",
+          closeButton: true,
+        });
+        return;
+      }
+
+      // Validate file size (max 10MB)
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        toast.error("File too large", {
+          description: "Please select an image smaller than 10MB.",
+          closeButton: true,
+        });
+        return;
+      }
+
       // Set file and preview immediately
       setBannerFile(file);
       setBannerImage(URL.createObjectURL(file));
-      console.log("📂 Selected banner file:", file);
 
-      // Clear input safely after React state updates
-      setTimeout(() => {
-        if (inputRef.current) inputRef.current.value = "";
-      }, 0);
+      // toast.success("Banner uploaded successfully", {
+      //   description: "Your banner image has been uploaded.",
+      //   closeButton: true,
+      // });
     }
   };
 

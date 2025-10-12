@@ -163,13 +163,16 @@ class ArtSerializer(serializers.Serializer):
         return instance
 
     def get_artist(self, obj):
-        if obj.artist:
-            return {
-                "id": str(obj.artist.id),
-                "name": f"{obj.artist.first_name} {obj.artist.last_name}",
-                "profile_picture": str(obj.artist.profile_picture)
-            }
-        return None
+        try:
+            if obj.artist:
+                return {
+                    "id": str(obj.artist.id),
+                    "name": f"{obj.artist.first_name} {obj.artist.last_name}",
+                    "profile_picture": str(obj.artist.profile_picture) if obj.artist.profile_picture else ""
+                }
+            return None
+        except Exception as e:
+            return None
 
     def to_representation(self, instance):
         artist_data = self.get_artist(instance) or {}

@@ -154,7 +154,6 @@ const AppContent = () => {
   return (
     <>
       {!hideHeader && <Header />}
-      <Routes>{/* all your routes here */}</Routes>
     </>
   );
 };

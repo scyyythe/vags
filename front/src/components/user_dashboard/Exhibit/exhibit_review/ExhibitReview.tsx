@@ -92,46 +92,61 @@ const ExhibitReview = () => {
     return <div className="p-10 text-sm text-red-600">Failed to load exhibit review.</div>;
   }
 
+  // Use backend-calculated collaborator status if available, otherwise fallback to frontend calculation
   let collaborators: Collaborator[] = [];
+  let totalSlots = 0;
+  let filledSlots = 0;
+  let completionPercentage = 0;
+  let isReadyToPublish = false;
 
-  if (exhibit.chosen_env === 2) {
-    // Each collaborator gets 2 slots in env 2
-    collaborators = exhibit.collaborators.map((collab: any) => {
-      const slotsForUser = exhibit.slots.filter((slot: any) => slot.contributor.id === collab.id);
-      return {
-        id: collab.id,
-        name: collab.name,
-        profile_picture: collab.profile_picture || "",
-        slotsToFill: 2,
-        slotsFilled: slotsForUser.length,
-        inProgress: slotsForUser.length < 2,
-      };
-    });
+  if (exhibit.collaborator_status && exhibit.overall_completion) {
+    // Use backend-calculated data
+    collaborators = exhibit.collaborator_status;
+    totalSlots = exhibit.overall_completion.totalSlots;
+    filledSlots = exhibit.overall_completion.filledSlots;
+    completionPercentage = exhibit.overall_completion.completionPercentage;
+    isReadyToPublish = exhibit.overall_completion.isReadyToPublish;
   } else {
-    // Env 1 = 4 slots, Env 3 = 10 slots
-    const totalSlotCount = exhibit.chosen_env === 1 ? 4 : 10;
-    const numCollaborators = exhibit.collaborators.length;
-    const baseSlots = Math.floor(totalSlotCount / numCollaborators);
-    const remainder = totalSlotCount % numCollaborators;
+    // Fallback to frontend calculation
+    if (exhibit.chosen_env === 2) {
+      // Each collaborator gets 2 slots in env 2
+      collaborators = exhibit.collaborators.map((collab: any) => {
+        const slotsForUser = exhibit.slots?.filter((slot: any) => slot.contributor.id === collab.id) || [];
+        return {
+          id: collab.id,
+          name: collab.name,
+          profile_picture: collab.profile_picture || "",
+          slotsToFill: 2,
+          slotsFilled: slotsForUser.length,
+          inProgress: slotsForUser.length < 2,
+        };
+      });
+    } else {
+      // Env 1 = 4 slots, Env 3 = 10 slots
+      const totalSlotCount = exhibit.chosen_env === 1 ? 4 : 10;
+      const numCollaborators = exhibit.collaborators.length;
+      const baseSlots = Math.floor(totalSlotCount / numCollaborators);
+      const remainder = totalSlotCount % numCollaborators;
 
-    collaborators = exhibit.collaborators.map((collab: any, index: number) => {
-      const slotsToFill = baseSlots + (index < remainder ? 1 : 0);
-      const slotsForUser = exhibit.slots.filter((slot: any) => slot.contributor.id === collab.id);
-      return {
-        id: collab.id,
-        name: collab.name,
-        profile_picture: collab.profile_picture || "",
-        slotsToFill,
-        slotsFilled: slotsForUser.length,
-        inProgress: slotsForUser.length < slotsToFill,
-      };
-    });
+      collaborators = exhibit.collaborators.map((collab: any, index: number) => {
+        const slotsToFill = baseSlots + (index < remainder ? 1 : 0);
+        const slotsForUser = exhibit.slots?.filter((slot: any) => slot.contributor.id === collab.id) || [];
+        return {
+          id: collab.id,
+          name: collab.name,
+          profile_picture: collab.profile_picture || "",
+          slotsToFill,
+          slotsFilled: slotsForUser.length,
+          inProgress: slotsForUser.length < slotsToFill,
+        };
+      });
+    }
+
+    totalSlots = collaborators.reduce((acc, c) => acc + c.slotsToFill, 0);
+    filledSlots = collaborators.reduce((acc, c) => acc + c.slotsFilled, 0);
+    completionPercentage = Math.floor((filledSlots / totalSlots) * 100);
+    isReadyToPublish = filledSlots === totalSlots;
   }
-
-  const totalSlots = collaborators.reduce((acc, c) => acc + c.slotsToFill, 0);
-  const filledSlots = collaborators.reduce((acc, c) => acc + c.slotsFilled, 0);
-  const completionPercentage = Math.floor((filledSlots / totalSlots) * 100);
-  const isReadyToPublish = filledSlots === totalSlots;
 
   return (
     <div>
@@ -226,76 +241,58 @@ const ExhibitReview = () => {
               </div>
 
               <div className="grid grid-cols-3 gap-2 mb-4">
-                <div className="text-center flex">
-                  <div className="h-2.5 w-2.5 bg-gray-800 rounded-full mr-2"></div>
-                  <p className="text-[10px] text-gray-600">Your slots</p>
-                </div>
-                <div className="text-center flex">
-                  <div className="h-2.5 w-2.5 bg-blue-500 rounded-full mr-2"></div>
-                  <p className="text-[10px] text-gray-600">Maya's slots</p>
-                </div>
-                <div className="text-center flex">
-                  <div className="h-2.5 w-2.5 bg-red-500 rounded-full mr-2"></div>
-                  <p className="text-[10px] text-gray-600">Angel's slots</p>
-                </div>
+                {/* Show legend for collaborators */}
+                {(exhibit.collaborators || [])
+                  .filter((person) => person && person.name) // Filter out undefined/null persons
+                  .slice(0, 3)
+                  .map((person: any, index: number) => {
+                    const colors = ["bg-gray-800", "bg-blue-500", "bg-red-500", "bg-green-500", "bg-purple-500"];
+                    return (
+                      <div key={person.id || index} className="text-center flex">
+                        <div className={`h-2.5 w-2.5 ${colors[index] || "bg-gray-400"} rounded-full mr-2`}></div>
+                        <p className="text-[10px] text-gray-600 truncate">{person.name}</p>
+                      </div>
+                    );
+                  })}
               </div>
 
               <div className="grid grid-cols-3 gap-2">
-                {/* Slot 1 */}
-                <div className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start">
-                  <img
-                    src="https://i.pinimg.com/736x/19/dd/6a/19dd6a09150116940f1470e42d54b0cc.jpg"
-                    alt="Artwork slot"
-                    className="w-full h-16 object-cover rounded-sm mb-2"
-                  />
-                </div>
+                {exhibit.slots?.map((slot: any, index: number) => (
+                  <div
+                    key={index}
+                    className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start"
+                  >
+                    {slot.artwork?.image_url ? (
+                      <img
+                        src={Array.isArray(slot.artwork.image_url) ? slot.artwork.image_url[0] : slot.artwork.image_url}
+                        alt={slot.artwork.title || "Artwork"}
+                        className="w-full h-16 object-cover rounded-sm mb-1"
+                      />
+                    ) : (
+                      <div className="w-full h-16 bg-gray-100 border-2 border-dashed border-gray-300 rounded-sm mb-1 flex items-center justify-center">
+                        <p className="text-[8px] text-gray-400">Empty</p>
+                      </div>
+                    )}
+                    <p className="text-[8px] text-gray-500 truncate w-full">{slot.contributor?.name || "Unknown"}</p>
+                  </div>
+                ))}
 
-                {/* Slot 2 */}
-                <div className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start">
-                  <img
-                    src="https://i.pinimg.com/736x/94/2c/35/942c35f24718efeafac5fb77067b4604.jpg"
-                    alt="Artwork slot"
-                    className="w-full h-16 object-cover rounded-sm mb-2"
-                  />
-                </div>
-
-                {/* Slot 3 */}
-                <div className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start">
-                  <img
-                    src="https://i.pinimg.com/736x/d9/d1/13/d9d11380d789d981001068d8a28fe1ef.jpg"
-                    alt="Artwork slot"
-                    className="w-full h-16 object-cover rounded-sm mb-2"
-                  />
-                </div>
-
-                {/* Slot 4 */}
-                <div className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start">
-                  <img
-                    src="https://i.pinimg.com/736x/5a/39/dd/5a39ddaf10f622ac82d11a7d56d3ba39.jpg"
-                    alt="Artwork slot"
-                    className="w-full h-16 object-cover rounded-sm mb-2"
-                  />
-                </div>
-
-                {/* Slot 5 */}
-                <div className="w-[120px] p-2 text-center flex flex-col items-center justify-start">
-                  <div className="border rounded-md w-[100px] h-[65px]">
-                    <div className="relative top-4">
-                      <p className="text-[10px] font-semibold">7</p>
-                      <p className="text-[10px] text-gray-500">Alex Chen's slot</p>
+                {/* Show empty slots if there are fewer artworks than total slots */}
+                {Array.from({
+                  length: Math.max(
+                    0,
+                    (exhibit.chosen_env === 1 ? 4 : exhibit.chosen_env === 2 ? 6 : 10) - (exhibit.slots?.length || 0)
+                  ),
+                }).map((_, index) => (
+                  <div
+                    key={`empty-${index}`}
+                    className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start"
+                  >
+                    <div className="w-full h-16 bg-gray-100 border-2 border-dashed border-gray-300 rounded-sm mb-1 flex items-center justify-center">
+                      <p className="text-[8px] text-gray-400">Empty</p>
                     </div>
                   </div>
-                </div>
-
-                {/* Slot 6 */}
-                <div className="w-[120px] p-2 text-center flex flex-col items-center justify-start">
-                  <div className="border rounded-md w-[100px] h-[65px]">
-                    <div className="relative top-4">
-                      <p className="text-[10px] font-semibold">8</p>
-                      <p className="text-[10px] text-gray-500">Jera's slot</p>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </Card>
           </div>
