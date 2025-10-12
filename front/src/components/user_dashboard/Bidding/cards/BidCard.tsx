@@ -12,10 +12,12 @@ import OwnerBidMenu from "../../own_profile/menu/bid_card/Menu";
 import { getLoggedInUserId } from "@/auth/decode";
 import { useAuctionActions } from "@/hooks/auction/useAuctionActions";
 import { useToggleHideAuction } from "@/hooks/auction/useToggleHideAuction";
+import { useRestoreAuction } from "@/hooks/auction/useRestoreAuction";
 interface ExtendedArtworkAuction extends ArtworkAuction {
   isPaid?: boolean;
   isHighestBidder?: boolean;
   joinedByCurrentUser?: boolean;
+  visibility?: string;
 }
 
 interface BidCardProps {
@@ -52,6 +54,7 @@ const BidCard: React.FC<BidCardProps> = ({
   const navigate = useNavigate();
   const { mutate: submitAuctionReport } = useAuctionSubmitReport();
   const { mutate: hideAuction } = useToggleHideAuction();
+  const { mutate: restoreAuction } = useRestoreAuction();
 
   useEffect(() => {
     console.log("Top level start_bid_amount:", data.start_bid_amount);
@@ -187,10 +190,17 @@ const BidCard: React.FC<BidCardProps> = ({
                     setMenuOpen(false);
                   }
                 }}
+                onRestore={(id) => {
+                  restoreAuction(id);
+                  setMenuOpen(false);
+                }}
                 onViewBids={() => {
                   setMenuOpen(false);
                 }}
                 bids={data.bid_history || []}
+                auctionId={data.id}
+                auctionTitle={data.artwork.title}
+                visibility={data.visibility}
                 className="top-8 -left-[12px]"
               />
             ) : (

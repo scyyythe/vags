@@ -97,6 +97,7 @@ class AuctionSerializer(serializers.Serializer):
     highest_bid = BidSerializer(read_only=True)
     bid_history = BidSerializer(read_only=True, many=True)
     status = serializers.CharField(read_only=True)
+    visibility = serializers.CharField(read_only=True)
     viewers = serializers.SerializerMethodField()
     auction_likes_count = serializers.SerializerMethodField()
     user_has_liked_auction = serializers.SerializerMethodField()

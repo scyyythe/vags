@@ -5,12 +5,14 @@ import { getLoggedInUserId } from "@/auth/decode";
 import BidCard from "../../Bidding/cards/BidCard";
 import useAuctions, { ArtworkAuction } from "@/hooks/auction/useAuction";
 import { useMyAuctions } from "@/hooks/auction/useMyAuctions";
+import { useRestoreAllAuctions } from "@/hooks/auction/useRestoreAllAuctions";
 
 type ExtendedAuction = ArtworkAuction & {
   isPaid?: boolean;
   joinedByCurrentUser?: boolean;
   isHighestBidder?: boolean;
   isLost?: boolean;
+  visibility?: string;
 };
 
 type MyBidFilter = "all" | "active" | "won" | "lost";
@@ -18,9 +20,10 @@ type MyBidFilter = "all" | "active" | "won" | "lost";
 type OnBidTabProps = {
   selectedStatus: string;
   onShowUnhidePopup?: () => void;
+  onShowRestoreAllPopup?: () => void;
 };
 
-const OnBidTab = ({ selectedStatus, onShowUnhidePopup }: OnBidTabProps) => {
+const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: OnBidTabProps) => {
   const [activeTab, setActiveTab] = useState<"on_going" | "sold" | "closed" | "my_bids">("on_going");
   const [myBidFilter, setMyBidFilter] = useState<MyBidFilter>("all");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -38,6 +41,7 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup }: OnBidTabProps) => {
 
   const { data: myAuctions = [], isLoading: isLoadingMyAuctions } = useMyAuctions({
     includeHidden: selectedStatus === "Hidden",
+    includeDeleted: selectedStatus === "Deleted",
   });
 
   const { data: auctions = [], isLoading: isLoadingAuctions } = useAuctions(
@@ -48,8 +52,12 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup }: OnBidTabProps) => {
   );
 
   // Use the appropriate data based on profile type and status
-  const auctionsToUse = isMyProfile && selectedStatus === "Hidden" ? myAuctions : auctions;
-  const isLoadingToUse = isMyProfile && selectedStatus === "Hidden" ? isLoadingMyAuctions : isLoadingAuctions;
+  const auctionsToUse =
+    isMyProfile && (selectedStatus === "Hidden" || selectedStatus === "Deleted") ? myAuctions : auctions;
+  const isLoadingToUse =
+    isMyProfile && (selectedStatus === "Hidden" || selectedStatus === "Deleted")
+      ? isLoadingMyAuctions
+      : isLoadingAuctions;
 
   const participatedAuctionsWithFlags = useMemo(() => {
     return participatedAuctions
@@ -81,8 +89,8 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup }: OnBidTabProps) => {
           // Show auctions with archived artworks
           return a.artwork?.visibility?.toLowerCase() === "archived";
         } else if (selectedStatus === "Deleted") {
-          // Show auctions with deleted artworks
-          return a.artwork?.visibility?.toLowerCase() === "deleted";
+          // Show deleted auctions (check auction visibility, not artwork visibility)
+          return a.visibility?.toLowerCase() === "deleted";
         } else if (selectedStatus === "Hidden") {
           // Backend already handles hidden filtering, so show all returned auctions
           return true;
@@ -143,15 +151,26 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup }: OnBidTabProps) => {
             {selectedStatus === "Archived" && "Archived Auctions"}
             {selectedStatus === "Private" && "Private Auctions"}
           </h2>
-          {/* Unhide All button for Hidden status */}
-          {selectedStatus === "Hidden" && isMyProfile && (
-            <button
-              onClick={onShowUnhidePopup}
-              className="text-[10px] py-2 pr-2 text-blue-700 hover:text-blue-600 font-medium"
-            >
-              Unhide All
-            </button>
-          )}
+          <div className="flex gap-2">
+            {/* Restore All button for Deleted status */}
+            {selectedStatus === "Deleted" && isMyProfile && onShowRestoreAllPopup && (
+              <button
+                onClick={onShowRestoreAllPopup}
+                className="text-[10px] py-2 pr-2 text-green-700 hover:text-green-600 font-medium"
+              >
+                Restore All
+              </button>
+            )}
+            {/* Unhide All button for Hidden status */}
+            {selectedStatus === "Hidden" && isMyProfile && (
+              <button
+                onClick={onShowUnhidePopup}
+                className="text-[10px] py-2 pr-2 text-blue-700 hover:text-blue-600 font-medium"
+              >
+                Unhide All
+              </button>
+            )}
+          </div>
         </div>
       )}
 

@@ -12,9 +12,16 @@ export const useAuctionActions = () => {
     },
     onSuccess: () => {
       toast.success("Auction closed successfully");
+      // Invalidate all auction-related queries
       queryClient.invalidateQueries({ queryKey: ["auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["my-auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["light-auctions"] });
       queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
       queryClient.invalidateQueries({ queryKey: ["myAuctionArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["myParticipatedAuctions"] });
+      queryClient.invalidateQueries({ queryKey: ["popular-auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["followedAuctions"] });
+      queryClient.invalidateQueries({ queryKey: ["auction"] });
     },
     onError: (err: any) => {
       console.error("Failed to close auction:", err);
@@ -29,9 +36,16 @@ export const useAuctionActions = () => {
     },
     onSuccess: (data) => {
       toast.success(data?.message || "Auction deleted successfully");
+      // Invalidate all auction-related queries
       queryClient.invalidateQueries({ queryKey: ["auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["my-auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["light-auctions"] });
       queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
       queryClient.invalidateQueries({ queryKey: ["myAuctionArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["myParticipatedAuctions"] });
+      queryClient.invalidateQueries({ queryKey: ["popular-auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["followedAuctions"] });
+      queryClient.invalidateQueries({ queryKey: ["auction"] });
     },
     onError: (error: any) => {
       const errorMsg = error?.response?.data?.error || error?.response?.data?.message || "Failed to delete auction";

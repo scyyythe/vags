@@ -4,16 +4,18 @@ import { calculateTimeRemaining } from "@/utils/timeUtils";
 import { ArtworkAuction } from "./useAuction";
 
 export const useMyAuctions = (
-  { includeHidden } = {
+  { includeHidden, includeDeleted } = {
     includeHidden: false,
+    includeDeleted: false,
   }
 ) => {
   return useQuery({
-    queryKey: ["my-auctions", includeHidden],
+    queryKey: ["my-auctions", includeHidden, includeDeleted],
     queryFn: async () => {
       const response = await apiClient.get(`/auction/list/created-by-me/`, {
         params: {
           include_hidden: includeHidden,
+          include_deleted: includeDeleted,
         },
       });
 
