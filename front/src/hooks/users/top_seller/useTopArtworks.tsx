@@ -13,17 +13,48 @@ export interface TopArtwork {
   artist_name: string;
   change24h: string;
   change7d: string;
+  category?: string;
+  medium?: string;
 }
 
-const fetchTopArtworks = async (): Promise<TopArtwork[]> => {
-  const { data } = await apiClient.get("/top-artworks/");
+export interface TopArtworksFilters {
+  category?: string;
+  medium?: string;
+  timeRange?: string;
+}
+
+const fetchTopArtworks = async (filters?: TopArtworksFilters): Promise<TopArtwork[]> => {
+  const params = new URLSearchParams();
+
+  if (filters?.category && filters.category !== "All") {
+    params.append("category", filters.category);
+  }
+
+  if (filters?.medium && filters.medium !== "Medium") {
+    params.append("medium", filters.medium);
+  }
+
+  if (filters?.timeRange) {
+    // Convert time range to backend format
+    const timeRangeMap: Record<string, string> = {
+      "Last 7 days": "7d",
+      "Last 30 days": "30d",
+      "All time": "all",
+    };
+    params.append("time_range", timeRangeMap[filters.timeRange] || "7d");
+  }
+
+  const queryString = params.toString();
+  const url = queryString ? `/top-artworks/?${queryString}` : "/top-artworks/";
+
+  const { data } = await apiClient.get(url);
   return data;
 };
 
-const useTopArtworks = () => {
+const useTopArtworks = (filters?: TopArtworksFilters) => {
   return useQuery<TopArtwork[]>({
-    queryKey: ["top-artworks"],
-    queryFn: fetchTopArtworks,
+    queryKey: ["top-artworks", filters],
+    queryFn: () => fetchTopArtworks(filters),
   });
 };
 

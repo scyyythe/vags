@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { differenceInDays } from "date-fns";
@@ -45,11 +45,24 @@ const SellTab = ({ selectedPriceRange }) => {
   const { data: myPurchases, isLoading: isMyPurchasesLoading } = useMyPurchases();
   const { openChat } = useChat();
 
-  const { data: myArtCards = [], isLoading, error } = useMySellArtCards();
+  const { data: myArtCards = [], isLoading: isMyArtLoading, error: myArtError } = useMySellArtCards();
+  const { data: userArtCards = [], isLoading: isUserArtLoading, error: userArtError } = useUserSellArtCards(userId);
+
+  // Use appropriate data based on whether it's own profile or not
+  const artCards = isOwnProfile ? myArtCards : userArtCards;
+  const isLoading = isOwnProfile ? isMyArtLoading : isUserArtLoading;
+  const error = isOwnProfile ? myArtError : userArtError;
 
   const [mainTab, setMainTab] = useState("myListings");
   const [activeSubGroup, setActiveSubGroup] = useState<"listings" | "soldArtworks">("listings");
   const [subTab, setSubTab] = useState("available");
+
+  // Reset subTab to "available" if it's "unlisted" and viewing another user's profile
+  React.useEffect(() => {
+    if (!isOwnProfile && subTab === "unlisted") {
+      setSubTab("available");
+    }
+  }, [isOwnProfile, subTab]);
   const [activeSubTab, setActiveSubTab] = useState("awaiting_payment");
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -281,7 +294,7 @@ const SellTab = ({ selectedPriceRange }) => {
     inactive: "unlisted",
   };
 
-  const activeListingTabs = ["available", "unlisted", "sold"];
+  const activeListingTabs = isOwnProfile ? ["available", "unlisted", "sold"] : ["available", "sold"];
   const soldArtworksTabs = [
     "awaiting_payment",
     "payment_received",
@@ -468,13 +481,14 @@ const SellTab = ({ selectedPriceRange }) => {
         : []
       : [];
 
-  let filteredArtworks = myArtCards
+  let filteredArtworks = artCards
     .filter((art) => {
       const status = (art.art_status || "").toLowerCase().trim();
       const tab = (subTab || "").toLowerCase().trim();
 
       if (tab === "unlisted") {
         return (
+          isOwnProfile &&
           mainTab === "myListings" &&
           activeSubGroup === "listings" &&
           ["unlisted", "draft", "inactive"].includes(status)

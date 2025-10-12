@@ -51,17 +51,41 @@ class TopSellersAPIView(APIView):
 class TopArtworksAPIView(APIView):
     def get(self, request):
         now = datetime.utcnow()
+        
+        # Get query parameters for filtering
+        category = request.GET.get('category', None)
+        medium = request.GET.get('medium', None)
+        time_range = request.GET.get('time_range', '7d')  # 7d, 30d, all
 
-        # Time ranges
-        last_24h = now - timedelta(hours=24)
-        prev_24h = last_24h - timedelta(hours=24)
-
-        last_7d = now - timedelta(days=7)
-        prev_7d = last_7d - timedelta(days=7)
+        # Time ranges based on filter
+        if time_range == '7d':
+            last_24h = now - timedelta(hours=24)
+            prev_24h = last_24h - timedelta(hours=24)
+            last_7d = now - timedelta(days=7)
+            prev_7d = last_7d - timedelta(days=7)
+        elif time_range == '30d':
+            last_24h = now - timedelta(hours=24)
+            prev_24h = last_24h - timedelta(hours=24)
+            last_7d = now - timedelta(days=30)
+            prev_7d = last_7d - timedelta(days=30)
+        else:  # all time
+            last_24h = now - timedelta(hours=24)
+            prev_24h = last_24h - timedelta(hours=24)
+            last_7d = datetime.min  # Start from beginning
+            prev_7d = datetime.min
 
         artwork_data = []
 
-        artworks = Art.objects(art_status__iexact="onSale")  # include active artworks
+        # Build base query with filters
+        base_query = {'art_status__iexact': 'onSale'}
+        
+        if category and category != 'All':
+            base_query['category__iexact'] = category
+            
+        if medium and medium != 'Medium':
+            base_query['medium__iexact'] = medium
+
+        artworks = Art.objects(**base_query)
         for art in artworks:
             sold_artworks = PurchasedArtwork.objects(
                 artwork=art, status="Completed"
@@ -118,6 +142,8 @@ class TopArtworksAPIView(APIView):
                 "sold_count": sold_count,
                 "change24h": f"{'+' if change24h >= 0 else ''}{change24h}%",
                 "change7d": f"{'+' if change7d >= 0 else ''}{change7d}%",
+                "category": getattr(art, "category", None),
+                "medium": getattr(art, "medium", None),
             })
 
         sorted_artworks = sorted(
