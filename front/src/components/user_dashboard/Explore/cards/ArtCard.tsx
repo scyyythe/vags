@@ -75,11 +75,16 @@ const ArtCard = ({
   const { mutate: updateVisibility } = useUpdateArtworkVisibility();
   const { mutate: archiveArtwork } = useArchivedArtwork();
   const [localIsLiked, setLocalIsLiked] = useState(status?.isLiked ?? isLikedFromBulk ?? false);
+  const [localIsReported, setLocalIsReported] = useState(report?.reported ?? isReportedFromBulk ?? false);
   const { isFavorite: localIsFavorite, handleFavorite } = useFavorite(id, status?.isSaved ?? isSavedFromBulk ?? false);
 
   useEffect(() => {
     setLocalIsLiked(status?.isLiked ?? isLikedFromBulk ?? false);
   }, [status?.isLiked, isLikedFromBulk]);
+
+  useEffect(() => {
+    setLocalIsReported(report?.reported ?? isReportedFromBulk ?? false);
+  }, [report?.reported, isReportedFromBulk]);
 
   const handleLike = () => {
     setLocalIsLiked((prev) => !prev);
@@ -117,22 +122,36 @@ const ArtCard = ({
     description?: string;
     additionalInfo?: string;
   }) => {
-    if (isReportedFromBulk) {
+    if (localIsReported || isReportedFromBulk) {
       toast.error("You have already reported this artwork.", { closeButton: true });
       setMenuOpen(false);
       return;
     }
+    // Update local state immediately for visual feedback
+    setLocalIsReported(true);
 
-    console.log("Submitting report with data:", { id, category, option, description, additionalInfo });
+    submitReport(
+      {
+        art_id: id,
+        category,
+        option,
+        description,
+        additionalInfo,
+      },
+      {
+        onError: () => {
+          // Revert local state if submission fails
+          setLocalIsReported(false);
+        },
+      }
+    );
 
-    submitReport({
-      art_id: id,
-      category,
-      option,
-      description,
-      additionalInfo,
-    });
+    setMenuOpen(false);
+  };
 
+  const handleUndoReport = () => {
+    // Update local state immediately for visual feedback
+    setLocalIsReported(false);
     setMenuOpen(false);
   };
 
@@ -222,9 +241,11 @@ const ArtCard = ({
               }}
               onHide={handleHide}
               onReport={handleReport}
+              onUndoReport={handleUndoReport}
               isFavorite={localIsFavorite}
-              isReported={report?.reported}
+              isReported={localIsReported}
               isShared={false}
+              artworkId={id}
               className="-right-1 top-7"
             />
           )}

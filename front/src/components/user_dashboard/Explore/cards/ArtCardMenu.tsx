@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react";
-import { Bookmark, EyeOff, Eye, Flag, Share2 } from "lucide-react";
+import { Bookmark, EyeOff, Eye, Flag, Share2, Undo2 } from "lucide-react";
 import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { normalizeReportType } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { ReportOption } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import ShareModal from "../../local_components/share/ShareModal";
+import useUndoArtworkReport from "@/hooks/mutate/report/undo/useUndoArtworkReport";
 interface ArtCardMenuProps {
   isOpen: boolean;
   onFavorite: () => void;
@@ -19,6 +20,7 @@ interface ArtCardMenuProps {
   className?: string;
   isReportedFromBulk?: boolean;
   reportStatusFromBulk?: "Pending" | "In Progress" | "Resolved" | null;
+  artworkId?: string;
 }
 
 const YELLOW = "#ffc107";
@@ -36,6 +38,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   isHidden = false,
   isReportedFromBulk,
   reportStatusFromBulk,
+  artworkId,
   className,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -43,6 +46,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const [showShareModal, setShowShareModal] = useState(false);
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const [showReportOptions, setShowReportOptions] = useState(false);
+  const { handleUndoReport: undoArtworkReport } = useUndoArtworkReport();
   const handleReportSubmit = (categoryId: string, optionData?: ReportOption | string) => {
     const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
     if (!selectedCategory) {
@@ -66,13 +70,6 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     });
 
     setShowReportOptions(false);
-  };
-
-  const handleUndoReport = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onUndoReport) {
-      onUndoReport();
-    }
   };
 
   if (!isOpen) return null;
@@ -151,7 +148,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             )}
           </div>
 
-          {/* Report / Undo */}
+          {/* Report */}
           <div className="flex items-center relative">
             <button
               onClick={() => setShowReportOptions(true)}
@@ -168,12 +165,32 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
                 Report
               </span>
             )}
-            {hoveredItem === "undo" && (
-              <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Undo Report
-              </span>
-            )}
           </div>
+
+          {/* Undo Report - Only show when content is reported */}
+          {isReported && artworkId && (
+            <div className="flex items-center relative">
+              <button
+                onClick={(e) => {
+                  undoArtworkReport(e, artworkId);
+                  if (onUndoReport) {
+                    onUndoReport();
+                  }
+                }}
+                className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+                aria-label="Undo Report"
+                onMouseEnter={() => setHoveredItem("undoReport")}
+                onMouseLeave={() => setHoveredItem(null)}
+              >
+                <Undo2 size={10} stroke="currentColor" />
+              </button>
+              {hoveredItem === "undoReport" && (
+                <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+                  Undo Report
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </div>
       {/* Report Options Popup */}
