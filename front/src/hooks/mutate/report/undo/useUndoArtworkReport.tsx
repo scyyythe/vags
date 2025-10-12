@@ -47,13 +47,34 @@ const useUndoArtworkReport = () => {
     },
   });
 
-  const handleUndoReport = (e: React.MouseEvent, id: string) => {
+  const handleUndoReport = (
+    e: React.MouseEvent,
+    id: string,
+    onLocalUpdate?: () => void,
+    onLocalRevert?: () => void
+  ) => {
     e.stopPropagation();
     if (!id) {
       toast.error("Invalid artwork ID.");
       return;
     }
-    undoReport({ id });
+
+    // Call local update immediately for instant UI feedback
+    if (onLocalUpdate) {
+      onLocalUpdate();
+    }
+
+    undoReport(
+      { id },
+      {
+        onError: () => {
+          // Revert local state if undo fails
+          if (onLocalRevert) {
+            onLocalRevert();
+          }
+        },
+      }
+    );
   };
 
   return { handleUndoReport };
