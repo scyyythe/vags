@@ -11,6 +11,7 @@ import EmptyTrashPopup from "@/components/user_dashboard/user_profile/components
 import UnhidePopup from "@/components/user_dashboard/user_profile/components/status_options/popups/unhide/Unhide";
 import UnarchivePopup from "@/components/user_dashboard/user_profile/components/status_options/popups/unarchive/Unarchive";
 import RestoreAllConfirmation from "@/components/user_dashboard/user_profile/components/status_options/popups/restore_all/RestoreAllConfirmation";
+import RestoreAllAuctionsConfirmation from "@/components/user_dashboard/user_profile/components/status_options/popups/restore_all_auctions/RestoreAllAuctionsConfirmation";
 import { getLoggedInUserId } from "@/auth/decode";
 import CollectionTab from "../tabs/CollectionTab";
 import OnBidTab from "../tabs/OnBidTab";
@@ -20,6 +21,7 @@ import useBulkUnhideArtworks from "@/hooks/mutate/visibility/private/useBulkUnhi
 import useBulkUnhideExhibits from "@/hooks/mutate/visibility/private/useBulkUnhideExhibits";
 import useBulkUnhideAuctions from "@/hooks/mutate/visibility/private/useBulkUnhideAuctions";
 import { useRestoreAllExhibits } from "@/hooks/exhibit/useRestoreAllExhibits";
+import { useRestoreAllAuctions } from "@/hooks/auction/useRestoreAllAuctions";
 import SellTab from "../tabs/OnSaleTab";
 const tabs = [
   { id: "created", label: "Created" },
@@ -57,6 +59,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   const [ShowMakePublicPopup, setShowMakePublicPopup] = useState(false);
   const [showUnarchivePopup, setShowUnarchivePopup] = useState(false);
   const [showRestoreAllPopup, setShowRestoreAllPopup] = useState(false);
+  const [showRestoreAllAuctionsPopup, setShowRestoreAllAuctionsPopup] = useState(false);
 
   const [artworkList, setArtworkList] = useState<Artwork[]>([]);
 
@@ -79,6 +82,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   const { mutate: bulkUnhideExhibits } = useBulkUnhideExhibits();
   const { mutate: bulkUnhideAuctions } = useBulkUnhideAuctions();
   const { mutate: restoreAllExhibits } = useRestoreAllExhibits();
+  const { mutate: restoreAllAuctions } = useRestoreAllAuctions();
   const handleMediumSelect = (option: string) => {
     setSelectedMedium(option);
     setShowMediumOptions(false);
@@ -143,6 +147,20 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
   const cancelRestoreAll = () => {
     setShowRestoreAllPopup(false);
+  };
+
+  // RESTORE ALL AUCTIONS BUTTON
+  const handleRestoreAllAuctions = () => {
+    setShowRestoreAllAuctionsPopup(true);
+  };
+
+  const confirmRestoreAllAuctions = () => {
+    restoreAllAuctions();
+    setShowRestoreAllAuctionsPopup(false);
+  };
+
+  const cancelRestoreAllAuctions = () => {
+    setShowRestoreAllAuctionsPopup(false);
   };
 
   const handlePriceRangeSelect = (option: string) => {
@@ -437,7 +455,11 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
       {activeTab === "collections" && <CollectionTab />}
       {activeTab === "onBid" && (
-        <OnBidTab selectedStatus={selectedStatus} onShowUnhidePopup={() => setShowUnhidePopup(true)} />
+        <OnBidTab
+          selectedStatus={selectedStatus}
+          onShowUnhidePopup={() => setShowUnhidePopup(true)}
+          onShowRestoreAllPopup={handleRestoreAllAuctions}
+        />
       )}
 
       {activeTab === "exhibits" && (
@@ -501,6 +523,11 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
       <EmptyTrashPopup isOpen={showEmptyTrashPopup} onCancel={cancelEmptyTrash} onConfirm={confirmEmptyTrash} />
       <UnhidePopup isOpen={showUnhidePopup} onCancel={cancelUnhide} onConfirm={confirmUnhideAll} />
       <RestoreAllConfirmation isOpen={showRestoreAllPopup} onCancel={cancelRestoreAll} onConfirm={confirmRestoreAll} />
+      <RestoreAllAuctionsConfirmation
+        isOpen={showRestoreAllAuctionsPopup}
+        onCancel={cancelRestoreAllAuctions}
+        onConfirm={confirmRestoreAllAuctions}
+      />
     </div>
   );
 };

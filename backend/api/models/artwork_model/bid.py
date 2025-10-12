@@ -41,6 +41,8 @@ class Auction(Document):
         choices=[status.value for status in AuctionStatus],
         default=AuctionStatus.ON_GOING.value
     )
+    
+    visibility = StringField(choices=['Public', 'Private', 'Pending','Deleted','Archived','Hidden'], default='Public')
 
     bid_history = ListField(ReferenceField(Bid))
     viewed_by = ListField(ReferenceField(User, reverse_delete_rule=CASCADE), default=[])

@@ -5,6 +5,7 @@ from api.models.artwork_model.bid import Auction, AuctionStatus,Bid
 from api.serializers.artwork_s.auction_light_serializer import LightweightAuctionCardSerializer
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from mongoengine.errors import DoesNotExist
 from datetime import datetime
 class LightweightAuctionListView(APIView):
@@ -18,7 +19,7 @@ class LightweightAuctionListView(APIView):
         skip = (page - 1) * limit
 
         auctions = (
-            Auction.objects(status=AuctionStatus.ON_GOING.value)
+            Auction.objects(status=AuctionStatus.ON_GOING.value, visibility__ne="Deleted")
             .order_by("-created_at")
             .skip(skip)
             .limit(limit)
@@ -99,6 +100,13 @@ class DeleteAuctionView(generics.GenericAPIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
+        # Check if auction is already deleted
+        if auction.visibility == "Deleted":
+            return Response(
+                {"error": "This auction is already deleted"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
        
         if auction.bid_history and len(auction.bid_history) > 0:
             return Response(
@@ -106,17 +114,13 @@ class DeleteAuctionView(generics.GenericAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        
-        try:
-            Bid.objects(artwork=auction.artwork).delete()
-        except Exception as e:
-            print(f"Warning: Failed to clean bids: {e}")
+        # Soft delete: Set visibility to "Deleted"
+        auction.visibility = "Deleted"
+        auction.updated_at = datetime.utcnow()
+        auction.save()
 
-       
+        # Set artwork back to Active so it can be used for new auctions
         artwork = auction.artwork
-        auction.delete()
-
-        
         if isinstance(artwork.image_url, str):
             artwork.image_url = [artwork.image_url]
         elif artwork.image_url is None:
@@ -125,4 +129,66 @@ class DeleteAuctionView(generics.GenericAPIView):
         artwork.art_status = "Active"
         artwork.save()
 
-        return Response({"message": "Auction deleted successfully"}, status=status.HTTP_200_OK)
+        return Response({"message": "Auction moved to trash"}, status=status.HTTP_200_OK)
+
+
+class RestoreAuctionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, auction_id):
+        try:
+            auction = Auction.objects.get(id=auction_id)
+        except Auction.DoesNotExist:
+            return Response({"detail": "Auction not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if str(auction.artwork.artist.id) != str(request.user.id):
+            return Response(
+                {"detail": "Not authorized to restore this auction."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        # Restore the auction by setting visibility back to Public
+        auction.visibility = "Public"
+        auction.updated_at = datetime.utcnow()
+        auction.save()
+
+        return Response(
+            {"detail": "Auction restored successfully."},
+            status=status.HTTP_200_OK,
+        )
+
+
+class RestoreAllAuctionsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+        try:
+            user = request.user
+            
+            # First get all artwork IDs owned by the user
+            from api.models.artwork_model.artwork import Art
+            user_artworks = Art.objects(artist=user.id).only('id')
+            artwork_ids = [art.id for art in user_artworks]
+            
+            # Get all deleted auctions for those artworks
+            deleted_auctions = Auction.objects(
+                artwork__in=artwork_ids,
+                visibility="Deleted"
+            )
+            
+            count = deleted_auctions.count()
+            
+            # Restore all deleted auctions
+            for auction in deleted_auctions:
+                auction.visibility = "Public"
+                auction.updated_at = datetime.utcnow()
+                auction.save()
+            
+            return Response(
+                {"message": f"Successfully restored {count} auctions."},
+                status=status.HTTP_200_OK,
+            )
+            
+        except Exception as e:
+            print("🔥 ERROR in RestoreAllAuctionsView:", e)
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
