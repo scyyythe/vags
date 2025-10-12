@@ -212,22 +212,38 @@ const ExhibitReview = () => {
                 </div>
 
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">Collaborators</p>
+                  <p className="text-gray-500 text-[10px] font-medium mb-1">Owner</p>
                   <div className="flex flex-col gap-2 mt-1">
-                    {exhibit.collaborators.map((collaborator, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <Avatar className="w-4 h-4">
-                          <AvatarImage src={collaborator.profile_picture} alt={collaborator.name} />
-                          <AvatarFallback className="text-[11px] bg-gray-600 text-white">
-                            {collaborator.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-
-                        <span className="text-[11px]">{collaborator.name}</span>
-                      </div>
-                    ))}
+                    <div className="flex items-center gap-2">
+                      <Avatar className="w-4 h-4">
+                        <AvatarImage src={exhibit.owner?.profile_picture} alt={exhibit.owner?.name} />
+                        <AvatarFallback className="text-[11px] bg-gray-600 text-white">
+                          {exhibit.owner?.name?.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-[11px]">{exhibit.owner?.name}</span>
+                    </div>
                   </div>
                 </div>
+
+                {exhibit.collaborators && exhibit.collaborators.length > 0 && (
+                  <div>
+                    <p className="text-gray-500 text-[10px] font-medium mb-1">Collaborators</p>
+                    <div className="flex flex-col gap-2 mt-1">
+                      {exhibit.collaborators.map((collaborator, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <Avatar className="w-4 h-4">
+                            <AvatarImage src={collaborator.profile_picture} alt={collaborator.name} />
+                            <AvatarFallback className="text-[11px] bg-gray-600 text-white">
+                              {collaborator.name.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-[11px]">{collaborator.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </Card>
           </div>
@@ -241,8 +257,8 @@ const ExhibitReview = () => {
               </div>
 
               <div className="grid grid-cols-3 gap-2 mb-4">
-                {/* Show legend for collaborators */}
-                {(exhibit.collaborators || [])
+                {/* Show legend for owner and collaborators */}
+                {[exhibit.owner, ...(exhibit.collaborators || [])]
                   .filter((person) => person && person.name) // Filter out undefined/null persons
                   .slice(0, 3)
                   .map((person: any, index: number) => {
