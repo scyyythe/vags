@@ -98,6 +98,10 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     setShowSellModal(true);
   };
 
+  const handleAuctionClick = () => {
+    setShowAuctionPopup(true);
+  };
+
   const handleSellArtwork = (data: SellArtworkData) => {
     setSellArtworkData(data);
     setShowSellModal(false);
@@ -139,7 +143,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
           {/* Request to Bid */}
           <div className="flex items-center relative">
             <button
-              onClick={() => setShowAuctionPopup(true)}
+              onClick={handleAuctionClick}
               className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
               onMouseEnter={() => setHoveredItem("bid")}
               onMouseLeave={() => setHoveredItem(null)}
