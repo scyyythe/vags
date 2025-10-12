@@ -757,9 +757,9 @@ class UserArtworksWithHiddenView(generics.ListAPIView):
                 artworks = artworks.filter(visibility__iexact='private')
                 
             elif visibility_filter.lower() == 'archived':
-                artworks = artworks.filter(art_status__iexact='archived')
+                artworks = artworks.filter(visibility__iexact='archived')
                 
             elif visibility_filter.lower() == 'deleted':
-                artworks = artworks.filter(art_status__iexact='deleted')
+                artworks = artworks.filter(visibility__iexact='deleted')
 
         return artworks

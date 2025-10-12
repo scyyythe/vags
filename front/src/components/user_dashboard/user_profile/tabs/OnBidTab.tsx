@@ -75,10 +75,19 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup }: OnBidTabProps) => {
 
   const filteredAuctions = useMemo(() => {
     return auctionsToDisplay.filter((a) => {
-      // If a status filter is applied (not Active), show all auctions regardless of internal status
+      // If a status filter is applied (not Active), apply appropriate filtering
       if (selectedStatus !== "Active") {
-        // Apply status-based filtering here if needed (similar to exhibits)
-        // For now, show all auctions when a status filter is applied
+        if (selectedStatus === "Archived") {
+          // Show auctions with archived artworks
+          return a.artwork?.visibility?.toLowerCase() === "archived";
+        } else if (selectedStatus === "Deleted") {
+          // Show auctions with deleted artworks
+          return a.artwork?.visibility?.toLowerCase() === "deleted";
+        } else if (selectedStatus === "Hidden") {
+          // Backend already handles hidden filtering, so show all returned auctions
+          return true;
+        }
+        // For other statuses, show all auctions
         return true;
       }
 

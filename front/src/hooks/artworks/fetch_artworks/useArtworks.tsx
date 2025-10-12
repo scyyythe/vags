@@ -37,10 +37,14 @@ const fetchArtworks = async (
   limit: number = 30
 ): Promise<Artwork[]> => {
   try {
-    // Use the new endpoint for user-specific queries with hidden filtering
+    // Use the new endpoint for user-specific queries with visibility filtering
     if (
       (endpointType === "created-by-me" || endpointType === "specific-user") &&
-      (filterVisibility === "hidden" || filterVisibility === "public" || filterVisibility === "private")
+      (filterVisibility === "hidden" ||
+        filterVisibility === "public" ||
+        filterVisibility === "private" ||
+        filterVisibility === "archived" ||
+        filterVisibility === "deleted")
     ) {
       const params: { page: number; limit: number; userId?: string; visibility?: string } = {
         page: currentPage,
@@ -103,6 +107,7 @@ const fetchArtworks = async (
         }),
         artworkImage: artwork.image_url,
         likesCount: artwork.likes_count,
+        art_status: artwork.art_status,
         default_paypal_email: artwork.default_paypal_email,
       };
       // console.log("Mapped artwork:", mapped);

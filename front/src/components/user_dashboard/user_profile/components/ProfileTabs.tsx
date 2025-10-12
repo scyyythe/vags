@@ -10,6 +10,7 @@ import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtwork
 import EmptyTrashPopup from "@/components/user_dashboard/user_profile/components/status_options/popups/empty_trash/EmptyTrash";
 import UnhidePopup from "@/components/user_dashboard/user_profile/components/status_options/popups/unhide/Unhide";
 import UnarchivePopup from "@/components/user_dashboard/user_profile/components/status_options/popups/unarchive/Unarchive";
+import RestoreAllConfirmation from "@/components/user_dashboard/user_profile/components/status_options/popups/restore_all/RestoreAllConfirmation";
 import { getLoggedInUserId } from "@/auth/decode";
 import CollectionTab from "../tabs/CollectionTab";
 import OnBidTab from "../tabs/OnBidTab";
@@ -18,6 +19,7 @@ import useUnarchiveAllMyArtworks from "@/hooks/mutate/visibility/arc/useUnarchiv
 import useBulkUnhideArtworks from "@/hooks/mutate/visibility/private/useBulkUnhideArtworks";
 import useBulkUnhideExhibits from "@/hooks/mutate/visibility/private/useBulkUnhideExhibits";
 import useBulkUnhideAuctions from "@/hooks/mutate/visibility/private/useBulkUnhideAuctions";
+import { useRestoreAllExhibits } from "@/hooks/exhibit/useRestoreAllExhibits";
 import SellTab from "../tabs/OnSaleTab";
 const tabs = [
   { id: "created", label: "Created" },
@@ -54,6 +56,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   const [showUnhidePopup, setShowUnhidePopup] = useState(false);
   const [ShowMakePublicPopup, setShowMakePublicPopup] = useState(false);
   const [showUnarchivePopup, setShowUnarchivePopup] = useState(false);
+  const [showRestoreAllPopup, setShowRestoreAllPopup] = useState(false);
 
   const [artworkList, setArtworkList] = useState<Artwork[]>([]);
 
@@ -75,6 +78,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   const { mutate: bulkUnhideArtworks } = useBulkUnhideArtworks();
   const { mutate: bulkUnhideExhibits } = useBulkUnhideExhibits();
   const { mutate: bulkUnhideAuctions } = useBulkUnhideAuctions();
+  const { mutate: restoreAllExhibits } = useRestoreAllExhibits();
   const handleMediumSelect = (option: string) => {
     setSelectedMedium(option);
     setShowMediumOptions(false);
@@ -127,6 +131,20 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
     setShowUnarchivePopup(false);
   };
 
+  // RESTORE ALL BUTTON
+  const handleRestoreAll = () => {
+    setShowRestoreAllPopup(true);
+  };
+
+  const confirmRestoreAll = () => {
+    restoreAllExhibits();
+    setShowRestoreAllPopup(false);
+  };
+
+  const cancelRestoreAll = () => {
+    setShowRestoreAllPopup(false);
+  };
+
   const handlePriceRangeSelect = (option: string) => {
     setSelectedPriceRange(option);
     setShowPriceOptions(false);
@@ -164,9 +182,9 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
       const mapped = statusMap[selectedStatus.toLowerCase()];
       if (mapped) {
         if (mapped === "archived") {
-          filtered = filtered.filter((art) => art.art_status?.toLowerCase() === "archived");
+          filtered = filtered.filter((art) => art.visibility?.toLowerCase() === "archived");
         } else if (mapped === "deleted") {
-          filtered = filtered.filter((art) => art.art_status?.toLowerCase() === "deleted");
+          filtered = filtered.filter((art) => art.visibility?.toLowerCase() === "deleted");
         }
       }
     }
@@ -436,15 +454,23 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
             </div>
           )}
 
-          {selectedStatus === "Deleted" && (
+          {selectedStatus === "Deleted" && isOwnProfile && (
             <div className="flex justify-between items-center my-4">
               <h2 className="text-sm font-semibold">Deleted Exhibits</h2>
-              <button
-                onClick={handleEmptyTrash}
-                className="text-[10px] py-2 pr-2 text-red-700 hover:text-red-600 font-medium"
-              >
-                Empty Trash
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleRestoreAll}
+                  className="text-[10px] py-2 pr-2 text-green-700 hover:text-green-600 font-medium"
+                >
+                  Restore All
+                </button>
+                <button
+                  onClick={handleEmptyTrash}
+                  className="text-[10px] py-2 pr-2 text-red-700 hover:text-red-600 font-medium"
+                >
+                  Empty Trash
+                </button>
+              </div>
             </div>
           )}
 
@@ -469,11 +495,12 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
           />
         </>
       )}
-      {activeTab === "onSale" && <SellTab selectedPriceRange={selectedPriceRange} />}
+      {activeTab === "onSale" && <SellTab selectedPriceRange={selectedPriceRange} selectedStatus={selectedStatus} />}
 
       <UnarchivePopup isOpen={showUnarchivePopup} onCancel={cancelUnarchive} onConfirm={confirmUnarchiveAll} />
       <EmptyTrashPopup isOpen={showEmptyTrashPopup} onCancel={cancelEmptyTrash} onConfirm={confirmEmptyTrash} />
       <UnhidePopup isOpen={showUnhidePopup} onCancel={cancelUnhide} onConfirm={confirmUnhideAll} />
+      <RestoreAllConfirmation isOpen={showRestoreAllPopup} onCancel={cancelRestoreAll} onConfirm={confirmRestoreAll} />
     </div>
   );
 };
