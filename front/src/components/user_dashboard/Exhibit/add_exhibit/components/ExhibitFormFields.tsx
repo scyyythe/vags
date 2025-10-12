@@ -73,7 +73,9 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
           className="w-full focus:outline-none focus:ring-0 h-8"
           readOnly={viewMode === "collaborator" || isReadOnly}
           style={{ fontSize: "10px" }}
+          maxLength={100}
         />
+        {/* <div className="text-[9px] text-gray-500 mt-1 text-right">{title.length}/100</div> */}
       </div>
 
       {viewMode === "owner" && !isReadOnly && (
@@ -167,6 +169,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
               className="w-full h-8"
               readOnly={viewMode === "collaborator" || isReadOnly}
               style={{ fontSize: "10px" }}
+              min={new Date().toISOString().split("T")[0]}
             />
           </div>
 
@@ -181,6 +184,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
               className="w-full h-8"
               readOnly={viewMode === "collaborator" || isReadOnly}
               style={{ fontSize: "10px" }}
+              min={startDate || new Date().toISOString().split("T")[0]}
             />
           </div>
         </div>
@@ -198,7 +202,9 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
           className="w-full h-20"
           readOnly={viewMode === "collaborator" || isReadOnly}
           style={{ fontSize: "10px" }}
+          maxLength={1000}
         />
+        {/* <div className="text-[9px] text-gray-500 mt-1 text-right">{description.length}/1000</div> */}
       </div>
 
       {exhibitType === "collab" && (
