@@ -39,7 +39,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
   const unfollowMutation = useUnfollowUser();
   const { id } = useParams<{ id: string }>();
   const { data: followCounts, error } = useFollowCounts(id || "");
-  const { data: socials = [], isLoading: isSocialsLoading } = useSocials(profileUserId);
+  const { data: socials = [], isLoading: isSocialsLoading, error: socialsError } = useSocials(profileUserId);
   const { openChat } = useChat();
 
   const [showReportOptions, setShowReportOptions] = useState(false);
