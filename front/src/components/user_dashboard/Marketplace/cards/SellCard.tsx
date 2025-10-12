@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import SellMenu from "@/components/user_dashboard/own_profile/menu/sell_card/Menu";
@@ -88,7 +88,13 @@ const SellCard = ({
   const [heightValue, widthValue] = size ? size.split("x") : ["", ""];
 
   const { data: reportStatusData } = useArtworkReportStatus(id);
-  const isReported = reportStatusData?.reported ?? false;
+  const [localIsReported, setLocalIsReported] = useState(reportStatusData?.reported ?? false);
+
+  // Sync local state with report status
+  useEffect(() => {
+    setLocalIsReported(reportStatusData?.reported ?? false);
+  }, [reportStatusData?.reported]);
+
   const formatPrice = (amount: number) => {
     if (amount >= 1_000_000) return `₱${(amount / 1_000_000).toFixed(1)}M`;
     if (amount >= 10_000) return `₱${(amount / 1_000).toFixed(1)}k`;
@@ -131,6 +137,9 @@ const SellCard = ({
   const handleReport = (data: { category: string; option?: string; description: string; additionalInfo: string }) => {
     if (!id) return;
 
+    // Update local state immediately for visual feedback
+    setLocalIsReported(true);
+
     submitReport(
       {
         art_id: id,
@@ -144,8 +153,23 @@ const SellCard = ({
           onReportSuccess?.();
           toast.success("Report submitted successfully", { closeButton: true });
         },
+        onError: () => {
+          // Revert local state if submission fails
+          setLocalIsReported(false);
+        },
       }
     );
+  };
+
+  const handleUndoReport = () => {
+    // Update local state immediately for visual feedback
+    setLocalIsReported(false);
+    setMenuOpen(false);
+  };
+
+  const handleUndoReportRevert = () => {
+    // Revert local state if undo fails
+    setLocalIsReported(true);
   };
 
   return (
@@ -216,10 +240,10 @@ const SellCard = ({
           )}
         </div>
 
-        <div className="relative text-gray-500" style={{ height: "24px" }}>
+        <div className="relative text-gray-500" style={{ height: "24px" }} onClick={(e) => e.stopPropagation()}>
           <button
             onClick={handleMenuClick}
-            className={`p-1 rounded-full ${isReported ? "text-red-600" : menuOpen ? "text-black" : ""}`}
+            className={`p-1 rounded-full ${localIsReported ? "text-red-600" : menuOpen ? "text-black" : ""}`}
           >
             <MoreHorizontal size={14} />
           </button>
@@ -260,7 +284,14 @@ const SellCard = ({
               className="-right-1 top-5"
             />
           ) : (
-            <SellCardMenu isOpen={menuOpen} onReport={handleReport} isReported={isReported} className="-left-2" />
+            <SellCardMenu
+              isOpen={menuOpen}
+              onReport={handleReport}
+              isReported={localIsReported}
+              artworkId={id}
+              onUndoReport={handleUndoReport}
+              className="-left-2"
+            />
           )}
         </div>
       </div>

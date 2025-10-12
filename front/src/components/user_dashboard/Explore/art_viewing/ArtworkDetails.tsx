@@ -50,6 +50,7 @@ const ArtworkDetails = () => {
   const [isHidden, setIsHidden] = useState(false);
 
   const [isReported, setIsReported] = useState(false);
+  const [localIsReported, setLocalIsReported] = useState(false);
 
   const [commentLikes, setCommentLikes] = useState<{ [commentId: string]: number }>({});
   const [likedComments, setLikedComments] = useState<{ [commentId: string]: boolean }>({});
@@ -80,15 +81,15 @@ const ArtworkDetails = () => {
   const reportStatusLookup = report_status || {};
 
   useEffect(() => {
-        if (isExpanded) {
-          document.body.style.overflow = "hidden";
-        } else {
-          document.body.style.overflow = "auto";
-        }
-    
-        return () => {
-          document.body.style.overflow = "auto";
-        };
+    if (isExpanded) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, [isExpanded]);
 
   useEffect(() => {
@@ -97,6 +98,10 @@ const ArtworkDetails = () => {
     const isOver = descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight;
     setIsOverflowing(isOver);
   }, [artwork]);
+
+  useEffect(() => {
+    setLocalIsReported(isReportedFromBulk ?? false);
+  }, [isReportedFromBulk]);
 
   const handleLike = () => {
     if (id) {
@@ -136,8 +141,20 @@ const ArtworkDetails = () => {
 
   const handleReport = () => {
     setIsReported(!isReported);
+    setLocalIsReported(!localIsReported);
     toast(isReported ? "Artwork report removed" : "Artwork reported", { closeButton: true });
     setMenuOpen(false);
+  };
+
+  const handleUndoReport = () => {
+    // Update local state immediately for visual feedback
+    setLocalIsReported(false);
+    setMenuOpen(false);
+  };
+
+  const handleUndoReportRevert = () => {
+    // Revert local state if undo fails
+    setLocalIsReported(true);
   };
 
   const handleFavorite = () => {
@@ -444,7 +461,10 @@ const ArtworkDetails = () => {
 
                     <div>
                       <button className="py-3 mr-4 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
-                        <MoreHorizontal size={isMobile ? 14 : 14} />
+                        <MoreHorizontal
+                          size={isMobile ? 14 : 14}
+                          className={`${localIsReported ? "text-red-600" : "text-gray-500"} hover:text-black`}
+                        />
                       </button>
 
                       {isOwner ? (
@@ -469,9 +489,12 @@ const ArtworkDetails = () => {
                           onFavorite={handleFavorite}
                           onHide={handleHide}
                           onReport={handleReport}
+                          onUndoReport={handleUndoReport}
+                          onUndoReportRevert={handleUndoReportRevert}
                           isFavorite={isFavorite}
-                          isReported={isReportedFromBulk}
+                          isReported={localIsReported}
                           isShared={artwork?.isShared}
+                          artworkId={id}
                           className="right-[65px] top-[163px]"
                         />
                       )}
