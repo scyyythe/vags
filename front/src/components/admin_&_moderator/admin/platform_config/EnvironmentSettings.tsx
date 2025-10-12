@@ -169,6 +169,7 @@ const EnvironmentSettings = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 text-[10px] h-7"
+            style={{ fontSize: "10px" }}
           />
         </div>
 
