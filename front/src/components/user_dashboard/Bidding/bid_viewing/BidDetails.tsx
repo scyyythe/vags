@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import BidMenu from "@/components/user_dashboard/Bidding/cards/BidMenu";
+import OwnerBidMenu from "@/components/user_dashboard/own_profile/menu/bid_card/Menu";
 import BidPopup from "../place_bid/BidPopup";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { useArtworkContext } from "@/context/ArtworkContext";
@@ -24,6 +25,8 @@ import { useAuctionLike } from "@/hooks/interactions/auction_like/useAuctionLike
 import useAuctionSubmitReport from "@/hooks/mutate/report/useReportBid";
 import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
 import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
+import { useAuctionActions } from "@/hooks/auction/useAuctionActions";
+import { useRestoreAuction } from "@/hooks/auction/useRestoreAuction";
 
 function formatAmount(amount: number): string {
   if (amount >= 1_000_000_000_000_000_000) {
@@ -97,6 +100,10 @@ const BidDetails = () => {
 
   const { data: bids = [], error } = useBidHistory(artworkId);
 
+  // Owner menu hooks
+  const { closeAuction, deleteAuction } = useAuctionActions();
+  const { mutate: restoreAuction } = useRestoreAuction();
+
   //LIST OF BIDS SECTION
   const formatBidDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -141,15 +148,15 @@ const BidDetails = () => {
   }, [item, allAuctions]);
 
   useEffect(() => {
-      if (isExpanded) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "auto";
-      }
-  
-      return () => {
-        document.body.style.overflow = "auto";
-      };
+    if (isExpanded) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, [isExpanded]);
 
   useEffect(() => {
@@ -377,15 +384,50 @@ const BidDetails = () => {
                         <MoreHorizontal size={isMobile ? 14 : 14} />
                       </button>
 
-                      <BidMenu
-                        isOpen={menuOpen}
-                        onHide={handleHide}
-                        onReport={handleReport}
-                        isReported={isReported}
-                        isShared={item.isShared}
-                        auctionId={item.id}
-                        className="top-7 -left-[11px]"
-                      />
+                      {isOwner ? (
+                        <OwnerBidMenu
+                          isOpen={menuOpen}
+                          onDelete={async () => {
+                            try {
+                              await deleteAuction.mutateAsync(item.id);
+                            } catch {
+                            } finally {
+                              setMenuOpen(false);
+                            }
+                          }}
+                          onCloseBid={async () => {
+                            try {
+                              await closeAuction.mutateAsync(item.id);
+                            } catch {
+                              toast.error("Failed to close bidding");
+                            } finally {
+                              setMenuOpen(false);
+                            }
+                          }}
+                          onRestore={(id) => {
+                            restoreAuction(id);
+                            setMenuOpen(false);
+                          }}
+                          onViewBids={() => {
+                            setMenuOpen(false);
+                          }}
+                          bids={item.bid_history || []}
+                          auctionId={item.id}
+                          auctionTitle={item.artwork.title}
+                          visibility={(item as any).visibility}
+                          className="top-7 -left-[11px]"
+                        />
+                      ) : (
+                        <BidMenu
+                          isOpen={menuOpen}
+                          onHide={handleHide}
+                          onReport={handleReport}
+                          isReported={isReported}
+                          isShared={item.isShared}
+                          auctionId={item.id}
+                          className="top-7 -left-[11px]"
+                        />
+                      )}
                     </div>
                   </div>
 
