@@ -155,6 +155,11 @@ const ArtCard = ({
     setMenuOpen(false);
   };
 
+  const handleUndoReportRevert = () => {
+    // Revert local state if undo fails
+    setLocalIsReported(true);
+  };
+
   const handleTipJar = () => {
     openPopup({
       id,
@@ -242,6 +247,7 @@ const ArtCard = ({
               onHide={handleHide}
               onReport={handleReport}
               onUndoReport={handleUndoReport}
+              onUndoReportRevert={handleUndoReportRevert}
               isFavorite={localIsFavorite}
               isReported={localIsReported}
               isShared={false}

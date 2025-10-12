@@ -13,6 +13,7 @@ interface ArtCardMenuProps {
   onReport: (data: { category: string; option?: string; description: string; additionalInfo: string }) => void;
 
   onUndoReport?: () => void;
+  onUndoReportRevert?: () => void;
   isFavorite: boolean;
   isReported: boolean;
   isShared: boolean;
@@ -32,6 +33,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   onHide,
   onReport,
   onUndoReport,
+  onUndoReportRevert,
   isFavorite = false,
   isReported = false,
   isShared = false,
@@ -172,10 +174,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             <div className="flex items-center relative">
               <button
                 onClick={(e) => {
-                  undoArtworkReport(e, artworkId);
-                  if (onUndoReport) {
-                    onUndoReport();
-                  }
+                  undoArtworkReport(e, artworkId, onUndoReport, onUndoReportRevert);
                 }}
                 className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
                 aria-label="Undo Report"
