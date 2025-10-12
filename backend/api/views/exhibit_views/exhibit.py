@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status,parsers
 from api.serializers.exhibit_s.exhibit_seriliazers import ExhibitSerializer
 from api.models.exhibit_model.exhibit import Exhibit
+from api.models.interaction_model.hidden_content import HiddenContent
 from api.serializers.exhibit_s.exhibit_card import ExhibitCardSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework import generics, permissions
@@ -13,6 +14,7 @@ from rest_framework import status
 from api.models.exhibit_model.exhibit_contribution import ExhibitContribution
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from api.models.artwork_model.artwork import Art
+from bson import ObjectId
 
 
 class ExhibitCreateView(APIView):
@@ -49,6 +51,19 @@ class ExhibitListView(APIView):
 class ExhibitCardListView(APIView):
     def get(self, request):
         exhibits = Exhibit.objects.filter(visibility='Public')
+        
+        # Filter out hidden exhibits for the current user
+        if request.user.is_authenticated:
+            try:
+                user = User.objects.get(id=ObjectId(request.user.id))
+                hidden_contents = HiddenContent.objects.filter(user=user, content_type='exhibit')
+                if hidden_contents:
+                    hidden_exhibit_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
+                    exhibits = exhibits.filter(id__nin=hidden_exhibit_ids)
+            except Exception as e:
+                # If there's an error getting hidden exhibits, just continue without filtering
+                pass
+        
         serializer = ExhibitCardSerializer(exhibits, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
@@ -260,21 +275,35 @@ class ToggleHideExhibitView(APIView):
     def patch(self, request, exhibit_id):
         try:
             exhibit = Exhibit.objects.get(id=exhibit_id)
+            user = User.objects.get(id=ObjectId(request.user.id))
         except Exhibit.DoesNotExist:
             return Response({"detail": "Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
- 
-        if exhibit.visibility == "Hidden":
-            exhibit.visibility = "Public"
+        # Check if exhibit is already hidden by this user
+        existing_hidden = HiddenContent.objects.filter(
+            user=user, 
+            content_type='exhibit', 
+            content_id=str(exhibit.id)
+        ).first()
+        
+        if existing_hidden:
+            # Unhide the exhibit for this user
+            existing_hidden.delete()
             message = "Exhibit successfully unhidden."
         else:
-            exhibit.visibility = "Hidden"
+            # Hide the exhibit for this user
+            hidden_content = HiddenContent(
+                user=user,
+                content_type='exhibit',
+                content_id=str(exhibit.id),
+                hidden_at=datetime.utcnow()
+            )
+            hidden_content.save()
             message = "Exhibit successfully hidden."
 
-        exhibit.updated_at = datetime.utcnow()
-        exhibit.save()
-
         return Response(
-            {"detail": message, "new_visibility": exhibit.visibility},
+            {"detail": message},
             status=status.HTTP_200_OK,
         )
