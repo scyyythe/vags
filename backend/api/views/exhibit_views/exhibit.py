@@ -80,6 +80,27 @@ class MyExhibitCardListView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class UserExhibitCardListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id):
+        try:
+            # Get the target user
+            target_user = User.objects.get(id=user_id)
+            
+            # Get only public exhibits for the target user
+            exhibits = Exhibit.objects.filter(owner=target_user, visibility='Public')
+
+            serializer = ExhibitCardSerializer(exhibits, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print("🔥 ERROR in UserExhibitCardListView:", e)
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 
             

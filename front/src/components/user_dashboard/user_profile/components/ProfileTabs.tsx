@@ -431,7 +431,13 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
             </div>
           )}
 
-          <ExhibitTab selectedStatus={selectedStatus} includeDeleted={selectedStatus === "Deleted"} />
+          <ExhibitTab
+            selectedStatus={selectedStatus}
+            includeDeleted={selectedStatus === "Deleted"}
+            includeHidden={selectedStatus === "Hidden"}
+            includeArchived={selectedStatus === "Archived"}
+            userId={userId}
+          />
         </>
       )}
       {activeTab === "onSale" && <SellTab selectedPriceRange={selectedPriceRange} />}

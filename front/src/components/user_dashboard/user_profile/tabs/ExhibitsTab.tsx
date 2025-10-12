@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import { useMyExhibitCards } from "@/hooks/exhibit/useMyCardExhibit";
+import useUserExhibits from "@/hooks/exhibit/useUserExhibits";
+import { getLoggedInUserId } from "@/auth/decode";
 import ExhibitCardSkeleton from "@/components/skeletons/ExhibitCardSkeleton";
 import { usePendingRequests } from "@/hooks/exhibit/usePendingRequests";
 import { usePublishExhibit } from "@/hooks/mutate/exhibit/usePublishExhibit";
@@ -23,6 +25,7 @@ type ExhibitsTabProps = {
   includeDeleted?: boolean;
   includeHidden?: boolean;
   includeArchived?: boolean;
+  userId?: string;
 };
 
 const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
@@ -30,6 +33,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
   includeDeleted = false,
   includeHidden = false,
   includeArchived = false,
+  userId,
 }) => {
   const navigate = useNavigate();
   const params = useParams();
@@ -40,11 +44,21 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
   const [showPublishDialog, setShowPublishDialog] = useState(false);
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitRequest | null>(null);
 
-  const { data: exhibits = [], isLoading } = useMyExhibitCards({
+  const loggedInUserId = getLoggedInUserId();
+  const isOwnProfile = !userId || userId === loggedInUserId;
+
+  // Use different hooks based on whether we're viewing our own profile or someone else's
+  const { data: myExhibits = [], isLoading: isLoadingMy } = useMyExhibitCards({
     includeDeleted,
     includeHidden,
     includeArchived,
   });
+
+  const { data: userExhibits = [], isLoading: isLoadingUser } = useUserExhibits(userId || "");
+
+  // Use the appropriate data based on profile type
+  const exhibits = isOwnProfile ? myExhibits : userExhibits;
+  const isLoading = isOwnProfile ? isLoadingMy : isLoadingUser;
 
   const { mutate: publishExhibit } = usePublishExhibit();
 
@@ -117,8 +131,8 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
     }
   };
 
-  const hasUnreadRequests = pendingRequests.length > 0;
-  const hasReadyExhibits = pendingRequests.some((req) => req.isOwner && req.type === "ready");
+  const hasUnreadRequests = isOwnProfile && pendingRequests.length > 0;
+  const hasReadyExhibits = isOwnProfile && pendingRequests.some((req) => req.isOwner && req.type === "ready");
 
   return (
     <div>
@@ -139,7 +153,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
             ))}
           </div>
           <div className="flex items-center space-x-2">
-            {typeTab === "collab" && (
+            {typeTab === "collab" && isOwnProfile && (
               <button onClick={() => setShowPending(!showPending)} className="relative group flex items-center">
                 <i
                   className={`bx bx-time text-[15px] cursor-pointer ${
@@ -168,7 +182,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
       </div>
 
       {/* Pending Section */}
-      {typeTab === "collab" && showPending && (
+      {typeTab === "collab" && showPending && isOwnProfile && (
         <div className="mb-4 border border-yellow-300 bg-yellow-50 rounded p-3 text-[10px]">
           <h2 className="font-semibold text-yellow-700 mb-2">Pending Requests</h2>
           {pendingRequests.length > 0 ? (
