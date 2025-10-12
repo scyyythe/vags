@@ -10,6 +10,7 @@ import { useCollaboratorExhibitView } from "@/hooks/exhibit/useCollaboratorExhib
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { getLoggedInUserId } from "@/auth/decode";
 import { useSubmitContributions } from "@/hooks/exhibit/useSubmitContributions";
+import CollaboratorViewSkeleton from "@/components/skeletons/CollaboratorViewSkeleton";
 // Color schemes for slots by user
 const slotColorSchemes = [
   "border-primary bg-primary/10",
@@ -55,6 +56,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const [selectedArtworks, setSelectedArtworks] = useState<string[]>([]);
   const [slotArtworkMap, setSlotArtworkMap] = useState<Record<number, string>>({});
   const [currentCollaborator, setCurrentCollaborator] = useState<Artist | null>(null);
+  const [hasUserSubmitted, setHasUserSubmitted] = useState(false);
   const { mutate: submitContributions } = useSubmitContributions(exhibitId!);
 
   const artworks = userArtworks || [];
@@ -169,11 +171,25 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     const currentUser = transformedExhibit.collaborators.find((c) => String(c.id) === String(userId));
 
     setCurrentCollaborator(currentUser || null);
+
+    // Check if current user has already submitted their contributions
+    if (currentUser && data.slots) {
+      const userSlots = Object.entries(transformedExhibit.slotOwnerMap)
+        .filter(([_, ownerId]) => ownerId === currentUser.id)
+        .map(([slotId]) => Number(slotId));
+
+      const userSubmittedSlots = data.slots.filter(
+        (slot: any) => userSlots.includes(slot.slot_number) && slot.contributor.id === currentUser.id
+      );
+
+      setHasUserSubmitted(userSubmittedSlots.length === userSlots.length && userSlots.length > 0);
+    }
+
     setLoading(false);
   }, [data]);
 
   if (loading) {
-    return <div className="min-h-screen text-xs flex items-center justify-center">Loading exhibit data...</div>;
+    return <CollaboratorViewSkeleton />;
   }
 
   if (!exhibit) {
@@ -184,7 +200,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const availableSlots = currentEnvironment ? Array.from({ length: currentEnvironment.slots }, (_, i) => i + 1) : [];
 
   const handleArtworkSelect = (artworkId: string) => {
-    if (!currentCollaborator) return;
+    if (!currentCollaborator || hasUserSubmitted) return;
 
     const availableUserSlots = Object.entries(exhibit.slotOwnerMap)
       .filter(
@@ -211,7 +227,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   };
 
   const handleClearSlot = (slotId: number) => {
-    if (!currentCollaborator) return;
+    if (!currentCollaborator || hasUserSubmitted) return;
 
     if (exhibit.slotOwnerMap[slotId] !== currentCollaborator.id) {
       return;
@@ -308,12 +324,22 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
         </div>
 
         {/* Collaborator View Notice */}
-        <div className=" mb-6">
+        <div className="mb-6">
           <h2 className="text-[13px] font-medium mb-1">Exhibit Collaboration</h2>
-          <p className="text-[11px]">
-            You are invited to contribute to "{exhibit.title}". Please select your artwork for the slots assigned to you
-            below.
-          </p>
+          {hasUserSubmitted ? (
+            <div className="space-y-2">
+              <p className="text-[11px] text-green-600 font-medium">✓ You have already submitted your contributions!</p>
+              <p className="text-[11px]">
+                You can no longer edit your artworks since they were already submitted to "{exhibit.title}". You can
+                view what other collaborators have contributed while waiting for the exhibit to be published.
+              </p>
+            </div>
+          ) : (
+            <p className="text-[11px]">
+              You are invited to contribute to "{exhibit.title}". Please select your artwork for the slots assigned to
+              you below.
+            </p>
+          )}
         </div>
 
         <div className="space-y-8">
@@ -500,8 +526,14 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                   return (
                     <Card
                       key={artwork.id}
-                      onClick={() => !isSelected && handleArtworkSelect(String(artwork.id))}
-                      className={`cursor-pointer overflow-hidden ${isSelected ? "opacity-40" : ""}`}
+                      onClick={() => !isSelected && !hasUserSubmitted && handleArtworkSelect(String(artwork.id))}
+                      className={`overflow-hidden ${
+                        hasUserSubmitted
+                          ? "cursor-not-allowed opacity-60"
+                          : isSelected
+                          ? "opacity-40 cursor-pointer"
+                          : "cursor-pointer"
+                      }`}
                     >
                       <img
                         src={artwork.artworkImage}
@@ -517,12 +549,26 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
 
           {/* Submit button */}
           <div className="flex justify-end mt-8">
-            <button
-              onClick={handleSaveSelections}
-              className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full"
-            >
-              Save Selections
-            </button>
+            {hasUserSubmitted ? (
+              <div className="flex flex-col items-end">
+                <button
+                  disabled
+                  className="bg-gray-400 text-white text-[10px] px-8 py-1.5 rounded-full cursor-not-allowed"
+                >
+                  Already Submitted
+                </button>
+                <p className="text-[9px] text-gray-500 mt-1">
+                  You can no longer edit your artworks since they were already submitted
+                </p>
+              </div>
+            ) : (
+              <button
+                onClick={handleSaveSelections}
+                className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full"
+              >
+                Save Selections
+              </button>
+            )}
           </div>
         </div>
       </div>
