@@ -49,43 +49,19 @@ class CollaboratorExhibitViewSerializer(serializers.Serializer):
         if obj.exhibit_type == "solo":  # Add this if you have a solo/collab flag
             return {i: str(obj.owner.id) for i in range(1, total_slots + 1)}
 
-        # Calculate slot distribution, but ensure owner gets enough slots for their artworks
+        # Use fair distribution for collaborative exhibits (equal slots for all users)
         slot_map = {}
         all_users = [obj.owner] + list(obj.collaborators)
-        
-        # Count owner's artworks to ensure they get enough slots
-        owner_artwork_count = len(obj.artworks) if hasattr(obj, 'artworks') and obj.artworks else 0
-        
-        # Calculate base distribution
         per_user = total_slots // len(all_users) if all_users else 0
         remainder = total_slots % len(all_users)
-        
-        # Ensure owner gets at least as many slots as they have artworks
-        owner_min_slots = max(per_user + (1 if 0 < remainder else 0), owner_artwork_count)
 
-        # Distribute slots with owner getting priority for their artworks
         current_slot = 1
-        
-        # Give owner their required slots first
-        for i in range(owner_min_slots):
-            if current_slot <= total_slots:
-                slot_map[current_slot] = str(obj.owner.id)
-                current_slot += 1
-        
-        # Distribute remaining slots to other users
-        remaining_users = all_users[1:]  # Exclude owner
-        remaining_slots = total_slots - owner_min_slots
-        
-        if remaining_slots > 0 and remaining_users:
-            per_other_user = remaining_slots // len(remaining_users)
-            other_remainder = remaining_slots % len(remaining_users)
-            
-            for idx, user in enumerate(remaining_users):
-                user_slot_count = per_other_user + (1 if idx < other_remainder else 0)
-                for _ in range(user_slot_count):
-                    if current_slot <= total_slots:
-                        slot_map[current_slot] = str(user.id)
-                        current_slot += 1
+        for idx, user in enumerate(all_users):
+            user_slot_count = per_user + (1 if idx < remainder else 0)
+            for _ in range(user_slot_count):
+                if current_slot <= total_slots:
+                    slot_map[current_slot] = str(user.id)
+                    current_slot += 1
 
         return slot_map
 
@@ -129,6 +105,9 @@ class CollaboratorExhibitViewSerializer(serializers.Serializer):
         owner_slots.sort()
         
         # Add owner's artworks first (limit to only show unique artworks, no duplicates)
+        print(f"🔍 CollaboratorView - Owner has {len(obj.artworks) if hasattr(obj, 'artworks') and obj.artworks else 0} artworks")
+        print(f"🔍 CollaboratorView - Owner slots: {owner_slots}")
+        
         if hasattr(obj, 'artworks') and obj.artworks:
             seen_artwork_ids = set()
             unique_artworks = []
@@ -139,12 +118,39 @@ class CollaboratorExhibitViewSerializer(serializers.Serializer):
                     seen_artwork_ids.add(artwork.id)
                     unique_artworks.append(artwork)
             
-            # Only show unique artworks that fit in assigned slots
+            print(f"🔍 CollaboratorView - Unique artworks count: {len(unique_artworks)}")
+            print(f"🔍 CollaboratorView - Owner slots count: {len(owner_slots)}")
+            
+            # Show ALL unique artworks in owner's assigned slots
             for i, artwork in enumerate(unique_artworks):
+                print(f"🔍 CollaboratorView - Processing artwork {i}: {artwork.id if artwork else 'None'}")
                 if artwork and i < len(owner_slots):  # Check if artwork exists and we have a slot for it
                     try:
-                        artwork_data = ArtSerializer(artwork, context=self.context).data
-                        slots.append({
+                        # Create a safe artwork data structure
+                        artwork_data = {
+                            "id": str(artwork.id) if hasattr(artwork, 'id') and artwork.id else "unknown",
+                            "title": getattr(artwork, 'title', 'Untitled') or 'Untitled',
+                            "artist_id": str(artwork.artist.id) if hasattr(artwork, 'artist') and artwork.artist else str(obj.owner.id),
+                            "profile_picture": getattr(artwork.artist, 'profile_picture', '') if hasattr(artwork, 'artist') and artwork.artist else obj.owner.profile_picture,
+                            "artist": f"{artwork.artist.first_name} {artwork.artist.last_name}".strip() if hasattr(artwork, 'artist') and artwork.artist else f"{obj.owner.first_name} {obj.owner.last_name}".strip(),
+                            "category": getattr(artwork, 'category', ''),
+                            "medium": getattr(artwork, 'medium', ''),
+                            "art_status": getattr(artwork, 'art_status', 'Active'),
+                            "price": getattr(artwork, 'price', 0),
+                            "discounted_price": getattr(artwork, 'discounted_price', None),
+                            "size": getattr(artwork, 'size', ''),
+                            "description": getattr(artwork, 'description', ''),
+                            "visibility": getattr(artwork, 'visibility', 'Public'),
+                            "created_at": str(getattr(artwork, 'created_at', obj.created_at)),
+                            "updated_at": str(getattr(artwork, 'updated_at', obj.created_at)),
+                            "image_url": getattr(artwork, 'image_url', ''),
+                            "likes_count": getattr(artwork, 'likes_count', 0),
+                            "edition": getattr(artwork, 'edition', None),
+                            "year_created": getattr(artwork, 'year_created', None),
+                            "default_paypal_email": getattr(artwork, 'default_paypal_email', None)
+                        }
+                        
+                        slot_data = {
                             "contributor": {
                                 "id": str(obj.owner.id),
                                 "name": f"{obj.owner.first_name} {obj.owner.last_name}".strip(),
@@ -153,10 +159,18 @@ class CollaboratorExhibitViewSerializer(serializers.Serializer):
                             "artwork": artwork_data,
                             "slot_number": owner_slots[i],  # Use actual slot number from slot calculation
                             "contributed_at": obj.created_at
-                        })
+                        }
+                        slots.append(slot_data)
+                        print(f"✅ CollaboratorView - Added artwork {i} to slot {owner_slots[i]}")
                     except Exception as e:
+                        print(f"❌ CollaboratorView - Error serializing artwork {i}: {str(e)}")
                         # Skip this artwork if it can't be serialized
                         continue
+                else:
+                    if not artwork:
+                        print(f"❌ CollaboratorView - Artwork {i} is None")
+                    if i >= len(owner_slots):
+                        print(f"❌ CollaboratorView - Artwork {i} index {i} >= owner_slots length {len(owner_slots)}")
         
         # Add collaborators' contributions
         contributions = ExhibitContribution.objects(exhibit=obj)

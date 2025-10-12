@@ -12,7 +12,7 @@ export const createSubmitHandler = (
   viewMode: string,
   exhibitType: string,
   collaborators: User[],
-  // setShowNotificationDialog: (show: boolean) => void,
+  setShowNotificationDialog: ((show: boolean) => void) | undefined,
   // Form data
   title: string,
   artworkStyle: string,
@@ -61,20 +61,20 @@ export const createSubmitHandler = (
     });
   };
 
-  // const sendNotificationsToCollaborators = () => {
-  //   const notificationsToSend = collaborators.map((collab) => ({
-  //     collaboratorId: collab.id,
-  //     collaboratorName: collab.first_name,
-  //     exhibitId: Math.floor(Math.random() * 1000) + 1,
-  //     exhibitTitle: title || "Untitled Exhibit",
-  //   }))
+  const sendNotificationsToCollaborators = () => {
+    // Notifications are now handled by the backend when the exhibit is created
+    // We just need to show a success message and complete the submission
+    if (collaborators.length > 0) {
+      toast.success("Invitations Sent", {
+        description: `Invitations have been sent to ${collaborators.length} collaborator${
+          collaborators.length > 1 ? "s" : ""
+        }.`,
+        closeButton: true,
+      });
+    }
 
-  //   const count = sendCollaboratorNotifications(notificationsToSend)
-  //   showCollaboratorNotification(count)
-
-  //   setShowNotificationDialog(false)
-  //   completeExhibitSubmission()
-  // }
+    completeExhibitSubmission();
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -206,8 +206,14 @@ export const createSubmitHandler = (
       }
 
       if (exhibitType === "collab" && collaborators.length > 0) {
-        // setShowNotificationDialog(true)
-        completeExhibitSubmission();
+        // Show notification dialog for collaborative exhibits
+        // Note: setShowNotificationDialog is passed as parameter
+        if (typeof setShowNotificationDialog === "function") {
+          setShowNotificationDialog(true);
+        } else {
+          // Fallback: complete submission directly
+          completeExhibitSubmission();
+        }
         return;
       }
 
@@ -225,6 +231,6 @@ export const createSubmitHandler = (
   return {
     handleSubmit,
     completeExhibitSubmission,
-    // sendNotificationsToCollaborators,
+    sendNotificationsToCollaborators,
   };
 };

@@ -86,10 +86,14 @@ const AddExhibit = () => {
   const { data: currentUser, isLoading } = useUserQuery(currentUserId ?? "");
 
   // Function to distribute slots among participants
-  const distributeSlots = () => {
-    if (!selectedEnvironment || !currentUser?.id) return;
+  const distributeSlots = (envId?: number, collabList?: User[], exhibitTypeParam?: string) => {
+    const environmentId = envId || selectedEnvironment;
+    const collaboratorList = collabList || collaborators;
+    const currentExhibitType = exhibitTypeParam || exhibitType;
 
-    const currentEnvironment = environments.find((env) => env.id === selectedEnvironment);
+    if (!environmentId || !currentUser?.id) return;
+
+    const currentEnvironment = environments.find((env) => env.id === environmentId);
     if (!currentEnvironment) return;
 
     const totalSlots = currentEnvironment.slots;
@@ -101,33 +105,69 @@ const AddExhibit = () => {
 
     const newSlotOwnerMap: Record<number, string> = {};
 
-    if (exhibitType === "solo") {
+    if (currentExhibitType === "solo") {
       // Solo exhibit: curator gets all slots
       for (let i = 1; i <= totalSlots; i++) {
         newSlotOwnerMap[i] = currentUser.id.toString();
       }
     } else {
-      // Collaborative exhibit: fair distribution
-      const participants = [currentUser, ...collaborators];
-      const totalParticipants = participants.length;
+      // Collaborative exhibit: specific distribution rules
+      const participants = [currentUser, ...collaboratorList];
 
-      const baseSlots = Math.floor(totalSlots / totalParticipants);
-      let remaining = totalSlots % totalParticipants;
-
-      let slotId = 1;
-
-      for (const participant of participants) {
-        let slotsForThisUser = baseSlots;
-        if (remaining > 0) {
-          slotsForThisUser += 1;
-          remaining--;
+      // Apply specific distribution rules based on slot count and collaborator count
+      if (totalSlots === 4) {
+        // 4 slots: Owner gets 2, Collaborator gets 2
+        newSlotOwnerMap[1] = currentUser.id.toString();
+        newSlotOwnerMap[2] = currentUser.id.toString();
+        if (collaboratorList.length > 0) {
+          newSlotOwnerMap[3] = collaboratorList[0].id.toString();
+          newSlotOwnerMap[4] = collaboratorList[0].id.toString();
         }
-
-        for (let j = 0; j < slotsForThisUser; j++) {
-          if (slotId <= totalSlots) {
-            newSlotOwnerMap[slotId] = participant.id.toString();
-            slotId++;
-          }
+      } else if (totalSlots === 6) {
+        // 6 slots: Distribute based on collaborator count
+        if (collaboratorList.length === 1) {
+          // 1 collaborator: 3-3 distribution
+          newSlotOwnerMap[1] = currentUser.id.toString();
+          newSlotOwnerMap[2] = currentUser.id.toString();
+          newSlotOwnerMap[3] = currentUser.id.toString();
+          newSlotOwnerMap[4] = collaboratorList[0].id.toString();
+          newSlotOwnerMap[5] = collaboratorList[0].id.toString();
+          newSlotOwnerMap[6] = collaboratorList[0].id.toString();
+        } else if (collaboratorList.length === 2) {
+          // 2 collaborators: 2-2-2 distribution
+          newSlotOwnerMap[1] = currentUser.id.toString();
+          newSlotOwnerMap[2] = currentUser.id.toString();
+          newSlotOwnerMap[3] = collaboratorList[0].id.toString();
+          newSlotOwnerMap[4] = collaboratorList[0].id.toString();
+          newSlotOwnerMap[5] = collaboratorList[1].id.toString();
+          newSlotOwnerMap[6] = collaboratorList[1].id.toString();
+        }
+      } else if (totalSlots === 10) {
+        // 10 slots: Distribute based on collaborator count
+        if (collaboratorList.length === 1) {
+          // 1 collaborator: 5-5 distribution
+          newSlotOwnerMap[1] = currentUser.id.toString();
+          newSlotOwnerMap[2] = currentUser.id.toString();
+          newSlotOwnerMap[3] = currentUser.id.toString();
+          newSlotOwnerMap[4] = currentUser.id.toString();
+          newSlotOwnerMap[5] = currentUser.id.toString();
+          newSlotOwnerMap[6] = collaboratorList[0].id.toString();
+          newSlotOwnerMap[7] = collaboratorList[0].id.toString();
+          newSlotOwnerMap[8] = collaboratorList[0].id.toString();
+          newSlotOwnerMap[9] = collaboratorList[0].id.toString();
+          newSlotOwnerMap[10] = collaboratorList[0].id.toString();
+        } else if (collaboratorList.length === 2) {
+          // 2 collaborators: 4-3-3 distribution (owner priority)
+          newSlotOwnerMap[1] = currentUser.id.toString();
+          newSlotOwnerMap[2] = currentUser.id.toString();
+          newSlotOwnerMap[3] = currentUser.id.toString();
+          newSlotOwnerMap[4] = currentUser.id.toString();
+          newSlotOwnerMap[5] = collaboratorList[0].id.toString();
+          newSlotOwnerMap[6] = collaboratorList[0].id.toString();
+          newSlotOwnerMap[7] = collaboratorList[0].id.toString();
+          newSlotOwnerMap[8] = collaboratorList[1].id.toString();
+          newSlotOwnerMap[9] = collaboratorList[1].id.toString();
+          newSlotOwnerMap[10] = collaboratorList[1].id.toString();
         }
       }
     }
@@ -232,13 +272,24 @@ const AddExhibit = () => {
   // Handle environment change - ORIGINAL LOGIC
   const handleEnvironmentChange = (envId: number) => {
     const selectedEnv = environments.find((env) => env.id === envId);
-    const totalParticipants = collaborators.length + 1;
 
     if (!selectedEnv) return;
 
-    if (selectedEnv.slots < totalParticipants) {
-      toast.error("Not enough slots to assign for all collaborators and the owner.", {
-        description: "Please select a virtual environment with more available slots.",
+    // Check if current collaborators exceed the limit for the new environment
+    let maxAllowedCollaborators = 0;
+    if (selectedEnv.slots === 4) {
+      maxAllowedCollaborators = 1;
+    } else if (selectedEnv.slots === 6) {
+      maxAllowedCollaborators = 2;
+    } else if (selectedEnv.slots === 10) {
+      maxAllowedCollaborators = 2;
+    }
+
+    if (collaborators.length > maxAllowedCollaborators) {
+      toast.error("Too many collaborators for this environment", {
+        description: `This environment only supports ${maxAllowedCollaborators} collaborator${
+          maxAllowedCollaborators > 1 ? "s" : ""
+        }. Please remove some collaborators first.`,
         duration: 4000,
         closeButton: true,
       });
@@ -249,10 +300,8 @@ const AddExhibit = () => {
     // setBannerImage(selectedEnv.image)
     setBannerFile(null);
 
-    // Call distributeSlots after state is set
-    setTimeout(() => {
-      distributeSlots();
-    }, 0);
+    // Call distributeSlots immediately with new environment
+    distributeSlots(envId, collaborators, exhibitType);
   };
 
   // Load exhibit data based on exhibitId and mode
@@ -323,7 +372,7 @@ const AddExhibit = () => {
     viewMode,
     exhibitType,
     collaborators,
-    // setShowNotificationDialog,
+    setShowNotificationDialog,
     title,
     artworkStyle,
     description,
@@ -339,20 +388,35 @@ const AddExhibit = () => {
 
   // Handle adding a collaborator - ORIGINAL LOGIC
   const handleAddCollaborator = (artist: User) => {
-    if (collaborators.length >= 5) {
+    // Get maximum collaborators allowed based on environment
+    const currentEnvironment = environments.find((env) => env.id === selectedEnvironment);
+    let maxCollaborators = 0;
+
+    if (currentEnvironment) {
+      if (currentEnvironment.slots === 4) {
+        maxCollaborators = 1;
+      } else if (currentEnvironment.slots === 6) {
+        maxCollaborators = 2;
+      } else if (currentEnvironment.slots === 10) {
+        maxCollaborators = 2;
+      }
+    }
+
+    if (collaborators.length >= maxCollaborators) {
       toast.error("Maximum collaborators reached", {
-        description: "You can only add up to 5 collaborators.",
+        description: `You can only add up to ${maxCollaborators} collaborator${
+          maxCollaborators > 1 ? "s" : ""
+        } for this environment.`,
         closeButton: true,
       });
       return;
     }
 
-    setCollaborators((prev) => [...prev, artist]);
+    const newCollaborators = [...collaborators, artist];
+    setCollaborators(newCollaborators);
 
-    // Call distributeSlots after adding collaborator
-    setTimeout(() => {
-      distributeSlots();
-    }, 0);
+    // Call distributeSlots immediately with new collaborator list
+    distributeSlots(selectedEnvironment, newCollaborators, exhibitType);
   };
 
   // Handle removing a collaborator - ORIGINAL LOGIC
@@ -364,14 +428,14 @@ const AddExhibit = () => {
   const confirmRemoveCollaborator = () => {
     if (!collaboratorToRemove) return;
 
-    setCollaborators((prev) => prev.filter((c) => c.id !== collaboratorToRemove.id));
+    const newCollaborators = collaborators.filter((c) => c.id !== collaboratorToRemove.id);
+    setCollaborators(newCollaborators);
 
     setIsRemoveCollaboratorDialogOpen(false);
     setCollaboratorToRemove(null);
 
-    setTimeout(() => {
-      distributeSlots();
-    }, 0);
+    // Call distributeSlots immediately with updated collaborator list
+    distributeSlots(selectedEnvironment, newCollaborators, exhibitType);
   };
   const isUploading = createExhibitMutation.status === "pending";
 
@@ -491,13 +555,12 @@ const AddExhibit = () => {
               exhibitType={exhibitType}
               handleExhibitTypeChange={(value) => {
                 setExhibitType(value);
+                const newCollaborators = value === "solo" ? [] : collaborators;
                 if (value === "solo") {
                   setCollaborators([]);
                 }
-                // Call distributeSlots after state updates
-                setTimeout(() => {
-                  distributeSlots();
-                }, 0);
+                // Call distributeSlots immediately with new exhibit type
+                distributeSlots(selectedEnvironment, newCollaborators, value);
               }}
               startDate={startDate}
               setStartDate={setStartDate}
@@ -560,9 +623,9 @@ const AddExhibit = () => {
         setIsRemoveCollaboratorDialogOpen={setIsRemoveCollaboratorDialogOpen}
         collaboratorToRemove={collaboratorToRemove}
         confirmRemoveCollaborator={confirmRemoveCollaborator}
-        // showNotificationDialog={showNotificationDialog}
-        // setShowNotificationDialog={setShowNotificationDialog}
-        // sendNotificationsToCollaborators={submitHandlers.sendNotificationsToCollaborators}
+        showNotificationDialog={showNotificationDialog}
+        setShowNotificationDialog={setShowNotificationDialog}
+        sendNotificationsToCollaborators={submitHandlers.sendNotificationsToCollaborators}
         collaborators={collaborators}
       />
     </div>

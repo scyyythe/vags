@@ -107,40 +107,47 @@ const ExhibitReview = () => {
     completionPercentage = exhibit.overall_completion.completionPercentage;
     isReadyToPublish = exhibit.overall_completion.isReadyToPublish;
   } else {
-    // Fallback to frontend calculation
-    if (exhibit.chosen_env === 2) {
-      // Each collaborator gets 2 slots in env 2
-      collaborators = exhibit.collaborators.map((collab: any) => {
-        const slotsForUser = exhibit.slots?.filter((slot: any) => slot.contributor.id === collab.id) || [];
-        return {
-          id: collab.id,
-          name: collab.name,
-          profile_picture: collab.profile_picture || "",
-          slotsToFill: 2,
-          slotsFilled: slotsForUser.length,
-          inProgress: slotsForUser.length < 2,
-        };
-      });
-    } else {
-      // Env 1 = 4 slots, Env 3 = 10 slots
-      const totalSlotCount = exhibit.chosen_env === 1 ? 4 : 10;
-      const numCollaborators = exhibit.collaborators.length;
-      const baseSlots = Math.floor(totalSlotCount / numCollaborators);
-      const remainder = totalSlotCount % numCollaborators;
+    // Fallback to frontend calculation using new distribution rules
+    const envSlotsMap: Record<number, number> = { 1: 4, 2: 6, 3: 10 };
+    const envSlots = envSlotsMap[exhibit.chosen_env] || 0;
 
-      collaborators = exhibit.collaborators.map((collab: any, index: number) => {
-        const slotsToFill = baseSlots + (index < remainder ? 1 : 0);
-        const slotsForUser = exhibit.slots?.filter((slot: any) => slot.contributor.id === collab.id) || [];
-        return {
-          id: collab.id,
-          name: collab.name,
-          profile_picture: collab.profile_picture || "",
-          slotsToFill,
-          slotsFilled: slotsForUser.length,
-          inProgress: slotsForUser.length < slotsToFill,
-        };
-      });
-    }
+    collaborators = exhibit.collaborators.map((collab: any, index: number) => {
+      let slotsToFill = 0;
+
+      // Apply specific distribution rules based on slot count and collaborator count
+      if (envSlots === 4) {
+        // 4 slots: Each collaborator gets 2
+        slotsToFill = 2;
+      } else if (envSlots === 6) {
+        // 6 slots: Distribute based on collaborator count
+        if (exhibit.collaborators.length === 1) {
+          // 1 collaborator: 3-3 distribution
+          slotsToFill = 3;
+        } else {
+          // 2 collaborators: 2-2-2 distribution
+          slotsToFill = 2;
+        }
+      } else if (envSlots === 10) {
+        // 10 slots: Distribute based on collaborator count
+        if (exhibit.collaborators.length === 1) {
+          // 1 collaborator: 5-5 distribution
+          slotsToFill = 5;
+        } else {
+          // 2 collaborators: 4-3-3 distribution (owner priority)
+          slotsToFill = 3;
+        }
+      }
+
+      const slotsForUser = exhibit.slots?.filter((slot: any) => slot.contributor.id === collab.id) || [];
+      return {
+        id: collab.id,
+        name: collab.name,
+        profile_picture: collab.profile_picture || "",
+        slotsToFill,
+        slotsFilled: slotsForUser.length,
+        inProgress: slotsForUser.length < slotsToFill,
+      };
+    });
 
     totalSlots = collaborators.reduce((acc, c) => acc + c.slotsToFill, 0);
     filledSlots = collaborators.reduce((acc, c) => acc + c.slotsFilled, 0);
