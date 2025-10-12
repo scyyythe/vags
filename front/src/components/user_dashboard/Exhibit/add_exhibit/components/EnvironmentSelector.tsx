@@ -5,7 +5,7 @@ interface EnvironmentSelectorProps {
   environments: Environment[];
   selectedEnvironment: number | null;
   handleEnvironmentChange: (envId: number) => void;
-  viewMode: 'owner' | 'collaborator' | 'review' | 'monitoring' | 'preview';
+  viewMode: "owner" | "collaborator" | "review" | "monitoring" | "preview";
   isReadOnly: boolean;
   collaboratorCount: number;
 }
@@ -16,45 +16,47 @@ const EnvironmentSelector: React.FC<EnvironmentSelectorProps> = ({
   handleEnvironmentChange,
   viewMode,
   isReadOnly,
-  collaboratorCount
+  collaboratorCount,
 }) => {
   return (
     <div>
       <h3 className="text-xs font-medium mb-4">Virtual Environment</h3>
       <div className="grid grid-cols-3 gap-2">
         {environments.map((env) => {
-          const totalParticipants = collaboratorCount + 1;
-          const isDisabled = env.slots < totalParticipants;
+          // Get maximum allowed collaborators for this environment
+          let maxAllowedCollaborators = 0;
+          if (env.slots === 4) {
+            maxAllowedCollaborators = 1;
+          } else if (env.slots === 6) {
+            maxAllowedCollaborators = 2;
+          } else if (env.slots === 10) {
+            maxAllowedCollaborators = 2;
+          }
 
-          return ( 
+          const isDisabled = collaboratorCount > maxAllowedCollaborators;
+
+          return (
             <div
               key={env.id}
               onClick={() => {
-                if (viewMode === 'owner' && !isReadOnly) {
-                  handleEnvironmentChange(env.id); 
+                if (viewMode === "owner" && !isReadOnly) {
+                  handleEnvironmentChange(env.id);
                 }
               }}
               className={`rounded-lg overflow-hidden 
-                ${viewMode === 'owner' && !isReadOnly && !isDisabled ? 'cursor-pointer' : ''}
-                border-2 ${selectedEnvironment === env.id ? 'border-gray-200' : 'border-transparent'}
-                ${isDisabled ? 'opacity-50 pointer-events-none' : ''}
+                ${viewMode === "owner" && !isReadOnly && !isDisabled ? "cursor-pointer" : ""}
+                border-2 ${selectedEnvironment === env.id ? "border-gray-200" : "border-transparent"}
+                ${isDisabled ? "opacity-50 pointer-events-none" : ""}
               `}
             >
-              <img
-                src={env.image}
-                alt={`Environment ${env.id}`}
-                className="w-full h-24 object-cover"
-              />
+              <img src={env.image} alt={`Environment ${env.id}`} className="w-full h-24 object-cover" />
               <div className="p-2 text-[10px] text-center">
                 {env.slots} slots
-                {isDisabled && (
-                  <p className="text-[9px] text-red-500 mt-1">Not enough slots</p>
-                )}
+                {isDisabled && <p className="text-[9px] text-red-500 mt-1">Too many collaborators</p>}
               </div>
             </div>
           );
         })}
-
       </div>
     </div>
   );

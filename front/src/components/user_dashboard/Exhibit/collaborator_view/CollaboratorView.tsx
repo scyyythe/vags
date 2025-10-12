@@ -10,6 +10,7 @@ import { useCollaboratorExhibitView } from "@/hooks/exhibit/useCollaboratorExhib
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { getLoggedInUserId } from "@/auth/decode";
 import { useSubmitContributions } from "@/hooks/exhibit/useSubmitContributions";
+import CollaboratorViewSkeleton from "@/components/skeletons/CollaboratorViewSkeleton";
 // Color schemes for slots by user
 const slotColorSchemes = [
   "border-primary bg-primary/10",
@@ -55,7 +56,8 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const [selectedArtworks, setSelectedArtworks] = useState<string[]>([]);
   const [slotArtworkMap, setSlotArtworkMap] = useState<Record<number, string>>({});
   const [currentCollaborator, setCurrentCollaborator] = useState<Artist | null>(null);
-const { mutate: submitContributions } = useSubmitContributions(exhibitId!);
+  const [hasUserSubmitted, setHasUserSubmitted] = useState(false);
+  const { mutate: submitContributions } = useSubmitContributions(exhibitId!);
 
   const artworks = userArtworks || [];
 
@@ -76,7 +78,7 @@ const { mutate: submitContributions } = useSubmitContributions(exhibitId!);
       id: 3,
       image:
         "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      slots: 9,
+      slots: 10,
     },
   ];
 
@@ -121,59 +123,73 @@ const { mutate: submitContributions } = useSubmitContributions(exhibitId!);
       },
     ],
   };
-useEffect(() => {
-  if (!data) return;
+  useEffect(() => {
+    if (!data) return;
 
-  const { slotOwnerMap, slotArtworkMap, owner, collaborators } = data;
+    const { slotOwnerMap, slotArtworkMap, owner, collaborators } = data;
 
-  const transformedExhibit = {
-    id: data.id, 
-    title: data.title,
-    description: data.description,
-    startDate: data.startDate,
-    endDate: data.endDate,
-    environment: data.environment,
-    bannerImage: data.bannerImage,
+    const transformedExhibit = {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      startDate: data.startDate,
+      endDate: data.endDate,
+      environment: data.environment,
+      bannerImage: data.bannerImage,
 
-   
-    slotOwnerMap: Object.fromEntries(
-      Object.entries(slotOwnerMap).map(([k, v]) => [parseInt(k), v])
-    ),
+      slotOwnerMap: Object.fromEntries(Object.entries(slotOwnerMap).map(([k, v]) => [parseInt(k), v])),
 
-  
-    slotArtworkMap: Object.fromEntries(
-      Object.entries(slotArtworkMap).map(([k, v]) => [parseInt(k), v])
-    ),
+      slotArtworkMap: Object.fromEntries(Object.entries(slotArtworkMap).map(([k, v]) => [parseInt(k), v])),
 
-    owner: {
-      id: owner.id,
-      name: owner.name,
-      avatar: owner.avatar,
-    },
+      owner: {
+        id: owner.id,
+        name: owner.name,
+        avatar: owner.avatar,
+      },
 
-    collaborators: collaborators.map((collab) => ({
-      id: collab.id,
-      name: collab.name,
-      avatar: collab.avatar,
-    })),
-  };
+      collaborators: collaborators.map((collab) => ({
+        id: collab.id,
+        name: collab.name,
+        avatar: collab.avatar,
+      })),
+    };
 
+    // Debug: Log the slot distribution
+    console.log("🔍 CollaboratorView - Slot Owner Map:", transformedExhibit.slotOwnerMap);
+    console.log("🔍 CollaboratorView - Backend Slots Data:", data.slots);
+    console.log(
+      "🔍 CollaboratorView - Expected slots for Gil (owner):",
+      Object.entries(transformedExhibit.slotOwnerMap)
+        .filter(([slot, ownerId]) => ownerId === transformedExhibit.owner.id)
+        .map(([slot, ownerId]) => slot)
+    );
 
-  setExhibit(transformedExhibit);
-  setSlotArtworkMap(transformedExhibit.slotArtworkMap);
-  setSelectedArtworks(Object.values(transformedExhibit.slotArtworkMap));
+    setExhibit(transformedExhibit);
+    setSlotArtworkMap(transformedExhibit.slotArtworkMap);
+    setSelectedArtworks(Object.values(transformedExhibit.slotArtworkMap));
 
-  const currentUser = transformedExhibit.collaborators.find(
-    (c) => String(c.id) === String(userId)
-  );
+    const currentUser = transformedExhibit.collaborators.find((c) => String(c.id) === String(userId));
 
+    setCurrentCollaborator(currentUser || null);
 
-  setCurrentCollaborator(currentUser || null);
-  setLoading(false);
-}, [data]);
+    // Check if current user has already submitted their contributions
+    if (currentUser && data.slots) {
+      const userSlots = Object.entries(transformedExhibit.slotOwnerMap)
+        .filter(([_, ownerId]) => ownerId === currentUser.id)
+        .map(([slotId]) => Number(slotId));
+
+      const userSubmittedSlots = data.slots.filter(
+        (slot: any) => userSlots.includes(slot.slot_number) && slot.contributor.id === currentUser.id
+      );
+
+      setHasUserSubmitted(userSubmittedSlots.length === userSlots.length && userSlots.length > 0);
+    }
+
+    setLoading(false);
+  }, [data]);
 
   if (loading) {
-    return <div className="min-h-screen text-xs flex items-center justify-center">Loading exhibit data...</div>;
+    return <CollaboratorViewSkeleton />;
   }
 
   if (!exhibit) {
@@ -184,7 +200,7 @@ useEffect(() => {
   const availableSlots = currentEnvironment ? Array.from({ length: currentEnvironment.slots }, (_, i) => i + 1) : [];
 
   const handleArtworkSelect = (artworkId: string) => {
-    if (!currentCollaborator) return;
+    if (!currentCollaborator || hasUserSubmitted) return;
 
     const availableUserSlots = Object.entries(exhibit.slotOwnerMap)
       .filter(
@@ -211,7 +227,7 @@ useEffect(() => {
   };
 
   const handleClearSlot = (slotId: number) => {
-    if (!currentCollaborator) return;
+    if (!currentCollaborator || hasUserSubmitted) return;
 
     if (exhibit.slotOwnerMap[slotId] !== currentCollaborator.id) {
       return;
@@ -227,54 +243,53 @@ useEffect(() => {
     }
   };
 
-
   const handleSaveSelections = () => {
-  if (!currentCollaborator) return;
+    if (!currentCollaborator) return;
 
-  const payload = Object.entries(slotArtworkMap)
-    .filter(([slotId, artworkId]) => {
-      return exhibit.slotOwnerMap[parseInt(slotId)] === currentCollaborator.id;
-    })
-    .map(([slotId, artworkId]) => ({
-      slot_number: parseInt(slotId),
-      artwork: artworkId,
-    }));
+    const payload = Object.entries(slotArtworkMap)
+      .filter(([slotId, artworkId]) => {
+        return exhibit.slotOwnerMap[parseInt(slotId)] === currentCollaborator.id;
+      })
+      .map(([slotId, artworkId]) => ({
+        slot_number: parseInt(slotId),
+        artwork: artworkId,
+      }));
 
-  submitContributions(payload, {
-    onSuccess: () => {
-      toast.success("Selections Saved", {
-        description: "Your artwork selections have been saved to the exhibit!",
-        closeButton: true,
-      });
-      navigate("/exhibits");
-    },
-    onError: (err: any) => {
-      toast.error("Error", {
-        description: err?.response?.data?.detail || "Failed to submit contributions.",
-        closeButton: true,
-      });
-    },
-  });
-};
+    submitContributions(payload, {
+      onSuccess: () => {
+        toast.success("Selections Saved", {
+          description: "Your artwork selections have been saved to the exhibit!",
+          closeButton: true,
+        });
+        navigate("/exhibits");
+      },
+      onError: (err: any) => {
+        toast.error("Error", {
+          description: err?.response?.data?.detail || "Failed to submit contributions.",
+          closeButton: true,
+        });
+      },
+    });
+  };
 
-const getColorSchemeIndex = (userId: string) => {
-  if (userId === exhibit.owner.id) return 0;
+  const getColorSchemeIndex = (userId: string) => {
+    if (userId === exhibit.owner.id) return 0;
 
-  const collaboratorIndex = exhibit.collaborators.findIndex((c) => c.id === userId);
-  return collaboratorIndex + 1;
-};
+    const collaboratorIndex = exhibit.collaborators.findIndex((c) => c.id === userId);
+    return collaboratorIndex + 1;
+  };
 
-const getSlotColor = (slotId: number) => {
-  const ownerId = exhibit.slotOwnerMap[slotId]; 
-  if (!ownerId) return slotColorSchemes[0];
+  const getSlotColor = (slotId: number) => {
+    const ownerId = exhibit.slotOwnerMap[slotId];
+    if (!ownerId) return slotColorSchemes[0];
 
-  return slotColorSchemes[getColorSchemeIndex(ownerId)];
-};
-const getUserName = (userId: string) => {
-  if (userId === exhibit.owner.id) return `${exhibit.owner.name}'s slot`;
-  const collaborator = exhibit.collaborators.find((c) => c.id === userId);
-  return collaborator ? `${collaborator.name}'s slot` : "";
-};
+    return slotColorSchemes[getColorSchemeIndex(ownerId)];
+  };
+  const getUserName = (userId: string) => {
+    if (userId === exhibit.owner.id) return `${exhibit.owner.name}'s slot`;
+    const collaborator = exhibit.collaborators.find((c) => c.id === userId);
+    return collaborator ? `${collaborator.name}'s slot` : "";
+  };
 
   const canInteractWithSlot = (slotId: number) => {
     const ownerId = exhibit.slotOwnerMap[slotId];
@@ -309,12 +324,22 @@ const getUserName = (userId: string) => {
         </div>
 
         {/* Collaborator View Notice */}
-        <div className=" mb-6">
+        <div className="mb-6">
           <h2 className="text-[13px] font-medium mb-1">Exhibit Collaboration</h2>
-          <p className="text-[11px]">
-            You are invited to contribute to "{exhibit.title}". Please select your artwork for the slots assigned to you
-            below.
-          </p>
+          {hasUserSubmitted ? (
+            <div className="space-y-2">
+              <p className="text-[11px] text-green-600 font-medium">✓ You have already submitted your contributions!</p>
+              <p className="text-[11px]">
+                You can no longer edit your artworks since they were already submitted to "{exhibit.title}". You can
+                view what other collaborators have contributed while waiting for the exhibit to be published.
+              </p>
+            </div>
+          ) : (
+            <p className="text-[11px]">
+              You are invited to contribute to "{exhibit.title}". Please select your artwork for the slots assigned to
+              you below.
+            </p>
+          )}
         </div>
 
         <div className="space-y-8">
@@ -361,54 +386,100 @@ const getUserName = (userId: string) => {
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
-                  {availableSlots.map((slotId) => {
-                    const assignedArtworkId = slotArtworkMap[slotId];
-                    const assignedArtwork = assignedArtworkId
-                      ? artworks.find((artwork) => artwork.id === String(assignedArtworkId))
-                      : null;
-                    const slotColor = getSlotColor(slotId);
-                    const slotOwner = exhibit.slotOwnerMap[slotId];
-                    const userCanInteract = canInteractWithSlot(slotId);
+                  {(() => {
+                    // Create a used artworks tracker to avoid showing the same artwork multiple times
+                    const usedArtworks = new Set();
 
-                    return (
-                      <div
-                        key={slotId}
-                        className={`h-[93px] rounded-lg relative overflow-hidden border flex items-center justify-center transition-colors 
+                    return availableSlots.map((slotId) => {
+                      const slotColor = getSlotColor(slotId);
+                      const slotOwner = exhibit.slotOwnerMap[slotId];
+                      const userCanInteract = canInteractWithSlot(slotId);
+
+                      // Find contributed artwork for this slot - ONLY use exact matches
+                      let contributedSlot = data.slots?.find((slot: any) => slot.slot_number === slotId);
+
+                      // Only use exact slot matches - don't try to assign artworks to different slots
+                      if (contributedSlot) {
+                        usedArtworks.add(contributedSlot.artwork?.id);
+                      }
+
+                      const assignedArtworkId = slotArtworkMap[slotId];
+                      const assignedArtwork = assignedArtworkId
+                        ? artworks.find((artwork) => artwork.id === String(assignedArtworkId))
+                        : null;
+
+                      return (
+                        <div
+                          key={slotId}
+                          className={`h-[93px] rounded-lg relative overflow-hidden border flex items-center justify-center transition-colors 
                           ${userCanInteract ? "cursor-pointer" : ""}
                           ${!userCanInteract ? slotColor + " opacity-75" : slotColor}`}
-                      >
-                        {assignedArtwork ? (
-                          <>
-                            <img
-                              src={assignedArtwork.artworkImage || assignedArtwork.image_url}
-                              alt={`Artwork ${assignedArtworkId}`}
-                              className="w-full h-full object-cover"
-                            />
-                            {userCanInteract && (
-                              <div
-                                className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
-                                onClick={() => handleClearSlot(slotId)}
-                              >
-                                <span className="text-white text-[10px]">Remove</span>
+                        >
+                          {contributedSlot?.artwork?.image_url ? (
+                            // Show actual contributed artwork from backend (highest priority)
+                            <>
+                              <img
+                                src={
+                                  Array.isArray(contributedSlot.artwork.image_url)
+                                    ? contributedSlot.artwork.image_url[0]
+                                    : contributedSlot.artwork.image_url
+                                }
+                                alt={contributedSlot.artwork.title || "Artwork"}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute top-1 left-1 bg-black/70 text-white text-[8px] px-1 py-0.5 rounded">
+                                {slotId}
                               </div>
-                            )}
-                          </>
-                        ) : (
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <div className="flex flex-col items-center justify-center w-full h-full">
-                                <span className="text-xs font-semibold">{slotId}</span>
-                                <span className="text-[10px] text-gray-500">{getUserName(slotOwner)}</span>
+                              <div className="absolute bottom-1 left-1 bg-black/70 text-white text-[7px] px-1 py-0.5 rounded truncate max-w-[80%]">
+                                {contributedSlot.contributor?.name || "Unknown"}
                               </div>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-2">
-                              <p className="text-[10px]">{getUserName(slotOwner)}</p>
-                            </PopoverContent>
-                          </Popover>
-                        )}
-                      </div>
-                    );
-                  })}
+                            </>
+                          ) : assignedArtwork ? (
+                            // Show user's selected artwork (for slots they can interact with)
+                            <>
+                              <img
+                                src={assignedArtwork.artworkImage || assignedArtwork.image_url}
+                                alt={`Artwork ${assignedArtworkId}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute top-1 left-1 bg-black/70 text-white text-[8px] px-1 py-0.5 rounded">
+                                {slotId}
+                              </div>
+                              <div className="absolute bottom-1 left-1 bg-black/70 text-white text-[7px] px-1 py-0.5 rounded truncate max-w-[80%]">
+                                Your selection
+                              </div>
+                              {userCanInteract && (
+                                <div
+                                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                                  onClick={() => handleClearSlot(slotId)}
+                                >
+                                  <span className="text-white text-[10px]">Remove</span>
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            // Show empty slot
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <div className="flex flex-col items-center justify-center w-full h-full">
+                                  <span className="text-xs font-semibold">{slotId}</span>
+                                  <span className="text-[10px] text-gray-500">{getUserName(slotOwner)}</span>
+                                </div>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-2">
+                                <p className="text-[10px]">{getUserName(slotOwner)}</p>
+                                {userCanInteract && (
+                                  <p className="text-[9px] text-blue-600 mt-1">
+                                    Click on an artwork to assign it to this slot
+                                  </p>
+                                )}
+                              </PopoverContent>
+                            </Popover>
+                          )}
+                        </div>
+                      );
+                    });
+                  })()}
                 </div>
               </div>
 
@@ -455,8 +526,14 @@ const getUserName = (userId: string) => {
                   return (
                     <Card
                       key={artwork.id}
-                      onClick={() => !isSelected && handleArtworkSelect(String(artwork.id))}
-                      className={`cursor-pointer overflow-hidden ${isSelected ? "opacity-40" : ""}`}
+                      onClick={() => !isSelected && !hasUserSubmitted && handleArtworkSelect(String(artwork.id))}
+                      className={`overflow-hidden ${
+                        hasUserSubmitted
+                          ? "cursor-not-allowed opacity-60"
+                          : isSelected
+                          ? "opacity-40 cursor-pointer"
+                          : "cursor-pointer"
+                      }`}
                     >
                       <img
                         src={artwork.artworkImage}
@@ -472,12 +549,26 @@ const getUserName = (userId: string) => {
 
           {/* Submit button */}
           <div className="flex justify-end mt-8">
-            <button
-              onClick={handleSaveSelections}
-              className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full"
-            >
-              Save Selections
-            </button>
+            {hasUserSubmitted ? (
+              <div className="flex flex-col items-end">
+                <button
+                  disabled
+                  className="bg-gray-400 text-white text-[10px] px-8 py-1.5 rounded-full cursor-not-allowed"
+                >
+                  Already Submitted
+                </button>
+                <p className="text-[9px] text-gray-500 mt-1">
+                  You can no longer edit your artworks since they were already submitted
+                </p>
+              </div>
+            ) : (
+              <button
+                onClick={handleSaveSelections}
+                className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full"
+              >
+                Save Selections
+              </button>
+            )}
           </div>
         </div>
       </div>

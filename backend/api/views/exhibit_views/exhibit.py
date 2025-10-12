@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status,parsers
 from api.serializers.exhibit_s.exhibit_seriliazers import ExhibitSerializer
 from api.models.exhibit_model.exhibit import Exhibit
+from api.models.interaction_model.hidden_content import HiddenContent
 from api.serializers.exhibit_s.exhibit_card import ExhibitCardSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework import generics, permissions
@@ -13,6 +14,7 @@ from rest_framework import status
 from api.models.exhibit_model.exhibit_contribution import ExhibitContribution
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from api.models.artwork_model.artwork import Art
+from bson import ObjectId
 
 
 class ExhibitCreateView(APIView):
@@ -49,6 +51,19 @@ class ExhibitListView(APIView):
 class ExhibitCardListView(APIView):
     def get(self, request):
         exhibits = Exhibit.objects.filter(visibility='Public')
+        
+        # Filter out hidden exhibits for the current user
+        if request.user.is_authenticated:
+            try:
+                user = User.objects.get(id=ObjectId(request.user.id))
+                hidden_contents = HiddenContent.objects.filter(user=user, content_type='exhibit')
+                if hidden_contents:
+                    hidden_exhibit_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
+                    exhibits = exhibits.filter(id__nin=hidden_exhibit_ids)
+            except Exception as e:
+                # If there's an error getting hidden exhibits, just continue without filtering
+                pass
+        
         serializer = ExhibitCardSerializer(exhibits, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
@@ -62,7 +77,18 @@ class MyExhibitCardListView(APIView):
             include_hidden = request.query_params.get("include_hidden", "false").lower() == "true"
             include_archived = request.query_params.get("include_archived", "false").lower() == "true"
 
-            exhibits = Exhibit.objects(owner=user)
+            # Get exhibits where user is owner OR collaborator
+            owned_exhibits = Exhibit.objects(owner=user)
+            collaborated_exhibits = Exhibit.objects(collaborators=user)
+            
+            # Combine both querysets and remove duplicates
+            all_exhibit_ids = set()
+            for exhibit in owned_exhibits:
+                all_exhibit_ids.add(str(exhibit.id))
+            for exhibit in collaborated_exhibits:
+                all_exhibit_ids.add(str(exhibit.id))
+            
+            exhibits = Exhibit.objects(id__in=list(all_exhibit_ids))
 
             # Filter based on visibility
             if not include_deleted:
@@ -72,11 +98,42 @@ class MyExhibitCardListView(APIView):
             if not include_archived:
                 exhibits = exhibits.filter(visibility__ne="Archived")
 
-            serializer = ExhibitCardSerializer(exhibits, many=True)
+            serializer = ExhibitCardSerializer(exhibits, many=True, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
             print("🔥 ERROR in MyExhibitCardListView:", e)
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class UserExhibitCardListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id):
+        try:
+            # Get the target user
+            target_user = User.objects.get(id=user_id)
+            
+            # Get public exhibits where target user is owner OR collaborator
+            owned_exhibits = Exhibit.objects.filter(owner=target_user, visibility='Public')
+            collaborated_exhibits = Exhibit.objects.filter(collaborators=target_user, visibility='Public')
+            
+            # Combine both querysets and remove duplicates
+            all_exhibit_ids = set()
+            for exhibit in owned_exhibits:
+                all_exhibit_ids.add(str(exhibit.id))
+            for exhibit in collaborated_exhibits:
+                all_exhibit_ids.add(str(exhibit.id))
+            
+            exhibits = Exhibit.objects.filter(id__in=list(all_exhibit_ids), visibility='Public')
+
+            serializer = ExhibitCardSerializer(exhibits, many=True, context={'request': request, 'target_user_id': user_id})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print("🔥 ERROR in UserExhibitCardListView:", e)
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -218,21 +275,35 @@ class ToggleHideExhibitView(APIView):
     def patch(self, request, exhibit_id):
         try:
             exhibit = Exhibit.objects.get(id=exhibit_id)
+            user = User.objects.get(id=ObjectId(request.user.id))
         except Exhibit.DoesNotExist:
             return Response({"detail": "Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
- 
-        if exhibit.visibility == "Hidden":
-            exhibit.visibility = "Public"
+        # Check if exhibit is already hidden by this user
+        existing_hidden = HiddenContent.objects.filter(
+            user=user, 
+            content_type='exhibit', 
+            content_id=str(exhibit.id)
+        ).first()
+        
+        if existing_hidden:
+            # Unhide the exhibit for this user
+            existing_hidden.delete()
             message = "Exhibit successfully unhidden."
         else:
-            exhibit.visibility = "Hidden"
+            # Hide the exhibit for this user
+            hidden_content = HiddenContent(
+                user=user,
+                content_type='exhibit',
+                content_id=str(exhibit.id),
+                hidden_at=datetime.utcnow()
+            )
+            hidden_content.save()
             message = "Exhibit successfully hidden."
 
-        exhibit.updated_at = datetime.utcnow()
-        exhibit.save()
-
         return Response(
-            {"detail": message, "new_visibility": exhibit.visibility},
+            {"detail": message},
             status=status.HTTP_200_OK,
         )

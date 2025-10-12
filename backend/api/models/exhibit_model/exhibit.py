@@ -1,6 +1,6 @@
 from mongoengine import (
     Document, StringField, ReferenceField, ListField,
-    DateTimeField, BooleanField, FileField, ValidationError,CASCADE,URLField,IntField
+    DateTimeField, BooleanField, FileField, ValidationError,CASCADE,URLField,IntField,DictField
 )
 from datetime import datetime
 from api.models.user_model.users import User
@@ -23,6 +23,8 @@ class Exhibit(Document):
     created_at = DateTimeField(default=datetime.utcnow)
     updated_at = DateTimeField(default=datetime.utcnow)
     viewed_by = ListField(ReferenceField(User, reverse_delete_rule=CASCADE), default=[])
+    slot_owner_map = DictField(default={})
+    slot_artwork_map = DictField(default={})
 
     meta = {
         'collection': 'exhibits',

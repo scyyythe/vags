@@ -36,8 +36,9 @@ const Marketplace = () => {
   const { data: trendingArtworks = [] } = useTrendingArtworks();
 
   const {
-    data: followedArtworksData = [],
+    data: followedArtworksData,
     isLoading: isFollowedLoading,
+    error: followedError,
     refetch: refetchFollowed,
   } = useFollowedArtworksOnSale(1, selectedCategoryFilter === "Following");
 
@@ -124,6 +125,23 @@ const Marketplace = () => {
   };
 
   const handleWishlistClick = () => setShowWishlist(true);
+
+  // Refetch followed artworks when switching to Following tab
+  useEffect(() => {
+    if (selectedCategoryFilter === "Following") {
+      refetchFollowed();
+    }
+  }, [selectedCategoryFilter, refetchFollowed]);
+
+  // Debug logging
+  useEffect(() => {
+    if (selectedCategoryFilter === "Following") {
+      console.log("Following tab selected");
+      console.log("followedArtworksData:", followedArtworksData);
+      console.log("isFollowedLoading:", isFollowedLoading);
+      console.log("followedError:", followedError);
+    }
+  }, [selectedCategoryFilter, followedArtworksData, isFollowedLoading, followedError]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -217,7 +235,7 @@ const Marketplace = () => {
 
           {/* Marketplace Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4">
-            {isLoading ? (
+            {isLoading || (selectedCategoryFilter === "Following" && isFollowedLoading) ? (
               <>
                 {Array.from({ length: 5 }).map((_, idx) => (
                   <SellCardSkeleton key={idx} />
@@ -225,10 +243,24 @@ const Marketplace = () => {
               </>
             ) : (
               <>
-                {selectedCategoryFilter === "Following" && filteredArtCards.length === 0 && (
-                  <p className="col-span-full text-xs text-gray-500 text-center">
-                    No artworks from your followings yet.
-                  </p>
+                {selectedCategoryFilter === "Following" && filteredArtCards.length === 0 && !isFollowedLoading && (
+                  <div className="col-span-full text-center py-8">
+                    <p className="text-xs text-gray-500 mb-2">
+                      {followedError
+                        ? "Error loading followed artworks. Please try again."
+                        : followedArtworksData?.artworks?.length === 0
+                        ? "No artworks from your followings yet."
+                        : "No artworks match your current filters."}
+                    </p>
+                    {followedError && (
+                      <button
+                        onClick={() => refetchFollowed()}
+                        className="text-xs text-blue-600 hover:text-blue-800 underline"
+                      >
+                        Retry
+                      </button>
+                    )}
+                  </div>
                 )}
                 {selectedCategoryFilter !== "Following" && filteredArtCards.length === 0 && (
                   <p className="col-span-full text-xs text-gray-500 text-center">No artworks found for this filter.</p>

@@ -50,6 +50,7 @@ const useAuctionReport = () => {
       }),
 
     onSuccess: (_, { auction_id }) => {
+      toast.success("You successfully reported this auction.");
       queryClient.invalidateQueries({ queryKey: ["auctionReportStatus", auction_id] });
       queryClient.invalidateQueries({ queryKey: ["auctions"] });
       queryClient.invalidateQueries({ queryKey: ["auctionReportStatusBulk"] });

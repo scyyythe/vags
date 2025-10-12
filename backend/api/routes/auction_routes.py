@@ -11,6 +11,7 @@ from api.views.artwork_views.bid_views import (
     CloseAuctionView,
     AuctionDetailView,
     MyAuctionListView,
+    ToggleHideAuctionView,
 )
 from api.views.artwork_views.auction_views import LightweightAuctionListView ,DeleteAuctionView,CloseAuctionViewNew
 
@@ -33,4 +34,5 @@ auction_urlpatterns = [
     
     path('auction/close_new/<str:auction_id>/', CloseAuctionViewNew.as_view(), name='close_auction'),
     path('auction/delete/<str:auction_id>/', DeleteAuctionView.as_view(), name='delete_auction'),
+    path('auction/<str:auction_id>/toggle-hide/', ToggleHideAuctionView.as_view(), name='toggle-hide-auction'),
 ]

@@ -22,6 +22,22 @@ export interface CollaboratorExhibitViewResponse {
   }[];
   slotOwnerMap: Record<number, string>;
   slotArtworkMap: Record<number, string>;
+  slots: {
+    contributor: {
+      id: string;
+      name: string;
+      profile_picture: string;
+    };
+    artwork: {
+      id: string;
+      title: string;
+      image_url: string | string[];
+      artist: string;
+      [key: string]: any;
+    };
+    slot_number: number;
+    contributed_at: string;
+  }[];
 }
 
 export const useCollaboratorExhibitView = (id: string | undefined) => {
@@ -33,7 +49,7 @@ export const useCollaboratorExhibitView = (id: string | undefined) => {
       try {
         const response = await apiClient.get(`/exhibits/${id}/collaborator-view/`);
         const data = response.data;
-        
+
         return data;
       } catch (error: any) {
         console.error("Collaborator view fetch error:", error);

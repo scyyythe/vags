@@ -24,9 +24,43 @@ class ExhibitCardSerializer(serializers.Serializer):
     artworks = serializers.SerializerMethodField()
     slotArtworkMap = serializers.SerializerMethodField()
     ownerId = serializers.SerializerMethodField()
+    userRole = serializers.SerializerMethodField()
+    targetUserRole = serializers.SerializerMethodField()
 
     def get_ownerId(self, obj):
         return str(obj.owner.id) if obj.owner else None
+
+    def get_userRole(self, obj):
+        request = self.context.get("request", None)
+        user = getattr(request, "user", None)
+        if not user or user.is_anonymous:
+            return None
+        
+        # Check if user is the owner
+        if obj.owner and str(obj.owner.id) == str(user.id):
+            return "owner"
+        
+        # Check if user is a collaborator
+        if obj.collaborators and any(str(collab.id) == str(user.id) for collab in obj.collaborators):
+            return "collaborator"
+        
+        return None
+
+    def get_targetUserRole(self, obj):
+        # Get target user ID from context (for profile viewing)
+        target_user_id = self.context.get("target_user_id")
+        if not target_user_id:
+            return None
+        
+        # Check if target user is the owner
+        if obj.owner and str(obj.owner.id) == str(target_user_id):
+            return "owner"
+        
+        # Check if target user is a collaborator
+        if obj.collaborators and any(str(collab.id) == str(target_user_id) for collab in obj.collaborators):
+            return "collaborator"
+        
+        return None
 
     def get_artworks(self, obj):
         

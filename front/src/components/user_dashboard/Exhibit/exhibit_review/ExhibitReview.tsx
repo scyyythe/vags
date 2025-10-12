@@ -92,31 +92,53 @@ const ExhibitReview = () => {
     return <div className="p-10 text-sm text-red-600">Failed to load exhibit review.</div>;
   }
 
+  // Use backend-calculated collaborator status if available, otherwise fallback to frontend calculation
   let collaborators: Collaborator[] = [];
+  let totalSlots = 0;
+  let filledSlots = 0;
+  let completionPercentage = 0;
+  let isReadyToPublish = false;
 
-  if (exhibit.chosen_env === 2) {
-    // Each collaborator gets 2 slots in env 2
-    collaborators = exhibit.collaborators.map((collab: any) => {
-      const slotsForUser = exhibit.slots.filter((slot: any) => slot.contributor.id === collab.id);
-      return {
-        id: collab.id,
-        name: collab.name,
-        profile_picture: collab.profile_picture || "",
-        slotsToFill: 2,
-        slotsFilled: slotsForUser.length,
-        inProgress: slotsForUser.length < 2,
-      };
-    });
+  if (exhibit.collaborator_status && exhibit.overall_completion) {
+    // Use backend-calculated data
+    collaborators = exhibit.collaborator_status;
+    totalSlots = exhibit.overall_completion.totalSlots;
+    filledSlots = exhibit.overall_completion.filledSlots;
+    completionPercentage = exhibit.overall_completion.completionPercentage;
+    isReadyToPublish = exhibit.overall_completion.isReadyToPublish;
   } else {
-    // Env 1 = 4 slots, Env 3 = 10 slots
-    const totalSlotCount = exhibit.chosen_env === 1 ? 4 : 10;
-    const numCollaborators = exhibit.collaborators.length;
-    const baseSlots = Math.floor(totalSlotCount / numCollaborators);
-    const remainder = totalSlotCount % numCollaborators;
+    // Fallback to frontend calculation using new distribution rules
+    const envSlotsMap: Record<number, number> = { 1: 4, 2: 6, 3: 10 };
+    const envSlots = envSlotsMap[exhibit.chosen_env] || 0;
 
     collaborators = exhibit.collaborators.map((collab: any, index: number) => {
-      const slotsToFill = baseSlots + (index < remainder ? 1 : 0);
-      const slotsForUser = exhibit.slots.filter((slot: any) => slot.contributor.id === collab.id);
+      let slotsToFill = 0;
+
+      // Apply specific distribution rules based on slot count and collaborator count
+      if (envSlots === 4) {
+        // 4 slots: Each collaborator gets 2
+        slotsToFill = 2;
+      } else if (envSlots === 6) {
+        // 6 slots: Distribute based on collaborator count
+        if (exhibit.collaborators.length === 1) {
+          // 1 collaborator: 3-3 distribution
+          slotsToFill = 3;
+        } else {
+          // 2 collaborators: 2-2-2 distribution
+          slotsToFill = 2;
+        }
+      } else if (envSlots === 10) {
+        // 10 slots: Distribute based on collaborator count
+        if (exhibit.collaborators.length === 1) {
+          // 1 collaborator: 5-5 distribution
+          slotsToFill = 5;
+        } else {
+          // 2 collaborators: 4-3-3 distribution (owner priority)
+          slotsToFill = 3;
+        }
+      }
+
+      const slotsForUser = exhibit.slots?.filter((slot: any) => slot.contributor.id === collab.id) || [];
       return {
         id: collab.id,
         name: collab.name,
@@ -126,12 +148,12 @@ const ExhibitReview = () => {
         inProgress: slotsForUser.length < slotsToFill,
       };
     });
-  }
 
-  const totalSlots = collaborators.reduce((acc, c) => acc + c.slotsToFill, 0);
-  const filledSlots = collaborators.reduce((acc, c) => acc + c.slotsFilled, 0);
-  const completionPercentage = Math.floor((filledSlots / totalSlots) * 100);
-  const isReadyToPublish = filledSlots === totalSlots;
+    totalSlots = collaborators.reduce((acc, c) => acc + c.slotsToFill, 0);
+    filledSlots = collaborators.reduce((acc, c) => acc + c.slotsFilled, 0);
+    completionPercentage = Math.floor((filledSlots / totalSlots) * 100);
+    isReadyToPublish = filledSlots === totalSlots;
+  }
 
   return (
     <div>
@@ -197,22 +219,38 @@ const ExhibitReview = () => {
                 </div>
 
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">Collaborators</p>
+                  <p className="text-gray-500 text-[10px] font-medium mb-1">Owner</p>
                   <div className="flex flex-col gap-2 mt-1">
-                    {exhibit.collaborators.map((collaborator, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <Avatar className="w-4 h-4">
-                          <AvatarImage src={collaborator.profile_picture} alt={collaborator.name} />
-                          <AvatarFallback className="text-[11px] bg-gray-600 text-white">
-                            {collaborator.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-
-                        <span className="text-[11px]">{collaborator.name}</span>
-                      </div>
-                    ))}
+                    <div className="flex items-center gap-2">
+                      <Avatar className="w-4 h-4">
+                        <AvatarImage src={exhibit.owner?.profile_picture} alt={exhibit.owner?.name} />
+                        <AvatarFallback className="text-[11px] bg-gray-600 text-white">
+                          {exhibit.owner?.name?.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-[11px]">{exhibit.owner?.name}</span>
+                    </div>
                   </div>
                 </div>
+
+                {exhibit.collaborators && exhibit.collaborators.length > 0 && (
+                  <div>
+                    <p className="text-gray-500 text-[10px] font-medium mb-1">Collaborators</p>
+                    <div className="flex flex-col gap-2 mt-1">
+                      {exhibit.collaborators.map((collaborator, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <Avatar className="w-4 h-4">
+                            <AvatarImage src={collaborator.profile_picture} alt={collaborator.name} />
+                            <AvatarFallback className="text-[11px] bg-gray-600 text-white">
+                              {collaborator.name.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-[11px]">{collaborator.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </Card>
           </div>
@@ -226,76 +264,58 @@ const ExhibitReview = () => {
               </div>
 
               <div className="grid grid-cols-3 gap-2 mb-4">
-                <div className="text-center flex">
-                  <div className="h-2.5 w-2.5 bg-gray-800 rounded-full mr-2"></div>
-                  <p className="text-[10px] text-gray-600">Your slots</p>
-                </div>
-                <div className="text-center flex">
-                  <div className="h-2.5 w-2.5 bg-blue-500 rounded-full mr-2"></div>
-                  <p className="text-[10px] text-gray-600">Maya's slots</p>
-                </div>
-                <div className="text-center flex">
-                  <div className="h-2.5 w-2.5 bg-red-500 rounded-full mr-2"></div>
-                  <p className="text-[10px] text-gray-600">Angel's slots</p>
-                </div>
+                {/* Show legend for owner and collaborators */}
+                {[exhibit.owner, ...(exhibit.collaborators || [])]
+                  .filter((person) => person && person.name) // Filter out undefined/null persons
+                  .slice(0, 3)
+                  .map((person: any, index: number) => {
+                    const colors = ["bg-gray-800", "bg-blue-500", "bg-red-500", "bg-green-500", "bg-purple-500"];
+                    return (
+                      <div key={person.id || index} className="text-center flex">
+                        <div className={`h-2.5 w-2.5 ${colors[index] || "bg-gray-400"} rounded-full mr-2`}></div>
+                        <p className="text-[10px] text-gray-600 truncate">{person.name}</p>
+                      </div>
+                    );
+                  })}
               </div>
 
               <div className="grid grid-cols-3 gap-2">
-                {/* Slot 1 */}
-                <div className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start">
-                  <img
-                    src="https://i.pinimg.com/736x/19/dd/6a/19dd6a09150116940f1470e42d54b0cc.jpg"
-                    alt="Artwork slot"
-                    className="w-full h-16 object-cover rounded-sm mb-2"
-                  />
-                </div>
+                {exhibit.slots?.map((slot: any, index: number) => (
+                  <div
+                    key={index}
+                    className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start"
+                  >
+                    {slot.artwork?.image_url ? (
+                      <img
+                        src={Array.isArray(slot.artwork.image_url) ? slot.artwork.image_url[0] : slot.artwork.image_url}
+                        alt={slot.artwork.title || "Artwork"}
+                        className="w-full h-16 object-cover rounded-sm mb-1"
+                      />
+                    ) : (
+                      <div className="w-full h-16 bg-gray-100 border-2 border-dashed border-gray-300 rounded-sm mb-1 flex items-center justify-center">
+                        <p className="text-[8px] text-gray-400">Empty</p>
+                      </div>
+                    )}
+                    <p className="text-[8px] text-gray-500 truncate w-full">{slot.contributor?.name || "Unknown"}</p>
+                  </div>
+                ))}
 
-                {/* Slot 2 */}
-                <div className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start">
-                  <img
-                    src="https://i.pinimg.com/736x/94/2c/35/942c35f24718efeafac5fb77067b4604.jpg"
-                    alt="Artwork slot"
-                    className="w-full h-16 object-cover rounded-sm mb-2"
-                  />
-                </div>
-
-                {/* Slot 3 */}
-                <div className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start">
-                  <img
-                    src="https://i.pinimg.com/736x/d9/d1/13/d9d11380d789d981001068d8a28fe1ef.jpg"
-                    alt="Artwork slot"
-                    className="w-full h-16 object-cover rounded-sm mb-2"
-                  />
-                </div>
-
-                {/* Slot 4 */}
-                <div className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start">
-                  <img
-                    src="https://i.pinimg.com/736x/5a/39/dd/5a39ddaf10f622ac82d11a7d56d3ba39.jpg"
-                    alt="Artwork slot"
-                    className="w-full h-16 object-cover rounded-sm mb-2"
-                  />
-                </div>
-
-                {/* Slot 5 */}
-                <div className="w-[120px] p-2 text-center flex flex-col items-center justify-start">
-                  <div className="border rounded-md w-[100px] h-[65px]">
-                    <div className="relative top-4">
-                      <p className="text-[10px] font-semibold">7</p>
-                      <p className="text-[10px] text-gray-500">Alex Chen's slot</p>
+                {/* Show empty slots if there are fewer artworks than total slots */}
+                {Array.from({
+                  length: Math.max(
+                    0,
+                    (exhibit.chosen_env === 1 ? 4 : exhibit.chosen_env === 2 ? 6 : 10) - (exhibit.slots?.length || 0)
+                  ),
+                }).map((_, index) => (
+                  <div
+                    key={`empty-${index}`}
+                    className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start"
+                  >
+                    <div className="w-full h-16 bg-gray-100 border-2 border-dashed border-gray-300 rounded-sm mb-1 flex items-center justify-center">
+                      <p className="text-[8px] text-gray-400">Empty</p>
                     </div>
                   </div>
-                </div>
-
-                {/* Slot 6 */}
-                <div className="w-[120px] p-2 text-center flex flex-col items-center justify-start">
-                  <div className="border rounded-md w-[100px] h-[65px]">
-                    <div className="relative top-4">
-                      <p className="text-[10px] font-semibold">8</p>
-                      <p className="text-[10px] text-gray-500">Jera's slot</p>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </Card>
           </div>
