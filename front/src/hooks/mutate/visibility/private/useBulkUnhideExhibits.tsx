@@ -1,32 +1,40 @@
-// frontend/hooks/exhibit/useToggleHideExhibit.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
 
-export const useToggleHideExhibit = () => {
+const bulkUnhideExhibits = async (): Promise<{ message: string; count: number }> => {
+  const response = await apiClient.patch("/exhibits/bulk-unhide/");
+  return response.data;
+};
+
+const useBulkUnhideExhibits = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (exhibitId: string) => {
-      const response = await apiClient.patch(`/exhibits/${exhibitId}/toggle-hide/`);
-      return response.data;
-    },
-    onSuccess: (data, exhibitId) => {
-      toast.success(data.detail);
+    mutationFn: bulkUnhideExhibits,
+    onSuccess: (data) => {
       // Invalidate all exhibit-related queries to refresh the data
       queryClient.invalidateQueries({ queryKey: ["exhibit-cards"] });
       queryClient.invalidateQueries({ queryKey: ["exhibits"] });
       queryClient.invalidateQueries({ queryKey: ["my-exhibit-cards"] });
       queryClient.invalidateQueries({ queryKey: ["user-exhibits"] });
       queryClient.invalidateQueries({ queryKey: ["exhibit-card"] });
-      queryClient.invalidateQueries({ queryKey: ["exhibit", exhibitId] });
       queryClient.invalidateQueries({ queryKey: ["collaborator-exhibit-view"] });
       queryClient.invalidateQueries({ queryKey: ["exhibit-review"] });
       queryClient.invalidateQueries({ queryKey: ["exhibitReportStatus"] });
       queryClient.invalidateQueries({ queryKey: ["exhibitReportStatusBulk"] });
+
+      toast.success(`Successfully unhid ${data.count} exhibits!`, {
+        closeButton: true,
+      });
     },
     onError: (error: any) => {
-      toast.error(error?.response?.data?.detail || "Failed to toggle exhibit hidden state.");
+      console.error("Bulk unhide exhibits error:", error);
+      toast.error("Failed to unhide exhibits.", {
+        closeButton: true,
+      });
     },
   });
 };
+
+export default useBulkUnhideExhibits;
