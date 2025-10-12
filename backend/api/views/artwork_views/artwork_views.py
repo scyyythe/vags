@@ -1,6 +1,7 @@
 from bson import ObjectId
 from rest_framework import generics, permissions
 from api.models.artwork_model.artwork import Art
+from api.models.interaction_model.hidden_content import HiddenContent
 from api.models.user_model.users import User
 from api.models.interaction_model.notification import Notification
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
@@ -92,15 +93,19 @@ class UpdateArtworkView(APIView):
         if main_image:
             upload_result = cloudinary.uploader.upload(main_image)
             main_url = upload_result.get("secure_url")
-            if art.image_url:
+            if art.image_url and len(art.image_url) > 0:
                 art.image_url[0] = main_url
             else:
+                # Initialize as list if None/empty
+                if not art.image_url:
+                    art.image_url = []
                 art.image_url.append(main_url)  # Add as first image if empty
 
         # ----- ADDITIONAL IMAGES -----
         additional_images = request.FILES.getlist("additional_images")
-        # Keep existing main image intact, append new ones
-        start_index = 1 if art.image_url else 0
+        # Ensure image_url is initialized as a list
+        if not art.image_url:
+            art.image_url = []
 
         for img_file in additional_images:
             upload_result = cloudinary.uploader.upload(img_file)
@@ -146,11 +151,25 @@ class ArtListView(generics.ListAPIView):
         if self.request.user.is_authenticated and hasattr(self.request.user, 'blocked_users'):
             blocked_user_ids = [user.id for user in self.request.user.blocked_users]
 
-        return Art.objects(
+        artworks = Art.objects(
             visibility__iexact="public",
             art_status__iexact="active",
             artist__nin=blocked_user_ids
         ).order_by('-created_at')
+
+        # Filter out hidden artworks for the current user
+        if self.request.user.is_authenticated:
+            try:
+                user = User.objects.get(id=ObjectId(self.request.user.id))
+                hidden_contents = HiddenContent.objects.filter(user=user, content_type='artwork')
+                if hidden_contents:
+                    hidden_artwork_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
+                    artworks = artworks.filter(id__nin=hidden_artwork_ids)
+            except Exception as e:
+                # If there's an error getting hidden artworks, just continue without filtering
+                pass
+
+        return artworks
 
 
 class PopularLightweightArtView(APIView):
@@ -202,6 +221,18 @@ class ArtCardListView(APIView):
             )
 
             artworks = Art.objects(query).order_by("-created_at")
+
+            # Filter out hidden artworks for the current user
+            if request.user.is_authenticated:
+                try:
+                    user = User.objects.get(id=ObjectId(request.user.id))
+                    hidden_artworks = HiddenArtwork.objects.filter(user=user)
+                    if hidden_artworks:
+                        hidden_artwork_ids = [ha.artwork.id for ha in hidden_artworks]
+                        artworks = artworks.filter(id__nin=hidden_artwork_ids)
+                except Exception as e:
+                    # If there's an error getting hidden artworks, just continue without filtering
+                    pass
 
             serializer = ArtCardSerializer(artworks, many=True)
             return Response(serializer.data)
@@ -267,11 +298,25 @@ class ArtBulkListView(generics.ListAPIView):
         if self.request.user.is_authenticated and hasattr(self.request.user, 'blocked_users'):
             blocked_user_ids = [user.id for user in self.request.user.blocked_users]
 
-        return Art.objects(
+        artworks = Art.objects(
             visibility__iexact="public",
             art_status__in=valid_statuses,
             artist__nin=blocked_user_ids
         ).order_by('-created_at')
+
+        # Filter out hidden artworks for the current user
+        if self.request.user.is_authenticated:
+            try:
+                user = User.objects.get(id=ObjectId(self.request.user.id))
+                hidden_contents = HiddenContent.objects.filter(user=user, content_type='artwork')
+                if hidden_contents:
+                    hidden_artwork_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
+                    artworks = artworks.filter(id__nin=hidden_artwork_ids)
+            except Exception as e:
+                # If there's an error getting hidden artworks, just continue without filtering
+                pass
+
+        return artworks
 
    
     
@@ -429,12 +474,30 @@ class HideArtworkView(APIView):
     def patch(self, request, pk):
         try:
             artwork = Art.objects.get(id=ObjectId(pk))
+            user = User.objects.get(id=ObjectId(request.user.id))
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
+        except User.DoesNotExist:
+            raise Http404("User not found")
 
-        artwork.visibility = "Hidden"
-        artwork.updated_at = datetime.utcnow()
-        artwork.save()
+        # Check if artwork is already hidden by this user
+        existing_hidden = HiddenContent.objects.filter(
+            user=user, 
+            content_type='artwork', 
+            content_id=str(artwork.id)
+        ).first()
+        
+        if existing_hidden:
+            return Response({"message": "Artwork was already hidden."}, status=status.HTTP_200_OK)
+        
+        # Create new hidden content record
+        hidden_content = HiddenContent(
+            user=user,
+            content_type='artwork',
+            content_id=str(artwork.id),
+            hidden_at=datetime.utcnow()
+        )
+        hidden_content.save()
 
         return Response({"message": "Artwork hidden successfully."}, status=status.HTTP_200_OK)
     
@@ -444,14 +507,24 @@ class UnHideArtworkView(APIView):
     def patch(self, request, pk):
         try:
             artwork = Art.objects.get(id=ObjectId(pk))
+            user = User.objects.get(id=ObjectId(request.user.id))
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
+        except User.DoesNotExist:
+            raise Http404("User not found")
 
-        artwork.visibility = "Public"
-        artwork.updated_at = datetime.utcnow()
-        artwork.save()
+        # Remove the hidden content record for this user
+        hidden_content = HiddenContent.objects.filter(
+            user=user,
+            content_type='artwork',
+            content_id=str(artwork.id)
+        ).first()
 
-        return Response({"message": "Artwork unhidden successfully."}, status=status.HTTP_200_OK)
+        if hidden_content:
+            hidden_content.delete()
+            return Response({"message": "Artwork unhidden successfully."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Artwork was not hidden."}, status=status.HTTP_200_OK)
     
 class DeleteArtwork(APIView):
     permission_classes = [permissions.IsAuthenticated]

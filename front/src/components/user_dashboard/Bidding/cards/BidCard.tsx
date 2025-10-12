@@ -11,6 +11,7 @@ import { formatNumber } from "@/utils/numberFormat";
 import OwnerBidMenu from "../../own_profile/menu/bid_card/Menu";
 import { getLoggedInUserId } from "@/auth/decode";
 import { useAuctionActions } from "@/hooks/auction/useAuctionActions";
+import { useToggleHideAuction } from "@/hooks/auction/useToggleHideAuction";
 interface ExtendedArtworkAuction extends ArtworkAuction {
   isPaid?: boolean;
   isHighestBidder?: boolean;
@@ -42,6 +43,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
   const { closeAuction, deleteAuction } = useAuctionActions();
   const navigate = useNavigate();
   const { mutate: submitAuctionReport } = useAuctionSubmitReport();
+  const { mutate: hideAuction } = useToggleHideAuction();
 
   useEffect(() => {
     console.log("Top level start_bid_amount:", data.start_bid_amount);
@@ -62,7 +64,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
 
   const handleHide = () => {
     setIsHidden(true);
-    toast("Artwork hidden", { closeButton: true });
+    hideAuction(data.id);
     setMenuOpen(false);
   };
 
