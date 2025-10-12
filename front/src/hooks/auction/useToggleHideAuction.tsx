@@ -12,9 +12,14 @@ export const useToggleHideAuction = () => {
     },
     onSuccess: (data, auctionId) => {
       toast.success(data.detail);
+      // Invalidate all auction-related queries
       queryClient.invalidateQueries({ queryKey: ["auctions"] });
-      queryClient.invalidateQueries({ queryKey: ["auction", auctionId] });
-      queryClient.invalidateQueries({ queryKey: ["auction-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["followedAuctions"] });
+      queryClient.invalidateQueries({ queryKey: ["my-auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["myParticipatedAuctions"] });
+      queryClient.invalidateQueries({ queryKey: ["myAuctionArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["hotBids"] });
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.detail || "Failed to toggle auction hidden state.");

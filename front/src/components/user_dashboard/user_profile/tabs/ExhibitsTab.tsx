@@ -78,7 +78,9 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
       const isCorrectType = typeTab === "solo" ? exhibit.isSolo : !exhibit.isSolo;
 
       const statusMatch =
-        statusFilter === "on_going"
+        selectedStatus === "Hidden"
+          ? true // Don't filter by status when viewing hidden exhibits
+          : statusFilter === "on_going"
           ? isOngoing(exhibit)
           : statusFilter === "closed"
           ? isEnded(exhibit)
@@ -86,14 +88,22 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
           ? isUpcoming(exhibit)
           : true;
       let visibilityMatch = true;
-      if (selectedStatus === "Deleted") visibilityMatch = exhibit.visibility?.toLowerCase() === "deleted";
-      else if (selectedStatus === "Hidden") visibilityMatch = exhibit.visibility?.toLowerCase() === "private";
-      else if (selectedStatus === "Archived") visibilityMatch = exhibit.visibility?.toLowerCase() === "archived";
-      else visibilityMatch = exhibit.visibility?.toLowerCase() === "public";
+      if (selectedStatus === "Deleted") {
+        visibilityMatch = exhibit.visibility?.toLowerCase() === "deleted";
+      } else if (selectedStatus === "Hidden") {
+        // For hidden status, backend already filters using HiddenContent model
+        // All exhibits returned are hidden, so we show all of them regardless of their visibility
+        visibilityMatch = true;
+      } else if (selectedStatus === "Archived") {
+        visibilityMatch = exhibit.visibility?.toLowerCase() === "archived";
+      } else {
+        // For Active/Public status, show public exhibits
+        visibilityMatch = exhibit.visibility?.toLowerCase() === "public";
+      }
 
       return isCorrectType && statusMatch && visibilityMatch;
     });
-  }, [exhibits, statusFilter, typeTab, includeDeleted]);
+  }, [exhibits, statusFilter, typeTab, selectedStatus, includeHidden]);
 
   const tabEmptyMessages = {
     upcoming: includeDeleted ? "No deleted exhibits found." : "No upcoming exhibits found.",
@@ -160,7 +170,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
             ))}
           </div>
           <div className="flex items-center space-x-2">
-            {typeTab === "collab" && isOwnProfile && (
+            {typeTab === "collab" && isOwnProfile && selectedStatus !== "Hidden" && (
               <>
                 {/* Pending Requests Icon */}
                 <button
@@ -212,21 +222,23 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
               </>
             )}
 
-            <select
-              className="text-[9px] border rounded-full pr-6 pl-2 py-1 text-gray-700 cursor-pointer"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-            >
-              <option value="upcoming">Upcoming</option>
-              <option value="on_going">Ongoing</option>
-              <option value="closed">Ended</option>
-            </select>
+            {selectedStatus !== "Hidden" && (
+              <select
+                className="text-[9px] border rounded-full pr-6 pl-2 py-1 text-gray-700 cursor-pointer"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+              >
+                <option value="upcoming">Upcoming</option>
+                <option value="on_going">Ongoing</option>
+                <option value="closed">Ended</option>
+              </select>
+            )}
           </div>
         </div>
       </div>
 
       {/* Pending Section */}
-      {typeTab === "collab" && showPending && isOwnProfile && (
+      {typeTab === "collab" && showPending && isOwnProfile && selectedStatus !== "Hidden" && (
         <div className="mb-4 border border-yellow-300 bg-yellow-50 rounded p-3 text-[10px]">
           <h2 className="font-semibold text-yellow-700 mb-2">Pending Requests</h2>
           {actualPendingRequests.length > 0 ? (
@@ -342,7 +354,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
       )}
 
       {/* Contributions Section */}
-      {typeTab === "collab" && showContributions && isOwnProfile && (
+      {typeTab === "collab" && showContributions && isOwnProfile && selectedStatus !== "Hidden" && (
         <div className="mb-4 border border-blue-300 bg-blue-50 rounded p-3 text-[10px]">
           <h2 className="font-semibold text-blue-700 mb-2">My Contributions</h2>
           {contributions.length > 0 ? (
