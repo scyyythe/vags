@@ -59,18 +59,37 @@ class ExhibitSerializer(serializers.Serializer):
         # Calculate total slots based on environment
         env_slots = {1: 4, 2: 6, 3: 10}.get(obj.chosen_env, 0)
         
-        # Calculate slots per collaborator
-        total_collaborators = len(obj.collaborators) + 1  # +1 for owner
-        base_slots = env_slots // total_collaborators
-        remainder = env_slots % total_collaborators
-        
+        # Apply specific distribution rules based on slot count and collaborator count
         collaborator_status = []
         
-        # Add owner status
-        owner_slots = base_slots + (1 if remainder > 0 else 0)
+        # Calculate owner slots based on new distribution rules
+        if env_slots == 4:
+            # 4 slots: Owner gets 2, Collaborator gets 2
+            owner_slots = 2
+        elif env_slots == 6:
+            # 6 slots: Distribute based on collaborator count
+            if len(obj.collaborators) == 1:
+                # 1 collaborator: 3-3 distribution
+                owner_slots = 3
+            else:
+                # 2 collaborators: 2-2-2 distribution
+                owner_slots = 2
+        elif env_slots == 10:
+            # 10 slots: Distribute based on collaborator count
+            if len(obj.collaborators) == 1:
+                # 1 collaborator: 5-5 distribution
+                owner_slots = 5
+            else:
+                # 2 collaborators: 4-3-3 distribution (owner priority)
+                owner_slots = 4
+        else:
+            owner_slots = 0
+        
+        # Calculate owner filled slots
         owner_filled = sum(1 for slot_id, artwork_id in slot_artwork_map.items() 
                           if slot_owner_map.get(str(slot_id)) == str(obj.owner.id))
         
+        # Add owner status
         collaborator_status.append({
             "id": str(obj.owner.id),
             "name": f"{obj.owner.first_name} {obj.owner.last_name}",
@@ -81,9 +100,31 @@ class ExhibitSerializer(serializers.Serializer):
             "completionPercentage": round((owner_filled / owner_slots) * 100) if owner_slots > 0 else 0
         })
         
-        # Add collaborators status
+        # Add collaborators status based on new distribution rules
         for i, collaborator in enumerate(obj.collaborators):
-            collab_slots = base_slots + (1 if i + 1 < remainder else 0)
+            # Calculate collaborator slots based on new distribution rules
+            if env_slots == 4:
+                # 4 slots: Each collaborator gets 2
+                collab_slots = 2
+            elif env_slots == 6:
+                # 6 slots: Distribute based on collaborator count
+                if len(obj.collaborators) == 1:
+                    # 1 collaborator: 3-3 distribution
+                    collab_slots = 3
+                else:
+                    # 2 collaborators: 2-2-2 distribution
+                    collab_slots = 2
+            elif env_slots == 10:
+                # 10 slots: Distribute based on collaborator count
+                if len(obj.collaborators) == 1:
+                    # 1 collaborator: 5-5 distribution
+                    collab_slots = 5
+                else:
+                    # 2 collaborators: 4-3-3 distribution (owner priority)
+                    collab_slots = 3
+            else:
+                collab_slots = 0
+            
             collab_filled = sum(1 for slot_id, artwork_id in slot_artwork_map.items() 
                               if slot_owner_map.get(str(slot_id)) == str(collaborator.id))
             
@@ -167,19 +208,20 @@ class ExhibitSerializer(serializers.Serializer):
 
        
         if exhibit_type == "Collaborative" and collaborators:
-            print(f"🔔 Creating notifications for {len(collaborators)} collaborators...")
+          
             for collaborator in collaborators:
                 try:
                     notification = Notification.objects.create(
                         user=collaborator,
                         actor=owner,
-                        message=f"You were invited to collaborate on the exhibit '{exhibit.title}'",
+                        message=f"invited you to collaborate on the exhibit '{exhibit.title}'",
                         exhibit=exhibit,
+                        name=f"{owner.first_name} {owner.last_name}",
                         action="invited you to collaborate",
                         target=exhibit.title,
                         icon="invite",
+                        link=f"/collaborator/exhibit/{exhibit.id}",
                         created_at=datetime.now(),
-                        link=f"exhibitreview?id={exhibit.id}",  
                     )
                     print(f"✅ Notification created for collaborator: {collaborator.first_name} {collaborator.last_name}")
                 except Exception as e:
@@ -217,11 +259,12 @@ class ExhibitSerializer(serializers.Serializer):
                             actor=instance.owner,
                             message=f"You were invited to collaborate on the exhibit '{instance.title}'",
                             exhibit=instance,
+                            name=f"{instance.owner.first_name} {instance.owner.last_name}",
                             action="invited you to collaborate",
                             target=instance.title,
                             icon="invite",
+                            link=f"/collaborator/exhibit/{instance.id}",
                             created_at=datetime.now(),
-                            link=f"exhibitreview?id={instance.id}",
                         )
                         print(f"✅ Notification created for newly added collaborator: {collaborator.first_name} {collaborator.last_name}")
                     except Exception as e:

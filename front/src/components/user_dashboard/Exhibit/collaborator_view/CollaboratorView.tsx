@@ -126,11 +126,6 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
 
     const { slotOwnerMap, slotArtworkMap, owner, collaborators } = data;
 
-    console.log("🔍 CollaboratorView - Raw data from backend:", data);
-    console.log("🔍 CollaboratorView - slotOwnerMap:", slotOwnerMap);
-    console.log("🔍 CollaboratorView - slotArtworkMap:", slotArtworkMap);
-    console.log("🔍 CollaboratorView - slots data:", data.slots);
-
     const transformedExhibit = {
       id: data.id,
       title: data.title,
@@ -157,9 +152,15 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
       })),
     };
 
-    console.log("🔍 CollaboratorView - Transformed exhibit:", transformedExhibit);
-    console.log("🔍 CollaboratorView - Transformed slotOwnerMap:", transformedExhibit.slotOwnerMap);
-    console.log("🔍 CollaboratorView - Transformed slotArtworkMap:", transformedExhibit.slotArtworkMap);
+    // Debug: Log the slot distribution
+    console.log("🔍 CollaboratorView - Slot Owner Map:", transformedExhibit.slotOwnerMap);
+    console.log("🔍 CollaboratorView - Backend Slots Data:", data.slots);
+    console.log(
+      "🔍 CollaboratorView - Expected slots for Gil (owner):",
+      Object.entries(transformedExhibit.slotOwnerMap)
+        .filter(([slot, ownerId]) => ownerId === transformedExhibit.owner.id)
+        .map(([slot, ownerId]) => slot)
+    );
 
     setExhibit(transformedExhibit);
     setSlotArtworkMap(transformedExhibit.slotArtworkMap);
@@ -368,24 +369,11 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                       const slotOwner = exhibit.slotOwnerMap[slotId];
                       const userCanInteract = canInteractWithSlot(slotId);
 
-                      // Find contributed artwork for this slot
+                      // Find contributed artwork for this slot - ONLY use exact matches
                       let contributedSlot = data.slots?.find((slot: any) => slot.slot_number === slotId);
 
-                      // If no exact slot number match, find any unused artwork from the slot owner
-                      if (!contributedSlot && slotOwner) {
-                        const ownerContributions =
-                          data.slots?.filter(
-                            (slot: any) =>
-                              slot.contributor?.id &&
-                              String(slot.contributor.id) === String(slotOwner) &&
-                              !usedArtworks.has(slot.artwork?.id)
-                          ) || [];
-
-                        if (ownerContributions.length > 0) {
-                          contributedSlot = ownerContributions[0]; // Take the first unused one
-                          usedArtworks.add(contributedSlot.artwork?.id);
-                        }
-                      } else if (contributedSlot) {
+                      // Only use exact slot matches - don't try to assign artworks to different slots
+                      if (contributedSlot) {
                         usedArtworks.add(contributedSlot.artwork?.id);
                       }
 
