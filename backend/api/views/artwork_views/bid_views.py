@@ -181,6 +181,9 @@ class AuctionListView(generics.ListAPIView):
         if valid_artwork_ids is not None:
             query["artwork__in"] = valid_artwork_ids
 
+        # Filter out deleted auctions
+        query["visibility__ne"] = "Deleted"
+
         auctions = Auction.objects(**query)
         
         # Filter out hidden auctions for the current user
@@ -206,6 +209,7 @@ class AuctionListViewOwner(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         include_hidden = self.request.query_params.get("include_hidden", "false").lower() == "true"
+        include_deleted = self.request.query_params.get("include_deleted", "false").lower() == "true"
 
         
         user_artworks = Art.objects(artist=user.id).only('id')
@@ -215,7 +219,8 @@ class AuctionListViewOwner(generics.ListAPIView):
         expired_auctions = Auction.objects(
             artwork__in=artwork_ids,
             status=AuctionStatus.ON_GOING.value,
-            end_time__lt=datetime.utcnow()
+            end_time__lt=datetime.utcnow(),
+            visibility__ne="Deleted"  # Don't try to close deleted auctions
         )
 
         for auction in expired_auctions:
@@ -236,9 +241,12 @@ class AuctionListViewOwner(generics.ListAPIView):
                     queryset = Auction.objects.none()
             except Exception as e:
                 queryset = Auction.objects.none()
+        elif include_deleted:
+            # When include_deleted=true, show only deleted auctions
+            queryset = Auction.objects(artwork__in=artwork_ids, visibility="Deleted")
         else:
-            # When include_hidden=false, get normal auctions and filter out hidden ones
-            queryset = Auction.objects(artwork__in=artwork_ids)
+            # When include_hidden=false and include_deleted=false, get normal auctions and filter out hidden and deleted ones
+            queryset = Auction.objects(artwork__in=artwork_ids, visibility__ne="Deleted")
 
             # Filter out hidden auctions
             try:
@@ -282,7 +290,7 @@ class AuctionListViewSpecificUser(generics.ListAPIView):
             auction.close_auction()
 
         
-        queryset = Auction.objects(artwork__in=artwork_ids)
+        queryset = Auction.objects(artwork__in=artwork_ids, visibility__ne="Deleted")
 
         
         status = self.request.query_params.get('status')
@@ -313,7 +321,7 @@ class AuctionListViewParticipated(generics.ListAPIView):
             auction.reload()
 
         participated_auctions = []
-        all_auctions = Auction.objects()
+        all_auctions = Auction.objects(visibility__ne="Deleted")
 
         for auction in all_auctions:
            
@@ -500,7 +508,8 @@ class FollowedAuctionsView(APIView):
 
         auctions = Auction.objects(
             artwork__in=artwork_ids,
-            status=AuctionStatus.ON_GOING.value
+            status=AuctionStatus.ON_GOING.value,
+            visibility__ne="Deleted"
         ).order_by('-created_at')[skip:skip + page_size]
         print("Ongoing Auction Count:", auctions.count())
 
@@ -516,7 +525,8 @@ class PopularAuctionListView(generics.ListAPIView):
        
         queryset = Auction.objects(
             status=AuctionStatus.ON_GOING.value,
-            end_time__gt=now_utc
+            end_time__gt=now_utc,
+            visibility__ne="Deleted"
         )
 
         user = self.request.user

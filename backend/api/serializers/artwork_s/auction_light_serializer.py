@@ -32,4 +32,5 @@ class LightweightAuctionCardSerializer(serializers.Serializer):  # <-- renamed
     start_time = serializers.DateTimeField()
     end_time = serializers.DateTimeField()
     status = serializers.CharField()
+    visibility = serializers.CharField(read_only=True)
     highest_bid = LightBidderSerializer(read_only=True)
