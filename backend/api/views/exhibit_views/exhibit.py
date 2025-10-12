@@ -137,6 +137,63 @@ class MyExhibitCardListView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class RestoreExhibitView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, exhibit_id):
+        try:
+            exhibit = Exhibit.objects.get(id=exhibit_id)
+        except Exhibit.DoesNotExist:
+            return Response({"detail": "Exhibit not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if exhibit.owner.id != request.user.id:
+            return Response(
+                {"detail": "Not authorized to restore this exhibit."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        # Restore the exhibit by setting visibility back to Public
+        exhibit.visibility = "Public"
+        exhibit.updated_at = datetime.utcnow()
+        exhibit.save()
+
+        return Response(
+            {"detail": "Exhibit restored successfully."},
+            status=status.HTTP_200_OK,
+        )
+
+
+class RestoreAllExhibitsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+        try:
+            user = request.user
+            
+            # Get all deleted exhibits owned by the user
+            deleted_exhibits = Exhibit.objects.filter(
+                owner=user,
+                visibility="Deleted"
+            )
+            
+            count = deleted_exhibits.count()
+            
+            # Restore all deleted exhibits
+            deleted_exhibits.update(
+                visibility="Public",
+                updated_at=datetime.utcnow()
+            )
+            
+            return Response(
+                {"message": f"Successfully restored {count} exhibits."},
+                status=status.HTTP_200_OK,
+            )
+            
+        except Exception as e:
+            print("🔥 ERROR in RestoreAllExhibitsView:", e)
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class UserExhibitCardListView(APIView):
     permission_classes = [IsAuthenticated]
 

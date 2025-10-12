@@ -18,10 +18,28 @@ const useUnarchiveArtwork = () => {
 
       queryClient.setQueryData<Artwork[]>(["artworks", 1, undefined, "created-by-me"], (oldData) => {
         if (!oldData) return [];
-        return oldData.map((art) => (art.id === id ? { ...art, art_status: "Active", visibility: "Public" } : art));
+        return oldData.filter((artwork) => artwork.id !== id);
       });
 
-      queryClient.invalidateQueries({ queryKey: ["artworks"] });
+      queryClient.setQueriesData<Artwork[]>({ queryKey: ["artworks"] }, (oldData) => {
+        if (!oldData) return oldData;
+        return oldData.filter((artwork) => artwork.id !== id);
+      });
+
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["artworks"] });
+        queryClient.invalidateQueries({ queryKey: ["artwork"] });
+        queryClient.invalidateQueries({ queryKey: ["artwork-cards"] });
+        queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
+        queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
+        queryClient.invalidateQueries({ queryKey: ["popular-artworks"] });
+        queryClient.invalidateQueries({ queryKey: ["myAuctionArtworks"] });
+        queryClient.invalidateQueries({ queryKey: ["hotBids"] });
+        queryClient.invalidateQueries({ queryKey: ["followedAuctions"] });
+        queryClient.invalidateQueries({ queryKey: ["my-auctions"] });
+        queryClient.invalidateQueries({ queryKey: ["myParticipatedAuctions"] });
+        queryClient.invalidateQueries({ queryKey: ["auctions"] });
+      }, 100);
     },
     onError: () => {
       toast.error("Failed to unarchive artwork.");

@@ -16,8 +16,6 @@ const useHideArtwork = () => {
     onSuccess: (_, id) => {
       toast.success("Artwork hidden successfully!");
 
-      // Only invalidate queries to refresh the data, don't remove from cache
-      // The backend should handle filtering hidden artworks for the current user
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
       queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
       queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });

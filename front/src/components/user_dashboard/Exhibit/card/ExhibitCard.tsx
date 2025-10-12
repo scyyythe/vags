@@ -7,6 +7,7 @@ import ExhibitMenu from "@/components/user_dashboard/Exhibit/menu/ExhibitMenu";
 import Menu from "@/components/user_dashboard/own_profile/menu/exhibit_card/Menu";
 import useExhibitReport from "@/hooks/mutate/report/useExhibitReport";
 import { useDeleteExhibit } from "@/hooks/exhibit/useDeleteExhibit";
+import { useRestoreExhibit } from "@/hooks/exhibit/useRestoreExhibit";
 import { getLoggedInUserId } from "@/auth/decode";
 import useExhibitReportStatus from "@/hooks/mutate/report/useExhibitReportStatus";
 import { useToggleHideExhibit } from "@/hooks/exhibit/useToggleHideExhibit";
@@ -25,6 +26,7 @@ interface ExhibitProps {
     startDate?: string;
     endDate?: string;
     ownerId: string;
+    visibility?: string;
     userRole?: "owner" | "collaborator" | null;
     targetUserRole?: "owner" | "collaborator" | null;
     collaborators?: {
@@ -57,6 +59,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
   const navigate = useNavigate();
 
   const { mutate: deleteExhibit } = useDeleteExhibit();
+  const { mutate: restoreExhibit } = useRestoreExhibit();
   const { mutate: submitExhibitReport } = useExhibitReport();
   const { mutate: toggleHideExhibit } = useToggleHideExhibit();
   const { mutate: toggleVisibilityExhibit } = useToggleVisibilityExhibit();
@@ -197,6 +200,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                   artworkTitle={exhibit.title}
                   isShared={false}
                   isPublic={true}
+                  visibility={exhibit.visibility}
                   onEdit={(id) => {
                     const searchParams = new URLSearchParams({ mode: "edit" });
                     navigate(`/edit-exhibit/${id}?${searchParams.toString()}`);
@@ -219,6 +223,9 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                         },
                       });
                     }
+                  }}
+                  onRestore={(id) => {
+                    restoreExhibit(id);
                   }}
                   className="-left-1.5 top-5"
                 />

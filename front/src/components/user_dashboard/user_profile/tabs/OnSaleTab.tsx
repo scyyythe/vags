@@ -37,7 +37,7 @@ import useMarkAsShipped from "@/hooks/purchase/useMarkAsShipped";
 type SellTabProps = {
   selectedPriceRange?: string;
 };
-const SellTab = ({ selectedPriceRange }) => {
+const SellTab = ({ selectedPriceRange, selectedStatus }) => {
   const { id: userId } = useParams();
   const loggedInUserId = getLoggedInUserId();
   const navigate = useNavigate();
@@ -483,6 +483,19 @@ const SellTab = ({ selectedPriceRange }) => {
 
   let filteredArtworks = artCards
     .filter((art) => {
+      // Apply status filter first (Archived, Deleted, etc.)
+      if (selectedStatus && selectedStatus !== "Active") {
+        if (selectedStatus === "Archived") {
+          return art.visibility?.toLowerCase() === "archived";
+        } else if (selectedStatus === "Deleted") {
+          return art.visibility?.toLowerCase() === "deleted";
+        } else if (selectedStatus === "Hidden") {
+          // Backend already handles hidden filtering
+          return true;
+        }
+        // For other statuses, continue with normal filtering
+      }
+
       const status = (art.art_status || "").toLowerCase().trim();
       const tab = (subTab || "").toLowerCase().trim();
 

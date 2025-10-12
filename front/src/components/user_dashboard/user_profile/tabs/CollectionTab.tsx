@@ -9,9 +9,10 @@ import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 
 type CollectionTabProps = {
   setSavedArtworksCount?: React.Dispatch<React.SetStateAction<number>>;
+  selectedStatus?: string;
 };
 
-const CollectionTab = ({ setSavedArtworksCount }: CollectionTabProps) => {
+const CollectionTab = ({ setSavedArtworksCount, selectedStatus }: CollectionTabProps) => {
   const loggedInUserId = getLoggedInUserId();
   const { id: visitedUserId } = useParams();
   const isOwnProfile = !visitedUserId || visitedUserId === loggedInUserId;

@@ -78,8 +78,8 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
       const isCorrectType = typeTab === "solo" ? exhibit.isSolo : !exhibit.isSolo;
 
       const statusMatch =
-        selectedStatus === "Hidden"
-          ? true // Don't filter by status when viewing hidden exhibits
+        selectedStatus === "Hidden" || selectedStatus === "Deleted" || selectedStatus === "Archived"
+          ? true // Don't filter by status when viewing hidden/deleted/archived exhibits
           : statusFilter === "on_going"
           ? isOngoing(exhibit)
           : statusFilter === "closed"
@@ -222,7 +222,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
               </>
             )}
 
-            {selectedStatus !== "Hidden" && (
+            {selectedStatus !== "Hidden" && selectedStatus !== "Deleted" && selectedStatus !== "Archived" && (
               <select
                 className="text-[9px] border rounded-full pr-6 pl-2 py-1 text-gray-700 cursor-pointer"
                 value={statusFilter}
