@@ -67,6 +67,7 @@ export interface ArtworkAuction {
     secs: number;
   };
   viewers: string[];
+  visibility?: string;
 
   isShared: boolean;
 
