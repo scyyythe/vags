@@ -29,6 +29,10 @@ class ExhibitSerializer(serializers.Serializer):
 
     exhibit_likes_count = serializers.SerializerMethodField()
     user_has_liked_exhibit = serializers.SerializerMethodField()
+    collaborator_status = serializers.SerializerMethodField()
+    overall_completion = serializers.SerializerMethodField()
+    slot_owner_map = serializers.DictField(required=False, allow_null=True)
+    slot_artwork_map = serializers.DictField(required=False, allow_null=True)
 
     def get_exhibit_likes_count(self, obj):
         return Like.objects(exhibit=obj).count()
@@ -39,6 +43,125 @@ class ExhibitSerializer(serializers.Serializer):
         if user and not user.is_anonymous:
             return Like.objects(user=user, exhibit=obj).first() is not None
         return False
+
+    def get_collaborator_status(self, obj):
+        """Calculate collaborator status based on slot assignments"""
+        if obj.exhibit_type != "Collaborative":
+            return []
+        
+        # Get slot owner map from request data or use empty dict
+        slot_owner_map = getattr(obj, 'slot_owner_map', {})
+        slot_artwork_map = getattr(obj, 'slot_artwork_map', {})
+        
+        if not slot_owner_map:
+            return []
+        
+        # Calculate total slots based on environment
+        env_slots = {1: 4, 2: 6, 3: 10}.get(obj.chosen_env, 0)
+        
+        # Apply specific distribution rules based on slot count and collaborator count
+        collaborator_status = []
+        
+        # Calculate owner slots based on new distribution rules
+        if env_slots == 4:
+            # 4 slots: Owner gets 2, Collaborator gets 2
+            owner_slots = 2
+        elif env_slots == 6:
+            # 6 slots: Distribute based on collaborator count
+            if len(obj.collaborators) == 1:
+                # 1 collaborator: 3-3 distribution
+                owner_slots = 3
+            else:
+                # 2 collaborators: 2-2-2 distribution
+                owner_slots = 2
+        elif env_slots == 10:
+            # 10 slots: Distribute based on collaborator count
+            if len(obj.collaborators) == 1:
+                # 1 collaborator: 5-5 distribution
+                owner_slots = 5
+            else:
+                # 2 collaborators: 4-3-3 distribution (owner priority)
+                owner_slots = 4
+        else:
+            owner_slots = 0
+        
+        # Calculate owner filled slots
+        owner_filled = sum(1 for slot_id, artwork_id in slot_artwork_map.items() 
+                          if slot_owner_map.get(str(slot_id)) == str(obj.owner.id))
+        
+        # Add owner status
+        collaborator_status.append({
+            "id": str(obj.owner.id),
+            "name": f"{obj.owner.first_name} {obj.owner.last_name}",
+            "profile_picture": obj.owner.profile_picture or "",
+            "slotsToFill": owner_slots,
+            "slotsFilled": owner_filled,
+            "inProgress": owner_filled < owner_slots,
+            "completionPercentage": round((owner_filled / owner_slots) * 100) if owner_slots > 0 else 0
+        })
+        
+        # Add collaborators status based on new distribution rules
+        for i, collaborator in enumerate(obj.collaborators):
+            # Calculate collaborator slots based on new distribution rules
+            if env_slots == 4:
+                # 4 slots: Each collaborator gets 2
+                collab_slots = 2
+            elif env_slots == 6:
+                # 6 slots: Distribute based on collaborator count
+                if len(obj.collaborators) == 1:
+                    # 1 collaborator: 3-3 distribution
+                    collab_slots = 3
+                else:
+                    # 2 collaborators: 2-2-2 distribution
+                    collab_slots = 2
+            elif env_slots == 10:
+                # 10 slots: Distribute based on collaborator count
+                if len(obj.collaborators) == 1:
+                    # 1 collaborator: 5-5 distribution
+                    collab_slots = 5
+                else:
+                    # 2 collaborators: 4-3-3 distribution (owner priority)
+                    collab_slots = 3
+            else:
+                collab_slots = 0
+            
+            collab_filled = sum(1 for slot_id, artwork_id in slot_artwork_map.items() 
+                              if slot_owner_map.get(str(slot_id)) == str(collaborator.id))
+            
+            collaborator_status.append({
+                "id": str(collaborator.id),
+                "name": f"{collaborator.first_name} {collaborator.last_name}",
+                "profile_picture": collaborator.profile_picture or "",
+                "slotsToFill": collab_slots,
+                "slotsFilled": collab_filled,
+                "inProgress": collab_filled < collab_slots,
+                "completionPercentage": round((collab_filled / collab_slots) * 100) if collab_slots > 0 else 0
+            })
+        
+        return collaborator_status
+
+    def get_overall_completion(self, obj):
+        """Calculate overall completion percentage"""
+        collaborator_status = self.get_collaborator_status(obj)
+        
+        if not collaborator_status:
+            return {
+                "totalSlots": 0,
+                "filledSlots": 0,
+                "completionPercentage": 0,
+                "isReadyToPublish": False
+            }
+        
+        total_slots = sum(collab["slotsToFill"] for collab in collaborator_status)
+        filled_slots = sum(collab["slotsFilled"] for collab in collaborator_status)
+        completion_percentage = round((filled_slots / total_slots) * 100) if total_slots > 0 else 0
+        
+        return {
+            "totalSlots": total_slots,
+            "filledSlots": filled_slots,
+            "completionPercentage": completion_percentage,
+            "isReadyToPublish": filled_slots == total_slots
+        }
 
     def upload_banner(self, banner_file):
         if banner_file:
@@ -57,6 +180,8 @@ class ExhibitSerializer(serializers.Serializer):
         collaborators_ids = validated_data.pop("collaborators", [])
         artworks_ids = validated_data.pop("artworks", [])
         viewed_by_ids = validated_data.pop("viewed_by", [])
+        slot_owner_map = validated_data.pop("slot_owner_map", {})
+        slot_artwork_map = validated_data.pop("slot_artwork_map", {})
 
         owner = User.objects.get(id=owner_id)
         collaborators = [User.objects.get(id=uid) for uid in collaborators_ids]
@@ -67,6 +192,8 @@ class ExhibitSerializer(serializers.Serializer):
         validated_data["collaborators"] = collaborators
         validated_data["artworks"] = artworks
         validated_data["viewed_by"] = viewed_by
+        validated_data["slot_owner_map"] = slot_owner_map
+        validated_data["slot_artwork_map"] = slot_artwork_map
 
        
         exhibit_type = validated_data.get("exhibit_type", "Solo")
@@ -80,19 +207,25 @@ class ExhibitSerializer(serializers.Serializer):
         exhibit.save()
 
        
-        if exhibit_type == "Collaborative":
+        if exhibit_type == "Collaborative" and collaborators:
+          
             for collaborator in collaborators:
-                Notification.objects.create(
-                    user=collaborator,
-                    actor=owner,
-                    message=f"You were invited to collaborate on the exhibit '{exhibit.title}'",
-                    exhibit=exhibit,
-                    action="invited you to collaborate",
-                    target=exhibit.title,
-                    icon="invite",
-                    created_at=datetime.now(),
-                    link="/exhibitreview",  
-                )
+                try:
+                    notification = Notification.objects.create(
+                        user=collaborator,
+                        actor=owner,
+                        message=f"invited you to collaborate on the exhibit '{exhibit.title}'",
+                        exhibit=exhibit,
+                        name=f"{owner.first_name} {owner.last_name}",
+                        action="invited you to collaborate",
+                        target=exhibit.title,
+                        icon="invite",
+                        link=f"/collaborator/exhibit/{exhibit.id}",
+                        created_at=datetime.now(),
+                    )
+                    print(f"✅ Notification created for collaborator: {collaborator.first_name} {collaborator.last_name}")
+                except Exception as e:
+                    print(f"❌ Failed to create notification for {collaborator.first_name}: {str(e)}")
 
         return exhibit
 
@@ -107,7 +240,35 @@ class ExhibitSerializer(serializers.Serializer):
 
         if "collaborators" in validated_data:
             collaborators_ids = validated_data.pop("collaborators")
+            old_collaborators = set(str(c.id) for c in instance.collaborators)
+            new_collaborators = set(collaborators_ids)
+            
+            # Find newly added collaborators
+            added_collaborators = new_collaborators - old_collaborators
+            
             instance.collaborators = [User.objects.get(id=uid) for uid in collaborators_ids]
+            
+            # Send notifications to newly added collaborators
+            if added_collaborators:
+                print(f"🔔 Creating notifications for {len(added_collaborators)} newly added collaborators...")
+                for collaborator_id in added_collaborators:
+                    try:
+                        collaborator = User.objects.get(id=collaborator_id)
+                        Notification.objects.create(
+                            user=collaborator,
+                            actor=instance.owner,
+                            message=f"You were invited to collaborate on the exhibit '{instance.title}'",
+                            exhibit=instance,
+                            name=f"{instance.owner.first_name} {instance.owner.last_name}",
+                            action="invited you to collaborate",
+                            target=instance.title,
+                            icon="invite",
+                            link=f"/collaborator/exhibit/{instance.id}",
+                            created_at=datetime.now(),
+                        )
+                        print(f"✅ Notification created for newly added collaborator: {collaborator.first_name} {collaborator.last_name}")
+                    except Exception as e:
+                        print(f"❌ Failed to create notification for newly added collaborator {collaborator_id}: {str(e)}")
 
         if "artworks" in validated_data:
             artworks_ids = validated_data.pop("artworks")
@@ -118,6 +279,12 @@ class ExhibitSerializer(serializers.Serializer):
         if "viewed_by" in validated_data:
             viewed_by_ids = validated_data.pop("viewed_by")
             instance.viewed_by = [User.objects.get(id=uid) for uid in viewed_by_ids]
+
+        if "slot_owner_map" in validated_data:
+            instance.slot_owner_map = validated_data.pop("slot_owner_map")
+
+        if "slot_artwork_map" in validated_data:
+            instance.slot_artwork_map = validated_data.pop("slot_artwork_map")
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -149,5 +316,8 @@ class ExhibitSerializer(serializers.Serializer):
             "viewed_by": [str(u.id) for u in instance.viewed_by],
             "exhibit_likes_count": self.get_exhibit_likes_count(instance),
             "user_has_liked_exhibit": self.get_user_has_liked_exhibit(instance),
-
+            "collaborator_status": self.get_collaborator_status(instance),
+            "overall_completion": self.get_overall_completion(instance),
+            "slot_owner_map": getattr(instance, 'slot_owner_map', {}),
+            "slot_artwork_map": getattr(instance, 'slot_artwork_map', {}),
         }

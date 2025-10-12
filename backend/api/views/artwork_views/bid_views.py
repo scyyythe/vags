@@ -4,6 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status
 from api.models.artwork_model.bid import Bid, Auction
 from api.models.artwork_model.bid import AuctionStatus
+from api.models.interaction_model.hidden_content import HiddenContent
 from api.models.interaction_model.interaction import Like
 from api.models.artwork_model.artwork import Art
 from api.serializers.artwork_s.bid_serializers import BidSerializer, AuctionSerializer
@@ -180,7 +181,21 @@ class AuctionListView(generics.ListAPIView):
         if valid_artwork_ids is not None:
             query["artwork__in"] = valid_artwork_ids
 
-        return Auction.objects(**query)
+        auctions = Auction.objects(**query)
+        
+        # Filter out hidden auctions for the current user
+        if self.request.user.is_authenticated:
+            try:
+                user = User.objects.get(id=ObjectId(self.request.user.id))
+                hidden_contents = HiddenContent.objects.filter(user=user, content_type='auction')
+                if hidden_contents:
+                    hidden_auction_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
+                    auctions = auctions.filter(id__nin=hidden_auction_ids)
+            except Exception as e:
+                # If there's an error getting hidden auctions, just continue without filtering
+                pass
+        
+        return auctions
 
 
 
@@ -490,3 +505,43 @@ class PopularAuctionListView(generics.ListAPIView):
         )
 
         return sorted_queryset[:4]
+
+
+class ToggleHideAuctionView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, auction_id):
+        try:
+            auction = Auction.objects.get(id=auction_id)
+            user = User.objects.get(id=ObjectId(request.user.id))
+        except Auction.DoesNotExist:
+            return Response({"detail": "Auction not found."}, status=status.HTTP_404_NOT_FOUND)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if auction is already hidden by this user
+        existing_hidden = HiddenContent.objects.filter(
+            user=user, 
+            content_type='auction', 
+            content_id=str(auction.id)
+        ).first()
+        
+        if existing_hidden:
+            # Unhide the auction for this user
+            existing_hidden.delete()
+            message = "Auction successfully unhidden."
+        else:
+            # Hide the auction for this user
+            hidden_content = HiddenContent(
+                user=user,
+                content_type='auction',
+                content_id=str(auction.id),
+                hidden_at=datetime.utcnow()
+            )
+            hidden_content.save()
+            message = "Auction successfully hidden."
+
+        return Response(
+            {"detail": message},
+            status=status.HTTP_200_OK,
+        )

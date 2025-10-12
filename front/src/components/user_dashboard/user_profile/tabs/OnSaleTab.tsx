@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { differenceInDays } from "date-fns";
@@ -17,6 +17,8 @@ import EditReviewModal from "@/components/user_dashboard/Marketplace/my_purchase
 import PaymentDetailsModal from "@/components/user_dashboard/Marketplace/my_listings/PaymentDetailsModal";
 import RefundDetailsModal from "@/components/user_dashboard/Marketplace/my_listings/RefundDetailsModal";
 import TrackPaymentModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/TrackPaymentModal";
+import { useChat } from "@/context/ChatContext";
+import apiClient from "@/utils/apiClient";
 
 import SoldArtworkCard from "@/components/user_dashboard/Marketplace/sold_artworks/card/SoldArtworksCard";
 import { useMyPurchases } from "@/hooks/purchase/useMyPurchases";
@@ -41,12 +43,26 @@ const SellTab = ({ selectedPriceRange }) => {
   const navigate = useNavigate();
   const isOwnProfile = String(userId) === String(loggedInUserId);
   const { data: myPurchases, isLoading: isMyPurchasesLoading } = useMyPurchases();
+  const { openChat } = useChat();
 
-  const { data: myArtCards = [], isLoading, error } = useMySellArtCards();
+  const { data: myArtCards = [], isLoading: isMyArtLoading, error: myArtError } = useMySellArtCards();
+  const { data: userArtCards = [], isLoading: isUserArtLoading, error: userArtError } = useUserSellArtCards(userId);
+
+  // Use appropriate data based on whether it's own profile or not
+  const artCards = isOwnProfile ? myArtCards : userArtCards;
+  const isLoading = isOwnProfile ? isMyArtLoading : isUserArtLoading;
+  const error = isOwnProfile ? myArtError : userArtError;
 
   const [mainTab, setMainTab] = useState("myListings");
   const [activeSubGroup, setActiveSubGroup] = useState<"listings" | "soldArtworks">("listings");
   const [subTab, setSubTab] = useState("available");
+
+  // Reset subTab to "available" if it's "unlisted" and viewing another user's profile
+  React.useEffect(() => {
+    if (!isOwnProfile && subTab === "unlisted") {
+      setSubTab("available");
+    }
+  }, [isOwnProfile, subTab]);
   const [activeSubTab, setActiveSubTab] = useState("awaiting_payment");
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -151,10 +167,23 @@ const SellTab = ({ selectedPriceRange }) => {
     }
   };
 
-  const handleContact = () =>
-    toast.info("Redirecting to contact seller...", {
-      closeButton: true,
-    });
+  const handleContact = (order) => {
+    const sellerId = order.artwork?.artist_id;
+    const sellerName = order.artwork?.artist_name;
+
+    if (!sellerId) {
+      toast.error("Unable to contact seller - seller ID not found");
+      return;
+    }
+
+    if (!sellerName) {
+      toast.error("Unable to contact seller - seller name not found");
+      return;
+    }
+
+    openChat(String(sellerId), sellerName, undefined, true);
+    toast(`Opening conversation with ${sellerName}...`, { closeButton: true });
+  };
 
   const handleTrackOrder = (order) => {
     setSelectedOrderForTracking(order);
@@ -265,7 +294,7 @@ const SellTab = ({ selectedPriceRange }) => {
     inactive: "unlisted",
   };
 
-  const activeListingTabs = ["available", "unlisted", "sold"];
+  const activeListingTabs = isOwnProfile ? ["available", "unlisted", "sold"] : ["available", "sold"];
   const soldArtworksTabs = [
     "awaiting_payment",
     "payment_received",
@@ -452,13 +481,14 @@ const SellTab = ({ selectedPriceRange }) => {
         : []
       : [];
 
-  let filteredArtworks = myArtCards
+  let filteredArtworks = artCards
     .filter((art) => {
       const status = (art.art_status || "").toLowerCase().trim();
       const tab = (subTab || "").toLowerCase().trim();
 
       if (tab === "unlisted") {
         return (
+          isOwnProfile &&
           mainTab === "myListings" &&
           activeSubGroup === "listings" &&
           ["unlisted", "draft", "inactive"].includes(status)
@@ -489,7 +519,22 @@ const SellTab = ({ selectedPriceRange }) => {
 
   // Seller actions for sold artworks
   const handleContactBuyer = (artwork) => {
-    toast.info("Redirecting to contact buyer...");
+    const buyerId = artwork.buyer_id;
+    const buyerName = artwork.buyer;
+
+    if (!buyerId) {
+      toast.error("Unable to contact buyer - buyer ID not found");
+      return;
+    }
+
+    if (!buyerName) {
+      toast.error("Unable to contact buyer - buyer name not found");
+      return;
+    }
+
+    // Open direct conversation with buyer
+    openChat(String(buyerId), buyerName, undefined, true);
+    toast(`Opening conversation with ${buyerName}...`, { closeButton: true });
   };
 
   const handleMarkAsShipped = (artwork) => {
@@ -685,6 +730,7 @@ const SellTab = ({ selectedPriceRange }) => {
                   artworkImage={artwork.artworkImage}
                   title={artwork.title}
                   buyer={artwork.buyer}
+                  buyer_id={artwork.buyer_id}
                   price={artwork.price}
                   status="reviewed"
                   saleDate={artwork.saleDate}
@@ -718,6 +764,7 @@ const SellTab = ({ selectedPriceRange }) => {
                 artworkImage={artwork.artworkImage}
                 title={artwork.title}
                 buyer={artwork.buyer}
+                buyer_id={artwork.buyer_id}
                 price={artwork.price}
                 status={artwork.status}
                 saleDate={artwork.saleDate}
@@ -791,7 +838,7 @@ const SellTab = ({ selectedPriceRange }) => {
                   )
                 }
                 onViewReview={() => handleViewReview(order)}
-                onContact={handleContact}
+                onContact={() => handleContact(order)}
                 onTrackOrder={() => handleTrackOrder(order)}
                 onRequestRefund={handleRequestRefund}
                 onCancelOrder={handleCancelOrder}

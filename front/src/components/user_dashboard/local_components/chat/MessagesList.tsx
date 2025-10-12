@@ -160,8 +160,9 @@ export const MessagesList = ({
                           <img
                             src={message.imageUrl}
                             alt="Shared image"
-                            className="max-w-full h-auto rounded"
-                            style={{ maxHeight: "200px" }}
+                            className="max-w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                            style={{ maxHeight: "300px", maxWidth: "250px" }}
+                            onClick={() => window.open(message.imageUrl, "_blank")}
                           />
                         </div>
                       )}
@@ -185,7 +186,8 @@ export const MessagesList = ({
                         </div>
                       )} */}
 
-                      <p className="text-[11px]">{message.content}</p>
+                      {/* Only show text content if it's not an image message or if there's actual content */}
+                      {message.type !== "image" && message.content && <p className="text-[11px]">{message.content}</p>}
 
                       {message.reactions && message.reactions.length > 0 && (
                         <div className="flex items-center space-x-1 mt-2">

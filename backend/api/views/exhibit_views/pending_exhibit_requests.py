@@ -63,7 +63,7 @@ class MyPendingExhibitRequestView(APIView):
                 "type": "pending"
             })
         
-        # 3. User is in exhibit.collaborators but has not submitted yet
+        # 3. User is in exhibit.collaborators - check if they've submitted and overall status
         collaborative_exhibits = Exhibit.objects(
             collaborators=user,
             exhibit_type="Collaborative",
@@ -72,7 +72,9 @@ class MyPendingExhibitRequestView(APIView):
 
         for exhibit in collaborative_exhibits:
             has_submitted = ExhibitContribution.objects(exhibit=exhibit, contributor=user).first()
+            
             if not has_submitted:
+                # User hasn't submitted yet
                 pending_requests.append({
                     "id": str(exhibit.id),
                     "exhibitTitle": exhibit.title,
@@ -81,6 +83,26 @@ class MyPendingExhibitRequestView(APIView):
                     "isOwner": False,
                     "type": "pending"
                 })
+            else:
+                # User has submitted, check if all collaborators have submitted
+                total_collaborators = len(exhibit.collaborators)
+                submitted_contributors = ExhibitContribution.objects(exhibit=exhibit).distinct('contributor')
+                submitted_count = len(submitted_contributors)
+                
+                if submitted_count < total_collaborators:
+                    # User has submitted but others haven't finished yet
+                    pending_requests.append({
+                        "id": str(exhibit.id),
+                        "exhibitTitle": exhibit.title,
+                        "status": f"You've submitted. Waiting for others ({submitted_count}/{total_collaborators})",
+                        "exhibitId": str(exhibit.id),
+                        "isOwner": False,
+                        "type": "contributed",
+                        "collaboratorsSubmitted": submitted_count,
+                        "totalCollaborators": total_collaborators,
+                        "hasUserSubmitted": True
+                    })
+                # If all have submitted, the owner will see it as "ready" in section 1
 
         # Serialize and return
         serializer = PendingExhibitRequestSerializer(pending_requests, many=True)

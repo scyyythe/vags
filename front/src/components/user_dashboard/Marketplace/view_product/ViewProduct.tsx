@@ -49,6 +49,7 @@ const ProductViewingContent = () => {
   const [activeTab, setActiveTab] = useState("description");
   const [menuOpen, setMenuOpen] = useState(false);
   const [isReported, setIsReported] = useState(false);
+  const [localIsReported, setLocalIsReported] = useState(false);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,6 +60,17 @@ const ProductViewingContent = () => {
     if (!id) return;
     toggleWishlist(id);
     toast(likedItems.has(id) ? "Removed from wishlist" : "Added to wishlist");
+  };
+
+  const handleUndoReport = () => {
+    // Update local state immediately for visual feedback
+    setLocalIsReported(false);
+    setMenuOpen(false);
+  };
+
+  const handleUndoReportRevert = () => {
+    // Revert local state if undo fails
+    setLocalIsReported(true);
   };
 
   useEffect(() => {
@@ -76,6 +88,7 @@ const ProductViewingContent = () => {
   useEffect(() => {
     if (reportStatus) {
       setIsReported(reportStatus.reported);
+      setLocalIsReported(reportStatus.reported);
     }
   }, [reportStatus]);
 
@@ -329,7 +342,12 @@ const ProductViewingContent = () => {
                   }}
                   className="p-2 rounded-full"
                 >
-                  <MoreHorizontal size={15} className="text-gray-500 hover:text-black" />
+                  <MoreHorizontal
+                    size={15}
+                    className={`${
+                      localIsReported ? "text-red-600" : menuOpen ? "text-black" : "text-gray-500"
+                    } hover:text-black`}
+                  />
                 </button>
                 {isOwner ? (
                   <SellMenu
@@ -369,9 +387,14 @@ const ProductViewingContent = () => {
                 ) : (
                   <SellCardMenu
                     isOpen={menuOpen}
-                    isReported={isReported}
+                    isReported={localIsReported}
+                    artworkId={id}
+                    onUndoReport={handleUndoReport}
                     onReport={(data) => {
                       if (!id) return;
+
+                      // Update local state immediately for visual feedback
+                      setLocalIsReported(true);
 
                       submitReportMutation.mutate(
                         {
@@ -385,6 +408,10 @@ const ProductViewingContent = () => {
                           onSuccess: () => {
                             setIsReported(true);
                             setMenuOpen(false);
+                          },
+                          onError: () => {
+                            // Revert local state if submission fails
+                            setLocalIsReported(false);
                           },
                         }
                       );

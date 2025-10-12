@@ -9,6 +9,7 @@ import { X } from "lucide-react";
 import { addDays } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useCreateAuction } from "@/hooks/auction/useCreateAuction";
+import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
 interface AuctionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -20,6 +21,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
   const today = new Date();
   const createAuction = useCreateAuction();
   const navigate = useNavigate();
+  const { accounts: paymentAccounts } = usePaymentAccounts();
   // Start date/time
   const [startDate, setStartDate] = useState<Date | undefined>(today);
   const now = new Date();
@@ -35,6 +37,13 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   const handlePublish = () => {
+    if (paymentAccounts.length === 0) {
+      toast.error("Please set up a payment account before creating an auction", {
+        closeButton: true,
+      });
+      return;
+    }
+
     if (!startDate) {
       // toast.error("Please select a start date for the auction");
       return;
@@ -122,6 +131,11 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
     );
   };
 
+  const handleSetupAccount = () => {
+    onOpenChange(false); // Close the modal first
+    navigate("/settings/billing"); // Navigate to billing settings
+  };
+
   // Calculate max end date (start date + 3 days)
   const maxEndDate = startDate ? addDays(startDate, 3) : addDays(today, 3);
 
@@ -189,12 +203,25 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
 
             <div className="flex space-x-2">
               <button
-                className="flex-1 p-2 bg-red-800 hover:bg-red-700 text-white text-xs w-full rounded-full"
+                className={`flex-1 p-2 text-white text-xs w-full rounded-full ${
+                  paymentAccounts.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-red-800 hover:bg-red-700"
+                }`}
                 onClick={handlePublish}
+                disabled={paymentAccounts.length === 0}
               >
-                Publish
+                {paymentAccounts.length === 0 ? "Set up payment account first" : "Publish"}
               </button>
             </div>
+
+            {/* Payment account warning and setup button */}
+            {paymentAccounts.length === 0 && (
+              <div className="mt-2 text-center">
+                <p className="text-[9px] text-red-500 mb-2">You need to set up a payment account to receive payments</p>
+                <button onClick={handleSetupAccount} className="text-[9px] text-blue-600 hover:text-blue-800 underline">
+                  Set up payment account →
+                </button>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

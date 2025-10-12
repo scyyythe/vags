@@ -1,7 +1,7 @@
 from django.urls import path
 from api.views.exhibit_views.exhibit import (
     ExhibitCreateView, ExhibitUpdateView,ExhibitListView, ExhibitCardDetailView,
-    ToggleHideExhibitView,ToggleVisibilityExhibitView,ExhibitCardListView,MyExhibitCardListView,PublishExhibitView,DeleteExhibitView
+    ToggleHideExhibitView,ToggleVisibilityExhibitView,ExhibitCardListView,MyExhibitCardListView,PublishExhibitView,DeleteExhibitView,UserExhibitCardListView
 )
 from api.views.exhibit_views.exhibit_invite import (
     ExhibitInvitationCreateView, ExhibitInvitationListView
@@ -19,6 +19,7 @@ exhibit_urlpatterns = [
     path('exhibits/<str:pk>/update/', ExhibitUpdateView.as_view(), name='exhibit-update'),
     path('exhibits/cards/', ExhibitCardListView.as_view(), name='exhibit-card-list'),
     path('exhibits/my/', MyExhibitCardListView.as_view(), name='my-exhibit-card-list'),
+    path('exhibits/user/<str:user_id>/', UserExhibitCardListView.as_view(), name='user-exhibit-card-list'),
     path('exhibits/<str:exhibit_id>/', ExhibitCardDetailView.as_view(), name='exhibit-card'),
   
 

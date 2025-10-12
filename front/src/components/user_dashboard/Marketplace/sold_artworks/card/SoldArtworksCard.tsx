@@ -10,6 +10,7 @@ interface SoldArtworkCardProps {
   artworkImage: string;
   title: string;
   buyer: string;
+  buyer_id?: string;
   price: number;
   status: string;
   saleDate: string;
@@ -49,6 +50,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
   artworkImage,
   title,
   buyer,
+  buyer_id,
   price,
   status,
   saleDate,
@@ -72,6 +74,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
     artworkImage,
     title,
     buyer,
+    buyer_id,
     price,
     status,
     saleDate,

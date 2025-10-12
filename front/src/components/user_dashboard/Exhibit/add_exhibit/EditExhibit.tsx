@@ -248,6 +248,7 @@ const EditExhibit = () => {
     viewMode,
     exhibitType,
     collaborators,
+    undefined, // setShowNotificationDialog not needed for edit mode
     title,
     artworkStyle,
     description,

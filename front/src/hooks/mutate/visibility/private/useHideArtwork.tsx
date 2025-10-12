@@ -16,12 +16,12 @@ const useHideArtwork = () => {
     onSuccess: (_, id) => {
       toast.success("Artwork hidden successfully!");
 
-      queryClient.setQueryData<Artwork[]>(["artworks", 1, undefined, "all"], (oldData) => {
-        if (!oldData) return [];
-        return oldData.filter((artwork) => artwork.id !== id);
-      });
-
+      // Only invalidate queries to refresh the data, don't remove from cache
+      // The backend should handle filtering hidden artworks for the current user
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
     },
     onError: () => {
       toast.error("Failed to hide artwork.");

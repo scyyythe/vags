@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Artist } from "../components/types";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
