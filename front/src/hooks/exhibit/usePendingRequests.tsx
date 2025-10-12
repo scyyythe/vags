@@ -7,9 +7,10 @@ export interface ExhibitRequest {
   status: string;
   exhibitId: string;
   isOwner?: boolean;
-  type: "pending" | "review" | "ready" | "published";
+  type: "pending" | "review" | "ready" | "published" | "contributed";
   collaboratorsSubmitted?: number;
   totalCollaborators?: number;
+  hasUserSubmitted?: boolean;
 }
 
 export const usePendingRequests = () => {

@@ -41,6 +41,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
   const [statusFilter, setStatusFilter] = useState<"on_going" | "closed" | "upcoming">("on_going");
 
   const [showPending, setShowPending] = useState(false);
+  const [showContributions, setShowContributions] = useState(false);
   const [showPublishDialog, setShowPublishDialog] = useState(false);
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitRequest | null>(null);
 
@@ -134,6 +135,12 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
   const hasUnreadRequests = isOwnProfile && pendingRequests.length > 0;
   const hasReadyExhibits = isOwnProfile && pendingRequests.some((req) => req.isOwner && req.type === "ready");
 
+  // Separate pending requests from contributions
+  const actualPendingRequests = pendingRequests.filter((req) => req.type !== "contributed");
+  const contributions = pendingRequests.filter((req) => req.type === "contributed");
+
+  const hasContributions = isOwnProfile && contributions.length > 0;
+
   return (
     <div>
       {/* Tabs */}
@@ -154,18 +161,55 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
           </div>
           <div className="flex items-center space-x-2">
             {typeTab === "collab" && isOwnProfile && (
-              <button onClick={() => setShowPending(!showPending)} className="relative group flex items-center">
-                <i
-                  className={`bx bx-time text-[15px] cursor-pointer ${
-                    hasReadyExhibits ? "text-yellow-500" : "text-yellow-500"
-                  } mr-1`}
-                ></i>
-                {hasUnreadRequests && <span className="absolute -top-1 right-0 w-2 h-2 bg-red-600 rounded-full"></span>}
-                {/* Tooltip */}
-                <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-white text-black text-[10px] px-2 py-1 border shadow opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                  {hasReadyExhibits ? "No Pending Requests" : "Pending Requests"}
-                </span>
-              </button>
+              <>
+                {/* Pending Requests Icon */}
+                <button
+                  onClick={() => {
+                    setShowPending(!showPending);
+                    if (!showPending) {
+                      setShowContributions(false); // Close contributions when opening pending
+                    }
+                  }}
+                  className="relative group flex items-center"
+                >
+                  <i
+                    className={`bx bx-time text-[15px] cursor-pointer ${
+                      showPending ? "text-yellow-600" : "text-yellow-500"
+                    } mr-1`}
+                  ></i>
+                  {actualPendingRequests.length > 0 && (
+                    <span className="absolute -top-1 right-0 w-2 h-2 bg-red-600 rounded-full"></span>
+                  )}
+                  {/* Tooltip */}
+                  <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-white text-black text-[10px] px-2 py-1 border shadow opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    Pending Requests
+                  </span>
+                </button>
+
+                {/* Contributions Icon */}
+                <button
+                  onClick={() => {
+                    setShowContributions(!showContributions);
+                    if (!showContributions) {
+                      setShowPending(false); // Close pending when opening contributions
+                    }
+                  }}
+                  className="relative group flex items-center"
+                >
+                  <i
+                    className={`bx bx-check-circle text-[15px] cursor-pointer ${
+                      showContributions ? "text-blue-600" : "text-blue-500"
+                    } mr-1`}
+                  ></i>
+                  {contributions.length > 0 && (
+                    <span className="absolute -top-1 right-0 w-2 h-2 bg-blue-600 rounded-full"></span>
+                  )}
+                  {/* Tooltip */}
+                  <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-white text-black text-[10px] px-2 py-1 border shadow opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    My Contributions
+                  </span>
+                </button>
+              </>
             )}
 
             <select
@@ -185,9 +229,9 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
       {typeTab === "collab" && showPending && isOwnProfile && (
         <div className="mb-4 border border-yellow-300 bg-yellow-50 rounded p-3 text-[10px]">
           <h2 className="font-semibold text-yellow-700 mb-2">Pending Requests</h2>
-          {pendingRequests.length > 0 ? (
+          {actualPendingRequests.length > 0 ? (
             <ul className="space-y-2">
-              {pendingRequests.map((req) => (
+              {actualPendingRequests.map((req) => (
                 <li
                   key={req.id}
                   className={`border rounded p-2 ${
@@ -282,7 +326,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                     ) : (
                       <button
                         onClick={() => handleRequestClick(req)}
-                        className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-[#9b87f5] hover:bg-[#7E69AB]"
+                        className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-[#9b87f5] hover:bg-[#7E69AB] flex items-center justify-center"
                       >
                         View
                       </button>
@@ -293,6 +337,62 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
             </ul>
           ) : (
             <p className="text-gray-500 text-[11px]">No pending requests at the moment.</p>
+          )}
+        </div>
+      )}
+
+      {/* Contributions Section */}
+      {typeTab === "collab" && showContributions && isOwnProfile && (
+        <div className="mb-4 border border-blue-300 bg-blue-50 rounded p-3 text-[10px]">
+          <h2 className="font-semibold text-blue-700 mb-2">My Contributions</h2>
+          {contributions.length > 0 ? (
+            <ul className="space-y-2">
+              {contributions.map((req) => (
+                <li key={req.id} className="border border-blue-200 bg-white rounded p-2">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{req.exhibitTitle}</span>
+
+                        {/* Role Badge */}
+                        <Badge variant="outline" className="text-[8px] px-1 py-0 text-purple-700 border-purple-400">
+                          Collaborator
+                        </Badge>
+
+                        {/* Status Badge */}
+                        <Badge className="bg-blue-500 text-white text-[8px] px-1 py-0">Contributed</Badge>
+                      </div>
+                      <p className="text-gray-500 mt-0.5">
+                        You've submitted your contributions. Waiting for others to finish.
+                      </p>
+                      {req.collaboratorsSubmitted !== undefined && (
+                        <div className="mt-1 flex items-center">
+                          <span className="text-[9px] text-gray-600 mr-2">
+                            Progress: {req.collaboratorsSubmitted}/{req.totalCollaborators} submissions
+                          </span>
+                          <div className="w-24 h-1 bg-gray-200 rounded-full">
+                            <div
+                              className="h-full bg-blue-500"
+                              style={{ width: `${(req.collaboratorsSubmitted / req.totalCollaborators) * 100}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* View Others Button */}
+                    <button
+                      onClick={() => handleRequestClick(req)}
+                      className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center"
+                    >
+                      View Others
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-500 text-[11px]">No contributions submitted yet.</p>
           )}
         </div>
       )}

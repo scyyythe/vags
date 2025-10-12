@@ -7,6 +7,7 @@ class PendingExhibitRequestSerializer(serializers.Serializer):
     status = serializers.CharField()
     exhibitId = serializers.CharField()
     isOwner = serializers.BooleanField()
-    type = serializers.ChoiceField(choices=["pending", "ready", "published"])
+    type = serializers.ChoiceField(choices=["pending", "ready", "published", "contributed"])
     collaboratorsSubmitted = serializers.IntegerField(required=False)
     totalCollaborators = serializers.IntegerField(required=False)
+    hasUserSubmitted = serializers.BooleanField(required=False)
