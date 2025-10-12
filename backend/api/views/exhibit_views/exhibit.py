@@ -62,7 +62,18 @@ class MyExhibitCardListView(APIView):
             include_hidden = request.query_params.get("include_hidden", "false").lower() == "true"
             include_archived = request.query_params.get("include_archived", "false").lower() == "true"
 
-            exhibits = Exhibit.objects(owner=user)
+            # Get exhibits where user is owner OR collaborator
+            owned_exhibits = Exhibit.objects(owner=user)
+            collaborated_exhibits = Exhibit.objects(collaborators=user)
+            
+            # Combine both querysets and remove duplicates
+            all_exhibit_ids = set()
+            for exhibit in owned_exhibits:
+                all_exhibit_ids.add(str(exhibit.id))
+            for exhibit in collaborated_exhibits:
+                all_exhibit_ids.add(str(exhibit.id))
+            
+            exhibits = Exhibit.objects(id__in=list(all_exhibit_ids))
 
             # Filter based on visibility
             if not include_deleted:
@@ -72,7 +83,7 @@ class MyExhibitCardListView(APIView):
             if not include_archived:
                 exhibits = exhibits.filter(visibility__ne="Archived")
 
-            serializer = ExhibitCardSerializer(exhibits, many=True)
+            serializer = ExhibitCardSerializer(exhibits, many=True, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
@@ -88,10 +99,20 @@ class UserExhibitCardListView(APIView):
             # Get the target user
             target_user = User.objects.get(id=user_id)
             
-            # Get only public exhibits for the target user
-            exhibits = Exhibit.objects.filter(owner=target_user, visibility='Public')
+            # Get public exhibits where target user is owner OR collaborator
+            owned_exhibits = Exhibit.objects.filter(owner=target_user, visibility='Public')
+            collaborated_exhibits = Exhibit.objects.filter(collaborators=target_user, visibility='Public')
+            
+            # Combine both querysets and remove duplicates
+            all_exhibit_ids = set()
+            for exhibit in owned_exhibits:
+                all_exhibit_ids.add(str(exhibit.id))
+            for exhibit in collaborated_exhibits:
+                all_exhibit_ids.add(str(exhibit.id))
+            
+            exhibits = Exhibit.objects.filter(id__in=list(all_exhibit_ids), visibility='Public')
 
-            serializer = ExhibitCardSerializer(exhibits, many=True)
+            serializer = ExhibitCardSerializer(exhibits, many=True, context={'request': request, 'target_user_id': user_id})
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except User.DoesNotExist:

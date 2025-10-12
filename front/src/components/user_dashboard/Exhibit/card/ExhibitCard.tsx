@@ -25,6 +25,8 @@ interface ExhibitProps {
     startDate?: string;
     endDate?: string;
     ownerId: string;
+    userRole?: "owner" | "collaborator" | null;
+    targetUserRole?: "owner" | "collaborator" | null;
     collaborators?: {
       id: string;
       name: string;
@@ -39,6 +41,18 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+
+  // Debug logging
+  console.log("ExhibitCard Debug:", {
+    title: exhibit.title,
+    isShared: exhibit.isShared,
+    isOwnProfile,
+    userRole: exhibit.userRole,
+    targetUserRole: exhibit.targetUserRole,
+    shouldShowBadge:
+      exhibit.isShared &&
+      ((isOwnProfile && exhibit.userRole === "collaborator") || (!isOwnProfile && exhibit.targetUserRole)),
+  });
 
   const navigate = useNavigate();
 
@@ -148,7 +162,21 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
 
       <div className="px-5 py-4 rounded-b-lg">
         <div className="flex justify-between items-start relative">
-          <h2 className="font-semibold text-xs">"{exhibit.title}"</h2>
+          <div className="flex flex-col">
+            <h2 className="font-semibold text-xs">"{exhibit.title}"</h2>
+            {exhibit.isShared &&
+              ((isOwnProfile && exhibit.userRole === "collaborator") || (!isOwnProfile && exhibit.targetUserRole)) && (
+                <span
+                  className={`text-[8px] px-1.5 py-0.5 rounded-full mt-1 inline-block w-fit ${
+                    (isOwnProfile ? exhibit.userRole : exhibit.targetUserRole) === "owner"
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-purple-100 text-purple-700"
+                  }`}
+                >
+                  {(isOwnProfile ? exhibit.userRole : exhibit.targetUserRole) === "owner" ? "Owner" : "Collaborator"}
+                </span>
+              )}
+          </div>
 
           <div className="relative bottom-1">
             <button

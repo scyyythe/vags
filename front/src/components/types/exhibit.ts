@@ -12,5 +12,7 @@ export interface Exhibit {
     name: string;
     avatar?: string;
   }[];
-  status: "on_going" | "closed"; 
+  status: "on_going" | "closed";
+  userRole?: "owner" | "collaborator" | null;
+  targetUserRole?: "owner" | "collaborator" | null;
 }
