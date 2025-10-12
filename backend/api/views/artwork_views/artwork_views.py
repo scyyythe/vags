@@ -659,3 +659,107 @@ class UpdateArtworkVisibilityView(APIView):
             {"message": f"Artwork visibility updated to {new_visibility}.", "visibility": new_visibility},
             status=status.HTTP_200_OK,
         )
+
+class BulkUnhideArtworksView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request):
+        try:
+            user = User.objects.get(id=ObjectId(request.user.id))
+        except User.DoesNotExist:
+            raise Http404("User not found")
+
+        # Remove all hidden content records for this user
+        hidden_contents = HiddenContent.objects.filter(
+            user=user,
+            content_type='artwork'
+        )
+        
+        count = hidden_contents.count()
+        hidden_contents.delete()
+
+        return Response(
+            {"message": f"Successfully unhid {count} artworks.", "count": count},
+            status=status.HTTP_200_OK,
+        )
+
+class UserArtworksWithHiddenView(generics.ListAPIView):
+    serializer_class = ArtSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        user_id = self.request.query_params.get('userId', None)
+        visibility_filter = self.request.query_params.get('visibility', None)
+        
+        
+        if not user_id:
+            return Art.objects.none()
+            
+        try:
+            user = User.objects.get(id=ObjectId(user_id))
+        except User.DoesNotExist:
+            return Art.objects.none()
+
+        # Base query for user's artworks
+        artworks = Art.objects.filter(artist=user).order_by('-created_at')
+
+        # Handle different visibility filters
+        if visibility_filter:
+            if visibility_filter.lower() == 'hidden':
+                # Return ALL artworks that are hidden by the current user (regardless of owner)
+                if self.request.user.is_authenticated:
+                    try:
+                        current_user = User.objects.get(id=ObjectId(self.request.user.id))
+                        
+                        hidden_contents = HiddenContent.objects.filter(
+                            user=current_user, 
+                            content_type='artwork'
+                        )
+                        
+                        if hidden_contents:
+                            hidden_artwork_ids = []
+                            for hc in hidden_contents:
+                                try:
+                                    artwork_id = ObjectId(hc.content_id)
+                                    hidden_artwork_ids.append(artwork_id)
+                                except Exception as e:
+                                    print(f"DEBUG: Failed to convert content_id {hc.content_id} to ObjectId: {e}")
+                            
+                            # Get ALL artworks that are hidden by current user (not just profile owner's artworks)
+                            artworks = Art.objects.filter(id__in=hidden_artwork_ids).order_by('-created_at')
+                            
+                        else:
+                            # No hidden artworks
+                            return Art.objects.none()
+                    except Exception as e:
+                        print(f"Error in hidden filter: {e}")
+                        return Art.objects.none()
+                else:
+                    return Art.objects.none()
+                    
+            elif visibility_filter.lower() == 'public':
+                # Return public artworks that are not hidden by current user
+                artworks = artworks.filter(visibility__iexact='public')
+                if self.request.user.is_authenticated:
+                    try:
+                        current_user = User.objects.get(id=ObjectId(self.request.user.id))
+                        hidden_contents = HiddenContent.objects.filter(
+                            user=current_user, 
+                            content_type='artwork'
+                        )
+                        if hidden_contents:
+                            hidden_artwork_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
+                            artworks = artworks.filter(id__nin=hidden_artwork_ids)
+                    except Exception:
+                        pass
+                        
+            elif visibility_filter.lower() == 'private':
+                artworks = artworks.filter(visibility__iexact='private')
+                
+            elif visibility_filter.lower() == 'archived':
+                artworks = artworks.filter(art_status__iexact='archived')
+                
+            elif visibility_filter.lower() == 'deleted':
+                artworks = artworks.filter(art_status__iexact='deleted')
+
+        return artworks

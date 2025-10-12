@@ -12,6 +12,7 @@ from api.views.artwork_views.bid_views import (
     AuctionDetailView,
     MyAuctionListView,
     ToggleHideAuctionView,
+    BulkUnhideAuctionsView,
 )
 from api.views.artwork_views.auction_views import LightweightAuctionListView ,DeleteAuctionView,CloseAuctionViewNew
 
@@ -20,6 +21,8 @@ auction_urlpatterns = [
     path('auction/', AuctionListView.as_view(), name='auction_list'),  
     path("auction/popular/", PopularAuctionListView.as_view(), name="popular-auctions"),
     path('auction/my/', MyAuctionListView.as_view(), name='auction_my_list'),  
+    # Bulk operations should come before parameterized routes to avoid conflicts
+    path('auction/bulk-unhide/', BulkUnhideAuctionsView.as_view(), name='bulk_unhide_auctions'),
     path('auction/<str:auction_id>/', AuctionDetailView.as_view(), name='auction_detail'),
     path('auction/active/', ActiveAuctionsView.as_view(), name='active_auctions'),
     path('auction/close/<str:artwork_id>/', CloseAuctionView.as_view(), name='close_auction'),

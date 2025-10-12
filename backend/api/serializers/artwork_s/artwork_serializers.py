@@ -187,6 +187,7 @@ class ArtSerializer(serializers.Serializer):
                 }
             return None
         except Exception as e:
+            print(f"DEBUG: Error serializing artist for artwork {obj.id}: {e}")
             return None
 
     def to_representation(self, instance):
@@ -196,8 +197,11 @@ class ArtSerializer(serializers.Serializer):
             "id": str(instance.id),
             "title": instance.title,
             "artist_id": str(artist_data.get("id", "")),
+            "artistId": str(artist_data.get("id", "")),
             "profile_picture": str(artist_data.get("profile_picture", "")),  
             "artist": str(artist_data.get("name", "")),
+            "artistName": str(artist_data.get("name", "")),
+            "artistImage": str(artist_data.get("profile_picture", "")),
             "category": instance.category,
             "medium": instance.medium,
             "art_status": instance.art_status,
@@ -209,7 +213,9 @@ class ArtSerializer(serializers.Serializer):
             "created_at": instance.created_at,
             "updated_at": instance.updated_at,
             "image_url": instance.image_url,
+            "artworkImage": instance.image_url[0] if instance.image_url and len(instance.image_url) > 0 else "",
             "likes_count": self.get_likes_count(instance),
+            "likesCount": self.get_likes_count(instance),
             "edition": instance.edition,
             "year_created": instance.year_created,
             "default_paypal_email": self.get_default_paypal_email(instance),
