@@ -16,6 +16,8 @@ import OnBidTab from "../tabs/OnBidTab";
 import ExhibitTab from "@/components/user_dashboard/user_profile/tabs/ExhibitsTab";
 import useUnarchiveAllMyArtworks from "@/hooks/mutate/visibility/arc/useUnarchiveAllMyArtworks";
 import useBulkUnhideArtworks from "@/hooks/mutate/visibility/private/useBulkUnhideArtworks";
+import useBulkUnhideExhibits from "@/hooks/mutate/visibility/private/useBulkUnhideExhibits";
+import useBulkUnhideAuctions from "@/hooks/mutate/visibility/private/useBulkUnhideAuctions";
 import SellTab from "../tabs/OnSaleTab";
 const tabs = [
   { id: "created", label: "Created" },
@@ -71,6 +73,8 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   );
   const { mutate: unarchiveAllMyArtworks } = useUnarchiveAllMyArtworks(artworks ?? []);
   const { mutate: bulkUnhideArtworks } = useBulkUnhideArtworks();
+  const { mutate: bulkUnhideExhibits } = useBulkUnhideExhibits();
+  const { mutate: bulkUnhideAuctions } = useBulkUnhideAuctions();
   const handleMediumSelect = (option: string) => {
     setSelectedMedium(option);
     setShowMediumOptions(false);
@@ -96,7 +100,13 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
   // UNHIDE BUTTON
   const confirmUnhideAll = () => {
-    bulkUnhideArtworks();
+    if (activeTab === "exhibits") {
+      bulkUnhideExhibits();
+    } else if (activeTab === "onBid") {
+      bulkUnhideAuctions();
+    } else {
+      bulkUnhideArtworks();
+    }
     setShowUnhidePopup(false);
   };
 
@@ -408,7 +418,9 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
       )}
 
       {activeTab === "collections" && <CollectionTab />}
-      {activeTab === "onBid" && <OnBidTab selectedStatus={selectedStatus} />}
+      {activeTab === "onBid" && (
+        <OnBidTab selectedStatus={selectedStatus} onShowUnhidePopup={() => setShowUnhidePopup(true)} />
+      )}
 
       {activeTab === "exhibits" && (
         <>

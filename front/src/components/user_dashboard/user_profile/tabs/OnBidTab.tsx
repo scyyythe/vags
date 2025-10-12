@@ -17,9 +17,10 @@ type MyBidFilter = "all" | "active" | "won" | "lost";
 
 type OnBidTabProps = {
   selectedStatus: string;
+  onShowUnhidePopup?: () => void;
 };
 
-const OnBidTab = ({ selectedStatus }: OnBidTabProps) => {
+const OnBidTab = ({ selectedStatus, onShowUnhidePopup }: OnBidTabProps) => {
   const [activeTab, setActiveTab] = useState<"on_going" | "sold" | "closed" | "my_bids">("on_going");
   const [myBidFilter, setMyBidFilter] = useState<MyBidFilter>("all");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -133,7 +134,15 @@ const OnBidTab = ({ selectedStatus }: OnBidTabProps) => {
             {selectedStatus === "Archived" && "Archived Auctions"}
             {selectedStatus === "Private" && "Private Auctions"}
           </h2>
-          {/* Add action buttons here if needed in the future */}
+          {/* Unhide All button for Hidden status */}
+          {selectedStatus === "Hidden" && isMyProfile && (
+            <button
+              onClick={onShowUnhidePopup}
+              className="text-[10px] py-2 pr-2 text-blue-700 hover:text-blue-600 font-medium"
+            >
+              Unhide All
+            </button>
+          )}
         </div>
       )}
 
