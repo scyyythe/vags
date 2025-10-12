@@ -1,7 +1,7 @@
 from django.urls import path
 from api.views.exhibit_views.exhibit import (
     ExhibitCreateView, ExhibitUpdateView,ExhibitListView, ExhibitCardDetailView,
-    ToggleHideExhibitView,ToggleVisibilityExhibitView,ExhibitCardListView,MyExhibitCardListView,PublishExhibitView,DeleteExhibitView,UserExhibitCardListView,BulkUnhideExhibitsView
+    ToggleHideExhibitView,ToggleVisibilityExhibitView,ExhibitCardListView,MyExhibitCardListView,PublishExhibitView,DeleteExhibitView,UserExhibitCardListView,BulkUnhideExhibitsView,RestoreExhibitView,RestoreAllExhibitsView
 )
 from api.views.exhibit_views.exhibit_invite import (
     ExhibitInvitationCreateView, ExhibitInvitationListView
@@ -18,6 +18,7 @@ exhibit_urlpatterns = [
     path('exhibits/create/', ExhibitCreateView.as_view(), name='exhibit-create'),
     # Bulk operations should come before parameterized routes to avoid conflicts
     path('exhibits/bulk-unhide/', BulkUnhideExhibitsView.as_view(), name='bulk_unhide_exhibits'),
+    path('exhibits/restore-all/', RestoreAllExhibitsView.as_view(), name='restore-all-exhibits'),
     path('exhibits/<str:pk>/update/', ExhibitUpdateView.as_view(), name='exhibit-update'),
     path('exhibits/cards/', ExhibitCardListView.as_view(), name='exhibit-card-list'),
     path('exhibits/my/', MyExhibitCardListView.as_view(), name='my-exhibit-card-list'),
@@ -42,5 +43,6 @@ exhibit_urlpatterns = [
     path("exhibits/<str:exhibit_id>/toggle-visibility/", ToggleVisibilityExhibitView.as_view(), name="toggle-visibility-exhibit"),
     path("exhibits/<str:exhibit_id>/toggle-hide/", ToggleHideExhibitView.as_view(), name="toggle-hide-exhibit"),
     path("exhibits/<str:exhibit_id>/delete/", DeleteExhibitView.as_view(), name="delete-exhibit"),
+    path("exhibits/<str:exhibit_id>/restore/", RestoreExhibitView.as_view(), name="restore-exhibit"),
 
 ]

@@ -9,10 +9,9 @@ import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
-  filterVisibility?: string;
 };
 
-const CreatedTab = ({ filteredArtworks, isLoading, filterVisibility }: CreatedTabProps) => {
+const CreatedTab = ({ filteredArtworks, isLoading }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
   const artworkIds = useMemo(() => filteredArtworks.map((art) => art.id), [filteredArtworks]);
 
@@ -30,9 +29,9 @@ const CreatedTab = ({ filteredArtworks, isLoading, filterVisibility }: CreatedTa
   const reportStatusLookup = reportStatus || {};
 
   const allArtworks = useMemo(() => {
-    if (!filterVisibility) return filteredArtworks;
-    return filteredArtworks.filter((art) => art.visibility?.toLowerCase() === filterVisibility.toLowerCase());
-  }, [filteredArtworks, filterVisibility]);
+    // ProfileTabs.tsx already handles all the filtering, so we just return the filtered artworks
+    return filteredArtworks;
+  }, [filteredArtworks]);
 
   const handleButtonClick = useCallback((artworkId: string) => {}, []);
 
