@@ -15,7 +15,7 @@ import CollectionTab from "../tabs/CollectionTab";
 import OnBidTab from "../tabs/OnBidTab";
 import ExhibitTab from "@/components/user_dashboard/user_profile/tabs/ExhibitsTab";
 import useUnarchiveAllMyArtworks from "@/hooks/mutate/visibility/arc/useUnarchiveAllMyArtworks";
-import useUnhideAllMyArtworks from "@/hooks/mutate/visibility/private/useUnhideArtwork";
+import useBulkUnhideArtworks from "@/hooks/mutate/visibility/private/useBulkUnhideArtworks";
 import SellTab from "../tabs/OnSaleTab";
 const tabs = [
   { id: "created", label: "Created" },
@@ -62,9 +62,15 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   const isOwnProfile = userId === loggedInUserId;
   const endpointType = isOwnProfile ? "created-by-me" : "specific-user";
 
-  const { data: artworks, isLoading } = useArtworks(currentPage, userId, true, endpointType);
+  const { data: artworks, isLoading } = useArtworks(
+    currentPage,
+    userId,
+    true,
+    endpointType,
+    selectedStatus.toLowerCase() as any
+  );
   const { mutate: unarchiveAllMyArtworks } = useUnarchiveAllMyArtworks(artworks ?? []);
-  const { mutate: unhideAllMyArtworks } = useUnhideAllMyArtworks(artworks ?? []);
+  const { mutate: bulkUnhideArtworks } = useBulkUnhideArtworks();
   const handleMediumSelect = (option: string) => {
     setSelectedMedium(option);
     setShowMediumOptions(false);
@@ -90,10 +96,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
   // UNHIDE BUTTON
   const confirmUnhideAll = () => {
-    unhideAllMyArtworks();
-    toast.success("All hidden artworks have been unhidden!", {
-      closeButton: true,
-    });
+    bulkUnhideArtworks();
     setShowUnhidePopup(false);
   };
 
@@ -124,33 +127,46 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
     let filtered = artworks;
 
+    // Category filtering - always apply
     filtered = filtered.filter((artwork) => {
       return selectedCategory.toLowerCase() === "all" || artwork.style.toLowerCase() === selectedCategory.toLowerCase();
     });
 
-    const statusMap: Record<string, string> = {
-      active: "public",
-      hidden: "hidden",
-      private: "private",
-      archived: "archived",
-      deleted: "deleted",
-    };
-
-    filtered = filtered.filter((art) => {
-      const mapped = statusMap[selectedStatus.toLowerCase()];
-
-      if (selectedStatus.toLowerCase() === "active") {
+    // Status filtering - only for cases not handled by backend
+    if (selectedStatus.toLowerCase() === "active") {
+      // For active status, show public + private active artworks
+      filtered = filtered.filter((art) => {
         return (
           art.visibility?.toLowerCase() === "public" ||
           (art.visibility?.toLowerCase() === "private" && art.art_status?.toLowerCase() === "active")
         );
+      });
+    } else if (["hidden", "public", "private"].includes(selectedStatus.toLowerCase())) {
+      // Backend already filtered these cases, so no additional status filtering needed
+      // Keep all artworks returned by backend
+    } else {
+      // For archived and deleted, still filter on frontend
+      const statusMap: Record<string, string> = {
+        archived: "archived",
+        deleted: "deleted",
+      };
+
+      const mapped = statusMap[selectedStatus.toLowerCase()];
+      if (mapped) {
+        if (mapped === "archived") {
+          filtered = filtered.filter((art) => art.art_status?.toLowerCase() === "archived");
+        } else if (mapped === "deleted") {
+          filtered = filtered.filter((art) => art.art_status?.toLowerCase() === "deleted");
+        }
       }
+    }
 
-      return art.visibility?.toLowerCase() === mapped;
-    });
-
-    // Debug
-    artworks.forEach((art) => console.log("VISIBILITY →", art.visibility, "STATUS →", art.art_status));
+    // Debug - log what we received from backend
+    console.log(`Backend returned ${artworks.length} artworks for status: ${selectedStatus}`);
+    console.log(
+      "Artworks from backend:",
+      artworks.map((art) => ({ id: art.id, title: art.title, visibility: art.visibility, art_status: art.art_status }))
+    );
 
     // Sorting
     switch (selectedSortBy) {
@@ -167,6 +183,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
         break;
     }
 
+    console.log(`After filtering: ${filtered.length} artworks`);
     return filtered;
   }, [artworks, selectedCategory, selectedSortBy, selectedStatus]);
 
@@ -391,7 +408,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
       )}
 
       {activeTab === "collections" && <CollectionTab />}
-      {activeTab === "onBid" && <OnBidTab />}
+      {activeTab === "onBid" && <OnBidTab selectedStatus={selectedStatus} />}
 
       {activeTab === "exhibits" && (
         <>

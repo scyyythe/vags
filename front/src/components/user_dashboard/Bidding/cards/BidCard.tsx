@@ -32,11 +32,19 @@ interface BidCardProps {
     first_name: string;
     last_name: string;
   };
+  isHidden?: boolean;
 }
 
-const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, onPlaceBid, onClick, user }) => {
+const BidCard: React.FC<BidCardProps> = ({
+  data,
+  reportInfo,
+  isLoading = false,
+  onPlaceBid,
+  onClick,
+  user,
+  isHidden: isHiddenProp = false,
+}) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
   const loggedInUserId = getLoggedInUserId();
   const isOwner = data?.artwork?.artist_id === loggedInUserId;
@@ -63,7 +71,6 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
   }
 
   const handleHide = () => {
-    setIsHidden(true);
     hideAuction(data.id);
     setMenuOpen(false);
   };
@@ -110,8 +117,6 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
     onPlaceBid?.(data.id, amount);
     toast(`Bid of ${amount}K placed successfully!`, { closeButton: true });
   };
-
-  if (isHidden) return null;
 
   const hasWon = data.isHighestBidder && data.isPaid;
 
@@ -194,6 +199,7 @@ const BidCard: React.FC<BidCardProps> = ({ data, reportInfo, isLoading = false, 
                 onHide={handleHide}
                 onReport={handleReport}
                 isReported={isReported}
+                isHidden={isHiddenProp}
                 auctionId={data.id}
                 className="top-8 -left-[12px]"
               />

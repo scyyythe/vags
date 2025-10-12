@@ -37,6 +37,26 @@ const fetchArtworks = async (
   limit: number = 30
 ): Promise<Artwork[]> => {
   try {
+    // Use the new endpoint for user-specific queries with hidden filtering
+    if (
+      (endpointType === "created-by-me" || endpointType === "specific-user") &&
+      (filterVisibility === "hidden" || filterVisibility === "public" || filterVisibility === "private")
+    ) {
+      const params: { page: number; limit: number; userId?: string; visibility?: string } = {
+        page: currentPage,
+        limit,
+        userId,
+      };
+
+      if (filterVisibility) {
+        params.visibility = filterVisibility;
+      }
+
+      const response = await apiClient.get("/art/list/user-with-hidden/", { params });
+      return response.data.results || response.data;
+    }
+
+    // Use the original logic for other cases
     const params: { page: number; limit: number; userId?: string; visibility?: string } = {
       page: currentPage,
       limit,

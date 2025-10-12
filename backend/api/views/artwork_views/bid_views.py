@@ -205,6 +205,7 @@ class AuctionListViewOwner(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
+        include_hidden = self.request.query_params.get("include_hidden", "false").lower() == "true"
 
         
         user_artworks = Art.objects(artist=user.id).only('id')
@@ -220,8 +221,36 @@ class AuctionListViewOwner(generics.ListAPIView):
         for auction in expired_auctions:
             auction.close_auction()
 
-        
-        queryset = Auction.objects(artwork__in=artwork_ids)
+        # Handle hidden auctions using HiddenContent model
+        if include_hidden:
+            # When include_hidden=true, show only hidden auctions
+            try:
+                from api.models.interaction_model.hidden_content import HiddenContent
+                from bson import ObjectId
+                
+                hidden_contents = HiddenContent.objects.filter(user=user, content_type='auction')
+                if hidden_contents:
+                    hidden_auction_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
+                    queryset = Auction.objects(id__in=hidden_auction_ids)
+                else:
+                    queryset = Auction.objects.none()
+            except Exception as e:
+                queryset = Auction.objects.none()
+        else:
+            # When include_hidden=false, get normal auctions and filter out hidden ones
+            queryset = Auction.objects(artwork__in=artwork_ids)
+
+            # Filter out hidden auctions
+            try:
+                from api.models.interaction_model.hidden_content import HiddenContent
+                from bson import ObjectId
+                
+                hidden_contents = HiddenContent.objects.filter(user=user, content_type='auction')
+                if hidden_contents:
+                    hidden_auction_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
+                    queryset = queryset.filter(id__nin=hidden_auction_ids)
+            except Exception as e:
+                pass
 
         status = self.request.query_params.get('status')
         if status:

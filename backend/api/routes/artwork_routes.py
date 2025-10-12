@@ -2,7 +2,7 @@ from django.urls import path
 from api.views.artwork_views.artwork_views import (ArtCardListView,SellArtworkView,UpdateArtworkView,DeleteArtworkImageView,UserArtCardListView,
 UpdateArtworkVisibilityView,MyArtCardListView,BulkArtDetailView,PopularLightweightArtView,ArtBulkListView,
 DeletePermanentArtwork,UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,
-UnHideArtworkView,HideArtworkView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, 
+UnHideArtworkView,HideArtworkView,BulkUnhideArtworksView,UserArtworksWithHiddenView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, 
 ArtListByArtistView,ArtDeleteView,ArtListViewOwner)
 from api.views.artwork_views.artwork_detail_view import MarketplaceArtDetailView
 from api.views.artwork_views.wishlist_view import ToggleWishlistView,WishlistArtView,WishlistIDListView,MyWishlistView
@@ -32,6 +32,7 @@ artwork_urlpatterns = [
     path('art/list/artist/<str:artist_id>/', ArtworksByArtistView.as_view(), name='my_list_art'),
     path('art/list/created-by-me/', ArtListViewOwner.as_view(), name='list_art_owner'),
     path('art/list/specific-user/', ArtListViewSpecificUser.as_view(), name='specific-user'),
+    path('art/list/user-with-hidden/', UserArtworksWithHiddenView.as_view(), name='art-list-user-with-hidden'),
     path('art/by-artist/<str:artist_id>/', ArtListByArtistView.as_view(), name='list_art_by_artist'),
     
     path('art/bulk/', BulkArtDetailView.as_view(), name='bulk_art_detail'),
@@ -42,6 +43,7 @@ artwork_urlpatterns = [
     
     path('art/<str:pk>/hide/',HideArtworkView.as_view(), name='hide_art'),
     path('art/<str:pk>/unhide/',UnHideArtworkView.as_view(), name='unhide_art'),
+    path('art/bulk-unhide/', BulkUnhideArtworksView.as_view(), name='bulk_unhide_artworks'),
     
     path('art/<str:pk>/update-visibility/', UpdateArtworkVisibilityView.as_view(), name='update_art_visibility'),
     

@@ -13,8 +13,8 @@ from datetime import datetime
 from rest_framework import status
 from api.models.exhibit_model.exhibit_contribution import ExhibitContribution
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
-from api.models.artwork_model.artwork import Art
 from bson import ObjectId
+from api.models.artwork_model.artwork import Art
 
 
 class ExhibitCreateView(APIView):
@@ -77,26 +77,57 @@ class MyExhibitCardListView(APIView):
             include_hidden = request.query_params.get("include_hidden", "false").lower() == "true"
             include_archived = request.query_params.get("include_archived", "false").lower() == "true"
 
-            # Get exhibits where user is owner OR collaborator
-            owned_exhibits = Exhibit.objects(owner=user)
-            collaborated_exhibits = Exhibit.objects(collaborators=user)
-            
-            # Combine both querysets and remove duplicates
-            all_exhibit_ids = set()
-            for exhibit in owned_exhibits:
-                all_exhibit_ids.add(str(exhibit.id))
-            for exhibit in collaborated_exhibits:
-                all_exhibit_ids.add(str(exhibit.id))
-            
-            exhibits = Exhibit.objects(id__in=list(all_exhibit_ids))
+            # Handle hidden exhibits using HiddenContent model
+            if include_hidden:
+                # When include_hidden=true, we want to show only hidden exhibits
+                # Get all exhibits that this user has hidden, regardless of ownership
+                try:
+                    hidden_contents = HiddenContent.objects.filter(user=user, content_type='exhibit')
+                    if hidden_contents:
+                        hidden_exhibit_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
+                        exhibits = Exhibit.objects(id__in=hidden_exhibit_ids)
+                        
+                        # Filter based on visibility
+                        if not include_deleted:
+                            exhibits = exhibits.filter(visibility__ne="Deleted")
+                        if not include_archived:
+                            exhibits = exhibits.filter(visibility__ne="Archived")
+                    else:
+                        # No hidden exhibits found
+                        exhibits = Exhibit.objects.none()
+                except Exception as e:
+                    # If there's an error getting hidden exhibits, return empty
+                    print(f"🔥 DEBUG: Error getting hidden exhibits: {e}")
+                    exhibits = Exhibit.objects.none()
+            else:
+                # When include_hidden=false, get exhibits where user is owner OR collaborator
+                owned_exhibits = Exhibit.objects(owner=user)
+                collaborated_exhibits = Exhibit.objects(collaborators=user)
+                
+                # Combine both querysets and remove duplicates
+                all_exhibit_ids = set()
+                for exhibit in owned_exhibits:
+                    all_exhibit_ids.add(str(exhibit.id))
+                for exhibit in collaborated_exhibits:
+                    all_exhibit_ids.add(str(exhibit.id))
+                
+                exhibits = Exhibit.objects(id__in=list(all_exhibit_ids))
 
-            # Filter based on visibility
-            if not include_deleted:
-                exhibits = exhibits.filter(visibility__ne="Deleted")
-            if not include_hidden:
-                exhibits = exhibits.filter(visibility__ne="Hidden")
-            if not include_archived:
-                exhibits = exhibits.filter(visibility__ne="Archived")
+                # Filter based on visibility
+                if not include_deleted:
+                    exhibits = exhibits.filter(visibility__ne="Deleted")
+                if not include_archived:
+                    exhibits = exhibits.filter(visibility__ne="Archived")
+                
+                # Filter out hidden exhibits
+                try:
+                    hidden_contents = HiddenContent.objects.filter(user=user, content_type='exhibit')
+                    if hidden_contents:
+                        hidden_exhibit_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
+                        exhibits = exhibits.filter(id__nin=hidden_exhibit_ids)
+                except Exception as e:
+                    # If there's an error getting hidden exhibits, just continue without filtering
+                    pass
 
             serializer = ExhibitCardSerializer(exhibits, many=True, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
