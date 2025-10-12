@@ -414,6 +414,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                 category: exhibit.category?.charAt(0).toUpperCase() + exhibit.category?.slice(1),
               }}
               onClick={() => navigate(`/view-exhibit/${exhibit.id}`)}
+              isOwnProfile={isOwnProfile}
             />
           ))}
         </div>
