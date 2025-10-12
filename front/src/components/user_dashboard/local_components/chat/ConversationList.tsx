@@ -1,6 +1,21 @@
-import { Pin, VolumeX, CheckCheck, Check, Archive, Trash2 } from "lucide-react";
+import {
+  Pin,
+  VolumeX,
+  CheckCheck,
+  Check,
+  Archive,
+  Trash2,
+  MoreVertical,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, ContextMenuSeparator } from "@/components/ui/context-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { Conversation } from "./types/types";
 
 interface ConversationListProps {
@@ -24,7 +39,7 @@ export const ConversationList = ({
   onTogglePin,
   onToggleMute,
   onToggleArchive,
-  onDeleteConversation
+  onDeleteConversation,
 }: ConversationListProps) => {
   const formatTime = (date: Date) => {
     const now = new Date();
@@ -57,82 +72,115 @@ export const ConversationList = ({
           return b.lastMessageTime.getTime() - a.lastMessageTime.getTime();
         })
         .map((conversation) => (
-          <ContextMenu key={conversation.id}>
-            <ContextMenuTrigger>
-              <div
-                onClick={() => onSelectConversation(conversation.id)}
-                className={`p-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 ${
-                  selectedConversation === conversation.id ? "bg-blue-50" : ""
-                } ${conversation.isMuted ? "opacity-60" : ""}`}
-              >
-                <div className="flex items-start space-x-3">
-                  <div className="relative">
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage src={conversation.participantAvatar} />
-                      <AvatarFallback className="text-xs">
-                        {conversation.participantName.split(" ").map(n => n[0]).join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    {conversation.isOnline && (
-                      <div className="absolute -bottom-0.5 -right-1 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
+          <div
+            key={conversation.id}
+            onClick={() => onSelectConversation(conversation.id)}
+            className={`p-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 relative group ${
+              selectedConversation === conversation.id ? "bg-blue-50" : ""
+            } ${conversation.isMuted ? "opacity-60" : ""}`}
+          >
+            <div className="flex items-start space-x-3">
+              <div className="relative">
+                <Avatar className="h-6 w-6">
+                  <AvatarImage src={conversation.participantAvatar} />
+                  <AvatarFallback className="text-xs">
+                    {conversation.participantName
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </AvatarFallback>
+                </Avatar>
+                {conversation.isOnline && (
+                  <div className="absolute -bottom-0.5 -right-1 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
+                )}
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-1">
+                    {conversation.isPinned && (
+                      <Pin size={10} className="text-blue-600" />
                     )}
+                    {conversation.isMuted && (
+                      <VolumeX size={10} className="text-gray-500" />
+                    )}
+                    <p className="text-xs font-medium text-gray-900 truncate">
+                      {conversation.participantName}
+                    </p>
                   </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-1">
-                        {conversation.isPinned && <Pin size={10} className="text-blue-600" />}
-                        {conversation.isMuted && <VolumeX size={10} className="text-gray-500" />}
-                        <p className="text-xs font-medium text-gray-900 truncate">
-                          {conversation.participantName}
-                        </p>
-                      </div>
-                      <span className="text-[10px] text-gray-500">
-                        {formatTime(conversation.lastMessageTime)}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] text-gray-600 truncate pr-2">
-                        {conversation.lastMessage}
-                      </p>
-                      {conversation.unreadCount > 0 && (
-                        <span className="inline-flex items-center justify-center px-2 py-1 text-[9px] font-medium leading-none text-white bg-blue-600 rounded-full">
-                          {conversation.unreadCount}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+                  <span className="text-[10px] text-gray-500">
+                    {formatTime(conversation.lastMessageTime)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] text-gray-600 truncate pr-2">
+                    {conversation.lastMessage}
+                  </p>
+                  {conversation.unreadCount > 0 && (
+                    <span className="inline-flex items-center justify-center px-2 py-1 text-[9px] font-medium leading-none text-white bg-blue-600 rounded-full">
+                      {conversation.unreadCount}
+                    </span>
+                  )}
                 </div>
               </div>
-            </ContextMenuTrigger>
-            <ContextMenuContent>
-              <ContextMenuItem onClick={() => onMarkAsRead(conversation.id)} className="text-[10px]">
-                <CheckCheck className="mr-2 h-3 w-3" />
-                Mark as Read
-              </ContextMenuItem>
-              <ContextMenuItem onClick={() => onMarkAsUnread(conversation.id)} className="text-[10px]">
-                <Check className="mr-2 h-3 w-3" />
-                Mark as Unread
-              </ContextMenuItem>
-              <ContextMenuItem onClick={() => onTogglePin(conversation.id)} className="text-[10px]">
-                <Pin className="mr-2 h-3 w-3" />
-                {conversation.isPinned ? 'Unpin' : 'Pin'}
-              </ContextMenuItem>
-              <ContextMenuItem onClick={() => onToggleMute(conversation.id)} className="text-[10px]">
-                <VolumeX className="mr-2 h-3 w-3" />
-                {conversation.isMuted ? 'Unmute' : 'Mute'}
-              </ContextMenuItem>
-              <ContextMenuItem onClick={() => onToggleArchive(conversation.id)} className="text-[10px]">
-                <Archive className="mr-2 h-3 w-3" />
-                {conversation.isArchived ? 'Unarchive' : 'Archive'}
-              </ContextMenuItem>
-              <ContextMenuSeparator />
-              <ContextMenuItem onClick={() => onDeleteConversation(conversation.id)} className="text-red-600 text-[10px]">
-                <Trash2 className="mr-2 h-3 w-3" />
-                Delete
-              </ContextMenuItem>
-            </ContextMenuContent>
-          </ContextMenu>
+
+              {/* MENU ICON - appears on hover */}
+              <div className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="p-1 bg-gray-200 rounded-full shadow-sm">
+                      <MoreVertical className="w-4 h-4 text-black " />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-32 text-[10px]">
+                    <DropdownMenuItem
+                      className="text-[10px]"
+                      onClick={() => onMarkAsRead(conversation.id)}
+                    >
+                      <CheckCheck className="mr-2 h-3 w-3" />
+                      Mark as Read
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-[10px]"
+                      onClick={() => onMarkAsUnread(conversation.id)}
+                    >
+                      <Check className="mr-2 h-3 w-3" />
+                      Mark as Unread
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-[10px]"
+                      onClick={() => onTogglePin(conversation.id)}
+                    >
+                      <Pin className="mr-2 h-3 w-3" />
+                      {conversation.isPinned ? "Unpin" : "Pin"}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-[10px]"
+                      onClick={() => onToggleMute(conversation.id)}
+                    >
+                      <VolumeX className="mr-2 h-3 w-3" />
+                      {conversation.isMuted ? "Unmute" : "Mute"}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-[10px]"
+                      onClick={() => onToggleArchive(conversation.id)}
+                    >
+                      <Archive className="mr-2 h-3 w-3" />
+                      {conversation.isArchived ? "Unarchive" : "Archive"}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => onDeleteConversation(conversation.id)}
+                      className="text-red-600 text-[10px] hover:none"
+                    >
+                      <Trash2 className="mr-2 h-3 w-3" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+          </div>
         ))}
     </>
   );
