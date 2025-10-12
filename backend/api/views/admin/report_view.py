@@ -136,7 +136,7 @@ class UndoReportView(APIView):
         report_id = request.data.get("id")
         report_type = request.data.get("type")
 
-        if not report_id or report_type not in ["auction", "exhibit"]:
+        if not report_id or report_type not in ["auction", "exhibit", "artwork"]:
             return Response({"error": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
@@ -148,6 +148,8 @@ class UndoReportView(APIView):
                 filter_kwargs["auction"] = ObjectId(report_id)
             elif report_type == "exhibit":
                 filter_kwargs["exhibit"] = ObjectId(report_id)
+            elif report_type == "artwork":
+                filter_kwargs["art"] = ObjectId(report_id)
 
             report = Report.objects.get(**filter_kwargs)
             report.delete()
