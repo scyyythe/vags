@@ -338,3 +338,27 @@ class ToggleHideExhibitView(APIView):
             {"detail": message},
             status=status.HTTP_200_OK,
         )
+
+
+class BulkUnhideExhibitsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request):
+        try:
+            user = User.objects.get(id=ObjectId(request.user.id))
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Remove all hidden content records for exhibits for this user
+        hidden_contents = HiddenContent.objects.filter(
+            user=user,
+            content_type='exhibit'
+        )
+        
+        count = hidden_contents.count()
+        hidden_contents.delete()
+
+        return Response(
+            {"message": f"Successfully unhid {count} exhibits.", "count": count},
+            status=status.HTTP_200_OK,
+        )

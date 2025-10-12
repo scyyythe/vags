@@ -36,14 +36,15 @@ artwork_urlpatterns = [
     path('art/by-artist/<str:artist_id>/', ArtListByArtistView.as_view(), name='list_art_by_artist'),
     
     path('art/bulk/', BulkArtDetailView.as_view(), name='bulk_art_detail'),
+    # Bulk operations should come before parameterized routes to avoid conflicts
+    path('art/bulk-unhide/', BulkUnhideArtworksView.as_view(), name='bulk_unhide_artworks'),
     path('art/<str:pk>/', ArtDetailView.as_view(), name='detail_art'),
    
 
     path('art/<str:pk>/update/', ArtUpdateView.as_view(), name='update_art'),
-    
+
     path('art/<str:pk>/hide/',HideArtworkView.as_view(), name='hide_art'),
     path('art/<str:pk>/unhide/',UnHideArtworkView.as_view(), name='unhide_art'),
-    path('art/bulk-unhide/', BulkUnhideArtworksView.as_view(), name='bulk_unhide_artworks'),
     
     path('art/<str:pk>/update-visibility/', UpdateArtworkVisibilityView.as_view(), name='update_art_visibility'),
     
