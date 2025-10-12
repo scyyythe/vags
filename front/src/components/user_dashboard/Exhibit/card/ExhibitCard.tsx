@@ -178,7 +178,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
               )}
           </div>
 
-          <div className="relative bottom-1">
+          <div className="relative bottom-1" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -189,7 +189,6 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
               <MoreHorizontal size={13} className="text-gray-600 hover:text-black" />
             </button>
 
-            {/* {menuOpen && isOwnProfile ? ( */}
             {menuOpen &&
               (isOwner ? (
                 <Menu

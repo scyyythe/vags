@@ -112,6 +112,10 @@ class UpdateArtworkView(APIView):
             img_url = upload_result.get("secure_url")
             art.image_url.append(img_url)
 
+        # ----- ENSURE IMAGE_URL IS ALWAYS A LIST -----
+        if not art.image_url or not isinstance(art.image_url, (list, tuple)):
+            art.image_url = []
+        
         # ----- SERIALIZER UPDATE FOR OTHER FIELDS -----
         serializer = ArtSerializer(art, data=request.data, partial=True)
         if serializer.is_valid():
@@ -615,6 +619,10 @@ class UnArchivedArtwork(APIView):
         except Art.DoesNotExist:
             raise Http404("Artwork not found")
 
+        # Ensure image_url is always a list
+        if not artwork.image_url or not isinstance(artwork.image_url, (list, tuple)):
+            artwork.image_url = []
+            
         artwork.art_status = "Active"
         artwork.visibility = "Public"
         artwork.updated_at = datetime.utcnow()
@@ -638,6 +646,10 @@ class UpdateArtworkVisibilityView(APIView):
                 {"message": "Invalid visibility. Only 'Public' or 'Private' are allowed."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        # Ensure image_url is always a list
+        if not artwork.image_url or not isinstance(artwork.image_url, (list, tuple)):
+            artwork.image_url = []
 
         artwork.visibility = new_visibility
         artwork.updated_at = datetime.utcnow()

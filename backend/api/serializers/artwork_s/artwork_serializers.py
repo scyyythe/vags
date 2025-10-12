@@ -137,9 +137,17 @@ class ArtSerializer(serializers.Serializer):
             instance.image_url = uploaded_urls
 
 
+        # Handle image_url field if it's in validated_data and not a list
+        if "image_url" in validated_data:
+            image_url_value = validated_data["image_url"]
+            if isinstance(image_url_value, str):
+                validated_data["image_url"] = [image_url_value]
+            elif not isinstance(image_url_value, (list, tuple)):
+                validated_data["image_url"] = []
+
         for field in [
             "title", "category", "medium", "art_status", "price", "discounted_price",
-            "size", "description", "visibility", "edition", "year_created"
+            "size", "description", "visibility", "edition", "year_created", "image_url"
         ]:
             if field in validated_data:
                 setattr(instance, field, validated_data[field])
@@ -157,6 +165,13 @@ class ArtSerializer(serializers.Serializer):
             width = validated_data.get("width")
             if height and width:
                 instance.size = f"{height}x{width}"
+
+        # Ensure image_url is always a list before saving
+        if hasattr(instance, 'image_url'):
+            if isinstance(instance.image_url, str):
+                instance.image_url = [instance.image_url]
+            elif not isinstance(instance.image_url, (list, tuple)):
+                instance.image_url = []
 
         instance.updated_at = datetime.utcnow()
         instance.save()
