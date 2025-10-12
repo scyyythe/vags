@@ -124,86 +124,82 @@ export const MessagesList = ({
                       </div>
                     )}
 
-                    {/* Message Bubble */}
-                    <div
-                      className={`rounded-lg px-4 py-3 ${
-                        message.senderId === currentUserId
-                          ? "bg-blue-600 text-white text-[10px]"
-                          : "bg-gray-100 text-gray-900 text-[10px]"
-                      } ${selectedMessage === message.id ? "ring-2 ring-blue-300" : ""}`}
-                      onClick={() => onSelectMessage(selectedMessage === message.id ? null : message.id)}
-                    >
-                      {message.replyTo && (
-                        <div
-                          className={`text-[10px] mb-2 border-l-2 pl-2 ${
-                            message.senderId === currentUserId
-                              ? "border-blue-300 bg-blue-500 bg-opacity-20"
-                              : "border-gray-300 bg-gray-200"
-                          } rounded p-2`}
-                        >
-                          <div className="flex items-center space-x-1 mb-1">
-                            <Reply size={10} />
-                          </div>
-                          <div className="opacity-80 truncate max-w-[200px] text-[10px]">
-                            {message.replyTo.type === "image" && "Image"}
-                            {message.replyTo.type === "file" && message.replyTo.fileName}
-                            {message.replyTo.type === "voice" && "Voice message"}
-                            {message.replyTo.type === "text" && message.replyTo.content}
-                          </div>
-                        </div>
-                      )}
-
-                      {message.isStarred && <Star size={12} className="inline mr-1 text-yellow-400 fill-current" />}
-
-                      {message.type === "image" && message.imageUrl && (
-                        <div className="mb-2">
-                          <img
-                            src={message.imageUrl}
-                            alt="Shared image"
-                            className="max-w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                            style={{ maxHeight: "300px", maxWidth: "250px" }}
-                            onClick={() => window.open(message.imageUrl, "_blank")}
-                          />
-                        </div>
-                      )}
-
-                      {message.type === "file" && (
-                        <div className="flex items-center space-x-2 mb-1">
-                          <Paperclip size={13} />
-                          <span className="text-sm">{message.fileName}</span>
-                        </div>
-                      )}
-
-                      {/* {message.type === "voice" && (
-                        <div className="flex items-center space-x-2 mb-1">
-                          <div className="flex items-center space-x-2 bg-white bg-opacity-20 rounded-full px-3 py-1">
-                            <Mic size={13} />
-                            <span className="text-[11px]">{message.voiceDuration}s</span>
-                            <div className="w-20 h-1 bg-white bg-opacity-30 rounded-full">
-                              <div className="w-1/3 h-full bg-white rounded-full"></div>
+                    {/* MESSAGE BUBBLE (CONTENT) */}
+                    {message.type === "image" && message.imageUrl ? (
+                      // Show image only
+                      <img
+                        src={message.imageUrl}
+                        alt="Shared image"
+                        className="rounded-lg cursor-pointer hover:opacity-90 transition-opacity object-contain"
+                        style={{
+                          width: "auto",
+                          maxWidth: "250px",
+                          maxHeight: "300px",
+                          height: "auto",
+                          display: "block",
+                          marginBottom: "4px",
+                        }}
+                        onClick={() => window.open(message.imageUrl, "_blank")}
+                      />
+                    ) : (
+                      // Regular message bubble for non-image messages
+                      <div
+                        className={`rounded-lg px-4 py-3 ${
+                          message.senderId === currentUserId
+                            ? "bg-blue-600 text-white text-[10px]"
+                            : "bg-gray-100 text-gray-900 text-[10px]"
+                        } ${selectedMessage === message.id ? "ring-2 ring-blue-300" : ""}`}
+                        onClick={() => onSelectMessage(selectedMessage === message.id ? null : message.id)}
+                      >
+                        {message.replyTo && (
+                          <div
+                            className={`text-[10px] mb-2 border-l-2 pl-2 ${
+                              message.senderId === currentUserId
+                                ? "border-blue-300 bg-blue-500 bg-opacity-20"
+                                : "border-gray-300 bg-gray-200"
+                            } rounded p-2`}
+                          >
+                            <div className="flex items-center space-x-1 mb-1">
+                              <Reply size={10} />
+                            </div>
+                            <div className="opacity-80 truncate max-w-[200px] text-[10px]">
+                              {message.replyTo.type === "image" && "Image"}
+                              {message.replyTo.type === "file" && message.replyTo.fileName}
+                              {message.replyTo.type === "voice" && "Voice message"}
+                              {message.replyTo.type === "text" && message.replyTo.content}
                             </div>
                           </div>
-                        </div>
-                      )} */}
+                        )}
 
-                      {/* Only show text content if it's not an image message or if there's actual content */}
-                      {message.type !== "image" && message.content && <p className="text-[11px]">{message.content}</p>}
+                        {message.isStarred && (
+                          <Star size={12} className="inline mr-1 text-yellow-400 fill-current" />
+                        )}
 
-                      {message.reactions && message.reactions.length > 0 && (
-                        <div className="flex items-center space-x-1 mt-2">
-                          {message.reactions.map((reaction, idx) => (
-                            <Badge
-                              key={idx}
-                              variant="outline"
-                              className="text-[10px] px-2 py-1 bg-white hover:bg-gray-50 cursor-pointer border-gray-200"
-                            >
-                              <span className="mr-1">{reaction.emoji}</span>
-                              <span className="text-gray-600">{reaction.users.length}</span>
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                        {message.type === "file" && (
+                          <div className="flex items-center space-x-2 mb-1">
+                            <Paperclip size={13} />
+                            <span className="text-sm">{message.fileName}</span>
+                          </div>
+                        )}
+
+                        {message.content && <p className="text-[11px]">{message.content}</p>}
+
+                        {message.reactions && message.reactions.length > 0 && (
+                          <div className="flex items-center space-x-1 mt-2">
+                            {message.reactions.map((reaction, idx) => (
+                              <Badge
+                                key={idx}
+                                variant="outline"
+                                className="text-[10px] px-2 py-1 bg-white hover:bg-gray-50 cursor-pointer border-gray-200"
+                              >
+                                <span className="mr-1">{reaction.emoji}</span>
+                                <span className="text-gray-600">{reaction.users.length}</span>
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     {/* Sender Delivery Status Text */}
                     {message.senderId === currentUserId && (
