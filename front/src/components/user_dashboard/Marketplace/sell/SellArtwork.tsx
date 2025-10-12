@@ -9,6 +9,7 @@ import { ArrowLeft, Upload } from "lucide-react";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/ArtworkStyles";
 import useSellArtwork from "@/hooks/artworks/sell/useSellArtwork";
+import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
 const SellArtwork = () => {
   const navigate = useNavigate();
   const [artworkTitle, setArtworkTitle] = useState("");
@@ -27,6 +28,7 @@ const SellArtwork = () => {
   const [height, setHeight] = useState("");
   const [width, setWidth] = useState("");
   const { sellArtwork } = useSellArtwork();
+  const { accounts } = usePaymentAccounts();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -101,25 +103,38 @@ const SellArtwork = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check if user has payment accounts set up
+    if (!accounts || accounts.length === 0) {
+      toast.error(
+        "You cannot sell artwork without setting up a payment account. Please add a bank account, PayPal, or other payment method in your account settings to receive payments.",
+        {
+          closeButton: true,
+          duration: 6000,
+        }
+      );
+      return;
+    }
+
     if (!validateForm()) {
       return;
     }
     if (!artworkTitle.trim()) {
-      toast.error("Please enter an artwork title", {
+      toast.error("Please enter an artwork title.", {
         closeButton: true,
       });
       return;
     }
 
     if (!selectedFile) {
-      toast.error("Please upload an artwork image", {
+      toast.error("Please upload an image of your artwork.", {
         closeButton: true,
       });
       return;
     }
 
     if (!price) {
-      toast.error("Please enter a price", {
+      toast.error("Please enter a price for your artwork.", {
         closeButton: true,
       });
       return;
@@ -164,68 +179,109 @@ const SellArtwork = () => {
 
     const currentYear = new Date().getFullYear();
 
+    // Payment Account Check
+    if (!accounts || accounts.length === 0) {
+      toast.error("You must set up a payment account before selling artwork.", {
+        closeButton: true,
+        duration: 5000,
+      });
+      return false;
+    }
+
     // Title
-    if (!artworkTitle.trim() || !titleRegex.test(artworkTitle.trim())) {
-      toast.error("Title must start with a capital letter and be 3-100 characters.");
+    if (!artworkTitle.trim()) {
+      toast.error("Please enter an artwork title.");
+      return false;
+    }
+    if (!titleRegex.test(artworkTitle.trim())) {
+      toast.error("Title must start with a capital letter and be 3-100 characters long.");
       return false;
     }
 
     // Year
+    if (!yearCreated) {
+      toast.error("Please enter the year the artwork was created.");
+      return false;
+    }
     const year = Number(yearCreated);
-    if (!yearCreated || isNaN(year) || year > currentYear || year < 1000) {
-      toast.error(`Year must be a valid number.`);
+    if (isNaN(year) || year > currentYear || year < 1000) {
+      toast.error(`Please enter a valid year between 1000 and ${currentYear}.`);
       return false;
     }
 
     // Style
     if (!artworkStyle) {
-      toast.error("Artwork style is required.");
+      toast.error("Please select an artwork style.");
       return false;
     }
 
     // Medium
-    if (!medium.trim() || !mediumRegex.test(medium.trim())) {
-      toast.error("Medium must contain letters only, 2-30 characters.");
+    if (!medium.trim()) {
+      toast.error("Please enter the medium used for this artwork.");
+      return false;
+    }
+    if (!mediumRegex.test(medium.trim())) {
+      toast.error("Medium should contain letters only (e.g., Oil on Canvas, Digital Art).");
       return false;
     }
 
     // Dimensions
     const h = Number(height);
     const w = Number(width);
-    if ((height && (isNaN(h) || h <= 0 || h > 1000)) || (width && (isNaN(w) || w <= 0 || w > 1000))) {
-      toast.error("Dimensions must be positive numbers ≤ 1000 cm.");
+    if (height && (isNaN(h) || h <= 0 || h > 1000)) {
+      toast.error("Height must be a positive number between 1-1000 cm.");
+      return false;
+    }
+    if (width && (isNaN(w) || w <= 0 || w > 1000)) {
+      toast.error("Width must be a positive number between 1-1000 cm.");
       return false;
     }
 
     // Price
+    if (!price) {
+      toast.error("Please enter a price for your artwork.");
+      return false;
+    }
     const p = Number(price);
-    if (!price || isNaN(p) || p <= 0 || price.length > 10) {
-      toast.error("Price must be a valid number up to 10 digits.");
+    if (isNaN(p) || p <= 0) {
+      toast.error("Price must be a positive number.");
+      return false;
+    }
+    if (price.length > 10) {
+      toast.error("Price cannot exceed 10 digits.");
       return false;
     }
 
     // Quantity
     if (edition !== "Original (1 of 1)") {
+      if (!quantity) {
+        toast.error("Please enter the quantity for this edition.");
+        return false;
+      }
       const q = Number(quantity);
-      if (!quantity || isNaN(q) || q <= 0 || q > 1000) {
-        toast.error("Quantity must be a positive number ≤ 1000.");
+      if (isNaN(q) || q <= 0) {
+        toast.error("Quantity must be a positive number.");
+        return false;
+      }
+      if (q > 1000) {
+        toast.error("Quantity cannot exceed 1000.");
         return false;
       }
     }
 
     // Description
     if (description && description.length > 500) {
-      toast.error("Description must be less than 500 characters.");
+      toast.error("Description cannot exceed 500 characters.");
       return false;
     }
 
     // Main image
     if (!selectedFile) {
-      toast.error("Please upload a main artwork image.");
+      toast.error("Please upload a main image of your artwork.");
       return false;
     }
     if (selectedFile.size > 20 * 1024 * 1024) {
-      toast.error("Main image must be ≤ 20MB.");
+      toast.error("Main image file size must be less than 20MB.");
       return false;
     }
 
@@ -234,11 +290,11 @@ const SellArtwork = () => {
       const file = additionalImages[i];
       if (file) {
         if (!file.type.startsWith("image/")) {
-          toast.error(`Additional image ${i + 1} must be an image file.`);
+          toast.error(`Additional image ${i + 1} must be a valid image file.`);
           return false;
         }
         if (file.size > 20 * 1024 * 1024) {
-          toast.error(`Additional image ${i + 1} must be ≤ 20MB.`);
+          toast.error(`Additional image ${i + 1} file size must be less than 20MB.`);
           return false;
         }
       }
@@ -551,12 +607,41 @@ const SellArtwork = () => {
                   />
                 </div>
 
+                {/* Payment Account Warning */}
+                {(!accounts || accounts.length === 0) && (
+                  <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0">
+                        <svg className="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                          <path
+                            fillRule="evenodd"
+                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <div className="ml-2">
+                        <h3 className="text-xs font-medium text-yellow-800">Payment Account Required</h3>
+                        <div className="mt-1 text-xs text-yellow-700">
+                          <p>Set up a payment account to receive payments before selling.</p>
+                          <button
+                            onClick={() => navigate("/settings")}
+                            className="mt-1 text-xs font-medium text-yellow-800 hover:text-yellow-900 underline"
+                          >
+                            Set up payment account →
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Submit button */}
                 <div className="text-right">
                   <Button
                     type="submit"
-                    disabled={isUploading}
-                    className="bg-red-800 hover:bg-red-700 text-white text-xs px-8 h-8 rounded-full font-medium"
+                    disabled={isUploading || !accounts || accounts.length === 0}
+                    className="bg-red-800 hover:bg-red-700 text-white text-xs px-8 h-8 rounded-full font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
                   >
                     {isUploading ? (
                       <span className="flex items-center gap-2">
