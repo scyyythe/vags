@@ -576,7 +576,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   }, [showUserDropdown]);
 
   return (
-    <div className="absolute right-4 md:right-0.5 bg-white rounded-2xl shadow-xl z-50 w-[330px] md:w-[330px] h-[534px]">
+    <div className="absolute right-4 md:right-1.5 bg-white rounded-2xl shadow-xl z-50 w-[360px] md:w-[360px] h-[534px]">
       <div className="flex h-full">
         <div className="w-full flex flex-col">
           <ChatHeader
