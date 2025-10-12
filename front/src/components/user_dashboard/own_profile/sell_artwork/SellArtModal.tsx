@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
 
 interface SellArtworkModalProps {
   isOpen: boolean;
@@ -43,6 +45,8 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
 
   const [imageSlots, setImageSlots] = useState<(File | null)[]>([null, null, null, null]);
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const { accounts: paymentAccounts } = usePaymentAccounts();
+  const navigate = useNavigate();
 
   // Disable background scrolling when modal is open
   useEffect(() => {
@@ -117,6 +121,13 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
   };
 
   const handleSubmit = () => {
+    if (paymentAccounts.length === 0) {
+      toast.error("Please set up a payment account before listing artwork for sale", {
+        closeButton: true,
+      });
+      return;
+    }
+
     if (validateForm()) {
       onSellArtwork(formData);
     } else {
@@ -143,6 +154,11 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
     if (errors.quantity) {
       setErrors((prev) => ({ ...prev, quantity: undefined }));
     }
+  };
+
+  const handleSetupAccount = () => {
+    onClose(); // Close the modal first
+    navigate("/settings/billing"); // Navigate to billing settings
   };
 
   return (
@@ -282,10 +298,23 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
         {/* Sell Artwork Button */}
         <Button
           onClick={handleSubmit}
-          className="w-full h-8 bg-red-800 hover:bg-red-700 text-white text-xs py-3 rounded-full"
+          disabled={paymentAccounts.length === 0}
+          className={`w-full h-8 text-white text-xs py-3 rounded-full ${
+            paymentAccounts.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-red-800 hover:bg-red-700"
+          }`}
         >
-          List Artwork for Sale
+          {paymentAccounts.length === 0 ? "Set up payment account first" : "List Artwork for Sale"}
         </Button>
+
+        {/* Payment account warning and setup button */}
+        {paymentAccounts.length === 0 && (
+          <div className="mt-2 text-center">
+            <p className="text-[9px] text-red-500 mb-2">You need to set up a payment account to receive payments</p>
+            <button onClick={handleSetupAccount} className="text-[9px] text-blue-600 hover:text-blue-800 underline">
+              Set up payment account →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
