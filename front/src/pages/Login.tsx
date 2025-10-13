@@ -10,7 +10,9 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { signInWithCustomToken } from "firebase/auth";
 import { auth } from "@/firebase/firebaseConfig";
 import useDeactivateAccount from "@/hooks/mutate/users/useDeactivateAccount";
+import useSoftDeleteAccount from "@/hooks/mutate/users/useSoftDeleteAccount";
 import ReactivationConfirmationPopup from "@/components/auth/ReactivationConfirmationPopup";
+import ScheduledDeletionPopup from "@/components/auth/ScheduledDeletionPopup";
 import { useQueryClient } from "@tanstack/react-query";
 
 // Translation hooks
@@ -29,9 +31,11 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
   const [showReactivationPopup, setShowReactivationPopup] = useState(false);
+  const [showScheduledDeletionPopup, setShowScheduledDeletionPopup] = useState(false);
   const [pendingUserData, setPendingUserData] = useState<any>(null);
 
   const { mutate: deactivateAccount } = useDeactivateAccount();
+  const { mutate: softDeleteAccount } = useSoftDeleteAccount();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -119,10 +123,12 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         email: string;
         role: string;
         user_status: string;
+        scheduled_for_deletion?: string;
         firebase_token: string;
       }>("token/", formData);
 
-      const { access_token, refresh_token, user_id, email, role, user_status, firebase_token } = response.data;
+      const { access_token, refresh_token, user_id, email, role, user_status, scheduled_for_deletion, firebase_token } =
+        response.data;
 
       if (!access_token || !refresh_token || !firebase_token) {
         throw new Error("Missing tokens from backend");
@@ -142,6 +148,24 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
 
         // Show reactivation popup
         setShowReactivationPopup(true);
+        return;
+      }
+
+      // Check if account is scheduled for deletion
+      if (user_status && user_status.toLowerCase() === "scheduled_for_deletion") {
+        // Store user data for reactivation
+        setPendingUserData({
+          access_token,
+          refresh_token,
+          user_id,
+          email,
+          role,
+          scheduled_for_deletion,
+          firebase_token,
+        });
+
+        // Show scheduled deletion popup
+        setShowScheduledDeletionPopup(true);
         return;
       }
 
@@ -329,6 +353,108 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     setFormData({ email: "", password: "" });
   };
 
+  const handleScheduledDeletionConfirm = async () => {
+    if (!pendingUserData) return;
+
+    try {
+      // First, save tokens and authenticate the user
+      localStorage.setItem("access_token", pendingUserData.access_token);
+      localStorage.setItem("refresh_token", pendingUserData.refresh_token);
+      localStorage.setItem("user_id", pendingUserData.user_id);
+      localStorage.setItem("email", pendingUserData.email);
+      localStorage.setItem("role", pendingUserData.role);
+
+      // Sign in to Firebase
+      await signInWithCustomToken(auth, pendingUserData.firebase_token);
+
+      // Now cancel the scheduled deletion (user is authenticated)
+      softDeleteAccount(
+        {
+          userId: pendingUserData.user_id,
+          data: {
+            action: "cancel_deletion",
+          },
+        },
+        {
+          onSuccess: async () => {
+            // Invalidate ALL queries to refresh content visibility
+            queryClient.invalidateQueries({ queryKey: ["user", pendingUserData.user_id] });
+            queryClient.invalidateQueries({ queryKey: ["userDetails", pendingUserData.user_id] });
+
+            // Invalidate artwork-related queries
+            queryClient.invalidateQueries({ queryKey: ["artworks"] });
+            queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+            queryClient.invalidateQueries({ queryKey: ["artCards"] });
+            queryClient.invalidateQueries({ queryKey: ["trendingArtworks"] });
+            queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+
+            // Invalidate auction-related queries
+            queryClient.invalidateQueries({ queryKey: ["auctions"] });
+            queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
+            queryClient.invalidateQueries({ queryKey: ["followedAuctions"] });
+
+            // Invalidate exhibit-related queries
+            queryClient.invalidateQueries({ queryKey: ["exhibits"] });
+            queryClient.invalidateQueries({ queryKey: ["exhibitCards"] });
+
+            // Invalidate marketplace queries
+            queryClient.invalidateQueries({ queryKey: ["marketplace"] });
+            queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+            queryClient.invalidateQueries({ queryKey: ["followedArtworksOnSale"] });
+
+            // Invalidate search and filter queries
+            queryClient.invalidateQueries({ queryKey: ["search"] });
+            queryClient.invalidateQueries({ queryKey: ["filter"] });
+
+            // Invalidate all queries to be safe
+            queryClient.invalidateQueries();
+
+            // Close popup and redirect
+            setShowScheduledDeletionPopup(false);
+            setPendingUserData(null);
+
+            toast.success("Account deletion cancelled. Account is now active!", {
+              closeButton: true,
+            });
+
+            // Close login modal and redirect based on role
+            closeLoginModal();
+            if (pendingUserData.role === "Admin") {
+              navigate("/admin");
+            } else if (pendingUserData.role === "Moderator") {
+              navigate("/moderator");
+            } else {
+              navigate("/explore");
+            }
+          },
+          onError: () => {
+            // If cancellation fails, clear the tokens and show error
+            localStorage.clear();
+            toast.error("Account Deletion Scheduled", {
+              description: "Failed to cancel account deletion. Please try again.",
+              closeButton: true,
+            });
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Scheduled deletion cancellation failed:", error);
+      // Clear tokens if there's an error
+      localStorage.clear();
+      toast.error("Account Deletion Scheduled", {
+        description: "Failed to cancel account deletion. Please try again.",
+        closeButton: true,
+      });
+    }
+  };
+
+  const handleScheduledDeletionCancel = () => {
+    setShowScheduledDeletionPopup(false);
+    setPendingUserData(null);
+    // Clear form
+    setFormData({ email: "", password: "" });
+  };
+
   return (
     <div className="w-full flex flex-col justify-center py-8 px-14 md:py-8 md:px-14 lg:py-8 lg:px-14 bg-white rounded-2xl">
       <div className="flex justify-end">
@@ -441,6 +567,15 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         onConfirm={handleReactivationConfirm}
         onCancel={handleReactivationCancel}
         userEmail={pendingUserData?.email}
+      />
+
+      {/* Scheduled Deletion Popup */}
+      <ScheduledDeletionPopup
+        isOpen={showScheduledDeletionPopup}
+        onConfirm={handleScheduledDeletionConfirm}
+        onCancel={handleScheduledDeletionCancel}
+        userEmail={pendingUserData?.email}
+        scheduledForDeletion={pendingUserData?.scheduled_for_deletion}
       />
     </div>
   );
