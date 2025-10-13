@@ -209,7 +209,8 @@ class CustomTokenObtainPairView(APIView):
             "firebase_token": firebase_token,
             "user_id": str(user.id),
             "email": user.email,
-            "role": user.role
+            "role": user.role,
+            "user_status": user.user_status
         }, status=status.HTTP_200_OK)
 
 

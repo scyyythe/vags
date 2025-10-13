@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { useGoogleLogin } from "@react-oauth/google";
 import { signInWithCustomToken } from "firebase/auth";
 import { auth } from "@/firebase/firebaseConfig";
+import useDeactivateAccount from "@/hooks/mutate/users/useDeactivateAccount";
+import ReactivationConfirmationPopup from "@/components/auth/ReactivationConfirmationPopup";
 
 // Translation hooks
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
@@ -25,6 +27,10 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const { setShowRegisterModal, setShowForgotPasswordModal } = useModal();
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
+  const [showReactivationPopup, setShowReactivationPopup] = useState(false);
+  const [pendingUserData, setPendingUserData] = useState<any>(null);
+
+  const { mutate: deactivateAccount } = useDeactivateAccount();
 
   useEffect(() => {
     // Disable scrolling when the modal opens
@@ -35,7 +41,6 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       document.body.style.overflow = "auto";
     };
   }, []);
-
 
   const [showFingerprintText, setShowFingerprintText] = useState(false);
 
@@ -67,6 +72,13 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const googleLoginFailedDesc = useAutoTranslation("Google authentication was unsuccessful.", language);
   const googleLoginErrorDesc = useAutoTranslation("Please try again later.", language);
   const googleMissingTokenDesc = useAutoTranslation("Missing tokens in response.", language);
+  const accountDeactivatedTitle = useAutoTranslation("Account Deactivated", language);
+  const accountDeactivatedDesc = useAutoTranslation(
+    "Your account is currently deactivated. Please reactivate it to continue.",
+    language
+  );
+  const reactivationSuccessTitle = useAutoTranslation("Account Reactivated", language);
+  const reactivationSuccessDesc = useAutoTranslation("Your account has been reactivated successfully!", language);
 
   interface GoogleLoginResponse {
     access_token: string;
@@ -85,73 +97,83 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setMessage(null);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setMessage(null);
 
-  if (!formData.email || !formData.password) {
-    toast.error(missingInfoTitle, {
-      description: missingInfoDesc,
-      closeButton: true,
-    });
-    return;
-  }
-
-  try {
-    const response = await apiClient.post<{
-      access_token: string;
-      refresh_token: string;
-      user_id: string;
-      email: string;
-      role: string;
-      firebase_token: string;
-    }>("token/", formData);
-
-    const {
-      access_token,
-      refresh_token,
-      user_id,
-      email,
-      role,
-      firebase_token,
-    } = response.data;
-
-    if (!access_token || !refresh_token || !firebase_token) {
-      throw new Error("Missing tokens from backend");
+    if (!formData.email || !formData.password) {
+      toast.error(missingInfoTitle, {
+        description: missingInfoDesc,
+        closeButton: true,
+      });
+      return;
     }
 
-    // Save Django tokens
-    localStorage.setItem("access_token", access_token);
-    localStorage.setItem("refresh_token", refresh_token);
-    localStorage.setItem("user_id", user_id);
-    localStorage.setItem("email", email);
-    localStorage.setItem("role", role);
+    try {
+      const response = await apiClient.post<{
+        access_token: string;
+        refresh_token: string;
+        user_id: string;
+        email: string;
+        role: string;
+        user_status: string;
+        firebase_token: string;
+      }>("token/", formData);
 
-    // Sign in to Firebase with the custom token
-    await signInWithCustomToken(auth, firebase_token);
+      const { access_token, refresh_token, user_id, email, role, user_status, firebase_token } = response.data;
 
-    toast.success(loginSuccessTitle, {
-      description: loginSuccessDesc,
-      closeButton: true,
-    });
+      if (!access_token || !refresh_token || !firebase_token) {
+        throw new Error("Missing tokens from backend");
+      }
 
-    // Redirect based on role
-    if (role === "Admin") {
-      navigate("/admin");
-    } else if (role === "Moderator") {
-      navigate("/moderator");
-    } else {
-      navigate("/explore");
+      // Check if account is deactivated
+      if (user_status && user_status.toLowerCase() === "deactivated") {
+        // Store user data for reactivation
+        setPendingUserData({
+          access_token,
+          refresh_token,
+          user_id,
+          email,
+          role,
+          firebase_token,
+        });
+
+        // Show reactivation popup
+        setShowReactivationPopup(true);
+        return;
+      }
+
+      // Save Django tokens
+      localStorage.setItem("access_token", access_token);
+      localStorage.setItem("refresh_token", refresh_token);
+      localStorage.setItem("user_id", user_id);
+      localStorage.setItem("email", email);
+      localStorage.setItem("role", role);
+
+      // Sign in to Firebase with the custom token
+      await signInWithCustomToken(auth, firebase_token);
+
+      toast.success(loginSuccessTitle, {
+        description: loginSuccessDesc,
+        closeButton: true,
+      });
+
+      // Redirect based on role
+      if (role === "Admin") {
+        navigate("/admin");
+      } else if (role === "Moderator") {
+        navigate("/moderator");
+      } else {
+        navigate("/explore");
+      }
+    } catch (err: any) {
+      console.error("Login failed:", err);
+      toast.error(loginFailedTitle, {
+        description: err.message || loginFailedDesc,
+        closeButton: true,
+      });
     }
-
-  } catch (err: any) {
-    console.error("Login failed:", err);
-    toast.error(loginFailedTitle, {
-      description: err.message || loginFailedDesc,
-      closeButton: true,
-    });
-  }
-};
+  };
 
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (response) => {
@@ -200,6 +222,77 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
   const handleFingerprintClick = () => {
     navigate("/fingerprint-auth");
+  };
+
+  const handleReactivationConfirm = async () => {
+    if (!pendingUserData) return;
+
+    try {
+      // First, save tokens and authenticate the user
+      localStorage.setItem("access_token", pendingUserData.access_token);
+      localStorage.setItem("refresh_token", pendingUserData.refresh_token);
+      localStorage.setItem("user_id", pendingUserData.user_id);
+      localStorage.setItem("email", pendingUserData.email);
+      localStorage.setItem("role", pendingUserData.role);
+
+      // Sign in to Firebase
+      await signInWithCustomToken(auth, pendingUserData.firebase_token);
+
+      // Now reactivate the account (user is authenticated)
+      deactivateAccount(
+        {
+          userId: pendingUserData.user_id,
+          data: {
+            user_status: "active",
+            deactivated_at: undefined,
+          },
+        },
+        {
+          onSuccess: async () => {
+            // Close popup and redirect
+            setShowReactivationPopup(false);
+            setPendingUserData(null);
+
+            toast.success(reactivationSuccessTitle, {
+              description: reactivationSuccessDesc,
+              closeButton: true,
+            });
+
+            // Redirect based on role
+            if (pendingUserData.role === "Admin") {
+              navigate("/admin");
+            } else if (pendingUserData.role === "Moderator") {
+              navigate("/moderator");
+            } else {
+              navigate("/explore");
+            }
+          },
+          onError: () => {
+            // If reactivation fails, clear the tokens and show error
+            localStorage.clear();
+            toast.error(accountDeactivatedTitle, {
+              description: accountDeactivatedDesc,
+              closeButton: true,
+            });
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Reactivation failed:", error);
+      // Clear tokens if there's an error
+      localStorage.clear();
+      toast.error(accountDeactivatedTitle, {
+        description: accountDeactivatedDesc,
+        closeButton: true,
+      });
+    }
+  };
+
+  const handleReactivationCancel = () => {
+    setShowReactivationPopup(false);
+    setPendingUserData(null);
+    // Clear form
+    setFormData({ email: "", password: "" });
   };
 
   return (
@@ -307,6 +400,14 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
           {message && <SystemMessage type={message.type} message={message.text} />}
         </form>
       </div>
+
+      {/* Reactivation Confirmation Popup */}
+      <ReactivationConfirmationPopup
+        isOpen={showReactivationPopup}
+        onConfirm={handleReactivationConfirm}
+        onCancel={handleReactivationCancel}
+        userEmail={pendingUserData?.email}
+      />
     </div>
   );
 };

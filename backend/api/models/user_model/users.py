@@ -28,6 +28,7 @@ class User(Document):
     date_of_birth = DateTimeField(required=False)  
 
     blocked_users = ListField(ReferenceField('User'))
+    deactivated_at = DateTimeField(required=False, null=True)
     
     def set_password(self, password):
          self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
