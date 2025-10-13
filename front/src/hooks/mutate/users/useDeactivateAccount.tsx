@@ -38,13 +38,43 @@ const useDeactivateAccount = () => {
         // Show login modal
         setShowLoginModal(true);
       } else {
-        // Invalidate user-related queries for reactivation
+        // Invalidate ALL queries to refresh content visibility
         queryClient.invalidateQueries({ queryKey: ["user", variables.userId] });
         queryClient.invalidateQueries({ queryKey: ["userDetails", variables.userId] });
+
+        // Invalidate artwork-related queries
+        queryClient.invalidateQueries({ queryKey: ["artworks"] });
+        queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+        queryClient.invalidateQueries({ queryKey: ["artCards"] });
+        queryClient.invalidateQueries({ queryKey: ["trendingArtworks"] });
+        queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+
+        // Invalidate auction-related queries
+        queryClient.invalidateQueries({ queryKey: ["auctions"] });
+        queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
+        queryClient.invalidateQueries({ queryKey: ["followedAuctions"] });
+
+        // Invalidate exhibit-related queries
+        queryClient.invalidateQueries({ queryKey: ["exhibits"] });
+        queryClient.invalidateQueries({ queryKey: ["exhibitCards"] });
+
+        // Invalidate marketplace queries
+        queryClient.invalidateQueries({ queryKey: ["marketplace"] });
+        queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+        queryClient.invalidateQueries({ queryKey: ["followedArtworksOnSale"] });
+
+        // Invalidate search and filter queries
+        queryClient.invalidateQueries({ queryKey: ["search"] });
+        queryClient.invalidateQueries({ queryKey: ["filter"] });
+
+        // Invalidate all queries to be safe
+        queryClient.invalidateQueries();
       }
 
-      // Clear user session data
-      queryClient.removeQueries({ queryKey: ["user"] });
+      // Clear user session data only for deactivation
+      if (variables.data.user_status === "deactivated") {
+        queryClient.removeQueries({ queryKey: ["user"] });
+      }
     },
     onError: (error: any) => {
       console.error("❌ Deactivation error:", error.response?.data || error.message);

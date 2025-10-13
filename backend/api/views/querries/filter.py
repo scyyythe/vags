@@ -39,6 +39,13 @@ class ArtSearchAndFilterView(APIView):
             query &= Q(price__lte=int(max_price))
 
         artworks = Art.objects(query)
+        
+        # Get deactivated user IDs to exclude their content
+        deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
+        
+        # Exclude content from deactivated users
+        if deactivated_user_ids:
+            artworks = artworks.filter(artist__nin=deactivated_user_ids)
 
      
         serializer = ArtSerializer(artworks, many=True)

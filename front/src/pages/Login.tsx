@@ -11,6 +11,7 @@ import { signInWithCustomToken } from "firebase/auth";
 import { auth } from "@/firebase/firebaseConfig";
 import useDeactivateAccount from "@/hooks/mutate/users/useDeactivateAccount";
 import ReactivationConfirmationPopup from "@/components/auth/ReactivationConfirmationPopup";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Translation hooks
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
@@ -31,6 +32,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [pendingUserData, setPendingUserData] = useState<any>(null);
 
   const { mutate: deactivateAccount } = useDeactivateAccount();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     // Disable scrolling when the modal opens
@@ -249,6 +251,38 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         },
         {
           onSuccess: async () => {
+            // Invalidate ALL queries to refresh content visibility
+            queryClient.invalidateQueries({ queryKey: ["user", pendingUserData.user_id] });
+            queryClient.invalidateQueries({ queryKey: ["userDetails", pendingUserData.user_id] });
+
+            // Invalidate artwork-related queries
+            queryClient.invalidateQueries({ queryKey: ["artworks"] });
+            queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+            queryClient.invalidateQueries({ queryKey: ["artCards"] });
+            queryClient.invalidateQueries({ queryKey: ["trendingArtworks"] });
+            queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+
+            // Invalidate auction-related queries
+            queryClient.invalidateQueries({ queryKey: ["auctions"] });
+            queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
+            queryClient.invalidateQueries({ queryKey: ["followedAuctions"] });
+
+            // Invalidate exhibit-related queries
+            queryClient.invalidateQueries({ queryKey: ["exhibits"] });
+            queryClient.invalidateQueries({ queryKey: ["exhibitCards"] });
+
+            // Invalidate marketplace queries
+            queryClient.invalidateQueries({ queryKey: ["marketplace"] });
+            queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+            queryClient.invalidateQueries({ queryKey: ["followedArtworksOnSale"] });
+
+            // Invalidate search and filter queries
+            queryClient.invalidateQueries({ queryKey: ["search"] });
+            queryClient.invalidateQueries({ queryKey: ["filter"] });
+
+            // Invalidate all queries to be safe
+            queryClient.invalidateQueries();
+
             // Close popup and redirect
             setShowReactivationPopup(false);
             setPendingUserData(null);
