@@ -143,7 +143,7 @@ export const useTwoFactorRegenerateBackupCodes = () => {
 
 // Hook to send SMS/Email verification code
 export const useTwoFactorSendCode = () => {
-  return useMutation<{ message: string }, Error, { method: string; contact: string }>({
+  return useMutation<{ message: string; email?: string }, Error, { method: string }>({
     mutationFn: async (data) => {
       const response = await apiClient.post("/auth/2fa/send-code/", data);
       return response.data;

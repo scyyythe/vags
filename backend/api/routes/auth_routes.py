@@ -6,7 +6,8 @@ from api.views.auth.two_factor_views import (
     TwoFactorVerifyView,
     TwoFactorDisableView,
     TwoFactorBackupCodesView,
-    TwoFactorStatusView
+    TwoFactorStatusView,
+    TwoFactorSendCodeView
 )
 
 auth_urlpatterns = [
@@ -19,4 +20,5 @@ auth_urlpatterns = [
     path('auth/2fa/disable/', TwoFactorDisableView.as_view(), name='2fa-disable'),
     path('auth/2fa/backup-codes/', TwoFactorBackupCodesView.as_view(), name='2fa-backup-codes'),
     path('auth/2fa/status/', TwoFactorStatusView.as_view(), name='2fa-status'),
+    path('auth/2fa/send-code/', TwoFactorSendCodeView.as_view(), name='2fa-send-code'),
 ]

@@ -272,6 +272,12 @@ const SecuritySettings = () => {
     );
   };
 
+  // Reset disable password when dialog closes
+  const handleCloseDisableDialog = () => {
+    setIs2FADisableOpen(false);
+    setDisablePassword("");
+  };
+
   const formatDeviceInfo = (deviceString: string) => {
     // Extract browser and OS info from user agent string
     const isChrome = deviceString.includes("Chrome");
@@ -492,7 +498,7 @@ const SecuritySettings = () => {
         />
 
         {/* 2FA Disable Dialog */}
-        <Dialog open={is2FADisableOpen} onOpenChange={setIs2FADisableOpen}>
+        <Dialog open={is2FADisableOpen} onOpenChange={handleCloseDisableDialog}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle className="text-sm">Disable Two-Factor Authentication</DialogTitle>
@@ -521,7 +527,7 @@ const SecuritySettings = () => {
                 />
               </div>
               <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setIs2FADisableOpen(false)} className="text-xs">
+                <Button variant="outline" onClick={handleCloseDisableDialog} className="text-xs">
                   Cancel
                 </Button>
                 <Button

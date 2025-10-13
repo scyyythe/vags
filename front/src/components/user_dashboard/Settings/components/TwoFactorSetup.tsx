@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import apiClient from "@/utils/apiClient";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface TwoFactorSetupProps {
   isOpen: boolean;
@@ -33,6 +34,7 @@ interface SetupData {
 
 const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSuccess, currentStatus }) => {
   const { language: selectedLanguage } = useLanguage();
+  const queryClient = useQueryClient();
 
   const getAvailableMethods = () => {
     const allMethods = ["totp", "sms", "email"];
@@ -52,6 +54,20 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
   const [step, setStep] = useState<"method" | "verify" | "backup">("method");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [backupEmail, setBackupEmail] = useState("");
+
+  // Reset state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setStep("method");
+      setVerificationCode("");
+      setBackupCodes([]);
+      setShowBackupCodes(false);
+      setIsLoading(false);
+      setPhoneNumber("");
+      setBackupEmail("");
+      setSetupData({});
+    }
+  }, [isOpen]);
 
   // Auto-translated labels
   const setup2FALabel = useAutoTranslation("Set up Two-Factor Authentication", selectedLanguage);
@@ -79,7 +95,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
     "Use an authenticator app like Google Authenticator or Authy to generate time-based codes",
     selectedLanguage
   );
-  const smsDesc = useAutoTranslation("Receive verification codes via text message", selectedLanguage);
+  const smsDesc = useAutoTranslation("SMS verification (testing mode - enter any 6-digit code)", selectedLanguage);
   const emailDesc = useAutoTranslation("Receive verification codes via email", selectedLanguage);
 
   const handleMethodSelect = async (method: string) => {
@@ -109,7 +125,13 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
         setSetupData(response.data);
         setStep("verify");
       } else {
-        toast.success("Setup initiated. Please verify your contact information.");
+        if (method === "sms") {
+          toast.success("SMS setup initiated. Enter any 6-digit code to proceed (testing mode)");
+        } else if (method === "email") {
+          toast.success("Email verification code sent to your backup email address");
+        } else {
+          toast.success("Setup initiated. Please verify your contact information.");
+        }
         setStep("verify");
       }
     } catch (error: any) {
@@ -137,6 +159,8 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
         setStep("backup");
       } else {
         toast.success("Two-factor authentication enabled successfully!");
+        // Invalidate 2FA status query to refresh data
+        queryClient.invalidateQueries({ queryKey: ["twoFactorStatus"] });
         onSuccess();
         onClose();
       }
@@ -149,7 +173,25 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
 
   const handleBackupCodesComplete = () => {
     toast.success("Two-factor authentication enabled successfully!");
+    // Invalidate 2FA status query to refresh data
+    queryClient.invalidateQueries({ queryKey: ["twoFactorStatus"] });
     onSuccess();
+    onClose();
+  };
+
+  // Reset state when modal closes
+  const handleClose = () => {
+    // Reset all state to initial values
+    setStep("method");
+    setVerificationCode("");
+    setBackupCodes([]);
+    setShowBackupCodes(false);
+    setIsLoading(false);
+    setPhoneNumber("");
+    setBackupEmail("");
+    setSetupData({});
+
+    // Call the original onClose
     onClose();
   };
 
@@ -241,7 +283,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
           <TabsContent value="sms" className="space-y-4">
             <div className="border rounded-lg p-4">
               <h4 className="font-medium text-sm mb-2">{smsLabel}</h4>
-              <p className="text-sm text-gray-600 mb-4">{smsDesc}</p>
+
               <div className="space-y-2">
                 <Label htmlFor="phone" className="text-sm">
                   {phoneNumberLabel}
@@ -380,7 +422,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-base">{setup2FALabel}</DialogTitle>
@@ -393,7 +435,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
         </div>
 
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose} className="text-sm">
+          <Button variant="outline" onClick={handleClose} className="text-sm">
             {cancelLabel}
           </Button>
         </div>
