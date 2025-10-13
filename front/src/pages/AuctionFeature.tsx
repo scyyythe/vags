@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks";
-import AuctionFeatureSkeleton from "@/components/skeletons/AuctionFeatureSkeleton";
+import AuctionFeatureSkeleton from "@/components/skeletons/bidding/AuctionFeatureSkeleton";
 import { useModal } from "../context/ModalContext";
 import { formatCurrency } from "@/utils/numberFormat";
 import { useLanguage } from "@/context/LanguageContext";
@@ -75,10 +75,7 @@ const AuctionFeature = (initialTime) => {
   const highestBidAmount = featured.highest_bid?.amount;
 
   return (
-    <section
-      className="w-full max-w-7xl mx-auto py-20 px-6 md:px-12 bg-black text-white"
-      id="auctions"
-    >
+    <section className="w-full max-w-7xl mx-auto py-20 px-6 md:px-12 bg-black text-white" id="auctions">
       <div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
           <motion.div
@@ -115,26 +112,18 @@ const AuctionFeature = (initialTime) => {
                 {translatedTitle.split(" ").length > 1 ? (
                   <>
                     {translatedTitle.split(" ").slice(0, -1).join(" ")}{" "}
-                    <span className="text-[#E20B0B]">
-                      {translatedTitle.split(" ").slice(-1)}
-                    </span>
+                    <span className="text-[#E20B0B]">{translatedTitle.split(" ").slice(-1)}</span>
                   </>
                 ) : (
                   translatedTitle
                 )}
               </h2>
-              <p className="text-gray-400 text-xs mb-10">
-                {translatedDescription}
-              </p>
+              <p className="text-gray-400 text-xs mb-10">{translatedDescription}</p>
             </div>
 
             <div className="flex items-center space-x-3">
               <div className="w-7 h-7 rounded-full overflow-hidden">
-                <img
-                  src={featured.artwork.profile_picture}
-                  alt="Creator"
-                  className="w-full h-full object-cover"
-                />
+                <img src={featured.artwork.profile_picture} alt="Creator" className="w-full h-full object-cover" />
               </div>
               <div className="mb-2">
                 <p className="text-[10px] text-gray-400">{tOwnedBy}</p>
@@ -158,31 +147,23 @@ const AuctionFeature = (initialTime) => {
                 <div className="border-l border-gray-700 h-19 mx-12"></div>
 
                 <div className="flex-1 text-center">
-                  <p className="text-[11px] text-white mb-3">
-                    {tAuctionEndingIn}
-                  </p>
+                  <p className="text-[11px] text-white mb-3">{tAuctionEndingIn}</p>
                   <div className="flex text-center space-x-6">
                     <div className="text-center">
                       <p className="text-lg font-semibold mb-1">
-                        {featured.timeRemaining.hrs
-                          .toString()
-                          .padStart(2, "0")}
+                        {featured.timeRemaining.hrs.toString().padStart(2, "0")}
                       </p>
                       <p className="text-[10px] text-gray-400">{tHrs}</p>
                     </div>
                     <div className="text-center">
                       <p className="text-lg font-semibold mb-1">
-                        {featured.timeRemaining.mins
-                          .toString()
-                          .padStart(2, "0")}
+                        {featured.timeRemaining.mins.toString().padStart(2, "0")}
                       </p>
                       <p className="text-[10px] text-gray-400">{tMins}</p>
                     </div>
                     <div className="text-center">
                       <p className="text-lg font-semibold mb-1">
-                        {featured.timeRemaining.secs
-                          .toString()
-                          .padStart(2, "0")}
+                        {featured.timeRemaining.secs.toString().padStart(2, "0")}
                       </p>
                       <p className="text-[10px] text-gray-400">{tSecs}</p>
                     </div>
@@ -198,10 +179,7 @@ const AuctionFeature = (initialTime) => {
               >
                 {tPlaceBid}
               </button>
-              <button
-                className="btn-secondary flex-1 text-xs rounded-full"
-                onClick={() => setShowRegisterModal(true)}
-              >
+              <button className="btn-secondary flex-1 text-xs rounded-full" onClick={() => setShowRegisterModal(true)}>
                 {tViewItem}
               </button>
             </div>

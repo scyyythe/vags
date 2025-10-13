@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
-import BidDetailsSkeleton from "@/components/skeletons/BidDetailsSkeleton";
+import BidDetailsSkeleton from "@/components/skeletons/bidding/BidDetailsSkeleton";
 export const BidDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data: bid, error, isLoading } = useFetchBiddingArtworkById(id || "");

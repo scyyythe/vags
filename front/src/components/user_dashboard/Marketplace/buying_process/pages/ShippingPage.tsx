@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ShippingDetails from "../shipping_address/ShippingDetails";
 import useAllAddresses from "@/hooks/users/address/useAllAddresses";
-import ShippingSkeleton from "@/components/skeletons/ShippingSkeleton";
+import ShippingSkeleton from "@/components/skeletons/shipping/ShippingSkeleton";
 import useSetDefaultAddress from "@/hooks/users/address/useSetDefaultAddress";
 import { getLoggedInUserId } from "@/auth/decode";
 const ShippingPage = () => {

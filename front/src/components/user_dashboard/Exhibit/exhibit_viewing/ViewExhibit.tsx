@@ -13,7 +13,7 @@ import CommentSection from "@/components/user_dashboard/Explore/comment_sec/Comm
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import { useExhibitCardDetail } from "@/hooks/exhibit/useCardDetail";
-import ExhibitCardDetailSkeleton from "@/components/skeletons/ExhibitCardDetail";
+import ExhibitCardDetailSkeleton from "@/components/skeletons/exhibits/ExhibitCardDetail";
 import Gallery3D from "@/components/gallery/Gallery3D";
 import { useExhibitLike } from "@/hooks/interactions/exhibit_like/useExhibitLike";
 import { useExhibitCards } from "@/hooks/exhibit/useCardExihibit";

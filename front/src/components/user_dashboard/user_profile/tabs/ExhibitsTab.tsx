@@ -16,7 +16,7 @@ import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import { useMyExhibitCards } from "@/hooks/exhibit/useMyCardExhibit";
 import useUserExhibits from "@/hooks/exhibit/useUserExhibits";
 import { getLoggedInUserId } from "@/auth/decode";
-import ExhibitCardSkeleton from "@/components/skeletons/ExhibitCardSkeleton";
+import ExhibitCardSkeleton from "@/components/skeletons/exhibits/ExhibitCardSkeleton";
 import { usePendingRequests } from "@/hooks/exhibit/usePendingRequests";
 import { usePublishExhibit } from "@/hooks/mutate/exhibit/usePublishExhibit";
 import { ExhibitRequest } from "@/hooks/exhibit/usePendingRequests";

@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
-import PopularArtworksSkeleton from "@/components/skeletons/PopularArtworksSkeleton";
+import PopularArtworksSkeleton from "@/components/skeletons/artworks/PopularArtworksSkeleton";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLanguage } from "@/context/LanguageContext";
 

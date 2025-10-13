@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 import { format } from "date-fns";
-import ArtworkSummarySkeleton from "@/components/skeletons/ArtworkSummarySkeleton";
+import ArtworkSummarySkeleton from "@/components/skeletons/artworks/ArtworkSummarySkeleton";
 export const ArtworkSummary: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data: artworkData, error, isLoading } = useFetchBiddingArtworkById(id);

@@ -10,7 +10,7 @@ import ArtVideoShowcase from "@/components/user_dashboard/Explore/gallery/Artwor
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
-import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
 import { useSearchParams } from "react-router-dom";
 import TrendingFollowingSection from "@/components/user_dashboard/Explore/navigation/trend_following/TrendingSection";
 import FollowingSection from "@/components/user_dashboard/Explore/navigation/trend_following/FollowingSection";

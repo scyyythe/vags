@@ -3,7 +3,10 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatHeader } from "./ChatHeader";
 import { ConversationList } from "./ConversationList";
-import { ConversationListSkeleton, ConversationLoadingSkeleton } from "../../../skeletons/ConversationListSkeleton";
+import {
+  ConversationListSkeleton,
+  ConversationLoadingSkeleton,
+} from "../../../skeletons/messages/ConversationListSkeleton";
 import { MessagesList } from "./MessagesList";
 import { MessageInput } from "./MessageInput";
 import { Conversation, Message } from "./types/types";

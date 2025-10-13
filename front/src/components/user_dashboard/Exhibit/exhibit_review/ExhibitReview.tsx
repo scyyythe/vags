@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { useExhibitReview } from "@/hooks/exhibit/useExhibitReview";
 import { usePublishExhibit } from "@/hooks/mutate/exhibit/usePublishExhibit";
-import ExhibitReviewSkeleton from "@/components/skeletons/ExhibitReviewSkeleton";
+import ExhibitReviewSkeleton from "@/components/skeletons/exhibits/ExhibitReviewSkeleton";
 interface Collaborator {
   id: number;
   name: string;

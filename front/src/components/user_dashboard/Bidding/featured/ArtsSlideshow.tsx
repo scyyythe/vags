@@ -8,7 +8,7 @@ import usePopularAuctions from "@/hooks/auction/featured/usePopularAuctions";
 import CountdownDisplay from "./CountdownDisplay";
 import { Artwork } from "@/hooks/artworks/owner/useMyArtworks";
 import { User } from "@/hooks/users/useUserQuery";
-import FeaturedAuctionSkeleton from "@/components/skeletons/FeaturedAuction";
+import FeaturedAuctionSkeleton from "@/components/skeletons/bidding/FeaturedAuction";
 import { formatCurrency } from "@/utils/numberFormat";
 interface ArtSlideshowProps {
   artworks?: Artwork[];
