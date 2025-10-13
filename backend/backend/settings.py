@@ -249,15 +249,16 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
     }
-# # CACHES = {
-# #     "default": {
-# #         "BACKEND": "django_redis.cache.RedisCache",
-# #        "LOCATION": "redis://redis:6379/1",  
-# #         "OPTIONS": {
-# #             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-# #         }
-# #     }
-# }
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+        "OPTIONS": {
+            "MAX_ENTRIES": 1000,
+            "CULL_FREQUENCY": 3,
+        }
+    }
+}
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,
