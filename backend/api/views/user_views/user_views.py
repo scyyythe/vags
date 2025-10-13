@@ -210,7 +210,8 @@ class CustomTokenObtainPairView(APIView):
             "user_id": str(user.id),
             "email": user.email,
             "role": user.role,
-            "user_status": user.user_status
+            "user_status": user.user_status,
+            "scheduled_for_deletion": user.scheduled_for_deletion.isoformat() if user.scheduled_for_deletion else None
         }, status=status.HTTP_200_OK)
 
 

@@ -5,11 +5,12 @@ import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
 import useDeactivateAccount from "@/hooks/mutate/users/useDeactivateAccount";
+import useSoftDeleteAccount from "@/hooks/mutate/users/useSoftDeleteAccount";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { toast } from "sonner";
-import DeleteConfirmationPopup from "../components/delete_deact_modals/DeleteConfirmationPopup";
 import DeactivateConfirmationPopup from "../components/delete_deact_modals/DeactivateConfirmationPopup";
+import SoftDeleteConfirmationPopup from "../components/delete_deact_modals/SoftDeleteConfirmationPopup";
 
 const AccountDetails = () => {
   const userId = getLoggedInUserId();
@@ -17,10 +18,21 @@ const AccountDetails = () => {
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isValidFullName = (fullName: string) => /^[a-zA-Z]+(?: [a-zA-Z]+)+$/.test(fullName.trim());
 
-  const { firstName, lastName, gender, address, dateOfBirth, email, userStatus, isLoading, error } =
-    useUserDetails(userId);
+  const {
+    firstName,
+    lastName,
+    gender,
+    address,
+    dateOfBirth,
+    email,
+    userStatus,
+    scheduledForDeletion,
+    isLoading,
+    error,
+  } = useUserDetails(userId);
   const { mutate: updateUser } = useUpdateUserDetails();
   const { mutate: deactivateAccount } = useDeactivateAccount();
+  const { mutate: softDeleteAccount } = useSoftDeleteAccount();
 
   const { language: selectedLanguage } = useLanguage();
 
@@ -37,7 +49,7 @@ const AccountDetails = () => {
 
   // Popups
   const [showDeactivatePopup, setShowDeactivatePopup] = useState(false);
-  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [showSoftDeletePopup, setShowSoftDeletePopup] = useState(false);
 
   // Translations
   const accountInfoLabel = useAutoTranslation("Account Information", selectedLanguage);
@@ -68,7 +80,7 @@ const AccountDetails = () => {
   const deactivateBtn = useAutoTranslation("Deactivate Account", selectedLanguage);
   const deleteAccountLabel = useAutoTranslation("Delete your data and account", selectedLanguage);
   const deleteDesc = useAutoTranslation(
-    "Permanently remove your account from the system, including all uploaded artworks, favorites, exhibition history, and profile details. This action is irreversible and your data cannot be recovered once deleted.",
+    "Schedule your account for deletion in 60 days. You can cancel this anytime by logging in again before the deletion date. After 60 days, your account and all data will be permanently deleted.",
     selectedLanguage
   );
   const deleteBtn = useAutoTranslation("Delete Account", selectedLanguage);
@@ -229,8 +241,8 @@ const AccountDetails = () => {
             <div className="grid grid-cols-2 gap-10">
               <p className="text-gray-600 mb-4 text-[11px]">{deleteDesc}</p>
               <button
-                onClick={() => setShowDeletePopup(true)}
-                className="bg-gray-200 font-medium text-[10px] hover:bg-gray-300 text-gray-800 rounded-sm w-32 h-9"
+                onClick={() => setShowSoftDeletePopup(true)}
+                className="bg-red-200 font-medium text-[10px] hover:bg-red-300 text-red-800 rounded-sm w-32 h-9"
               >
                 {deleteBtn}
               </button>
@@ -280,13 +292,20 @@ const AccountDetails = () => {
         }}
       />
 
-      <DeleteConfirmationPopup
-        isOpen={showDeletePopup}
-        onCancel={() => setShowDeletePopup(false)}
+      <SoftDeleteConfirmationPopup
+        isOpen={showSoftDeletePopup}
+        onCancel={() => setShowSoftDeletePopup(false)}
         onConfirm={() => {
-          toast.success("Your account has been deleted successfully.", { closeButton: true });
-          setShowDeletePopup(false);
+          setShowSoftDeletePopup(false);
+
+          softDeleteAccount({
+            userId,
+            data: {
+              action: "schedule_deletion",
+            },
+          });
         }}
+        user={{ userStatus: userStatus, scheduledForDeletion: scheduledForDeletion }}
       />
     </div>
   );

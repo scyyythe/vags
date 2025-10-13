@@ -19,6 +19,7 @@ class UserSerializer(serializers.Serializer):
     role = serializers.CharField(max_length=100, required=False, allow_blank=True)
     user_status = serializers.CharField(max_length=100, required=False, allow_blank=True)
     deactivated_at = serializers.DateTimeField(required=False, allow_null=True)
+    scheduled_for_deletion = serializers.DateTimeField(required=False, allow_null=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     gender = serializers.ChoiceField(choices=["Male", "Female", "Other"], required=False, allow_null=True)
@@ -134,7 +135,7 @@ class UserSerializer(serializers.Serializer):
       
         for field in [
             "username", "email", "first_name", "last_name", "role", "user_status",
-            "gender", "date_of_birth", "bio", "contact_number", "address", "deactivated_at"
+            "gender", "date_of_birth", "bio", "contact_number", "address", "deactivated_at", "scheduled_for_deletion"
         ]:
             if field in validated_data:
                 setattr(instance, field, validated_data[field])
@@ -155,6 +156,7 @@ class UserSerializer(serializers.Serializer):
             "role": instance.role,
             "user_status": instance.user_status,
             "deactivated_at": instance.deactivated_at,
+            "scheduled_for_deletion": instance.scheduled_for_deletion,
             "created_at": instance.created_at,
             "updated_at": instance.updated_at,
             "gender": instance.gender,
