@@ -308,11 +308,12 @@ class ArtBulkListView(generics.ListAPIView):
         if self.request.user.is_authenticated and hasattr(self.request.user, 'blocked_users'):
             blocked_user_ids = [user.id for user in self.request.user.blocked_users]
 
-        # Get deactivated user IDs to exclude their content
+        # Get deactivated and scheduled for deletion user IDs to exclude their content
         deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
+        scheduled_deletion_user_ids = User.objects(user_status__iexact="scheduled_for_deletion").scalar('id')
         
-        # Combine blocked and deactivated user IDs
-        all_excluded_ids = list(blocked_user_ids) + list(deactivated_user_ids)
+        # Combine blocked, deactivated, and scheduled deletion user IDs
+        all_excluded_ids = list(blocked_user_ids) + list(deactivated_user_ids) + list(scheduled_deletion_user_ids)
         
         artworks = Art.objects(
             visibility__iexact="public",
