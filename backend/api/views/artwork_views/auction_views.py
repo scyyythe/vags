@@ -18,12 +18,23 @@ class LightweightAuctionListView(APIView):
 
         skip = (page - 1) * limit
 
+        # Get deactivated user IDs to exclude their content
+        from api.models.user_model.users import User
+        deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
+        
         auctions = (
             Auction.objects(status=AuctionStatus.ON_GOING.value, visibility__ne="Deleted")
             .order_by("-created_at")
             .skip(skip)
             .limit(limit)
         )
+        
+        # Filter out auctions from deactivated users
+        if deactivated_user_ids:
+            from api.models.artwork_model.artwork import Art
+            valid_artworks = Art.objects(artist__nin=deactivated_user_ids).only("id")
+            valid_artwork_ids = [art.id for art in valid_artworks]
+            auctions = auctions.filter(artwork__in=valid_artwork_ids)
 
         data = LightweightAuctionCardSerializer(auctions, many=True).data
         return Response(data, status=status.HTTP_200_OK)

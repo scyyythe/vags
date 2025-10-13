@@ -18,8 +18,19 @@ type Social = {
 
 const EditProfile = () => {
   const userId = getLoggedInUserId();
-  const { username, firstName, email, lastName, profilePicture, cover_photo, isLoading, error } =
-    useUserDetails(userId);
+  const {
+    username,
+    firstName,
+    email,
+    lastName,
+    profilePicture,
+    cover_photo,
+    gender,
+    dateOfBirth,
+    address,
+    isLoading,
+    error,
+  } = useUserDetails(userId);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
   const { mutate: updateUser } = useUpdateUserDetails();
@@ -85,6 +96,7 @@ const EditProfile = () => {
   useEffect(() => {
     if (!isLoading && !error && firstName && lastName && username) {
       const fullName = `${firstName} ${lastName}`;
+
       const updatedForm = {
         fullName,
         username,
@@ -345,7 +357,7 @@ const EditProfile = () => {
             <div className="relative w-32 h-32">
               <img
                 src={formData.profile_picture ? URL.createObjectURL(formData.profile_picture) : profilePicture}
-                alt="Profile" 
+                alt="Profile"
                 className="w-32 h-32 rounded-full object-cover"
               />
               <button

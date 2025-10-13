@@ -13,6 +13,7 @@ import DeactivateConfirmationPopup from "../components/delete_deact_modals/Deact
 
 const AccountDetails = () => {
   const userId = getLoggedInUserId();
+
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isValidFullName = (fullName: string) => /^[a-zA-Z]+(?: [a-zA-Z]+)+$/.test(fullName.trim());
 
@@ -49,8 +50,8 @@ const AccountDetails = () => {
   const translatedFullName = useAutoTranslation(formData.fullName || "Unknown", selectedLanguage);
   const translatedDateOfBirth = useAutoTranslation(formData.date_of_birth || "N/A", selectedLanguage);
   const translatedCountry = useAutoTranslation(formData.country || "Philippines", selectedLanguage);
-  const translatedEmail = useAutoTranslation(formData.email || "Unknown", selectedLanguage);
-  const translatedGender = useAutoTranslation(formData.gender || "Unknown", selectedLanguage);
+  const translatedEmail = useAutoTranslation(email || "Unknown", selectedLanguage);
+  const translatedGender = useAutoTranslation(gender || "Unknown", selectedLanguage);
   const translatedLanguage = useAutoTranslation(formData.language || "English", selectedLanguage);
 
   const deactivationDeletionLabel = useAutoTranslation("Deactivation and Deletion", selectedLanguage);
