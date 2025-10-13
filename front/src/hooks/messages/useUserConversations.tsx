@@ -126,6 +126,15 @@ export const useUserConversations = (userId: string) => {
         // Get the unread count for this specific user
         const userUnreadCount = data.unread && data.unread[userId] ? data.unread[userId] : 0;
 
+        // Get individual user settings
+        const mutedBy = data.mutedBy || [];
+        const pinnedBy = data.pinnedBy || [];
+        const archivedBy = data.archivedBy || [];
+
+        const isUserMuted = mutedBy.includes(userId);
+        const isUserPinned = pinnedBy.includes(userId);
+        const isUserArchived = archivedBy.includes(userId);
+
         convs.push({
           id: docSnap.id,
           participantId: firstParticipant,
@@ -134,13 +143,16 @@ export const useUserConversations = (userId: string) => {
           lastMessage: isRevivedConversation ? "New message" : data.lastMessage,
           lastMessageTime: data.lastMessageTime?.toDate?.() ?? new Date(),
           unreadCount: isRevivedConversation ? 1 : userUnreadCount,
-          isArchived: data.isArchived || false,
-          isPinned: data.isPinned || false,
-          isMuted: data.isMuted || false,
+          isArchived: isUserArchived,
+          isPinned: isUserPinned,
+          isMuted: isUserMuted,
           isOnline: true,
           messages: messages, // Messages are already filtered based on deletion timestamp
           deletedBy: deletedBy,
           deletedAt: data.deletedAt || {},
+          mutedBy: mutedBy,
+          pinnedBy: pinnedBy,
+          archivedBy: archivedBy,
           isRevived: isRevivedConversation, // Add flag to indicate this is a revived conversation
         });
       }

@@ -95,17 +95,7 @@ export const ConversationList = ({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-1">
                     <p className="text-[10px] text-gray-600 truncate pr-2">{conversation.lastMessage}</p>
-                    {conversation.isRevived && (
-                      <span className="inline-flex items-center px-1 py-0.5 text-[8px] font-medium leading-none text-green-700 bg-green-100 rounded">
-                        New
-                      </span>
-                    )}
                   </div>
-                  {conversation.unreadCount > 0 && (
-                    <span className="inline-flex items-center justify-center px-2 py-1 text-[9px] font-medium leading-none text-white bg-blue-600 rounded-full">
-                      {conversation.unreadCount}
-                    </span>
-                  )}
                 </div>
               </div>
 
