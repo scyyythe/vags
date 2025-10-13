@@ -232,8 +232,33 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       }
     } catch (err: any) {
       console.error("Login failed:", err);
+
+      // Handle account lockout
+      if (err.response?.status === 423) {
+        const errorData = err.response.data;
+        const minutesRemaining = errorData.minutes_remaining || 30;
+        toast.error("Account Locked", {
+          description: `Your account has been temporarily locked due to multiple failed login attempts. Please try again in ${minutesRemaining} minutes.`,
+          closeButton: true,
+          duration: 8000,
+        });
+        return;
+      }
+
+      // Handle failed login attempts (before lockout)
+      if (err.response?.status === 401 && err.response?.data?.failed_attempts) {
+        const errorData = err.response.data;
+        const attemptsRemaining = errorData.attempts_remaining || 0;
+        toast.error("Invalid Credentials", {
+          description: `Incorrect email or password. ${attemptsRemaining} attempts remaining before account lockout.`,
+          closeButton: true,
+        });
+        return;
+      }
+
+      // Handle other login errors
       toast.error(loginFailedTitle, {
-        description: err.message || loginFailedDesc,
+        description: err.response?.data?.error || err.message || loginFailedDesc,
         closeButton: true,
       });
     }
