@@ -85,11 +85,20 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
             type="single"
             value={exhibitType}
             onValueChange={(value) => {
-              // Prevent switching if in edit mode:
-              if (isEditMode && isSoloOriginal && value === "collab") return;
-              if (isEditMode && !isSoloOriginal && value === "solo") return;
+              // Prevent switching from solo to collab in edit mode
+              if (isEditMode && isSoloOriginal && value === "collab") {
+                return; // Don't allow changing from solo to collaborative
+              }
+              // Allow changing from collab to solo in edit mode
+              if (isEditMode && !isSoloOriginal && value === "solo") {
+                handleExhibitTypeChange(value);
+                return;
+              }
 
-              handleExhibitTypeChange(value);
+              // Allow all changes in create mode
+              if (!isEditMode) {
+                handleExhibitTypeChange(value);
+              }
             }}
             className="mt-1.5 gap-9"
           >
@@ -108,6 +117,16 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
               Collaborative
             </ToggleGroupItem>
           </ToggleGroup>
+
+          {/* Show warning message for solo exhibits in edit mode */}
+          {isEditMode && isSoloOriginal && (
+            <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-md">
+              <p className="text-[10px] text-amber-700">
+                <strong>Note:</strong> Solo exhibits cannot be changed to collaborative exhibits. To create a
+                collaborative exhibit, please create a new exhibit instead.
+              </p>
+            </div>
+          )}
         </div>
       )}
 
@@ -220,6 +239,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
                 onClick={onAddCollaborator}
                 disabled={collaborators.length >= 2}
                 style={{ fontSize: "10px" }}
+                title={collaborators.length >= 2 ? "Maximum 2 collaborators allowed" : "Add a new collaborator"}
               >
                 <i className="bx bx-plus text-xs"></i> Add
               </Button>
@@ -243,13 +263,21 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
                           `${artist.first_name?.[0] || ""}`.toUpperCase()
                         )}
                       </Avatar>
-                      <span className="text-[10px]">
-                        {artist.first_name} {artist.last_name || ""}
-                      </span>
+                      <div className="flex flex-col">
+                        <span className="text-[10px]">
+                          {artist.first_name} {artist.last_name || ""}
+                        </span>
+                        {isEditMode && status.filled === 0 && (
+                          <span className="text-[9px] text-amber-600 font-medium">New</span>
+                        )}
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      {(viewMode === "review" || viewMode === "monitoring" || viewMode === "preview") && (
+                      {(viewMode === "review" ||
+                        viewMode === "monitoring" ||
+                        viewMode === "preview" ||
+                        (viewMode === "owner" && isEditMode)) && (
                         <div className="flex items-center gap-1 text-[10px]">
                           <span>
                             {status.filled}/{status.total}
@@ -262,16 +290,25 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
                           </div>
                         </div>
                       )}
-                      {viewMode === "owner" && !isReadOnly && !isEditMode && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-6 w-6 p-0 rounded-full"
-                          onClick={() => onRemoveCollaborator(artist)}
-                        >
-                          <i className="bx bx-x"></i>
-                        </Button>
-                      )}
+                      {viewMode === "owner" &&
+                        !isReadOnly &&
+                        // In edit mode: only show remove button if collaborator hasn't submitted any artworks
+                        // In create mode: show remove button for all collaborators
+                        (!isEditMode || status.filled === 0) && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-6 w-6 p-0 rounded-full hover:bg-red-100 hover:text-red-600"
+                            onClick={() => onRemoveCollaborator(artist)}
+                            title={
+                              isEditMode && status.filled === 0
+                                ? "Remove newly added collaborator"
+                                : "Remove collaborator"
+                            }
+                          >
+                            <i className="bx bx-x text-xs"></i>
+                          </Button>
+                        )}
                     </div>
                   </div>
                 );
@@ -280,6 +317,17 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
           ) : (
             <div className="text-[10px] text-muted-foreground py-2 p-4 text-center">
               No collaborators added yet. Add up to 2 collaborators.
+            </div>
+          )}
+
+          {/* Info message for edit mode */}
+          {isEditMode && viewMode === "owner" && collaborators.length > 0 && (
+            <div className="mt-2 p-2 bg-blue-50 rounded-md">
+              <p className="text-[9px] text-blue-700">
+                <i className="bx bx-info-circle mr-1"></i>
+                Only newly added collaborators who haven't submitted artworks can be removed. Adding collaborators may
+                automatically switch to a larger environment.
+              </p>
             </div>
           )}
         </div>

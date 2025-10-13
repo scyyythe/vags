@@ -105,7 +105,17 @@ const fetchArtworks = async (
           month: "long",
           day: "numeric",
         }),
-        artworkImage: artwork.image_url,
+        artworkImage: (() => {
+          // Check if artworkImage is valid (not empty, not 'h')
+          const isValidArtworkImage =
+            artwork.artworkImage && artwork.artworkImage !== "" && artwork.artworkImage !== "h";
+
+          return isValidArtworkImage
+            ? artwork.artworkImage
+            : Array.isArray(artwork.image_url)
+            ? artwork.image_url[0]
+            : artwork.image_url;
+        })(),
         likesCount: artwork.likes_count,
         art_status: artwork.art_status,
         default_paypal_email: artwork.default_paypal_email,

@@ -105,9 +105,6 @@ class CollaboratorExhibitViewSerializer(serializers.Serializer):
         owner_slots.sort()
         
         # Add owner's artworks first (limit to only show unique artworks, no duplicates)
-        print(f"🔍 CollaboratorView - Owner has {len(obj.artworks) if hasattr(obj, 'artworks') and obj.artworks else 0} artworks")
-        print(f"🔍 CollaboratorView - Owner slots: {owner_slots}")
-        
         if hasattr(obj, 'artworks') and obj.artworks:
             seen_artwork_ids = set()
             unique_artworks = []
@@ -118,12 +115,8 @@ class CollaboratorExhibitViewSerializer(serializers.Serializer):
                     seen_artwork_ids.add(artwork.id)
                     unique_artworks.append(artwork)
             
-            print(f"🔍 CollaboratorView - Unique artworks count: {len(unique_artworks)}")
-            print(f"🔍 CollaboratorView - Owner slots count: {len(owner_slots)}")
-            
             # Show ALL unique artworks in owner's assigned slots
             for i, artwork in enumerate(unique_artworks):
-                print(f"🔍 CollaboratorView - Processing artwork {i}: {artwork.id if artwork else 'None'}")
                 if artwork and i < len(owner_slots):  # Check if artwork exists and we have a slot for it
                     try:
                         # Create a safe artwork data structure
@@ -144,6 +137,7 @@ class CollaboratorExhibitViewSerializer(serializers.Serializer):
                             "created_at": str(getattr(artwork, 'created_at', obj.created_at)),
                             "updated_at": str(getattr(artwork, 'updated_at', obj.created_at)),
                             "image_url": getattr(artwork, 'image_url', ''),
+                            "artworkImage": self._get_artwork_image(artwork),
                             "likes_count": getattr(artwork, 'likes_count', 0),
                             "edition": getattr(artwork, 'edition', None),
                             "year_created": getattr(artwork, 'year_created', None),
@@ -161,16 +155,9 @@ class CollaboratorExhibitViewSerializer(serializers.Serializer):
                             "contributed_at": obj.created_at
                         }
                         slots.append(slot_data)
-                        print(f"✅ CollaboratorView - Added artwork {i} to slot {owner_slots[i]}")
                     except Exception as e:
-                        print(f"❌ CollaboratorView - Error serializing artwork {i}: {str(e)}")
                         # Skip this artwork if it can't be serialized
                         continue
-                else:
-                    if not artwork:
-                        print(f"❌ CollaboratorView - Artwork {i} is None")
-                    if i >= len(owner_slots):
-                        print(f"❌ CollaboratorView - Artwork {i} index {i} >= owner_slots length {len(owner_slots)}")
         
         # Add collaborators' contributions
         contributions = ExhibitContribution.objects(exhibit=obj)
@@ -193,6 +180,20 @@ class CollaboratorExhibitViewSerializer(serializers.Serializer):
                     # Skip this artwork if it can't be serialized
                     continue
         return slots
+
+    def _get_artwork_image(self, artwork):
+        """Helper method to extract artwork image"""
+        image_url = getattr(artwork, 'image_url', '')
+        
+        if image_url:
+            if isinstance(image_url, list) and len(image_url) > 0:
+                return image_url[0]
+            elif isinstance(image_url, str):
+                return image_url
+            else:
+                return ''
+        else:
+            return ''
 
 
 

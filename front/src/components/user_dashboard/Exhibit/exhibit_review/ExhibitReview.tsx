@@ -280,42 +280,94 @@ const ExhibitReview = () => {
               </div>
 
               <div className="grid grid-cols-3 gap-2">
-                {exhibit.slots?.map((slot: any, index: number) => (
-                  <div
-                    key={index}
-                    className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start"
-                  >
-                    {slot.artwork?.image_url ? (
-                      <img
-                        src={Array.isArray(slot.artwork.image_url) ? slot.artwork.image_url[0] : slot.artwork.image_url}
-                        alt={slot.artwork.title || "Artwork"}
-                        className="w-full h-16 object-cover rounded-sm mb-1"
-                      />
-                    ) : (
-                      <div className="w-full h-16 bg-gray-100 border-2 border-dashed border-gray-300 rounded-sm mb-1 flex items-center justify-center">
-                        <p className="text-[8px] text-gray-400">Empty</p>
-                      </div>
-                    )}
-                    <p className="text-[8px] text-gray-500 truncate w-full">{slot.contributor?.name || "Unknown"}</p>
-                  </div>
-                ))}
+                {/* Check if new slot structure exists, otherwise use old structure */}
+                {exhibit.slot_owner_map && exhibit.slot_artwork_map
+                  ? /* New structure: Generate slots based on slot_owner_map/slot_artwork_map */
+                    Array.from({
+                      length: exhibit.chosen_env === 1 ? 4 : exhibit.chosen_env === 2 ? 6 : 10,
+                    }).map((_, index) => {
+                      const slotNumber = index + 1;
+                      const slotId = slotNumber.toString();
+                      const artworkId = exhibit.slot_artwork_map[slotId];
+                      const ownerId = exhibit.slot_owner_map[slotId];
 
-                {/* Show empty slots if there are fewer artworks than total slots */}
-                {Array.from({
-                  length: Math.max(
-                    0,
-                    (exhibit.chosen_env === 1 ? 4 : exhibit.chosen_env === 2 ? 6 : 10) - (exhibit.slots?.length || 0)
-                  ),
-                }).map((_, index) => (
-                  <div
-                    key={`empty-${index}`}
-                    className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start"
-                  >
-                    <div className="w-full h-16 bg-gray-100 border-2 border-dashed border-gray-300 rounded-sm mb-1 flex items-center justify-center">
-                      <p className="text-[8px] text-gray-400">Empty</p>
-                    </div>
-                  </div>
-                ))}
+                      // Find the person who owns this slot
+                      const slotOwner =
+                        ownerId === exhibit.owner.id
+                          ? exhibit.owner
+                          : exhibit.collaborators?.find((collab: any) => collab.id === ownerId);
+
+                      // Find the artwork data if it exists
+                      const artwork = artworkId
+                        ? exhibit.artworks?.find((art: any) => art.id === artworkId) ||
+                          // Also check in collaborator contributions if not found in main artworks
+                          exhibit.slots?.find((slot: any) => slot.artwork?.id === artworkId)?.artwork
+                        : null;
+
+                      return (
+                        <div
+                          key={slotNumber}
+                          className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start"
+                        >
+                          {artwork?.image_url ? (
+                            <img
+                              src={Array.isArray(artwork.image_url) ? artwork.image_url[0] : artwork.image_url}
+                              alt={artwork.title || "Artwork"}
+                              className="w-full h-16 object-cover rounded-sm mb-1"
+                            />
+                          ) : (
+                            <div className="w-full h-16 bg-gray-100 border-2 border-dashed border-gray-300 rounded-sm mb-1 flex items-center justify-center">
+                              <p className="text-[8px] text-gray-400">Empty</p>
+                            </div>
+                          )}
+                          <p className="text-[8px] text-gray-500 truncate w-full">{slotOwner?.name || "Unknown"}</p>
+                        </div>
+                      );
+                    })
+                  : /* Old structure: Show all slots with proper distribution for new collaborators */
+                    Array.from({
+                      length: exhibit.chosen_env === 1 ? 4 : exhibit.chosen_env === 2 ? 6 : 10,
+                    }).map((_, index) => {
+                      const slotNumber = index + 1;
+
+                      // Check if this slot has an existing artwork
+                      const existingSlot = exhibit.slots?.find((slot: any) => slot.slot_number === slotNumber);
+
+                      if (existingSlot && existingSlot.artwork) {
+                        // Show existing slot with artwork
+                        return (
+                          <div
+                            key={slotNumber}
+                            className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start"
+                          >
+                            <img
+                              src={
+                                Array.isArray(existingSlot.artwork.image_url)
+                                  ? existingSlot.artwork.image_url[0]
+                                  : existingSlot.artwork.image_url
+                              }
+                              alt={existingSlot.artwork.title || "Artwork"}
+                              className="w-full h-16 object-cover rounded-sm mb-1"
+                            />
+                            <p className="text-[8px] text-gray-500 truncate w-full">
+                              {existingSlot.contributor?.name || "Unknown"}
+                            </p>
+                          </div>
+                        );
+                      } else {
+                        // Show empty slot for new collaborators
+                        return (
+                          <div
+                            key={slotNumber}
+                            className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start"
+                          >
+                            <div className="w-full h-16 bg-gray-100 border-2 border-dashed border-gray-300 rounded-sm mb-1 flex items-center justify-center">
+                              <p className="text-[8px] text-gray-400">Empty</p>
+                            </div>
+                          </div>
+                        );
+                      }
+                    })}
               </div>
             </Card>
           </div>
