@@ -42,10 +42,12 @@ class ArtSearchAndFilterView(APIView):
         
         # Get deactivated user IDs to exclude their content
         deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
+        scheduled_deletion_user_ids = User.objects(user_status__iexact="scheduled_for_deletion").scalar('id')
         
-        # Exclude content from deactivated users
-        if deactivated_user_ids:
-            artworks = artworks.filter(artist__nin=deactivated_user_ids)
+        # Exclude content from deactivated and scheduled for deletion users
+        if deactivated_user_ids or scheduled_deletion_user_ids:
+            excluded_user_ids = list(deactivated_user_ids) + list(scheduled_deletion_user_ids)
+            artworks = artworks.filter(artist__nin=excluded_user_ids)
 
      
         serializer = ArtSerializer(artworks, many=True)
