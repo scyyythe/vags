@@ -21,6 +21,7 @@ class LightweightAuctionListView(APIView):
         # Get deactivated user IDs to exclude their content
         from api.models.user_model.users import User
         deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
+        scheduled_deletion_user_ids = User.objects(user_status__iexact="scheduled_for_deletion").scalar('id')
         
         auctions = (
             Auction.objects(status=AuctionStatus.ON_GOING.value, visibility__ne="Deleted")
@@ -29,10 +30,11 @@ class LightweightAuctionListView(APIView):
             .limit(limit)
         )
         
-        # Filter out auctions from deactivated users
-        if deactivated_user_ids:
+        # Filter out auctions from deactivated and scheduled for deletion users
+        if deactivated_user_ids or scheduled_deletion_user_ids:
             from api.models.artwork_model.artwork import Art
-            valid_artworks = Art.objects(artist__nin=deactivated_user_ids).only("id")
+            excluded_user_ids = list(deactivated_user_ids) + list(scheduled_deletion_user_ids)
+            valid_artworks = Art.objects(artist__nin=excluded_user_ids).only("id")
             valid_artwork_ids = [art.id for art in valid_artworks]
             auctions = auctions.filter(artwork__in=valid_artwork_ids)
 
