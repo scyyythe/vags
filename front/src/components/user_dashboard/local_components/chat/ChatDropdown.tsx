@@ -552,6 +552,68 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     );
   };
 
+  const addReaction = async (messageId: string, emoji: string) => {
+    if (!selectedConversation) return;
+
+    try {
+      // Get current reactions from Firebase messages first, then fallback to local
+      const firebaseMsg = firebaseMessages?.find((msg: any) => msg.id === messageId);
+      const currentReactions = Array.isArray(firebaseMsg?.reactions) ? firebaseMsg.reactions : [];
+
+      // Check if user already reacted with this emoji
+      const existingReactionIndex = currentReactions.findIndex(
+        (r: any) => r.emoji === emoji && r.users.includes(userId)
+      );
+
+      let updatedReactions;
+      if (existingReactionIndex >= 0) {
+        // Remove reaction
+        const reaction = currentReactions[existingReactionIndex];
+        reaction.users = reaction.users.filter((id: string) => id !== userId);
+
+        if (reaction.users.length === 0) {
+          // Remove the entire reaction if no users left
+          updatedReactions = currentReactions.filter((_: any, index: number) => index !== existingReactionIndex);
+        } else {
+          updatedReactions = [...currentReactions];
+          updatedReactions[existingReactionIndex] = reaction;
+        }
+      } else {
+        // Add reaction
+        const existingEmojiIndex = currentReactions.findIndex((r: any) => r.emoji === emoji);
+
+        if (existingEmojiIndex >= 0) {
+          // Add user to existing emoji reaction
+          updatedReactions = [...currentReactions];
+          updatedReactions[existingEmojiIndex].users.push(userId);
+        } else {
+          // Create new emoji reaction
+          updatedReactions = [...currentReactions, { emoji, users: [userId] }];
+        }
+      }
+
+      // Update Firebase
+      const messageRef = doc(db, "conversations", selectedConversation, "messages", messageId);
+      await updateDoc(messageRef, { reactions: updatedReactions });
+
+      // Update local state optimistically
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === selectedConversation
+            ? {
+                ...conv,
+                messages: (conv.messages || []).map((msg) =>
+                  msg.id === messageId ? { ...msg, reactions: updatedReactions } : msg
+                ),
+              }
+            : conv
+        )
+      );
+    } catch (error) {
+      console.error("Failed to add reaction:", error);
+    }
+  };
+
   const deleteMessage = (messageId: string) => {
     if (!selectedConversation) return;
     setConversations((prev) =>
@@ -693,6 +755,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                 onStarMessage={starMessage}
                 onDeleteMessage={deleteMessage}
                 onSetReactionPicker={setShowReactionPicker}
+                onAddReaction={addReaction}
               />
             ) : directMessageMode && loadingConversation ? (
               <ConversationLoadingSkeleton />
