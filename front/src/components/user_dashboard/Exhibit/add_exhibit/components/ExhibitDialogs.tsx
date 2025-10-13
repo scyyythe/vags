@@ -44,7 +44,11 @@ const ExhibitDialogs: React.FC<ExhibitDialogsProps> = ({
               {collaboratorToRemove
                 ? `${collaboratorToRemove.first_name || ""} ${collaboratorToRemove.last_name || ""}`.trim()
                 : ""}
-              from this exhibit? Their slot assignments will be redistributed.
+              from this exhibit?
+              <br />
+              <span className="text-amber-600 font-medium">
+                Their slot assignments will be redistributed among remaining participants.
+              </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

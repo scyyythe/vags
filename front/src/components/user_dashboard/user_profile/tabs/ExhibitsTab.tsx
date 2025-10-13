@@ -318,15 +318,24 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                     {/* Conditional Button */}
                     {req.isOwner ? (
                       req.type === "ready" ? (
-                        <button
-                          onClick={() => {
-                            setSelectedExhibit(req);
-                            setShowPublishDialog(true);
-                          }}
-                          className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-green-600 hover:bg-green-700 flex items-center justify-center"
-                        >
-                          Publish
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => navigate(`/exhibitreview?id=${req.exhibitId}`)}
+                            className="h-6 text-[9px] text-gray-600 px-2 py-1 rounded-full border border-gray-300 hover:bg-gray-50 flex items-center justify-center"
+                            title="Preview all contributions"
+                          >
+                            <i className="bx bx-show-alt text-[10px]"></i>
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedExhibit(req);
+                              setShowPublishDialog(true);
+                            }}
+                            className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-green-600 hover:bg-green-700 flex items-center justify-center"
+                          >
+                            Publish
+                          </button>
+                        </div>
                       ) : (
                         <Link
                           to={`/exhibitreview?id=${req.exhibitId}`}

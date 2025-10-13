@@ -59,7 +59,15 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const [hasUserSubmitted, setHasUserSubmitted] = useState(false);
   const { mutate: submitContributions } = useSubmitContributions(exhibitId!);
 
-  const artworks = userArtworks || [];
+  // Filter artworks to show only Active and Public ones with valid images
+  const artworks = (userArtworks || []).filter((artwork) => {
+    const isActiveAndPublic = artwork.art_status === "Active" && artwork.visibility === "Public";
+    const hasValidImage =
+      (artwork.artworkImage && artwork.artworkImage !== "" && artwork.artworkImage !== "h") ||
+      (artwork.image_url && artwork.image_url !== "" && artwork.image_url !== "h");
+
+    return isActiveAndPublic && hasValidImage;
+  });
 
   const environments = [
     {
@@ -153,16 +161,6 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
         avatar: collab.avatar,
       })),
     };
-
-    // Debug: Log the slot distribution
-    console.log("🔍 CollaboratorView - Slot Owner Map:", transformedExhibit.slotOwnerMap);
-    console.log("🔍 CollaboratorView - Backend Slots Data:", data.slots);
-    console.log(
-      "🔍 CollaboratorView - Expected slots for Gil (owner):",
-      Object.entries(transformedExhibit.slotOwnerMap)
-        .filter(([slot, ownerId]) => ownerId === transformedExhibit.owner.id)
-        .map(([slot, ownerId]) => slot)
-    );
 
     setExhibit(transformedExhibit);
     setSlotArtworkMap(transformedExhibit.slotArtworkMap);
@@ -415,17 +413,51 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                           ${userCanInteract ? "cursor-pointer" : ""}
                           ${!userCanInteract ? slotColor + " opacity-75" : slotColor}`}
                         >
-                          {contributedSlot?.artwork?.image_url ? (
+                          {contributedSlot?.artwork ? (
                             // Show actual contributed artwork from backend (highest priority)
                             <>
                               <img
-                                src={
-                                  Array.isArray(contributedSlot.artwork.image_url)
-                                    ? contributedSlot.artwork.image_url[0]
-                                    : contributedSlot.artwork.image_url
-                                }
+                                src={(() => {
+                                  // Try artworkImage first, then image_url, with array handling
+                                  const artwork = contributedSlot.artwork;
+                                  if (
+                                    artwork.artworkImage &&
+                                    artwork.artworkImage !== "" &&
+                                    artwork.artworkImage !== "h"
+                                  ) {
+                                    return artwork.artworkImage;
+                                  }
+                                  if (artwork.image_url) {
+                                    return Array.isArray(artwork.image_url) ? artwork.image_url[0] : artwork.image_url;
+                                  }
+                                  return "";
+                                })()}
                                 alt={contributedSlot.artwork.title || "Artwork"}
                                 className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  // Try the alternative image source
+                                  const target = e.target as HTMLImageElement;
+                                  const artwork = contributedSlot.artwork;
+
+                                  if (target.src === artwork.artworkImage && artwork.image_url) {
+                                    // Try image_url if artworkImage failed
+                                    target.src = Array.isArray(artwork.image_url)
+                                      ? artwork.image_url[0]
+                                      : artwork.image_url;
+                                  } else if (
+                                    (Array.isArray(artwork.image_url)
+                                      ? artwork.image_url.some((url) => target.src.includes(url))
+                                      : artwork.image_url && target.src.includes(artwork.image_url)) &&
+                                    artwork.artworkImage &&
+                                    artwork.artworkImage !== "h"
+                                  ) {
+                                    // Try artworkImage if image_url failed
+                                    target.src = artwork.artworkImage;
+                                  } else {
+                                    // Hide image if both URLs fail
+                                    e.currentTarget.style.display = "none";
+                                  }
+                                }}
                               />
                               <div className="absolute top-1 left-1 bg-black/70 text-white text-[8px] px-1 py-0.5 rounded">
                                 {slotId}
@@ -438,9 +470,23 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                             // Show user's selected artwork (for slots they can interact with)
                             <>
                               <img
-                                src={assignedArtwork.artworkImage || assignedArtwork.image_url}
+                                src={
+                                  assignedArtwork.artworkImage ||
+                                  (Array.isArray(assignedArtwork.image_url)
+                                    ? assignedArtwork.image_url[0]
+                                    : assignedArtwork.image_url)
+                                }
                                 alt={`Artwork ${assignedArtworkId}`}
                                 className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  const fallbackUrl = Array.isArray(assignedArtwork.image_url)
+                                    ? assignedArtwork.image_url[0]
+                                    : assignedArtwork.image_url;
+                                  if (target.src !== fallbackUrl) {
+                                    target.src = fallbackUrl || "";
+                                  }
+                                }}
                               />
                               <div className="absolute top-1 left-1 bg-black/70 text-white text-[8px] px-1 py-0.5 rounded">
                                 {slotId}
@@ -536,9 +582,16 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                       }`}
                     >
                       <img
-                        src={artwork.artworkImage}
+                        src={artwork.artworkImage || artwork.image_url}
                         alt={`Artwork ${artwork.id}`}
                         className="w-full h-[96px] object-cover"
+                        onError={(e) => {
+                          // Fallback to image_url if artworkImage fails
+                          const target = e.target as HTMLImageElement;
+                          if (target.src !== artwork.image_url) {
+                            target.src = artwork.image_url || "";
+                          }
+                        }}
                       />
                     </Card>
                   );

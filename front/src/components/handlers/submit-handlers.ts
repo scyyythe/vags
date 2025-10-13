@@ -24,7 +24,9 @@ export const createSubmitHandler = (
   selectedArtworks: string[],
   bannerFile: File | null,
   slotArtworkMap: Record<number, string>,
-  slotOwnerMap: Record<number, string>
+  slotOwnerMap: Record<number, string>,
+  exhibitId?: string, // Add exhibit ID to detect edit mode
+  bannerImage?: string | null // Add existing banner image for edit mode
 ) => {
   const completeExhibitSubmission = () => {
     const formattedExhibitType = exhibitType.toLowerCase() === "solo" ? "Solo" : "Collaborative";
@@ -86,9 +88,19 @@ export const createSubmitHandler = (
 
     if (viewMode === "owner") {
       // Validate required fields before submission
-      if (!bannerFile) {
+      // For edit mode, we need to ensure banner and artwork style are properly set
+      if (!bannerFile && !exhibitId) {
         toast.error("Banner is required", {
           description: "Please upload a banner image for your exhibit.",
+          closeButton: true,
+        });
+        return;
+      }
+
+      // For edit mode, check if we have banner data (either file or existing)
+      if (exhibitId && !bannerFile && !bannerImage) {
+        toast.error("Banner is required", {
+          description: "Please ensure your exhibit has a banner image.",
           closeButton: true,
         });
         return;

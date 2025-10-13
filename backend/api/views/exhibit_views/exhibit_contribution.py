@@ -10,6 +10,7 @@ from api.models.artwork_model.artwork import Art
 from api.models.exhibit_model.exhibit_contribution import ExhibitContribution, ArtworkEntry
 from api.serializers.exhibit_s.exhibit_contribution import ExhibitContributionSerializer
 from api.serializers.exhibit_s.collaborator_exhibit_view import CollaboratorExhibitViewSerializer
+from api.models.interaction_model.notification import Notification
 
 class ExhibitContributionCreateView(APIView):
     def post(self, request):
@@ -81,6 +82,42 @@ class SubmitCollaboratorContributionView(APIView):
 
         # Save the updated single document
         contribution.save()
+
+        # Send notifications to owner and other collaborators
+        contributor_name = f"{user.first_name} {user.last_name}".strip()
+        exhibit_title = exhibit.title
+        artworks_count = len(artworks_data)
+        
+        # Notify the exhibit owner
+        if str(exhibit.owner.id) != str(user.id):  # Don't notify self
+            Notification.objects.create(
+                user=exhibit.owner,
+                actor=user,
+                message=f"{contributor_name} contributed {artworks_count} artwork{'s' if artworks_count > 1 else ''} to '{exhibit_title}'. You can check the exhibit now!",
+                exhibit=exhibit,
+                name=contributor_name,
+                action="contributed to your exhibit",
+                target=exhibit_title,
+                icon="collaborate",
+                link=f"/exhibits/{exhibit.id}/",
+                created_at=datetime.utcnow()
+            )
+        
+        # Notify other collaborators
+        for collaborator in exhibit.collaborators:
+            if str(collaborator.id) != str(user.id) and str(collaborator.id) != str(exhibit.owner.id):  # Don't notify self or owner (already notified above)
+                Notification.objects.create(
+                    user=collaborator,
+                    actor=user,
+                    message=f"{contributor_name} contributed {artworks_count} artwork{'s' if artworks_count > 1 else ''} to '{exhibit_title}'. You can check the exhibit now!",
+                    exhibit=exhibit,
+                    name=contributor_name,
+                    action="contributed to the exhibit",
+                    target=exhibit_title,
+                    icon="collaborate",
+                    link=f"/exhibits/{exhibit.id}/",
+                    created_at=datetime.utcnow()
+                )
 
         serializer = ExhibitContributionSerializer(contribution)
         return Response({
