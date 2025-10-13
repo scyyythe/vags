@@ -28,5 +28,6 @@ urlpatterns = (
     reset_urlpatterns + 
     transaction_urlpatterns + 
     purchase_urlpatterns +
-    fingerprint_urlpatterns
+    fingerprint_urlpatterns +
+    auth_urlpatterns
 )
