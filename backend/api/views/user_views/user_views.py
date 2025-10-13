@@ -180,7 +180,20 @@ class CustomTokenObtainPairView(APIView):
             "token_type": "refresh"
         }, timedelta(days=7))
 
-        # Firebase custom token
+        # Check if 2FA is enabled for this user
+        from api.models.user_model.two_factor_auth import TwoFactorAuth
+        two_factor = TwoFactorAuth.objects(user=user).first()
+        
+        if two_factor and two_factor.is_enabled:
+            # 2FA is enabled, return partial login data
+            return Response({
+                "requires_2fa": True,
+                "enabled_methods": two_factor.enabled_methods,
+                "primary_method": two_factor.primary_method,
+                "message": "Two-factor authentication required"
+            }, status=status.HTTP_200_OK)
+        
+        # Firebase custom token (only if 2FA is not enabled)
         firebase_token = firebase_auth.create_custom_token(str(user.id)).decode("utf-8")
 
         # Save user session with deduplication and cleanup

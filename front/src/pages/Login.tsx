@@ -14,6 +14,8 @@ import useSoftDeleteAccount from "@/hooks/mutate/users/useSoftDeleteAccount";
 import ReactivationConfirmationPopup from "@/components/auth/ReactivationConfirmationPopup";
 import ScheduledDeletionPopup from "@/components/auth/ScheduledDeletionPopup";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTwoFactorVerify } from "@/hooks/mutate/users/useTwoFactorMutate";
+import TwoFactorVerification from "@/components/auth/TwoFactorVerification";
 
 // Translation hooks
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
@@ -34,8 +36,15 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [showScheduledDeletionPopup, setShowScheduledDeletionPopup] = useState(false);
   const [pendingUserData, setPendingUserData] = useState<any>(null);
 
+  // 2FA state
+  const [show2FA, setShow2FA] = useState(false);
+  const [twoFactorMethod, setTwoFactorMethod] = useState<string>("");
+  const [enabledMethods, setEnabledMethods] = useState<string[]>([]);
+  const [pendingLoginData, setPendingLoginData] = useState<any>(null);
+
   const { mutate: deactivateAccount } = useDeactivateAccount();
   const { mutate: softDeleteAccount } = useSoftDeleteAccount();
+  const { mutate: verify2FA, isPending: isVerifying2FA } = useTwoFactorVerify();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -125,11 +134,40 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         user_status: string;
         scheduled_for_deletion?: string;
         firebase_token: string;
+        requires_2fa?: boolean;
+        enabled_methods?: string[];
+        primary_method?: string;
       }>("token/", formData);
 
-      const { access_token, refresh_token, user_id, email, role, user_status, scheduled_for_deletion, firebase_token } =
-        response.data;
+      const {
+        access_token,
+        refresh_token,
+        user_id,
+        email,
+        role,
+        user_status,
+        scheduled_for_deletion,
+        firebase_token,
+        requires_2fa,
+        enabled_methods,
+      } = response.data;
 
+      // Check if 2FA is required first
+      if (requires_2fa) {
+        // Store form data for after 2FA verification
+        setPendingLoginData({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        // Set 2FA method and show 2FA screen
+        setTwoFactorMethod(enabled_methods?.[0] || "totp");
+        setEnabledMethods(enabled_methods || []);
+        setShow2FA(true);
+        return;
+      }
+
+      // If no 2FA required, check for tokens
       if (!access_token || !refresh_token || !firebase_token) {
         throw new Error("Missing tokens from backend");
       }
@@ -248,6 +286,122 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
 
   const handleFingerprintClick = () => {
     navigate("/fingerprint-auth");
+  };
+
+  // 2FA functions
+  const handle2FAVerification = async (code: string) => {
+    try {
+      // Complete login with 2FA verification
+      const response = await apiClient.post("/auth/2fa/complete-login/", {
+        email: pendingLoginData.email,
+        password: pendingLoginData.password,
+        code: code,
+      });
+
+      const { access_token, refresh_token, user_id, email, role, user_status, scheduled_for_deletion, firebase_token } =
+        response.data;
+
+      // Complete the login process
+      await completeLogin({
+        access_token,
+        refresh_token,
+        user_id,
+        email,
+        role,
+        user_status,
+        scheduled_for_deletion,
+        firebase_token,
+      });
+    } catch (error: any) {
+      console.error("2FA verification failed:", error);
+      toast.error(error.response?.data?.error || "Invalid verification code");
+    }
+  };
+
+  const handleBackToLogin = () => {
+    setShow2FA(false);
+    setPendingLoginData(null);
+    setTwoFactorMethod("");
+    setEnabledMethods([]);
+    setFormData({ email: "", password: "" });
+  };
+
+  const completeLogin = async (loginData: any) => {
+    const { access_token, refresh_token, user_id, email, role, user_status, scheduled_for_deletion, firebase_token } =
+      loginData;
+
+    // Check if account is deactivated
+    if (user_status && user_status.toLowerCase() === "deactivated") {
+      // Store user data for reactivation
+      setPendingUserData({
+        access_token,
+        refresh_token,
+        user_id,
+        email,
+        role,
+        firebase_token,
+      });
+
+      // Show reactivation popup
+      setShowReactivationPopup(true);
+      setShow2FA(false);
+      return;
+    }
+
+    // Check if account is scheduled for deletion
+    if (user_status && user_status.toLowerCase() === "scheduled_for_deletion") {
+      // Store user data for reactivation
+      setPendingUserData({
+        access_token,
+        refresh_token,
+        user_id,
+        email,
+        role,
+        scheduled_for_deletion,
+        firebase_token,
+      });
+
+      // Show scheduled deletion popup
+      setShowScheduledDeletionPopup(true);
+      setShow2FA(false);
+      return;
+    }
+
+    // Save Django tokens
+    localStorage.setItem("access_token", access_token);
+    localStorage.setItem("refresh_token", refresh_token);
+    localStorage.setItem("user_id", user_id);
+    localStorage.setItem("email", email);
+    localStorage.setItem("role", role);
+
+    // Sign in to Firebase with the custom token
+    signInWithCustomToken(auth, firebase_token)
+      .then(() => {
+        toast.success(loginSuccessTitle, {
+          description: loginSuccessDesc,
+          closeButton: true,
+        });
+
+        // Clear 2FA state
+        setShow2FA(false);
+        setPendingLoginData(null);
+
+        // Redirect based on role
+        if (role === "Admin") {
+          navigate("/admin");
+        } else if (role === "Moderator") {
+          navigate("/moderator");
+        } else {
+          navigate("/explore");
+        }
+      })
+      .catch((error) => {
+        console.error("Firebase sign-in failed:", error);
+        toast.error("Login failed", {
+          description: "Firebase authentication failed",
+          closeButton: true,
+        });
+      });
   };
 
   const handleReactivationConfirm = async () => {
@@ -454,6 +608,20 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     // Clear form
     setFormData({ email: "", password: "" });
   };
+
+  // Render 2FA verification screen
+  if (show2FA) {
+    return (
+      <TwoFactorVerification
+        twoFactorMethod={twoFactorMethod}
+        enabledMethods={enabledMethods}
+        pendingLoginData={pendingLoginData}
+        onVerify={handle2FAVerification}
+        onBack={handleBackToLogin}
+        isVerifying={isVerifying2FA}
+      />
+    );
+  }
 
   return (
     <div className="w-full flex flex-col justify-center py-8 px-14 md:py-8 md:px-14 lg:py-8 lg:px-14 bg-white rounded-2xl">
