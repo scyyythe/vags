@@ -9,7 +9,7 @@ import WishlistModal from "@/components/user_dashboard/Marketplace/wishlist/Wish
 import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { toast } from "sonner";
-import SellCardSkeleton from "@/components/skeletons/SellCardSkeleton";
+import SellCardSkeleton from "@/components/skeletons/marketplace/SellCardSkeleton";
 import useFollowedArtworksOnSale from "@/hooks/artworks/follow_artworks/useFollowedArtworksOnSale";
 import useWishlistArtCards from "@/hooks/artworks/wishlist/useWishlistArtCards";
 import { ChevronDown } from "lucide-react";

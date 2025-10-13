@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { differenceInDays } from "date-fns";
 import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
-import SellCardSkeleton from "@/components/skeletons/SellCardSkeleton";
+import SellCardSkeleton from "@/components/skeletons/marketplace/SellCardSkeleton";
 import SalesSummary from "@/components/user_dashboard/Marketplace/sales_summary/SalesSummary";
 import useMySellArtCards from "@/hooks/artworks/sell/useMySellArtCards";
 import useUserSellArtCards from "@/hooks/artworks/sell/useUserSellArtCards";

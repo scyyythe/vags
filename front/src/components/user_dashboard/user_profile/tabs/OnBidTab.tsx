@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
 import BidCard from "../../Bidding/cards/BidCard";
 import useAuctions, { ArtworkAuction } from "@/hooks/auction/useAuction";

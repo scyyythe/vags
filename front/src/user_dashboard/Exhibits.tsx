@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useExhibitCards } from "@/hooks/exhibit/useCardExihibit";
-import ExhibitCardSkeleton from "@/components/skeletons/ExhibitCardSkeleton";
+import ExhibitCardSkeleton from "@/components/skeletons/exhibits/ExhibitCardSkeleton";
 import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
 
 type SortOption = "popularity" | "newest" | "oldest";

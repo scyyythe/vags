@@ -10,7 +10,7 @@ import { useEffect, useState, useMemo, memo } from "react";
 import useAuctions from "@/hooks/auction/useAuction";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import "react-loading-skeleton/dist/skeleton.css";
-import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
 import { useSearchParams } from "react-router-dom";
 import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks";
 import useFollowedAuctions from "@/hooks/auction/followed_users/useFollowedBiddings";

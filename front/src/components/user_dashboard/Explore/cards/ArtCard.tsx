@@ -11,7 +11,7 @@ import ArchivedMenu from "@/components/user_dashboard/user_profile/components/st
 import DeletedMenu from "@/components/user_dashboard/user_profile/components/status_options/Deleted";
 import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
-import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import useHideArtwork from "@/hooks/mutate/visibility/private/useHideArtwork";
 import useUnarchiveArtwork from "@/hooks/mutate/visibility/arc/useUnarchiveArtwork";

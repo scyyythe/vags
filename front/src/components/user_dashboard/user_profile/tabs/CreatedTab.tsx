@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
 import useArtworks, { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
-import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
 import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";

@@ -16,8 +16,8 @@ import { PayPalPayment } from "@/components/user_dashboard/Bidding/highest_bid/p
 import { toast } from "sonner";
 import { X } from "lucide-react";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
-import ArtworkSummarySkeleton from "@/components/skeletons/ArtworkSummarySkeleton";
-import BidDetailsSkeleton from "@/components/skeletons/BidDetailsSkeleton";
+import ArtworkSummarySkeleton from "@/components/skeletons/artworks/ArtworkSummarySkeleton";
+import BidDetailsSkeleton from "@/components/skeletons/bidding/BidDetailsSkeleton";
 import { useArtistPaymentAccounts } from "@/hooks/accounts/useArtistPaymentAccounts";
 const BidWinnerPageContent = () => {
   const { selectedPaymentMethod } = usePayment();

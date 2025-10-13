@@ -10,7 +10,7 @@ import { useCollaboratorExhibitView } from "@/hooks/exhibit/useCollaboratorExhib
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { getLoggedInUserId } from "@/auth/decode";
 import { useSubmitContributions } from "@/hooks/exhibit/useSubmitContributions";
-import CollaboratorViewSkeleton from "@/components/skeletons/CollaboratorViewSkeleton";
+import CollaboratorViewSkeleton from "@/components/skeletons/exhibits/CollaboratorViewSkeleton";
 // Color schemes for slots by user
 const slotColorSchemes = [
   "border-primary bg-primary/10",

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useFetchHotBids } from "@/hooks/auction/featured/useFetchHotBids";
-import HotBidsCarouselSkeleton from "@/components/skeletons/HotBidsCarouselSkeleton";
+import HotBidsCarouselSkeleton from "@/components/skeletons/bidding/HotBidsCarouselSkeleton";
 import { useLanguage } from "@/context/LanguageContext";
 import { autoTranslate } from "@/utils/autoTranslate"; // ✅ use raw function here
 
@@ -21,10 +21,7 @@ const HotBidsCarousel = () => {
       .filter((auction) => auction.bid_history && auction.bid_history.length > 0)
       .sort((a, b) => b.bid_history.length - a.bid_history.length);
 
-    const sortedHotBids = filteredBids.slice(
-      0,
-      Math.min(filteredBids.length, 5)
-    );
+    const sortedHotBids = filteredBids.slice(0, Math.min(filteredBids.length, 5));
 
     // async translate all titles
     Promise.all(
@@ -48,12 +45,7 @@ const HotBidsCarousel = () => {
 
   if (isLoading) return <HotBidsCarouselSkeleton />;
 
-  if (isError || !hotBids)
-    return (
-      <div className="text-center py-10 text-red-500">
-        Failed to load bids.
-      </div>
-    );
+  if (isError || !hotBids) return <div className="text-center py-10 text-red-500">Failed to load bids.</div>;
 
   const filteredBids = hotBids
     .filter((auction) => auction.bid_history && auction.bid_history.length > 0)
@@ -64,10 +56,8 @@ const HotBidsCarousel = () => {
 
   const radius = 250;
 
-  const goToPrevious = () =>
-    setCurrentIndex((prev) => (prev === 0 ? itemCount - 1 : prev - 1));
-  const goToNext = () =>
-    setCurrentIndex((prev) => (prev === itemCount - 1 ? 0 : prev + 1));
+  const goToPrevious = () => setCurrentIndex((prev) => (prev === 0 ? itemCount - 1 : prev - 1));
+  const goToNext = () => setCurrentIndex((prev) => (prev === itemCount - 1 ? 0 : prev + 1));
 
   return (
     <section className="py-20 px-6 md:px-12" id="bids">
@@ -118,9 +108,7 @@ const HotBidsCarousel = () => {
                 {angle === 0 && (
                   <div className="text-center mt-6">
                     {/* Artist name is NOT translated */}
-                    <p className="text-xs text-gray-500">
-                      {bid.artwork.artist}
-                    </p>
+                    <p className="text-xs text-gray-500">{bid.artwork.artist}</p>
                     {/* Artwork title is translated */}
                     <p className="text-lg font-medium">{translatedTitle}</p>
                   </div>
@@ -130,16 +118,10 @@ const HotBidsCarousel = () => {
           })}
 
           <div className="flex justify-center -mb-60 space-x-4">
-            <button
-              onClick={goToPrevious}
-              className="p-2 rounded-full bg-black text-white"
-            >
+            <button onClick={goToPrevious} className="p-2 rounded-full bg-black text-white">
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <button
-              onClick={goToNext}
-              className="p-2 rounded-full bg-black text-white"
-            >
+            <button onClick={goToNext} className="p-2 rounded-full bg-black text-white">
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
