@@ -182,6 +182,9 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         messages: [] as Message[],
         deletedBy: [],
         deletedAt: {},
+        mutedBy: [],
+        pinnedBy: [],
+        archivedBy: [],
       };
 
       const docRef = await addDoc(collection(db, "conversations"), newConv);
@@ -489,33 +492,81 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     const conv = conversations.find((c) => c.id === convId);
     if (!conv) return;
 
-    const newVal = !conv.isPinned;
-    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, isPinned: newVal } : c)));
+    const currentPinnedBy = conv.pinnedBy || [];
+    const isCurrentlyPinned = currentPinnedBy.includes(userId);
+
+    let updatedPinnedBy;
+    if (isCurrentlyPinned) {
+      // Remove user from pinned list
+      updatedPinnedBy = currentPinnedBy.filter((id) => id !== userId);
+    } else {
+      // Add user to pinned list
+      updatedPinnedBy = [...currentPinnedBy, userId];
+    }
+
+    // Update local state
+    setConversations((prev) =>
+      prev.map((c) => (c.id === convId ? { ...c, isPinned: !isCurrentlyPinned, pinnedBy: updatedPinnedBy } : c))
+    );
 
     try {
-      await updateDoc(doc(db, "conversations", convId), { isPinned: newVal });
+      await updateDoc(doc(db, "conversations", convId), {
+        pinnedBy: updatedPinnedBy,
+      });
     } catch (err) {}
   };
   const toggleMute = async (convId: string) => {
     const conv = conversations.find((c) => c.id === convId);
     if (!conv) return;
 
-    const newVal = !conv.isMuted;
-    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, isMuted: newVal } : c)));
+    const currentMutedBy = conv.mutedBy || [];
+    const isCurrentlyMuted = currentMutedBy.includes(userId);
+
+    let updatedMutedBy;
+    if (isCurrentlyMuted) {
+      // Remove user from muted list
+      updatedMutedBy = currentMutedBy.filter((id) => id !== userId);
+    } else {
+      // Add user to muted list
+      updatedMutedBy = [...currentMutedBy, userId];
+    }
+
+    // Update local state
+    setConversations((prev) =>
+      prev.map((c) => (c.id === convId ? { ...c, isMuted: !isCurrentlyMuted, mutedBy: updatedMutedBy } : c))
+    );
 
     try {
-      await updateDoc(doc(db, "conversations", convId), { isMuted: newVal });
+      await updateDoc(doc(db, "conversations", convId), {
+        mutedBy: updatedMutedBy,
+      });
     } catch (err) {}
   };
   const toggleArchive = async (convId: string) => {
     const conv = conversations.find((c) => c.id === convId);
     if (!conv) return;
 
-    const newVal = !conv.isArchived;
-    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, isArchived: newVal } : c)));
+    const currentArchivedBy = conv.archivedBy || [];
+    const isCurrentlyArchived = currentArchivedBy.includes(userId);
+
+    let updatedArchivedBy;
+    if (isCurrentlyArchived) {
+      // Remove user from archived list
+      updatedArchivedBy = currentArchivedBy.filter((id) => id !== userId);
+    } else {
+      // Add user to archived list
+      updatedArchivedBy = [...currentArchivedBy, userId];
+    }
+
+    // Update local state
+    setConversations((prev) =>
+      prev.map((c) => (c.id === convId ? { ...c, isArchived: !isCurrentlyArchived, archivedBy: updatedArchivedBy } : c))
+    );
 
     try {
-      await updateDoc(doc(db, "conversations", convId), { isArchived: newVal });
+      await updateDoc(doc(db, "conversations", convId), {
+        archivedBy: updatedArchivedBy,
+      });
     } catch (err) {}
   };
   const deleteConversation = async (convId: string) => {

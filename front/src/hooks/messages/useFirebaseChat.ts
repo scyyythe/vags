@@ -107,8 +107,11 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
             isArchived: false,
             isPinned: false,
             isMuted: false,
-            deletedBy: [], // Initialize empty deletedBy array
-            deletedAt: {}, // Initialize empty deletedAt object
+            deletedBy: [],
+            deletedAt: {},
+            mutedBy: [],
+            pinnedBy: [],
+            archivedBy: [],
           });
           convoId = newConvoRef.id;
         }
