@@ -8,7 +8,7 @@ from api.views.user_views.deactivate_view import DeactivateAccountView
 from api.views.user_views.soft_delete_view import SoftDeleteAccountView, PermanentlyDeleteAccountView
 from api.views.user_views.top_sellers_view import TopSellersAPIView,TopArtworksAPIView,PopularArtistsAPIView
 from api.views.user_views.address_view import AddressViewSet,DefaultAddressView,SetDefaultAddressView
-from api.views.user_views.user_views import SessionListView, SessionDeleteView
+from api.views.user_views.user_views import SessionListView, SessionDeleteView, ClearAllSessionsView
 from api.views.user_views.social_views import  DeleteSocialView,SocialsView
 user_urlpatterns = [
     path('top-sellers/', TopSellersAPIView.as_view(), name='top-sellers'),
@@ -17,6 +17,7 @@ user_urlpatterns = [
 
 
     path("sessions/", SessionListView.as_view(), name="sessions"),
+    path("sessions/clear-all/", ClearAllSessionsView.as_view(), name="clear-all-sessions"),
     path("sessions/<str:session_id>/", SessionDeleteView.as_view(), name="session-delete"),
     
     path('user/<str:pk>/', RetrieveUserView.as_view(), name='retrieve_user'),

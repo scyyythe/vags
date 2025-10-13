@@ -183,23 +183,52 @@ class CustomTokenObtainPairView(APIView):
         # Firebase custom token
         firebase_token = firebase_auth.create_custom_token(str(user.id)).decode("utf-8")
 
-        # Save user session
+        # Save user session with deduplication and cleanup
         def record_session(user, request):
             device = request.META.get("HTTP_USER_AGENT", "Unknown device")
             ip_address = request.META.get("REMOTE_ADDR")
+            device_truncated = device[:100]
+
+            # Cleanup old sessions (older than 30 days)
+            from datetime import timedelta
+            cutoff_date = datetime.utcnow() - timedelta(days=30)
+            UserSession.objects(user=user, created_at__lt=cutoff_date).delete()
+
+            # Limit sessions per user (keep only 10 most recent)
+            user_sessions = UserSession.objects(user=user).order_by("-created_at")
+            if user_sessions.count() > 10:
+                sessions_to_delete = user_sessions[10:]
+                for session in sessions_to_delete:
+                    session.delete()
+
+            # Check if session with same device already exists
+            existing_session = UserSession.objects(
+                user=user, 
+                device=device_truncated,
+                is_current=False
+            ).first()
 
             # Mark all previous sessions inactive
             UserSession.objects(user=user, is_current=True).update(is_current=False)
 
-            session = UserSession(
-                user=user,
-                device=device[:100],
-                ip_address=ip_address,
-                user_agent=device,
-                is_current=True,
-            )
-            session.save()
-            return session
+            if existing_session:
+                # Update existing session instead of creating new one
+                existing_session.is_current = True
+                existing_session.ip_address = ip_address
+                existing_session.created_at = datetime.utcnow()
+                existing_session.save()
+                return existing_session
+            else:
+                # Create new session only if no existing session with same device
+                session = UserSession(
+                    user=user,
+                    device=device_truncated,
+                    ip_address=ip_address,
+                    user_agent=device,
+                    is_current=True,
+                )
+                session.save()
+                return session
 
         record_session(user, request)
 
@@ -299,3 +328,24 @@ class SessionDeleteView(APIView):
 
         session.delete()
         return Response({"message": "Session removed"}, status=status.HTTP_204_NO_CONTENT)
+
+class ClearAllSessionsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request):
+        try:
+            # Delete all sessions for the user except the current session
+            deleted_count = UserSession.objects(
+                user=request.user,
+                is_current=False
+            ).delete()
+            
+            return Response({
+                "message": f"Cleared {deleted_count} sessions successfully",
+                "deleted_count": deleted_count
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({
+                "error": "Failed to clear sessions",
+                "details": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

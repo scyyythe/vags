@@ -8,6 +8,7 @@ import { Edit, Eye, EyeOff } from "lucide-react";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
+import useClearAllSessions from "@/hooks/mutate/users/useClearAllSessions";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import apiClient from "@/utils/apiClient";
@@ -25,6 +26,7 @@ const SecuritySettings = () => {
   const userId = getLoggedInUserId();
   const { username, email, password, isLoading, error } = useUserDetails(userId);
   const updateUser = useUpdateUserDetails();
+  const { mutate: clearAllSessions, isPending: isClearingSessions } = useClearAllSessions();
   const { language: selectedLanguage } = useLanguage();
 
   // Auto-translated labels
@@ -39,11 +41,14 @@ const SecuritySettings = () => {
   const securityCredentialsLabel = useAutoTranslation("Security Credentials", selectedLanguage);
   const currentSessionText = useAutoTranslation("Current session", selectedLanguage);
   const removeDeviceText = useAutoTranslation("Remove device", selectedLanguage);
+  const clearAllSessionsText = useAutoTranslation("Clear all sessions", selectedLanguage);
   const loadingText = useAutoTranslation("Loading...", selectedLanguage);
   const fetchErrorText = useAutoTranslation("Error fetching user data", selectedLanguage);
   const fetchSessionsError = useAutoTranslation("Failed to fetch sessions", selectedLanguage);
   const deviceRemovedText = useAutoTranslation("Device removed", selectedLanguage);
   const removeDeviceFailedText = useAutoTranslation("Failed to remove device", selectedLanguage);
+  const allSessionsClearedText = useAutoTranslation("All sessions cleared", selectedLanguage);
+  const clearAllSessionsFailedText = useAutoTranslation("Failed to clear all sessions", selectedLanguage);
 
   const allPasswordRequired = useAutoTranslation("All password fields are required.", selectedLanguage);
   const newPasswordLengthError = useAutoTranslation(
@@ -211,6 +216,76 @@ const SecuritySettings = () => {
     }
   };
 
+  const handleClearAllSessions = () => {
+    clearAllSessions(undefined, {
+      onSuccess: () => {
+        // Update state to only keep current session
+        setCredentials((prev) => prev.filter((cred) => cred.isCurrentSession));
+      },
+    });
+  };
+
+  const formatDeviceInfo = (deviceString: string) => {
+    // Extract browser and OS info from user agent string
+    const isChrome = deviceString.includes("Chrome");
+    const isFirefox = deviceString.includes("Firefox");
+    const isSafari = deviceString.includes("Safari") && !deviceString.includes("Chrome");
+    const isEdge = deviceString.includes("Edg");
+
+    const isWindows = deviceString.includes("Windows");
+    const isMac = deviceString.includes("Mac");
+    const isLinux = deviceString.includes("Linux");
+    const isAndroid = deviceString.includes("Android");
+    const isIOS = deviceString.includes("iPhone") || deviceString.includes("iPad");
+
+    let browser = "Unknown Browser";
+    if (isChrome) browser = "Chrome";
+    else if (isFirefox) browser = "Firefox";
+    else if (isSafari) browser = "Safari";
+    else if (isEdge) browser = "Edge";
+
+    let os = "Unknown OS";
+    if (isWindows) os = "Windows";
+    else if (isMac) os = "macOS";
+    else if (isLinux) os = "Linux";
+    else if (isAndroid) os = "Android";
+    else if (isIOS) os = "iOS";
+
+    return `${browser} on ${os}`;
+  };
+
+  const formatSessionDate = (dateString: string) => {
+    try {
+      // Ensure the date string is treated as UTC by adding 'Z' if not present
+      let utcDateString = dateString;
+      if (!dateString.includes("Z") && !dateString.includes("+") && !dateString.includes("-", 10)) {
+        // If no timezone info, assume it's UTC and add 'Z'
+        utcDateString = dateString + "Z";
+      }
+
+      // Parse the date string as UTC and convert to local time
+      const date = new Date(utcDateString);
+
+      // Check if the date is valid
+      if (isNaN(date.getTime())) {
+        return "Invalid date";
+      }
+
+      // Format in user's local timezone
+      return date.toLocaleString(undefined, {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid date";
+    }
+  };
+
   if (isLoading) return <p>{loadingText}</p>;
   if (error) return <p>{fetchErrorText}</p>;
 
@@ -323,7 +398,18 @@ const SecuritySettings = () => {
       </div>
 
       {/* Security Credentials */}
-      <h2 className="text-sm font-bold mb-6">{securityCredentialsLabel}</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-sm font-bold">{securityCredentialsLabel}</h2>
+        {credentials.length > 1 && (
+          <button
+            onClick={handleClearAllSessions}
+            disabled={isClearingSessions}
+            className="text-red-500 text-[10px] hover:text-red-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isClearingSessions ? "Clearing..." : clearAllSessionsText}
+          </button>
+        )}
+      </div>
 
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <div className="space-y-6">
@@ -334,17 +420,8 @@ const SecuritySettings = () => {
                   <i className="bx bx-tab"></i>
                 </div>
                 <div>
-                  <p className="text-[10px] text-gray-400">
-                    {new Date(cred.date).toLocaleString("en-PH", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true,
-                    })}
-                  </p>
-                  <p className="text-xs font-semibold">{cred.device}</p>
+                  <p className="text-[10px] text-gray-400">{formatSessionDate(cred.date)}</p>
+                  <p className="text-xs font-semibold">{formatDeviceInfo(cred.device)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
