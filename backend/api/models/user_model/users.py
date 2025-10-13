@@ -31,6 +31,10 @@ class User(Document):
     deactivated_at = DateTimeField(required=False, null=True)
     scheduled_for_deletion = DateTimeField(required=False, null=True)
     
+    # Security fields for login lockout
+    failed_login_attempts = IntField(default=0)
+    locked_until = DateTimeField(required=False, null=True)
+    
     def set_password(self, password):
          self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
@@ -50,6 +54,37 @@ class User(Document):
     @property
     def is_staff(self):
         return self.role == "Admin"
+    
+    def is_locked(self):
+        """Check if user account is currently locked"""
+        if self.locked_until and datetime.utcnow() < self.locked_until:
+            return True
+        return False
+    
+    def lock_account(self, minutes=30):
+        """Lock the account for specified minutes"""
+        self.locked_until = datetime.utcnow() + timedelta(minutes=minutes)
+        self.save()
+    
+    def unlock_account(self):
+        """Unlock the account and reset failed attempts"""
+        self.failed_login_attempts = 0
+        self.locked_until = None
+        self.save()
+    
+    def increment_failed_attempts(self):
+        """Increment failed login attempts and lock if threshold reached"""
+        self.failed_login_attempts += 1
+        if self.failed_login_attempts >= 5:
+            self.lock_account(minutes=30)  # Lock for 30 minutes
+        else:
+            self.save()
+    
+    def reset_failed_attempts(self):
+        """Reset failed login attempts on successful login"""
+        self.failed_login_attempts = 0
+        self.locked_until = None
+        self.save()
     
     def get_active_suspension(self):
         from api.models.admin.suspension.suspension_model import Suspension

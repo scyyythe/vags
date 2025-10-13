@@ -152,8 +152,42 @@ class CustomTokenObtainPairView(APIView):
 
         # Verify user credentials
         user = User.objects(email=email).first()
-        if not user or not user.password or not bcrypt.checkpw(password, user.password.encode("utf-8")):
+        if not user:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Check if account is locked
+        if user.is_locked():
+            time_remaining = user.locked_until - datetime.utcnow()
+            minutes_remaining = int(time_remaining.total_seconds() / 60)
+            return Response({
+                "error": "Account temporarily locked due to multiple failed login attempts",
+                "locked_until": user.locked_until.isoformat(),
+                "minutes_remaining": minutes_remaining,
+                "message": f"Please try again in {minutes_remaining} minutes"
+            }, status=status.HTTP_423_LOCKED)
+        
+        # Check password
+        if not user.password or not bcrypt.checkpw(password, user.password.encode("utf-8")):
+            # Increment failed login attempts
+            user.increment_failed_attempts()
+            
+            # Check if account is now locked after this attempt
+            if user.is_locked():
+                return Response({
+                    "error": "Account locked due to multiple failed login attempts",
+                    "locked_until": user.locked_until.isoformat(),
+                    "minutes_remaining": 30,
+                    "message": "Please try again in 30 minutes"
+                }, status=status.HTTP_423_LOCKED)
+            
+            return Response({
+                "error": "Invalid credentials",
+                "failed_attempts": user.failed_login_attempts,
+                "attempts_remaining": 5 - user.failed_login_attempts
+            }, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Reset failed attempts on successful login
+        user.reset_failed_attempts()
 
         # Token generator helper
         def generate_token(payload, exp_delta):
