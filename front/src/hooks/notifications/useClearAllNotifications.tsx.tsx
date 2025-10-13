@@ -1,8 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
+import { getLoggedInUserId } from "@/auth/decode";
 
 const useClearAllNotifications = (onLocalClear: () => void) => {
+  const queryClient = useQueryClient();
+  const userId = getLoggedInUserId();
+
   return useMutation({
     mutationFn: async () => {
       const response = await apiClient.delete("notifications/delete-all/");
@@ -10,6 +14,12 @@ const useClearAllNotifications = (onLocalClear: () => void) => {
     },
     onSuccess: () => {
       onLocalClear();
+
+      // Invalidate and refetch notifications query
+      queryClient.invalidateQueries({
+        queryKey: ["notifications", userId],
+      });
+
       toast.success("All notifications cleared!");
     },
     onError: (error) => {
