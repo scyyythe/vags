@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { getLoggedInUserId } from "@/auth/decode";
 
@@ -63,6 +63,7 @@ const useNotifications = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const userId = getLoggedInUserId();
+  const queryClient = useQueryClient();
 
   // Use React Query to fetch notifications with caching
   const {
@@ -115,7 +116,10 @@ const useNotifications = () => {
   };
 
   const clearAllNotifications = () => {
-    // This would need to be implemented with a delete API call
+    // Invalidate the notifications query to trigger a refetch with empty data
+    queryClient.invalidateQueries({
+      queryKey: ["notifications", userId],
+    });
     toast.success("All notifications cleared");
   };
 
