@@ -25,14 +25,35 @@ export const useUserConversations = (userId: string) => {
       for (const docSnap of snapshot.docs) {
         const data = docSnap.data();
 
-        // Check if current user has deleted this conversation FIRST
+        // Check if current user has deleted this conversation
         const deletedBy = data.deletedBy || [];
         const isDeletedByUser = deletedBy.includes(userId);
 
+        // If user deleted the conversation, check if there are new messages since deletion
         if (isDeletedByUser) {
-          // Skip this conversation as it's been deleted by current user
+          // Get the deletion timestamp for this user
+          const deletedAt = data.deletedAt || {};
+          const userDeletedAt = deletedAt[userId]?.toDate?.() ?? null;
 
-          continue; // Use continue to skip this iteration and continue with the next conversation
+          // If user deleted the conversation, only show it if there are messages AFTER deletion
+          if (userDeletedAt) {
+            const lastMessageTime = data.lastMessageTime?.toDate?.() ?? new Date();
+
+            // Only show the conversation if the last message was sent AFTER the user deleted it
+            if (lastMessageTime <= userDeletedAt) {
+              continue; // Skip conversations with no new messages since deletion
+            }
+
+            // Also check if the last message was sent by the current user
+            // If so, don't show it as a "revived" conversation
+            const lastMessageSenderId = data.lastMessageSenderId;
+            if (lastMessageSenderId === userId) {
+              continue; // Skip if the last message was sent by the current user
+            }
+          } else {
+            // If no deletion timestamp, skip the conversation (shouldn't happen but safety check)
+            continue;
+          }
         }
 
         const participantIds: string[] = data.participants.filter((id: string) => id !== userId);
@@ -59,45 +80,68 @@ export const useUserConversations = (userId: string) => {
         );
         const messagesSnapshot = await getDocs(messagesQuery);
 
-        const messages: Message[] = messagesSnapshot.docs.map((m) => {
-          const msgData = m.data();
-          const senderId = msgData.senderId as string;
-          const senderInfo = userCache[senderId] || { name: "Unknown", avatar: undefined };
+        // Get the deletion timestamp for this user
+        const deletedAt = data.deletedAt || {};
+        const userDeletedAt = deletedAt[userId]?.toDate?.() ?? null;
 
-          return {
-            id: m.id,
-            senderId,
-            senderName: senderInfo.name,
-            senderAvatar: senderInfo.avatar,
-            content: msgData.content || "",
-            type: msgData.type || "text",
-            fileName: msgData.fileName,
-            imageUrl: msgData.imageUrl,
-            voiceDuration: msgData.voiceDuration,
-            isStarred: msgData.isStarred || false,
-            reactions: msgData.reactions || [],
-            deliveryStatus: msgData.deliveryStatus || "sent",
-            replyTo: msgData.replyTo || null,
-            timestamp: msgData.createdAt?.toDate?.() ?? new Date(),
-            isRead: msgData.isRead || false,
-          };
-        });
+        const messages: Message[] = messagesSnapshot.docs
+          .map((m) => {
+            const msgData = m.data();
+            const senderId = msgData.senderId as string;
+            const senderInfo = userCache[senderId] || { name: "Unknown", avatar: undefined };
+            const messageTimestamp = msgData.createdAt?.toDate?.() ?? new Date();
+
+            return {
+              id: m.id,
+              senderId,
+              senderName: senderInfo.name,
+              senderAvatar: senderInfo.avatar,
+              content: msgData.content || "",
+              type: msgData.type || "text",
+              fileName: msgData.fileName,
+              imageUrl: msgData.imageUrl,
+              voiceDuration: msgData.voiceDuration,
+              isStarred: msgData.isStarred || false,
+              reactions: msgData.reactions || [],
+              deliveryStatus: msgData.deliveryStatus || "sent",
+              replyTo: msgData.replyTo || null,
+              timestamp: messageTimestamp,
+              isRead: msgData.isRead || false,
+            };
+          })
+          .filter((message) => {
+            // If user deleted the conversation, only show messages sent after deletion
+            if (userDeletedAt && isDeletedByUser) {
+              return message.timestamp > userDeletedAt;
+            }
+            // If user didn't delete the conversation, show all messages
+            return true;
+          });
 
         const firstParticipant = participantIds[0];
+
+        // Check if this is a revived conversation (was deleted by user but has new activity)
+        const isRevivedConversation = isDeletedByUser;
+
+        // Get the unread count for this specific user
+        const userUnreadCount = data.unread && data.unread[userId] ? data.unread[userId] : 0;
+
         convs.push({
           id: docSnap.id,
           participantId: firstParticipant,
           participantName: userCache[firstParticipant]?.name || "Unknown",
           participantAvatar: userCache[firstParticipant]?.avatar,
-          lastMessage: data.lastMessage,
+          lastMessage: isRevivedConversation ? "New message" : data.lastMessage,
           lastMessageTime: data.lastMessageTime?.toDate?.() ?? new Date(),
-          unreadCount: data.unreadCount || 0,
+          unreadCount: isRevivedConversation ? 1 : userUnreadCount,
           isArchived: data.isArchived || false,
           isPinned: data.isPinned || false,
           isMuted: data.isMuted || false,
           isOnline: true,
-          messages,
+          messages: messages, // Messages are already filtered based on deletion timestamp
           deletedBy: deletedBy,
+          deletedAt: data.deletedAt || {},
+          isRevived: isRevivedConversation, // Add flag to indicate this is a revived conversation
         });
       }
 
