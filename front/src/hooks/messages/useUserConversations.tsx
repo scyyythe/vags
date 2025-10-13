@@ -11,9 +11,6 @@ export const useUserConversations = (userId: string) => {
   useEffect(() => {
     if (!userId) return;
 
-    console.log(`🔄 useUserConversations hook started for userId: ${userId}`);
-    console.log(`📊 Current conversations state:`, conversations.length);
-
     // Create a query that excludes conversations deleted by the current user
     const q = query(
       collection(db, "conversations"),
@@ -32,15 +29,9 @@ export const useUserConversations = (userId: string) => {
         const deletedBy = data.deletedBy || [];
         const isDeletedByUser = deletedBy.includes(userId);
 
-        console.log(`🔍 Checking conversation ${docSnap.id}:`, {
-          userId,
-          deletedBy,
-          isDeleted: isDeletedByUser,
-        });
-
         if (isDeletedByUser) {
           // Skip this conversation as it's been deleted by current user
-          console.log(`🚫 Skipping deleted conversation ${docSnap.id} for user ${userId}`);
+
           continue; // Use continue to skip this iteration and continue with the next conversation
         }
 
@@ -110,29 +101,11 @@ export const useUserConversations = (userId: string) => {
         });
       }
 
-      console.log(`📊 useUserConversations final result:`, {
-        userId: userId,
-        totalAdded: convs.length,
-        conversations: convs.map((conv) => ({
-          id: conv.id,
-          name: conv.participantName,
-          deletedBy: conv.deletedBy,
-        })),
-      });
-
-      // Always update to ensure deleted conversations are filtered out
-      console.log(`🔄 Updating conversations state for userId: ${userId}`, {
-        previousCount: conversations.length,
-        newCount: convs.length,
-        newConversations: convs.map((c) => ({ id: c.id, name: c.participantName })),
-      });
-
       setConversations(convs);
       setIsLoading(false);
     });
 
     return () => {
-      console.log(`🧹 useUserConversations hook cleanup for userId: ${userId}`);
       unsub();
     };
   }, [userId]);
