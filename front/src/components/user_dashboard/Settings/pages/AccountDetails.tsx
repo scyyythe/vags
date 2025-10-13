@@ -4,6 +4,7 @@ import ActionButtons from "../components/ActionButtons";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
+import useDeactivateAccount from "@/hooks/mutate/users/useDeactivateAccount";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { toast } from "sonner";
@@ -15,8 +16,10 @@ const AccountDetails = () => {
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isValidFullName = (fullName: string) => /^[a-zA-Z]+(?: [a-zA-Z]+)+$/.test(fullName.trim());
 
-  const { firstName, lastName, gender, address, dateOfBirth, email, isLoading, error } = useUserDetails(userId);
+  const { firstName, lastName, gender, address, dateOfBirth, email, userStatus, isLoading, error } =
+    useUserDetails(userId);
   const { mutate: updateUser } = useUpdateUserDetails();
+  const { mutate: deactivateAccount } = useDeactivateAccount();
 
   const { language: selectedLanguage } = useLanguage();
 
@@ -125,7 +128,7 @@ const AccountDetails = () => {
     form.append("first_name", updatedFirstName);
     form.append("last_name", updatedLastName);
     form.append("gender", formData.gender);
-    form.append("email", formData.email); 
+    form.append("email", formData.email);
     form.append("date_of_birth", formattedDob);
 
     const loadingToast = toast("Updating your details...", {
@@ -160,12 +163,42 @@ const AccountDetails = () => {
 
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
-          <EditableField label={fullNameLabel} value={translatedFullName} type="text" onChange={(value) => handleChange("fullName", value)} />
-          <EditableField label={countryLabel} value={translatedCountry} type="country" onChange={(value) => handleChange("country", value)} />
-          <EditableField label={genderLabel} value={translatedGender} type="gender" onChange={(value) => handleChange("gender", value)} />
-          <EditableField label={languageLabel} value={translatedLanguage} type="language" onChange={(value) => handleChange("language", value)} />
-          <EditableField label={dobLabel} value={translatedDateOfBirth} type="date" onChange={(value) => handleChange("date_of_birth", value)} />
-          <EditableField label={emailLabel} value={translatedEmail} type="email" onChange={(value) => handleChange("email", value)} />
+          <EditableField
+            label={fullNameLabel}
+            value={translatedFullName}
+            type="text"
+            onChange={(value) => handleChange("fullName", value)}
+          />
+          <EditableField
+            label={countryLabel}
+            value={translatedCountry}
+            type="country"
+            onChange={(value) => handleChange("country", value)}
+          />
+          <EditableField
+            label={genderLabel}
+            value={translatedGender}
+            type="gender"
+            onChange={(value) => handleChange("gender", value)}
+          />
+          <EditableField
+            label={languageLabel}
+            value={translatedLanguage}
+            type="language"
+            onChange={(value) => handleChange("language", value)}
+          />
+          <EditableField
+            label={dobLabel}
+            value={translatedDateOfBirth}
+            type="date"
+            onChange={(value) => handleChange("date_of_birth", value)}
+          />
+          <EditableField
+            label={emailLabel}
+            value={translatedEmail}
+            type="email"
+            onChange={(value) => handleChange("email", value)}
+          />
         </div>
       </div>
 
@@ -212,36 +245,36 @@ const AccountDetails = () => {
         isOpen={showDeactivatePopup}
         onCancel={() => setShowDeactivatePopup(false)}
         onConfirm={() => {
-          const form = new FormData();
-          form.append("status", "deactivated");
-          form.append("deactivated_at", new Date().toISOString());
+          setShowDeactivatePopup(false);
 
-          updateUser([userId, form], {
-            onSuccess: () => {
-              toast.success("Your account has been deactivated successfully.", { closeButton: true });
-              setShowDeactivatePopup(false);
-            },
-            onError: () => {
-              toast.error("Failed to deactivate your account.", { closeButton: true });
+          deactivateAccount({
+            userId,
+            data: {
+              user_status: "deactivated",
+              deactivated_at: new Date().toISOString(),
             },
           });
         }}
-        user={{ userStatus: status }}
+        user={{ userStatus: userStatus }}
         setUser={(updatedUser) => {
           if (updatedUser.userStatus === "active") {
-            const form = new FormData();
-            form.append("status", "active");
-            form.append("deactivated_at", "");
-
-            updateUser([userId, form], {
-              onSuccess: () => {
-                toast.success("Your account has been reactivated successfully!", { closeButton: true });
-                setShowDeactivatePopup(false);
+            deactivateAccount(
+              {
+                userId,
+                data: {
+                  user_status: "active",
+                  deactivated_at: undefined,
+                },
               },
-              onError: () => {
-                toast.error("Failed to reactivate account.", { closeButton: true });
-              },
-            });
+              {
+                onSuccess: () => {
+                  setShowDeactivatePopup(false);
+                },
+                onError: () => {
+                  // Error handling is done in the hook
+                },
+              }
+            );
           }
         }}
       />
