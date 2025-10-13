@@ -21,6 +21,7 @@ import { getLoggedInUserId } from "@/auth/decode";
 import { useDonation } from "@/context/DonationContext";
 import { useStripeTip } from "@/hooks/tips/useStripeTip";
 import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Explore = () => {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ const Explore = () => {
   const [currentPage] = useState(1);
   const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all", "public");
   const { data: popularArtworksRaw } = useFetchPopularArtworks();
+  const queryClient = useQueryClient();
 
   const popularArtworks = popularArtworksRaw?.slice(0, 5) ?? [];
 
@@ -51,11 +53,18 @@ const Explore = () => {
     async function runVerify() {
       const result = await verifyStripePayment();
       if (result) {
-        setStatus("Tip successful ✅");
+        setStatus("Tip successful");
       }
     }
     runVerify();
   }, []);
+
+  // Refetch report status when component mounts or artworkIds change
+  useEffect(() => {
+    if (artworkIds.length > 0) {
+      queryClient.invalidateQueries({ queryKey: ["bulkReportStatus", artworkIds] });
+    }
+  }, [artworkIds, queryClient]);
   const bulkStatusLookup = React.useMemo(() => {
     if (!bulkStatus) return {};
     return bulkStatus.reduce((acc, item) => {

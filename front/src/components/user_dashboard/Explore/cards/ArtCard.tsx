@@ -20,6 +20,7 @@ import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateArtworkVisibility from "@/hooks/mutate/visibility/private/useUpdateArtworkVisibility";
 import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork";
+import { useQueryClient } from "@tanstack/react-query";
 
 export interface ArtCardProps {
   artwork: Artwork;
@@ -74,6 +75,7 @@ const ArtCard = ({
   const { mutate: submitReport } = useSubmitReport();
   const { mutate: updateVisibility } = useUpdateArtworkVisibility();
   const { mutate: archiveArtwork } = useArchivedArtwork();
+  const queryClient = useQueryClient();
   const [localIsLiked, setLocalIsLiked] = useState(status?.isLiked ?? isLikedFromBulk ?? false);
   const [localIsReported, setLocalIsReported] = useState(report?.reported ?? isReportedFromBulk ?? false);
   const { isFavorite: localIsFavorite, handleFavorite } = useFavorite(id, status?.isSaved ?? isSavedFromBulk ?? false);
@@ -94,6 +96,9 @@ const ArtCard = ({
   const handleHide = () => {
     setIsHidden(true);
     hideArtwork(id);
+    // Additional cache invalidation to ensure consistent state across components
+    queryClient.invalidateQueries({ queryKey: ["bulkReportStatus"] });
+    queryClient.invalidateQueries({ queryKey: ["artworks"] });
     setMenuOpen(false);
   };
 
@@ -192,7 +197,9 @@ const ArtCard = ({
         <div className="relative text-gray-500" style={{ height: "24px" }}>
           <button
             onClick={() => setMenuOpen((prev) => !prev)}
-            className={`p-1 rounded-full ${menuOpen ? "border border-gray-300 text-black" : ""}`}
+            className={`p-1 rounded-full ${menuOpen ? "border border-gray-300 text-black" : ""} ${
+              localIsReported ? "text-red-600" : ""
+            }`}
           >
             <MoreHorizontal size={14} />
           </button>
@@ -242,6 +249,9 @@ const ArtCard = ({
               isOpen={menuOpen}
               onFavorite={() => {
                 handleFavorite();
+                // Additional cache invalidation to ensure consistent state across components
+                queryClient.invalidateQueries({ queryKey: ["bulkReportStatus"] });
+                queryClient.invalidateQueries({ queryKey: ["artworks"] });
                 setMenuOpen(false);
               }}
               onHide={handleHide}
