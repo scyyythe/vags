@@ -71,7 +71,12 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       setConversations((prev) =>
         prev.map((conv) =>
           conv.id === convId
-            ? { ...conv, unreadCount: 0, messages: (conv.messages || []).map((msg) => ({ ...msg, isRead: true })) }
+            ? {
+                ...conv,
+                unreadCount: 0,
+                messages: (conv.messages || []).map((msg) => ({ ...msg, isRead: true })),
+                isRevived: false,
+              }
             : conv
         )
       );
@@ -79,7 +84,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       try {
         const convRef = doc(db, "conversations", convId);
         const updateData: any = {
-          unreadCount: 0,
+          [`unread.${userId}`]: 0, // Reset unread count for this specific user
           isArchived: false,
         };
 
@@ -115,27 +120,30 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
       const existing = snapshot.docs.find((doc) => {
         const data = doc.data();
-        const isDeletedByUser = data.deletedBy?.includes(userId) || false;
 
         return (
           Array.isArray(data.participants) &&
           data.participants.length === 2 &&
           data.participants.includes(userId) &&
-          data.participants.includes(targetId) &&
-          !isDeletedByUser
+          data.participants.includes(targetId)
         );
       });
 
       if (existing) {
         const existingData = existing.data();
         const currentDeletedBy = existingData.deletedBy || [];
+        const currentDeletedAt = existingData.deletedAt || {};
 
+        // If user had deleted this conversation, restore it (remove from deletedBy array and deletedAt)
         if (currentDeletedBy.includes(userId)) {
           const updatedDeletedBy = currentDeletedBy.filter((id: string) => id !== userId);
+          const updatedDeletedAt = { ...currentDeletedAt };
+          delete updatedDeletedAt[userId];
 
           try {
             await updateDoc(doc(db, "conversations", existing.id), {
               deletedBy: updatedDeletedBy,
+              deletedAt: updatedDeletedAt,
             });
           } catch (err) {}
         }
@@ -154,6 +162,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
           isMuted: existingData.isMuted || false,
           messages: existingData.messages || [],
           deletedBy: existingData.deletedBy || [],
+          deletedAt: existingData.deletedAt || {},
         };
       }
 
@@ -164,6 +173,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         participantAvatar: targetAvatar || null,
         lastMessage: "",
         lastMessageTime: serverTimestamp(),
+        lastMessageSenderId: "",
         unreadCount: 0,
         isOnline: false,
         isArchived: false,
@@ -171,6 +181,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         isMuted: false,
         messages: [] as Message[],
         deletedBy: [],
+        deletedAt: {},
       };
 
       const docRef = await addDoc(collection(db, "conversations"), newConv);
@@ -220,10 +231,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
   const filteredConversations = useMemo(() => {
     return conversations.filter((conv) => {
-      const isDeletedByUser = conv.deletedBy?.includes(userId) || false;
-      if (isDeletedByUser) {
-        return false;
-      }
+      // The useUserConversations hook already handles the deletion logic properly
+      // So we don't need to filter deleted conversations here again
 
       const matchesSearch = conv.participantName?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesArchive = showArchived ? conv.isArchived : !conv.isArchived;
@@ -354,6 +363,9 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       userAvatarLocal,
       selectedConversation
     );
+
+    // Note: We don't increment unread count for the sender
+    // The Firebase hook handles incrementing unread count for the receiver
   };
 
   const handleFileAttachment = async (file: File) => {
@@ -377,6 +389,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         userAvatarLocal,
         selectedConversation
       );
+
+      // Note: Firebase hook handles unread count for receiver
     } catch (error) {
     } finally {
       setUploadingFile(false);
@@ -407,6 +421,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
             userAvatarLocal,
             selectedConversation
           );
+
+          // Note: Firebase hook handles unread count for receiver
         } catch (error) {
         } finally {
           setUploadingFile(false);
@@ -433,6 +449,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
           userAvatarLocal,
           selectedConversation
         );
+
+        // Note: Firebase hook handles unread count for receiver
       }, 2000);
     } else setIsRecording(false);
   };
@@ -510,15 +528,31 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       }
 
       const currentDeletedBy = conv.deletedBy || [];
+      const currentDeletedAt = conv.deletedAt || {};
 
       if (!currentDeletedBy.includes(userId)) {
         const updatedDeletedBy = [...currentDeletedBy, userId];
+        const updatedDeletedAt = {
+          ...currentDeletedAt,
+          [userId]: serverTimestamp(),
+        };
+
+        // Update local state immediately to hide the conversation
+        setConversations((prev) => prev.filter((c) => c.id !== convId));
 
         await updateDoc(doc(db, "conversations", convId), {
           deletedBy: updatedDeletedBy,
+          deletedAt: updatedDeletedAt,
         });
       }
-    } catch (err) {}
+    } catch (err) {
+      // If there's an error, restore the conversation in local state
+      // We need to find the conversation again since conv is out of scope
+      const convToRestore = conversations.find((c) => c.id === convId);
+      if (convToRestore) {
+        setConversations((prev) => [...prev, convToRestore]);
+      }
+    }
   };
 
   const restoreConversation = async (convId: string) => {
@@ -527,11 +561,15 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       if (!conv) return;
 
       const currentDeletedBy = conv.deletedBy || [];
+      const currentDeletedAt = conv.deletedAt || {};
 
       const updatedDeletedBy = currentDeletedBy.filter((id) => id !== userId);
+      const updatedDeletedAt = { ...currentDeletedAt };
+      delete updatedDeletedAt[userId];
 
       await updateDoc(doc(db, "conversations", convId), {
         deletedBy: updatedDeletedBy,
+        deletedAt: updatedDeletedAt,
       });
     } catch (err) {}
   };
@@ -840,7 +878,22 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                       onDeleteConversation={deleteConversation}
                     />
                   ) : (
-                    <div className="flex items-center justify-center flex-1 text-gray-500 text-xs">No messages yet</div>
+                    <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-gray-500 text-xs space-y-3">
+                      <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center">
+                        <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                          />
+                        </svg>
+                      </div>
+                      <div className="text-center space-y-1">
+                        <p className="text-sm font-medium">No messages yet</p>
+                        <p className="text-[10px] text-gray-400">Start a conversation by searching above</p>
+                      </div>
+                    </div>
                   )}
                 </div>
                 <div className="mt-auto mb-4 px-4 space-y-2">

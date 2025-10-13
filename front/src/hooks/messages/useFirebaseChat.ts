@@ -101,11 +101,14 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
             participants: [currentUserId, receiverId],
             lastMessage: "",
             lastMessageTime: serverTimestamp(),
+            lastMessageSenderId: "",
             unread: { [receiverId]: 0 },
             createdAt: serverTimestamp(),
             isArchived: false,
             isPinned: false,
             isMuted: false,
+            deletedBy: [], // Initialize empty deletedBy array
+            deletedAt: {}, // Initialize empty deletedAt object
           });
           convoId = newConvoRef.id;
         }
@@ -122,12 +125,33 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
           reactions: {},
         };
 
+        // Before sending the message, check if the receiver had deleted this conversation
+        const convDoc = await getDoc(doc(db, "conversations", convoId));
+        if (convDoc.exists()) {
+          const convData = convDoc.data();
+          const deletedBy = convData.deletedBy || [];
+          const deletedAt = convData.deletedAt || {};
+
+          // If the receiver had deleted this conversation, restore it for them
+          if (deletedBy.includes(receiverId)) {
+            const updatedDeletedBy = deletedBy.filter((id: string) => id !== receiverId);
+            const updatedDeletedAt = { ...deletedAt };
+            delete updatedDeletedAt[receiverId];
+
+            await updateDoc(doc(db, "conversations", convoId), {
+              deletedBy: updatedDeletedBy,
+              deletedAt: updatedDeletedAt,
+            });
+          }
+        }
+
         const msgRef = await addDoc(collection(db, "conversations", convoId, "messages"), message);
         message.id = msgRef.id;
         // Update conversation metadata
         await updateDoc(doc(db, "conversations", convoId), {
           lastMessage: payload.text || payload.fileName || "📎 Attachment",
           lastMessageTime: serverTimestamp(),
+          lastMessageSenderId: currentUserId, // Track who sent the last message
           [`unread.${receiverId}`]: increment(1),
           updatedAt: serverTimestamp(),
         });

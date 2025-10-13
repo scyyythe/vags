@@ -51,4 +51,6 @@ export interface Conversation {
   isMuted: boolean;
   messages: Message[];
   deletedBy?: string[]; // Array of user IDs who have deleted this conversation
+  deletedAt?: { [userId: string]: Date }; // Track when each user deleted the conversation
+  isRevived?: boolean; // Flag to indicate this conversation was deleted but has new messages
 }
