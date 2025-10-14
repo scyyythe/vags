@@ -28,15 +28,29 @@ const AutomaticMessageBubble: React.FC<AutomaticMessageBubbleProps> = ({
       onViewOrder();
     } else {
       if (currentUserId) {
-        navigate(`/userprofile/${currentUserId}`, {
-          state: {
-            activeTab: "onSale",
-            mainTab: "myListings",
-            activeSubGroup: "soldArtworks",
-            subTab: "payment_received",
-            highlightedOrderId: orderId,
-          },
-        });
+        if (isSender) {
+          // Buyer navigation - go to purchase history
+          navigate(`/userprofile/${currentUserId}`, {
+            state: {
+              activeTab: "onSale",
+              mainTab: "myPurchase",
+              activeSubGroup: "purchasedArtworks",
+              subTab: "paid",
+              highlightedOrderId: orderId,
+            },
+          });
+        } else {
+          // Seller navigation - go to listings
+          navigate(`/userprofile/${currentUserId}`, {
+            state: {
+              activeTab: "onSale",
+              mainTab: "myListings",
+              activeSubGroup: "soldArtworks",
+              subTab: "payment_received",
+              highlightedOrderId: orderId,
+            },
+          });
+        }
       } else {
         console.log("View order details:", orderId);
       }
@@ -87,9 +101,7 @@ const AutomaticMessageBubble: React.FC<AutomaticMessageBubbleProps> = ({
 
         <div
           className={`rounded-lg p-3 mt-4 ${
-            isSender
-              ? "bg-yellow-400/20 border border-yellow-300/30"
-              : "bg-yellow-100/40 border border-yellow-400/50"
+            isSender ? "bg-yellow-400/20 border border-yellow-300/30" : "bg-yellow-100/40 border border-yellow-400/50"
           }`}
         >
           <p className="text-[9px] text-yellow-700">
