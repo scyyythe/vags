@@ -130,6 +130,8 @@ const ProductViewingContent = () => {
     return <ProductViewingSkeleton />;
   }
 
+  const productStatus = (product as any)?.status || "active";
+
   if (error || !product) {
     return <div>Product not found.</div>;
   }
@@ -549,16 +551,20 @@ const ProductViewingContent = () => {
             </div>
 
             {/* Quantity, Buy Now, Wishlist */}
-
             <div className="space-y-2">
               <div className="flex items-center justify-between space-x-3">
-                {/* Show quantity selector only if edition is "Open Edition" */}
+                {/* Disable quantity picker if sold */}
                 {product.edition === "Open Edition" && (
                   <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs">
+                    <div
+                      className={`flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs ${
+                        productStatus === "sold" ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                    >
                       <button
                         onClick={() => handleQuantityChange(-1)}
                         className="w-8 h-8 pl-1.5 flex items-center justify-center text-black hover:bg-gray-100"
+                        disabled={productStatus === "sold"}
                       >
                         −
                       </button>
@@ -572,6 +578,7 @@ const ProductViewingContent = () => {
                       <button
                         onClick={() => handleQuantityChange(1)}
                         className="w-8 h-8 pr-1.5 flex items-center justify-center text-black hover:bg-gray-100"
+                        disabled={productStatus === "sold"}
                       >
                         +
                       </button>
@@ -582,15 +589,27 @@ const ProductViewingContent = () => {
                   </div>
                 )}
 
+                {/* Disable Buy Now button if sold */}
                 <button
-                  className="w-full bg-red-800 hover:bg-red-700 text-white py-2 text-xs font-medium rounded-full"
-                  onClick={() => setIsModalOpen(true)}
+                  className={`w-full py-2 text-xs font-medium rounded-full transition-colors duration-200 ${
+                    productStatus === "sold"
+                      ? "bg-gray-400 text-white cursor-not-allowed"
+                      : "bg-red-800 hover:bg-red-700 text-white"
+                  }`}
+                  onClick={() => {
+                    if (productStatus !== "sold") setIsModalOpen(true);
+                  }}
+                  disabled={productStatus === "sold"}
                 >
                   <i className="bx bx-cart text-[15px] relative top-0.5 mr-3"></i>
-                  Buy Now
+                  {productStatus === "sold" ? "Sold Out" : "Buy Now"}
                 </button>
 
-                <button onClick={handleWishlistToggle} className="py-1.5 px-2.5 border border-gray-300 rounded-full">
+                <button
+                  onClick={handleWishlistToggle}
+                  className="py-1.5 px-2.5 border border-gray-300 rounded-full"
+                  disabled={productStatus === "sold"}
+                >
                   <img
                     src={
                       likedItems.has(id)

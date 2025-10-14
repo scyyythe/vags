@@ -112,6 +112,7 @@ const SellCard = ({
     });
     onLike?.();
   };
+
   const participantAvatar = profile_picture ?? undefined;
   const handleContact = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -182,9 +183,17 @@ const SellCard = ({
         ${isFading ? "opacity-0 scale-95" : "opacity-100 scale-100"}
       `}
     >
-
       <div className="relative">
         <img src={artworkImage} alt={title} className="rounded-md w-full h-44 object-cover" />
+
+        {/* SOLD OUT Overlay (only for non-owner users) */}
+        {!isOwner && status === "sold" && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-black/60 rounded-full px-6 py-6 flex items-center justify-center">
+              <span className="text-white text-[12px] font-medium">Sold Out</span>
+            </div>
+          </div>
+        )}
 
         {/* Icons or Status */}
         {status === "active" && (isWishlistView || isMarketplace) ? (
@@ -340,33 +349,31 @@ const SellCard = ({
             Relist
           </button>
         ) : null} */}
-
       </div>
 
       {isModalOpen &&
-      typeof document !== "undefined" &&
-      ReactDOM.createPortal(
-        <PreviewModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onProceedToCheckout={() => setIsModalOpen(false)}
-          artwork={{
-            id,
-            artworkImage,
-            title,
-            artist,
-            medium,
-            style: category,
-            edition,
-            size,
-            yearCreated,
-            price,
-            default_paypal_email,
-          }}
-        />,
-        document.body //ensures modal renders at the top of the DOM
-      )}
-
+        typeof document !== "undefined" &&
+        ReactDOM.createPortal(
+          <PreviewModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onProceedToCheckout={() => setIsModalOpen(false)}
+            artwork={{
+              id,
+              artworkImage,
+              title,
+              artist,
+              medium,
+              style: category,
+              edition,
+              size,
+              yearCreated,
+              price,
+              default_paypal_email,
+            }}
+          />,
+          document.body //ensures modal renders at the top of the DOM
+        )}
     </div>
   );
 };
