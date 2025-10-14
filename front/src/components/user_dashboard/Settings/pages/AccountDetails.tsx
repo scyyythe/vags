@@ -131,7 +131,7 @@ const AccountDetails = () => {
     if (!isValidEmail(formData.email)) {
       toast.error("Please enter a valid email address.", { closeButton: true });
       return;
-    }
+    } 
 
     const [updatedFirstName, ...rest] = formData.fullName.split(" ");
     const updatedLastName = rest.join(" ");
