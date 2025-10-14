@@ -20,6 +20,9 @@ class ExhibitContribution(Document):
         'collection': 'exhibit_contributions',
         'indexes': [
             ('exhibit', 'contributor'),
+            'exhibit',  # For exhibit-based queries
+            'contributor',  # For contributor-based queries
+            ('exhibit', 'artworks.slot_number'),  # For slot-based lookups
         ],
         'unique_with': ['exhibit', 'contributor']
     }

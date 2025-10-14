@@ -28,6 +28,18 @@ class Exhibit(Document):
 
     meta = {
         'collection': 'exhibits',
-        'indexes': ['owner', 'visibility', 'start_time']
+        'indexes': [
+            'owner',
+            'visibility', 
+            'start_time',
+            'exhibit_type',
+            'chosen_env',
+            'created_at',
+            ('owner', 'visibility'),  # Compound index for user's exhibits
+            ('visibility', 'start_time'),  # For public exhibits sorted by time
+            ('exhibit_type', 'visibility'),  # For filtering collaborative exhibits
+            ('collaborators', 'visibility'),  # For collaborator queries
+            ('owner', 'visibility', 'start_time'),  # Optimized for user exhibit lists
+        ]
     }
 
