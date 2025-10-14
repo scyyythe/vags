@@ -113,6 +113,10 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [artworks, setArtworks] = useState<any[]>([]); 
+  const [activeSubTab, setActiveSubTab] = useState("sold");
+
+
   const handleViewDetails = (artwork: any) => {
     setSelectedOrder(artwork);
     setShowOrderDetails(true);
@@ -489,6 +493,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
               category: sale.artwork.style,
               artworkImage: sale.artworkImage,
               status: "sold",
+              isFading: (sale as any).isFading ?? false,
             }))
         : []
       : [];
@@ -606,6 +611,36 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
     setShowReviewDetailsModal(true);
   };
 
+ const handleRelist = (id: string) => {
+    // Fade out the sold card first
+    setArtworks((prevArtworks) =>
+      prevArtworks.map((artwork) =>
+        artwork.id === id ? { ...artwork, isFading: true } : artwork
+      )
+    );
+
+    // After fade animation, move to "active" list
+    setTimeout(() => {
+      setArtworks((prevArtworks) => {
+        const relisted = prevArtworks.find((art) => art.id === id);
+        if (!relisted) return prevArtworks;
+
+        // remove it from sold
+        const updatedSold = prevArtworks.filter((art) => art.id !== id);
+
+        // add to available with updated status
+        const relistedArt = { ...relisted, status: "active", isFading: false };
+
+        return [...updatedSold, relistedArt];
+      });
+
+      // move the user to the Available (active) subtab
+      setActiveSubTab("active");
+
+      toast.success("Artwork relisted successfully!", { closeButton: true });
+    }, 400);
+  };
+
   return (
     <div className="w-full">
       {/* MAIN TABS */}
@@ -680,7 +715,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                         }`}
                         onClick={() => {
                           setActiveSubGroup(option as "listings" | "soldArtworks");
-                          setSubTab(option === "listings" ? "available" : "awaiting_payment");
+                          setSubTab(option === "listings" ? "available" : "payment_received");
                           setShowDropdown(false);
                         }}
                       >
@@ -902,25 +937,25 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {filteredSoldArtworksForListings.map((art) => {
-                return (
-                  <SellCard
-                    key={art.id}
-                    id={art.id}
-                    artworkImage={art.artworkImage}
-                    title={art.title}
-                    price={art.price}
-                    originalPrice={art.originalPrice}
-                    rating={art.rating}
-                    category={art.category}
-                    status="sold"
-                    isMarketplace={true}
-                    artistId={art.artist_id}
-                    isOwner={isOwnProfile}
-                    onCardClick={() => onCardClick(art.id)}
-                  />
-                );
-              })}
+              {filteredSoldArtworksForListings.map((art) => (
+                <SellCard
+                  key={art.id}
+                  id={art.id}
+                  artworkImage={art.artworkImage}
+                  title={art.title}
+                  price={art.price}
+                  originalPrice={art.originalPrice}
+                  rating={art.rating}
+                  category={art.category}
+                  status="sold" // ensures SellCard recognizes it as sold
+                  isMarketplace={true}
+                  artistId={art.artist_id}
+                  isOwner={isOwnProfile}
+                  isFading={(art as any).isFading ?? false}
+                  onCardClick={() => onCardClick(art.id)}
+                  onRelist={() => handleRelist(art.id)} // enables "Relist" button
+                />
+              ))}
             </div>
           )
         ) : filteredArtworks.length === 0 ? (

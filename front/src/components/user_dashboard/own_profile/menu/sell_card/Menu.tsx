@@ -1,17 +1,15 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Pencil, EyeOff, Eye, BarChart, Trash2, CheckCircle, MoreHorizontal } from "lucide-react";
+import { Pencil, EyeOff, Eye, Trash2 } from "lucide-react";
 import DeleteConfirmationPopup from "./DeleteConfirmation";
 import useDeleteArtwork from "@/hooks/mutate/visibility/trash/useDeleteArtwork";
 
 interface SellMenuProps {
   isOpen: boolean;
   artworkId: string;
-  isOwnerView?: boolean;
   artworkTitle?: string;
   isPublic?: boolean;
-  isSold?: boolean;
   onEdit: (id: string) => void;
   onToggleVisibility: (newVisibility: string, artworkId: string) => void;
   onDelete: () => void;
@@ -26,8 +24,6 @@ const SellMenu: React.FC<SellMenuProps> = ({
   onEdit,
   onToggleVisibility,
   onDelete,
-  onMarkAsSold,
-  onViewInsights,
   artworkTitle,
   isPublic = true,
   className,
@@ -36,8 +32,6 @@ const SellMenu: React.FC<SellMenuProps> = ({
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [publicStatus, setPublicStatus] = useState(isPublic);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
-  const [isMoreOptionsOpen, setIsMoreOptionsOpen] = useState(false);
-  const [isSold, setIsSold] = useState(false);
   const navigate = useNavigate();
   const deleteArtwork = useDeleteArtwork();
 
@@ -59,41 +53,24 @@ const SellMenu: React.FC<SellMenuProps> = ({
     onToggleVisibility(visibilityString, artworkId);
 
     toast.success(
-      newStatus ? `"${artworkTitle ?? "Artwork"}" is now listed.` : `"${artworkTitle ?? "Artwork"}" has been unlisted.`,
-      {
-        closeButton: true,
-      }
+      newStatus
+        ? `"${artworkTitle ?? "Artwork"}" is now listed.`
+        : `"${artworkTitle ?? "Artwork"}" has been unlisted."`,
+      { closeButton: true }
     );
   };
 
   const handleConfirmDelete = () => {
     deleteArtwork.mutate(artworkId, {
-      onSuccess: () => setShowDeletePopup(false),
-      onError: () => setShowDeletePopup(false),
+      onSuccess: () => {
+        setShowDeletePopup(false);
+        toast.success("Artwork deleted successfully.", { closeButton: true });
+      },
+      onError: () => {
+        setShowDeletePopup(false);
+        toast.error("Failed to delete artwork.", { closeButton: true });
+      },
     });
-  };
-
-  const handleEdit = () => {
-    navigate(`/sell-update/${artworkId}`, { state: { artworkId } });
-  };
-
-  const handleInsights = () => {
-    navigate(`/insights/${artworkId}`);
-  };
-
-  const handleMarkAsSold = () => {
-    const newSoldStatus = !isSold;
-    setIsSold(newSoldStatus);
-    onMarkAsSold(artworkId);
-
-    toast.success(
-      newSoldStatus
-        ? `"${artworkTitle ?? "Artwork"}" marked as sold.`
-        : `"${artworkTitle ?? "Artwork"}" marked as not sold.`,
-      {
-        closeButton: true,
-      }
-    );
   };
 
   return (
@@ -104,26 +81,8 @@ const SellMenu: React.FC<SellMenuProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start gap-1 text-[10px]">
-          {/* Mark as Sold */}
-          <div className="flex items-center relative">
-            <button
-              onClick={handleMarkAsSold}
-              className={`p-1 rounded-full transition-colors hover:bg-gray-200 ${
-                isSold ? "text-green-600" : "text-black"
-              }`}
-              onMouseEnter={() => setHoveredItem("sold")}
-              onMouseLeave={() => setHoveredItem(null)}
-            >
-              <CheckCircle size={11} />
-            </button>
-            {hoveredItem === "sold" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                {isSold ? "Mark as Not Sold" : "Mark as Sold"}
-              </span>
-            )}
-          </div>
 
-          {/* Toggle Visibility */}
+          {/* Unlist / Relist Button */}
           <div className="flex items-center relative">
             <button
               onClick={handleToggleVisibility}
@@ -131,67 +90,49 @@ const SellMenu: React.FC<SellMenuProps> = ({
               onMouseEnter={() => setHoveredItem("visibility")}
               onMouseLeave={() => setHoveredItem(null)}
             >
-              {publicStatus ? <EyeOff size={11} /> : <Eye size={11} />}
+              {publicStatus ? <EyeOff size={12} /> : <Eye size={12} />}
             </button>
             {hoveredItem === "visibility" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">
-                {publicStatus ? "Unlist" : "List"}
+              <span className="absolute left-8 text-[9px] bg-black text-white px-2 py-1 rounded">
+                {publicStatus ? "Unlist" : "Relist"}
               </span>
             )}
           </div>
 
-          {/* View Insights */}
+          {/* Edit Button */}
           <div className="flex items-center relative">
             <button
-              onClick={handleInsights}
+              onClick={() => onEdit(artworkId)}
               className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
-              onMouseEnter={() => setHoveredItem("insights")}
+              onMouseEnter={() => setHoveredItem("edit")}
               onMouseLeave={() => setHoveredItem(null)}
             >
-              <BarChart size={11} />
+              <Pencil size={12} />
             </button>
-            {hoveredItem === "insights" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                View Insights
+            {hoveredItem === "edit" && (
+              <span className="absolute left-8 text-[9px] bg-black text-white px-2 py-1 rounded">
+                Edit
               </span>
             )}
           </div>
 
-          {/* More Options: Edit & Delete */}
+          {/* Delete Button */}
           <div className="flex items-center relative">
             <button
-              onClick={() => setIsMoreOptionsOpen((prev) => !prev)}
-              className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
-              onMouseEnter={() => setHoveredItem("more")}
+              onClick={() => setShowDeletePopup(true)}
+              className="p-1 rounded-full text-red-600 hover:bg-red-100 transition-colors"
+              onMouseEnter={() => setHoveredItem("delete")}
               onMouseLeave={() => setHoveredItem(null)}
             >
-              <MoreHorizontal size={11} />
+              <Trash2 size={12} />
             </button>
-
-            {isMoreOptionsOpen && (
-              <div className="absolute left-8 -top-3 bg-black rounded text-[9px] flex flex-col z-20 w-18">
-                <button
-                  onClick={() => {
-                    onEdit(artworkId);
-                    setIsMoreOptionsOpen(false);
-                  }}
-                  className="px-3 py-1 text-left text-white hover:bg-gray-800"
-                >
-                  Edit
-                </button>
-
-                <button
-                  onClick={() => {
-                    setShowDeletePopup(true);
-                    setIsMoreOptionsOpen(false);
-                  }}
-                  className="px-3 py-1 text-left text-red-500 hover:text-red-400"
-                >
-                  Delete
-                </button>
-              </div>
+            {hoveredItem === "delete" && (
+              <span className="absolute left-8 text-[9px] bg-black text-white px-2 py-1 rounded">
+                Delete
+              </span>
             )}
           </div>
+
         </div>
       </div>
 
