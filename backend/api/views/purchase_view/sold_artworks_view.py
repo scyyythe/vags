@@ -81,13 +81,29 @@ class ToggleArtworkStatusView(APIView):
         except Art.DoesNotExist:
             return Response({"error": "Artwork not found"}, status=status.HTTP_404_NOT_FOUND)
 
-     
-        if artwork.art_status == "Sold":
-            artwork.art_status = "onSale" 
-            message = "Artwork is now on sale"
+        # Handle status toggle based on edition type
+        if artwork.edition == "Open Edition" and artwork.quantity is not None:
+            # For Open Edition, only allow toggle if quantity > 0
+            if artwork.art_status == "Sold":
+                # Can't toggle Sold Out Open Edition back to onSale without quantity
+                return Response(
+                    {"error": "Cannot toggle Sold Out Open Edition artwork. Please add quantity first."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            elif artwork.art_status == "onSale":
+                artwork.art_status = "Sold"
+                message = "Open Edition artwork marked as sold out"
+            else:
+                artwork.art_status = "onSale"
+                message = "Open Edition artwork is now on sale"
         else:
-            artwork.art_status = "Sold"
-            message = "Artwork marked as sold"
+            # For non-Open Edition artworks
+            if artwork.art_status == "Sold":
+                artwork.art_status = "onSale" 
+                message = "Artwork is now on sale"
+            else:
+                artwork.art_status = "Sold"
+                message = "Artwork marked as sold"
 
         artwork.save()
 

@@ -60,11 +60,12 @@ class PurchaseArtworkSerializer(serializers.Serializer):
         if artwork.edition == "Open Edition" and artwork.quantity is not None:
             artwork.quantity -= quantity
             if artwork.quantity == 0:
-                artwork.art_status = "Sold Out"
+                artwork.art_status = "Sold"  
             else:
-                artwork.art_status = "To Receive"
+                artwork.art_status = "onSale" 
         else:
-            artwork.art_status = "To Receive"
+            # For non-Open Edition artworks, mark as Sold
+            artwork.art_status = "Sold"
         artwork.save()
 
         now = datetime.now()

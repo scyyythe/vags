@@ -151,7 +151,12 @@ const ProductViewingContent = () => {
   };
 
   const handleQuantityChange = (change: number) => {
-    setQuantity((prev) => Math.max(1, prev + change));
+    setQuantity((prev) => {
+      const newQuantity = prev + change;
+      // Use the actual product quantity if available, otherwise allow up to 999
+      const maxQuantity = product?.quantity || 999;
+      return Math.max(1, Math.min(newQuantity, maxQuantity));
+    });
   };
 
   const renderStars = (rating: number, size: string = "text-sm") => {
@@ -549,26 +554,31 @@ const ProductViewingContent = () => {
               <div className="flex items-center justify-between space-x-3">
                 {/* Show quantity selector only if edition is "Open Edition" */}
                 {product.edition === "Open Edition" && (
-                  <div className="flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs">
-                    <button
-                      onClick={() => handleQuantityChange(-1)}
-                      className="w-8 h-8 pl-1.5 flex items-center justify-center text-black"
-                    >
-                      −
-                    </button>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs">
+                      <button
+                        onClick={() => handleQuantityChange(-1)}
+                        className="w-8 h-8 pl-1.5 flex items-center justify-center text-black hover:bg-gray-100"
+                      >
+                        −
+                      </button>
 
-                    <div className="w-px h-3 bg-gray-300" />
+                      <div className="w-px h-3 bg-gray-300" />
 
-                    <span className="w-8 text-center font-medium text-black">{quantity}</span>
+                      <span className="w-8 text-center font-medium text-black">{quantity}</span>
 
-                    <div className="w-px h-3 bg-gray-300" />
+                      <div className="w-px h-3 bg-gray-300" />
 
-                    <button
-                      onClick={() => handleQuantityChange(1)}
-                      className="w-8 h-8 pr-1.5 flex items-center justify-center text-black"
-                    >
-                      +
-                    </button>
+                      <button
+                        onClick={() => handleQuantityChange(1)}
+                        className="w-8 h-8 pr-1.5 flex items-center justify-center text-black hover:bg-gray-100"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <p className="text-[9px] text-gray-500 text-center">
+                      {product.quantity ? `${product.quantity} remaining stocks` : ""}
+                    </p>
                   </div>
                 )}
 
@@ -695,6 +705,9 @@ const ProductViewingContent = () => {
             size: product.size ? `${product.size} cm` : "Unknown",
             yearCreated: product.year_created || "Unknown",
             price: product.price || 0,
+            default_paypal_email: product.default_paypal_email,
+            quantity: product.edition === "Open Edition" ? quantity : 1,
+            availableQuantity: product.quantity || 1,
           }}
         />
       )}

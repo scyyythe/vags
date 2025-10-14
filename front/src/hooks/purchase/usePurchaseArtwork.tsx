@@ -25,7 +25,19 @@ const usePurchaseArtwork = () => {
       return apiClient.post("/purchase/", payload);
     },
     onSuccess: () => {
+      // Invalidate all relevant marketplace queries to refresh the data
       queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["popular-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] });
+      queryClient.invalidateQueries({ queryKey: ["top-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["top-sellers"] });
+      queryClient.invalidateQueries({ queryKey: ["my-purchases"] });
+      queryClient.invalidateQueries({ queryKey: ["my-sold-artworks"] });
     },
   });
 };
