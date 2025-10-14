@@ -7,6 +7,8 @@ from api.utils.content_moderation import moderate_image
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 from api.models.payment_model.payment_accounts import PaymentAccount
+from api.utils.cache_utils import get_cached_data, set_cache_data
+from collections import defaultdict
 
 class ArtSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
@@ -28,7 +30,6 @@ class ArtSerializer(serializers.Serializer):
     year_created = serializers.CharField(max_length=10, required=False)
     quantity = serializers.IntegerField(required=False, allow_null=True)
 
-
     images = serializers.ListField(
         child=serializers.ImageField(),
         required=False,
@@ -41,7 +42,12 @@ class ArtSerializer(serializers.Serializer):
     )
 
     likes_count = serializers.SerializerMethodField()
-    default_paypal_email = serializers.SerializerMethodField() 
+    default_paypal_email = serializers.SerializerMethodField()
+    
+    # Class-level cache for likes and paypal emails to avoid N+1 queries
+    _likes_cache = {}
+    _paypal_cache = {}
+    _artist_cache = {} 
     
     def get_default_paypal_email(self, obj):
         """
@@ -49,18 +55,99 @@ class ArtSerializer(serializers.Serializer):
         """
         if not obj.artist:
             return None
+            
+        # Use cache to avoid N+1 queries
+        if obj.artist.id in self._paypal_cache:
+            return self._paypal_cache[obj.artist.id]
+            
         try:
             account = PaymentAccount.objects.get(
                 user=obj.artist,
                 type="paypal",
                 is_default=True
             )
-            return account.account_info
+            email = account.account_info
+            self._paypal_cache[obj.artist.id] = email
+            return email
         except PaymentAccount.DoesNotExist:
+            self._paypal_cache[obj.artist.id] = None
             return None
         
     def get_likes_count(self, obj):
-        return Like.objects.filter(art=obj).count()
+        # Use cache to avoid N+1 queries
+        if obj.id in self._likes_cache:
+            return self._likes_cache[obj.id]
+        
+        count = Like.objects.filter(art=obj).count()
+        self._likes_cache[obj.id] = count
+        return count
+    
+    @classmethod
+    def prefetch_likes_data(cls, artworks):
+        """Prefetch likes count for multiple artworks to avoid N+1 queries"""
+        if not artworks:
+            return
+        
+        artwork_ids = [art.id for art in artworks]
+        
+        # Get likes count for all artworks in one query
+        likes_data = Like.objects.aggregate([
+            {'$match': {'art': {'$in': artwork_ids}}},
+            {'$group': {'_id': '$art', 'count': {'$sum': 1}}}
+        ])
+        
+        # Update cache
+        for like_data in likes_data:
+            cls._likes_cache[like_data['_id']] = like_data['count']
+        
+        # Set count to 0 for artworks without likes
+        for artwork_id in artwork_ids:
+            if artwork_id not in cls._likes_cache:
+                cls._likes_cache[artwork_id] = 0
+    
+    @classmethod
+    def prefetch_paypal_data(cls, artworks):
+        """Prefetch PayPal email data for multiple artworks"""
+        if not artworks:
+            return
+            
+        artist_ids = list(set([art.artist.id for art in artworks if art.artist]))
+        
+        if not artist_ids:
+            return
+            
+        # Get PayPal accounts for all artists in one query
+        paypal_accounts = PaymentAccount.objects.filter(
+            user__in=artist_ids,
+            type="paypal",
+            is_default=True
+        )
+        
+        # Update cache
+        for account in paypal_accounts:
+            cls._paypal_cache[account.user.id] = account.account_info
+    
+    @classmethod
+    def prefetch_artist_data(cls, artworks):
+        """Prefetch artist data to avoid repeated artist queries"""
+        if not artworks:
+            return
+            
+        artist_ids = list(set([art.artist.id for art in artworks if art.artist]))
+        
+        if not artist_ids:
+            return
+            
+        # This would need to be implemented based on your User model
+        # For now, we'll keep the individual queries but cache the results
+        pass
+    
+    @classmethod
+    def clear_cache(cls):
+        """Clear all caches"""
+        cls._likes_cache.clear()
+        cls._paypal_cache.clear()
+        cls._artist_cache.clear()
 
     def validate(self, data):
         price = data.get("price")
@@ -231,6 +318,11 @@ class LightweightArtSerializer(serializers.Serializer):
     image_url = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
     default_paypal_email = serializers.SerializerMethodField()
+    
+    # Use the same caches as ArtSerializer
+    _likes_cache = ArtSerializer._likes_cache
+    _paypal_cache = ArtSerializer._paypal_cache
+    _artist_cache = ArtSerializer._artist_cache
 
     def get_artist(self, obj):
         if obj.artist:
@@ -256,19 +348,33 @@ class LightweightArtSerializer(serializers.Serializer):
         return []
 
     def get_likes_count(self, obj):
-        return Like.objects.filter(art=obj).count()
+        # Use cache to avoid N+1 queries
+        if obj.id in self._likes_cache:
+            return self._likes_cache[obj.id]
+        
+        count = Like.objects.filter(art=obj).count()
+        self._likes_cache[obj.id] = count
+        return count
 
     def get_default_paypal_email(self, obj):
         if not obj.artist:
             return None
+            
+        # Use cache to avoid N+1 queries
+        if obj.artist.id in self._paypal_cache:
+            return self._paypal_cache[obj.artist.id]
+            
         try:
             account = PaymentAccount.objects.get(
                 user=obj.artist,
                 type="paypal",
                 is_default=True
             )
-            return account.account_info
+            email = account.account_info
+            self._paypal_cache[obj.artist.id] = email
+            return email
         except PaymentAccount.DoesNotExist:
+            self._paypal_cache[obj.artist.id] = None
             return None
 
 
@@ -292,7 +398,12 @@ class ArtCardSerializer(serializers.Serializer):
     year_created=serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
     profile_picture = serializers.SerializerMethodField()
-    default_paypal_email = serializers.SerializerMethodField() 
+    default_paypal_email = serializers.SerializerMethodField()
+    
+    # Use the same caches as ArtSerializer
+    _likes_cache = ArtSerializer._likes_cache
+    _paypal_cache = ArtSerializer._paypal_cache
+    _artist_cache = ArtSerializer._artist_cache 
 
     def get_average_rating(self, obj):
             from api.models.review_model.review import Review
@@ -301,7 +412,13 @@ class ArtCardSerializer(serializers.Serializer):
                 return 0
             return round(sum(r.rating for r in reviews) / len(reviews), 1)
     def get_total_ratings(self, obj):
-        return Like.objects.filter(art=obj).count()
+        # Use cache to avoid N+1 queries
+        if obj.id in self._likes_cache:
+            return self._likes_cache[obj.id]
+        
+        count = Like.objects.filter(art=obj).count()
+        self._likes_cache[obj.id] = count
+        return count
 
     def get_visibility(self, obj):
         return str(obj.visibility).lower() if hasattr(obj, "visibility") and obj.visibility else ""
@@ -394,14 +511,22 @@ class ArtCardSerializer(serializers.Serializer):
     def get_default_paypal_email(self, obj):
         if not obj.artist:
             return None
+            
+        # Use cache to avoid N+1 queries
+        if obj.artist.id in self._paypal_cache:
+            return self._paypal_cache[obj.artist.id]
+            
         try:
             account = PaymentAccount.objects.get(
                 user=obj.artist,
                 type="paypal",
                 is_default=True
             )
-            return account.account_info
+            email = account.account_info
+            self._paypal_cache[obj.artist.id] = email
+            return email
         except PaymentAccount.DoesNotExist:
+            self._paypal_cache[obj.artist.id] = None
             return None
         
     def to_representation(self, instance):
