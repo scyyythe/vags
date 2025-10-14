@@ -75,7 +75,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
       if (navSubTab) setSubTab(navSubTab);
     }
   }, [navigationState]);
-  const [activeSubTab, setActiveSubTab] = useState("awaiting_payment");
+  // const [activeSubTab, setActiveSubTab] = useState("awaiting_payment");
   const [showDropdown, setShowDropdown] = useState(false);
 
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
@@ -308,7 +308,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
 
   const activeListingTabs = isOwnProfile ? ["available", "unlisted", "sold"] : ["available", "sold"];
   const soldArtworksTabs = [
-    "awaiting_payment",
+    // "awaiting_payment",
     "payment_received",
     "in_progress",
     "completed",
