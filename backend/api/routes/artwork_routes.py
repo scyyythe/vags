@@ -3,7 +3,7 @@ from api.views.artwork_views.artwork_views import (ArtCardListView,SellArtworkVi
 UpdateArtworkVisibilityView,MyArtCardListView,BulkArtDetailView,PopularLightweightArtView,ArtBulkListView,
 DeletePermanentArtwork,UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,
 UnHideArtworkView,HideArtworkView,BulkUnhideArtworksView,UserArtworksWithHiddenView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, 
-ArtListByArtistView,ArtDeleteView,ArtListViewOwner)
+ArtListByArtistView,ArtDeleteView,ArtListViewOwner,RelistArtworkView)
 from api.views.artwork_views.artwork_detail_view import MarketplaceArtDetailView
 from api.views.artwork_views.wishlist_view import ToggleWishlistView,WishlistArtView,WishlistIDListView,MyWishlistView
 from api.views.artwork_views.artwork_trending_view import TrendingArtworksView
@@ -54,6 +54,7 @@ artwork_urlpatterns = [
     
     path('art/<str:pk>/archived/',ArchivedArtwork.as_view(), name='archived_art'),
     path('art/<str:pk>/unarchived/',UnArchivedArtwork.as_view(), name='archived_art'),
+    path('art/<str:artwork_id>/relist/', RelistArtworkView.as_view(), name='relist_artwork'),
     
    
 ]
