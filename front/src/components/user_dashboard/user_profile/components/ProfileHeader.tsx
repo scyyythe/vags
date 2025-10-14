@@ -51,7 +51,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
     e.stopPropagation();
 
     if (!profileUserId || !name) {
-      console.error("❌ Missing profile info", { profileUserId, name });
+      console.error("Missing profile info", { profileUserId, name });
       return;
     }
 
@@ -116,15 +116,30 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
     console.log("Reason:", reason);
     setShowReportOptions(false);
   };
+
   const socialIcons: Record<string, string> = {
     website: "https://img.icons8.com/fluency-systems-regular/48/globe--v1.png",
     twitter: "https://img.icons8.com/color/48/twitter--v1.png",
     facebook: "https://img.icons8.com/color/48/facebook-new.png",
     instagram: "https://img.icons8.com/fluency/48/instagram-new.png",
     linkedin: "https://img.icons8.com/color/48/linkedin--v1.png",
+    tiktok: "https://img.icons8.com/color/48/tiktok--v1.png",
+    youtube: "https://img.icons8.com/color/48/youtube-play.png",
+    pinterest: "https://img.icons8.com/color/48/pinterest--v1.png",
+    snapchat: "https://img.icons8.com/color/48/snapchat.png",
+    reddit: "https://img.icons8.com/color/48/reddit.png",
 
-    // add more platforms as needed
+    // Artist-focused platforms
+    behance: "https://img.icons8.com/color/48/behance.png",
+    dribbble: "https://img.icons8.com/color/48/dribbble.png",
+    artstation: "https://img.icons8.com/color/48/artstation.png",
+    deviantart: "https://img.icons8.com/color/48/deviantart.png",
+    patreon: "https://img.icons8.com/color/48/patreon.png",
+    etsy: "https://img.icons8.com/color/48/etsy.png",
+    twitch: "https://img.icons8.com/color/48/twitch.png",
+    discord: "https://img.icons8.com/color/48/discord-new.png",
   };
+
 
   return (
     <div className="w-full px-4">
