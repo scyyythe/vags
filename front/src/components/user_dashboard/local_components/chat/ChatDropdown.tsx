@@ -50,6 +50,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const [headerName, setHeaderName] = useState(participantName || "Unknown");
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchJustFocused, setSearchJustFocused] = useState(false);
 
   const { data: allUsers = [], isLoading: isLoadingUsers } = useAllUsersQuery();
 
@@ -244,26 +246,34 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   }, [conversations, searchQuery, showArchived, userId]);
 
   const filteredUsers = useMemo(() => {
-    return allUsers
-      .filter((user) => {
-        if (user.id === userId) return false;
-        const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim();
-        const username = user.username || "";
-        const email = user.email || "";
+    // If search is focused but no query, show all users (limited to 10)
+    if (isSearchFocused && searchQuery.length === 0) {
+      return allUsers.filter((user) => user.id !== userId).slice(0, 10);
+    }
 
-        const searchLower = searchQuery.toLowerCase();
-        return (
-          fullName.toLowerCase().includes(searchLower) ||
-          username.toLowerCase().includes(searchLower) ||
-          email.toLowerCase().includes(searchLower)
-        );
-      })
-      .slice(0, 5);
-  }, [allUsers, searchQuery, userId]);
+    // If there's a search query, show filtered results (limited to 10)
+    const filtered = allUsers.filter((user) => {
+      if (user.id === userId) return false;
+      const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim();
+      const username = user.username || "";
+      const email = user.email || "";
+
+      const searchLower = searchQuery.toLowerCase();
+      return (
+        fullName.toLowerCase().includes(searchLower) ||
+        username.toLowerCase().includes(searchLower) ||
+        email.toLowerCase().includes(searchLower)
+      );
+    });
+
+    return filtered.slice(0, 10);
+  }, [allUsers, searchQuery, userId, isSearchFocused]);
 
   const handleUserSelect = async (selectedUser: any) => {
     setSearchQuery("");
     setShowUserDropdown(false);
+    setIsSearchFocused(false);
+    setSearchJustFocused(false);
 
     const existingConv = conversations.find((conv) => conv.participantId === selectedUser.id);
 
@@ -719,15 +729,36 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   };
 
   useEffect(() => {
-    const handleClickOutside = () => {
-      setShowUserDropdown(false);
+    const handleClickOutside = (event: MouseEvent) => {
+      // Don't close if search was just focused
+      if (searchJustFocused) {
+        setSearchJustFocused(false);
+        return;
+      }
+
+      // Check if the click is outside the search area and user dropdown
+      const target = event.target as Element;
+      const searchContainer = target.closest(".search-container");
+      const userDropdown = target.closest("[data-user-dropdown]");
+
+      if (!searchContainer && !userDropdown) {
+        setShowUserDropdown(false);
+        setIsSearchFocused(false);
+      }
     };
 
-    if (showUserDropdown) {
-      document.addEventListener("click", handleClickOutside);
-      return () => document.removeEventListener("click", handleClickOutside);
+    if (showUserDropdown || isSearchFocused) {
+      // Add a small delay to prevent immediate closing when clicking the search input
+      const timeoutId = setTimeout(() => {
+        document.addEventListener("click", handleClickOutside);
+      }, 150);
+
+      return () => {
+        clearTimeout(timeoutId);
+        document.removeEventListener("click", handleClickOutside);
+      };
     }
-  }, [showUserDropdown]);
+  }, [showUserDropdown, isSearchFocused, searchJustFocused]);
 
   return (
     <div className="absolute right-4 md:right-1.5 bg-white rounded-2xl shadow-xl z-50 w-[360px] md:w-[360px] h-[534px]">
@@ -748,7 +779,21 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
             onMarkAllAsUnread={() => conversations.forEach((c) => markAsUnread(c.id))}
             onSearchChange={(query) => {
               setSearchQuery(query);
-              setShowUserDropdown(query.length > 0);
+              setShowUserDropdown(query.length > 0 || isSearchFocused);
+            }}
+            onSearchFocus={() => {
+              setSearchJustFocused(true);
+              setIsSearchFocused(true);
+              setShowUserDropdown(true);
+            }}
+            onSearchBlur={() => {
+              // Delay to allow for user selection
+              setTimeout(() => {
+                setIsSearchFocused(false);
+                if (!searchQuery) {
+                  setShowUserDropdown(false);
+                }
+              }, 300);
             }}
           />
           <ScrollArea className="flex-1">
@@ -793,7 +838,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                     />
                   </div>
                 </div>
-                <div className="text-gray-500 text-xs">Opening chat...</div>
+                <div className="text-gray-500 text-xs"></div>
               </div>
             ) : selectedConversation && selectedConv ? (
               <MessagesList
@@ -850,9 +895,10 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
               <ConversationLoadingSkeleton />
             ) : (
               <div className="flex flex-col h-full relative">
-                {showUserDropdown && searchQuery.length > 0 && (
+                {showUserDropdown && (isSearchFocused || searchQuery.length > 0) && (
                   <div
-                    className="absolute top-0 left-0 right-0 z-10 bg-white border-b border-gray-200 max-h-48 overflow-y-auto"
+                    data-user-dropdown
+                    className="absolute top-0 left-0 right-0 bottom-0 z-10 bg-white overflow-y-auto"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {isLoadingUsers ? (
@@ -860,7 +906,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                     ) : filteredUsers.length > 0 ? (
                       <div className="py-1">
                         <div className="px-3 py-2 text-xs font-medium text-gray-500 border-b border-gray-100">
-                          Start or continue conversation
+                          {searchQuery.length > 0 ? `Search results for "${searchQuery}"` : "All users"}
                         </div>
                         {filteredUsers.map((user) => {
                           const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim();
@@ -893,7 +939,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                                 <div className="flex items-center space-x-2">
                                   <p className="text-sm font-medium text-gray-900 truncate">{displayName}</p>
                                   {existingConv && (
-                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-blue-100 text-blue-800">
+                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                       Chat
                                     </span>
                                   )}
@@ -905,12 +951,16 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                         })}
                       </div>
                     ) : (
-                      <div className="p-3 text-center text-gray-500 text-xs">No users found for "{searchQuery}"</div>
+                      <div className="p-3 text-center text-gray-500 text-xs">
+                        {searchQuery.length > 0 ? `No users found for "${searchQuery}"` : "No users available"}
+                      </div>
                     )}
                   </div>
                 )}
 
-                <div className={`${showUserDropdown && searchQuery.length > 0 ? "pt-48" : ""}`}>
+                <div
+                  className={`${showUserDropdown && (isSearchFocused || searchQuery.length > 0) ? "opacity-0" : ""}`}
+                >
                   {isLoadingConversations ? (
                     <ConversationListSkeleton count={6} />
                   ) : filteredConversations.length > 0 ? (
