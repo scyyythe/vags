@@ -31,5 +31,10 @@ export const useFetchBiddingArtworks = (params?: FetchBiddingParams) => {
     queryKey: ["biddingArtworks", params],
     queryFn: () => fetchBiddingArtworks(params ?? {}),
     staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 15,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 };
