@@ -130,7 +130,7 @@ const ProductViewingContent = () => {
     return <ProductViewingSkeleton />;
   }
 
-  const productStatus = (product as any)?.status || "active";
+  const productStatus = product?.art_status || "active";
 
   if (error || !product) {
     return <div>Product not found.</div>;
@@ -153,7 +153,12 @@ const ProductViewingContent = () => {
   };
 
   const handleQuantityChange = (change: number) => {
-    setQuantity((prev) => Math.max(1, prev + change));
+    setQuantity((prev) => {
+      const newQuantity = prev + change;
+      // Use the actual product quantity if available, otherwise allow up to 999
+      const maxQuantity = product?.quantity || 999;
+      return Math.max(1, Math.min(newQuantity, maxQuantity));
+    });
   };
 
   const renderStars = (rating: number, size: string = "text-sm") => {
@@ -271,6 +276,15 @@ const ProductViewingContent = () => {
                     alt={product.title}
                     className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                   />
+
+                  {/* SOLD OUT Overlay */}
+                  {productStatus === "Sold" && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-xl">
+                      <div className="bg-red-800 text-white px-6 py-3 rounded-full">
+                        <span className="text-lg font-bold">SOLD OUT</span>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Chevron Buttons (on hover of artwork only) */}
                   {product.image_urls.length > 1 && (
@@ -468,7 +482,7 @@ const ProductViewingContent = () => {
                   About this Artwork
                 </button>
 
-                {product.edition !== "Original (1 of 1)" && (
+                {product.edition !== "Original (1 of 1)" && product.edition !== "Limited Edition" && (
                   <button
                     className={`px-4 py-2 ml-4 ${
                       activeTab === "review" ? "border-b-2 border-black text-black" : "text-gray-400"
@@ -497,51 +511,53 @@ const ProductViewingContent = () => {
                 )}
 
                 {/* Reviews Content */}
-                {activeTab === "review" && product.edition !== "Original (1 of 1)" && (
-                  <div className="relative flex flex-col md:h-[110px] sm:flex-row gap-4 pr-4">
-                    {/* View All Reviews Button - Top Right Corner */}
-                    <div className="absolute right-0 top-0">
-                      <button
-                        onClick={() => setIsReviewModalOpen(true)}
-                        className="text-[9px] text-gray-600 hover:underline flex items-center"
-                      >
-                        View all reviews
-                        <ChevronRight size={10} className="ml-1" />
-                      </button>
-                    </div>
-
-                    {/* Rating Summary */}
-                    <div className="min-w-[120px] mt-6 sm:mt-6">
-                      <div className="flex items-end space-x-1 mb-1">
-                        <span className="text-[24px] font-semibold">{averageRating}</span>
-                        <span className="text-[10px] text-gray-500 mb-1">out of 5</span>
+                {activeTab === "review" &&
+                  product.edition !== "Original (1 of 1)" &&
+                  product.edition !== "Limited Edition" && (
+                    <div className="relative flex flex-col md:h-[110px] sm:flex-row gap-4 pr-4">
+                      {/* View All Reviews Button - Top Right Corner */}
+                      <div className="absolute right-0 top-0">
+                        <button
+                          onClick={() => setIsReviewModalOpen(true)}
+                          className="text-[9px] text-gray-600 hover:underline flex items-center"
+                        >
+                          View all reviews
+                          <ChevronRight size={10} className="ml-1" />
+                        </button>
                       </div>
-                      <div className="flex items-center space-x-0.5 mb-1">
-                        {renderStars(Math.round(Number(averageRating)))}
-                      </div>
-                      <p className="text-[10px] text-gray-500">({reviews.length} reviews)</p>
-                    </div>
 
-                    {/* Rating Breakdown */}
-                    <div className="flex-1 pt-1 sm:mt-6">
-                      <div className="space-y-0.5 text-[9px]">
-                        {[5, 4, 3, 2, 1].map((star) => {
-                          const count = reviewCounts[star];
-                          const percent = reviews.length ? (count / reviews.length) * 100 : 0;
-                          return (
-                            <div key={star} className="flex items-center space-x-2">
-                              <span className="w-2">{star}</span>
-                              <div className="flex-1 h-[6px] bg-gray-200 rounded-full overflow-hidden">
-                                <div className="bg-yellow-400 h-full" style={{ width: `${percent}%` }} />
+                      {/* Rating Summary */}
+                      <div className="min-w-[120px] mt-6 sm:mt-6">
+                        <div className="flex items-end space-x-1 mb-1">
+                          <span className="text-[24px] font-semibold">{averageRating}</span>
+                          <span className="text-[10px] text-gray-500 mb-1">out of 5</span>
+                        </div>
+                        <div className="flex items-center space-x-0.5 mb-1">
+                          {renderStars(Math.round(Number(averageRating)))}
+                        </div>
+                        <p className="text-[10px] text-gray-500">({reviews.length} reviews)</p>
+                      </div>
+
+                      {/* Rating Breakdown */}
+                      <div className="flex-1 pt-1 sm:mt-6">
+                        <div className="space-y-0.5 text-[9px]">
+                          {[5, 4, 3, 2, 1].map((star) => {
+                            const count = reviewCounts[star];
+                            const percent = reviews.length ? (count / reviews.length) * 100 : 0;
+                            return (
+                              <div key={star} className="flex items-center space-x-2">
+                                <span className="w-2">{star}</span>
+                                <div className="flex-1 h-[6px] bg-gray-200 rounded-full overflow-hidden">
+                                  <div className="bg-yellow-400 h-full" style={{ width: `${percent}%` }} />
+                                </div>
+                                <span className="w-6 text-right">{count}</span>
                               </div>
-                              <span className="w-6 text-right">{count}</span>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             </div>
 
@@ -550,55 +566,60 @@ const ProductViewingContent = () => {
               <div className="flex items-center justify-between space-x-3">
                 {/* Disable quantity picker if sold */}
                 {product.edition === "Open Edition" && (
-                  <div
-                    className={`flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs ${
-                      productStatus === "sold" ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                  >
-                    <button
-                      onClick={() => handleQuantityChange(-1)}
-                      className="w-8 h-8 pl-1.5 flex items-center justify-center text-black"
-                      disabled={productStatus === "sold"}
+                  <div className="flex flex-col gap-1">
+                    <div
+                      className={`flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs ${
+                        productStatus === "Sold" ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
                     >
-                      −
-                    </button>
+                      <button
+                        onClick={() => handleQuantityChange(-1)}
+                        className="w-8 h-8 pl-1.5 flex items-center justify-center text-black hover:bg-gray-100"
+                        disabled={productStatus === "Sold"}
+                      >
+                        −
+                      </button>
 
-                    <div className="w-px h-3 bg-gray-300" />
+                      <div className="w-px h-3 bg-gray-300" />
 
-                    <span className="w-8 text-center font-medium text-black">{quantity}</span>
+                      <span className="w-8 text-center font-medium text-black">{quantity}</span>
 
-                    <div className="w-px h-3 bg-gray-300" />
+                      <div className="w-px h-3 bg-gray-300" />
 
-                    <button
-                      onClick={() => handleQuantityChange(1)}
-                      className="w-8 h-8 pr-1.5 flex items-center justify-center text-black"
-                      disabled={productStatus === "sold"}
-                    >
-                      +
-                    </button>
+                      <button
+                        onClick={() => handleQuantityChange(1)}
+                        className="w-8 h-8 pr-1.5 flex items-center justify-center text-black hover:bg-gray-100"
+                        disabled={productStatus === "Sold"}
+                      >
+                        +
+                      </button>
+                    </div>
+                    <p className="text-[9px] text-gray-500 text-center">
+                      {product.quantity ? `${product.quantity} remaining stocks` : ""}
+                    </p>
                   </div>
                 )}
 
                 {/* Disable Buy Now button if sold */}
                 <button
                   className={`w-full py-2 text-xs font-medium rounded-full transition-colors duration-200 ${
-                    productStatus === "sold"
+                    productStatus === "Sold"
                       ? "bg-gray-400 text-white cursor-not-allowed"
                       : "bg-red-800 hover:bg-red-700 text-white"
                   }`}
                   onClick={() => {
-                    if (productStatus !== "sold") setIsModalOpen(true);
+                    if (productStatus !== "Sold") setIsModalOpen(true);
                   }}
-                  disabled={productStatus === "sold"}
+                  disabled={productStatus === "Sold"}
                 >
                   <i className="bx bx-cart text-[15px] relative top-0.5 mr-3"></i>
-                  {productStatus === "sold" ? "Sold Out" : "Buy Now"}
+                  {productStatus === "Sold" ? "Sold Out" : "Buy Now"}
                 </button>
 
                 <button
                   onClick={handleWishlistToggle}
                   className="py-1.5 px-2.5 border border-gray-300 rounded-full"
-                  disabled={productStatus === "sold"}
+                  disabled={productStatus === "Sold"}
                 >
                   <img
                     src={
@@ -640,7 +661,7 @@ const ProductViewingContent = () => {
                 category={art.category}
                 onCardClick={() => navigate(`/viewproduct/${art.id}`)}
                 isMarketplace={true}
-                status="active"
+                status={art.art_status || "active"}
               />
             ))}
           </div>
@@ -714,6 +735,9 @@ const ProductViewingContent = () => {
             size: product.size ? `${product.size} cm` : "Unknown",
             yearCreated: product.year_created || "Unknown",
             price: product.price || 0,
+            default_paypal_email: product.default_paypal_email,
+            quantity: product.edition === "Open Edition" ? quantity : 1,
+            availableQuantity: product.quantity || 1,
           }}
         />
       )}

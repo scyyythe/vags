@@ -370,9 +370,11 @@ const SellCard = ({
               yearCreated,
               price,
               default_paypal_email,
+              quantity: 1,
+              availableQuantity: quantity || 1,
             }}
           />,
-          document.body //ensures modal renders at the top of the DOM
+          document.body
         )}
     </div>
   );

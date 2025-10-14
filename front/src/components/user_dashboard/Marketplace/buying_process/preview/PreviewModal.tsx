@@ -19,6 +19,8 @@ interface PreviewModalProps {
     yearCreated: string;
     price: number;
     default_paypal_email?: string;
+    quantity?: number;
+    availableQuantity?: number;
   };
   onProceedToCheckout: () => void;
 }
@@ -70,10 +72,18 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
   const handleProceed = () => {
     if (isLoading) return;
 
+    // Calculate total price based on quantity
+    const quantity = artwork.quantity || 1;
+    const totalPrice = artwork.price * quantity;
+
     setArtwork({
       ...artwork,
       id: artwork.id,
       yearCreated: Number(artwork.yearCreated),
+      quantity: quantity,
+      price: totalPrice, // Pass the total price
+      originalPrice: artwork.price, // Keep original price for reference
+      availableQuantity: artwork.availableQuantity || 1,
     });
 
     const hasAddress = Array.isArray(addresses) && addresses.length > 0;
@@ -152,10 +162,30 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
           {/* Price & Button */}
           <div className="text-center">
             <div className="flex justify-between my-4">
-              <p className="text-[15px] font-semibold relative top-1.5">PRICE</p>
-              <p className="text-xl font-bold text-red-800">
-                ₱{artwork.price && artwork.price >= 1000 ? `${artwork.price / 1000}k` : artwork.price || 0}
+              <p className="text-[15px] font-semibold relative top-1.5">
+                {artwork.edition === "Open Edition" && artwork.quantity && artwork.quantity > 1
+                  ? "TOTAL PRICE"
+                  : "PRICE"}
               </p>
+              <div className="text-right">
+                {artwork.edition === "Open Edition" && artwork.quantity && artwork.quantity > 1 ? (
+                  <>
+                    <p className="text-xl font-bold text-red-800">
+                      ₱
+                      {artwork.price * artwork.quantity >= 1000
+                        ? `${(artwork.price * artwork.quantity) / 1000}k`
+                        : artwork.price * artwork.quantity}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      ({artwork.quantity} × ₱{artwork.price >= 1000 ? `${artwork.price / 1000}k` : artwork.price})
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-xl font-bold text-red-800">
+                    ₱{artwork.price && artwork.price >= 1000 ? `${artwork.price / 1000}k` : artwork.price || 0}
+                  </p>
+                )}
+              </div>
             </div>
             <button
               onClick={handleProceed}

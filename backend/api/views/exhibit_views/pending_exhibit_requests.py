@@ -14,17 +14,18 @@ class MyPendingExhibitRequestView(APIView):
         user = request.user
         pending_requests = []
 
-        # 1. Collaborative exhibits owned by the user
+        # 1. Collaborative exhibits owned by the user - optimized query
         owned_exhibits = Exhibit.objects(
             owner=user,
             exhibit_type="Collaborative",
             visibility__ne="Public"  # Exclude already published
-        )
+        ).only('id', 'title', 'collaborators')  # Only fetch needed fields
 
         for exhibit in owned_exhibits:
             total = len(exhibit.collaborators)
-            submitted = ExhibitContribution.objects(exhibit=exhibit).distinct('contributor')
-            submitted_count = len(submitted)
+            # Optimized query: Get distinct contributor count directly
+            submitted_contributors = ExhibitContribution.objects(exhibit=exhibit).distinct('contributor')
+            submitted_count = len(submitted_contributors)
 
             if submitted_count < total:
                 pending_requests.append({
@@ -63,15 +64,20 @@ class MyPendingExhibitRequestView(APIView):
                 "type": "pending"
             })
         
-        # 3. User is in exhibit.collaborators - check if they've submitted and overall status
+        # 3. User is in exhibit.collaborators - optimized query with prefetch
         collaborative_exhibits = Exhibit.objects(
             collaborators=user,
             exhibit_type="Collaborative",
             visibility__ne="Public"
+        ).only('id', 'title', 'collaborators')  # Only fetch needed fields
+
+        # Pre-fetch all user contributions to avoid N+1 queries
+        user_contributions = set(
+            str(contrib.exhibit.id) for contrib in ExhibitContribution.objects(contributor=user).only('exhibit')
         )
 
         for exhibit in collaborative_exhibits:
-            has_submitted = ExhibitContribution.objects(exhibit=exhibit, contributor=user).first()
+            has_submitted = str(exhibit.id) in user_contributions
             
             if not has_submitted:
                 # User hasn't submitted yet
