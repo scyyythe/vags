@@ -66,19 +66,40 @@ const SecuritySettings = () => {
   const removeDeviceFailedText = useAutoTranslation("Failed to remove device", selectedLanguage);
   const allSessionsClearedText = useAutoTranslation("All sessions cleared", selectedLanguage);
   const clearAllSessionsFailedText = useAutoTranslation("Failed to clear all sessions", selectedLanguage);
-
   const allPasswordRequired = useAutoTranslation("All password fields are required.", selectedLanguage);
-  const newPasswordLengthError = useAutoTranslation(
-    "New password must be at least 8 characters long.",
-    selectedLanguage
-  );
-  const newPasswordSameError = useAutoTranslation(
-    "New password must be different from the current password.",
-    selectedLanguage
-  );
+  const newPasswordLengthError = useAutoTranslation("New password must be at least 8 characters long.", selectedLanguage);
+  const newPasswordSameError = useAutoTranslation("New password must be different from the current password.", selectedLanguage);
+  const newPasswordUniqueError = useAutoTranslation("New password must be unique and not match previous passwords.", selectedLanguage);
+  const disable2FAEnterPasswordError = useAutoTranslation("Please enter your password to disable 2FA", selectedLanguage);
   const newPasswordMismatchError = useAutoTranslation("New passwords do not match.", selectedLanguage);
   const userUpdateSuccess = useAutoTranslation("User updated successfully.", selectedLanguage);
   const userUpdateFailed = useAutoTranslation("Failed to update user.", selectedLanguage);
+  const unknownBrowserLabel = useAutoTranslation("Unknown Browser", selectedLanguage);
+  const unknownOSLabel = useAutoTranslation("Unknown OS", selectedLanguage);
+  const chromeLabel = useAutoTranslation("Chrome", selectedLanguage);
+  const firefoxLabel = useAutoTranslation("Firefox", selectedLanguage);
+  const safariLabel = useAutoTranslation("Safari", selectedLanguage);
+  const edgeLabel = useAutoTranslation("Edge", selectedLanguage);
+  const windowsLabel = useAutoTranslation("Windows", selectedLanguage);
+  const macLabel = useAutoTranslation("macOS", selectedLanguage);
+  const linuxLabel = useAutoTranslation("Linux", selectedLanguage);
+  const androidLabel = useAutoTranslation("Android", selectedLanguage);
+  const iosLabel = useAutoTranslation("iOS", selectedLanguage);
+  const invalidDateLabel = useAutoTranslation("Invalid date", selectedLanguage);
+  const twoFactorActiveLabel = useAutoTranslation("Two-factor authentication is active", selectedLanguage);
+  const methodsLabel = useAutoTranslation("Methods:", selectedLanguage);
+  const unknownLabel = useAutoTranslation("Unknown", selectedLanguage);
+  const backupCodesRemainingLabel = useAutoTranslation("backup codes remaining", selectedLanguage);
+  const addMethodLabel = useAutoTranslation("Add Method", selectedLanguage);
+  const disable2FATitle = useAutoTranslation("Disable Two-Factor Authentication", selectedLanguage);
+  const disable2FADescription = useAutoTranslation("Enter your password to disable two-factor authentication. This will make your account less secure.", selectedLanguage);
+  const disable2FAWarning = useAutoTranslation("Disabling 2FA will remove the extra security layer from your account.", selectedLanguage);
+  const currentPassLabel = useAutoTranslation("Current Password", selectedLanguage);
+  const enterPasswordPlaceholder = useAutoTranslation("Enter your password", selectedLanguage);
+  const cancelLabel = useAutoTranslation("Cancel", selectedLanguage);
+  const disablingLabel = useAutoTranslation("Disabling...", selectedLanguage);
+  const disable2FALabel = useAutoTranslation("Disable 2FA", selectedLanguage);
+  const clearingLabel = useAutoTranslation("Clearing...", selectedLanguage);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -177,7 +198,7 @@ const SecuritySettings = () => {
 
       // 4. Unique check against previous password (optional)
       if (newPassword === password) {
-        toast.error("New password must be unique and not match previous passwords.", { closeButton: true });
+        toast.error(newPasswordUniqueError, { closeButton: true });
         return;
       }
 
@@ -255,7 +276,7 @@ const SecuritySettings = () => {
 
   const handleDisable2FA = () => {
     if (!disablePassword) {
-      toast.error("Please enter your password to disable 2FA");
+      toast.error(disable2FAEnterPasswordError);
       return;
     }
 
@@ -291,18 +312,18 @@ const SecuritySettings = () => {
     const isAndroid = deviceString.includes("Android");
     const isIOS = deviceString.includes("iPhone") || deviceString.includes("iPad");
 
-    let browser = "Unknown Browser";
-    if (isChrome) browser = "Chrome";
-    else if (isFirefox) browser = "Firefox";
-    else if (isSafari) browser = "Safari";
-    else if (isEdge) browser = "Edge";
+    let browser = unknownBrowserLabel;
+    if (isChrome) browser = chromeLabel;
+    else if (isFirefox) browser = firefoxLabel;
+    else if (isSafari) browser = safariLabel;
+    else if (isEdge) browser = edgeLabel;
 
-    let os = "Unknown OS";
-    if (isWindows) os = "Windows";
-    else if (isMac) os = "macOS";
-    else if (isLinux) os = "Linux";
-    else if (isAndroid) os = "Android";
-    else if (isIOS) os = "iOS";
+    let os = unknownOSLabel;
+    if (isWindows) os = windowsLabel;
+    else if (isMac) os = macLabel;
+    else if (isLinux) os = linuxLabel;
+    else if (isAndroid) os = androidLabel;
+    else if (isIOS) os = iosLabel;
 
     return `${browser} on ${os}`;
   };
@@ -321,11 +342,11 @@ const SecuritySettings = () => {
 
       // Check if the date is valid
       if (isNaN(date.getTime())) {
-        return "Invalid date";
+        return invalidDateLabel;
       }
 
-      // Format in user's local timezone
-      return date.toLocaleString(undefined, {
+      // Format in user's local timezone using selected language locale
+      return date.toLocaleString(selectedLanguage || undefined, {
         month: "short",
         day: "2-digit",
         year: "numeric",
@@ -335,7 +356,7 @@ const SecuritySettings = () => {
       });
     } catch (error) {
       console.error("Error formatting date:", error);
-      return "Invalid date";
+      return invalidDateLabel;
     }
   };
 
@@ -461,11 +482,14 @@ const SecuritySettings = () => {
               <div className="flex items-start gap-2">
                 <Shield className="h-4 w-4 text-green-600 mt-0.5" />
                 <div className="text-[10px] text-green-800 flex-1">
-                  <p className="font-medium">Two-factor authentication is active</p>
+                  <p className="font-medium">{twoFactorActiveLabel}</p>
                   <p className="text-green-600">
-                    Methods: {twoFactorStatus.enabled_methods?.join(", ").toUpperCase() || "Unknown"}
+                    {methodsLabel}{" "}
+                    {twoFactorStatus.enabled_methods?.join(", ").toUpperCase() || unknownLabel}
                   </p>
-                  <p className="text-green-600">{twoFactorStatus.remaining_backup_codes} backup codes remaining</p>
+                  <p className="text-green-600">
+                    {twoFactorStatus.remaining_backup_codes} {backupCodesRemainingLabel}
+                  </p>
                 </div>
                 <div className="flex flex-col gap-1">
                   <Button
@@ -474,7 +498,7 @@ const SecuritySettings = () => {
                     onClick={() => setIs2FASetupOpen(true)}
                     className="text-[9px] px-2 py-1 h-6"
                   >
-                    Add Method
+                    {addMethodLabel}
                   </Button>
                 </div>
               </div>
@@ -501,34 +525,34 @@ const SecuritySettings = () => {
         <Dialog open={is2FADisableOpen} onOpenChange={handleCloseDisableDialog}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle className="text-sm">Disable Two-Factor Authentication</DialogTitle>
+              <DialogTitle className="text-sm">{disable2FATitle}</DialogTitle>
               <DialogDescription className="text-xs">
-                Enter your password to disable two-factor authentication. This will make your account less secure.
+                {disable2FADescription}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <Alert>
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription className="text-xs">
-                  Disabling 2FA will remove the extra security layer from your account.
+                  {disable2FAWarning}
                 </AlertDescription>
               </Alert>
               <div>
                 <Label htmlFor="disable-password" className="text-xs">
-                  Current Password
+                  {currentPassLabel}
                 </Label>
                 <Input
                   id="disable-password"
                   type="password"
                   value={disablePassword}
                   onChange={(e) => setDisablePassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder={enterPasswordPlaceholder}
                   className="text-xs"
                 />
               </div>
               <div className="flex justify-end gap-2">
                 <Button variant="outline" onClick={handleCloseDisableDialog} className="text-xs">
-                  Cancel
+                  {cancelLabel}
                 </Button>
                 <Button
                   variant="destructive"
@@ -536,7 +560,7 @@ const SecuritySettings = () => {
                   disabled={!disablePassword || isDisabling2FA}
                   className="text-xs"
                 >
-                  {isDisabling2FA ? "Disabling..." : "Disable 2FA"}
+                  {isDisabling2FA ? disablingLabel : disable2FALabel}
                 </Button>
               </div>
             </div>
@@ -553,7 +577,7 @@ const SecuritySettings = () => {
             disabled={isClearingSessions}
             className="text-red-500 text-[10px] hover:text-red-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isClearingSessions ? "Clearing..." : clearAllSessionsText}
+            {isClearingSessions ? clearingLabel : clearAllSessionsText}
           </button>
         )}
       </div>
