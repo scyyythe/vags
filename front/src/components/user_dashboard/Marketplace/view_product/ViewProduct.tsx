@@ -279,9 +279,9 @@ const ProductViewingContent = () => {
 
                   {/* SOLD OUT Overlay */}
                   {productStatus === "Sold" && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-xl">
-                      <div className="bg-red-800 text-white px-6 py-3 rounded-full">
-                        <span className="text-lg font-bold">SOLD OUT</span>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="bg-black/75 text-white px-6 py-3 rounded-full">
+                        <span className="text-md font-semibold">SOLD OUT</span>
                       </div>
                     </div>
                   )}
@@ -594,7 +594,7 @@ const ProductViewingContent = () => {
                         +
                       </button>
                     </div>
-                    <p className="text-[9px] text-gray-500 text-center">
+                    <p className="text-[10px] text-red-600 text-center">
                       {product.quantity ? `${product.quantity} remaining stocks` : ""}
                     </p>
                   </div>
