@@ -186,10 +186,12 @@ export const MessagesList = ({
                             artworkTitle={message.automaticMessageData.artworkTitle}
                             buyerName={message.automaticMessageData.buyerName}
                             orderId={message.automaticMessageData.orderId}
+                            isSender={message.senderId === currentUserId} // Pass sender info
                           />
                         ) : (
                           message.content && <p className="text-[11px]">{message.content}</p>
                         )}
+
                       </div>
 
                       {/* REACTIONS OUTSIDE THE BUBBLE */}
