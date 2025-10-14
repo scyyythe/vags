@@ -10,7 +10,7 @@ from api.serializers.artwork_s.artwork_serializers import LightweightArtSerializ
 from api.serializers.artwork_s.artwork_detail_serializer import ArtDetailSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from api.models.interaction_model.interaction import Like
-from datetime import datetime
+from datetime import datetime, timezone
 from rest_framework.response import Response
 from django.http import Http404
 from rest_framework.views import APIView
@@ -816,3 +816,35 @@ class UserArtworksWithHiddenView(generics.ListAPIView):
                 artworks = artworks.filter(visibility__iexact='deleted')
 
         return artworks
+
+
+class RelistArtworkView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, artwork_id):
+        try:
+            artwork = Art.objects.get(id=artwork_id)
+            user = User.objects.get(id=ObjectId(request.user.id))
+        except Art.DoesNotExist:
+            return Response({"detail": "Artwork not found."}, status=status.HTTP_404_NOT_FOUND)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if user is the owner of the artwork
+        if artwork.artist != user:
+            return Response({"detail": "You can only relist your own artworks."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Check if artwork can be relisted (sold, expired, unsold, etc.)
+        if artwork.art_status == "Active":
+            return Response({"detail": "Artwork is already active and cannot be relisted."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Relist the artwork
+        artwork.art_status = "Active"
+        artwork.visibility = "Public"
+        artwork.updated_at = datetime.now(timezone.utc)
+        artwork.save()
+
+        return Response(
+            {"message": "Artwork successfully relisted."},
+            status=status.HTTP_200_OK,
+        )
