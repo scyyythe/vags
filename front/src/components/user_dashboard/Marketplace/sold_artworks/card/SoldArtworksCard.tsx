@@ -285,7 +285,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
       className={`p-4 hover:shadow-md transition-all duration-700 ${
         isHighlighted
           ? "border border-red-300 shadow-[0_0_6px_rgba(239,68,68,0.7)]"
-          : "border border-transparent shadow-none"
+          : "border group transition-all duration-300 cursor-pointer hover:shadow-lg"
       }`}
     >
       <div className="flex gap-4">

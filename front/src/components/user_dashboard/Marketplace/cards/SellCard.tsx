@@ -43,6 +43,7 @@ export interface SellCardProps {
   reason?: string;
   onRelist?: (id: string) => void;
   isWishlistView?: boolean;
+  isFading?: boolean;
 }
 
 const SellCard = ({
@@ -72,7 +73,7 @@ const SellCard = ({
   onReportSuccess,
   isMarketplace = false,
   onCardClick,
-
+  isFading = false,
   isWishlistView = false,
 }: SellCardProps) => {
   const loggedInUserId = getLoggedInUserId();
@@ -175,8 +176,12 @@ const SellCard = ({
   return (
     <div
       onClick={onCardClick}
-      className="sell-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border border-gray-200 px-3 py-3 relative cursor-pointer"
+      className={`sell-card h-full text-xs group rounded-xl bg-white hover:shadow-lg border border-gray-200 px-3 py-3 relative cursor-pointer
+        transition-all duration-300 ease-in-out transform 
+        ${isFading ? "opacity-0 scale-95" : "opacity-100 scale-100"}
+      `}
     >
+
       <div className="relative">
         <img src={artworkImage} alt={title} className="rounded-md w-full h-44 object-cover" />
 
@@ -311,6 +316,18 @@ const SellCard = ({
           >
             Buy Now
           </button>
+        ) : null}
+
+        {/* ) : status === "sold" && onRelist ? (
+           <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onRelist(id);
+            }}
+            className="text-white text-[10px] bg-blue-600 hover:bg-blue-500 transition px-4 py-1.5 rounded-full"
+          >
+            Relist
+          </button>
         ) : onRelist ? (
           <button
             onClick={(e) => {
@@ -319,9 +336,10 @@ const SellCard = ({
             }}
             className="text-white text-[9px] bg-blue-600 hover:bg-blue-500 transition px-4 py-1.5 rounded-full"
           >
-            Relist Artwork
+            Relist
           </button>
-        ) : null}
+        ) : null} */}
+
       </div>
 
       {isModalOpen && (
