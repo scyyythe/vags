@@ -8,7 +8,7 @@ export interface Message {
   timestamp: Date;
   isRead: boolean;
   isStarred: boolean;
-  type: "text" | "image" | "file" | "voice";
+  type: "text" | "image" | "file" | "voice" | "automatic";
   deliveryStatus: DeliveryStatus;
 
   imageUrl?: string;
@@ -18,11 +18,19 @@ export interface Message {
   isMine?: boolean;
   senderAvatar?: string;
 
+  // Automatic message specific fields
+  automaticMessageData?: {
+    sellerName: string;
+    artworkTitle: string;
+    buyerName: string;
+    orderId: string;
+  };
+
   replyTo?: {
     messageId: string;
     senderId: string;
     senderName: string;
-    type: "text" | "image" | "file" | "voice";
+    type: "text" | "image" | "file" | "voice" | "automatic";
     content?: string;
     fileName?: string;
     imageUrl?: string;
