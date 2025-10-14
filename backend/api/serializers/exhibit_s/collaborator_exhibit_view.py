@@ -3,6 +3,7 @@ from api.models.exhibit_model.exhibit import Exhibit
 from api.models.exhibit_model.exhibit_contribution import ExhibitContribution
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from api.serializers.user_s.users_serializers import UserSerializer
+from collections import defaultdict
 
 class CollaboratorExhibitViewSerializer(serializers.Serializer):
     id = serializers.CharField()
@@ -36,34 +37,39 @@ class CollaboratorExhibitViewSerializer(serializers.Serializer):
             })
         return collaborators
 
-    def get_slotOwnerMap(self, obj):
-        ENVIRONMENT_SLOT_COUNTS = {
-            1: 4,
-            2: 6,
-            3: 10,
-            # Add more environments as needed
-        }
+    def _get_environment_slot_counts(self):
+        """Cache environment slot counts to avoid repeated dictionary lookups"""
+        return {1: 4, 2: 6, 3: 10}
 
-        total_slots = ENVIRONMENT_SLOT_COUNTS.get(obj.chosen_env, 0)
-
-        if obj.exhibit_type == "solo":  # Add this if you have a solo/collab flag
-            return {i: str(obj.owner.id) for i in range(1, total_slots + 1)}
-
-        # Use fair distribution for collaborative exhibits (equal slots for all users)
+    def _distribute_slots_fairly(self, total_slots, users):
+        """Optimized slot distribution algorithm"""
+        if not users or total_slots == 0:
+            return {}
+            
         slot_map = {}
-        all_users = [obj.owner] + list(obj.collaborators)
-        per_user = total_slots // len(all_users) if all_users else 0
-        remainder = total_slots % len(all_users)
-
+        per_user = total_slots // len(users)
+        remainder = total_slots % len(users)
+        
         current_slot = 1
-        for idx, user in enumerate(all_users):
+        for idx, user in enumerate(users):
             user_slot_count = per_user + (1 if idx < remainder else 0)
             for _ in range(user_slot_count):
                 if current_slot <= total_slots:
                     slot_map[current_slot] = str(user.id)
                     current_slot += 1
-
+        
         return slot_map
+
+    def get_slotOwnerMap(self, obj):
+        ENVIRONMENT_SLOT_COUNTS = self._get_environment_slot_counts()
+        total_slots = ENVIRONMENT_SLOT_COUNTS.get(obj.chosen_env, 0)
+
+        if obj.exhibit_type == "Solo":
+            return {i: str(obj.owner.id) for i in range(1, total_slots + 1)}
+
+        # Use optimized fair distribution for collaborative exhibits
+        all_users = [obj.owner] + list(obj.collaborators)
+        return self._distribute_slots_fairly(total_slots, all_users)
 
     def get_slotArtworkMap(self, obj):
         result = {}

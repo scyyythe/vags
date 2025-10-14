@@ -3,6 +3,7 @@ from api.models.user_model.users import User
 from api.models.exhibit_model.exhibit import Exhibit
 from api.models.interaction_model.interaction import Like
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
+from collections import defaultdict
 
 class ExhibitCardSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
@@ -26,6 +27,12 @@ class ExhibitCardSerializer(serializers.Serializer):
     ownerId = serializers.SerializerMethodField()
     userRole = serializers.SerializerMethodField()
     targetUserRole = serializers.SerializerMethodField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Cache for likes to avoid N+1 queries
+        self._likes_cache = {}
+        self._user_likes_cache = {}
 
     def get_ownerId(self, obj):
         return str(obj.owner.id) if obj.owner else None
@@ -72,13 +79,20 @@ class ExhibitCardSerializer(serializers.Serializer):
         return self.context.get("slot_artwork_map", {})
 
     def get_exhibit_likes_count(self, obj):
-        return Like.objects(exhibit=obj).count()
+        # Use cache to avoid repeated database queries
+        exhibit_id = str(obj.id)
+        if exhibit_id not in self._likes_cache:
+            self._likes_cache[exhibit_id] = Like.objects(exhibit=obj).count()
+        return self._likes_cache[exhibit_id]
 
     def get_user_has_liked_exhibit(self, obj):
         request = self.context.get("request", None)
         user = getattr(request, "user", None)
         if user and not user.is_anonymous:
-            return Like.objects(user=user, exhibit=obj).first() is not None
+            cache_key = f"{user.id}_{obj.id}"
+            if cache_key not in self._user_likes_cache:
+                self._user_likes_cache[cache_key] = Like.objects(user=user, exhibit=obj).first() is not None
+            return self._user_likes_cache[cache_key]
         return False
 
     def get_image(self, obj):
