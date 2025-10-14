@@ -13,7 +13,7 @@ const Index = () => {
   const { id } = useParams();
   const location = useLocation();
 
-  // ✅ Initialize with saved tab or default to "created"
+  // Initialize with saved tab or default to "created"
   const [activeTab, setActiveTab] = useState(() => {
     return sessionStorage.getItem("lastActiveTab") || "created";
   });
@@ -33,7 +33,7 @@ const Index = () => {
     }
   }, [id, data, isLoading]);
 
-  // ✅ Update tab if redirected with a specific tab
+  // Update tab if redirected with a specific tab
   useEffect(() => {
     const { state } = location as { state?: { activeTab?: string } };
     if (state?.activeTab) {
@@ -41,7 +41,7 @@ const Index = () => {
     }
   }, [location.state]);
 
-  // ✅ Save the last active tab before leaving
+  // Save the last active tab before leaving
   useEffect(() => {
     sessionStorage.setItem("lastActiveTab", activeTab);
   }, [activeTab]);
