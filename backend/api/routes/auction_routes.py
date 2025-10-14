@@ -13,6 +13,7 @@ from api.views.artwork_views.bid_views import (
     MyAuctionListView,
     ToggleHideAuctionView,
     BulkUnhideAuctionsView,
+    ReopenAuctionView,
 )
 from api.views.artwork_views.auction_views import LightweightAuctionListView ,DeleteAuctionView,CloseAuctionViewNew,RestoreAuctionView,RestoreAllAuctionsView
 
@@ -40,4 +41,5 @@ auction_urlpatterns = [
     path('auction/delete/<str:auction_id>/', DeleteAuctionView.as_view(), name='delete_auction'),
     path('auction/<str:auction_id>/restore/', RestoreAuctionView.as_view(), name='restore_auction'),
     path('auction/<str:auction_id>/toggle-hide/', ToggleHideAuctionView.as_view(), name='toggle-hide-auction'),
+    path('auction/<str:auction_id>/reopen/', ReopenAuctionView.as_view(), name='reopen_auction'),
 ]

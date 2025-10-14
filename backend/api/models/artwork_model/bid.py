@@ -22,6 +22,10 @@ class Bid(Document):
         required=True,
         choices=("anonymous", "username", "fullName")
     )
+    
+    meta = {
+        'collection': 'bid',
+    }
 
 class AuctionStatus(Enum):
     ON_GOING = "on_going"
@@ -49,17 +53,20 @@ class Auction(Document):
     updated_at = DateTimeField(default=datetime.utcnow)
 
     meta = {
-        'collection': 'auctions',
+        'collection': 'auction',
         'indexes': [
             'status',
             'visibility',
             'end_time',
             'start_time',
+            'updated_at',
             ('status', 'visibility'),  # For active public auctions
             ('status', 'end_time'),    # For expired auction queries
             ('artwork', 'status'),     # For artwork-based queries
             ('visibility', 'status', 'end_time'),  # Optimized for main listing
             ('status', 'visibility', 'updated_at'),  # For sorting by update time
+            ('artwork', 'visibility', 'status'),  # For user-specific queries
+            ('visibility', 'updated_at'),  # For general listing with sorting
         ]
     }
 

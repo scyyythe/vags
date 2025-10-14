@@ -13,6 +13,8 @@ import { getLoggedInUserId } from "@/auth/decode";
 import { useAuctionActions } from "@/hooks/auction/useAuctionActions";
 import { useToggleHideAuction } from "@/hooks/auction/useToggleHideAuction";
 import { useRestoreAuction } from "@/hooks/auction/useRestoreAuction";
+import { useReopenAuction } from "@/hooks/auction/useReopenAuction";
+import { getArtworkImageUrl } from "@/utils/imageUtils";
 interface ExtendedArtworkAuction extends ArtworkAuction {
   isPaid?: boolean;
   isHighestBidder?: boolean;
@@ -55,6 +57,7 @@ const BidCard: React.FC<BidCardProps> = ({
   const { mutate: submitAuctionReport } = useAuctionSubmitReport();
   const { mutate: hideAuction } = useToggleHideAuction();
   const { mutate: restoreAuction } = useRestoreAuction();
+  const { mutate: reopenAuction } = useReopenAuction();
 
   useEffect(() => {
     console.log("Top level start_bid_amount:", data.start_bid_amount);
@@ -123,6 +126,10 @@ const BidCard: React.FC<BidCardProps> = ({
 
   const hasWon = data.isHighestBidder && data.isPaid;
 
+  // Check if auction is manually closed and can be reopened
+  const isManuallyClosed = data.status === "closed" && new Date() < new Date(data.end_time);
+  const canReopen = isManuallyClosed && isOwner;
+
   return (
     <>
       <div
@@ -130,7 +137,11 @@ const BidCard: React.FC<BidCardProps> = ({
         className="w-full rounded-xl bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
       >
         <div className="relative">
-          <img src={data.artwork.image_url} alt={data.artwork.title} className="w-full h-56 object-cover rounded-xl" />
+          <img
+            src={getArtworkImageUrl(data.artwork.image_url)}
+            alt={data.artwork.title}
+            className="w-full h-56 object-cover rounded-xl"
+          />
 
           {/* Auction Timer Display */}
           <div className="absolute top-0.5 left-4">
@@ -150,6 +161,10 @@ const BidCard: React.FC<BidCardProps> = ({
                     })}
                   </p>
                 </div>
+              </div>
+            ) : data.status === "closed" ? (
+              <div className="absolute top-1 left-24 whitespace-nowrap">
+                {/* Closed auction - no visual indicator */}
               </div>
             ) : (
               <div className="absolute top-1 left-24 whitespace-nowrap">
@@ -194,6 +209,10 @@ const BidCard: React.FC<BidCardProps> = ({
                   restoreAuction(id);
                   setMenuOpen(false);
                 }}
+                onReopen={(id) => {
+                  reopenAuction(id);
+                  setMenuOpen(false);
+                }}
                 onViewBids={() => {
                   setMenuOpen(false);
                 }}
@@ -201,6 +220,7 @@ const BidCard: React.FC<BidCardProps> = ({
                 auctionId={data.id}
                 auctionTitle={data.artwork.title}
                 visibility={data.visibility}
+                canReopen={canReopen}
                 className="top-8 -left-[12px]"
               />
             ) : (
@@ -239,18 +259,23 @@ const BidCard: React.FC<BidCardProps> = ({
                     navigate(`/bid-winner/${data.id}`);
                   } else if (data.status === "on_going") {
                     setShowBidPopup(true);
+                  } else if (canReopen) {
+                    // Handle reopen functionality - we'll add this to the menu
+                    toast.info("Use the menu to reopen this auction");
                   }
                 }}
-                disabled={data.status !== "on_going" && !hasWon}
+                disabled={data.status !== "on_going" && !hasWon && !canReopen}
                 className={`text-white text-[9px] px-5 py-1.5 rounded-full font-normal transition-colors ${
-                  data.status !== "on_going" && !hasWon
+                  data.status !== "on_going" && !hasWon && !canReopen
                     ? "bg-gray-400 cursor-not-allowed"
                     : hasWon
-                    ? "bg-green-600 hover:bg-green-700"
-                    : "bg-red-800 hover:bg-red-700"
+                    ? "bg-red-800 hover:bg-red-800"
+                    : canReopen
+                    ? "bg-orange-600 hover:bg-orange-700"
+                    : "bg-red-800 hover:bg-red-800"
                 }`}
               >
-                {hasWon ? "Claim" : data.status === "on_going" ? "Place A Bid" : "Closed"}
+                {hasWon ? "Claim" : data.status === "on_going" ? "Place A Bid" : canReopen ? "Reopen" : "Closed"}
               </button>
             </div>
           </div>

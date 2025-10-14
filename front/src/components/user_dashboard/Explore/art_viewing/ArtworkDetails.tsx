@@ -25,6 +25,7 @@ import useUpdateArtworkVisibility from "@/hooks/mutate/visibility/private/useUpd
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import OwnerMenu from "@/components/user_dashboard/own_profile/menu/art_card/Menu";
 import { useQueryClient } from "@tanstack/react-query";
+import { getArtworkImageUrl } from "@/utils/imageUtils";
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -219,7 +220,7 @@ const ArtworkDetails = () => {
       id,
       title: artwork.title || "Untitled Artwork",
       artistName: artwork.artist || "Unknown Artist",
-      artworkImage: artwork.image_url || "",
+      artworkImage: getArtworkImageUrl(artwork.image_url),
       artistId: artwork.artistId,
     });
   };
@@ -444,7 +445,7 @@ const ArtworkDetails = () => {
                   >
                     <div className="w-[420px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                       <img
-                        src={artwork?.image_url}
+                        src={getArtworkImageUrl(artwork?.image_url)}
                         alt={artwork?.title}
                         className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                       />
@@ -670,7 +671,7 @@ const ArtworkDetails = () => {
 
             <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
               <img
-                src={artwork?.image_url}
+                src={getArtworkImageUrl(artwork?.image_url)}
                 alt="Expanded artwork"
                 className="max-h-[80vh] max-w-[90vw] object-contain"
               />

@@ -36,7 +36,7 @@ export interface AuctionArtwork {
   category: string;
   artistAvatar: string;
   description: string;
-  image_url: string;
+  image_url: string | string[];
   likes_count: number;
   medium: string;
   price: number;
