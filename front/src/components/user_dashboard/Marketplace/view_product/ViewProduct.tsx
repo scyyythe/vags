@@ -12,7 +12,7 @@ import ReviewModal from "@/components/user_dashboard/Marketplace/reviews/ReviewM
 import PreviewModal from "../buying_process/preview/PreviewModal";
 import { useWishlist } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
 import { useSellArtworkDetail } from "@/hooks/artworks/sell/useSellArtworkDetail";
-import ProductViewingSkeleton from "@/components/skeletons/ProductViewingSkeleton";
+import ProductViewingSkeleton from "@/components/skeletons/marketplace/ProductViewingSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
 import SellMenu from "../../own_profile/menu/sell_card/Menu";
 import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";

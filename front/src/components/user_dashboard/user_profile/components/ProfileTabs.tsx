@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import ArtGrid from "./ArtGrid";
 import { ChevronDown } from "lucide-react";
 import { mediumOptions } from "@/components/user_dashboard/user_profile/components/options/MediumOptions";
@@ -35,6 +35,7 @@ type ProfileTabsProps = {
   setActiveTab: (tab: string) => void;
 };
 const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
+  const location = useLocation();
   const [showFilters, setShowFilters] = useState(false);
   const [filterCategory, setFilterCategory] = useState("Digital Art");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -517,7 +518,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
           />
         </>
       )}
-      {activeTab === "onSale" && <SellTab selectedPriceRange={selectedPriceRange} selectedStatus={selectedStatus} />}
+      {activeTab === "onSale" && <SellTab selectedPriceRange={selectedPriceRange} selectedStatus={selectedStatus} navigationState={location.state} />}
 
       <UnarchivePopup isOpen={showUnarchivePopup} onCancel={cancelUnarchive} onConfirm={confirmUnarchiveAll} />
       <EmptyTrashPopup isOpen={showEmptyTrashPopup} onCancel={cancelEmptyTrash} onConfirm={confirmEmptyTrash} />

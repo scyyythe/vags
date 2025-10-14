@@ -246,29 +246,44 @@ class ExhibitSerializer(serializers.Serializer):
             # Find newly added collaborators
             added_collaborators = new_collaborators - old_collaborators
             
+            # Check if collaborators changed (added or removed)
+            collaborators_changed = added_collaborators or (old_collaborators - new_collaborators)
+            
             instance.collaborators = [User.objects.get(id=uid) for uid in collaborators_ids]
             
-            # Send notifications to newly added collaborators
-            if added_collaborators:
-                print(f"🔔 Creating notifications for {len(added_collaborators)} newly added collaborators...")
-                for collaborator_id in added_collaborators:
+            # If collaborators changed, set exhibit to Pending and notify all collaborators
+            if collaborators_changed:
+                print(f"🔔 Collaborators changed - setting exhibit to Pending and notifying all collaborators...")
+                instance.visibility = "Pending"
+                
+                # Notify all current collaborators (including newly added ones)
+                for collaborator_id in collaborators_ids:
                     try:
                         collaborator = User.objects.get(id=collaborator_id)
+                        if collaborator_id in added_collaborators:
+                            # New collaborator notification
+                            message = f"You were invited to collaborate on the exhibit '{instance.title}'"
+                            action = "invited you to collaborate"
+                        else:
+                            # Existing collaborator notification about changes
+                            message = f"The exhibit '{instance.title}' has been updated. Please check your assigned slots."
+                            action = "exhibit updated"
+                        
                         Notification.objects.create(
                             user=collaborator,
                             actor=instance.owner,
-                            message=f"You were invited to collaborate on the exhibit '{instance.title}'",
+                            message=message,
                             exhibit=instance,
                             name=f"{instance.owner.first_name} {instance.owner.last_name}",
-                            action="invited you to collaborate",
+                            action=action,
                             target=instance.title,
-                            icon="invite",
+                            icon="invite" if collaborator_id in added_collaborators else "update",
                             link=f"/collaborator/exhibit/{instance.id}",
                             created_at=datetime.now(),
                         )
-                        print(f"✅ Notification created for newly added collaborator: {collaborator.first_name} {collaborator.last_name}")
+                        print(f"✅ Notification created for collaborator: {collaborator.first_name} {collaborator.last_name}")
                     except Exception as e:
-                        print(f"❌ Failed to create notification for newly added collaborator {collaborator_id}: {str(e)}")
+                        print(f"❌ Failed to create notification for collaborator {collaborator_id}: {str(e)}")
 
         if "artworks" in validated_data:
             artworks_ids = validated_data.pop("artworks")
@@ -286,8 +301,40 @@ class ExhibitSerializer(serializers.Serializer):
         if "slot_artwork_map" in validated_data:
             instance.slot_artwork_map = validated_data.pop("slot_artwork_map")
 
+        # Check for environment changes that require notifications
+        environment_changed = False
+        if "chosen_env" in validated_data:
+            old_env = instance.chosen_env
+            new_env = validated_data.get("chosen_env")
+            if old_env != new_env:
+                environment_changed = True
+                print(f"🔔 Environment changed from {old_env} to {new_env} - setting exhibit to Pending")
+
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
+
+        # If environment changed and there are collaborators, set to Pending and notify them
+        if environment_changed and instance.collaborators:
+            instance.visibility = "Pending"
+            
+            # Notify all collaborators about environment change
+            for collaborator in instance.collaborators:
+                try:
+                    Notification.objects.create(
+                        user=collaborator,
+                        actor=instance.owner,
+                        message=f"The exhibit '{instance.title}' environment has been changed. Please check your assigned slots.",
+                        exhibit=instance,
+                        name=f"{instance.owner.first_name} {instance.owner.last_name}",
+                        action="exhibit environment updated",
+                        target=instance.title,
+                        icon="update",
+                        link=f"/collaborator/exhibit/{instance.id}",
+                        created_at=datetime.now(),
+                    )
+                    print(f"✅ Environment change notification created for collaborator: {collaborator.first_name} {collaborator.last_name}")
+                except Exception as e:
+                    print(f"❌ Failed to create environment change notification for collaborator {collaborator.id}: {str(e)}")
 
         instance.updated_at = datetime.utcnow()
         instance.save()

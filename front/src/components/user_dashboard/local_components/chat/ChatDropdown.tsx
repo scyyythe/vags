@@ -3,7 +3,10 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatHeader } from "./ChatHeader";
 import { ConversationList } from "./ConversationList";
-import { ConversationListSkeleton, ConversationLoadingSkeleton } from "../../../skeletons/ConversationListSkeleton";
+import {
+  ConversationListSkeleton,
+  ConversationLoadingSkeleton,
+} from "../../../skeletons/messages/ConversationListSkeleton";
 import { MessagesList } from "./MessagesList";
 import { MessageInput } from "./MessageInput";
 import { Conversation, Message } from "./types/types";
@@ -47,6 +50,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const [headerName, setHeaderName] = useState(participantName || "Unknown");
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchJustFocused, setSearchJustFocused] = useState(false);
 
   const { data: allUsers = [], isLoading: isLoadingUsers } = useAllUsersQuery();
 
@@ -68,7 +73,12 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       setConversations((prev) =>
         prev.map((conv) =>
           conv.id === convId
-            ? { ...conv, unreadCount: 0, messages: (conv.messages || []).map((msg) => ({ ...msg, isRead: true })) }
+            ? {
+                ...conv,
+                unreadCount: 0,
+                messages: (conv.messages || []).map((msg) => ({ ...msg, isRead: true })),
+                isRevived: false,
+              }
             : conv
         )
       );
@@ -76,7 +86,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       try {
         const convRef = doc(db, "conversations", convId);
         const updateData: any = {
-          unreadCount: 0,
+          [`unread.${userId}`]: 0, // Reset unread count for this specific user
           isArchived: false,
         };
 
@@ -112,27 +122,30 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
       const existing = snapshot.docs.find((doc) => {
         const data = doc.data();
-        const isDeletedByUser = data.deletedBy?.includes(userId) || false;
 
         return (
           Array.isArray(data.participants) &&
           data.participants.length === 2 &&
           data.participants.includes(userId) &&
-          data.participants.includes(targetId) &&
-          !isDeletedByUser
+          data.participants.includes(targetId)
         );
       });
 
       if (existing) {
         const existingData = existing.data();
         const currentDeletedBy = existingData.deletedBy || [];
+        const currentDeletedAt = existingData.deletedAt || {};
 
+        // If user had deleted this conversation, restore it (remove from deletedBy array and deletedAt)
         if (currentDeletedBy.includes(userId)) {
           const updatedDeletedBy = currentDeletedBy.filter((id: string) => id !== userId);
+          const updatedDeletedAt = { ...currentDeletedAt };
+          delete updatedDeletedAt[userId];
 
           try {
             await updateDoc(doc(db, "conversations", existing.id), {
               deletedBy: updatedDeletedBy,
+              deletedAt: updatedDeletedAt,
             });
           } catch (err) {}
         }
@@ -151,6 +164,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
           isMuted: existingData.isMuted || false,
           messages: existingData.messages || [],
           deletedBy: existingData.deletedBy || [],
+          deletedAt: existingData.deletedAt || {},
         };
       }
 
@@ -161,6 +175,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         participantAvatar: targetAvatar || null,
         lastMessage: "",
         lastMessageTime: serverTimestamp(),
+        lastMessageSenderId: "",
         unreadCount: 0,
         isOnline: false,
         isArchived: false,
@@ -168,6 +183,10 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         isMuted: false,
         messages: [] as Message[],
         deletedBy: [],
+        deletedAt: {},
+        mutedBy: [],
+        pinnedBy: [],
+        archivedBy: [],
       };
 
       const docRef = await addDoc(collection(db, "conversations"), newConv);
@@ -217,10 +236,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
   const filteredConversations = useMemo(() => {
     return conversations.filter((conv) => {
-      const isDeletedByUser = conv.deletedBy?.includes(userId) || false;
-      if (isDeletedByUser) {
-        return false;
-      }
+      // The useUserConversations hook already handles the deletion logic properly
+      // So we don't need to filter deleted conversations here again
 
       const matchesSearch = conv.participantName?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesArchive = showArchived ? conv.isArchived : !conv.isArchived;
@@ -229,26 +246,34 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   }, [conversations, searchQuery, showArchived, userId]);
 
   const filteredUsers = useMemo(() => {
-    return allUsers
-      .filter((user) => {
-        if (user.id === userId) return false;
-        const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim();
-        const username = user.username || "";
-        const email = user.email || "";
+    // If search is focused but no query, show all users (limited to 10)
+    if (isSearchFocused && searchQuery.length === 0) {
+      return allUsers.filter((user) => user.id !== userId).slice(0, 10);
+    }
 
-        const searchLower = searchQuery.toLowerCase();
-        return (
-          fullName.toLowerCase().includes(searchLower) ||
-          username.toLowerCase().includes(searchLower) ||
-          email.toLowerCase().includes(searchLower)
-        );
-      })
-      .slice(0, 5);
-  }, [allUsers, searchQuery, userId]);
+    // If there's a search query, show filtered results (limited to 10)
+    const filtered = allUsers.filter((user) => {
+      if (user.id === userId) return false;
+      const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim();
+      const username = user.username || "";
+      const email = user.email || "";
+
+      const searchLower = searchQuery.toLowerCase();
+      return (
+        fullName.toLowerCase().includes(searchLower) ||
+        username.toLowerCase().includes(searchLower) ||
+        email.toLowerCase().includes(searchLower)
+      );
+    });
+
+    return filtered.slice(0, 10);
+  }, [allUsers, searchQuery, userId, isSearchFocused]);
 
   const handleUserSelect = async (selectedUser: any) => {
     setSearchQuery("");
     setShowUserDropdown(false);
+    setIsSearchFocused(false);
+    setSearchJustFocused(false);
 
     const existingConv = conversations.find((conv) => conv.participantId === selectedUser.id);
 
@@ -351,6 +376,9 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       userAvatarLocal,
       selectedConversation
     );
+
+    // Note: We don't increment unread count for the sender
+    // The Firebase hook handles incrementing unread count for the receiver
   };
 
   const handleFileAttachment = async (file: File) => {
@@ -374,6 +402,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         userAvatarLocal,
         selectedConversation
       );
+
+      // Note: Firebase hook handles unread count for receiver
     } catch (error) {
     } finally {
       setUploadingFile(false);
@@ -404,6 +434,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
             userAvatarLocal,
             selectedConversation
           );
+
+          // Note: Firebase hook handles unread count for receiver
         } catch (error) {
         } finally {
           setUploadingFile(false);
@@ -430,6 +462,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
           userAvatarLocal,
           selectedConversation
         );
+
+        // Note: Firebase hook handles unread count for receiver
       }, 2000);
     } else setIsRecording(false);
   };
@@ -468,33 +502,81 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     const conv = conversations.find((c) => c.id === convId);
     if (!conv) return;
 
-    const newVal = !conv.isPinned;
-    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, isPinned: newVal } : c)));
+    const currentPinnedBy = conv.pinnedBy || [];
+    const isCurrentlyPinned = currentPinnedBy.includes(userId);
+
+    let updatedPinnedBy;
+    if (isCurrentlyPinned) {
+      // Remove user from pinned list
+      updatedPinnedBy = currentPinnedBy.filter((id) => id !== userId);
+    } else {
+      // Add user to pinned list
+      updatedPinnedBy = [...currentPinnedBy, userId];
+    }
+
+    // Update local state
+    setConversations((prev) =>
+      prev.map((c) => (c.id === convId ? { ...c, isPinned: !isCurrentlyPinned, pinnedBy: updatedPinnedBy } : c))
+    );
 
     try {
-      await updateDoc(doc(db, "conversations", convId), { isPinned: newVal });
+      await updateDoc(doc(db, "conversations", convId), {
+        pinnedBy: updatedPinnedBy,
+      });
     } catch (err) {}
   };
   const toggleMute = async (convId: string) => {
     const conv = conversations.find((c) => c.id === convId);
     if (!conv) return;
 
-    const newVal = !conv.isMuted;
-    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, isMuted: newVal } : c)));
+    const currentMutedBy = conv.mutedBy || [];
+    const isCurrentlyMuted = currentMutedBy.includes(userId);
+
+    let updatedMutedBy;
+    if (isCurrentlyMuted) {
+      // Remove user from muted list
+      updatedMutedBy = currentMutedBy.filter((id) => id !== userId);
+    } else {
+      // Add user to muted list
+      updatedMutedBy = [...currentMutedBy, userId];
+    }
+
+    // Update local state
+    setConversations((prev) =>
+      prev.map((c) => (c.id === convId ? { ...c, isMuted: !isCurrentlyMuted, mutedBy: updatedMutedBy } : c))
+    );
 
     try {
-      await updateDoc(doc(db, "conversations", convId), { isMuted: newVal });
+      await updateDoc(doc(db, "conversations", convId), {
+        mutedBy: updatedMutedBy,
+      });
     } catch (err) {}
   };
   const toggleArchive = async (convId: string) => {
     const conv = conversations.find((c) => c.id === convId);
     if (!conv) return;
 
-    const newVal = !conv.isArchived;
-    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, isArchived: newVal } : c)));
+    const currentArchivedBy = conv.archivedBy || [];
+    const isCurrentlyArchived = currentArchivedBy.includes(userId);
+
+    let updatedArchivedBy;
+    if (isCurrentlyArchived) {
+      // Remove user from archived list
+      updatedArchivedBy = currentArchivedBy.filter((id) => id !== userId);
+    } else {
+      // Add user to archived list
+      updatedArchivedBy = [...currentArchivedBy, userId];
+    }
+
+    // Update local state
+    setConversations((prev) =>
+      prev.map((c) => (c.id === convId ? { ...c, isArchived: !isCurrentlyArchived, archivedBy: updatedArchivedBy } : c))
+    );
 
     try {
-      await updateDoc(doc(db, "conversations", convId), { isArchived: newVal });
+      await updateDoc(doc(db, "conversations", convId), {
+        archivedBy: updatedArchivedBy,
+      });
     } catch (err) {}
   };
   const deleteConversation = async (convId: string) => {
@@ -507,15 +589,31 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       }
 
       const currentDeletedBy = conv.deletedBy || [];
+      const currentDeletedAt = conv.deletedAt || {};
 
       if (!currentDeletedBy.includes(userId)) {
         const updatedDeletedBy = [...currentDeletedBy, userId];
+        const updatedDeletedAt = {
+          ...currentDeletedAt,
+          [userId]: serverTimestamp(),
+        };
+
+        // Update local state immediately to hide the conversation
+        setConversations((prev) => prev.filter((c) => c.id !== convId));
 
         await updateDoc(doc(db, "conversations", convId), {
           deletedBy: updatedDeletedBy,
+          deletedAt: updatedDeletedAt,
         });
       }
-    } catch (err) {}
+    } catch (err) {
+      // If there's an error, restore the conversation in local state
+      // We need to find the conversation again since conv is out of scope
+      const convToRestore = conversations.find((c) => c.id === convId);
+      if (convToRestore) {
+        setConversations((prev) => [...prev, convToRestore]);
+      }
+    }
   };
 
   const restoreConversation = async (convId: string) => {
@@ -524,11 +622,15 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       if (!conv) return;
 
       const currentDeletedBy = conv.deletedBy || [];
+      const currentDeletedAt = conv.deletedAt || {};
 
       const updatedDeletedBy = currentDeletedBy.filter((id) => id !== userId);
+      const updatedDeletedAt = { ...currentDeletedAt };
+      delete updatedDeletedAt[userId];
 
       await updateDoc(doc(db, "conversations", convId), {
         deletedBy: updatedDeletedBy,
+        deletedAt: updatedDeletedAt,
       });
     } catch (err) {}
   };
@@ -549,6 +651,68 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     );
   };
 
+  const addReaction = async (messageId: string, emoji: string) => {
+    if (!selectedConversation) return;
+
+    try {
+      // Get current reactions from Firebase messages first, then fallback to local
+      const firebaseMsg = firebaseMessages?.find((msg: any) => msg.id === messageId);
+      const currentReactions = Array.isArray(firebaseMsg?.reactions) ? firebaseMsg.reactions : [];
+
+      // Check if user already reacted with this emoji
+      const existingReactionIndex = currentReactions.findIndex(
+        (r: any) => r.emoji === emoji && r.users.includes(userId)
+      );
+
+      let updatedReactions;
+      if (existingReactionIndex >= 0) {
+        // Remove reaction
+        const reaction = currentReactions[existingReactionIndex];
+        reaction.users = reaction.users.filter((id: string) => id !== userId);
+
+        if (reaction.users.length === 0) {
+          // Remove the entire reaction if no users left
+          updatedReactions = currentReactions.filter((_: any, index: number) => index !== existingReactionIndex);
+        } else {
+          updatedReactions = [...currentReactions];
+          updatedReactions[existingReactionIndex] = reaction;
+        }
+      } else {
+        // Add reaction
+        const existingEmojiIndex = currentReactions.findIndex((r: any) => r.emoji === emoji);
+
+        if (existingEmojiIndex >= 0) {
+          // Add user to existing emoji reaction
+          updatedReactions = [...currentReactions];
+          updatedReactions[existingEmojiIndex].users.push(userId);
+        } else {
+          // Create new emoji reaction
+          updatedReactions = [...currentReactions, { emoji, users: [userId] }];
+        }
+      }
+
+      // Update Firebase
+      const messageRef = doc(db, "conversations", selectedConversation, "messages", messageId);
+      await updateDoc(messageRef, { reactions: updatedReactions });
+
+      // Update local state optimistically
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === selectedConversation
+            ? {
+                ...conv,
+                messages: (conv.messages || []).map((msg) =>
+                  msg.id === messageId ? { ...msg, reactions: updatedReactions } : msg
+                ),
+              }
+            : conv
+        )
+      );
+    } catch (error) {
+      console.error("Failed to add reaction:", error);
+    }
+  };
+
   const deleteMessage = (messageId: string) => {
     if (!selectedConversation) return;
     setConversations((prev) =>
@@ -565,15 +729,36 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   };
 
   useEffect(() => {
-    const handleClickOutside = () => {
-      setShowUserDropdown(false);
+    const handleClickOutside = (event: MouseEvent) => {
+      // Don't close if search was just focused
+      if (searchJustFocused) {
+        setSearchJustFocused(false);
+        return;
+      }
+
+      // Check if the click is outside the search area and user dropdown
+      const target = event.target as Element;
+      const searchContainer = target.closest(".search-container");
+      const userDropdown = target.closest("[data-user-dropdown]");
+
+      if (!searchContainer && !userDropdown) {
+        setShowUserDropdown(false);
+        setIsSearchFocused(false);
+      }
     };
 
-    if (showUserDropdown) {
-      document.addEventListener("click", handleClickOutside);
-      return () => document.removeEventListener("click", handleClickOutside);
+    if (showUserDropdown || isSearchFocused) {
+      // Add a small delay to prevent immediate closing when clicking the search input
+      const timeoutId = setTimeout(() => {
+        document.addEventListener("click", handleClickOutside);
+      }, 150);
+
+      return () => {
+        clearTimeout(timeoutId);
+        document.removeEventListener("click", handleClickOutside);
+      };
     }
-  }, [showUserDropdown]);
+  }, [showUserDropdown, isSearchFocused, searchJustFocused]);
 
   return (
     <div className="absolute right-4 md:right-1.5 bg-white rounded-2xl shadow-xl z-50 w-[360px] md:w-[360px] h-[534px]">
@@ -594,7 +779,21 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
             onMarkAllAsUnread={() => conversations.forEach((c) => markAsUnread(c.id))}
             onSearchChange={(query) => {
               setSearchQuery(query);
-              setShowUserDropdown(query.length > 0);
+              setShowUserDropdown(query.length > 0 || isSearchFocused);
+            }}
+            onSearchFocus={() => {
+              setSearchJustFocused(true);
+              setIsSearchFocused(true);
+              setShowUserDropdown(true);
+            }}
+            onSearchBlur={() => {
+              // Delay to allow for user selection
+              setTimeout(() => {
+                setIsSearchFocused(false);
+                if (!searchQuery) {
+                  setShowUserDropdown(false);
+                }
+              }, 300);
             }}
           />
           <ScrollArea className="flex-1">
@@ -639,7 +838,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                     />
                   </div>
                 </div>
-                <div className="text-gray-500 text-xs">Opening chat...</div>
+                <div className="text-gray-500 text-xs"></div>
               </div>
             ) : selectedConversation && selectedConv ? (
               <MessagesList
@@ -656,11 +855,14 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
                     // Add Firebase messages, overriding local ones if they exist
                     (firebaseMessages || []).forEach((msg: any) => {
+                      if (msg.type === "automatic") {
+                        console.log("Processing automatic message:", msg); // Debug log
+                      }
                       const message = {
                         id: msg.id,
                         senderId: msg.senderId,
                         senderName: msg.senderName || selectedConv.participantName || participantName || "Unknown",
-                        content: msg.content || msg.text || "",
+                        content: msg.type === "automatic" ? "" : msg.content || msg.text || "",
                         timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(),
                         isRead: msg.isRead || false,
                         isStarred: msg.isStarred || false,
@@ -672,6 +874,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                         voiceDuration: msg.voiceDuration,
                         isMine: String(msg.senderId) === String(userId),
                         replyTo: msg.replyTo || null,
+                        automaticMessageData: msg.automaticMessageData || null,
                       };
                       messageMap.set(msg.id, message);
                     });
@@ -690,14 +893,16 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                 onStarMessage={starMessage}
                 onDeleteMessage={deleteMessage}
                 onSetReactionPicker={setShowReactionPicker}
+                onAddReaction={addReaction}
               />
             ) : directMessageMode && loadingConversation ? (
               <ConversationLoadingSkeleton />
             ) : (
               <div className="flex flex-col h-full relative">
-                {showUserDropdown && searchQuery.length > 0 && (
+                {showUserDropdown && (isSearchFocused || searchQuery.length > 0) && (
                   <div
-                    className="absolute top-0 left-0 right-0 z-10 bg-white border-b border-gray-200 max-h-48 overflow-y-auto"
+                    data-user-dropdown
+                    className="absolute top-0 left-0 right-0 bottom-0 z-10 bg-white overflow-y-auto"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {isLoadingUsers ? (
@@ -705,7 +910,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                     ) : filteredUsers.length > 0 ? (
                       <div className="py-1">
                         <div className="px-3 py-2 text-xs font-medium text-gray-500 border-b border-gray-100">
-                          Start or continue conversation
+                          {searchQuery.length > 0 ? `Search results for "${searchQuery}"` : "All users"}
                         </div>
                         {filteredUsers.map((user) => {
                           const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim();
@@ -738,7 +943,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                                 <div className="flex items-center space-x-2">
                                   <p className="text-sm font-medium text-gray-900 truncate">{displayName}</p>
                                   {existingConv && (
-                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-blue-100 text-blue-800">
+                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                       Chat
                                     </span>
                                   )}
@@ -750,12 +955,16 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                         })}
                       </div>
                     ) : (
-                      <div className="p-3 text-center text-gray-500 text-xs">No users found for "{searchQuery}"</div>
+                      <div className="p-3 text-center text-gray-500 text-xs">
+                        {searchQuery.length > 0 ? `No users found for "${searchQuery}"` : "No users available"}
+                      </div>
                     )}
                   </div>
                 )}
 
-                <div className={`${showUserDropdown && searchQuery.length > 0 ? "pt-48" : ""}`}>
+                <div
+                  className={`${showUserDropdown && (isSearchFocused || searchQuery.length > 0) ? "opacity-0" : ""}`}
+                >
                   {isLoadingConversations ? (
                     <ConversationListSkeleton count={6} />
                   ) : filteredConversations.length > 0 ? (
@@ -774,7 +983,22 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                       onDeleteConversation={deleteConversation}
                     />
                   ) : (
-                    <div className="flex items-center justify-center flex-1 text-gray-500 text-xs">No messages yet</div>
+                    <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-gray-500 text-xs space-y-3">
+                      <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center">
+                        <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                          />
+                        </svg>
+                      </div>
+                      <div className="text-center space-y-1">
+                        <p className="text-sm font-medium">No messages yet</p>
+                        <p className="text-[10px] text-gray-400">Start a conversation by searching above</p>
+                      </div>
+                    </div>
                   )}
                 </div>
                 <div className="mt-auto mb-4 px-4 space-y-2">

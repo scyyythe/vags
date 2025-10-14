@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { differenceInDays } from "date-fns";
 import SellCard from "@/components/user_dashboard/Marketplace/cards/SellCard";
-import SellCardSkeleton from "@/components/skeletons/SellCardSkeleton";
+import SellCardSkeleton from "@/components/skeletons/marketplace/SellCardSkeleton";
 import SalesSummary from "@/components/user_dashboard/Marketplace/sales_summary/SalesSummary";
 import useMySellArtCards from "@/hooks/artworks/sell/useMySellArtCards";
 import useUserSellArtCards from "@/hooks/artworks/sell/useUserSellArtCards";
@@ -36,8 +36,10 @@ import useMarkPurchaseCompleted from "@/hooks/purchase/useMarkPurchaseCompleted"
 import useMarkAsShipped from "@/hooks/purchase/useMarkAsShipped";
 type SellTabProps = {
   selectedPriceRange?: string;
+  selectedStatus?: string;
+  navigationState?: any;
 };
-const SellTab = ({ selectedPriceRange, selectedStatus }) => {
+const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const { id: userId } = useParams();
   const loggedInUserId = getLoggedInUserId();
   const navigate = useNavigate();
@@ -63,6 +65,16 @@ const SellTab = ({ selectedPriceRange, selectedStatus }) => {
       setSubTab("available");
     }
   }, [isOwnProfile, subTab]);
+
+  // Handle navigation state to set specific tabs
+  React.useEffect(() => {
+    if (navigationState) {
+      const { mainTab: navMainTab, activeSubGroup: navActiveSubGroup, subTab: navSubTab } = navigationState;
+      if (navMainTab) setMainTab(navMainTab);
+      if (navActiveSubGroup) setActiveSubGroup(navActiveSubGroup);
+      if (navSubTab) setSubTab(navSubTab);
+    }
+  }, [navigationState]);
   const [activeSubTab, setActiveSubTab] = useState("awaiting_payment");
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -752,6 +764,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus }) => {
                   shippingAddress={artwork.shippingAddress}
                   artwork={artwork.artwork}
                   review={artwork.review}
+                  isHighlighted={navigationState?.highlightedOrderId === artwork.id}
                   onViewReview={() => handleViewSellerReview(artwork)}
                   onViewDetails={(artwork) => handleViewDetails(artwork)}
                   onContactBuyer={(artwork) => handleContactBuyer(artwork)}
@@ -786,6 +799,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus }) => {
                 shippingAddress={artwork.shippingAddress}
                 artwork={artwork.artwork}
                 review={artwork.review}
+                isHighlighted={navigationState?.highlightedOrderId === artwork.id}
                 onViewDetails={(art) => handleViewDetails(art)}
                 onContactBuyer={(art) => handleContactBuyer(art)}
                 onMarkAsShipped={(art) => handleMarkAsShipped(art)}
@@ -825,6 +839,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus }) => {
                 artworkImage={order.artwork.image_url?.[0]}
                 title={order.artwork?.title || "Untitled"}
                 artist={order.artwork?.artist_name || "Unknown"}
+                artistId={order.artwork?.artist_id}
                 price={order.artwork?.price ?? 0}
                 status={
                   order.status === "Pending" ? "pending_payment" : order.status?.toLowerCase().replace(/\s+/g, "_")

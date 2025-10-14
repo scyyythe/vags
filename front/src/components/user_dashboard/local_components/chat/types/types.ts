@@ -8,7 +8,7 @@ export interface Message {
   timestamp: Date;
   isRead: boolean;
   isStarred: boolean;
-  type: "text" | "image" | "file" | "voice";
+  type: "text" | "image" | "file" | "voice" | "automatic";
   deliveryStatus: DeliveryStatus;
 
   imageUrl?: string;
@@ -18,11 +18,19 @@ export interface Message {
   isMine?: boolean;
   senderAvatar?: string;
 
+  // Automatic message specific fields
+  automaticMessageData?: {
+    sellerName: string;
+    artworkTitle: string;
+    buyerName: string;
+    orderId: string;
+  };
+
   replyTo?: {
     messageId: string;
     senderId: string;
     senderName: string;
-    type: "text" | "image" | "file" | "voice";
+    type: "text" | "image" | "file" | "voice" | "automatic";
     content?: string;
     fileName?: string;
     imageUrl?: string;
@@ -51,4 +59,9 @@ export interface Conversation {
   isMuted: boolean;
   messages: Message[];
   deletedBy?: string[]; // Array of user IDs who have deleted this conversation
+  deletedAt?: { [userId: string]: Date }; // Track when each user deleted the conversation
+  mutedBy?: string[]; // Array of user IDs who have muted this conversation
+  pinnedBy?: string[]; // Array of user IDs who have pinned this conversation
+  archivedBy?: string[]; // Array of user IDs who have archived this conversation
+  isRevived?: boolean; // Flag to indicate this conversation was deleted but has new messages
 }

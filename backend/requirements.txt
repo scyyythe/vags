@@ -39,4 +39,6 @@ whitenoise
 Pillow>=9.0.0
 firebase-admin
 stripe
+pyotp
+qrcode[pil]
 

@@ -50,6 +50,8 @@ const useUserDetails = (id?: string) => {
   const cover_photo = state.cover_photo || user?.cover_photo || "";
   const gender = state.gender || user?.gender || "Unknown";
   const dateOfBirth = state.dateOfBirth || user?.date_of_birth || null;
+  const deactivatedAt = state.deactivatedAt || user?.deactivated_at || null;
+  const scheduledForDeletion = state.scheduledForDeletion || user?.scheduled_for_deletion || null;
   const bio = state.bio || user?.bio || "No bio available";
   const contactNumber = state.contactNumber || user?.contact_number || "No contact number";
   const address = state.address || user?.address || "No address provided";
@@ -67,6 +69,8 @@ const useUserDetails = (id?: string) => {
     cover_photo,
     gender,
     dateOfBirth,
+    deactivatedAt,
+    scheduledForDeletion,
     bio,
     contactNumber,
     address,

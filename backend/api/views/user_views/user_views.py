@@ -152,8 +152,42 @@ class CustomTokenObtainPairView(APIView):
 
         # Verify user credentials
         user = User.objects(email=email).first()
-        if not user or not user.password or not bcrypt.checkpw(password, user.password.encode("utf-8")):
+        if not user:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Check if account is locked
+        if user.is_locked():
+            time_remaining = user.locked_until - datetime.utcnow()
+            minutes_remaining = int(time_remaining.total_seconds() / 60)
+            return Response({
+                "error": "Account temporarily locked due to multiple failed login attempts",
+                "locked_until": user.locked_until.isoformat(),
+                "minutes_remaining": minutes_remaining,
+                "message": f"Please try again in {minutes_remaining} minutes"
+            }, status=status.HTTP_423_LOCKED)
+        
+        # Check password
+        if not user.password or not bcrypt.checkpw(password, user.password.encode("utf-8")):
+            # Increment failed login attempts
+            user.increment_failed_attempts()
+            
+            # Check if account is now locked after this attempt
+            if user.is_locked():
+                return Response({
+                    "error": "Account locked due to multiple failed login attempts",
+                    "locked_until": user.locked_until.isoformat(),
+                    "minutes_remaining": 30,
+                    "message": "Please try again in 30 minutes"
+                }, status=status.HTTP_423_LOCKED)
+            
+            return Response({
+                "error": "Invalid credentials",
+                "failed_attempts": user.failed_login_attempts,
+                "attempts_remaining": 5 - user.failed_login_attempts
+            }, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Reset failed attempts on successful login
+        user.reset_failed_attempts()
 
         # Token generator helper
         def generate_token(payload, exp_delta):
@@ -180,26 +214,68 @@ class CustomTokenObtainPairView(APIView):
             "token_type": "refresh"
         }, timedelta(days=7))
 
-        # Firebase custom token
+        # Check if 2FA is enabled for this user
+        from api.models.user_model.two_factor_auth import TwoFactorAuth
+        two_factor = TwoFactorAuth.objects(user=user).first()
+        
+        if two_factor and two_factor.is_enabled:
+            # 2FA is enabled, return partial login data
+            return Response({
+                "requires_2fa": True,
+                "enabled_methods": two_factor.enabled_methods,
+                "primary_method": two_factor.primary_method,
+                "message": "Two-factor authentication required"
+            }, status=status.HTTP_200_OK)
+        
+        # Firebase custom token (only if 2FA is not enabled)
         firebase_token = firebase_auth.create_custom_token(str(user.id)).decode("utf-8")
 
-        # Save user session
+        # Save user session with deduplication and cleanup
         def record_session(user, request):
             device = request.META.get("HTTP_USER_AGENT", "Unknown device")
             ip_address = request.META.get("REMOTE_ADDR")
+            device_truncated = device[:100]
+
+            # Cleanup old sessions (older than 30 days)
+            from datetime import timedelta
+            cutoff_date = datetime.utcnow() - timedelta(days=30)
+            UserSession.objects(user=user, created_at__lt=cutoff_date).delete()
+
+            # Limit sessions per user (keep only 10 most recent)
+            user_sessions = UserSession.objects(user=user).order_by("-created_at")
+            if user_sessions.count() > 10:
+                sessions_to_delete = user_sessions[10:]
+                for session in sessions_to_delete:
+                    session.delete()
+
+            # Check if session with same device already exists
+            existing_session = UserSession.objects(
+                user=user, 
+                device=device_truncated,
+                is_current=False
+            ).first()
 
             # Mark all previous sessions inactive
             UserSession.objects(user=user, is_current=True).update(is_current=False)
 
-            session = UserSession(
-                user=user,
-                device=device[:100],
-                ip_address=ip_address,
-                user_agent=device,
-                is_current=True,
-            )
-            session.save()
-            return session
+            if existing_session:
+                # Update existing session instead of creating new one
+                existing_session.is_current = True
+                existing_session.ip_address = ip_address
+                existing_session.created_at = datetime.utcnow()
+                existing_session.save()
+                return existing_session
+            else:
+                # Create new session only if no existing session with same device
+                session = UserSession(
+                    user=user,
+                    device=device_truncated,
+                    ip_address=ip_address,
+                    user_agent=device,
+                    is_current=True,
+                )
+                session.save()
+                return session
 
         record_session(user, request)
 
@@ -209,7 +285,9 @@ class CustomTokenObtainPairView(APIView):
             "firebase_token": firebase_token,
             "user_id": str(user.id),
             "email": user.email,
-            "role": user.role
+            "role": user.role,
+            "user_status": user.user_status,
+            "scheduled_for_deletion": user.scheduled_for_deletion.isoformat() if user.scheduled_for_deletion else None
         }, status=status.HTTP_200_OK)
 
 
@@ -297,3 +375,24 @@ class SessionDeleteView(APIView):
 
         session.delete()
         return Response({"message": "Session removed"}, status=status.HTTP_204_NO_CONTENT)
+
+class ClearAllSessionsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request):
+        try:
+            # Delete all sessions for the user except the current session
+            deleted_count = UserSession.objects(
+                user=request.user,
+                is_current=False
+            ).delete()
+            
+            return Response({
+                "message": f"Cleared {deleted_count} sessions successfully",
+                "deleted_count": deleted_count
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({
+                "error": "Failed to clear sessions",
+                "details": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

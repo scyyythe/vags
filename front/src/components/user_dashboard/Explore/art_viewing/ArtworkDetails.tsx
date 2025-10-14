@@ -22,7 +22,9 @@ import useHideArtwork from "@/hooks/mutate/visibility/private/useHideArtwork";
 import { getLoggedInUserId } from "@/auth/decode";
 import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork";
 import useUpdateArtworkVisibility from "@/hooks/mutate/visibility/private/useUpdateArtworkVisibility";
+import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import OwnerMenu from "@/components/user_dashboard/own_profile/menu/art_card/Menu";
+import { useQueryClient } from "@tanstack/react-query";
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -65,6 +67,8 @@ const ArtworkDetails = () => {
   const { data: report_status } = useBulkReportStatus([id]);
   const { mutate: updateVisibility } = useUpdateArtworkVisibility();
   const { mutate: archiveArtwork } = useArchivedArtwork();
+  const { mutate: submitReport } = useSubmitReport();
+  const queryClient = useQueryClient();
 
   const { isLikedFromBulk, isSavedFromBulk, isReportedFromBulk, reportStatusFromBulk } = location.state || {};
   const isOwner = String(loggedInUserId) === String(artwork?.artist_id);
@@ -136,13 +140,53 @@ const ArtworkDetails = () => {
   const handleHide = () => {
     setIsHidden(true);
     hideArtwork(id);
+    // Additional cache invalidation to ensure Explore page updates
+    queryClient.invalidateQueries({ queryKey: ["bulkReportStatus"] });
+    queryClient.invalidateQueries({ queryKey: ["artworks"] });
     setMenuOpen(false);
   };
 
-  const handleReport = () => {
-    setIsReported(!isReported);
-    setLocalIsReported(!localIsReported);
-    toast(isReported ? "Artwork report removed" : "Artwork reported", { closeButton: true });
+  const handleReport = ({
+    category,
+    option,
+    description,
+    additionalInfo,
+  }: {
+    category: string;
+    option?: string;
+    description?: string;
+    additionalInfo?: string;
+  }) => {
+    if (localIsReported || isReportedFromBulk) {
+      toast.error("You have already reported this artwork.", { closeButton: true });
+      setMenuOpen(false);
+      return;
+    }
+    // Update local state immediately for visual feedback
+    setLocalIsReported(true);
+
+    submitReport(
+      {
+        art_id: id,
+        category,
+        option,
+        description,
+        additionalInfo,
+      },
+      {
+        onSuccess: () => {
+          // Additional cache invalidation to ensure Explore page updates
+          queryClient.invalidateQueries({ queryKey: ["bulkReportStatus"] });
+          queryClient.invalidateQueries({ queryKey: ["artworks"] });
+          queryClient.invalidateQueries({ queryKey: ["artworkReportStatus", id] });
+        },
+        onError: () => {
+          // Revert local state if submission fails
+          setLocalIsReported(false);
+        },
+      }
+    );
+
     setMenuOpen(false);
   };
 
@@ -159,6 +203,9 @@ const ArtworkDetails = () => {
 
   const handleFavorite = () => {
     toggleFavorite();
+    // Additional cache invalidation to ensure Explore page updates
+    queryClient.invalidateQueries({ queryKey: ["bulkReportStatus"] });
+    queryClient.invalidateQueries({ queryKey: ["artworks"] });
     setMenuOpen(false);
   };
   const toggleDetailsPanel = () => {

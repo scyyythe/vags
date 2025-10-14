@@ -11,9 +11,6 @@ export const useUserConversations = (userId: string) => {
   useEffect(() => {
     if (!userId) return;
 
-    console.log(`🔄 useUserConversations hook started for userId: ${userId}`);
-    console.log(`📊 Current conversations state:`, conversations.length);
-
     // Create a query that excludes conversations deleted by the current user
     const q = query(
       collection(db, "conversations"),
@@ -28,20 +25,15 @@ export const useUserConversations = (userId: string) => {
       for (const docSnap of snapshot.docs) {
         const data = docSnap.data();
 
-        // Check if current user has deleted this conversation FIRST
+        // Check if current user has deleted this conversation
         const deletedBy = data.deletedBy || [];
         const isDeletedByUser = deletedBy.includes(userId);
 
-        console.log(`🔍 Checking conversation ${docSnap.id}:`, {
-          userId,
-          deletedBy,
-          isDeleted: isDeletedByUser,
-        });
-
+        // If user deleted the conversation, NEVER show it in their chat list
+        // Even if the other person sends new messages, the conversation stays hidden
         if (isDeletedByUser) {
-          // Skip this conversation as it's been deleted by current user
-          console.log(`🚫 Skipping deleted conversation ${docSnap.id} for user ${userId}`);
-          continue; // Use continue to skip this iteration and continue with the next conversation
+          console.log("Skipping conversation - user deleted it, keeping it hidden permanently");
+          continue; // Always skip conversations deleted by the current user
         }
 
         const participantIds: string[] = data.participants.filter((id: string) => id !== userId);
@@ -68,71 +60,88 @@ export const useUserConversations = (userId: string) => {
         );
         const messagesSnapshot = await getDocs(messagesQuery);
 
-        const messages: Message[] = messagesSnapshot.docs.map((m) => {
-          const msgData = m.data();
-          const senderId = msgData.senderId as string;
-          const senderInfo = userCache[senderId] || { name: "Unknown", avatar: undefined };
+        // Get the deletion timestamp for this user
+        const deletedAt = data.deletedAt || {};
+        const userDeletedAt = deletedAt[userId]?.toDate?.() ?? null;
 
-          return {
-            id: m.id,
-            senderId,
-            senderName: senderInfo.name,
-            senderAvatar: senderInfo.avatar,
-            content: msgData.content || "",
-            type: msgData.type || "text",
-            fileName: msgData.fileName,
-            imageUrl: msgData.imageUrl,
-            voiceDuration: msgData.voiceDuration,
-            isStarred: msgData.isStarred || false,
-            reactions: msgData.reactions || [],
-            deliveryStatus: msgData.deliveryStatus || "sent",
-            replyTo: msgData.replyTo || null,
-            timestamp: msgData.createdAt?.toDate?.() ?? new Date(),
-            isRead: msgData.isRead || false,
-          };
-        });
+        const messages: Message[] = messagesSnapshot.docs
+          .map((m) => {
+            const msgData = m.data();
+            const senderId = msgData.senderId as string;
+            const senderInfo = userCache[senderId] || { name: "Unknown", avatar: undefined };
+            const messageTimestamp = msgData.createdAt?.toDate?.() ?? new Date();
+
+            return {
+              id: m.id,
+              senderId,
+              senderName: senderInfo.name,
+              senderAvatar: senderInfo.avatar,
+              content: msgData.content || "",
+              type: msgData.type || "text",
+              fileName: msgData.fileName,
+              imageUrl: msgData.imageUrl,
+              voiceDuration: msgData.voiceDuration,
+              isStarred: msgData.isStarred || false,
+              reactions: msgData.reactions || [],
+              deliveryStatus: msgData.deliveryStatus || "sent",
+              replyTo: msgData.replyTo || null,
+              timestamp: messageTimestamp,
+              isRead: msgData.isRead || false,
+            };
+          })
+          .filter((message) => {
+            // If user deleted the conversation, only show messages sent after deletion
+            if (userDeletedAt && isDeletedByUser) {
+              return message.timestamp > userDeletedAt;
+            }
+            // If user didn't delete the conversation, show all messages
+            return true;
+          });
 
         const firstParticipant = participantIds[0];
+
+        // Check if this is a revived conversation (was deleted by user but has new activity)
+        const isRevivedConversation = isDeletedByUser;
+
+        // Get the unread count for this specific user
+        const userUnreadCount = data.unread && data.unread[userId] ? data.unread[userId] : 0;
+
+        // Get individual user settings
+        const mutedBy = data.mutedBy || [];
+        const pinnedBy = data.pinnedBy || [];
+        const archivedBy = data.archivedBy || [];
+
+        const isUserMuted = mutedBy.includes(userId);
+        const isUserPinned = pinnedBy.includes(userId);
+        const isUserArchived = archivedBy.includes(userId);
+
         convs.push({
           id: docSnap.id,
           participantId: firstParticipant,
           participantName: userCache[firstParticipant]?.name || "Unknown",
           participantAvatar: userCache[firstParticipant]?.avatar,
-          lastMessage: data.lastMessage,
+          lastMessage: isRevivedConversation ? "New message" : data.lastMessage,
           lastMessageTime: data.lastMessageTime?.toDate?.() ?? new Date(),
-          unreadCount: data.unreadCount || 0,
-          isArchived: data.isArchived || false,
-          isPinned: data.isPinned || false,
-          isMuted: data.isMuted || false,
+          unreadCount: isRevivedConversation ? 1 : userUnreadCount,
+          isArchived: isUserArchived,
+          isPinned: isUserPinned,
+          isMuted: isUserMuted,
           isOnline: true,
-          messages,
+          messages: messages, // Messages are already filtered based on deletion timestamp
           deletedBy: deletedBy,
+          deletedAt: data.deletedAt || {},
+          mutedBy: mutedBy,
+          pinnedBy: pinnedBy,
+          archivedBy: archivedBy,
+          isRevived: isRevivedConversation, // Add flag to indicate this is a revived conversation
         });
       }
-
-      console.log(`📊 useUserConversations final result:`, {
-        userId: userId,
-        totalAdded: convs.length,
-        conversations: convs.map((conv) => ({
-          id: conv.id,
-          name: conv.participantName,
-          deletedBy: conv.deletedBy,
-        })),
-      });
-
-      // Always update to ensure deleted conversations are filtered out
-      console.log(`🔄 Updating conversations state for userId: ${userId}`, {
-        previousCount: conversations.length,
-        newCount: convs.length,
-        newConversations: convs.map((c) => ({ id: c.id, name: c.participantName })),
-      });
 
       setConversations(convs);
       setIsLoading(false);
     });
 
     return () => {
-      console.log(`🧹 useUserConversations hook cleanup for userId: ${userId}`);
       unsub();
     };
   }, [userId]);

@@ -10,6 +10,8 @@ export interface User {
   last_name?: string;
   role?: string;
   user_status?: string;
+  deactivated_at?: string;
+  scheduled_for_deletion?: string;
   created_at?: string;
   updated_at?: string;
   profile_picture?: string;

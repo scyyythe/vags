@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { getLoggedInUserId } from "@/auth/decode";
 
@@ -44,61 +45,66 @@ interface Notification {
   artworkTitle?: string;
   message?: string;
 }
+// Fetch function for notifications
+const fetchNotifications = async (): Promise<Notification[]> => {
+  try {
+    const response = await apiClient.get("/notifications/");
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch notifications", error);
+    toast.error("Failed to fetch notifications");
+    throw error;
+  }
+};
+
 const useNotifications = () => {
-  const [allNotifications, setAllNotifications] = useState<Notification[]>([]);
-  const [displayedNotifications, setDisplayedNotifications] = useState<Notification[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const userId = getLoggedInUserId();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (!userId) {
-      toast.error("User not authenticated");
-      return;
-    }
+  // Use React Query to fetch notifications with caching
+  const {
+    data: allNotifications = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery<Notification[], Error>({
+    queryKey: ["notifications", userId],
+    queryFn: fetchNotifications,
+    enabled: !!userId, // Only fetch if user is authenticated
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    refetchOnWindowFocus: false, // Don't refetch when window gains focus
+    refetchOnMount: false, // Don't refetch on component mount if data exists
+    refetchOnReconnect: true, // Refetch on network reconnect
+    retry: 1, // Retry once on failure
+  });
 
-    const fetchNotifications = async () => {
-      try {
-        const response = await apiClient.get("/notifications/");
-        const notifications: Notification[] = response.data;
-        setAllNotifications(notifications);
-        setDisplayedNotifications(notifications);
-      } catch (error) {
-        console.error("Failed to fetch notifications", error);
-        toast.error("Failed to fetch notifications");
-      }
-    };
-
-    fetchNotifications();
-  }, [userId]);
-
-  const filterNotifications = () => {
-    let filtered = [...allNotifications];
+  // Filter notifications based on search and date
+  const displayedNotifications = allNotifications.filter((n) => {
+    let matches = true;
 
     if (searchQuery) {
-      filtered = filtered.filter(
-        (n) =>
-          (n.name && n.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      matches =
+        matches &&
+        ((n.name && n.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
           (n.action && n.action.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          (n.target && n.target.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
+          (n.target && n.target.toLowerCase().includes(searchQuery.toLowerCase())));
     }
 
-    if (date) {
-      filtered = filtered.filter((n) => {
-        const notifDate = new Date(n.date);
-        return (
-          notifDate.getDate() === date.getDate() &&
-          notifDate.getMonth() === date.getMonth() &&
-          notifDate.getFullYear() === date.getFullYear()
-        );
-      });
+    if (date && n.date) {
+      const notifDate = new Date(n.date);
+      matches =
+        matches &&
+        notifDate.getDate() === date.getDate() &&
+        notifDate.getMonth() === date.getMonth() &&
+        notifDate.getFullYear() === date.getFullYear();
     }
 
-    setDisplayedNotifications(filtered);
-  };
+    return matches;
+  });
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -110,31 +116,31 @@ const useNotifications = () => {
   };
 
   const clearAllNotifications = () => {
-    setAllNotifications([]);
-    setDisplayedNotifications([]);
+    // Invalidate the notifications query to trigger a refetch with empty data
+    queryClient.invalidateQueries({
+      queryKey: ["notifications", userId],
+    });
     toast.success("All notifications cleared");
   };
 
   const resetFilters = () => {
     setSearchQuery("");
     setDate(undefined);
-    setDisplayedNotifications(allNotifications);
   };
-
-  useEffect(() => {
-    filterNotifications();
-  }, [searchQuery, date, allNotifications]);
 
   return {
     displayedNotifications,
     searchQuery,
     date,
     isFilterOpen,
+    isLoading,
+    error,
     handleSearch,
     handleDateSelect,
     clearAllNotifications,
     resetFilters,
     setIsFilterOpen,
+    refetch, // Expose refetch for manual refresh if needed
   };
 };
 

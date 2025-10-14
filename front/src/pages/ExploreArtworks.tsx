@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { MoreHorizontal, Heart } from "lucide-react";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
-import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
 import { useModal } from "../context/ModalContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLanguage } from "@/context/LanguageContext";
@@ -22,11 +22,7 @@ const ArtworkCard = ({ artwork, item }: { artwork: any; item: any }) => {
           <div className="flex justify-between items-center pt-2 px-2 pb-4">
             <div className="flex items-center space-x-1">
               <div className="w-5 h-5 rounded-full overflow-hidden mr-2">
-                <img
-                  src={artwork.artistImage}
-                  alt={artwork.artistName}
-                  className="w-full h-full object-cover"
-                />
+                <img src={artwork.artistImage} alt={artwork.artistName} className="w-full h-full object-cover" />
               </div>
               {/* Artist name stays original */}
               <span className="text-[10px] text-gray-700">{artwork.artistName}</span>
@@ -45,9 +41,7 @@ const ArtworkCard = ({ artwork, item }: { artwork: any; item: any }) => {
           <div className="pt-4 px-2 pb-2">
             <div className="flex justify-between items-center mb-1">
               {/* Translated title */}
-              <h3 className="text-sm font-medium relative top-1 truncate max-w-[120px]">
-                {translatedTitle}
-              </h3>
+              <h3 className="text-sm font-medium relative top-1 truncate max-w-[120px]">{translatedTitle}</h3>
 
               <button
                 className="text-gray-500 hover:text-red-500 transition-colors relative top-1"

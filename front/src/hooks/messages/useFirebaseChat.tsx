@@ -24,7 +24,7 @@ export interface Message {
   senderAvatar?: string;
   timestamp: any;
   isRead?: boolean;
-  type?: "text" | "image" | "file" | "voice" | "video";
+  type?: "text" | "image" | "file" | "voice" | "video" | "automatic";
   fileUrl?: string;
   fileName?: string;
   fileSize?: number;
@@ -38,6 +38,14 @@ export interface Message {
 
   reactions?: {
     [userId: string]: string;
+  };
+
+  // Automatic message specific fields
+  automaticMessageData?: {
+    sellerName: string;
+    artworkTitle: string;
+    buyerName: string;
+    orderId: string;
   };
 }
 
@@ -72,7 +80,7 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
     async (
       payload: {
         text?: string;
-        type?: "text" | "image" | "file" | "voice" | "video";
+        type?: "text" | "image" | "file" | "voice" | "video" | "automatic";
         fileUrl?: string;
         fileName?: string;
         fileSize?: number;
@@ -101,11 +109,17 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
             participants: [currentUserId, receiverId],
             lastMessage: "",
             lastMessageTime: serverTimestamp(),
+            lastMessageSenderId: "",
             unread: { [receiverId]: 0 },
             createdAt: serverTimestamp(),
             isArchived: false,
             isPinned: false,
             isMuted: false,
+            deletedBy: [], // Initialize as empty array
+            deletedAt: {}, // Initialize as empty object
+            mutedBy: [],
+            pinnedBy: [],
+            archivedBy: [],
           });
           convoId = newConvoRef.id;
         }
@@ -122,12 +136,39 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
           reactions: {},
         };
 
+        // Before sending the message, check if the receiver had deleted this conversation
+        const convDoc = await getDoc(doc(db, "conversations", convoId));
+        if (convDoc.exists()) {
+          const convData = convDoc.data();
+          const deletedBy = convData.deletedBy || [];
+          const deletedAt = convData.deletedAt || {};
+
+          // Only restore the conversation for the receiver if they deleted it
+          // Don't restore it for the sender (current user) if they deleted it
+          if (deletedBy.includes(receiverId)) {
+            const updatedDeletedBy = deletedBy.filter((id: string) => id !== receiverId);
+            const updatedDeletedAt = { ...deletedAt };
+            delete updatedDeletedAt[receiverId];
+
+            await updateDoc(doc(db, "conversations", convoId), {
+              deletedBy: updatedDeletedBy,
+              deletedAt: updatedDeletedAt,
+            });
+          }
+
+          // If the current user (sender) had deleted this conversation, keep it deleted for them
+          // This means the conversation won't appear in their chat list
+          // The conversation will remain deleted for the sender, so they won't see it in their chat list
+          // Only the receiver will see the conversation if they didn't delete it
+        }
+
         const msgRef = await addDoc(collection(db, "conversations", convoId, "messages"), message);
         message.id = msgRef.id;
         // Update conversation metadata
         await updateDoc(doc(db, "conversations", convoId), {
           lastMessage: payload.text || payload.fileName || "📎 Attachment",
           lastMessageTime: serverTimestamp(),
+          lastMessageSenderId: currentUserId, // Track who sent the last message
           [`unread.${receiverId}`]: increment(1),
           updatedAt: serverTimestamp(),
         });

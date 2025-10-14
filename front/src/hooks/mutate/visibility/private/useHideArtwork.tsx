@@ -17,6 +17,8 @@ const useHideArtwork = () => {
       toast.success("Artwork hidden successfully!");
 
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["bulkReportStatus"] });
+      queryClient.invalidateQueries({ queryKey: ["artworkReportStatus"] });
       queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
       queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
       queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
