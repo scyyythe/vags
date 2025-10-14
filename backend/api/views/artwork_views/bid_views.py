@@ -327,17 +327,19 @@ class AuctionListViewParticipated(generics.ListAPIView):
             auction.close_auction()
             auction.reload()
 
+        # Find auctions where user has participated (either bid or viewed)
         participated_auctions = []
         all_auctions = Auction.objects(visibility__ne="Deleted")
 
         for auction in all_auctions:
-           
-            participated = any(
+            # Check if user has bid on this auction
+            user_participated = any(
                 (getattr(bid.bidder, 'id', None) and str(bid.bidder.id) == user_id)
                 or (getattr(bid.bidder, 'username', None) == user_id)
                 for bid in auction.bid_history
             )
-            if participated:
+            
+            if user_participated:
                 participated_auctions.append(auction)
 
         return participated_auctions
@@ -468,10 +470,13 @@ class MyBidsAuctionListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        user_id = str(self.request.user.id)
+        user_id = ObjectId(self.request.user.id)
         filter_type = self.request.query_params.get("filter")
 
-        base_qs = Auction.objects(bid_history__bidder=user_id).distinct()
+        base_qs = Auction.objects(
+            bid_history__bidder=user_id,
+            visibility__ne="Deleted"
+        )
 
         if filter_type == "won":
             return base_qs.filter(status="sold", highest_bid__bidder=user_id)
@@ -517,7 +522,7 @@ class FollowedAuctionsView(APIView):
             artwork__in=artwork_ids,
             status=AuctionStatus.ON_GOING.value,
             visibility__ne="Deleted"
-        ).order_by('-created_at')[skip:skip + page_size]
+        ).order_by('-updated_at')[skip:skip + page_size]
         print("Ongoing Auction Count:", auctions.count())
 
         serialized = AuctionSerializer(auctions, many=True)
@@ -623,5 +628,49 @@ class BulkUnhideAuctionsView(APIView):
 
         return Response(
             {"message": f"Successfully unhid {count} auctions.", "count": count},
+            status=status.HTTP_200_OK,
+        )
+
+
+class ReopenAuctionView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, auction_id):
+        try:
+            auction = Auction.objects.get(id=auction_id)
+            user = User.objects.get(id=ObjectId(request.user.id))
+        except Auction.DoesNotExist:
+            return Response({"detail": "Auction not found."}, status=status.HTTP_404_NOT_FOUND)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if user is the owner of the artwork
+        if auction.artwork.artist != user:
+            return Response({"detail": "You can only reopen your own auctions."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Check if auction is closed and still has time remaining
+        now = datetime.now(timezone.utc)
+        if auction.status != AuctionStatus.CLOSED.value:
+            return Response({"detail": "Only closed auctions can be reopened."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Ensure end_time is timezone-aware for comparison
+        end_time = auction.end_time
+        if end_time.tzinfo is None:
+            end_time = end_time.replace(tzinfo=timezone.utc)
+        
+        if now >= end_time:
+            return Response({"detail": "Cannot reopen expired auctions."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Reopen the auction
+        auction.status = AuctionStatus.ON_GOING.value
+        auction.save()
+
+        # Update artwork status back to Active
+        artwork = auction.artwork
+        artwork.art_status = "Active"
+        artwork.save()
+
+        return Response(
+            {"message": "Auction successfully reopened."},
             status=status.HTTP_200_OK,
         )

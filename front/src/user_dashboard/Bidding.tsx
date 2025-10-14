@@ -10,7 +10,7 @@ import { useEffect, useState, useMemo, memo } from "react";
 import useAuctions from "@/hooks/auction/useAuction";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import "react-loading-skeleton/dist/skeleton.css";
-import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
+import BidCardSkeleton from "@/components/skeletons/bidding/BidCardSkeleton";
 import { useSearchParams } from "react-router-dom";
 import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks";
 import useFollowedAuctions from "@/hooks/auction/followed_users/useFollowedBiddings";
@@ -156,7 +156,9 @@ const Bidding = () => {
           <div className="lg:w-[100%] custom-scrollbars pb-4 pl-2 sm:pl-0">
             {isLoading && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <ArtCardSkeleton />
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <BidCardSkeleton key={index} />
+                ))}
               </div>
             )}
             {isError && <p className="text-center text-red-500 py-10">Failed to fetch bidding artworks.</p>}

@@ -10,6 +10,7 @@ import { Artwork } from "@/hooks/artworks/owner/useMyArtworks";
 import { User } from "@/hooks/users/useUserQuery";
 import FeaturedAuctionSkeleton from "@/components/skeletons/bidding/FeaturedAuction";
 import { formatCurrency } from "@/utils/numberFormat";
+import { getArtworkImageUrl } from "@/utils/imageUtils";
 interface ArtSlideshowProps {
   artworks?: Artwork[];
   autoPlay?: boolean;
@@ -74,7 +75,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
           {/* Left - Artwork Image */}
           <div className={cn("overflow-hidden pt-1", isMobile ? "pt-4" : "pl-28")}>
             <img
-              src={artwork.artwork.image_url}
+              src={getArtworkImageUrl(artwork.artwork.image_url)}
               alt={artwork.artwork.title}
               className={cn("object-cover rounded-xl", isMobile ? "w-[350px] h-full" : "w-[350px] h-[350px]")}
               draggable={false}
