@@ -26,6 +26,8 @@ interface ChatHeaderProps {
   onMarkAllAsRead: () => void;
   onMarkAllAsUnread: () => void;
   onSearchChange: (query: string) => void;
+  onSearchFocus: () => void;
+  onSearchBlur: () => void;
 }
 
 export const ChatHeader = ({
@@ -42,6 +44,8 @@ export const ChatHeader = ({
   onMarkAllAsRead,
   onMarkAllAsUnread,
   onSearchChange,
+  onSearchFocus,
+  onSearchBlur,
 }: ChatHeaderProps) => {
   return (
     <div className="p-4 border-b border-gray-200">
@@ -102,13 +106,15 @@ export const ChatHeader = ({
       </div>
 
       {!selectedConversation && (
-        <div className="relative">
+        <div className="relative search-container">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={11} />
           <Input
             placeholder="Search conversations..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 h-9 rounded-full"
+            onFocus={onSearchFocus}
+            onBlur={onSearchBlur}
+            className="pl-10 h-9 rounded-full text-xs"
             style={{ fontSize: "11px" }}
           />
         </div>
