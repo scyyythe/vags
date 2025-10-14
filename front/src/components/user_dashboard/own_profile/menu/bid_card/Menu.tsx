@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Trash2, BarChart3, Hammer, RotateCcw } from "lucide-react";
+import { Trash2, BarChart3, Hammer, RotateCcw, Unlock } from "lucide-react";
 import DeleteConfirmationPopup from "./DeletePopup";
 import CloseBidConfirmationPopup from "./CloseBidPopup";
 import ViewBidsModal from "./ViewBidsModal";
@@ -22,11 +22,13 @@ interface OwnerBidMenuProps {
   onViewBids: () => void;
   onCloseBid: () => void;
   onRestore?: (id: string) => void;
+  onReopen?: (id: string) => void;
   className?: string;
   bids?: Bid[];
   auctionId?: string;
   auctionTitle?: string;
   visibility?: string;
+  canReopen?: boolean;
 }
 
 const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
@@ -34,11 +36,13 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
   onDelete,
   onCloseBid,
   onRestore,
+  onReopen,
   bids = [],
   className,
   auctionId,
   auctionTitle,
   visibility,
+  canReopen = false,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -92,8 +96,32 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
             )}
           </div>
 
-          {/* Close Bidding - Only show if not deleted */}
-          {visibility?.toLowerCase() !== "deleted" && (
+          {/* Reopen Auction - Only show if can be reopened */}
+          {canReopen && onReopen && (
+            <div className="flex items-center relative">
+              <button
+                onClick={() => {
+                  if (onReopen && auctionId) {
+                    onReopen(auctionId);
+                  }
+                }}
+                className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+                aria-label="Reopen Auction"
+                onMouseEnter={() => setHoveredItem("reopen")}
+                onMouseLeave={() => setHoveredItem(null)}
+              >
+                <Unlock size={10} stroke="currentColor" />
+              </button>
+              {hoveredItem === "reopen" && (
+                <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+                  Reopen Auction
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Close Bidding - Only show if not deleted and not closed */}
+          {visibility?.toLowerCase() !== "deleted" && !canReopen && (
             <div className="flex items-center relative">
               <button
                 onClick={() => setShowClosePopup(true)}

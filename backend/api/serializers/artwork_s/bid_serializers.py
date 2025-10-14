@@ -148,7 +148,7 @@ class AuctionSerializer(serializers.Serializer):
                 (getattr(bid.bidder, 'id', None) and str(bid.bidder.id) == user_id)
                 or (getattr(bid.bidder, 'username', None) == username)
                 for bid in instance.bid_history
-            )
+            ) if instance.bid_history else False
 
             joined_by_viewers = username in data['viewers']
 
@@ -156,6 +156,7 @@ class AuctionSerializer(serializers.Serializer):
 
             data['isHighestBidder'] = (
                 instance.highest_bid and
+                instance.highest_bid.bidder and
                 (
                     (getattr(instance.highest_bid.bidder, 'id', None) and str(instance.highest_bid.bidder.id) == user_id)
                     or

@@ -12,7 +12,7 @@ import { useArtworkContext } from "@/context/ArtworkContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLocation } from "react-router-dom";
 import "react-loading-skeleton/dist/skeleton.css";
-import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
+import BidDetailsSkeleton from "@/components/skeletons/bidding/BidDetailsSkeleton";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 import AuctionCountdown from "@/hooks/count/AuctionCountDown";
 
@@ -27,6 +27,7 @@ import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
 import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { useAuctionActions } from "@/hooks/auction/useAuctionActions";
 import { useRestoreAuction } from "@/hooks/auction/useRestoreAuction";
+import { getArtworkImageUrl } from "@/utils/imageUtils";
 
 function formatAmount(amount: number): string {
   if (amount >= 1_000_000_000_000_000_000) {
@@ -236,7 +237,7 @@ const BidDetails = () => {
   };
 
   if (isLoading || !artwork) {
-    return <ArtCardSkeleton />;
+    return <BidDetailsSkeleton />;
   }
 
   if (item) {
@@ -325,7 +326,7 @@ const BidDetails = () => {
                   >
                     <div className="w-[420px] h-[400px] overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.15)] rounded-xl">
                       <img
-                        src={item.artwork.image_url}
+                        src={getArtworkImageUrl(item.artwork.image_url)}
                         alt={item.artwork.title}
                         className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                       />
@@ -639,7 +640,7 @@ const BidDetails = () => {
 
               <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
                 <img
-                  src={item.artwork.image_url}
+                  src={getArtworkImageUrl(item.artwork.image_url)}
                   alt="Expanded artwork"
                   className="max-h-[80vh] max-w-[90vw] object-contain"
                 />
