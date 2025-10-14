@@ -522,10 +522,17 @@ const BidDetails = () => {
                   </div>
 
                   <button
-                    onClick={() => setShowBidPopup(true)}
-                    className="w-full bg-red-800 hover:bg-red-700 text-white text-xs py-[11px] rounded-full mt-3"
+                    onClick={() => {
+                      if (item.status === "on_going") {
+                        setShowBidPopup(true);
+                      }
+                    }}
+                    disabled={item.status !== "on_going"}
+                    className={`w-full text-white text-xs py-[11px] rounded-full mt-3 transition-colors ${
+                      item.status !== "on_going" ? "bg-gray-400 cursor-not-allowed" : "bg-red-800 hover:bg-red-700"
+                    }`}
                   >
-                    Place A Bid
+                    {item.status === "on_going" ? "Place A Bid" : "Auction Closed"}
                   </button>
                 </div>
 
@@ -610,7 +617,7 @@ const BidDetails = () => {
             </div>
           )}
 
-          {showBidPopup && (
+          {showBidPopup && item.status === "on_going" && (
             <BidPopup
               isOpen={showBidPopup}
               onClose={() => setShowBidPopup(false)}
