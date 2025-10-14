@@ -237,29 +237,38 @@ const BidCard: React.FC<BidCardProps> = ({
                   e.stopPropagation();
                   if (hasWon) {
                     navigate(`/bid-winner/${data.id}`);
-                  } else {
+                  } else if (data.status === "on_going") {
                     setShowBidPopup(true);
                   }
                 }}
-                className="bg-red-800 hover:bg-red-700 text-white text-[9px] px-5 py-1.5 rounded-full font-normal transition-colors"
+                disabled={data.status !== "on_going" && !hasWon}
+                className={`text-white text-[9px] px-5 py-1.5 rounded-full font-normal transition-colors ${
+                  data.status !== "on_going" && !hasWon
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : hasWon
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-red-800 hover:bg-red-700"
+                }`}
               >
-                {hasWon ? "Claim" : "Place A Bid"}
+                {hasWon ? "Claim" : data.status === "on_going" ? "Place A Bid" : "Closed"}
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <BidPopup
-        isOpen={showBidPopup}
-        onClose={() => setShowBidPopup(false)}
-        data={data}
-        artworkId={data.artwork.id}
-        artworkTitle={data.artwork.title}
-        username={user?.username || "Unknown"}
-        fullName={`${user?.first_name || "Unknown"} ${user?.last_name || ""}`}
-        start_bid_amount={data.start_bid_amount}
-      />
+      {data.status === "on_going" && (
+        <BidPopup
+          isOpen={showBidPopup}
+          onClose={() => setShowBidPopup(false)}
+          data={data}
+          artworkId={data.artwork.id}
+          artworkTitle={data.artwork.title}
+          username={user?.username || "Unknown"}
+          fullName={`${user?.first_name || "Unknown"} ${user?.last_name || ""}`}
+          start_bid_amount={data.start_bid_amount}
+        />
+      )}
     </>
   );
 };
