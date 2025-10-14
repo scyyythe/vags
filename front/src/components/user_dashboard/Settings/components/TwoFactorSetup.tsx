@@ -219,8 +219,8 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
     <div className="space-y-6">
       <div className="text-center">
         <Shield className="mx-auto h-10 w-10 text-blue-600 mb-4" />
-        <h3 className="text-base font-semibold mb-2">{chooseMethodLabel}</h3>
-        <p className="text-sm text-gray-600">Choose how you'd like to receive verification codes</p>
+        <h3 className="text-sm font-semibold mb-2">{chooseMethodLabel}</h3>
+        <p className="text-xs text-gray-600">Choose how you'd like to receive verification codes</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -266,15 +266,15 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
           <TabsContent value="totp" className="space-y-4">
             <div className="border rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <h4 className="font-medium text-sm">{authenticatorAppLabel}</h4>
-                <Badge variant="secondary" className="text-xs px-2 py-1">
+                <h4 className="font-medium text-xs">{authenticatorAppLabel}</h4>
+                <Badge variant="secondary" className="text-[10px] px-2 py-1">
                   {recommendedLabel}
                 </Badge>
               </div>
-              <p className="text-sm text-gray-600 mb-4">{authenticatorAppDesc}</p>
-              <Button onClick={() => handleMethodSelect("totp")} className="w-full text-xs">
+              <p className="text-[11px] text-gray-600 mb-4">{authenticatorAppDesc}</p>
+              <button onClick={() => handleMethodSelect("totp")} className="w-full rounded-full bg-black text-[11px] text-white px-4 py-2">
                 {scanQRCodeLabel}
-              </Button>
+              </button>
             </div>
           </TabsContent>
         )}
@@ -282,7 +282,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
         {getAvailableMethods().includes("sms") && (
           <TabsContent value="sms" className="space-y-4">
             <div className="border rounded-lg p-4">
-              <h4 className="font-medium text-sm mb-2">{smsLabel}</h4>
+              <h4 className="font-medium text-xs mb-2">{smsLabel}</h4>
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
                 <div className="flex items-start gap-2">
@@ -296,8 +296,8 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-yellow-800">SMS temporarily unavailable</p>
-                    <p className="text-xs text-yellow-700 mt-1">
+                    <p className="text-[11px] font-medium text-yellow-800">SMS temporarily unavailable</p>
+                    <p className="text-[10px] text-yellow-700 mt-1">
                       SMS verification is not available at the moment. Please consider using email two-factor
                       authentication instead.
                     </p>
@@ -306,22 +306,23 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
               </div>
 
               <div className="space-y-2 opacity-50">
-                <Label htmlFor="phone" className="text-sm">
+                <Label htmlFor="phone" className="text-[11px]">
                   {phoneNumberLabel}
                 </Label>
                 <Input
                   id="phone"
                   type="tel"
                   placeholder={enterPhoneNumberLabel}
-                  className="w-full text-sm"
+                  className="w-full"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   disabled
+                  style={{ fontSize: "10px" }}
                 />
               </div>
-              <Button onClick={() => handleMethodSelect("sms")} className="w-full mt-4 text-sm" disabled>
+              <button onClick={() => handleMethodSelect("sms")} className="w-full rounded-full bg-black text-[11px] text-white px-4 py-2 mt-4" disabled>
                 {continueLabel}
-              </Button>
+              </button>
             </div>
           </TabsContent>
         )}
@@ -329,10 +330,10 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
         {getAvailableMethods().includes("email") && (
           <TabsContent value="email" className="space-y-4">
             <div className="border rounded-lg p-4">
-              <h4 className="font-medium text-sm mb-2">{emailLabel}</h4>
-              <p className="text-sm text-gray-600 mb-4">{emailDesc}</p>
+              <h4 className="font-medium text-xs mb-2">{emailLabel}</h4>
+              <p className="text-[11px] text-gray-600 mb-4">{emailDesc}</p>
               <div className="space-y-2">
-                <Label htmlFor="backup-email" className="text-sm">
+                <Label htmlFor="backup-email" className="text-xs">
                   {backupEmailLabel}
                 </Label>
                 <Input
@@ -342,11 +343,12 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
                   className="w-full text-sm"
                   value={backupEmail}
                   onChange={(e) => setBackupEmail(e.target.value)}
+                  style={{ fontSize: "10px" }}
                 />
               </div>
-              <Button onClick={() => handleMethodSelect("email")} className="w-full mt-4 text-xs">
+              <button onClick={() => handleMethodSelect("email")} className="w-full rounded-full bg-black text-[11px] text-white px-4 py-2 mt-4">
                 {continueLabel}
-              </Button>
+              </button>
             </div>
           </TabsContent>
         )}
@@ -355,20 +357,20 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
   );
 
   const renderVerification = () => (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {activeTab === "totp" && setupData.qr_code && (
         <div className="text-center">
-          <h3 className="text-base font-semibold mb-4">{scanQRCodeLabel}</h3>
-          <div className="bg-white p-4 rounded-lg border inline-block">
+          <h3 className="text-sm font-semibold mb-4">{scanQRCodeLabel}</h3>
+          <div className="bg-white p-1.5 rounded-lg border inline-block">
             <img src={`data:image/png;base64,${setupData.qr_code}`} alt="QR Code" className="w-40 h-40" />
           </div>
-          <p className="text-sm text-gray-600 mt-4">Scan this QR code with your authenticator app</p>
+          <p className="text-[11px] text-gray-600 mt-4">Scan this QR code with your authenticator app</p>
 
           {setupData.secret && (
             <div className="mt-4">
-              <p className="text-sm text-gray-600 mb-2">{enterCodeManuallyLabel}</p>
+              <p className="text-[11px] text-gray-600 mb-2 text-start">{enterCodeManuallyLabel}</p>
               <div className="flex items-center gap-2">
-                <Input value={setupData.secret} readOnly className="font-mono text-sm" />
+                <Input value={setupData.secret} readOnly className="font-mono" style={{ fontSize: "11px" }}/>
                 <Button variant="outline" size="sm" onClick={() => copyToClipboard(setupData.secret!)}>
                   <Copy className="h-4 w-4" />
                 </Button>
@@ -379,7 +381,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
       )}
 
       <div className="space-y-4">
-        <Label htmlFor="verification-code" className="text-sm">
+        <Label htmlFor="verification-code" className="text-xs">
           {verificationCodeLabel}
         </Label>
         <Input
@@ -387,16 +389,17 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
           value={verificationCode}
           onChange={(e) => setVerificationCode(e.target.value)}
           placeholder="Enter 6-digit code"
-          className="w-full text-center text-base tracking-widest"
+          className="w-full text-center tracking-widest"
           maxLength={6}
+          style={{ fontSize: "11px" }}
         />
-        <Button
+        <button
           onClick={handleVerification}
           disabled={!verificationCode || verificationCode.length !== 6 || isLoading}
-          className="w-full text-sm"
+          className="w-full rounded-full bg-black text-xs text-white px-4 py-2"
         >
           {isLoading ? "Verifying..." : verifyLabel}
-        </Button>
+        </button>
       </div>
     </div>
   );
@@ -404,14 +407,14 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
   const renderBackupCodes = () => (
     <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-base font-semibold mb-2">{backupCodesLabel}</h3>
-        <p className="text-sm text-gray-600">
+        <h3 className="text-xs font-semibold mb-2">{backupCodesLabel}</h3>
+        <p className="text-[11px] text-gray-600">
           Save these backup codes in a safe place. You can use them to access your account if you lose your phone.
         </p>
       </div>
 
       <Alert>
-        <AlertDescription className="text-sm">
+        <AlertDescription className="text-[11px]">
           Each backup code can only be used once. Keep them safe and don't share them with anyone.
         </AlertDescription>
       </Alert>
@@ -427,17 +430,17 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
       </div>
 
       <div className="flex gap-2">
-        <Button variant="outline" onClick={downloadBackupCodes} className="flex-1 text-sm">
+        <Button variant="outline" onClick={downloadBackupCodes} className="flex-1 text-xs">
           <Download className="h-4 w-4 mr-2" />
           {downloadLabel}
         </Button>
-        <Button variant="outline" onClick={() => copyToClipboard(backupCodes.join("\n"))} className="flex-1 text-sm">
+        <Button variant="outline" onClick={() => copyToClipboard(backupCodes.join("\n"))} className="flex-1 text-xs">
           <Copy className="h-4 w-4 mr-2" />
           {copyLabel}
         </Button>
       </div>
 
-      <Button onClick={handleBackupCodesComplete} className="w-full text-sm">
+      <Button onClick={handleBackupCodesComplete} className="w-full text-xs">
         {continueLabel}
       </Button>
     </div>
@@ -445,21 +448,18 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-md"
+      onInteractOutside={(e) => e.preventDefault()}
+      onEscapeKeyDown={(e) => e.preventDefault()} 
+      >
         <DialogHeader>
-          <DialogTitle className="text-base">{setup2FALabel}</DialogTitle>
+          <DialogTitle className="text-sm">{setup2FALabel}</DialogTitle>
         </DialogHeader>
 
-        <div className="py-4">
+        <div className="py-2">
           {step === "method" && renderMethodSelection()}
           {step === "verify" && renderVerification()}
           {step === "backup" && renderBackupCodes()}
-        </div>
-
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={handleClose} className="text-sm">
-            {cancelLabel}
-          </Button>
         </div>
       </DialogContent>
     </Dialog>
