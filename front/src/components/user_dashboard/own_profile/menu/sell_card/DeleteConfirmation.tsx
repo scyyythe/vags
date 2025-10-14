@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 
 interface DeleteConfirmationProps {
   isOpen: boolean;
@@ -13,7 +14,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  return (
+   return ReactDOM.createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-hidden"
     onClick={(e) => e.stopPropagation()}>
       <div className="bg-white rounded-lg py-7 px-8 shadow-xl max-w-sm w-full text-center relative"
@@ -35,7 +36,8 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
