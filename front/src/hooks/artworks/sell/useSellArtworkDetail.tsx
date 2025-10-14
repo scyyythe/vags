@@ -19,6 +19,7 @@ export interface ArtworkDetail {
   artwork_style?: string;
   year_created?: string;
   visibility: string;
+  art_status?: string;
   created_at: string;
   updated_at: string;
   artist: Artist;

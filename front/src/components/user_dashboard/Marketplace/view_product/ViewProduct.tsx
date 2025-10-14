@@ -130,7 +130,7 @@ const ProductViewingContent = () => {
     return <ProductViewingSkeleton />;
   }
 
-  const productStatus = (product as any)?.status || "active";
+  const productStatus = product?.art_status || "active";
 
   if (error || !product) {
     return <div>Product not found.</div>;
@@ -276,6 +276,15 @@ const ProductViewingContent = () => {
                     alt={product.title}
                     className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                   />
+
+                  {/* SOLD OUT Overlay */}
+                  {productStatus === "Sold" && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-xl">
+                      <div className="bg-red-800 text-white px-6 py-3 rounded-full">
+                        <span className="text-lg font-bold">SOLD OUT</span>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Chevron Buttons (on hover of artwork only) */}
                   {product.image_urls.length > 1 && (
@@ -558,13 +567,13 @@ const ProductViewingContent = () => {
                   <div className="flex flex-col gap-1">
                     <div
                       className={`flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs ${
-                        productStatus === "sold" ? "opacity-50 cursor-not-allowed" : ""
+                        productStatus === "Sold" ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                     >
                       <button
                         onClick={() => handleQuantityChange(-1)}
                         className="w-8 h-8 pl-1.5 flex items-center justify-center text-black hover:bg-gray-100"
-                        disabled={productStatus === "sold"}
+                        disabled={productStatus === "Sold"}
                       >
                         −
                       </button>
@@ -578,7 +587,7 @@ const ProductViewingContent = () => {
                       <button
                         onClick={() => handleQuantityChange(1)}
                         className="w-8 h-8 pr-1.5 flex items-center justify-center text-black hover:bg-gray-100"
-                        disabled={productStatus === "sold"}
+                        disabled={productStatus === "Sold"}
                       >
                         +
                       </button>
@@ -592,23 +601,23 @@ const ProductViewingContent = () => {
                 {/* Disable Buy Now button if sold */}
                 <button
                   className={`w-full py-2 text-xs font-medium rounded-full transition-colors duration-200 ${
-                    productStatus === "sold"
+                    productStatus === "Sold"
                       ? "bg-gray-400 text-white cursor-not-allowed"
                       : "bg-red-800 hover:bg-red-700 text-white"
                   }`}
                   onClick={() => {
-                    if (productStatus !== "sold") setIsModalOpen(true);
+                    if (productStatus !== "Sold") setIsModalOpen(true);
                   }}
-                  disabled={productStatus === "sold"}
+                  disabled={productStatus === "Sold"}
                 >
                   <i className="bx bx-cart text-[15px] relative top-0.5 mr-3"></i>
-                  {productStatus === "sold" ? "Sold Out" : "Buy Now"}
+                  {productStatus === "Sold" ? "Sold Out" : "Buy Now"}
                 </button>
 
                 <button
                   onClick={handleWishlistToggle}
                   className="py-1.5 px-2.5 border border-gray-300 rounded-full"
-                  disabled={productStatus === "sold"}
+                  disabled={productStatus === "Sold"}
                 >
                   <img
                     src={
@@ -650,7 +659,7 @@ const ProductViewingContent = () => {
                 category={art.category}
                 onCardClick={() => navigate(`/viewproduct/${art.id}`)}
                 isMarketplace={true}
-                status="active"
+                status={art.art_status || "active"}
               />
             ))}
           </div>
