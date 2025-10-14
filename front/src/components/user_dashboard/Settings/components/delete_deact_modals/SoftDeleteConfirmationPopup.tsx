@@ -86,13 +86,13 @@ const SoftDeleteConfirmationPopup: React.FC<SoftDeleteConfirmationPopupProps> = 
         <div className="flex justify-center gap-4">
           <button
             onClick={onCancel}
-            className="px-6 py-2 text-[10px] text-gray-600 hover:text-gray-800 border border-gray-300 hover:border-gray-400 rounded-md transition-colors"
+            className="w-full text-[10px] px-8 py-1 text-gray-600 hover:text-black border border-gray-500 hover:border-black rounded-full transition-colors duration-200"
           >
             {cancelBtn}
           </button>
           <button
             onClick={onConfirm}
-            className="px-6 py-2 bg-red-600 text-white text-[10px] rounded-md hover:bg-red-700 transition-colors"
+            className="w-full bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1 rounded-full"
           >
             {confirmBtn}
           </button>

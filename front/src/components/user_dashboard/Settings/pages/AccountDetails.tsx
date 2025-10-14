@@ -229,7 +229,7 @@ const AccountDetails = () => {
             </div>
             <button
               onClick={() => setShowDeactivatePopup(true)}
-              className="bg-gray-200 font-medium text-[10px] hover:bg-gray-300 text-gray-800 rounded-sm w-32 h-9"
+              className="bg-gray-200 font-medium text-[10px] hover:bg-gray-300 text-gray-800 rounded-full w-32 h-8"
             >
               {deactivateBtn}
             </button>
@@ -242,7 +242,7 @@ const AccountDetails = () => {
               <p className="text-gray-600 mb-4 text-[11px]">{deleteDesc}</p>
               <button
                 onClick={() => setShowSoftDeletePopup(true)}
-                className="bg-red-200 font-medium text-[10px] hover:bg-red-300 text-red-800 rounded-sm w-32 h-9"
+                className="bg-red-200 font-medium text-[10px] hover:bg-red-300 text-red-800 rounded-full w-32 h-8"
               >
                 {deleteBtn}
               </button>
