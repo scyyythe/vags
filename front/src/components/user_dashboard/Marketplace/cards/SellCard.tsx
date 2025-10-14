@@ -326,10 +326,8 @@ const SellCard = ({
           >
             Buy Now
           </button>
-        ) : null}
-
-        {/* ) : status === "sold" && onRelist ? (
-           <button
+        ) : status === "sold" && onRelist ? (
+          <button
             onClick={(e) => {
               e.stopPropagation();
               onRelist(id);
@@ -348,7 +346,7 @@ const SellCard = ({
           >
             Relist
           </button>
-        ) : null} */}
+        ) : null}
       </div>
 
       {isModalOpen &&
