@@ -12,7 +12,7 @@ import { useArtworkContext } from "@/context/ArtworkContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLocation } from "react-router-dom";
 import "react-loading-skeleton/dist/skeleton.css";
-import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
+import BidDetailsSkeleton from "@/components/skeletons/bidding/BidDetailsSkeleton";
 import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetails";
 import AuctionCountdown from "@/hooks/count/AuctionCountDown";
 
@@ -237,7 +237,7 @@ const BidDetails = () => {
   };
 
   if (isLoading || !artwork) {
-    return <ArtCardSkeleton />;
+    return <BidDetailsSkeleton />;
   }
 
   if (item) {
