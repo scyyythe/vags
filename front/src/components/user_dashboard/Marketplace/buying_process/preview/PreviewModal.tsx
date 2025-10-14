@@ -164,9 +164,6 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
               <div className="text-right">
                 {artwork.edition === "Open Edition" && artwork.quantity && artwork.quantity > 1 ? (
                   <>
-                    <p className="text-sm text-gray-500 line-through">
-                      ₱{artwork.price && artwork.price >= 1000 ? `${artwork.price / 1000}k` : artwork.price || 0} each
-                    </p>
                     <p className="text-xl font-bold text-red-800">
                       ₱
                       {artwork.price * artwork.quantity >= 1000
