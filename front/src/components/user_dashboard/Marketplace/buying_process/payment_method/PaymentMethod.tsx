@@ -32,6 +32,8 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
   });
 
   const navigate = useNavigate();
+
+  // Identify selected payment details
   const selectedPaymentMethod = {
     type:
       formData.paymentMethod === "paypal"
@@ -61,19 +63,26 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
     navigate("/reviewpurchase", { state: { selectedPaymentMethod } });
   };
 
+  // Determine if an account is set up (used for enabling/disabling the button)
+  const hasAccountSetup = () => {
+    switch (formData.paymentMethod) {
+      case "paypal":
+        return !!formData.paypalEmail;
+      case "gcash":
+        return !!formData.gcashNumber;
+      case "stripe":
+        return !!formData.stripeEmail;
+      case "credit-card":
+        return !!formData.cardNumber;
+      default:
+        return false;
+    }
+  };
+
   const renderPaymentForm = () => {
     switch (formData.paymentMethod) {
       case "paypal":
-        return (
-          <PayPalForm
-            email={formData.paypalEmail}
-            password={formData.paypalPassword}
-            rememberMe={formData.rememberPayPal}
-            onEmailChange={(value) => handleInputChange("paypalEmail", value)}
-            onPasswordChange={(value) => handleInputChange("paypalPassword", value)}
-            onRememberMeChange={(value) => handleInputChange("rememberPayPal", value)}
-          />
-        );
+        return <PayPalForm email={formData.paypalEmail} />;
       case "gcash":
         return (
           <GCashForm
@@ -82,24 +91,18 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
           />
         );
       case "stripe":
-        return (
-          <StripeForm email={formData.stripeEmail} onEmailChange={(value) => handleInputChange("stripeEmail", value)} />
-        );
+        return <StripeForm email={formData.stripeEmail} />;
       case "credit-card":
         return (
           <CreditCardForm
             cardNumber={formData.cardNumber}
             expiryDate={formData.expiryDate}
-            cvc={formData.cvc}
             nameOnCard={formData.nameOnCard}
             country={formData.country}
             addressLine1={formData.addressLine1}
-            addressLine2={formData.addressLine2}
             city={formData.city}
             state={formData.state}
             postalCode={formData.postalCode}
-            saveCard={formData.saveCard}
-            onFieldChange={handleInputChange}
           />
         );
       default:
@@ -111,6 +114,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
     <div className="min-h-screen overflow-y-auto bg-white">
       <Header />
       <div className="container mx-auto px-4 pt-20 max-w-6xl">
+        {/* Back Button */}
         <div className="mb-8">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
@@ -138,8 +142,12 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
             </p>
             <button
               type="submit"
-              disabled={formData.paymentMethod !== "gcash"}
-              className="bg-red-800 text-white px-10 py-2.5 rounded-full text-[11px] font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              disabled={!hasAccountSetup()}
+              className={`px-10 py-2.5 rounded-full text-[11px] font-medium transition-colors ${
+                hasAccountSetup()
+                  ? "bg-red-800 text-white hover:bg-red-700"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
             >
               Save and Continue
             </button>
