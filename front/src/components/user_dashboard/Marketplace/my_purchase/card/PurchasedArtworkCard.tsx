@@ -14,6 +14,7 @@ interface PurchasedArtworkCardProps {
   orderDate: string;
   completedDate?: string;
   expectedDelivery?: string;
+  isHighlighted?: boolean;
   onViewDetails: () => void;
   onReview?: () => void;
   onViewReview?: () => void;
@@ -36,6 +37,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
   orderDate,
   completedDate,
   expectedDelivery,
+  isHighlighted = false,
   onViewDetails,
   onReview,
   onViewReview,
@@ -218,13 +220,20 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
 
   return (
     <div
-      className="bg-card border border-border rounded-lg py-4 px-6 group transition-all duration-300 cursor-pointer hover:shadow-lg"
+      className={`bg-card border rounded-lg py-4 px-6 group transition-all duration-300 cursor-pointer hover:shadow-lg ${
+        isHighlighted ? "border-red-400 border-2 bg-red-50 shadow-lg ring-2 ring-red-200" : "border-border"
+      }`}
       onClick={onViewDetails}
     >
       <div className="flex gap-4">
         {/* Image */}
         <div className="relative">
           <img src={artworkImage} alt={title} className="w-20 h-20 rounded-md object-cover" />
+          {isHighlighted && (
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-400 rounded-full border-2 border-white flex items-center justify-center">
+              <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+            </div>
+          )}
         </div>
 
         {/* Info */}
