@@ -90,9 +90,38 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
   const backupEmailLabel = useAutoTranslation("Backup Email", selectedLanguage);
   const enterPhoneNumberLabel = useAutoTranslation("Enter your phone number", selectedLanguage);
   const enterBackupEmailLabel = useAutoTranslation("Enter backup email address", selectedLanguage);
-
+  const pleaseEnterPhoneText = useAutoTranslation("Please enter your phone number", selectedLanguage);
+  const pleaseEnterBackupEmailText = useAutoTranslation("Please enter your backup email", selectedLanguage);
+  const pleaseEnterVerificationText = useAutoTranslation("Please enter verification code", selectedLanguage);
+  const failedInitializeText = useAutoTranslation("Failed to initialize 2FA setup", selectedLanguage);
+  const smsSetupInitiatedText = useAutoTranslation("SMS setup initiated. Enter any 6-digit code to proceed (testing mode)", selectedLanguage);
+  const emailSetupInitiatedText = useAutoTranslation("Email verification code sent to your backup email address", selectedLanguage);
+  const setupInitiatedText = useAutoTranslation("Setup initiated. Please verify your contact information.", selectedLanguage);
+  const failedVerifyText = useAutoTranslation("Failed to verify setup", selectedLanguage);
+  const successEnabledText = useAutoTranslation("Two-factor authentication enabled successfully!", selectedLanguage);
+  const copiedToClipboardText = useAutoTranslation("Copied to clipboard", selectedLanguage);
+  const scanQRCodeDesc = useAutoTranslation("Scan this QR code with your authenticator app", selectedLanguage);
+  const enter6DigitPlaceholder = useAutoTranslation("Enter 6-digit code", selectedLanguage);
+  const verifyingText = useAutoTranslation("Verifying...", selectedLanguage);
+  const backupCodesInstruction = useAutoTranslation(
+    "Save these backup codes in a safe place. You can use them to access your account if you lose your phone.",
+    selectedLanguage
+  );
+  const backupCodesWarning = useAutoTranslation(
+    "Each backup code can only be used once. Keep them safe and don't share them with anyone.",
+    selectedLanguage
+  );
   const authenticatorAppDesc = useAutoTranslation(
     "Use an authenticator app like Google Authenticator or Authy to generate time-based codes",
+    selectedLanguage
+  );
+  const chooseVerificationText = useAutoTranslation(
+    "Choose how you'd like to receive verification codes",
+    selectedLanguage
+  );
+  const smsUnavailableTitle = useAutoTranslation("SMS temporarily unavailable", selectedLanguage);
+  const smsUnavailableDesc = useAutoTranslation(
+    "SMS verification is not available at the moment. Please consider using email two-factor authentication instead.",
     selectedLanguage
   );
   const smsDesc = useAutoTranslation("SMS verification (testing mode - enter any 6-digit code)", selectedLanguage);
@@ -105,14 +134,14 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
 
       if (method === "sms") {
         if (!phoneNumber) {
-          toast.error("Please enter your phone number");
+          toast.error(pleaseEnterPhoneText);
           setIsLoading(false);
           return;
         }
         requestData.phone_number = phoneNumber;
       } else if (method === "email") {
         if (!backupEmail) {
-          toast.error("Please enter your backup email");
+          toast.error(pleaseEnterBackupEmailText);
           setIsLoading(false);
           return;
         }
@@ -126,16 +155,16 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
         setStep("verify");
       } else {
         if (method === "sms") {
-          toast.success("SMS setup initiated. Enter any 6-digit code to proceed (testing mode)");
+          toast.success(smsSetupInitiatedText);
         } else if (method === "email") {
-          toast.success("Email verification code sent to your backup email address");
+          toast.success(emailSetupInitiatedText);
         } else {
-          toast.success("Setup initiated. Please verify your contact information.");
+          toast.success(setupInitiatedText);
         }
         setStep("verify");
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "Failed to initialize 2FA setup");
+      toast.error(error.response?.data?.error || failedInitializeText);
     } finally {
       setIsLoading(false);
     }
@@ -143,7 +172,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
 
   const handleVerification = async () => {
     if (!verificationCode) {
-      toast.error("Please enter verification code");
+      toast.error(pleaseEnterVerificationText);
       return;
     }
 
@@ -158,21 +187,21 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
         setBackupCodes(response.data.backup_codes);
         setStep("backup");
       } else {
-        toast.success("Two-factor authentication enabled successfully!");
+        toast.success(successEnabledText);
         // Invalidate 2FA status query to refresh data
         queryClient.invalidateQueries({ queryKey: ["twoFactorStatus"] });
         onSuccess();
         onClose();
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "Failed to verify setup");
+      toast.error(error.response?.data?.error || failedVerifyText);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleBackupCodesComplete = () => {
-    toast.success("Two-factor authentication enabled successfully!");
+    toast.success(successEnabledText);
     // Invalidate 2FA status query to refresh data
     queryClient.invalidateQueries({ queryKey: ["twoFactorStatus"] });
     onSuccess();
@@ -197,7 +226,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Copied to clipboard");
+    toast.success(copiedToClipboardText);
   };
 
   const downloadBackupCodes = () => {
@@ -220,7 +249,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
       <div className="text-center">
         <Shield className="mx-auto h-10 w-10 text-blue-600 mb-4" />
         <h3 className="text-sm font-semibold mb-2">{chooseMethodLabel}</h3>
-        <p className="text-xs text-gray-600">Choose how you'd like to receive verification codes</p>
+        <p className="text-xs text-gray-600">{chooseVerificationText}</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -296,11 +325,8 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[11px] font-medium text-yellow-800">SMS temporarily unavailable</p>
-                    <p className="text-[10px] text-yellow-700 mt-1">
-                      SMS verification is not available at the moment. Please consider using email two-factor
-                      authentication instead.
-                    </p>
+                    <p className="text-[11px] font-medium text-yellow-800">{smsUnavailableTitle}</p>
+                    <p className="text-[10px] text-yellow-700 mt-1">{smsUnavailableDesc}</p>
                   </div>
                 </div>
               </div>
@@ -364,7 +390,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
           <div className="bg-white p-1.5 rounded-lg border inline-block">
             <img src={`data:image/png;base64,${setupData.qr_code}`} alt="QR Code" className="w-40 h-40" />
           </div>
-          <p className="text-[11px] text-gray-600 mt-4">Scan this QR code with your authenticator app</p>
+          <p className="text-[11px] text-gray-600 mt-4">{scanQRCodeDesc}</p>
 
           {setupData.secret && (
             <div className="mt-4">
@@ -388,7 +414,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
           id="verification-code"
           value={verificationCode}
           onChange={(e) => setVerificationCode(e.target.value)}
-          placeholder="Enter 6-digit code"
+          placeholder={enter6DigitPlaceholder}
           className="w-full text-center tracking-widest"
           maxLength={6}
           style={{ fontSize: "11px" }}
@@ -398,7 +424,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
           disabled={!verificationCode || verificationCode.length !== 6 || isLoading}
           className="w-full rounded-full bg-black text-xs text-white px-4 py-2"
         >
-          {isLoading ? "Verifying..." : verifyLabel}
+          {isLoading ? verifyingText : verifyLabel}
         </button>
       </div>
     </div>
@@ -409,13 +435,13 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
       <div className="text-center">
         <h3 className="text-xs font-semibold mb-2">{backupCodesLabel}</h3>
         <p className="text-[11px] text-gray-600">
-          Save these backup codes in a safe place. You can use them to access your account if you lose your phone.
+          {backupCodesInstruction}
         </p>
       </div>
 
       <Alert>
         <AlertDescription className="text-[11px]">
-          Each backup code can only be used once. Keep them safe and don't share them with anyone.
+          {backupCodesWarning}
         </AlertDescription>
       </Alert>
 
