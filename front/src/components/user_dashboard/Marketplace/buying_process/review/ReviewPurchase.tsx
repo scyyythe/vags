@@ -113,11 +113,20 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
 
       await purchaseMutation.mutateAsync(payload);
 
-      // Remove the frontend status override - let the backend handle status correctly
-      // The backend will set status to "onSale" for Open Edition and "Sold" for others
-
       toast.success("Your purchase has been successfully completed!");
-      navigate("/marketplace");
+
+      const userId = localStorage.getItem("user_id");
+      if (userId) {
+        navigate(`/userprofile/${userId}`, {
+          state: {
+            mainTab: "myPurchase",
+            subTab: "paid",
+            activeSubGroup: "listings",
+          },
+        });
+      } else {
+        navigate("/marketplace");
+      }
     } catch (error: any) {
       console.error("Purchase Error Full:", error?.response?.data || error);
       const errorMessage = JSON.stringify(error?.response?.data) || error?.message || "Failed to complete purchase.";
@@ -166,7 +175,20 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
     defaultPayPalEmail: defaultArtwork?.default_paypal_email || "",
     onSuccess: (details) => {
       toast.success("Payment completed successfully!");
-      navigate("/marketplace");
+
+      // Navigate to user profile with MY PURCHASE tab and Paid subtab selected
+      const userId = localStorage.getItem("user_id");
+      if (userId) {
+        navigate(`/userprofile/${userId}`, {
+          state: {
+            mainTab: "myPurchase",
+            subTab: "paid",
+            activeSubGroup: "listings",
+          },
+        });
+      } else {
+        navigate("/marketplace");
+      }
     },
     onError: (err) => {
       toast.error("Payment failed, try again.");

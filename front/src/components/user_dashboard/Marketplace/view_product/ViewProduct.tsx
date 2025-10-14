@@ -482,7 +482,7 @@ const ProductViewingContent = () => {
                   About this Artwork
                 </button>
 
-                {product.edition !== "Original (1 of 1)" && (
+                {product.edition !== "Original (1 of 1)" && product.edition !== "Limited Edition" && (
                   <button
                     className={`px-4 py-2 ml-4 ${
                       activeTab === "review" ? "border-b-2 border-black text-black" : "text-gray-400"
@@ -511,51 +511,53 @@ const ProductViewingContent = () => {
                 )}
 
                 {/* Reviews Content */}
-                {activeTab === "review" && product.edition !== "Original (1 of 1)" && (
-                  <div className="relative flex flex-col md:h-[110px] sm:flex-row gap-4 pr-4">
-                    {/* View All Reviews Button - Top Right Corner */}
-                    <div className="absolute right-0 top-0">
-                      <button
-                        onClick={() => setIsReviewModalOpen(true)}
-                        className="text-[9px] text-gray-600 hover:underline flex items-center"
-                      >
-                        View all reviews
-                        <ChevronRight size={10} className="ml-1" />
-                      </button>
-                    </div>
-
-                    {/* Rating Summary */}
-                    <div className="min-w-[120px] mt-6 sm:mt-6">
-                      <div className="flex items-end space-x-1 mb-1">
-                        <span className="text-[24px] font-semibold">{averageRating}</span>
-                        <span className="text-[10px] text-gray-500 mb-1">out of 5</span>
+                {activeTab === "review" &&
+                  product.edition !== "Original (1 of 1)" &&
+                  product.edition !== "Limited Edition" && (
+                    <div className="relative flex flex-col md:h-[110px] sm:flex-row gap-4 pr-4">
+                      {/* View All Reviews Button - Top Right Corner */}
+                      <div className="absolute right-0 top-0">
+                        <button
+                          onClick={() => setIsReviewModalOpen(true)}
+                          className="text-[9px] text-gray-600 hover:underline flex items-center"
+                        >
+                          View all reviews
+                          <ChevronRight size={10} className="ml-1" />
+                        </button>
                       </div>
-                      <div className="flex items-center space-x-0.5 mb-1">
-                        {renderStars(Math.round(Number(averageRating)))}
-                      </div>
-                      <p className="text-[10px] text-gray-500">({reviews.length} reviews)</p>
-                    </div>
 
-                    {/* Rating Breakdown */}
-                    <div className="flex-1 pt-1 sm:mt-6">
-                      <div className="space-y-0.5 text-[9px]">
-                        {[5, 4, 3, 2, 1].map((star) => {
-                          const count = reviewCounts[star];
-                          const percent = reviews.length ? (count / reviews.length) * 100 : 0;
-                          return (
-                            <div key={star} className="flex items-center space-x-2">
-                              <span className="w-2">{star}</span>
-                              <div className="flex-1 h-[6px] bg-gray-200 rounded-full overflow-hidden">
-                                <div className="bg-yellow-400 h-full" style={{ width: `${percent}%` }} />
+                      {/* Rating Summary */}
+                      <div className="min-w-[120px] mt-6 sm:mt-6">
+                        <div className="flex items-end space-x-1 mb-1">
+                          <span className="text-[24px] font-semibold">{averageRating}</span>
+                          <span className="text-[10px] text-gray-500 mb-1">out of 5</span>
+                        </div>
+                        <div className="flex items-center space-x-0.5 mb-1">
+                          {renderStars(Math.round(Number(averageRating)))}
+                        </div>
+                        <p className="text-[10px] text-gray-500">({reviews.length} reviews)</p>
+                      </div>
+
+                      {/* Rating Breakdown */}
+                      <div className="flex-1 pt-1 sm:mt-6">
+                        <div className="space-y-0.5 text-[9px]">
+                          {[5, 4, 3, 2, 1].map((star) => {
+                            const count = reviewCounts[star];
+                            const percent = reviews.length ? (count / reviews.length) * 100 : 0;
+                            return (
+                              <div key={star} className="flex items-center space-x-2">
+                                <span className="w-2">{star}</span>
+                                <div className="flex-1 h-[6px] bg-gray-200 rounded-full overflow-hidden">
+                                  <div className="bg-yellow-400 h-full" style={{ width: `${percent}%` }} />
+                                </div>
+                                <span className="w-6 text-right">{count}</span>
                               </div>
-                              <span className="w-6 text-right">{count}</span>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             </div>
 
