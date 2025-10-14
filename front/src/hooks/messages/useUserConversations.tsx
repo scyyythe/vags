@@ -29,31 +29,11 @@ export const useUserConversations = (userId: string) => {
         const deletedBy = data.deletedBy || [];
         const isDeletedByUser = deletedBy.includes(userId);
 
-        // If user deleted the conversation, check if there are new messages since deletion
+        // If user deleted the conversation, NEVER show it in their chat list
+        // Even if the other person sends new messages, the conversation stays hidden
         if (isDeletedByUser) {
-          // Get the deletion timestamp for this user
-          const deletedAt = data.deletedAt || {};
-          const userDeletedAt = deletedAt[userId]?.toDate?.() ?? null;
-
-          // If user deleted the conversation, only show it if there are messages AFTER deletion
-          if (userDeletedAt) {
-            const lastMessageTime = data.lastMessageTime?.toDate?.() ?? new Date();
-
-            // Only show the conversation if the last message was sent AFTER the user deleted it
-            if (lastMessageTime <= userDeletedAt) {
-              continue; // Skip conversations with no new messages since deletion
-            }
-
-            // Also check if the last message was sent by the current user
-            // If so, don't show it as a "revived" conversation
-            const lastMessageSenderId = data.lastMessageSenderId;
-            if (lastMessageSenderId === userId) {
-              continue; // Skip if the last message was sent by the current user
-            }
-          } else {
-            // If no deletion timestamp, skip the conversation (shouldn't happen but safety check)
-            continue;
-          }
+          console.log("Skipping conversation - user deleted it, keeping it hidden permanently");
+          continue; // Always skip conversations deleted by the current user
         }
 
         const participantIds: string[] = data.participants.filter((id: string) => id !== userId);

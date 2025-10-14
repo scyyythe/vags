@@ -1,5 +1,7 @@
 import React from "react";
 import { Package, Link as LinkIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { getLoggedInUserId } from "@/auth/decode";
 
 interface AutomaticMessageBubbleProps {
   sellerName: string;
@@ -16,11 +18,27 @@ const AutomaticMessageBubble: React.FC<AutomaticMessageBubbleProps> = ({
   orderId,
   onViewOrder,
 }) => {
+  const navigate = useNavigate();
+  const currentUserId = getLoggedInUserId();
+
   const handleViewOrder = () => {
     if (onViewOrder) {
       onViewOrder();
     } else {
-      console.log("View order details:", orderId);
+      // Navigate to user profile with Sold Artworks section open
+      if (currentUserId) {
+        navigate(`/userprofile/${currentUserId}`, {
+          state: {
+            activeTab: "onSale",
+            mainTab: "myListings",
+            activeSubGroup: "soldArtworks",
+            subTab: "payment_received",
+            highlightedOrderId: orderId,
+          },
+        });
+      } else {
+        console.log("View order details:", orderId);
+      }
     }
   };
 
