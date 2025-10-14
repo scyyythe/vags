@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
+import BidCardSkeleton from "@/components/skeletons/bidding/BidCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
 import BidCard from "../../Bidding/cards/BidCard";
 import useAuctions, { ArtworkAuction } from "@/hooks/auction/useAuction";
@@ -66,7 +66,8 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
         const isHighestBidder = auction.highest_bid?.user?.id === loggedInUserId;
         const joinedByCurrentUser = auction.bid_history?.some((bid) => bid.user?.id === loggedInUserId) ?? false;
         const isPaid = auction.status === "sold" && isHighestBidder;
-        const isLost = !isHighestBidder && (auction.status === "sold" || auction.status === "closed");
+        const isLost =
+          joinedByCurrentUser && !isHighestBidder && (auction.status === "sold" || auction.status === "closed");
 
         return {
           ...auction,
@@ -107,7 +108,7 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
           case "active":
             return a.isHighestBidder && a.status === "on_going";
           case "won":
-            return a.isHighestBidder && a.status === "sold" && a.isPaid;
+            return a.isHighestBidder && a.status === "sold";
           case "lost":
             return a.isLost;
           case "all":
@@ -246,7 +247,11 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
       )}
       {/* Content */}
       {(activeTab === "my_bids" ? isLoadingParticipated : isLoadingToUse) ? (
-        <ArtCardSkeleton />
+        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <BidCardSkeleton key={index} />
+          ))}
+        </div>
       ) : filteredAuctions.length === 0 ? (
         <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
           <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
