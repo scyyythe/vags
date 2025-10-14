@@ -74,7 +74,17 @@ const useSellArtwork = () => {
 
       toast.success("Artwork listed successfully!", { id: "upload", closeButton: true });
 
+      // Invalidate all relevant marketplace queries to refresh the data
       queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["popular-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] });
+      queryClient.invalidateQueries({ queryKey: ["top-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["top-sellers"] });
 
       navigate("/marketplace");
     } catch (err) {

@@ -34,6 +34,7 @@ interface ReviewPurchaseProps {
     yearCreated: number;
     price: number;
     default_paypal_email?: string;
+    quantity?: number;
   };
 }
 
@@ -45,6 +46,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   artwork,
 }) => {
   const navigate = useNavigate();
+  const { artwork: contextArtwork } = usePurchase();
   const { data: defaultAddress, isLoading: isAddressLoading } = useDefaultAddress();
   const { artwork: purchasedArtwork } = usePurchase();
   const purchaseMutation = usePurchaseArtwork();
@@ -93,7 +95,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       artwork_id: defaultArtwork.id,
       payment_method: paymentMethod,
       is_paid: true,
-      quantity: 1,
+      quantity: defaultArtwork.quantity || 1,
       shipping_address: {
         name: finalAddress.name,
         address: finalAddress.address,
@@ -110,13 +112,8 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
 
       await purchaseMutation.mutateAsync(payload);
 
-      const formData = new FormData();
-      formData.append("art_status", "Sold");
-
-      await updateArtworkMutation.mutateAsync({
-        id: defaultArtwork.id,
-        formData,
-      });
+      // Remove the frontend status override - let the backend handle status correctly
+      // The backend will set status to "onSale" for Open Edition and "Sold" for others
 
       toast.success("Your purchase has been successfully completed!");
       navigate("/marketplace");
@@ -144,7 +141,8 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       details: "(display the major short details of the payment method)",
     };
 
-  const defaultArtwork = artwork ||
+  const defaultArtwork = contextArtwork ||
+    artwork ||
     purchasedArtwork || {
       id: "placeholder-id",
       artworkImage: "/placeholder.svg?height=200&width=200",
@@ -157,9 +155,10 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       yearCreated: 2025,
       price: 100000,
       default_paypal_email: "no email provided",
+      quantity: 1,
     };
   const { paypalRef, startPayment } = usePayPalPurchase({
-    amount: defaultArtwork?.price || 0,
+    amount: (defaultArtwork?.price || 0) * (defaultArtwork?.quantity || 1),
     buyerId: localStorage.getItem("user_id")!,
     artworkId: defaultArtwork?.id || "",
     defaultPayPalEmail: defaultArtwork?.default_paypal_email || "",
@@ -180,7 +179,6 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       startPayment();
     }
   }, [step]);
-
 
   // Disable scrolling when modal OR receipt popup is open
   useEffect(() => {
@@ -373,9 +371,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 animate-fadeIn">
           <div className="bg-white rounded-lg shadow-xl p-6 text-center max-w-xs mx-auto">
             <h2 className="text-sm font-semibold text-red-700 mb-2">Payment Complete!</h2>
-            <p className="text-xs text-black">
-              You can now send your receipt to the owner as proof.
-            </p>
+            <p className="text-xs text-black">You can now send your receipt to the owner as proof.</p>
           </div>
         </div>
       )}

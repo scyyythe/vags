@@ -53,6 +53,8 @@ class ArtDetailSerializer(serializers.Serializer):
     visibility = serializers.CharField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
+    quantity = serializers.IntegerField(required=False, allow_null=True)
+    default_paypal_email = serializers.CharField(required=False, allow_blank=True)
 
     artist = ArtistMiniSerializer(read_only=True)  
     image_urls = serializers.SerializerMethodField()

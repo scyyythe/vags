@@ -27,6 +27,8 @@ export interface ArtworkDetail {
   rating?: number;
   total_reviews?: number;
   review_breakdown?: Record<string, number>;
+  quantity?: number;
+  default_paypal_email?: string;
 }
 
 export const useSellArtworkDetail = (id: string | undefined) => {
