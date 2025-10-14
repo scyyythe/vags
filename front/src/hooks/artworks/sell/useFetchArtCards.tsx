@@ -23,9 +23,29 @@ export interface ArtCard {
 }
 
 const fetchArtCards = async () => {
-  const response = await apiClient.get("/art/cards/");
+  try {
+    const response = await apiClient.get("/art/cards/");
 
-  return response.data as ArtCard[];
+    // Handle paginated response
+    if (response.data && typeof response.data === "object" && "results" in response.data) {
+      const results = response.data.results;
+
+      if (Array.isArray(results)) {
+        return results as ArtCard[];
+      } else {
+        return [];
+      }
+    }
+
+    // Fallback for non-paginated response
+    if (Array.isArray(response.data)) {
+      return response.data as ArtCard[];
+    }
+
+    return [];
+  } catch (error) {
+    return [];
+  }
 };
 
 const useFetchArtCards = () => {

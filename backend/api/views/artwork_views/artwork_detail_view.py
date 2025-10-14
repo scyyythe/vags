@@ -32,10 +32,11 @@ class MarketplaceArtDetailView(generics.RetrieveAPIView):
             from api.models.user_model.users import User
             if art.artist:
                 try:
-                    artist = User.objects.get(id=art.artist)
+                    # art.artist is already a User object (ReferenceField), so we can access it directly
+                    artist = art.artist
                     if artist.user_status and (artist.user_status.lower() == "deactivated" or artist.user_status.lower() == "scheduled_for_deletion"):
                         raise NotFound("Artwork not available.")
-                except User.DoesNotExist:
+                except Exception:
                     raise NotFound("Artist not found.")
 
             return art

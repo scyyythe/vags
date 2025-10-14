@@ -21,8 +21,8 @@ import { useLocation } from "react-router-dom";
 import { useArtworkReviews } from "@/hooks/review/useArtworkReviews";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import useArtworkReportStatus from "@/hooks/mutate/report/useArtworkReportStatus";
-import SellCard from "../cards/SellCard";
 import useFetchArtCards from "@/hooks/artworks/sell/useFetchArtCards";
+import SellCard from "../cards/SellCard";
 const ProductViewingContent = () => {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, error } = useSellArtworkDetail(id);
@@ -677,25 +677,27 @@ const ProductViewingContent = () => {
       />
 
       {/* Preview Modal */}
-      <PreviewModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onProceedToCheckout={() => {
-          setIsModalOpen(false);
-        }}
-        artwork={{
-          id: product.id,
-          artworkImage: product.image_urls?.[0],
-          title: product.title,
-          artist: product.artist.name,
-          medium: product.medium,
-          style: product.artwork_style,
-          edition: product.edition,
-          size: product.size + " cm",
-          yearCreated: product.year_created,
-          price: product.price,
-        }}
-      />
+      {product && (
+        <PreviewModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onProceedToCheckout={() => {
+            setIsModalOpen(false);
+          }}
+          artwork={{
+            id: product.id || "",
+            artworkImage: product.image_urls?.[0] || "/images/placeholder.jpg",
+            title: product.title || "Untitled",
+            artist: product.artist?.name || "Unknown Artist",
+            medium: product.medium || "Unknown",
+            style: product.artwork_style || "Unknown",
+            edition: product.edition || "Unknown",
+            size: product.size ? `${product.size} cm` : "Unknown",
+            yearCreated: product.year_created || "Unknown",
+            price: product.price || 0,
+          }}
+        />
+      )}
     </div>
   );
 };
