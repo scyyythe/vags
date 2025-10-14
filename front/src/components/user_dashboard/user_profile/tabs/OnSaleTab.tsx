@@ -825,6 +825,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus }) => {
                 artworkImage={order.artwork.image_url?.[0]}
                 title={order.artwork?.title || "Untitled"}
                 artist={order.artwork?.artist_name || "Unknown"}
+                artistId={order.artwork?.artist_id}
                 price={order.artwork?.price ?? 0}
                 status={
                   order.status === "Pending" ? "pending_payment" : order.status?.toLowerCase().replace(/\s+/g, "_")

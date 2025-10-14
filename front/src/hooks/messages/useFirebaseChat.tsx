@@ -24,7 +24,7 @@ export interface Message {
   senderAvatar?: string;
   timestamp: any;
   isRead?: boolean;
-  type?: "text" | "image" | "file" | "voice" | "video";
+  type?: "text" | "image" | "file" | "voice" | "video" | "automatic";
   fileUrl?: string;
   fileName?: string;
   fileSize?: number;
@@ -38,6 +38,14 @@ export interface Message {
 
   reactions?: {
     [userId: string]: string;
+  };
+
+  // Automatic message specific fields
+  automaticMessageData?: {
+    sellerName: string;
+    artworkTitle: string;
+    buyerName: string;
+    orderId: string;
   };
 }
 
@@ -72,7 +80,7 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
     async (
       payload: {
         text?: string;
-        type?: "text" | "image" | "file" | "voice" | "video";
+        type?: "text" | "image" | "file" | "voice" | "video" | "automatic";
         fileUrl?: string;
         fileName?: string;
         fileSize?: number;

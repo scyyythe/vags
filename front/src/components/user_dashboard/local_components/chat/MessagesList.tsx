@@ -12,6 +12,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Message, Conversation } from "./types/types";
 import { useEffect, useRef } from "react";
+import AutomaticMessageBubble from "../../Marketplace/my_purchase/card/AutomaticMessageBubble";
 
 interface MessagesListProps {
   conversation: Conversation;
@@ -179,7 +180,18 @@ export const MessagesList = ({
                               <span className="text-sm">{message.fileName}</span>
                             </div>
                           )}
-                          {message.content && <p className="text-[11px]">{message.content}</p>}
+                          {message.type === "automatic" && message.automaticMessageData ? (
+                            <>
+                              <AutomaticMessageBubble
+                                sellerName={message.automaticMessageData.sellerName}
+                                artworkTitle={message.automaticMessageData.artworkTitle}
+                                buyerName={message.automaticMessageData.buyerName}
+                                orderId={message.automaticMessageData.orderId}
+                              />
+                            </>
+                          ) : (
+                            message.content && <p className="text-[11px]">{message.content}</p>
+                          )}
 
                           {message.reactions && message.reactions.length > 0 && (
                             <div className="flex items-center space-x-1 mt-2">

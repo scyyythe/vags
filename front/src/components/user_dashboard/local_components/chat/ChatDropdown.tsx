@@ -855,11 +855,14 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
                     // Add Firebase messages, overriding local ones if they exist
                     (firebaseMessages || []).forEach((msg: any) => {
+                      if (msg.type === "automatic") {
+                        console.log("Processing automatic message:", msg); // Debug log
+                      }
                       const message = {
                         id: msg.id,
                         senderId: msg.senderId,
                         senderName: msg.senderName || selectedConv.participantName || participantName || "Unknown",
-                        content: msg.content || msg.text || "",
+                        content: msg.type === "automatic" ? "" : msg.content || msg.text || "",
                         timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(),
                         isRead: msg.isRead || false,
                         isStarred: msg.isStarred || false,
@@ -871,6 +874,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                         voiceDuration: msg.voiceDuration,
                         isMine: String(msg.senderId) === String(userId),
                         replyTo: msg.replyTo || null,
+                        automaticMessageData: msg.automaticMessageData || null,
                       };
                       messageMap.set(msg.id, message);
                     });
