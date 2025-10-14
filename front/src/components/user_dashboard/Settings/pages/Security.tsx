@@ -8,11 +8,26 @@ import { Edit, Eye, EyeOff } from "lucide-react";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
+import useClearAllSessions from "@/hooks/mutate/users/useClearAllSessions";
+import { useTwoFactorStatus, useTwoFactorDisable } from "@/hooks/mutate/users/useTwoFactorMutate";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import apiClient from "@/utils/apiClient";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import TwoFactorSetup from "../components/TwoFactorSetup";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Shield, AlertTriangle } from "lucide-react";
 
 interface Credential {
   id: string;
@@ -23,8 +38,12 @@ interface Credential {
 
 const SecuritySettings = () => {
   const userId = getLoggedInUserId();
+  const queryClient = useQueryClient();
   const { username, email, password, isLoading, error } = useUserDetails(userId);
   const updateUser = useUpdateUserDetails();
+  const { mutate: clearAllSessions, isPending: isClearingSessions } = useClearAllSessions();
+  const { data: twoFactorStatus, isLoading: is2FAStatusLoading } = useTwoFactorStatus();
+  const { mutate: disable2FA, isPending: isDisabling2FA } = useTwoFactorDisable();
   const { language: selectedLanguage } = useLanguage();
 
   // Auto-translated labels
@@ -39,11 +58,14 @@ const SecuritySettings = () => {
   const securityCredentialsLabel = useAutoTranslation("Security Credentials", selectedLanguage);
   const currentSessionText = useAutoTranslation("Current session", selectedLanguage);
   const removeDeviceText = useAutoTranslation("Remove device", selectedLanguage);
+  const clearAllSessionsText = useAutoTranslation("Clear all sessions", selectedLanguage);
   const loadingText = useAutoTranslation("Loading...", selectedLanguage);
   const fetchErrorText = useAutoTranslation("Error fetching user data", selectedLanguage);
   const fetchSessionsError = useAutoTranslation("Failed to fetch sessions", selectedLanguage);
   const deviceRemovedText = useAutoTranslation("Device removed", selectedLanguage);
   const removeDeviceFailedText = useAutoTranslation("Failed to remove device", selectedLanguage);
+  const allSessionsClearedText = useAutoTranslation("All sessions cleared", selectedLanguage);
+  const clearAllSessionsFailedText = useAutoTranslation("Failed to clear all sessions", selectedLanguage);
 
   const allPasswordRequired = useAutoTranslation("All password fields are required.", selectedLanguage);
   const newPasswordLengthError = useAutoTranslation(
@@ -74,6 +96,11 @@ const SecuritySettings = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // 2FA state
+  const [is2FASetupOpen, setIs2FASetupOpen] = useState(false);
+  const [is2FADisableOpen, setIs2FADisableOpen] = useState(false);
+  const [disablePassword, setDisablePassword] = useState("");
 
   const mockCredentials: Credential[] = [
     {
@@ -211,6 +238,107 @@ const SecuritySettings = () => {
     }
   };
 
+  const handleClearAllSessions = () => {
+    clearAllSessions(undefined, {
+      onSuccess: () => {
+        // Update state to only keep current session
+        setCredentials((prev) => prev.filter((cred) => cred.isCurrentSession));
+      },
+    });
+  };
+
+  const handle2FASuccess = () => {
+    setIs2FASetupOpen(false);
+    // Invalidate 2FA status query to refresh data
+    queryClient.invalidateQueries({ queryKey: ["twoFactorStatus"] });
+  };
+
+  const handleDisable2FA = () => {
+    if (!disablePassword) {
+      toast.error("Please enter your password to disable 2FA");
+      return;
+    }
+
+    disable2FA(
+      { password: disablePassword },
+      {
+        onSuccess: () => {
+          setIs2FADisableOpen(false);
+          setDisablePassword("");
+          // Invalidate 2FA status query to refresh data
+          queryClient.invalidateQueries({ queryKey: ["twoFactorStatus"] });
+        },
+      }
+    );
+  };
+
+  // Reset disable password when dialog closes
+  const handleCloseDisableDialog = () => {
+    setIs2FADisableOpen(false);
+    setDisablePassword("");
+  };
+
+  const formatDeviceInfo = (deviceString: string) => {
+    // Extract browser and OS info from user agent string
+    const isChrome = deviceString.includes("Chrome");
+    const isFirefox = deviceString.includes("Firefox");
+    const isSafari = deviceString.includes("Safari") && !deviceString.includes("Chrome");
+    const isEdge = deviceString.includes("Edg");
+
+    const isWindows = deviceString.includes("Windows");
+    const isMac = deviceString.includes("Mac");
+    const isLinux = deviceString.includes("Linux");
+    const isAndroid = deviceString.includes("Android");
+    const isIOS = deviceString.includes("iPhone") || deviceString.includes("iPad");
+
+    let browser = "Unknown Browser";
+    if (isChrome) browser = "Chrome";
+    else if (isFirefox) browser = "Firefox";
+    else if (isSafari) browser = "Safari";
+    else if (isEdge) browser = "Edge";
+
+    let os = "Unknown OS";
+    if (isWindows) os = "Windows";
+    else if (isMac) os = "macOS";
+    else if (isLinux) os = "Linux";
+    else if (isAndroid) os = "Android";
+    else if (isIOS) os = "iOS";
+
+    return `${browser} on ${os}`;
+  };
+
+  const formatSessionDate = (dateString: string) => {
+    try {
+      // Ensure the date string is treated as UTC by adding 'Z' if not present
+      let utcDateString = dateString;
+      if (!dateString.includes("Z") && !dateString.includes("+") && !dateString.includes("-", 10)) {
+        // If no timezone info, assume it's UTC and add 'Z'
+        utcDateString = dateString + "Z";
+      }
+
+      // Parse the date string as UTC and convert to local time
+      const date = new Date(utcDateString);
+
+      // Check if the date is valid
+      if (isNaN(date.getTime())) {
+        return "Invalid date";
+      }
+
+      // Format in user's local timezone
+      return date.toLocaleString(undefined, {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid date";
+    }
+  };
+
   if (isLoading) return <p>{loadingText}</p>;
   if (error) return <p>{fetchErrorText}</p>;
 
@@ -310,20 +438,125 @@ const SecuritySettings = () => {
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-[10px] text-gray-500">{twoFactorLabel}</p>
-              <p className="font-medium text-[11px]">{formData.twoFactorEnabled ? enabledText : disabledText}</p>
+              <p className="font-medium text-[11px]">
+                {twoFactorStatus?.two_factor_enabled ? enabledText : disabledText}
+              </p>
             </div>
             <div className="transform scale-50 origin-left">
               <Switch
-                checked={formData.twoFactorEnabled}
-                onCheckedChange={(checked) => handleChange("twoFactorEnabled", checked)}
+                checked={twoFactorStatus?.two_factor_enabled || false}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setIs2FASetupOpen(true);
+                  } else {
+                    setIs2FADisableOpen(true);
+                  }
+                }}
               />
             </div>
           </div>
+
+          {twoFactorStatus?.two_factor_enabled && (
+            <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-start gap-2">
+                <Shield className="h-4 w-4 text-green-600 mt-0.5" />
+                <div className="text-[10px] text-green-800 flex-1">
+                  <p className="font-medium">Two-factor authentication is active</p>
+                  <p className="text-green-600">
+                    Methods: {twoFactorStatus.enabled_methods?.join(", ").toUpperCase() || "Unknown"}
+                  </p>
+                  <p className="text-green-600">{twoFactorStatus.remaining_backup_codes} backup codes remaining</p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIs2FASetupOpen(true)}
+                    className="text-[9px] px-2 py-1 h-6"
+                  >
+                    Add Method
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* 2FA Setup Dialog */}
+        <TwoFactorSetup
+          isOpen={is2FASetupOpen}
+          onClose={() => setIs2FASetupOpen(false)}
+          onSuccess={handle2FASuccess}
+          currentStatus={
+            twoFactorStatus || {
+              two_factor_enabled: false,
+              enabled_methods: [],
+              primary_method: "totp",
+              remaining_backup_codes: 0,
+            }
+          }
+        />
+
+        {/* 2FA Disable Dialog */}
+        <Dialog open={is2FADisableOpen} onOpenChange={handleCloseDisableDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="text-sm">Disable Two-Factor Authentication</DialogTitle>
+              <DialogDescription className="text-xs">
+                Enter your password to disable two-factor authentication. This will make your account less secure.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Alert>
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription className="text-xs">
+                  Disabling 2FA will remove the extra security layer from your account.
+                </AlertDescription>
+              </Alert>
+              <div>
+                <Label htmlFor="disable-password" className="text-xs">
+                  Current Password
+                </Label>
+                <Input
+                  id="disable-password"
+                  type="password"
+                  value={disablePassword}
+                  onChange={(e) => setDisablePassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="text-xs"
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={handleCloseDisableDialog} className="text-xs">
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleDisable2FA}
+                  disabled={!disablePassword || isDisabling2FA}
+                  className="text-xs"
+                >
+                  {isDisabling2FA ? "Disabling..." : "Disable 2FA"}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Security Credentials */}
-      <h2 className="text-sm font-bold mb-6">{securityCredentialsLabel}</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-sm font-bold">{securityCredentialsLabel}</h2>
+        {credentials.length > 1 && (
+          <button
+            onClick={handleClearAllSessions}
+            disabled={isClearingSessions}
+            className="text-red-500 text-[10px] hover:text-red-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isClearingSessions ? "Clearing..." : clearAllSessionsText}
+          </button>
+        )}
+      </div>
 
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <div className="space-y-6">
@@ -334,17 +567,8 @@ const SecuritySettings = () => {
                   <i className="bx bx-tab"></i>
                 </div>
                 <div>
-                  <p className="text-[10px] text-gray-400">
-                    {new Date(cred.date).toLocaleString("en-PH", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true,
-                    })}
-                  </p>
-                  <p className="text-xs font-semibold">{cred.device}</p>
+                  <p className="text-[10px] text-gray-400">{formatSessionDate(cred.date)}</p>
+                  <p className="text-xs font-semibold">{formatDeviceInfo(cred.device)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">

@@ -160,10 +160,15 @@ class AuctionListView(generics.ListAPIView):
                 print(f"Error reading blocked users: {e}")
                 blocked_user_ids = []
 
+        # Get deactivated user IDs to exclude their content
+        deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
+        scheduled_deletion_user_ids = User.objects(user_status__iexact="scheduled_for_deletion").scalar('id')
+        all_blocked_ids = list(blocked_user_ids) + list(deactivated_user_ids) + list(scheduled_deletion_user_ids)
+        
         valid_artwork_ids = None
-        if blocked_user_ids:
+        if all_blocked_ids:
             try:
-                valid_artworks = Art.objects(artist__nin=blocked_user_ids).only("id")
+                valid_artworks = Art.objects(artist__nin=all_blocked_ids).only("id")
                 valid_artwork_ids = [art.id for art in valid_artworks]
             except Exception as e:
                 print(f"Error filtering artworks: {e}")
@@ -530,9 +535,19 @@ class PopularAuctionListView(generics.ListAPIView):
         )
 
         user = self.request.user
+        blocked_user_ids = []
         if user.is_authenticated and hasattr(user, "blocked_users"):
             blocked_user_ids = [u.id for u in user.blocked_users]
-            valid_artworks = Art.objects(artist__nin=blocked_user_ids).only('id')
+
+        # Get deactivated and scheduled for deletion user IDs to exclude their content
+        deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
+        scheduled_deletion_user_ids = User.objects(user_status__iexact="scheduled_for_deletion").scalar('id')
+        
+        # Combine blocked, deactivated, and scheduled deletion user IDs
+        all_excluded_user_ids = list(blocked_user_ids) + list(deactivated_user_ids) + list(scheduled_deletion_user_ids)
+        
+        if all_excluded_user_ids:
+            valid_artworks = Art.objects(artist__nin=all_excluded_user_ids).only('id')
             valid_artwork_ids = [art.id for art in valid_artworks]
             queryset = queryset.filter(artwork__in=valid_artwork_ids)
 

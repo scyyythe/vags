@@ -1,14 +1,4 @@
-import {
-  Reply,
-  Star,
-  Copy,
-  Forward,
-  Edit,
-  Trash2,
-  Smile,
-  Paperclip,
-  MoreVertical,
-} from "lucide-react";
+import { Reply, Star, Copy, Forward, Edit, Trash2, Smile, Paperclip, MoreVertical } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +12,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Message, Conversation } from "./types/types";
 import { useEffect, useRef } from "react";
+import AutomaticMessageBubble from "../../Marketplace/my_purchase/card/AutomaticMessageBubble";
 
 interface MessagesListProps {
   conversation: Conversation;
@@ -33,6 +24,7 @@ interface MessagesListProps {
   onStarMessage: (messageId: string) => void;
   onDeleteMessage: (messageId: string) => void;
   onSetReactionPicker: (messageId: string | null) => void;
+  onAddReaction: (messageId: string, emoji: string) => void;
 }
 
 export const MessagesList = ({
@@ -45,6 +37,7 @@ export const MessagesList = ({
   onStarMessage,
   onDeleteMessage,
   onSetReactionPicker,
+  onAddReaction,
 }: MessagesListProps) => {
   const formatFullDateTime = (date: Date) => {
     return date.toLocaleString("en-US", {
@@ -73,7 +66,6 @@ export const MessagesList = ({
 
     prevMessageCountRef.current = currentCount;
   }, [conversation.messages]);
-
 
   const prevMessageCountRef = useRef(conversation.messages.length);
 
@@ -105,9 +97,7 @@ export const MessagesList = ({
     <div className="p-4">
       <div className="space-y-6">
         {conversation.messages.map((message) => {
-          const repliedMessage = message.replyTo
-            ? findRepliedMessage(message.replyTo.messageId)
-            : null;
+          const repliedMessage = message.replyTo ? findRepliedMessage(message.replyTo.messageId) : null;
 
           return (
             <ContextMenu key={message.id}>
@@ -130,9 +120,7 @@ export const MessagesList = ({
                               .join("")}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-[11px] font-medium text-gray-700">
-                          {conversation.participantName}
-                        </span>
+                        <span className="text-[11px] font-medium text-gray-700">{conversation.participantName}</span>
                       </div>
                     )}
 
@@ -153,7 +141,6 @@ export const MessagesList = ({
                           }}
                           onClick={() => window.open(message.imageUrl, "_blank")}
                         />
-
                       </div>
                     ) : (
                       /* TEXT/FILE MESSAGES */
@@ -164,9 +151,7 @@ export const MessagesList = ({
                               ? "bg-blue-600 text-white text-[10px]"
                               : "bg-gray-100 text-gray-900 text-[10px]"
                           } ${selectedMessage === message.id ? "ring-2 ring-blue-300" : ""}`}
-                          onClick={() =>
-                            onSelectMessage(selectedMessage === message.id ? null : message.id)
-                          }
+                          onClick={() => onSelectMessage(selectedMessage === message.id ? null : message.id)}
                         >
                           {message.replyTo && (
                             <div
@@ -188,41 +173,57 @@ export const MessagesList = ({
                             </div>
                           )}
 
-                          {message.isStarred && (
-                            <Star size={12} className="inline mr-1 text-yellow-400 fill-current" />
-                          )}
+                          {message.isStarred && <Star size={12} className="inline mr-1 text-yellow-400 fill-current" />}
                           {message.type === "file" && (
                             <div className="flex items-center space-x-2 mb-1">
                               <Paperclip size={13} />
                               <span className="text-sm">{message.fileName}</span>
                             </div>
                           )}
-                          {message.content && <p className="text-[11px]">{message.content}</p>}
+                          {message.type === "automatic" && message.automaticMessageData ? (
+                            <>
+                              <AutomaticMessageBubble
+                                sellerName={message.automaticMessageData.sellerName}
+                                artworkTitle={message.automaticMessageData.artworkTitle}
+                                buyerName={message.automaticMessageData.buyerName}
+                                orderId={message.automaticMessageData.orderId}
+                              />
+                            </>
+                          ) : (
+                            message.content && <p className="text-[11px]">{message.content}</p>
+                          )}
 
                           {message.reactions && message.reactions.length > 0 && (
                             <div className="flex items-center space-x-1 mt-2">
-                              {message.reactions.map((reaction, idx) => (
-                                <Badge
-                                  key={idx}
-                                  variant="outline"
-                                  className="text-[10px] px-2 py-1 bg-white hover:bg-gray-50 cursor-pointer border-gray-200"
-                                >
-                                  <span className="mr-1">{reaction.emoji}</span>
-                                  <span className="text-gray-600">{reaction.users.length}</span>
-                                </Badge>
-                              ))}
+                              {message.reactions.map((reaction, idx) => {
+                                const hasUserReacted = reaction.users.includes(currentUserId);
+                                return (
+                                  <Badge
+                                    key={idx}
+                                    variant="outline"
+                                    onClick={() => onAddReaction(message.id, reaction.emoji)}
+                                    className={`text-[10px] px-2 py-1 cursor-pointer border-gray-200 transition-colors ${
+                                      hasUserReacted
+                                        ? "bg-blue-50 border-blue-200 text-blue-700"
+                                        : "bg-white hover:bg-gray-50"
+                                    }`}
+                                  >
+                                    <span className="mr-1">{reaction.emoji}</span>
+                                    <span className="text-gray-600">{reaction.users.length}</span>
+                                  </Badge>
+                                );
+                              })}
                             </div>
                           )}
                         </div>
                       </div>
-
                     )}
 
                     {/* REPLY + REACT + MENU buttons on hover */}
                     <div
                       className={`absolute flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 -translate-y-1/2 ${
                         message.senderId === currentUserId
-                          ? "right-full mr-2 top-[40%] justify-end"  // sender: icons on the left side of bubble
+                          ? "right-full mr-2 top-[40%] justify-end" // sender: icons on the left side of bubble
                           : "left-full ml-2 top-[55%] justify-start" // receiver: icons on the right side of bubble
                       }`}
                     >
@@ -255,7 +256,11 @@ export const MessagesList = ({
                                 {["👍", "❤️", "😂", "😮", "😢", "😡"].map((emoji) => (
                                   <button
                                     key={emoji}
-                                    className="text-lg hover:bg-gray-100 rounded p-1"
+                                    onClick={() => {
+                                      onAddReaction(message.id, emoji);
+                                      onSetReactionPicker(null); // Close the picker after selecting
+                                    }}
+                                    className="text-lg hover:bg-gray-100 rounded p-1 transition-colors"
                                   >
                                     {emoji}
                                   </button>
@@ -315,7 +320,6 @@ export const MessagesList = ({
                       </div>
                     </div>
 
-
                     {/* Delivery/Date Info */}
                     {message.senderId === currentUserId && (
                       <div className="mt-1 flex justify-end">{renderDeliveryText(message)}</div>
@@ -357,10 +361,7 @@ export const MessagesList = ({
                       <Edit className="mr-2 h-3 w-3" />
                       Edit
                     </ContextMenuItem>
-                    <ContextMenuItem
-                      onClick={() => onDeleteMessage(message.id)}
-                      className="text-red-600 text-[10px]"
-                    >
+                    <ContextMenuItem onClick={() => onDeleteMessage(message.id)} className="text-red-600 text-[10px]">
                       <Trash2 className="mr-2 h-3 w-3" />
                       Delete
                     </ContextMenuItem>

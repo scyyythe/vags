@@ -83,6 +83,23 @@ const AddExhibit = () => {
     "public",
     true
   );
+
+  // Additional filtering to ensure only Active and Public artworks with valid images
+  const filteredArtworks = artworks.filter((artwork) => {
+    // Use artworkImage as primary, fallback to image_url if artworkImage is invalid
+    const primaryImage =
+      artwork.artworkImage && artwork.artworkImage.trim() !== "" && artwork.artworkImage !== "h"
+        ? artwork.artworkImage
+        : artwork.image_url;
+
+    return (
+      artwork.art_status === "Active" &&
+      artwork.visibility === "Public" &&
+      primaryImage &&
+      primaryImage.trim() !== "" &&
+      primaryImage !== "h"
+    );
+  });
   const { data: currentUser, isLoading } = useUserQuery(currentUserId ?? "");
 
   // Function to distribute slots among participants
@@ -383,40 +400,80 @@ const AddExhibit = () => {
     selectedArtworks,
     bannerFile,
     slotArtworkMap,
-    slotOwnerMap
+    slotOwnerMap,
+    undefined, // No exhibit ID for new exhibits
+    null // No existing banner image for new exhibits
   );
 
   // Handle adding a collaborator - ORIGINAL LOGIC
   const handleAddCollaborator = (artist: User) => {
+    // Check global maximum first (2 collaborators max)
+    if (collaborators.length >= 2) {
+      toast.error("Maximum collaborators reached", {
+        description: "You can only have a maximum of 2 collaborators per exhibit.",
+        closeButton: true,
+      });
+      return;
+    }
+
     // Get maximum collaborators allowed based on environment
     const currentEnvironment = environments.find((env) => env.id === selectedEnvironment);
     let maxCollaborators = 0;
 
     if (currentEnvironment) {
       if (currentEnvironment.slots === 4) {
-        maxCollaborators = 1;
+        maxCollaborators = 1; // 4 slots can handle 1 collaborator (2-2 distribution)
       } else if (currentEnvironment.slots === 6) {
-        maxCollaborators = 2;
+        maxCollaborators = 1; // 6 slots can handle 1 collaborator (3-3 distribution)
       } else if (currentEnvironment.slots === 10) {
-        maxCollaborators = 2;
+        maxCollaborators = 2; // 10 slots can handle 2 collaborators (4-3-3 distribution)
       }
     }
 
-    if (collaborators.length >= maxCollaborators) {
-      toast.error("Maximum collaborators reached", {
-        description: `You can only add up to ${maxCollaborators} collaborator${
-          maxCollaborators > 1 ? "s" : ""
-        } for this environment.`,
-        closeButton: true,
-      });
-      return;
+    const newCollaborators = [...collaborators, artist];
+    const newCollaboratorCount = newCollaborators.length;
+
+    // Check if current environment can accommodate the new collaborator count
+    let newEnvironmentId = selectedEnvironment;
+    if (newCollaboratorCount > maxCollaborators) {
+      if (newCollaboratorCount === 1) {
+        // Adding 1st collaborator - check if current environment can handle 2 participants
+        if (currentEnvironment?.slots === 4) {
+          // 4 slots can handle 2 participants (2-2 distribution), no need to switch
+          newEnvironmentId = selectedEnvironment;
+        }
+      } else if (newCollaboratorCount === 2) {
+        // Adding 2nd collaborator - need environment that supports 3 participants
+        if (currentEnvironment?.slots === 4) {
+          // Switch from 4 slots to 6 slots (4 slots can't handle 3 participants)
+          newEnvironmentId = environments.find((env) => env.slots === 6)?.id || selectedEnvironment;
+        } else if (currentEnvironment?.slots === 6) {
+          // Switch from 6 slots to 10 slots (need more slots for 3 participants)
+          newEnvironmentId = environments.find((env) => env.slots === 10)?.id || selectedEnvironment;
+        }
+      }
+
+      // Show confirmation dialog for environment change
+      if (newEnvironmentId !== selectedEnvironment) {
+        const newEnv = environments.find((env) => env.id === newEnvironmentId);
+        const confirmChange = window.confirm(
+          `Adding this collaborator requires switching to the ${newEnv?.slots} slots environment. This will redistribute all slots among participants. Continue?`
+        );
+
+        if (!confirmChange) {
+          return;
+        }
+
+        // Update environment
+        setSelectedEnvironment(newEnvironmentId);
+      }
     }
 
-    const newCollaborators = [...collaborators, artist];
+    // Add the collaborator
     setCollaborators(newCollaborators);
 
-    // Call distributeSlots immediately with new collaborator list
-    distributeSlots(selectedEnvironment, newCollaborators, exhibitType);
+    // Call distributeSlots with the updated environment and collaborator list
+    distributeSlots(newEnvironmentId || selectedEnvironment, newCollaborators, exhibitType);
   };
 
   // Handle removing a collaborator - ORIGINAL LOGIC
@@ -491,7 +548,7 @@ const AddExhibit = () => {
                     environments={environments}
                     slotOwnerMap={slotOwnerMap}
                     slotArtworkMap={slotArtworkMap}
-                    artworks={artworks}
+                    artworks={filteredArtworks}
                     exhibitType={exhibitType}
                     selectedSlots={selectedSlots}
                     handleSlotSelect={handleSlotSelect}
@@ -583,7 +640,7 @@ const AddExhibit = () => {
           {/* Artwork selection section - Only show if an environment is selected */}
           {selectedEnvironment && !isReadOnly && (
             <ArtworkSelector
-              artworks={artworks}
+              artworks={filteredArtworks}
               selectedArtworks={selectedArtworks}
               handleArtworkSelect={handleArtworkSelect}
               currentCollaborator={currentCollaborator}

@@ -4,9 +4,11 @@ from api.views.user_views.user_views import (
     RetrieveUserView, UpdateUserDetailsView, UpdateUserView,
     DeleteUserView, ListAllUsersView, BlockUserView, UnblockUserView
 )
+from api.views.user_views.deactivate_view import DeactivateAccountView
+from api.views.user_views.soft_delete_view import SoftDeleteAccountView, PermanentlyDeleteAccountView
 from api.views.user_views.top_sellers_view import TopSellersAPIView,TopArtworksAPIView,PopularArtistsAPIView
 from api.views.user_views.address_view import AddressViewSet,DefaultAddressView,SetDefaultAddressView
-from api.views.user_views.user_views import SessionListView, SessionDeleteView
+from api.views.user_views.user_views import SessionListView, SessionDeleteView, ClearAllSessionsView
 from api.views.user_views.social_views import  DeleteSocialView,SocialsView
 user_urlpatterns = [
     path('top-sellers/', TopSellersAPIView.as_view(), name='top-sellers'),
@@ -15,6 +17,7 @@ user_urlpatterns = [
 
 
     path("sessions/", SessionListView.as_view(), name="sessions"),
+    path("sessions/clear-all/", ClearAllSessionsView.as_view(), name="clear-all-sessions"),
     path("sessions/<str:session_id>/", SessionDeleteView.as_view(), name="session-delete"),
     
     path('user/<str:pk>/', RetrieveUserView.as_view(), name='retrieve_user'),
@@ -25,6 +28,9 @@ user_urlpatterns = [
 
     path('user/<str:user_id>/block/', BlockUserView.as_view(), name='block_user'),
     path('user/<str:user_id>/unblock/', UnblockUserView.as_view(), name='unblock_user'),
+    path('users/<str:user_id>/deactivate/', DeactivateAccountView.as_view(), name='deactivate_user'),
+    path('users/<str:user_id>/soft-delete/', SoftDeleteAccountView.as_view(), name='soft_delete_user'),
+    path('users/<str:user_id>/permanently-delete/', PermanentlyDeleteAccountView.as_view(), name='permanently_delete_user'),
 
     # Address routes
     path('address/', AddressViewSet.as_view({'get': 'list', 'post': 'create'}), name='address-list-create'),

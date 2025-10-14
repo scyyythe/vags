@@ -10,11 +10,13 @@ import { useEffect, useState, useMemo, memo } from "react";
 import useAuctions from "@/hooks/auction/useAuction";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
 import "react-loading-skeleton/dist/skeleton.css";
-import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
 import { useSearchParams } from "react-router-dom";
 import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks";
 import useFollowedAuctions from "@/hooks/auction/followed_users/useFollowedBiddings";
 import useBulkBidReportStatus from "@/hooks/mutate/report/useBulkAuctionReport";
+import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
+
 interface StaticArtwork {
   id: string;
   title: string;
@@ -106,66 +108,68 @@ const Bidding = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 sm:px-6 pt-20">
-        <main className="container">
-          <section className="mb-8">
-            <ArtsContainer artworks={staticArtworks} />
-          </section>
-          <div className="flex items-center justify-between -ml-7 mb-6 w-[114%] md:w-[105%] lg:w-[105%] pl-2 sm:pl-0">
-            <CategoryFilter categories={categories} onSelectCategory={setSelectedFilterCategory} />
-            <div className="flex space-x-2 text-xs">
-              {/* Incoming Auctions */}
-              <button
-                onClick={() => setShowIncoming((prev) => !prev)}
-                className={`px-3 rounded-full border border-gray-300 transition-all text-[10px] 
-                  ${showIncoming ? "shadow-md font-medium" : "bg-white"}`}
-              >
-                Upcoming
-              </button>
+        <ActiveAccountOnly>
+          <main className="container">
+            <section className="mb-8">
+              <ArtsContainer artworks={staticArtworks} />
+            </section>
+            <div className="flex items-center justify-between -ml-7 mb-6 w-[114%] md:w-[105%] lg:w-[105%] pl-2 sm:pl-0">
+              <CategoryFilter categories={categories} onSelectCategory={setSelectedFilterCategory} />
+              <div className="flex space-x-2 text-xs">
+                {/* Incoming Auctions */}
+                <button
+                  onClick={() => setShowIncoming((prev) => !prev)}
+                  className={`px-3 rounded-full border border-gray-300 transition-all text-[10px] 
+                    ${showIncoming ? "shadow-md font-medium" : "bg-white"}`}
+                >
+                  Upcoming
+                </button>
 
-              <div className="relative">
-                <ArtCategorySelect
-                  selectedCategory={selectedArtCategory}
-                  onChange={(value) => setSelectedArtCategory(value)}
-                />
+                <div className="relative">
+                  <ArtCategorySelect
+                    selectedCategory={selectedArtCategory}
+                    onChange={(value) => setSelectedArtCategory(value)}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </main>
+          </main>
 
-        <div className="lg:w-[100%] custom-scrollbars pb-4 pl-2 sm:pl-0">
-          {isLoading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              <ArtCardSkeleton />
-            </div>
-          )}
-          {isError && <p className="text-center text-red-500 py-10">Failed to fetch bidding artworks.</p>}
+          <div className="lg:w-[100%] custom-scrollbars pb-4 pl-2 sm:pl-0">
+            {isLoading && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <ArtCardSkeleton />
+              </div>
+            )}
+            {isError && <p className="text-center text-red-500 py-10">Failed to fetch bidding artworks.</p>}
 
-          {/* ACTIVE AUCTIONS */}
-          {!showIncoming && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {filteredArtworks.map((artwork) => {
-                const reportInfo = reportStatusData?.[artwork.id];
-                return (
-                  <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
-                    <BidCard data={artwork} reportInfo={reportInfo} onPlaceBid={handlePlaceBid} />
+            {/* ACTIVE AUCTIONS */}
+            {!showIncoming && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {filteredArtworks.map((artwork) => {
+                  const reportInfo = reportStatusData?.[artwork.id];
+                  return (
+                    <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
+                      <BidCard data={artwork} reportInfo={reportInfo} onPlaceBid={handlePlaceBid} />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* UPCOMING AUCTIONS SECTION */}
+            {showIncoming && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {upcomingArtworks.length === 0 && (
+                  <div className="col-span-full flex flex-col items-center justify-center text-center py-16">
+                    <img src="/pics/empty.png" alt="No Upcoming Auctions" className="w-48 h-48 mb-4 opacity-70" />
+                    <p className="text-gray-500 text-sm">No upcoming auctions found.</p>
                   </div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* UPCOMING AUCTIONS SECTION */}
-          {showIncoming && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {upcomingArtworks.length === 0 && (
-                <div className="col-span-full flex flex-col items-center justify-center text-center py-16">
-                  <img src="/pics/empty.png" alt="No Upcoming Auctions" className="w-48 h-48 mb-4 opacity-70" />
-                  <p className="text-gray-500 text-sm">No upcoming auctions found.</p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+                )}
+              </div>
+            )}
+          </div>
+        </ActiveAccountOnly>
       </div>
       <Footer />
     </div>

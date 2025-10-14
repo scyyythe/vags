@@ -11,7 +11,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useExhibitCards } from "@/hooks/exhibit/useCardExihibit";
-import ExhibitCardSkeleton from "@/components/skeletons/ExhibitCardSkeleton";
+import ExhibitCardSkeleton from "@/components/skeletons/exhibits/ExhibitCardSkeleton";
+import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
 
 type SortOption = "popularity" | "newest" | "oldest";
 type FilterOption = "none" | "trending" | "most-viewed" | "upcoming" | "ongoing" | "ended";
@@ -37,8 +38,7 @@ const Exhibits = () => {
   const filteredExhibits = exhibits.filter((exhibit: any) => {
     const matchesType = baseType === "solo" ? exhibit.isSolo : !exhibit.isSolo;
     const matchesCategory =
-    selectedCategory === "All" ||
-    exhibit.category?.toLowerCase() === selectedCategory.toLowerCase();
+      selectedCategory === "All" || exhibit.category?.toLowerCase() === selectedCategory.toLowerCase();
 
     if (!matchesType || !matchesCategory) return false;
 
@@ -50,7 +50,6 @@ const Exhibits = () => {
 
     return true;
   });
-
 
   const sortedExhibits = [...filteredExhibits].sort((a, b) => {
     if (sortBy === "popularity") return b.likes - a.likes;
@@ -64,84 +63,95 @@ const Exhibits = () => {
         <Header />
 
         <div className="container mx-auto px-6">
-          <div className="mb-8 mt-20">
-            <span className="font-bold">Exhibits</span>
+          <ActiveAccountOnly>
+            <div className="mb-8 mt-20">
+              <span className="font-bold">Exhibits</span>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 my-4">
-              {/* SOLO / COLLAB TOGGLE */}
-              <div className="flex flex-wrap gap-2">
-                {["solo", "collab"].map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => setBaseType(type as "solo" | "collab")}
-                    className={`py-[5px] px-4 rounded-full text-[10px] font-small transition-colors ${
-                      baseType === type
-                        ? "border border-gray-300 font-medium shadow-md"
-                        : "bg-white border border-gray-200 hover:bg-gray-100"
-                    }`}
-                  >
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </button>
-                ))}
-              </div>
-
-              {/* FILTER DROPDOWN */}
-              <div className="flex flex-wrap items-center gap-2">
-                {/* Art Category Dropdown */}
-                <ArtCategorySelect selectedCategory={selectedCategory} onChange={setSelectedCategory} />
-
-                {/* Filter Dropdown */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="py-1 px-4 rounded-full text-[10px] border border-gray-300">
-                      <i className="bx bx-sort text-xs mr-1.5"></i>
-                      {{
-                        trending: "Trending",
-                        "most-viewed": "Most Viewed",
-                        upcoming: "Upcoming",
-                        ongoing: "Ongoing",
-                        ended: "Ended",
-                      }[filter] || "Filter"}
+              <div className="flex flex-wrap items-center justify-between gap-4 my-4">
+                {/* SOLO / COLLAB TOGGLE */}
+                <div className="flex flex-wrap gap-2">
+                  {["solo", "collab"].map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setBaseType(type as "solo" | "collab")}
+                      className={`py-[5px] px-4 rounded-full text-[10px] font-small transition-colors ${
+                        baseType === type
+                          ? "border border-gray-300 font-medium shadow-md"
+                          : "bg-white border border-gray-200 hover:bg-gray-100"
+                      }`}
+                    >
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
                     </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setFilter("trending")} className="text-[10px]">Trending</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("most-viewed")} className="text-[10px]">Most Viewed</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("upcoming")} className="text-[10px]">Upcoming</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("ongoing")} className="text-[10px]">Ongoing</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("ended")} className="text-[10px]">Ended</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  ))}
+                </div>
 
-                {/* Create Button */}
-                <button
-                  className="py-[5px] px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
-                  onClick={() => navigate("/add-exhibit")}
-                >
-                  <i className="bx bx-plus text-xs"></i>
-                  Create
-                </button>
+                {/* FILTER DROPDOWN */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Art Category Dropdown */}
+                  <ArtCategorySelect selectedCategory={selectedCategory} onChange={setSelectedCategory} />
+
+                  {/* Filter Dropdown */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="py-1 px-4 rounded-full text-[10px] border border-gray-300">
+                        <i className="bx bx-sort text-xs mr-1.5"></i>
+                        {{
+                          trending: "Trending",
+                          "most-viewed": "Most Viewed",
+                          upcoming: "Upcoming",
+                          ongoing: "Ongoing",
+                          ended: "Ended",
+                        }[filter] || "Filter"}
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setFilter("trending")} className="text-[10px]">
+                        Trending
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setFilter("most-viewed")} className="text-[10px]">
+                        Most Viewed
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setFilter("upcoming")} className="text-[10px]">
+                        Upcoming
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setFilter("ongoing")} className="text-[10px]">
+                        Ongoing
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setFilter("ended")} className="text-[10px]">
+                        Ended
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {/* Create Button */}
+                  <button
+                    className="py-[5px] px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
+                    onClick={() => navigate("/add-exhibit")}
+                  >
+                    <i className="bx bx-plus text-xs"></i>
+                    Create
+                  </button>
+                </div>
               </div>
-
             </div>
-          </div>
 
-          {/* Exhibit Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-5 lg:pb-4">
-            {isLoading
-              ? Array.from({ length: 8 }).map((_, i) => <ExhibitCardSkeleton key={i} />)
-              : sortedExhibits.map((exhibit) => (
-                  <ExhibitCard
-                    key={exhibit.id}
-                    exhibit={{
-                      ...exhibit,
-                      ownerId: exhibit.ownerId,
-                      category: exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1),
-                    }}
-                    onClick={() => navigate(`/view-exhibit/${exhibit.id}`)}
-                  />
-                ))}
-          </div>
+            {/* Exhibit Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-5 lg:pb-4">
+              {isLoading
+                ? Array.from({ length: 8 }).map((_, i) => <ExhibitCardSkeleton key={i} />)
+                : sortedExhibits.map((exhibit) => (
+                    <ExhibitCard
+                      key={exhibit.id}
+                      exhibit={{
+                        ...exhibit,
+                        ownerId: exhibit.ownerId,
+                        category: exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1),
+                      }}
+                      onClick={() => navigate(`/view-exhibit/${exhibit.id}`)}
+                    />
+                  ))}
+            </div>
+          </ActiveAccountOnly>
         </div>
       </div>
       <Footer />

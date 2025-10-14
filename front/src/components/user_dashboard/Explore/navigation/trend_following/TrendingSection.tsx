@@ -1,5 +1,5 @@
 import ArtCard from "@/components/user_dashboard/Explore/cards/ArtCard";
-import ArtCardSkeleton from "@/components/skeletons/ArtCardSkeleton";
+import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
 import React, { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import useTrendingArtworks from "@/hooks/artworks/trending_artworks/useTrendingArtwork";

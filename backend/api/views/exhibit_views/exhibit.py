@@ -50,7 +50,16 @@ class ExhibitListView(APIView):
 
 class ExhibitCardListView(APIView):
     def get(self, request):
+        # Get deactivated user IDs to exclude their content
+        deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
+        scheduled_deletion_user_ids = User.objects(user_status__iexact="scheduled_for_deletion").scalar('id')
+        
         exhibits = Exhibit.objects.filter(visibility='Public')
+        
+        # Exclude exhibits from deactivated and scheduled for deletion users
+        if deactivated_user_ids or scheduled_deletion_user_ids:
+            excluded_user_ids = list(deactivated_user_ids) + list(scheduled_deletion_user_ids)
+            exhibits = exhibits.filter(owner__nin=excluded_user_ids)
         
         # Filter out hidden exhibits for the current user
         if request.user.is_authenticated:

@@ -9,3 +9,14 @@ class UserSession(Document):
     user_agent = StringField()
     is_current = BooleanField(default=False)
     created_at = DateTimeField(default=datetime.utcnow)
+
+    meta = {
+        'collection': 'user_sessions',
+        'indexes': [
+            'user',
+            'is_current',
+            'created_at',
+            ('user', 'device'),
+            ('user', 'created_at'),
+        ]
+    }

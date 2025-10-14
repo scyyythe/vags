@@ -4,19 +4,35 @@ import ActionButtons from "../components/ActionButtons";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
+import useDeactivateAccount from "@/hooks/mutate/users/useDeactivateAccount";
+import useSoftDeleteAccount from "@/hooks/mutate/users/useSoftDeleteAccount";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { toast } from "sonner";
-import DeleteConfirmationPopup from "../components/delete_deact_modals/DeleteConfirmationPopup";
 import DeactivateConfirmationPopup from "../components/delete_deact_modals/DeactivateConfirmationPopup";
+import SoftDeleteConfirmationPopup from "../components/delete_deact_modals/SoftDeleteConfirmationPopup";
 
 const AccountDetails = () => {
   const userId = getLoggedInUserId();
+
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isValidFullName = (fullName: string) => /^[a-zA-Z]+(?: [a-zA-Z]+)+$/.test(fullName.trim());
 
-  const { firstName, lastName, gender, address, dateOfBirth, email, isLoading, error } = useUserDetails(userId);
+  const {
+    firstName,
+    lastName,
+    gender,
+    address,
+    dateOfBirth,
+    email,
+    userStatus,
+    scheduledForDeletion,
+    isLoading,
+    error,
+  } = useUserDetails(userId);
   const { mutate: updateUser } = useUpdateUserDetails();
+  const { mutate: deactivateAccount } = useDeactivateAccount();
+  const { mutate: softDeleteAccount } = useSoftDeleteAccount();
 
   const { language: selectedLanguage } = useLanguage();
 
@@ -33,7 +49,7 @@ const AccountDetails = () => {
 
   // Popups
   const [showDeactivatePopup, setShowDeactivatePopup] = useState(false);
-  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [showSoftDeletePopup, setShowSoftDeletePopup] = useState(false);
 
   // Translations
   const accountInfoLabel = useAutoTranslation("Account Information", selectedLanguage);
@@ -46,8 +62,8 @@ const AccountDetails = () => {
   const translatedFullName = useAutoTranslation(formData.fullName || "Unknown", selectedLanguage);
   const translatedDateOfBirth = useAutoTranslation(formData.date_of_birth || "N/A", selectedLanguage);
   const translatedCountry = useAutoTranslation(formData.country || "Philippines", selectedLanguage);
-  const translatedEmail = useAutoTranslation(formData.email || "Unknown", selectedLanguage);
-  const translatedGender = useAutoTranslation(formData.gender || "Unknown", selectedLanguage);
+  const translatedEmail = useAutoTranslation(email || "Unknown", selectedLanguage);
+  const translatedGender = useAutoTranslation(gender || "Unknown", selectedLanguage);
   const translatedLanguage = useAutoTranslation(formData.language || "English", selectedLanguage);
 
   const deactivationDeletionLabel = useAutoTranslation("Deactivation and Deletion", selectedLanguage);
@@ -64,7 +80,7 @@ const AccountDetails = () => {
   const deactivateBtn = useAutoTranslation("Deactivate Account", selectedLanguage);
   const deleteAccountLabel = useAutoTranslation("Delete your data and account", selectedLanguage);
   const deleteDesc = useAutoTranslation(
-    "Permanently remove your account from the system, including all uploaded artworks, favorites, exhibition history, and profile details. This action is irreversible and your data cannot be recovered once deleted.",
+    "Schedule your account for deletion in 60 days. You can cancel this anytime by logging in again before the deletion date. After 60 days, your account and all data will be permanently deleted.",
     selectedLanguage
   );
   const deleteBtn = useAutoTranslation("Delete Account", selectedLanguage);
@@ -125,7 +141,7 @@ const AccountDetails = () => {
     form.append("first_name", updatedFirstName);
     form.append("last_name", updatedLastName);
     form.append("gender", formData.gender);
-    form.append("email", formData.email); 
+    form.append("email", formData.email);
     form.append("date_of_birth", formattedDob);
 
     const loadingToast = toast("Updating your details...", {
@@ -160,12 +176,42 @@ const AccountDetails = () => {
 
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
-          <EditableField label={fullNameLabel} value={translatedFullName} type="text" onChange={(value) => handleChange("fullName", value)} />
-          <EditableField label={countryLabel} value={translatedCountry} type="country" onChange={(value) => handleChange("country", value)} />
-          <EditableField label={genderLabel} value={translatedGender} type="gender" onChange={(value) => handleChange("gender", value)} />
-          <EditableField label={languageLabel} value={translatedLanguage} type="language" onChange={(value) => handleChange("language", value)} />
-          <EditableField label={dobLabel} value={translatedDateOfBirth} type="date" onChange={(value) => handleChange("date_of_birth", value)} />
-          <EditableField label={emailLabel} value={translatedEmail} type="email" onChange={(value) => handleChange("email", value)} />
+          <EditableField
+            label={fullNameLabel}
+            value={translatedFullName}
+            type="text"
+            onChange={(value) => handleChange("fullName", value)}
+          />
+          <EditableField
+            label={countryLabel}
+            value={translatedCountry}
+            type="country"
+            onChange={(value) => handleChange("country", value)}
+          />
+          <EditableField
+            label={genderLabel}
+            value={translatedGender}
+            type="gender"
+            onChange={(value) => handleChange("gender", value)}
+          />
+          <EditableField
+            label={languageLabel}
+            value={translatedLanguage}
+            type="language"
+            onChange={(value) => handleChange("language", value)}
+          />
+          <EditableField
+            label={dobLabel}
+            value={translatedDateOfBirth}
+            type="date"
+            onChange={(value) => handleChange("date_of_birth", value)}
+          />
+          <EditableField
+            label={emailLabel}
+            value={translatedEmail}
+            type="email"
+            onChange={(value) => handleChange("email", value)}
+          />
         </div>
       </div>
 
@@ -195,8 +241,8 @@ const AccountDetails = () => {
             <div className="grid grid-cols-2 gap-10">
               <p className="text-gray-600 mb-4 text-[11px]">{deleteDesc}</p>
               <button
-                onClick={() => setShowDeletePopup(true)}
-                className="bg-gray-200 font-medium text-[10px] hover:bg-gray-300 text-gray-800 rounded-sm w-32 h-9"
+                onClick={() => setShowSoftDeletePopup(true)}
+                className="bg-red-200 font-medium text-[10px] hover:bg-red-300 text-red-800 rounded-sm w-32 h-9"
               >
                 {deleteBtn}
               </button>
@@ -212,47 +258,54 @@ const AccountDetails = () => {
         isOpen={showDeactivatePopup}
         onCancel={() => setShowDeactivatePopup(false)}
         onConfirm={() => {
-          const form = new FormData();
-          form.append("status", "deactivated");
-          form.append("deactivated_at", new Date().toISOString());
+          setShowDeactivatePopup(false);
 
-          updateUser([userId, form], {
-            onSuccess: () => {
-              toast.success("Your account has been deactivated successfully.", { closeButton: true });
-              setShowDeactivatePopup(false);
-            },
-            onError: () => {
-              toast.error("Failed to deactivate your account.", { closeButton: true });
+          deactivateAccount({
+            userId,
+            data: {
+              user_status: "deactivated",
+              deactivated_at: new Date().toISOString(),
             },
           });
         }}
-        user={{ userStatus: status }}
+        user={{ userStatus: userStatus }}
         setUser={(updatedUser) => {
           if (updatedUser.userStatus === "active") {
-            const form = new FormData();
-            form.append("status", "active");
-            form.append("deactivated_at", "");
-
-            updateUser([userId, form], {
-              onSuccess: () => {
-                toast.success("Your account has been reactivated successfully!", { closeButton: true });
-                setShowDeactivatePopup(false);
+            deactivateAccount(
+              {
+                userId,
+                data: {
+                  user_status: "active",
+                  deactivated_at: undefined,
+                },
               },
-              onError: () => {
-                toast.error("Failed to reactivate account.", { closeButton: true });
-              },
-            });
+              {
+                onSuccess: () => {
+                  setShowDeactivatePopup(false);
+                },
+                onError: () => {
+                  // Error handling is done in the hook
+                },
+              }
+            );
           }
         }}
       />
 
-      <DeleteConfirmationPopup
-        isOpen={showDeletePopup}
-        onCancel={() => setShowDeletePopup(false)}
+      <SoftDeleteConfirmationPopup
+        isOpen={showSoftDeletePopup}
+        onCancel={() => setShowSoftDeletePopup(false)}
         onConfirm={() => {
-          toast.success("Your account has been deleted successfully.", { closeButton: true });
-          setShowDeletePopup(false);
+          setShowSoftDeletePopup(false);
+
+          softDeleteAccount({
+            userId,
+            data: {
+              action: "schedule_deletion",
+            },
+          });
         }}
+        user={{ userStatus: userStatus, scheduledForDeletion: scheduledForDeletion }}
       />
     </div>
   );

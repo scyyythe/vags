@@ -12,6 +12,8 @@ const useFavorite = (id: string, initialIsFavorite = false) => {
   }, [initialIsFavorite]);
 
   const handleFavorite = () => {
+    // Optimistic UI update - change color immediately
+    const previousState = isFavorite;
     setIsFavorite((prev) => !prev);
 
     apiClient
@@ -19,12 +21,18 @@ const useFavorite = (id: string, initialIsFavorite = false) => {
       .then((response) => {
         const { detail } = response.data;
 
+        // Update state based on server response
         setIsFavorite(detail !== "You have unsaved this artwork.");
         queryClient.invalidateQueries({ queryKey: ["artworks"] });
-        toast(detail || (isFavorite ? "Unsaved artwork." : "You have saved this artwork!"), { closeButton: true });
+        queryClient.invalidateQueries({ queryKey: ["bulkReportStatus"] });
+        queryClient.invalidateQueries({ queryKey: ["artworkReportStatus"] });
+        toast.success(detail || (previousState ? "Unsaved artwork." : "You have saved this artwork!"), {
+          closeButton: true,
+        });
       })
       .catch(() => {
-        setIsFavorite((prev) => !prev);
+        // Revert optimistic update on error
+        setIsFavorite(previousState);
         toast.error("Failed to save artwork");
       });
   };

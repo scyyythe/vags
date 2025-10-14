@@ -1,12 +1,4 @@
-import {
-  Pin,
-  VolumeX,
-  CheckCheck,
-  Check,
-  Archive,
-  Trash2,
-  MoreVertical,
-} from "lucide-react";
+import { Pin, VolumeX, CheckCheck, Check, Archive, Trash2, MoreVertical } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -56,11 +48,7 @@ export const ConversationList = ({
   };
 
   if (conversations.length === 0) {
-    return (
-      <div className="p-4 text-center text-gray-500 text-sm">
-        No conversations found
-      </div>
-    );
+    return <div className="p-4 text-center text-gray-500 text-sm">No conversations found</div>;
   }
 
   return (
@@ -98,79 +86,87 @@ export const ConversationList = ({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-1">
-                    {conversation.isPinned && (
-                      <Pin size={10} className="text-blue-600" />
-                    )}
-                    {conversation.isMuted && (
-                      <VolumeX size={10} className="text-gray-500" />
-                    )}
-                    <p className="text-xs font-medium text-gray-900 truncate">
-                      {conversation.participantName}
-                    </p>
+                    {conversation.isPinned && <Pin size={10} className="text-blue-600" />}
+                    {conversation.isMuted && <VolumeX size={10} className="text-gray-500" />}
+                    <p className="text-xs font-medium text-gray-900 truncate">{conversation.participantName}</p>
                   </div>
-                  <span className="text-[10px] text-gray-500">
-                    {formatTime(conversation.lastMessageTime)}
-                  </span>
+                  <span className="text-[10px] text-gray-500">{formatTime(conversation.lastMessageTime)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <p className="text-[10px] text-gray-600 truncate pr-2">
-                    {conversation.lastMessage}
-                  </p>
-                  {conversation.unreadCount > 0 && (
-                    <span className="inline-flex items-center justify-center px-2 py-1 text-[9px] font-medium leading-none text-white bg-blue-600 rounded-full">
-                      {conversation.unreadCount}
-                    </span>
-                  )}
+                  <div className="flex items-center space-x-1">
+                    <p className="text-[10px] text-gray-600 truncate pr-2">{conversation.lastMessage}</p>
+                  </div>
                 </div>
               </div>
 
               {/* MENU ICON - appears on hover */}
-              <div className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div
+                className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="p-1 bg-gray-200 rounded-full shadow-sm">
+                    <button className="p-1 bg-gray-200 rounded-full shadow-sm" onClick={(e) => e.stopPropagation()}>
                       <MoreVertical className="w-4 h-4 text-black " />
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-32 text-[10px]">
                     <DropdownMenuItem
                       className="text-[10px]"
-                      onClick={() => onMarkAsRead(conversation.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onMarkAsRead(conversation.id);
+                      }}
                     >
                       <CheckCheck className="mr-2 h-3 w-3" />
                       Mark as Read
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-[10px]"
-                      onClick={() => onMarkAsUnread(conversation.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onMarkAsUnread(conversation.id);
+                      }}
                     >
                       <Check className="mr-2 h-3 w-3" />
                       Mark as Unread
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-[10px]"
-                      onClick={() => onTogglePin(conversation.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onTogglePin(conversation.id);
+                      }}
                     >
                       <Pin className="mr-2 h-3 w-3" />
                       {conversation.isPinned ? "Unpin" : "Pin"}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-[10px]"
-                      onClick={() => onToggleMute(conversation.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleMute(conversation.id);
+                      }}
                     >
                       <VolumeX className="mr-2 h-3 w-3" />
                       {conversation.isMuted ? "Unmute" : "Mute"}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-[10px]"
-                      onClick={() => onToggleArchive(conversation.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleArchive(conversation.id);
+                      }}
                     >
                       <Archive className="mr-2 h-3 w-3" />
                       {conversation.isArchived ? "Unarchive" : "Archive"}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      onClick={() => onDeleteConversation(conversation.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteConversation(conversation.id);
+                      }}
                       className="text-red-600 text-[10px] hover:none"
                     >
                       <Trash2 className="mr-2 h-3 w-3" />

@@ -185,11 +185,17 @@ class PopularLightweightArtView(APIView):
             if request.user.is_authenticated and hasattr(request.user, 'blocked_users'):
                 blocked_user_ids = [user.id for user in request.user.blocked_users]
 
- 
+            # Get deactivated and scheduled for deletion user IDs to exclude their content
+            deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
+            scheduled_deletion_user_ids = User.objects(user_status__iexact="scheduled_for_deletion").scalar('id')
+            
+            # Combine blocked, deactivated, and scheduled deletion user IDs
+            all_excluded_ids = list(blocked_user_ids) + list(deactivated_user_ids) + list(scheduled_deletion_user_ids)
+            
             artworks = Art.objects(
                 visibility__iexact="public",
                 art_status__iexact="active",
-                artist__nin=blocked_user_ids
+                artist__nin=all_excluded_ids
             )
  
             artworks = [art for art in artworks if art.image_url and len(art.image_url) > 0]
@@ -302,10 +308,17 @@ class ArtBulkListView(generics.ListAPIView):
         if self.request.user.is_authenticated and hasattr(self.request.user, 'blocked_users'):
             blocked_user_ids = [user.id for user in self.request.user.blocked_users]
 
+        # Get deactivated and scheduled for deletion user IDs to exclude their content
+        deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
+        scheduled_deletion_user_ids = User.objects(user_status__iexact="scheduled_for_deletion").scalar('id')
+        
+        # Combine blocked, deactivated, and scheduled deletion user IDs
+        all_excluded_ids = list(blocked_user_ids) + list(deactivated_user_ids) + list(scheduled_deletion_user_ids)
+        
         artworks = Art.objects(
             visibility__iexact="public",
             art_status__in=valid_statuses,
-            artist__nin=blocked_user_ids
+            artist__nin=all_excluded_ids
         ).order_by('-created_at')
 
         # Filter out hidden artworks for the current user

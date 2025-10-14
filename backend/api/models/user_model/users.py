@@ -17,7 +17,7 @@ class User(Document):
     is_oauth_user = BooleanField(default=False)
     registered_via = StringField(choices=["google", "email", "other"], required=False)
 
-    firebase_uid = StringField(required=False, unique=True)  
+    firebase_uid = StringField(required=False, unique=True, sparse=True)  
     
     profile_picture = URLField(required=False)  
     cover_photo=URLField(required=False)  
@@ -28,6 +28,12 @@ class User(Document):
     date_of_birth = DateTimeField(required=False)  
 
     blocked_users = ListField(ReferenceField('User'))
+    deactivated_at = DateTimeField(required=False, null=True)
+    scheduled_for_deletion = DateTimeField(required=False, null=True)
+    
+    # Security fields for login lockout
+    failed_login_attempts = IntField(default=0)
+    locked_until = DateTimeField(required=False, null=True)
     
     def set_password(self, password):
          self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
@@ -48,6 +54,37 @@ class User(Document):
     @property
     def is_staff(self):
         return self.role == "Admin"
+    
+    def is_locked(self):
+        """Check if user account is currently locked"""
+        if self.locked_until and datetime.utcnow() < self.locked_until:
+            return True
+        return False
+    
+    def lock_account(self, minutes=30):
+        """Lock the account for specified minutes"""
+        self.locked_until = datetime.utcnow() + timedelta(minutes=minutes)
+        self.save()
+    
+    def unlock_account(self):
+        """Unlock the account and reset failed attempts"""
+        self.failed_login_attempts = 0
+        self.locked_until = None
+        self.save()
+    
+    def increment_failed_attempts(self):
+        """Increment failed login attempts and lock if threshold reached"""
+        self.failed_login_attempts += 1
+        if self.failed_login_attempts >= 5:
+            self.lock_account(minutes=30)  # Lock for 30 minutes
+        else:
+            self.save()
+    
+    def reset_failed_attempts(self):
+        """Reset failed login attempts on successful login"""
+        self.failed_login_attempts = 0
+        self.locked_until = None
+        self.save()
     
     def get_active_suspension(self):
         from api.models.admin.suspension.suspension_model import Suspension
@@ -73,5 +110,25 @@ class User(Document):
             ]}
         ).first()
         return active_ban is not None
+
+    def get_two_factor_auth(self):
+        """Get or create 2FA settings for this user"""
+        from api.models.user_model.two_factor_auth import TwoFactorAuth
+        return TwoFactorAuth.get_or_create_for_user(self)
+
+    @property
+    def two_factor_enabled(self):
+        """Check if 2FA is enabled for this user"""
+        return self.get_two_factor_auth().is_enabled
+
+    @property
+    def two_factor_method(self):
+        """Get 2FA method for this user"""
+        return self.get_two_factor_auth().method
+
+    @property
+    def two_factor_setup_completed(self):
+        """Check if 2FA setup is completed for this user"""
+        return self.get_two_factor_auth().setup_completed
 
 

@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import useNotifications from "@/hooks/notifications/useNotification";
+import NotificationSkeleton from "../../../skeletons/notifications/NotificationSkeleton";
 interface NotificationsProps {
   isOpen: boolean;
   onClose: () => void;
@@ -132,7 +133,7 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const navigate = useNavigate();
-  const { displayedNotifications } = useNotifications();
+  const { displayedNotifications, isLoading, error, refetch } = useNotifications();
   const handleNotification = () => {
     navigate("/settings/notifications");
     onClose();
@@ -192,7 +193,23 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
 
       <ScrollArea className="h-[480px] px-4 py-2">
         <div className="space-y-4 pr-2">
-          {displayedNotifications.length === 0 ? (
+          {isLoading ? (
+            <NotificationSkeleton />
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center h-full text-center text-xs text-muted-foreground mt-4">
+              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <Bell className="h-5 w-5 text-red-400" />
+              </div>
+              <h3 className="text-md font-medium text-gray-900 mb-1">Failed to load notifications</h3>
+              <p className="text-gray-500 max-w-sm text-xs mb-2">There was an error loading your notifications.</p>
+              <button
+                onClick={() => refetch()}
+                className="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          ) : displayedNotifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center text-xs text-muted-foreground mt-4">
               <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                 <Bell className="h-5 w-5 text-gray-400" />
