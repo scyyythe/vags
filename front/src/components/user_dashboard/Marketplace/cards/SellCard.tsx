@@ -1,4 +1,5 @@
 import React, { useState, useEffect, memo } from "react";
+import ReactDOM from "react-dom";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import SellMenu from "@/components/user_dashboard/own_profile/menu/sell_card/Menu";
@@ -342,7 +343,9 @@ const SellCard = ({
 
       </div>
 
-      {isModalOpen && (
+      {isModalOpen &&
+      typeof document !== "undefined" &&
+      ReactDOM.createPortal(
         <PreviewModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
@@ -360,8 +363,10 @@ const SellCard = ({
             price,
             default_paypal_email,
           }}
-        />
+        />,
+        document.body //ensures modal renders at the top of the DOM
       )}
+
     </div>
   );
 };

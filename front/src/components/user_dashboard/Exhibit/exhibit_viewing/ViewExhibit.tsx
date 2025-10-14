@@ -306,12 +306,12 @@ const ExhibitViewing = () => {
                       >
                         {/* Expand Icon */}
                         <div
-                          className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
+                          className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[120px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
                           onClick={() => setIsExpanded(true)}
                         >
-                          <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
-                          <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
-                            Expand
+                          <i className="bx bx-cube-alt text-[13px] mr-[6px]"></i>
+                          <span className="mr-2 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
+                            Explore Gallery
                           </span>
                         </div>
                       </div>
@@ -459,7 +459,7 @@ const ExhibitViewing = () => {
               });
 
               return relatedExhibits.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {relatedExhibits.map((card) => (
                     <ExhibitCard
                       key={card.id}
