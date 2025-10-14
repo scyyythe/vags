@@ -50,7 +50,10 @@ const Marketplace = () => {
   const editionOptions = ["Original (1 of 1)", "Limited Edition", "Open Edition"];
 
   const [showWishlist, setShowWishlist] = useState(false);
-  const { data: artCards = [], isLoading, error, refetch } = useFetchArtCards();
+  const { data: artCards, isLoading, error, refetch } = useFetchArtCards();
+
+  // Ensure artCards is always an array
+  const safeArtCards = Array.isArray(artCards) ? artCards : [];
 
   const { wishlist, likedItems, removeFromWishlist, toggleWishlist, isLoading: wishlistApiLoading } = useWishlist();
 
@@ -80,7 +83,7 @@ const Marketplace = () => {
           if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
           return true;
         })
-      : artCards
+      : safeArtCards
           .filter((artwork) => {
             const isSold = artwork.art_status === "Sold";
             const isOpenEdition = artwork.edition === "Open Edition";
@@ -268,10 +271,20 @@ const Marketplace = () => {
                       )}
                     </div>
                   )}
-                  {selectedCategoryFilter !== "Following" && filteredArtCards.length === 0 && (
-                    <p className="col-span-full text-xs text-gray-500 text-center">
-                      No artworks found for this filter.
-                    </p>
+                  {selectedCategoryFilter !== "Following" && filteredArtCards.length === 0 && !isLoading && (
+                    <div className="col-span-full text-center py-8">
+                      <p className="text-xs text-gray-500 mb-2">
+                        {error ? "Error loading artworks. Please try again." : "No artworks found for this filter."}
+                      </p>
+                      {error && (
+                        <button
+                          onClick={() => refetch()}
+                          className="text-xs text-blue-600 hover:text-blue-800 underline"
+                        >
+                          Retry
+                        </button>
+                      )}
+                    </div>
                   )}
                   {filteredArtCards.map((artwork) => {
                     const isOwner = artwork.artistId === loggedInUserId;
