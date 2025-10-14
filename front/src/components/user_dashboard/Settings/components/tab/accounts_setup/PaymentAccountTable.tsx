@@ -1,6 +1,7 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   AlertDialog,
@@ -29,6 +30,34 @@ export const PaymentAccountTable: React.FC<PaymentAccountTableProps> = ({
   onDeleteAccount,
   onSetDefault,
 }) => {
+  const { language: selectedLanguage } = useLanguage();
+  // Translatable texts
+  const providerLabel = useAutoTranslation("Provider", selectedLanguage);
+  const accountLabel = useAutoTranslation("Account", selectedLanguage);
+  const statusLabel = useAutoTranslation("Status", selectedLanguage);
+  const addedLabel = useAutoTranslation("Added", selectedLanguage);
+  const actionsLabel = useAutoTranslation("Actions", selectedLanguage);
+  const defaultLabel = useAutoTranslation("Default", selectedLanguage);
+  const setDefaultLabel = useAutoTranslation("Set Default", selectedLanguage);
+  const editLabel = useAutoTranslation("Edit", selectedLanguage);
+  const deleteLabel = useAutoTranslation("Delete", selectedLanguage);
+  const deletePaymentTitle = useAutoTranslation("Delete Payment Account", selectedLanguage);
+  const deletePaymentDescription = useAutoTranslation("Are you sure you want to delete this payment account? This action cannot be undone.", selectedLanguage);
+  const cancelLabel = useAutoTranslation("Cancel", selectedLanguage);
+  const confirmDeleteLabel = useAutoTranslation("Delete", selectedLanguage);
+  const verifiedLabel = useAutoTranslation("verified", selectedLanguage);
+  const pendingLabel = useAutoTranslation("pending", selectedLanguage);
+  const notVerifiedLabel = useAutoTranslation("not verified", selectedLanguage);
+  const naLabel = useAutoTranslation("N/A", selectedLanguage);
+
+  // Provider names
+  const paypalLabel = useAutoTranslation("PayPal", selectedLanguage);
+  const stripeLabel = useAutoTranslation("Stripe", selectedLanguage);
+  const bankLabel = useAutoTranslation("Bank Transfer", selectedLanguage);
+  const gcashLabel = useAutoTranslation("GCash", selectedLanguage);
+  const payoneerLabel = useAutoTranslation("Payoneer", selectedLanguage);
+  const cardLabel = useAutoTranslation("Credit/Debit Card", selectedLanguage);
+
   const paymentMethodIcons = {
     paypal: <DollarSign className="w-3 h-3 text-red-500" />,
     stripe: <CreditCard className="w-3 h-3 text-red-500" />,
@@ -49,20 +78,33 @@ export const PaymentAccountTable: React.FC<PaymentAccountTableProps> = ({
     }
   };
 
+  const getStatusText = (status: PaymentAccount["status"]) => {
+    switch (status) {
+      case "verified":
+        return verifiedLabel;
+      case "pending":
+        return pendingLabel;
+      case "not_verified":
+        return notVerifiedLabel;
+      default:
+        return pendingLabel;
+    }
+  };
+
   const getProviderName = (type: PaymentAccount["type"]) => {
     switch (type) {
       case "paypal":
-        return "PayPal";
+        return paypalLabel;
       case "stripe":
-        return "Stripe";
+        return stripeLabel;
       case "bank":
-        return "Bank Transfer";
+        return bankLabel;
       case "gcash":
-        return "GCash";
+        return gcashLabel;
       case "payoneer":
-        return "Payoneer";
+        return payoneerLabel;
       case "card":
-        return "Credit/Debit Card";
+        return cardLabel;
     }
   };
 
@@ -71,13 +113,14 @@ export const PaymentAccountTable: React.FC<PaymentAccountTableProps> = ({
       <Table>
         <TableHeader>
           <TableRow className="bg-gray-100">
-            <TableHead className="text-[11px]">Provider</TableHead>
-            <TableHead className="text-[11px]">Account</TableHead>
-            <TableHead className="text-[11px]">Status</TableHead>
-            <TableHead className="text-[11px]">Added</TableHead>
-            <TableHead className="text-right text-[11px]">Actions</TableHead>
+            <TableHead className="text-[11px]">{providerLabel}</TableHead>
+            <TableHead className="text-[11px]">{accountLabel}</TableHead>
+            <TableHead className="text-[11px]">{statusLabel}</TableHead>
+            <TableHead className="text-[11px]">{addedLabel}</TableHead>
+            <TableHead className="text-right text-[11px]">{actionsLabel}</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
           {accounts.map((account) => (
             <TableRow key={account.id} className="hover:bg-gray-50">
@@ -88,7 +131,9 @@ export const PaymentAccountTable: React.FC<PaymentAccountTableProps> = ({
                   </div>
                   <div>
                     <div className="font-medium text-[11px] text-gray-800">{getProviderName(account.type)}</div>
-                    <div className="text-[10px] text-gray-500">{account.name}</div>
+                    <div className="text-[10px] text-gray-500">
+                      {useAutoTranslation(account.name || "", selectedLanguage)}
+                    </div>
                   </div>
                 </div>
               </TableCell>
@@ -98,17 +143,17 @@ export const PaymentAccountTable: React.FC<PaymentAccountTableProps> = ({
                   {account.isDefault && (
                     <Badge variant="outline" className="w-fit mt-1 gap-1 text-[10px] border-gray-300">
                       <Shield className="w-3 h-3" />
-                      Default
+                      {defaultLabel}
                     </Badge>
                   )}
                 </div>
               </TableCell>
               <TableCell>
                 <span className={getStatusColor(account.status || "pending")}>
-                  {(account.status || "pending").replace("_", " ")}
+                  {getStatusText(account.status || "pending")}
                 </span>
               </TableCell>
-              <TableCell className="text-gray-500 text-[11px]">{account.dateAdded || "N/A"}</TableCell>
+              <TableCell className="text-gray-500 text-[11px]">{account.dateAdded || naLabel}</TableCell>
 
               <TableCell className="text-right">
                 <div className="flex items-center justify-end gap-6">
@@ -117,7 +162,7 @@ export const PaymentAccountTable: React.FC<PaymentAccountTableProps> = ({
                       onClick={() => onSetDefault(account.id)}
                       className="text-[10px] text-blue-600 hover:underline px-1"
                     >
-                      Set Default
+                      {setDefaultLabel}
                     </button>
                   )}
                   <button
@@ -125,7 +170,7 @@ export const PaymentAccountTable: React.FC<PaymentAccountTableProps> = ({
                     className="flex text-[10px] text-gray-700 hover:underline gap-1 px-1"
                   >
                     <Edit3 className="w-3 h-3 relative top-1" />
-                    Edit
+                    {editLabel}
                   </button>
 
                   {/* Delete Confirmation Dialog */}
@@ -133,27 +178,27 @@ export const PaymentAccountTable: React.FC<PaymentAccountTableProps> = ({
                     <AlertDialogTrigger asChild>
                       <button className="flex text-[10px] text-red-500 hover:underline gap-1 px-1">
                         <Trash2 className="w-3 h-3 relative top-1" />
-                        Delete
+                        {deleteLabel}
                       </button>
                     </AlertDialogTrigger>
                     <AlertDialogContent className="sm:max-w-[350px] bg-opacity-60">
                       <AlertDialogHeader className="mb-2">
-                        <AlertDialogTitle className="text-[13px] text-center">Delete Payment Account</AlertDialogTitle>
+                        <AlertDialogTitle className="text-[13px] text-center">{deletePaymentTitle}</AlertDialogTitle>
                         <AlertDialogDescription className="text-[11px] text-center">
-                          Are you sure you want to delete "{account.name}"? This action cannot be undone.
+                          {deletePaymentDescription}
                         </AlertDialogDescription>
                       </AlertDialogHeader>
 
                       {/* Centered Buttons */}
                       <div className="flex items-center justify-center gap-4">
                         <AlertDialogCancel className="w-full rounded-full text-[11px] bg-gray-300">
-                          Cancel
+                          {cancelLabel}
                         </AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() => onDeleteAccount(account.id)}
                           className="w-full rounded-full bg-red-700 text-white hover:bg-red-600 text-[11px]"
                         >
-                          Delete
+                          {confirmDeleteLabel}
                         </AlertDialogAction>
                       </div>
                     </AlertDialogContent>

@@ -26,10 +26,7 @@ const PaymentAccountsTab = () => {
   const myPaymentAccountsLabel = useAutoTranslation("My Payment Accounts", selectedLanguage);
   const addNewPaymentMethodLabel = useAutoTranslation("Add New Payment Method", selectedLanguage);
   const editPaymentMethodLabel = useAutoTranslation("Edit Payment Method", selectedLanguage);
-  const addNewPaymentMethodDesc = useAutoTranslation(
-    "Connect a new payment account to receive funds",
-    selectedLanguage
-  );
+  const addNewPaymentMethodDesc = useAutoTranslation("Connect a new payment account to receive funds", selectedLanguage);
   const editPaymentMethodDesc = useAutoTranslation("Update your payment account details", selectedLanguage);
   const setAsDefaultLabel = useAutoTranslation("Set as default payment account", selectedLanguage);
   const updateAccountLabel = useAutoTranslation("Update Account", selectedLanguage);
@@ -38,15 +35,9 @@ const PaymentAccountsTab = () => {
   const addFirstAccountLabel = useAutoTranslation("Add your first payment method to get started", selectedLanguage);
   const paymentInfoLabel = useAutoTranslation("Payment Information", selectedLanguage);
   const verificationProcessLabel = useAutoTranslation("Verification Process", selectedLanguage);
-  const verificationDescLabel = useAutoTranslation(
-    "New payment accounts require verification before they can receive funds. This typically takes 1-3 business days.",
-    selectedLanguage
-  );
+  const verificationDescLabel = useAutoTranslation("New payment accounts require verification before they can receive funds. This typically takes 1-3 business days.", selectedLanguage);
   const securityLabel = useAutoTranslation("Security", selectedLanguage);
-  const securityDescLabel = useAutoTranslation(
-    "Your payment information is encrypted and stored securely. We only display masked account details for your privacy.",
-    selectedLanguage
-  );
+  const securityDescLabel = useAutoTranslation("Your payment information is encrypted and stored securely. We only display masked account details for your privacy.", selectedLanguage);
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState<PaymentAccount | null>(null);
