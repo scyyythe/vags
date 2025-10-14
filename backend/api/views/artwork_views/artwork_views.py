@@ -27,6 +27,36 @@ from rest_framework.exceptions import NotFound
 import os
 from django.conf import settings
 import cloudinary.uploader
+from rest_framework.pagination import PageNumberPagination
+from api.utils.cache_utils import get_cached_data, set_cache_data
+from api.utils.query_optimization import (
+    get_user_exclusions, 
+    get_popular_artworks, 
+    prefetch_artwork_relations,
+    build_artwork_query_filters,
+    get_artworks_for_sale
+)
+
+class ArtworkPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+def clear_artwork_caches():
+    """Clear all artwork-related caches"""
+    from api.serializers.artwork_s.artwork_serializers import ArtSerializer
+    ArtSerializer.clear_cache()
+    
+    # Clear view-level caches
+    cache_keys_to_clear = [
+        "popular_artworks_top5",
+        # Add more cache keys as needed
+    ]
+    
+    for key in cache_keys_to_clear:
+        from api.utils.cache_utils import delete_cache_data
+        delete_cache_data(key)
+
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
     serializer_class = ArtSerializer
@@ -48,6 +78,8 @@ class ArtCreateView(generics.ListCreateAPIView):
         try:
             art = serializer.save(artist=mongo_user)
             print("✅ Art saved:", art.id)
+            # Clear caches after creating new artwork
+            clear_artwork_caches()
         except Exception as e:
             print("❌ Error during serializer.save():", e)
             raise ValidationError({"error": str(e)})
@@ -120,6 +152,8 @@ class UpdateArtworkView(APIView):
         serializer = ArtSerializer(art, data=request.data, partial=True)
         if serializer.is_valid():
             updated_art = serializer.save()
+            # Clear caches after updating artwork
+            clear_artwork_caches()
             return Response(ArtSerializer(updated_art).data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -149,31 +183,38 @@ class DeleteArtworkImageView(APIView):
 class ArtListView(generics.ListAPIView):
     serializer_class = ArtSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = ArtworkPagination
 
     def get_queryset(self):
-        blocked_user_ids = []
-        if self.request.user.is_authenticated and hasattr(self.request.user, 'blocked_users'):
-            blocked_user_ids = [user.id for user in self.request.user.blocked_users]
-
-        artworks = Art.objects(
-            visibility__iexact="public",
-            art_status__iexact="active",
-            artist__nin=blocked_user_ids
-        ).order_by('-created_at')
-
-        # Filter out hidden artworks for the current user
-        if self.request.user.is_authenticated:
-            try:
-                user = User.objects.get(id=ObjectId(self.request.user.id))
-                hidden_contents = HiddenContent.objects.filter(user=user, content_type='artwork')
-                if hidden_contents:
-                    hidden_artwork_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
-                    artworks = artworks.filter(id__nin=hidden_artwork_ids)
-            except Exception as e:
-                # If there's an error getting hidden artworks, just continue without filtering
-                pass
-
-        return artworks
+        # Use optimized query building
+        query_filters = build_artwork_query_filters(
+            user=self.request.user,
+            visibility='public',
+            art_status='active'
+        )
+        
+        artworks = Art.objects(**query_filters).order_by('-created_at')
+        
+        # Prefetch data for serialization
+        artworks_list = list(artworks)
+        prefetch_relations = prefetch_artwork_relations(artworks_list)
+        
+        # Update serializer caches with prefetched data
+        if prefetch_relations:
+            # Update likes cache
+            for like_data in prefetch_relations['likes_data']:
+                ArtSerializer._likes_cache[like_data['_id']] = like_data['count']
+            
+            # Set likes count to 0 for artworks without likes
+            for artwork in artworks_list:
+                if artwork.id not in ArtSerializer._likes_cache:
+                    ArtSerializer._likes_cache[artwork.id] = 0
+            
+            # Update PayPal cache
+            for account in prefetch_relations['paypal_accounts']:
+                ArtSerializer._paypal_cache[account.user.id] = account.account_info
+        
+        return artworks_list
 
 
 class PopularLightweightArtView(APIView):
@@ -181,70 +222,69 @@ class PopularLightweightArtView(APIView):
 
     def get(self, request):
         try:
-            blocked_user_ids = []
-            if request.user.is_authenticated and hasattr(request.user, 'blocked_users'):
-                blocked_user_ids = [user.id for user in request.user.blocked_users]
-
-            # Get deactivated and scheduled for deletion user IDs to exclude their content
-            deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
-            scheduled_deletion_user_ids = User.objects(user_status__iexact="scheduled_for_deletion").scalar('id')
+            # Use optimized function to get popular artworks
+            top_artworks = get_popular_artworks(limit=5, user=request.user)
             
-            # Combine blocked, deactivated, and scheduled deletion user IDs
-            all_excluded_ids = list(blocked_user_ids) + list(deactivated_user_ids) + list(scheduled_deletion_user_ids)
+            # Prefetch relations for serialization
+            prefetch_relations = prefetch_artwork_relations(top_artworks)
             
-            artworks = Art.objects(
-                visibility__iexact="public",
-                art_status__iexact="active",
-                artist__nin=all_excluded_ids
-            )
- 
-            artworks = [art for art in artworks if art.image_url and len(art.image_url) > 0]
-     
-            artworks_sorted = sorted(
-                artworks,
-                key=lambda art: Like.objects.filter(art=art).count(),
-                reverse=True
-            )
-
-            top_artworks = artworks_sorted[:5] if artworks_sorted else artworks[:5]
+            # Update serializer caches with prefetched data
+            if prefetch_relations:
+                # Update likes cache
+                for like_data in prefetch_relations['likes_data']:
+                    LightweightArtSerializer._likes_cache[like_data['_id']] = like_data['count']
+                
+                # Set likes count to 0 for artworks without likes
+                for artwork in top_artworks:
+                    if artwork.id not in LightweightArtSerializer._likes_cache:
+                        LightweightArtSerializer._likes_cache[artwork.id] = 0
+                
+                # Update PayPal cache
+                for account in prefetch_relations['paypal_accounts']:
+                    LightweightArtSerializer._paypal_cache[account.user.id] = account.account_info
 
             serializer = LightweightArtSerializer(top_artworks, many=True)
             return Response(serializer.data)
 
         except Exception as e:
-        
             return Response({"error": str(e)}, status=500)
 
 
 class ArtCardListView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = ArtworkPagination
 
     def get(self, request):
         try:
-            blocked_user_ids = []
-            if request.user.is_authenticated and hasattr(request.user, 'blocked_users'):
-                blocked_user_ids = [user.id for user in request.user.blocked_users]
+            # Use optimized function to get artworks for sale
+            artworks_list = get_artworks_for_sale(user=request.user)
+            
+            # Prefetch relations for serialization
+            prefetch_relations = prefetch_artwork_relations(artworks_list)
+            
+            # Update serializer caches with prefetched data
+            if prefetch_relations:
+                # Update likes cache
+                for like_data in prefetch_relations['likes_data']:
+                    ArtCardSerializer._likes_cache[like_data['_id']] = like_data['count']
+                
+                # Set likes count to 0 for artworks without likes
+                for artwork in artworks_list:
+                    if artwork.id not in ArtCardSerializer._likes_cache:
+                        ArtCardSerializer._likes_cache[artwork.id] = 0
+                
+                # Update PayPal cache
+                for account in prefetch_relations['paypal_accounts']:
+                    ArtCardSerializer._paypal_cache[account.user.id] = account.account_info
+            
+            # Apply pagination manually since this is an APIView
+            paginator = self.pagination_class()
+            page = paginator.paginate_queryset(artworks_list, request)
+            if page is not None:
+                serializer = ArtCardSerializer(page, many=True)
+                return paginator.get_paginated_response(serializer.data)
 
-            query = Q(visibility__iexact="public") & Q(artist__nin=blocked_user_ids) & (
-                Q(art_status__iexact="onSale") |
-                (Q(edition__iexact="Open Edition") & Q(quantity__gt=0))
-            )
-
-            artworks = Art.objects(query).order_by("-created_at")
-
-            # Filter out hidden artworks for the current user
-            if request.user.is_authenticated:
-                try:
-                    user = User.objects.get(id=ObjectId(request.user.id))
-                    hidden_artworks = HiddenArtwork.objects.filter(user=user)
-                    if hidden_artworks:
-                        hidden_artwork_ids = [ha.artwork.id for ha in hidden_artworks]
-                        artworks = artworks.filter(id__nin=hidden_artwork_ids)
-                except Exception as e:
-                    # If there's an error getting hidden artworks, just continue without filtering
-                    pass
-
-            serializer = ArtCardSerializer(artworks, many=True)
+            serializer = ArtCardSerializer(artworks_list, many=True)
             return Response(serializer.data)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
