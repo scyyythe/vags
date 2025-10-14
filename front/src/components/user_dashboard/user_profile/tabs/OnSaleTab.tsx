@@ -59,20 +59,32 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const [activeSubGroup, setActiveSubGroup] = useState<"listings" | "soldArtworks">("listings");
   const [subTab, setSubTab] = useState("available");
 
-  // Reset subTab to "available" if it's "unlisted" and viewing another user's profile
   React.useEffect(() => {
     if (!isOwnProfile && subTab === "unlisted") {
       setSubTab("available");
     }
   }, [isOwnProfile, subTab]);
 
-  // Handle navigation state to set specific tabs
+  const [highlightedOrderId, setHighlightedOrderId] = useState<string | null>(null);
+
   React.useEffect(() => {
     if (navigationState) {
-      const { mainTab: navMainTab, activeSubGroup: navActiveSubGroup, subTab: navSubTab } = navigationState;
+      const {
+        mainTab: navMainTab,
+        activeSubGroup: navActiveSubGroup,
+        subTab: navSubTab,
+        highlightedOrderId: navHighlightedOrderId,
+      } = navigationState;
       if (navMainTab) setMainTab(navMainTab);
       if (navActiveSubGroup) setActiveSubGroup(navActiveSubGroup);
       if (navSubTab) setSubTab(navSubTab);
+      if (navHighlightedOrderId) {
+        setHighlightedOrderId(navHighlightedOrderId);
+
+        setTimeout(() => {
+          setHighlightedOrderId(null);
+        }, 5000);
+      }
     }
   }, [navigationState]);
   // const [activeSubTab, setActiveSubTab] = useState("awaiting_payment");
@@ -113,9 +125,8 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [artworks, setArtworks] = useState<any[]>([]); 
+  const [artworks, setArtworks] = useState<any[]>([]);
   const [activeSubTab, setActiveSubTab] = useState("sold");
-
 
   const handleViewDetails = (artwork: any) => {
     setSelectedOrder(artwork);
@@ -611,12 +622,10 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
     setShowReviewDetailsModal(true);
   };
 
- const handleRelist = (id: string) => {
+  const handleRelist = (id: string) => {
     // Fade out the sold card first
     setArtworks((prevArtworks) =>
-      prevArtworks.map((artwork) =>
-        artwork.id === id ? { ...artwork, isFading: true } : artwork
-      )
+      prevArtworks.map((artwork) => (artwork.id === id ? { ...artwork, isFading: true } : artwork))
     );
 
     // After fade animation, move to "active" list
@@ -888,6 +897,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                     ? new Date(new Date(order.created_at).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()
                     : "Unknown"
                 }
+                isHighlighted={highlightedOrderId === order.id}
                 onViewDetails={() => handleViewDetails(order)}
                 onReview={() =>
                   handleReviewClick(
