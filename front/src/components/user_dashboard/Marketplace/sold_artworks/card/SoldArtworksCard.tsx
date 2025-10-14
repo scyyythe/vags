@@ -35,6 +35,7 @@ interface SoldArtworkCardProps {
     photos: string[];
     reviewDate: string;
   };
+  isHighlighted?: boolean;
   onViewDetails: (artwork: any) => void;
   onContactBuyer: (artwork: any) => void;
   onMarkAsShipped?: (artwork: any) => void;
@@ -60,6 +61,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
   artwork,
   commission = 0.1,
   review,
+  isHighlighted = false,
   onViewDetails,
   onContactBuyer,
   onMarkAsShipped,
@@ -279,7 +281,9 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
   const statusBadge = getStatusBadge();
 
   return (
-    <Card className="p-4 hover:shadow-md transition-shadow">
+    <Card
+      className={`p-4 hover:shadow-md transition-shadow ${isHighlighted ? "border-4 border-blue-500 shadow-lg" : ""}`}
+    >
       <div className="flex gap-4">
         {/* Artwork Image */}
         <div className="flex-shrink-0">

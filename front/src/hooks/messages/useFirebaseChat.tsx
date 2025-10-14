@@ -115,8 +115,8 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
             isArchived: false,
             isPinned: false,
             isMuted: false,
-            deletedBy: [],
-            deletedAt: {},
+            deletedBy: [], // Initialize as empty array
+            deletedAt: {}, // Initialize as empty object
             mutedBy: [],
             pinnedBy: [],
             archivedBy: [],
@@ -143,7 +143,8 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
           const deletedBy = convData.deletedBy || [];
           const deletedAt = convData.deletedAt || {};
 
-          // If the receiver had deleted this conversation, restore it for them
+          // Only restore the conversation for the receiver if they deleted it
+          // Don't restore it for the sender (current user) if they deleted it
           if (deletedBy.includes(receiverId)) {
             const updatedDeletedBy = deletedBy.filter((id: string) => id !== receiverId);
             const updatedDeletedAt = { ...deletedAt };
@@ -154,6 +155,11 @@ export const useFirebaseChat = (conversationId: string | null, currentUserId: st
               deletedAt: updatedDeletedAt,
             });
           }
+
+          // If the current user (sender) had deleted this conversation, keep it deleted for them
+          // This means the conversation won't appear in their chat list
+          // The conversation will remain deleted for the sender, so they won't see it in their chat list
+          // Only the receiver will see the conversation if they didn't delete it
         }
 
         const msgRef = await addDoc(collection(db, "conversations", convoId, "messages"), message);

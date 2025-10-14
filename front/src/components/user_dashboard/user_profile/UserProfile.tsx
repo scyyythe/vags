@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
 import ProfileHeader from "@/components/user_dashboard/user_profile/components/ProfileHeader";
@@ -11,6 +11,7 @@ import useOwnedArtworksCount from "@/hooks/artworks/fetch_artworks/useOwnedArtwo
 
 const Index = () => {
   const { id } = useParams();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState("created");
   const { firstName, lastName, profilePicture, cover_photo, email } = useUserDetails(id);
 
@@ -25,6 +26,16 @@ const Index = () => {
       setCreatedArtworksCount(userArtworks.length);
     }
   }, [id, data, isLoading]);
+
+  // Handle navigation state to set specific tabs
+  useEffect(() => {
+    if (location.state) {
+      const { activeTab: stateActiveTab } = location.state as { activeTab?: string };
+      if (stateActiveTab) {
+        setActiveTab(stateActiveTab);
+      }
+    }
+  }, [location.state]);
   return (
     <>
       <div className="min-h-screen flex flex-col">
