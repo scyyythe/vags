@@ -48,6 +48,21 @@ class Auction(Document):
     viewed_by = ListField(ReferenceField(User, reverse_delete_rule=CASCADE), default=[])
     updated_at = DateTimeField(default=datetime.utcnow)
 
+    meta = {
+        'collection': 'auctions',
+        'indexes': [
+            'status',
+            'visibility',
+            'end_time',
+            'start_time',
+            ('status', 'visibility'),  # For active public auctions
+            ('status', 'end_time'),    # For expired auction queries
+            ('artwork', 'status'),     # For artwork-based queries
+            ('visibility', 'status', 'end_time'),  # Optimized for main listing
+            ('status', 'visibility', 'updated_at'),  # For sorting by update time
+        ]
+    }
+
     def close_auction(self):
         from api.models.interaction_model.notification import Notification
         from django.utils.timezone import now as dj_now

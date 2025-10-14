@@ -134,23 +134,25 @@ class AuctionListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+  
         now_utc = now()
 
         try:
+         
             expired_auctions = Auction.objects(
                 status=AuctionStatus.ON_GOING.value,
                 end_time__lt=now_utc
-            )
+            ).limit(10) 
+            
             for auction in expired_auctions:
                 try:
                     auction.close_auction()
-                    auction.reload()
                 except Exception as e:
                     print(f"Error closing auction {auction.id}: {e}")
         except Exception as e:
             print(f"Error fetching expired auctions: {e}")
 
-       
+ 
         blocked_user_ids = []
         user = self.request.user
         if user.is_authenticated and hasattr(user, "blocked_users"):
@@ -160,20 +162,14 @@ class AuctionListView(generics.ListAPIView):
                 print(f"Error reading blocked users: {e}")
                 blocked_user_ids = []
 
-        # Get deactivated user IDs to exclude their content
-        deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
-        scheduled_deletion_user_ids = User.objects(user_status__iexact="scheduled_for_deletion").scalar('id')
-        all_blocked_ids = list(blocked_user_ids) + list(deactivated_user_ids) + list(scheduled_deletion_user_ids)
+ 
+        excluded_user_ids = list(User.objects.filter(
+            user_status__in=["deactivated", "scheduled_for_deletion"]
+        ).scalar('id'))
         
-        valid_artwork_ids = None
-        if all_blocked_ids:
-            try:
-                valid_artworks = Art.objects(artist__nin=all_blocked_ids).only("id")
-                valid_artwork_ids = [art.id for art in valid_artworks]
-            except Exception as e:
-                print(f"Error filtering artworks: {e}")
+        all_blocked_ids = list(blocked_user_ids) + excluded_user_ids
+        
 
-       
         query = {}
         status_param = self.request.query_params.get("status")
         allowed_statuses = [choice.value for choice in AuctionStatus]
@@ -183,27 +179,33 @@ class AuctionListView(generics.ListAPIView):
                 raise ValidationError(f"Invalid status filter: {status_param}")
             query["status"] = status_param
 
-        if valid_artwork_ids is not None:
-            query["artwork__in"] = valid_artwork_ids
-
         # Filter out deleted auctions
         query["visibility__ne"] = "Deleted"
 
+        # Apply user filtering if needed
+        if all_blocked_ids:
+            query["artwork__artist__nin"] = all_blocked_ids
+
         auctions = Auction.objects(**query)
         
-        # Filter out hidden auctions for the current user
+        # Optimize hidden content filtering
         if self.request.user.is_authenticated:
             try:
                 user = User.objects.get(id=ObjectId(self.request.user.id))
-                hidden_contents = HiddenContent.objects.filter(user=user, content_type='auction')
-                if hidden_contents:
-                    hidden_auction_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
-                    auctions = auctions.filter(id__nin=hidden_auction_ids)
+                hidden_auction_ids = list(HiddenContent.objects.filter(
+                    user=user, 
+                    content_type='auction'
+                ).scalar('content_id'))
+                
+                if hidden_auction_ids:
+                    hidden_object_ids = [ObjectId(hid) for hid in hidden_auction_ids]
+                    auctions = auctions.filter(id__nin=hidden_object_ids)
             except Exception as e:
-                # If there's an error getting hidden auctions, just continue without filtering
+                print(f"Error filtering hidden auctions: {e}")
                 pass
         
-        return auctions
+        # Order by creation date for consistent results
+        return auctions.order_by('-updated_at')
 
 
 

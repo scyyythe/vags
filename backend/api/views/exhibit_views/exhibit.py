@@ -50,31 +50,46 @@ class ExhibitListView(APIView):
 
 class ExhibitCardListView(APIView):
     def get(self, request):
-        # Get deactivated user IDs to exclude their content
-        deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
-        scheduled_deletion_user_ids = User.objects(user_status__iexact="scheduled_for_deletion").scalar('id')
-        
-        exhibits = Exhibit.objects.filter(visibility='Public')
-        
-        # Exclude exhibits from deactivated and scheduled for deletion users
-        if deactivated_user_ids or scheduled_deletion_user_ids:
-            excluded_user_ids = list(deactivated_user_ids) + list(scheduled_deletion_user_ids)
-            exhibits = exhibits.filter(owner__nin=excluded_user_ids)
-        
-        # Filter out hidden exhibits for the current user
-        if request.user.is_authenticated:
-            try:
-                user = User.objects.get(id=ObjectId(request.user.id))
-                hidden_contents = HiddenContent.objects.filter(user=user, content_type='exhibit')
-                if hidden_contents:
-                    hidden_exhibit_ids = [ObjectId(hc.content_id) for hc in hidden_contents]
-                    exhibits = exhibits.filter(id__nin=hidden_exhibit_ids)
-            except Exception as e:
-                # If there's an error getting hidden exhibits, just continue without filtering
-                pass
-        
-        serializer = ExhibitCardSerializer(exhibits, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            # Optimized query: Get excluded user IDs in a single query
+            excluded_user_ids = list(User.objects.filter(
+                user_status__in=["deactivated", "scheduled_for_deletion"]
+            ).scalar('id'))
+            
+            # Start with optimized base query
+            exhibits = Exhibit.objects.filter(visibility='Public')
+            
+            # Apply user exclusion filter if needed
+            if excluded_user_ids:
+                exhibits = exhibits.filter(owner__nin=excluded_user_ids)
+            
+            # Optimize hidden content filtering
+            if request.user.is_authenticated:
+                try:
+                    user = User.objects.get(id=ObjectId(request.user.id))
+                    hidden_exhibit_ids = list(HiddenContent.objects.filter(
+                        user=user, 
+                        content_type='exhibit'
+                    ).scalar('content_id'))
+                    
+                    if hidden_exhibit_ids:
+                        # Convert string IDs to ObjectIds for filtering
+                        hidden_object_ids = [ObjectId(hid) for hid in hidden_exhibit_ids]
+                        exhibits = exhibits.filter(id__nin=hidden_object_ids)
+                except Exception as e:
+                    # Log error but continue without filtering
+                    print(f"⚠️ Error filtering hidden exhibits: {e}")
+                    pass
+            
+            # Order by creation date for consistent results
+            exhibits = exhibits.order_by('-created_at')
+            
+            serializer = ExhibitCardSerializer(exhibits, many=True, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            print(f"🔥 ERROR in ExhibitCardListView: {e}")
+            return Response({"error": "Failed to retrieve exhibits"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class MyExhibitCardListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -109,18 +124,15 @@ class MyExhibitCardListView(APIView):
                     print(f"🔥 DEBUG: Error getting hidden exhibits: {e}")
                     exhibits = Exhibit.objects.none()
             else:
-                # When include_hidden=false, get exhibits where user is owner OR collaborator
-                owned_exhibits = Exhibit.objects(owner=user)
-                collaborated_exhibits = Exhibit.objects(collaborators=user)
-                
-                # Combine both querysets and remove duplicates
-                all_exhibit_ids = set()
-                for exhibit in owned_exhibits:
-                    all_exhibit_ids.add(str(exhibit.id))
-                for exhibit in collaborated_exhibits:
-                    all_exhibit_ids.add(str(exhibit.id))
-                
-                exhibits = Exhibit.objects(id__in=list(all_exhibit_ids))
+                # Optimized query: Get exhibits where user is owner OR collaborator in a single query
+                exhibits = Exhibit.objects.filter(
+                    __raw__={
+                        "$or": [
+                            {"owner": user.id},
+                            {"collaborators": user.id}
+                        ]
+                    }
+                )
 
                 # Filter based on visibility
                 if not include_deleted:
@@ -211,18 +223,16 @@ class UserExhibitCardListView(APIView):
             # Get the target user
             target_user = User.objects.get(id=user_id)
             
-            # Get public exhibits where target user is owner OR collaborator
-            owned_exhibits = Exhibit.objects.filter(owner=target_user, visibility='Public')
-            collaborated_exhibits = Exhibit.objects.filter(collaborators=target_user, visibility='Public')
-            
-            # Combine both querysets and remove duplicates
-            all_exhibit_ids = set()
-            for exhibit in owned_exhibits:
-                all_exhibit_ids.add(str(exhibit.id))
-            for exhibit in collaborated_exhibits:
-                all_exhibit_ids.add(str(exhibit.id))
-            
-            exhibits = Exhibit.objects.filter(id__in=list(all_exhibit_ids), visibility='Public')
+            # Optimized query: Get public exhibits where target user is owner OR collaborator
+            exhibits = Exhibit.objects.filter(
+                visibility='Public',
+                __raw__={
+                    "$or": [
+                        {"owner": target_user.id},
+                        {"collaborators": target_user.id}
+                    ]
+                }
+            ).order_by('-created_at')
 
             serializer = ExhibitCardSerializer(exhibits, many=True, context={'request': request, 'target_user_id': user_id})
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -231,7 +241,7 @@ class UserExhibitCardListView(APIView):
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             print("🔥 ERROR in UserExhibitCardListView:", e)
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": "Failed to retrieve user exhibits"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 

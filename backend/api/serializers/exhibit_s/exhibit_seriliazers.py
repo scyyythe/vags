@@ -7,6 +7,7 @@ from datetime import datetime
 from api.models.interaction_model.interaction import Like
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from api.models.interaction_model.notification import Notification
+from functools import lru_cache
 class ExhibitSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField(max_length=100)
@@ -44,6 +45,29 @@ class ExhibitSerializer(serializers.Serializer):
             return Like.objects(user=user, exhibit=obj).first() is not None
         return False
 
+    def _get_slot_distribution(self, env_slots, collaborator_count):
+        """Cache slot distribution calculations to avoid repeated computation"""
+        if env_slots == 4:
+            # 4 slots: Owner gets 2, Collaborator gets 2
+            return {"owner": 2, "collaborator": 2}
+        elif env_slots == 6:
+            # 6 slots: Distribute based on collaborator count
+            if collaborator_count == 1:
+                # 1 collaborator: 3-3 distribution
+                return {"owner": 3, "collaborator": 3}
+            else:
+                # 2 collaborators: 2-2-2 distribution
+                return {"owner": 2, "collaborator": 2}
+        elif env_slots == 10:
+            # 10 slots: Distribute based on collaborator count
+            if collaborator_count == 1:
+                # 1 collaborator: 5-5 distribution
+                return {"owner": 5, "collaborator": 5}
+            else:
+                # 2 collaborators: 4-3-3 distribution (owner priority)
+                return {"owner": 4, "collaborator": 3}
+        return {"owner": 0, "collaborator": 0}
+
     def get_collaborator_status(self, obj):
         """Calculate collaborator status based on slot assignments"""
         if obj.exhibit_type != "Collaborative":
@@ -62,28 +86,9 @@ class ExhibitSerializer(serializers.Serializer):
         # Apply specific distribution rules based on slot count and collaborator count
         collaborator_status = []
         
-        # Calculate owner slots based on new distribution rules
-        if env_slots == 4:
-            # 4 slots: Owner gets 2, Collaborator gets 2
-            owner_slots = 2
-        elif env_slots == 6:
-            # 6 slots: Distribute based on collaborator count
-            if len(obj.collaborators) == 1:
-                # 1 collaborator: 3-3 distribution
-                owner_slots = 3
-            else:
-                # 2 collaborators: 2-2-2 distribution
-                owner_slots = 2
-        elif env_slots == 10:
-            # 10 slots: Distribute based on collaborator count
-            if len(obj.collaborators) == 1:
-                # 1 collaborator: 5-5 distribution
-                owner_slots = 5
-            else:
-                # 2 collaborators: 4-3-3 distribution (owner priority)
-                owner_slots = 4
-        else:
-            owner_slots = 0
+        # Use optimized slot distribution calculation
+        slot_dist = self._get_slot_distribution(env_slots, len(obj.collaborators))
+        owner_slots = slot_dist["owner"]
         
         # Calculate owner filled slots
         owner_filled = sum(1 for slot_id, artwork_id in slot_artwork_map.items() 
@@ -100,30 +105,9 @@ class ExhibitSerializer(serializers.Serializer):
             "completionPercentage": round((owner_filled / owner_slots) * 100) if owner_slots > 0 else 0
         })
         
-        # Add collaborators status based on new distribution rules
+        # Add collaborators status using optimized calculation
+        collab_slots = slot_dist["collaborator"]
         for i, collaborator in enumerate(obj.collaborators):
-            # Calculate collaborator slots based on new distribution rules
-            if env_slots == 4:
-                # 4 slots: Each collaborator gets 2
-                collab_slots = 2
-            elif env_slots == 6:
-                # 6 slots: Distribute based on collaborator count
-                if len(obj.collaborators) == 1:
-                    # 1 collaborator: 3-3 distribution
-                    collab_slots = 3
-                else:
-                    # 2 collaborators: 2-2-2 distribution
-                    collab_slots = 2
-            elif env_slots == 10:
-                # 10 slots: Distribute based on collaborator count
-                if len(obj.collaborators) == 1:
-                    # 1 collaborator: 5-5 distribution
-                    collab_slots = 5
-                else:
-                    # 2 collaborators: 4-3-3 distribution (owner priority)
-                    collab_slots = 3
-            else:
-                collab_slots = 0
             
             collab_filled = sum(1 for slot_id, artwork_id in slot_artwork_map.items() 
                               if slot_owner_map.get(str(slot_id)) == str(collaborator.id))

@@ -7,6 +7,7 @@ from mongoengine.errors import DoesNotExist
 from api.models.interaction_model.interaction import Like
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
 from api.serializers.user_s.users_serializers import UserSerializer
+from collections import defaultdict
 
 class BidSerializer(serializers.Serializer):
     user = UserSerializer(source="bidder", read_only=True) 
@@ -101,19 +102,31 @@ class AuctionSerializer(serializers.Serializer):
     viewers = serializers.SerializerMethodField()
     auction_likes_count = serializers.SerializerMethodField()
     user_has_liked_auction = serializers.SerializerMethodField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Cache for likes to avoid N+1 queries
+        self._likes_cache = {}
+        self._user_likes_cache = {}
     
     def get_viewers(self, obj):
         return [user.username for user in obj.viewed_by]
     
     def get_auction_likes_count(self, obj):
-        return Like.objects(auction=obj).count() 
+        # Use cache to avoid repeated database queries
+        auction_id = str(obj.id)
+        if auction_id not in self._likes_cache:
+            self._likes_cache[auction_id] = Like.objects(auction=obj).count()
+        return self._likes_cache[auction_id]
     
     def get_user_has_liked_auction(self, obj):
-    
         request = self.context.get("request", None)
         user = getattr(request, "user", None)
         if user and not user.is_anonymous:
-            return Like.objects(user=user, auction=obj).first() is not None
+            cache_key = f"{user.id}_{obj.id}"
+            if cache_key not in self._user_likes_cache:
+                self._user_likes_cache[cache_key] = Like.objects(user=user, auction=obj).first() is not None
+            return self._user_likes_cache[cache_key]
         return False
     def to_representation(self, instance):
         data = super().to_representation(instance)

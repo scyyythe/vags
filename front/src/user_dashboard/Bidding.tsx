@@ -64,22 +64,40 @@ const Bidding = () => {
       activeArtworks = biddingArtworks?.filter((a) => new Date(a.start_time) <= now) || [];
 
       if (selectedFilterCategory === "Trending") {
-        activeArtworks = [...activeArtworks].sort((a, b) => b.auction_likes_count - a.auction_likes_count);
+        // Optimize: Use a more efficient sorting approach
+        activeArtworks = [...activeArtworks].sort((a, b) => {
+          const likesA = a.auction_likes_count || 0;
+          const likesB = b.auction_likes_count || 0;
+          return likesB - likesA;
+        });
       }
     }
 
-    if (selectedArtCategory !== "All") {
-      activeArtworks = activeArtworks.filter(
-        (artwork) => artwork.artwork.category?.toLowerCase() === selectedArtCategory.toLowerCase()
-      );
-    }
+    // Apply filters efficiently
+    if (selectedArtCategory !== "All" || searchQuery?.trim()) {
+      const categoryLower = selectedArtCategory.toLowerCase();
+      const queryLower = searchQuery?.toLowerCase();
 
-    if (searchQuery?.trim()) {
-      const query = searchQuery.toLowerCase();
-      activeArtworks = activeArtworks.filter(
-        (artwork) =>
-          artwork.artwork.title.toLowerCase().includes(query) || artwork.artwork.artist.toLowerCase().includes(query)
-      );
+      activeArtworks = activeArtworks.filter((artwork) => {
+        // Category filter
+        if (selectedArtCategory !== "All") {
+          const artworkCategory = artwork.artwork.category?.toLowerCase();
+          if (artworkCategory !== categoryLower) {
+            return false;
+          }
+        }
+
+        // Search filter
+        if (queryLower?.trim()) {
+          const title = artwork.artwork.title.toLowerCase();
+          const artist = artwork.artwork.artist.toLowerCase();
+          if (!title.includes(queryLower) && !artist.includes(queryLower)) {
+            return false;
+          }
+        }
+
+        return true;
+      });
     }
 
     return activeArtworks;

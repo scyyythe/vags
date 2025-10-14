@@ -37,7 +37,8 @@ class SubmitCollaboratorContributionView(APIView):
             return Response({"detail": "Invalid format. 'artworks' must be a list."}, status=400)
 
         try:
-            exhibit = Exhibit.objects.get(id=exhibit_id)
+            # Optimized query: Only fetch necessary fields
+            exhibit = Exhibit.objects.only('id', 'title', 'owner', 'collaborators').get(id=exhibit_id)
         except DoesNotExist:
             return Response({"detail": "Exhibit not found."}, status=404)
 
@@ -50,7 +51,14 @@ class SubmitCollaboratorContributionView(APIView):
             contribution = ExhibitContribution(exhibit=exhibit, contributor=user, artworks=[])
 
         slot_owner_map = CollaboratorExhibitViewSerializer().get_slotOwnerMap(exhibit)
-
+        
+        # Pre-validate all entries to avoid partial saves
+        validated_entries = []
+        artwork_ids = [entry.get("artwork") for entry in artworks_data if entry.get("artwork")]
+        
+        # Batch fetch all artworks to avoid N+1 queries
+        artworks_dict = {str(art.id): art for art in Art.objects(id__in=artwork_ids)}
+        
         for entry in artworks_data:
             slot = entry.get("slot_number")
             artwork_id = entry.get("artwork")
@@ -70,16 +78,18 @@ class SubmitCollaboratorContributionView(APIView):
             if any(a.slot_number == slot for a in contribution.artworks):
                 return Response({"detail": f"Slot {slot} already exists in your contributions."}, status=400)
 
-            try:
-                artwork = Art.objects.get(id=artwork_id)
-            except DoesNotExist:
+            # Check if artwork exists in our batch
+            if artwork_id not in artworks_dict:
                 return Response({"detail": f"Artwork {artwork_id} not found."}, status=404)
 
-            # Add new entry
-            contribution.artworks.append(
-                ArtworkEntry(artwork=artwork, slot_number=slot, contributed_at=datetime.utcnow())
+            # Add validated entry to batch
+            validated_entries.append(
+                ArtworkEntry(artwork=artworks_dict[artwork_id], slot_number=slot, contributed_at=datetime.utcnow())
             )
 
+        # Add all validated entries at once
+        contribution.artworks.extend(validated_entries)
+        
         # Save the updated single document
         contribution.save()
 

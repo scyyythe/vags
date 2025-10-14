@@ -42,7 +42,9 @@ const UpdateArtwork = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(artworkData?.mainImageUrl || null);
   const [additionalImages, setAdditionalImages] = useState<(File | string | null)[]>(
-    artworkData?.additionalImagesUrls?.length ? artworkData.additionalImagesUrls : [null, null, null, null]
+    artworkData?.additionalImagesUrls?.length
+      ? [...artworkData.additionalImagesUrls, ...Array(4 - artworkData.additionalImagesUrls.length).fill(null)]
+      : [null, null, null, null]
   );
   const [price, setPrice] = useState(artworkData?.price || "");
   const [edition, setEdition] = useState(artworkData?.edition || "Original (1 of 1)");
@@ -184,7 +186,7 @@ const UpdateArtwork = () => {
         quantity: String(quantity),
         mainImage: selectedFile,
         additionalImages: additionalImages.filter((img): img is File => img instanceof File),
-        removeExistingImages: true,
+        removeExistingImages: false, // Don't remove existing images, just add new ones
       });
 
       toast.success("Artwork updated successfully!", { id: "upload" });
@@ -206,16 +208,25 @@ const UpdateArtwork = () => {
       setSelectedFile(null);
       setPreviewUrl(null);
     } else {
-      try {
-        await apiClient.delete(`/art/${artworkData.id}/images/${index}/`);
-        toast.success("Image removed successfully");
+      const imageToRemove = additionalImages[index];
 
-        const newImages = [...additionalImages];
-        newImages[index] = null;
-        setAdditionalImages(newImages);
-      } catch (err: any) {
-        toast.error(err.response?.data?.error || "Failed to delete image");
+      if (typeof imageToRemove === "string") {
+        // It's an existing URL - need to delete from backend
+        try {
+          // Find the actual index in the backend (accounting for main image at index 0)
+          const backendIndex = index + 1; // Additional images start at index 1
+          await apiClient.delete(`/art/${artworkData.id}/images/${backendIndex}/`);
+          toast.success("Image removed successfully");
+        } catch (err: any) {
+          toast.error(err.response?.data?.error || "Failed to delete image");
+          return;
+        }
       }
+
+      // Update local state
+      const newImages = [...additionalImages];
+      newImages[index] = null;
+      setAdditionalImages(newImages);
     }
   };
 
