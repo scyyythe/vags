@@ -12,9 +12,13 @@ import useOwnedArtworksCount from "@/hooks/artworks/fetch_artworks/useOwnedArtwo
 const Index = () => {
   const { id } = useParams();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState("created");
-  const { firstName, lastName, profilePicture, cover_photo, email } = useUserDetails(id);
 
+  // ✅ Initialize with saved tab or default to "created"
+  const [activeTab, setActiveTab] = useState(() => {
+    return sessionStorage.getItem("lastActiveTab") || "created";
+  });
+
+  const { firstName, lastName, profilePicture, cover_photo, email } = useUserDetails(id);
   const userName = `${firstName} ${lastName}`;
   const ownedArtworksCount = useOwnedArtworksCount(id!);
   const { data, isLoading } = useArtworks(1, id, true, "specific-user");
@@ -22,20 +26,26 @@ const Index = () => {
 
   useEffect(() => {
     if (!isLoading && data) {
-      const userArtworks = data.filter((artwork) => artwork.artistId === id && artwork.visibility === "public");
+      const userArtworks = data.filter(
+        (artwork) => artwork.artistId === id && artwork.visibility === "public"
+      );
       setCreatedArtworksCount(userArtworks.length);
     }
   }, [id, data, isLoading]);
 
-  // Handle navigation state to set specific tabs
+  // ✅ Update tab if redirected with a specific tab
   useEffect(() => {
-    if (location.state) {
-      const { activeTab: stateActiveTab } = location.state as { activeTab?: string };
-      if (stateActiveTab) {
-        setActiveTab(stateActiveTab);
-      }
+    const { state } = location as { state?: { activeTab?: string } };
+    if (state?.activeTab) {
+      setActiveTab(state.activeTab);
     }
   }, [location.state]);
+
+  // ✅ Save the last active tab before leaving
+  useEffect(() => {
+    sessionStorage.setItem("lastActiveTab", activeTab);
+  }, [activeTab]);
+
   return (
     <>
       <div className="min-h-screen flex flex-col">
