@@ -123,7 +123,7 @@ const DeactivateConfirmationPopup: React.FC<DeactivateConfirmationPopupProps> = 
               >
                 {cancelBtn}
               </button>
-              <button
+              <button 
                 onClick={handleReactivate}
                 className="w-full bg-green-700 hover:bg-green-600 text-white text-[10px] px-8 py-1 rounded-full"
               >
