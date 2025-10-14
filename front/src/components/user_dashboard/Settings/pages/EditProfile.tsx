@@ -77,20 +77,19 @@ const EditProfile = () => {
   const accountAddedText = useAutoTranslation("account added successfully!", selectedLanguage);
   const contactEmailLabel = useAutoTranslation("Contact Email (for inquiries)", selectedLanguage);
   const contactEmailPlaceholder = useAutoTranslation("Enter your contact email", selectedLanguage);
-  const emailHelperText = useAutoTranslation(
-    "This email will be shown publicly for inquiries or contact purposes.",
-    selectedLanguage
-  );
+  const emailHelperText = useAutoTranslation("This email will be shown publicly for inquiries or contact purposes.", selectedLanguage);
   const updatingDetailsText = useAutoTranslation("Updating your details...", selectedLanguage);
   const updatingDetailsDesc = useAutoTranslation("Please wait while we process your update.", selectedLanguage);
   const userUpdatedSuccess = useAutoTranslation("User details updated successfully!", selectedLanguage);
   const userUpdateFailed = useAutoTranslation("Failed to update user details.", selectedLanguage);
   const invalidEmailText = useAutoTranslation("Please enter a valid email address.", selectedLanguage);
   const removeText = useAutoTranslation("Remove", selectedLanguage);
-  const uploadValidImageText = useAutoTranslation(
-    "Please upload a valid image file (JPG, JPEG, PNG).",
-    selectedLanguage
-  );
+  const uploadValidImageText = useAutoTranslation("Please upload a valid image file (JPG, JPEG, PNG).", selectedLanguage);
+  const usernameValidationError = useAutoTranslation("Username must be 3-20 characters, letters/numbers/underscores only.", selectedLanguage);
+  const profilePicRemovedText = useAutoTranslation("Profile picture removed. Save to apply changes.", selectedLanguage);
+  const coverPhotoRemovedText = useAutoTranslation("Cover photo removed. Save to apply changes.", selectedLanguage);
+  const failedAddSocialText = useAutoTranslation("Failed to add social account", selectedLanguage);
+
 
   useEffect(() => {
     if (!isLoading && !error && firstName && lastName && username) {
@@ -169,7 +168,7 @@ const EditProfile = () => {
     }
 
     if (!isValidUsername(formData.username)) {
-      toast.error("Username must be 3-20 characters, letters/numbers/underscores only.", { closeButton: true });
+      toast.error(usernameValidationError, { closeButton: true });
       return;
     }
 
@@ -214,9 +213,7 @@ const EditProfile = () => {
     setRemoveProfilePic(true);
 
     // Show toast for removal
-    const removalToast = toast.success("Profile picture removed. Save to apply changes.", {
-      closeButton: true,
-    });
+    const removalToast = toast.success(profilePicRemovedText, { closeButton: true });
 
     setTimeout(() => toast.dismiss(removalToast), 3000);
   };
@@ -226,9 +223,7 @@ const EditProfile = () => {
     setCoverPreviewUrl(null);
     setRemoveCoverPhoto(true);
 
-    const removalToast = toast.success("Cover photo removed. Save to apply changes.", {
-      closeButton: true,
-    });
+    const removalToast = toast.success(coverPhotoRemovedText, { closeButton: true });
 
     setTimeout(() => toast.dismiss(removalToast), 3000);
   };
@@ -274,7 +269,7 @@ const EditProfile = () => {
         },
         onError: (err: any) => {
           console.error(err);
-          toast.error("Failed to add social account", { closeButton: true });
+          toast.error(failedAddSocialText, { closeButton: true });
         },
       }
     );
