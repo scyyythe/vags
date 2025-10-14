@@ -33,6 +33,7 @@ interface ReviewPurchaseProps {
     edition: string;
     yearCreated: number;
     price: number;
+    originalPrice?: number;
     default_paypal_email?: string;
     quantity?: number;
   };
@@ -154,11 +155,12 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       edition: "Limited Edition",
       yearCreated: 2025,
       price: 100000,
+      originalPrice: 100000,
       default_paypal_email: "no email provided",
       quantity: 1,
     };
   const { paypalRef, startPayment } = usePayPalPurchase({
-    amount: (defaultArtwork?.price || 0) * (defaultArtwork?.quantity || 1),
+    amount: defaultArtwork?.price || 0, // Price is already the total (price × quantity)
     buyerId: localStorage.getItem("user_id")!,
     artworkId: defaultArtwork?.id || "",
     defaultPayPalEmail: defaultArtwork?.default_paypal_email || "",
@@ -332,16 +334,44 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
                   <span className="text-gray-600">Year Created</span>
                   <span className="font-medium">{defaultArtwork.yearCreated}</span>
                 </div>
+                {defaultArtwork.quantity && defaultArtwork.quantity > 1 && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Quantity</span>
+                    <span className="font-medium">{defaultArtwork.quantity}</span>
+                  </div>
+                )}
               </div>
 
               {/* Price */}
               <div className="pt-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold">PRICE</span>
-                  <span className="text-xl font-bold text-red-800">
-                    ₱{defaultArtwork.price >= 1000 ? `${defaultArtwork.price / 1000}k` : defaultArtwork.price}
-                  </span>
-                </div>
+                {defaultArtwork.quantity && defaultArtwork.quantity > 1 ? (
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-semibold">TOTAL PRICE</span>
+                      <span className="text-xl font-bold text-red-800">
+                        ₱{defaultArtwork.price >= 1000 ? `${defaultArtwork.price / 1000}k` : defaultArtwork.price}
+                      </span>
+                    </div>
+                    {defaultArtwork.originalPrice && (
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-gray-500">
+                          ({defaultArtwork.quantity} × ₱
+                          {defaultArtwork.originalPrice >= 1000
+                            ? `${defaultArtwork.originalPrice / 1000}k`
+                            : defaultArtwork.originalPrice}
+                          )
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-semibold">PRICE</span>
+                    <span className="text-xl font-bold text-red-800">
+                      ₱{defaultArtwork.price >= 1000 ? `${defaultArtwork.price / 1000}k` : defaultArtwork.price}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>

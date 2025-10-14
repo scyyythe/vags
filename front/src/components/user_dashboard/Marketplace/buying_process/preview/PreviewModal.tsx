@@ -72,11 +72,17 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
   const handleProceed = () => {
     if (isLoading) return;
 
+    // Calculate total price based on quantity
+    const quantity = artwork.quantity || 1;
+    const totalPrice = artwork.price * quantity;
+
     setArtwork({
       ...artwork,
       id: artwork.id,
       yearCreated: Number(artwork.yearCreated),
-      quantity: artwork.quantity || 1,
+      quantity: quantity,
+      price: totalPrice, // Pass the total price
+      originalPrice: artwork.price, // Keep original price for reference
       availableQuantity: artwork.availableQuantity || 1,
     });
 
