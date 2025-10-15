@@ -72,19 +72,30 @@ const useSellArtwork = () => {
         },
       });
 
-      toast.success("Artwork listed successfully!", { id: "upload", closeButton: true });
+      // Invalidate and refetch all relevant marketplace queries to refresh the data
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] }),
+        queryClient.invalidateQueries({ queryKey: ["trending-artworks"] }),
+        queryClient.invalidateQueries({ queryKey: ["followedArtworks"] }),
+        queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] }),
+        queryClient.invalidateQueries({ queryKey: ["artworks"] }),
+        queryClient.invalidateQueries({ queryKey: ["popular-artworks"] }),
+        queryClient.invalidateQueries({ queryKey: ["popularArtworks"] }),
+        queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] }),
+        queryClient.invalidateQueries({ queryKey: ["top-artworks"] }),
+        queryClient.invalidateQueries({ queryKey: ["top-sellers"] }),
+      ]);
 
-      // Invalidate all relevant marketplace queries to refresh the data
-      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["popular-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] });
-      queryClient.invalidateQueries({ queryKey: ["top-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["top-sellers"] });
+      // Clear all artwork-related caches to ensure fresh data
+      queryClient.removeQueries({ queryKey: ["marketplace-art-cards"] });
+      queryClient.removeQueries({ queryKey: ["artworks"] });
+
+      // Force refetch the marketplace data
+      await queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
+
+      // Small delay to ensure backend processing is complete
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      toast.success("Artwork listed successfully!", { id: "upload", closeButton: true });
 
       navigate("/marketplace");
     } catch (err) {

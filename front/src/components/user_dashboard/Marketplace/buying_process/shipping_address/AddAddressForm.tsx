@@ -55,46 +55,77 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
   });
 
   const validateForm = (): boolean => {
-    const nameRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/;
-    const cityRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/;
-    const stateRegex = /^(?=.*[A-Za-z])[A-Z][A-Za-z0-9 ]*$/;
-    const postalCodeRegex = /^\d{4,10}$/;
-    const phoneRegex = /^(\+63|0)9\d{9}$/;
-    const addressRegex = /^[A-Za-z\s.,'-]{3,}[0-9A-Za-z\s.,'-]*$/;
-    const apartmentRegex = /^[A-Za-z\s.,'-]{3,}[0-9A-Za-z\s.,'-]*$/;
+    const nameRegex = /^[A-Za-z][A-Za-z\s\-'\.]*[A-Za-z]$|^[A-Za-z]$/;
+    const cityRegex = /^[A-Za-z][A-Za-z\s\-'.,]*[A-Za-z0-9]$|^[A-Za-z]$/;
+    const stateRegex = /^[A-Za-z][A-Za-z\s\-'.,]*[A-Za-z0-9]$|^[A-Za-z]$/;
+    const postalCodeRegex = /^[A-Za-z0-9\s\-]{3,10}$/;
+    const phoneRegex = /^(\+\d{1,3})?[\d\s\-()]{7,15}$/;
+    const addressRegex = /^[A-Za-z0-9\s.,'\-/()]{5,}$/;
+    const apartmentRegex = /^[A-Za-z0-9\s.,'\-/()]*$/;
 
+    // Validate full name
+    if (!formData.fullName.trim()) {
+      toast.error("Full name is required.");
+      return false;
+    }
     if (!nameRegex.test(formData.fullName.trim())) {
-      toast.error("Full name must start with capital letters and contain only letters and spaces.");
+      toast.error("Please enter a valid full name (letters, spaces, hyphens, and apostrophes only).");
       return false;
     }
 
+    // Validate address
+    if (!formData.address.trim()) {
+      toast.error("Address is required.");
+      return false;
+    }
     if (!addressRegex.test(formData.address.trim())) {
-      toast.error("Address must include a number and a valid street name.");
+      toast.error("Please enter a valid address (minimum 5 characters).");
       return false;
     }
 
-    if (formData.apartment && !apartmentRegex.test(formData.apartment.trim())) {
-      toast.error("Apartment/floor/suite must be valid.");
+    // Validate apartment (optional field)
+    if (formData.apartment.trim() && !apartmentRegex.test(formData.apartment.trim())) {
+      toast.error("Please enter a valid apartment/floor/suite information.");
       return false;
     }
 
+    // Validate city
+    if (!formData.city.trim()) {
+      toast.error("City is required.");
+      return false;
+    }
     if (!cityRegex.test(formData.city.trim())) {
-      toast.error("City must start with a capital letter and contain only letters and spaces.");
+      toast.error("Please enter a valid city name.");
       return false;
     }
 
+    // Validate state
+    if (!formData.state.trim()) {
+      toast.error("State/Region is required.");
+      return false;
+    }
     if (!stateRegex.test(formData.state.trim())) {
-      toast.error("State/Region must start with a capital letter and can contain letters, numbers, and spaces.");
+      toast.error("Please enter a valid state/region name.");
       return false;
     }
 
+    // Validate postal code
+    if (!formData.postalCode.trim()) {
+      toast.error("Postal code is required.");
+      return false;
+    }
     if (!postalCodeRegex.test(formData.postalCode.trim())) {
-      toast.error("Postal code must contain only numbers and be 4-10 digits long.");
+      toast.error("Please enter a valid postal code (3-10 characters).");
       return false;
     }
 
+    // Validate phone number
+    if (!formData.phoneNumber.trim()) {
+      toast.error("Phone number is required.");
+      return false;
+    }
     if (!phoneRegex.test(formData.phoneNumber.trim())) {
-      toast.error("Phone number must be a valid Philippine number, e.g., +639XXXXXXXXX or 09XXXXXXXXX.");
+      toast.error("Please enter a valid phone number (e.g., +639XXXXXXXXX, 09123456789, +1234567890).");
       return false;
     }
 

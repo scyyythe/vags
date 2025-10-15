@@ -178,3 +178,24 @@ def notify_review_deleted(reviewer, seller, artwork):
         notifications.append(seller_notification)
     
     return notifications
+
+def notify_artwork_listed_for_sale(artist, artwork, price):
+    """Create notification when artwork is listed for sale"""
+    notifications = []
+    
+    # Notify the artist about successful listing
+    artist_notification = create_notification(
+        recipient_user_id=str(artist.id),
+        actor_user=artist,
+        message=f"Your artwork '{artwork.title}' has been successfully listed for sale at ₱{price:,.2f}",
+        action="listed artwork for sale",
+        target=artwork.title,
+        icon="sale",
+        link=f"/artwork/{artwork.id}/",
+        amount=f"₱{price:,.2f}",
+        artwork=artwork
+    )
+    if artist_notification:
+        notifications.append(artist_notification)
+    
+    return notifications
