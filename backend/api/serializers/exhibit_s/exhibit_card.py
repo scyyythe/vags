@@ -119,7 +119,10 @@ class ExhibitCardSerializer(serializers.Serializer):
         return getattr(obj, "visibility", None)
 
     def get_views(self, obj):
-        return len(obj.viewed_by or [])
+        # Cache the views count to avoid recalculating len() multiple times
+        if not hasattr(obj, '_cached_views'):
+            obj._cached_views = len(obj.viewed_by or [])
+        return obj._cached_views
 
     def get_startDate(self, obj):
         return obj.start_time.isoformat() if obj.start_time else None
@@ -134,6 +137,14 @@ class ExhibitCardSerializer(serializers.Serializer):
         return obj.exhibit_type == 'Collaborative'
 
     def get_collaborators(self, obj):
+        # Use prefetched data to avoid N+1 queries
+        exhibit_id = str(obj.id)
+        collaborators_data = self.context.get('collaborators_data', {})
+        
+        if exhibit_id in collaborators_data:
+            return collaborators_data[exhibit_id]
+        
+        # Fallback to original logic if not prefetched
         collaborators = []
         for user in obj.collaborators:
             try:
@@ -152,6 +163,14 @@ class ExhibitCardSerializer(serializers.Serializer):
         return collaborators
 
     def get_owner(self, obj):
+        # Use prefetched data to avoid N+1 queries
+        exhibit_id = str(obj.id)
+        owner_data = self.context.get('owner_data', {})
+        
+        if exhibit_id in owner_data:
+            return owner_data[exhibit_id]
+        
+        # Fallback to original logic if not prefetched
         owner = obj.owner
         if not owner:
             return None

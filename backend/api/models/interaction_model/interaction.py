@@ -22,7 +22,20 @@ class Like(Document):
     exhibit=ReferenceField(Exhibit, required=False, null=True)
     created_at = DateTimeField(default=datetime.utcnow)
 
-    meta = {'collection': 'likes'}
+    meta = {
+        'collection': 'likes',
+        'indexes': [
+            'user',
+            'art',
+            'exhibit',
+            'auction',
+            ('user', 'art'),
+            ('user', 'exhibit'),
+            ('user', 'auction'),
+            ('exhibit', 'user'), 
+            ('art', 'user'),     
+        ]
+    }
     
 class LikeExhibit(Document):
     user = ReferenceField(User)  
