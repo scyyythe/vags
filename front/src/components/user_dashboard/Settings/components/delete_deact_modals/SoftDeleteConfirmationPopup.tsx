@@ -92,7 +92,7 @@ const SoftDeleteConfirmationPopup: React.FC<SoftDeleteConfirmationPopupProps> = 
           </button>
           <button
             onClick={onConfirm}
-            className="w-full bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1 rounded-full"
+            className="w-full bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1 rounded-full whitespace-nowrap"
           >
             {confirmBtn}
           </button>
