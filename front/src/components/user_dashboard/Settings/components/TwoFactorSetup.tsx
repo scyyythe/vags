@@ -474,7 +474,7 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ isOpen, onClose, onSucc
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md"
+      <DialogContent className="max-w-md rounded-lg sm:rounded-lg"
       onInteractOutside={(e) => e.preventDefault()}
       onEscapeKeyDown={(e) => e.preventDefault()} 
       >
