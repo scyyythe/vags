@@ -5,7 +5,7 @@ export function useAutoTranslation(text: string, lang: string) {
   const [translated, setTranslated] = useState(text);
 
   useEffect(() => {
-    if (lang.toLowerCase() === "EN") {
+    if (lang.toLowerCase() === "en") {
       setTranslated(text);
       return;
     }
