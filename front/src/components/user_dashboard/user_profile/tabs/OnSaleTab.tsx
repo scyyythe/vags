@@ -18,10 +18,10 @@ import PaymentDetailsModal from "@/components/user_dashboard/Marketplace/my_list
 import RefundDetailsModal from "@/components/user_dashboard/Marketplace/my_listings/RefundDetailsModal";
 import TrackPaymentModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/TrackPaymentModal";
 import { useChat } from "@/context/ChatContext";
-import apiClient from "@/utils/apiClient";
 import { useThankYouMessage } from "@/hooks/messages/useThankYouMessage";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUserQuery from "@/hooks/users/useUserQuery";
+import { useQueryClient } from "@tanstack/react-query";
 
 import SoldArtworkCard from "@/components/user_dashboard/Marketplace/sold_artworks/card/SoldArtworksCard";
 import { useMyPurchases } from "@/hooks/purchase/useMyPurchases";
@@ -35,9 +35,10 @@ import { useReviewByPurchase } from "@/hooks/review/useReviewByPurchase";
 import { ReviewResponse } from "@/hooks/review/useReviewByPurchase";
 import { useEditReview } from "@/hooks/review/useEditReview";
 import { useDeleteReview } from "@/hooks/review/useDeleteReview";
-// import { useArtworkReviews } from "@/hooks/review/useArtworkReviews"; // Not needed since we fetch on demand
+import { useArtworkReviews } from "@/hooks/review/useArtworkReviews";
 import useMarkPurchaseCompleted from "@/hooks/purchase/useMarkPurchaseCompleted";
 import useMarkAsShipped from "@/hooks/purchase/useMarkAsShipped";
+import { useRelistArtwork } from "@/hooks/artworks/relist/useRelistArtwork";
 type SellTabProps = {
   selectedPriceRange?: string;
   selectedStatus?: string;
@@ -50,6 +51,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const isOwnProfile = String(userId) === String(loggedInUserId);
   const { data: myPurchases, isLoading: isMyPurchasesLoading } = useMyPurchases();
   const { openChat } = useChat();
+  const queryClient = useQueryClient();
 
   const { data: myArtCards = [], isLoading: isMyArtLoading, error: myArtError } = useMySellArtCards();
   const { data: userArtCards = [], isLoading: isUserArtLoading, error: userArtError } = useUserSellArtCards(userId);
@@ -62,6 +64,12 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const [mainTab, setMainTab] = useState("myListings");
   const [activeSubGroup, setActiveSubGroup] = useState<"listings" | "soldArtworks">("listings");
   const [subTab, setSubTab] = useState("available");
+
+  // Clear cache when switching tabs to prevent duplication
+  const clearArtworkCache = () => {
+    queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+    queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
+  };
 
   React.useEffect(() => {
     if (!isOwnProfile && subTab === "unlisted") {
@@ -127,15 +135,14 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const { mutate: submitReview } = useSubmitReview();
   const { mutate: markAsCompleted } = useMarkPurchaseCompleted();
   const { mutate: markAsShipped } = useMarkAsShipped();
-  // We'll fetch reviews on demand instead of using the hook with selectedArtworkId
-  const [artworkReviews, setArtworkReviews] = useState<any[]>([]);
-  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const { mutate: relistArtwork, isPending: isRelisting } = useRelistArtwork();
+  // Use the artwork reviews hook
+  const { artworkReviews, reviewsLoading, fetchArtworkReviews, setArtworkReviews } = useArtworkReviews();
 
   // Thank you message functionality - will be defined after user data is available
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [artworks, setArtworks] = useState<any[]>([]);
   const [activeSubTab, setActiveSubTab] = useState("sold");
 
   const handleViewDetails = (artwork: any) => {
@@ -545,6 +552,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
               status: "sold",
               isFading: (sale as any).isFading ?? false,
             }))
+            .filter((artwork, index, self) => index === self.findIndex((art) => art.id === artwork.id)) // Remove duplicates
         : []
       : [];
 
@@ -563,21 +571,34 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
         // For other statuses, continue with normal filtering
       }
 
-      const status = (art.art_status || "").toLowerCase().trim();
+      const status = (art.art_status || "").trim().toLowerCase();
       const tab = (subTab || "").toLowerCase().trim();
 
-      if (tab === "unlisted") {
-        return (
-          isOwnProfile &&
-          mainTab === "myListings" &&
-          activeSubGroup === "listings" &&
-          ["unlisted", "draft", "inactive"].includes(status)
-        );
+      // Only process artworks in the listings section
+      if (mainTab !== "myListings" || activeSubGroup !== "listings") {
+        return false;
       }
 
-      return (
-        mainTab === "myListings" && activeSubGroup === "listings" && status === (statusMap[tab] || "").toLowerCase()
-      );
+      // Don't show any artworks from artCards when on sold tab - use soldArtworks instead
+      if (tab === "sold") {
+        return false;
+      }
+
+      // Filter out sold artworks from artCards data - they should only appear in soldArtworks
+      // Check for various sold status variations
+      if (status === "sold" || status === "completed" || status === "reviewed") {
+        return false;
+      }
+
+      if (tab === "unlisted") {
+        return isOwnProfile && ["unlisted", "draft", "inactive"].includes(status);
+      }
+
+      if (tab === "available") {
+        return status === "onsale";
+      }
+
+      return false;
     })
     .map((art) => ({
       id: art.id,
@@ -588,13 +609,19 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
       rating: art.total_ratings,
       category: art.category,
       artworkImage: art.image_url[0] || "",
-      status: (art.art_status || "").toLowerCase().trim(),
+      status: (art.art_status || "").trim().toLowerCase(),
     }));
 
+  // Remove duplicates based on artwork ID
+  const uniqueFilteredArtworks = filteredArtworks.filter(
+    (artwork, index, self) => index === self.findIndex((art) => art.id === artwork.id)
+  );
+
+  let finalFilteredArtworks = uniqueFilteredArtworks;
   if (selectedPriceRange === "Low to High") {
-    filteredArtworks = filteredArtworks.slice().sort((a, b) => a.price - b.price);
+    finalFilteredArtworks = uniqueFilteredArtworks.slice().sort((a, b) => a.price - b.price);
   } else if (selectedPriceRange === "High to Low") {
-    filteredArtworks = filteredArtworks.slice().sort((a, b) => b.price - a.price);
+    finalFilteredArtworks = uniqueFilteredArtworks.slice().sort((a, b) => b.price - a.price);
   }
 
   // Seller actions for sold artworks
@@ -644,25 +671,9 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const handleViewSellerReview = async (artwork) => {
     const artworkId = artwork.artwork_id || artwork.id;
 
-    if (!artworkId) {
-      toast.error("Artwork ID not found.");
-      return;
-    }
+    const { reviews, success } = await fetchArtworkReviews(artworkId);
 
-    setReviewsLoading(true);
-
-    try {
-      const response = await apiClient.get(`/review/all-by-artwork/${artworkId}/`);
-      const reviews = response.data;
-
-      if (reviews.length === 0) {
-        toast.info("No reviews found for this artwork.");
-        setReviewsLoading(false);
-        return;
-      }
-
-      setArtworkReviews(reviews);
-
+    if (success && reviews.length > 0) {
       const firstReview = reviews[0];
       setSelectedReview({
         id: firstReview.id,
@@ -671,8 +682,8 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
         photos: firstReview.images || [],
         reviewDate: firstReview.created_at,
         reviewerName: `${firstReview.user.first_name} ${firstReview.user.last_name}`,
-        canEdit: false,
-        canDelete: false,
+        canEdit: false, // seller cannot edit buyer reviews
+        canDelete: false, // seller usually shouldn't delete reviews
         artwork: {
           artworkImage: artwork.artworkImage,
           title: artwork.title,
@@ -680,40 +691,27 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
         },
       });
       setShowReviewDetailsModal(true);
-    } catch (error) {
-      console.error("Error fetching artwork reviews:", error);
-      toast.error("Failed to fetch reviews.");
-    } finally {
-      setReviewsLoading(false);
     }
   };
 
   const handleRelist = (id: string) => {
-    // Fade out the sold card first
-    setArtworks((prevArtworks) =>
-      prevArtworks.map((artwork) => (artwork.id === id ? { ...artwork, isFading: true } : artwork))
-    );
+    relistArtwork(id, {
+      onSuccess: () => {
+        // Show success message
+        toast.success("Artwork relisted successfully!", {
+          closeButton: true,
+        });
 
-    // After fade animation, move to "active" list
-    setTimeout(() => {
-      setArtworks((prevArtworks) => {
-        const relisted = prevArtworks.find((art) => art.id === id);
-        if (!relisted) return prevArtworks;
+        // Move to available tab to show the relisted artwork
+        setSubTab("available");
 
-        // remove it from sold
-        const updatedSold = prevArtworks.filter((art) => art.id !== id);
-
-        // add to available with updated status
-        const relistedArt = { ...relisted, status: "active", isFading: false };
-
-        return [...updatedSold, relistedArt];
-      });
-
-      // move the user to the Available (active) subtab
-      setActiveSubTab("active");
-
-      toast.success("Artwork relisted successfully!", { closeButton: true });
-    }, 400);
+        // The data will be refreshed automatically by React Query
+      },
+      onError: (error) => {
+        console.error("Failed to relist artwork:", error);
+        toast.error("Failed to relist artwork. Please try again.");
+      },
+    });
   };
 
   const handleThankBuyer = (artwork: any) => {
@@ -733,6 +731,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
               setSubTab("available");
               setActiveSubGroup("listings");
               setShowDropdown(false);
+              clearArtworkCache();
             }}
           >
             MY LISTINGS
@@ -745,6 +744,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                 setSubTab("paid");
                 setActiveSubGroup("listings");
                 setShowDropdown(false);
+                clearArtworkCache();
               }}
             >
               MY PURCHASE
@@ -796,6 +796,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                           setActiveSubGroup(option as "listings" | "soldArtworks");
                           setSubTab(option === "listings" ? "available" : "payment_received");
                           setShowDropdown(false);
+                          clearArtworkCache();
                         }}
                       >
                         {option === "listings" ? "Listings" : "Sold"}
@@ -811,7 +812,10 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                     className={`px-3 py-1 border-b-2 ${
                       subTab === tab ? "border-red-800 text-red-800" : "border-transparent text-gray-600"
                     }`}
-                    onClick={() => setSubTab(tab)}
+                    onClick={() => {
+                      setSubTab(tab);
+                      clearArtworkCache();
+                    }}
                   >
                     {tab.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                   </button>
@@ -827,7 +831,10 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                   className={`px-3 py-1 border-b-2 ${
                     subTab === tab ? "border-red-800 text-red-800" : "border-transparent text-gray-600"
                   }`}
-                  onClick={() => setSubTab(tab)}
+                  onClick={() => {
+                    setSubTab(tab);
+                    clearArtworkCache();
+                  }}
                 >
                   {tab.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                 </button>
@@ -1040,7 +1047,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
               ))}
             </div>
           )
-        ) : filteredArtworks.length === 0 ? (
+        ) : finalFilteredArtworks.length === 0 ? (
           <div className="text-xs text-center py-12">
             <div className="w-24 h-24 mx-auto mb-4 opacity-50">
               <svg
@@ -1061,7 +1068,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {filteredArtworks.map((art) => (
+            {finalFilteredArtworks.map((art) => (
               <SellCard
                 key={art.id}
                 id={art.id}

@@ -18,7 +18,7 @@ import SellMenu from "../../own_profile/menu/sell_card/Menu";
 import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";
 import useToggleArtworkStatus from "@/hooks/purchase/useMarkArtworkAsSold";
 import { useLocation } from "react-router-dom";
-import { useArtworkReviews } from "@/hooks/review/useArtworkReviews";
+import { useArtworkReviewsAuto } from "@/hooks/review/useArtworkReviews";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import useArtworkReportStatus from "@/hooks/mutate/report/useArtworkReportStatus";
 import useFetchArtCards from "@/hooks/artworks/sell/useFetchArtCards";
@@ -29,7 +29,7 @@ const ProductViewingContent = () => {
   const submitReportMutation = useSubmitReport();
   const { data: reportStatus, isLoading: reportLoading, error: reportError } = useArtworkReportStatus(id || "");
 
-  const { reviews, loading: reviewsLoading, error: reviewsError } = useArtworkReviews(id || "");
+  const { reviews, loading: reviewsLoading, error: reviewsError } = useArtworkReviewsAuto(id);
   const { data: allArtworks = [] } = useFetchArtCards();
   const relatedArtworks = allArtworks.filter(
     (art) => art.category === product?.artwork_style && art.id !== product?.id
@@ -169,18 +169,19 @@ const ProductViewingContent = () => {
     ));
   };
   // Compute average rating
-  const averageRating = reviews.length
-    ? (reviews.reduce((sum, r) => sum + r.score, 0) / reviews.length).toFixed(1)
-    : "0.0";
+  const averageRating =
+    reviews && reviews.length ? (reviews.reduce((sum, r) => sum + r.score, 0) / reviews.length).toFixed(1) : "0.0";
 
   // Count reviews by star
   const reviewCounts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-  reviews.forEach((r) => {
-    const rating = Math.round(r.score);
-    if (rating >= 1 && rating <= 5) {
-      reviewCounts[rating]++;
-    }
-  });
+  if (reviews && reviews.length) {
+    reviews.forEach((r) => {
+      const rating = Math.round(r.score);
+      if (rating >= 1 && rating <= 5) {
+        reviewCounts[rating]++;
+      }
+    });
+  }
   const formatPrice = (price: number) => {
     if (price >= 1_000_000) {
       return `₱${(price / 1_000_000).toFixed(1)}M`;
@@ -535,7 +536,7 @@ const ProductViewingContent = () => {
                         <div className="flex items-center space-x-0.5 mb-1">
                           {renderStars(Math.round(Number(averageRating)))}
                         </div>
-                        <p className="text-[10px] text-gray-500">({reviews.length} reviews)</p>
+                        <p className="text-[10px] text-gray-500">({reviews?.length || 0} reviews)</p>
                       </div>
 
                       {/* Rating Breakdown */}
@@ -543,7 +544,7 @@ const ProductViewingContent = () => {
                         <div className="space-y-0.5 text-[9px]">
                           {[5, 4, 3, 2, 1].map((star) => {
                             const count = reviewCounts[star];
-                            const percent = reviews.length ? (count / reviews.length) * 100 : 0;
+                            const percent = reviews && reviews.length ? (count / reviews.length) * 100 : 0;
                             return (
                               <div key={star} className="flex items-center space-x-2">
                                 <span className="w-2">{star}</span>
@@ -712,8 +713,8 @@ const ProductViewingContent = () => {
       <ReviewModal
         isOpen={isReviewModalOpen}
         onClose={() => setIsReviewModalOpen(false)}
-        reviews={reviews}
-        totalReviews={reviews.length}
+        reviews={reviews || []}
+        totalReviews={reviews?.length || 0}
       />
 
       {/* Preview Modal */}
