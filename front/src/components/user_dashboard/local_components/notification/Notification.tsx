@@ -112,8 +112,9 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
   );
 };
 
-// ✅ Child component (safe hook usage)
+// Child component (safe hook usage)
 const NotificationItem = ({ n, language, navigate, onClose }: any) => {
+  const translatedName = n.name ? useAutoTranslation(n.name, language) : "";
   const translatedMessage = n.message ? useAutoTranslation(n.message, language) : "";
   const translatedAction = n.action ? useAutoTranslation(n.action, language) : "";
   const translatedForAmount = n.forAmount ? useAutoTranslation(n.forAmount, language) : "";
@@ -178,7 +179,7 @@ const NotificationItem = ({ n, language, navigate, onClose }: any) => {
       <div className="text-[10px] leading-snug">
         {n.name && (
           <>
-            <span className="font-medium">{n.name}</span>
+            <span className="font-medium">{translatedName}</span>
             {translatedMessage && <span className="font-medium"> {translatedMessage}</span>}
           </>
         )}
