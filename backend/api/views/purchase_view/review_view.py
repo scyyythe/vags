@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from api.serializers.review_serializer.review_serializer import ReviewSerializer
 from api.models.review_model.review import Review
+from api.utils.notification_utils import notify_review_submitted, notify_review_updated, notify_review_deleted
 from bson import ObjectId
 from api.serializers.review_serializer.review_serializer import ReviewSerializer, ReviewUpdateSerializer,ReviewReadSerializer
 
@@ -14,6 +15,17 @@ class SubmitReviewView(APIView):
         serializer = ReviewSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
             review = serializer.save()
+            
+            # Create notification for review submission
+            if review.artwork and review.artwork.artist:
+                notify_review_submitted(
+                    reviewer=request.user,
+                    seller=review.artwork.artist,
+                    artwork=review.artwork,
+                    review_id=str(review.id),
+                    rating=review.rating
+                )
+            
             return Response({"message": "Review submitted successfully!", "review_id": str(review.id)}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -65,6 +77,17 @@ class UpdateReviewView(APIView):
             review.comment = validated_data.get("comment", "")
             review.photos = validated_data.get("photos", [])
             review.save()
+            
+            # Create notification for review update
+            if review.artwork and review.artwork.artist:
+                notify_review_updated(
+                    reviewer=request.user,
+                    seller=review.artwork.artist,
+                    artwork=review.artwork,
+                    review_id=str(review.id),
+                    rating=review.rating
+                )
+            
             return Response({"message": "Review updated successfully."})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -83,11 +106,23 @@ class DeleteReviewView(APIView):
         purchase = review.purchase
 
 
+        # Store artwork info before deletion for notification
+        artwork = review.artwork
+        seller = artwork.artist if artwork else None
+        
         review.delete()
 
         if purchase:
             purchase.status = "Completed"
             purchase.save()
+
+        # Create notification for review deletion
+        if artwork and seller:
+            notify_review_deleted(
+                reviewer=request.user,
+                seller=seller,
+                artwork=artwork
+            )
 
         return Response({"message": "Review deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
