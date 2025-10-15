@@ -3,10 +3,11 @@ import apiClient from "@/utils/apiClient";
 
 export interface UseMySoldArtworksOptions {
   status?: string;
+  enabled?: boolean;
 }
 
 export const useMySoldArtworks = (options: UseMySoldArtworksOptions = {}) => {
-  const { status } = options;
+  const { status, enabled = true } = options;
 
   return useQuery<any[]>({
     queryKey: ["my-sold-artworks", status],
@@ -17,6 +18,7 @@ export const useMySoldArtworks = (options: UseMySoldArtworksOptions = {}) => {
       const { data } = await apiClient.get(`/my-sold-artworks/?${params.toString()}`);
       return data;
     },
+    enabled,
     // Cache for 5 minutes
     staleTime: 5 * 60 * 1000,
     // Keep data fresh for 10 minutes

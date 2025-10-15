@@ -24,10 +24,11 @@ export interface ArtCard {
 
 export interface UseMySellArtCardsOptions {
   status?: string;
+  enabled?: boolean;
 }
 
 const useMySellArtCards = (options: UseMySellArtCardsOptions = {}) => {
-  const { status } = options;
+  const { status, enabled = true } = options;
 
   return useQuery<ArtCard[]>({
     queryKey: ["my-sell-art-cards", status],
@@ -38,6 +39,7 @@ const useMySellArtCards = (options: UseMySellArtCardsOptions = {}) => {
       const { data } = await apiClient.get(`/art/cards/my/?${params.toString()}`);
       return data;
     },
+    enabled,
     // Cache for 5 minutes
     staleTime: 5 * 60 * 1000,
     // Keep data fresh for 10 minutes

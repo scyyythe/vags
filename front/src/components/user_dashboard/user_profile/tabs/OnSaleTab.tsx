@@ -55,8 +55,20 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const { openChat } = useChat();
   const queryClient = useQueryClient();
 
-  const { data: myArtCards = [], isLoading: isMyArtLoading, error: myArtError } = useMySellArtCards();
-  const { data: userArtCards = [], isLoading: isUserArtLoading, error: userArtError } = useUserSellArtCards(userId);
+  const {
+    data: myArtCards = [],
+    isLoading: isMyArtLoading,
+    error: myArtError,
+  } = useMySellArtCards({
+    enabled: isOwnProfile, // Only fetch if it's own profile
+  });
+  const {
+    data: userArtCards = [],
+    isLoading: isUserArtLoading,
+    error: userArtError,
+  } = useUserSellArtCards(userId, {
+    enabled: !isOwnProfile, // Only fetch if it's not own profile
+  });
 
   // Use appropriate data based on whether it's own profile or not
   const artCards = isOwnProfile ? myArtCards : userArtCards;
@@ -77,11 +89,15 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const [activeSubGroup, setActiveSubGroup] = useState<"listings" | "soldArtworks">("listings");
   const [subTab, setSubTab] = useState("available");
 
-  // Clear cache when switching tabs to prevent duplication
-  const clearArtworkCache = () => {
-    queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
-    queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
-  };
+  // Clear cache only when necessary to prevent excessive API calls
+  const clearArtworkCache = useCallback(() => {
+    // Only invalidate if we're switching between different data sources
+    if (isOwnProfile) {
+      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+    } else {
+      queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
+    }
+  }, [isOwnProfile, queryClient]);
 
   React.useEffect(() => {
     if (!isOwnProfile && subTab === "unlisted") {
@@ -478,13 +494,15 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
 
   const shouldPassStatusToBackend = !["completed", "reviews", "reviewed"].includes(normalizedTab);
 
-  // Use appropriate hook based on whether it's own profile or not
+  // Use appropriate hook based on whether it's own profile or not - only call the needed one
   const { data: mySoldArtworks = [] } = useMySoldArtworks({
     status: shouldPassStatusToBackend ? mappedStatus : undefined,
+    enabled: isOwnProfile, // Only fetch if it's own profile
   });
 
   const { data: userSoldArtworks = [] } = useUserSoldArtworks(userId, {
     status: shouldPassStatusToBackend ? mappedStatus : undefined,
+    enabled: !isOwnProfile, // Only fetch if it's not own profile
   });
 
   // Use the appropriate sold artworks data
@@ -775,11 +793,13 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
           <button
             className={`px-3 ${mainTab === "myListings" ? "text-red-800" : "text-gray-600"}`}
             onClick={() => {
-              setMainTab("myListings");
-              setSubTab("available");
-              setActiveSubGroup("listings");
-              setShowDropdown(false);
-              clearArtworkCache();
+              if (mainTab !== "myListings") {
+                setMainTab("myListings");
+                setSubTab("available");
+                setActiveSubGroup("listings");
+                setShowDropdown(false);
+                clearArtworkCache();
+              }
             }}
           >
             MY LISTINGS
@@ -788,11 +808,13 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
             <button
               className={`px-3 ${mainTab === "myPurchase" ? "text-red-800" : "text-gray-600"}`}
               onClick={() => {
-                setMainTab("myPurchase");
-                setSubTab("paid");
-                setActiveSubGroup("listings");
-                setShowDropdown(false);
-                clearArtworkCache();
+                if (mainTab !== "myPurchase") {
+                  setMainTab("myPurchase");
+                  setSubTab("paid");
+                  setActiveSubGroup("listings");
+                  setShowDropdown(false);
+                  clearArtworkCache();
+                }
               }}
             >
               MY PURCHASE
@@ -803,7 +825,9 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
         <button
           className={`px-3 ${mainTab === "salesSummary" ? "text-red-800" : "text-gray-600"}`}
           onClick={() => {
-            setMainTab("salesSummary");
+            if (mainTab !== "salesSummary") {
+              setMainTab("salesSummary");
+            }
           }}
         >
           SALES SUMMARY
@@ -862,7 +886,10 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                     }`}
                     onClick={() => {
                       setSubTab(tab);
-                      clearArtworkCache();
+                      // Only clear cache if switching between different data sources
+                      if (tab !== subTab) {
+                        clearArtworkCache();
+                      }
                     }}
                   >
                     {tab.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
