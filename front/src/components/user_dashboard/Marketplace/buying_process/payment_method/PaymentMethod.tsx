@@ -89,6 +89,11 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
     navigate("/reviewpurchase", { state: { selectedPaymentMethod } });
   };
 
+  const handleEditAccount = (account: PaymentAccount) => {
+    // Navigate to settings billing page to edit the account
+    navigate("/settings/billing");
+  };
+
   // Determine if an account is set up (used for enabling/disabling the button)
   const hasAccountSetup = () => {
     switch (formData.paymentMethod) {
@@ -108,17 +113,30 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
   const renderPaymentForm = () => {
     switch (formData.paymentMethod) {
       case "paypal":
-        return <PayPalForm email={formData.paypalEmail} accounts={accounts.filter((acc) => acc.type === "paypal")} />;
+        return (
+          <PayPalForm
+            email={formData.paypalEmail}
+            accounts={accounts.filter((acc) => acc.type === "paypal")}
+            onEditAccount={handleEditAccount}
+          />
+        );
       case "gcash":
         return (
           <GCashForm
             number={formData.gcashNumber}
             onNumberChange={(value) => handleInputChange("gcashNumber", value)}
             accounts={accounts.filter((acc) => acc.type === "gcash")}
+            onEditAccount={handleEditAccount}
           />
         );
       case "stripe":
-        return <StripeForm email={formData.stripeEmail} accounts={accounts.filter((acc) => acc.type === "stripe")} />;
+        return (
+          <StripeForm
+            email={formData.stripeEmail}
+            accounts={accounts.filter((acc) => acc.type === "stripe")}
+            onEditAccount={handleEditAccount}
+          />
+        );
       case "credit-card":
         return (
           <CreditCardForm
@@ -131,6 +149,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
             state={formData.state}
             postalCode={formData.postalCode}
             accounts={accounts.filter((acc) => acc.type === "card")}
+            onEditAccount={handleEditAccount}
           />
         );
       default:
