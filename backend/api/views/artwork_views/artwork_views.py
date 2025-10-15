@@ -835,11 +835,11 @@ class RelistArtworkView(APIView):
             return Response({"detail": "You can only relist your own artworks."}, status=status.HTTP_403_FORBIDDEN)
 
         # Check if artwork can be relisted (sold, expired, unsold, etc.)
-        if artwork.art_status == "Active":
-            return Response({"detail": "Artwork is already active and cannot be relisted."}, status=status.HTTP_400_BAD_REQUEST)
+        if artwork.art_status == "onSale":
+            return Response({"detail": "Artwork is already on sale and cannot be relisted."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Relist the artwork
-        artwork.art_status = "Active"
+        artwork.art_status = "onSale"
         artwork.visibility = "Public"
         artwork.updated_at = datetime.now(timezone.utc)
         artwork.save()
