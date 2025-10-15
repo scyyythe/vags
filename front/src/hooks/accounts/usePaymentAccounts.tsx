@@ -28,7 +28,6 @@ export const usePaymentAccounts = () => {
   const fetchAccounts = async () => {
     try {
       const res = await apiClient.get("/accounts/");
-      console.log("Raw API response:", res.data);
 
       const transformed = res.data.map((acc: any) => {
         const rawDate = acc.created_at?.$date || acc.created_at;
