@@ -12,6 +12,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import ExhibitCard from "@/components/user_dashboard/Exhibit/card/ExhibitCard";
 import { useMyExhibitCards } from "@/hooks/exhibit/useMyCardExhibit";
 import useUserExhibits from "@/hooks/exhibit/useUserExhibits";
@@ -222,17 +228,54 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
               </>
             )}
 
+            {/* DROPDOWN */}
             {selectedStatus !== "Hidden" && selectedStatus !== "Deleted" && selectedStatus !== "Archived" && (
-              <select
-                className="text-[9px] border rounded-full pr-6 pl-2 py-1 text-gray-700 cursor-pointer"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-              >
-                <option value="upcoming">Upcoming</option>
-                <option value="on_going">Ongoing</option>
-                <option value="closed">Ended</option>
-              </select>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="py-1 px-4 rounded-full text-[10px] border border-gray-300 flex items-center gap-1.5">
+                    {/* <i className="bx bx-sort text-xs"></i> */}
+                    {{
+                      upcoming: "Upcoming",
+                      on_going: "Ongoing",
+                      closed: "Ended",
+                    }[statusFilter] || "Filter"}
+                  </button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                  align="end"
+                  className="rounded-lg shadow-md py-2 text-[10px] bg-white border"
+                >
+                  <DropdownMenuItem
+                    onClick={() => setStatusFilter("upcoming")}
+                    className={`text-[10px] hover:bg-gray-100 cursor-pointer ${
+                      statusFilter === "upcoming" ? "font-semibold text-gray-800" : "text-gray-600"
+                    }`}
+                  >
+                    Upcoming
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => setStatusFilter("on_going")}
+                    className={`text-[10px] hover:bg-gray-100 cursor-pointer ${
+                      statusFilter === "on_going" ? "font-semibold text-gray-800" : "text-gray-600"
+                    }`}
+                  >
+                    Ongoing
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => setStatusFilter("closed")}
+                    className={`text-[10px] hover:bg-gray-100 cursor-pointer ${
+                      statusFilter === "closed" ? "font-semibold text-gray-800" : "text-gray-600"
+                    }`}
+                  >
+                    Ended
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
+
           </div>
         </div>
       </div>
