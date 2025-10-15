@@ -2,6 +2,7 @@ from django.urls import path
 from api.views.purchase_view.purchase_view import PurchaseArtworkView,MyPurchasesView,MarkPurchaseCompletedView,MarkPurchaseAsShippedView
 from api.views.purchase_view.review_view import SubmitReviewView
 from api.views.purchase_view.sold_artworks_view import MySoldArtworksView,ToggleArtworkStatusView,MarkArtworkAsUnlistedView
+from api.views.purchase_view.user_sold_artworks_view import UserSoldArtworksView
 from api.views.purchase_view.review_view import SubmitReviewView,AllReviewsByArtworkView, GetReviewByPurchaseView,AllReviewsByPurchaseView,UpdateReviewView,DeleteReviewView
 from api.views.payment_views.payment_accounts import ListPaymentAccounts,AddOrUpdatePaymentAccount,DeletePaymentAccount,GetArtistPaymentAccounts
 from api.views.transaction.auction_payment import PayPalVerifyAuctionPaymentView
@@ -13,8 +14,9 @@ purchase_urlpatterns = [
    path("my-purchases/", MyPurchasesView.as_view(), name="my-purchases"),
    path("my-purchases/<str:purchase_id>/complete/", MarkPurchaseCompletedView.as_view(), name="mark-purchase-completed"),
    path("my-sales/<str:purchase_id>/mark-shipped/", MarkPurchaseAsShippedView.as_view()),
-#   sold artworks
+   #   sold artworks
    path("my-sold-artworks/", MySoldArtworksView.as_view(), name="my-sold-artworks"),
+   path("user-sold-artworks/<str:user_id>/", UserSoldArtworksView.as_view(), name="user-sold-artworks"),
     path("my-artworks/<str:artwork_id>/mark-sold/", ToggleArtworkStatusView.as_view(), name="mark-artwork-sold"),
     
    #  unlisted

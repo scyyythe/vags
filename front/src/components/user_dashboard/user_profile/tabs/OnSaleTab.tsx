@@ -30,6 +30,7 @@ import { useSubmitReview } from "@/hooks/review/useSubmitReview";
 import { formatOrderDetails } from "@/utils/purchase/formatOrder";
 import { uploadToCloudinary } from "@/hooks/review/useSubmitReview";
 import { useMySoldArtworks } from "@/hooks/purchase/useMySoldArtworks";
+import { useUserSoldArtworks } from "@/hooks/purchase/useUserSoldArtworks";
 import { formatSoldArtworks } from "@/utils/purchase/formatSoldArtwork";
 import { useReviewByPurchase } from "@/hooks/review/useReviewByPurchase";
 import { ReviewResponse } from "@/hooks/review/useReviewByPurchase";
@@ -350,15 +351,17 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   };
 
   const activeListingTabs = isOwnProfile ? ["available", "unlisted", "sold"] : ["available", "sold"];
-  const soldArtworksTabs = [
-    // "awaiting_payment",
-    "payment_received",
-    "in_progress",
-    "completed",
-    "cancelled",
-    "refunded",
-    "reviews",
-  ];
+  const soldArtworksTabs = isOwnProfile
+    ? [
+        // "awaiting_payment",
+        "payment_received",
+        "in_progress",
+        "completed",
+        "cancelled",
+        "refunded",
+        "reviews",
+      ]
+    : ["sold"]; // For visitors, only show "sold" tab
   const myPurchaseTabs = [
     // "pending_payment",
     // "payment_processing",
@@ -475,15 +478,33 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
 
   const shouldPassStatusToBackend = !["completed", "reviews", "reviewed"].includes(normalizedTab);
 
-  const { data: soldArtworks = [] } = useMySoldArtworks({
+  // Use appropriate hook based on whether it's own profile or not
+  const { data: mySoldArtworks = [] } = useMySoldArtworks({
     status: shouldPassStatusToBackend ? mappedStatus : undefined,
   });
+
+  const { data: userSoldArtworks = [] } = useUserSoldArtworks(userId, {
+    status: shouldPassStatusToBackend ? mappedStatus : undefined,
+  });
+
+  // Use the appropriate sold artworks data
+  const soldArtworks = isOwnProfile ? mySoldArtworks : userSoldArtworks;
+
+  // Debug logging will be added after filteredSoldArtworks declaration
+
+  // Removed auto-switch logic - visitors can manually choose between available and sold artworks
 
   const filteredSoldArtworks = Array.isArray(soldArtworks)
     ? formatSoldArtworks(soldArtworks)
         .filter((sale) => {
           const status = sale.status?.toLowerCase();
 
+          // For both owners and visitors on "sold" tab, show all sold artworks regardless of status
+          if (normalizedTab === "sold") {
+            return true; // Show all sold artworks for both owners and visitors
+          }
+
+          // Owner's filtering logic for other tabs
           if (normalizedTab === "reviews" || normalizedTab === "reviewed") {
             return status === "reviewed";
           }
@@ -514,7 +535,11 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
 
           return { ...sale, status: updatedStatus };
         })
+        // Remove duplicates based on artwork_id, keeping the first occurrence
+        .filter((sale, index, self) => index === self.findIndex((art) => art.artwork_id === sale.artwork_id))
     : [];
+
+  // Debug logging removed - functionality working correctly
 
   // Fetch current user's profile data using their ID
   const { data: currentUserProfile } = useUserQuery(loggedInUserId || "");
@@ -846,7 +871,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
               </div>
             </div>
           ) : (
-            // Not owner: Only show Listings subtabs, no dropdown
+            // Visitor: Show only Available and Sold tabs directly (no dropdown)
             <div className="flex flex-wrap gap-4 mb-6 text-[11px]">
               {activeListingTabs.map((tab) => (
                 <button
@@ -886,12 +911,14 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
         {mainTab === "salesSummary" ? (
           <SalesSummary />
         ) : mainTab === "myListings" && activeSubGroup === "soldArtworks" ? (
-          subTab === "reviews" ? (
-            filteredSoldArtworks.length === 0 ? (
-              <div className="text-xs text-center py-12">
-                <p className="text-muted-foreground">No reviews yet on your sold artworks.</p>
-              </div>
-            ) : (
+          filteredSoldArtworks.length === 0 ? (
+            <div className="text-xs text-center py-12">
+              <div className="w-24 h-24 mx-auto mb-4 opacity-50">{/* icon svg */}</div>
+              <p className="text-muted-foreground">No sold artworks found for this status.</p>
+            </div>
+          ) : isOwnProfile ? (
+            // Owner: Show detailed SoldArtworkCard with management options
+            subTab === "reviews" ? (
               filteredSoldArtworks.map((artwork) => (
                 <SoldArtworkCard
                   key={artwork.id}
@@ -920,42 +947,59 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                   onViewSummary={(artwork) => handleViewSummary(artwork)}
                 />
               ))
+            ) : (
+              filteredSoldArtworks.map((artwork) => (
+                <SoldArtworkCard
+                  key={artwork.id}
+                  id={artwork.id}
+                  artworkImage={artwork.artworkImage}
+                  title={artwork.title}
+                  buyer={artwork.buyer}
+                  buyer_id={artwork.buyer_id}
+                  price={artwork.price}
+                  status={artwork.status}
+                  saleDate={artwork.saleDate}
+                  completedDate={artwork.completedDate}
+                  paymentMethod={artwork.paymentMethod}
+                  shippingAddress={artwork.shippingAddress}
+                  artwork={artwork.artwork}
+                  review={artwork.review}
+                  isHighlighted={navigationState?.highlightedOrderId === artwork.id}
+                  onViewDetails={(art) => handleViewDetails(art)}
+                  onContactBuyer={(art) => handleContactBuyer(art)}
+                  onThankBuyer={(art) => handleThankBuyer(art)}
+                  onMarkAsShipped={(art) => handleMarkAsShipped(art)}
+                  onViewPayment={(art) => handleViewPayment(art)}
+                  onProcessRefund={(art) => handleProcessRefund(art)}
+                  onViewReview={(art) => handleViewSellerReview(art)}
+                  onTrackProgress={(art) => handleTrackProgress(art)}
+                  onViewSummary={(art) => handleViewSummary(art)}
+                />
+              ))
             )
-          ) : // default for other soldArtworks tabs
-          filteredSoldArtworks.length === 0 ? (
-            <div className="text-xs text-center py-12">
-              <div className="w-24 h-24 mx-auto mb-4 opacity-50">{/* icon svg */}</div>
-              <p className="text-muted-foreground">No sold artworks found for this status.</p>
-            </div>
           ) : (
-            filteredSoldArtworks.map((artwork) => (
-              <SoldArtworkCard
-                key={artwork.id}
-                id={artwork.id}
-                artworkImage={artwork.artworkImage}
-                title={artwork.title}
-                buyer={artwork.buyer}
-                buyer_id={artwork.buyer_id}
-                price={artwork.price}
-                status={artwork.status}
-                saleDate={artwork.saleDate}
-                completedDate={artwork.completedDate}
-                paymentMethod={artwork.paymentMethod}
-                shippingAddress={artwork.shippingAddress}
-                artwork={artwork.artwork}
-                review={artwork.review}
-                isHighlighted={navigationState?.highlightedOrderId === artwork.id}
-                onViewDetails={(art) => handleViewDetails(art)}
-                onContactBuyer={(art) => handleContactBuyer(art)}
-                onThankBuyer={(art) => handleThankBuyer(art)}
-                onMarkAsShipped={(art) => handleMarkAsShipped(art)}
-                onViewPayment={(art) => handleViewPayment(art)}
-                onProcessRefund={(art) => handleProcessRefund(art)}
-                onViewReview={(art) => handleViewSellerReview(art)}
-                onTrackProgress={(art) => handleTrackProgress(art)}
-                onViewSummary={(art) => handleViewSummary(art)}
-              />
-            ))
+            // Visitor: Show sold artworks as simple SellCards
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {filteredSoldArtworks.map((artwork) => (
+                <SellCard
+                  key={artwork.id}
+                  id={artwork.artwork_id}
+                  artworkImage={artwork.artworkImage}
+                  title={artwork.title}
+                  price={artwork.price}
+                  originalPrice={artwork.price}
+                  rating={artwork.review ? artwork.review.rating : 0}
+                  category={artwork.artwork?.style || "Art"}
+                  status="sold"
+                  isMarketplace={true}
+                  artistId={artwork.artist_id}
+                  isOwner={false}
+                  isFading={false}
+                  onCardClick={() => onCardClick(artwork.artwork_id)}
+                  isReported={reportStatusMap[artwork.artwork_id]?.reported || false}
+                />
+              ))}
+            </div>
           )
         ) : mainTab === "myPurchase" ? (
           filteredOrders.length === 0 ? (
@@ -1027,8 +1071,9 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
               <SellCardSkeleton key={idx} />
             ))}
           </div>
-        ) : subTab === "sold" && isOwnProfile ? (
-          filteredSoldArtworksForListings.length === 0 ? (
+        ) : subTab === "sold" ? (
+          // Show sold artworks for both owners and visitors using the same data source
+          filteredSoldArtworks.length === 0 ? (
             <div className="text-xs text-center py-12">
               <div className="w-24 h-24 mx-auto mb-4 opacity-50">
                 <svg
@@ -1049,24 +1094,24 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {filteredSoldArtworksForListings.map((art) => (
+              {filteredSoldArtworks.map((artwork) => (
                 <SellCard
-                  key={art.id}
-                  id={art.id}
-                  artworkImage={art.artworkImage}
-                  title={art.title}
-                  price={art.price}
-                  originalPrice={art.originalPrice}
-                  rating={art.rating}
-                  category={art.category}
-                  status="sold" // ensures SellCard recognizes it as sold
+                  key={artwork.id}
+                  id={artwork.artwork_id}
+                  artworkImage={artwork.artworkImage}
+                  title={artwork.title}
+                  price={artwork.price}
+                  originalPrice={artwork.price}
+                  rating={artwork.review ? artwork.review.rating : 0}
+                  category={artwork.artwork?.style || "Art"}
+                  status="sold"
                   isMarketplace={true}
-                  artistId={art.artist_id}
+                  artistId={artwork.artist_id}
                   isOwner={isOwnProfile}
-                  isFading={(art as any).isFading ?? false}
-                  onCardClick={() => onCardClick(art.id)}
-                  onRelist={() => handleRelist(art.id)} // enables "Relist" button
-                  isReported={reportStatusMap[art.id]?.reported || false}
+                  isFading={false}
+                  onCardClick={() => onCardClick(artwork.artwork_id)}
+                  onRelist={isOwnProfile ? () => handleRelist(artwork.artwork_id) : undefined}
+                  isReported={reportStatusMap[artwork.artwork_id]?.reported || false}
                 />
               ))}
             </div>
@@ -1202,22 +1247,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
           onEdit={handleEditReview}
           onDelete={handleDeleteReview}
           onThankBuyer={() => {
-            console.log("=== ONTHANKBUYER DEBUG ===");
-            console.log("selectedReview:", selectedReview);
-            console.log("filteredSoldArtworks:", filteredSoldArtworks);
-
-            // Try to find the sold artwork that matches this review
-            // The review might be associated with a specific sold artwork
             const soldArtwork = filteredSoldArtworks.find((art) => {
-              console.log("Checking artwork:", {
-                art_id: (art as any).id,
-                art_artwork_id: (art as any).artwork_id,
-                art_title: (art as any).title,
-                review_artwork_id: (selectedReview?.artwork as any)?.id,
-                review_title: (selectedReview?.artwork as any)?.title,
-              });
-
-              // Try multiple ways to match the review with the artwork
               return (
                 (art as any).artwork?.id === (selectedReview?.artwork as any)?.id ||
                 (art as any).artwork_id === (selectedReview?.artwork as any)?.id ||
@@ -1227,20 +1257,8 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
             });
 
             if (soldArtwork) {
-              console.log("✅ Found sold artwork for thank you:", soldArtwork);
-              console.log("Sold artwork buyer info:", {
-                buyer_id: (soldArtwork as any).buyer_id,
-                buyer: (soldArtwork as any).buyer,
-                buyerName: (soldArtwork as any).buyerName,
-              });
               handleThankBuyer(soldArtwork);
             } else if (selectedReview?.artwork) {
-              console.log("⚠️ Using selectedReview.artwork:", selectedReview.artwork);
-              console.log("SelectedReview artwork buyer info:", {
-                buyer_id: (selectedReview.artwork as any).buyer_id,
-                buyer: (selectedReview.artwork as any).buyer,
-                buyerName: (selectedReview.artwork as any).buyerName,
-              });
               handleThankBuyer(selectedReview.artwork);
             } else {
               console.log("❌ No artwork data found");
@@ -1259,8 +1277,8 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                   photos: review.images || [],
                   reviewDate: review.created_at,
                   reviewerName: `${review.user.first_name} ${review.user.last_name}`,
-                  canEdit: false, // seller cannot edit buyer reviews
-                  canDelete: false, // seller usually shouldn't delete reviews
+                  canEdit: false,
+                  canDelete: false,
                 }))
               : undefined
           }
