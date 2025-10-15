@@ -708,6 +708,15 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   };
 
   const handleRelist = (id: string) => {
+    // Check if the artwork is already onSale in the main artCards data
+    const artworkInMainData = artCards.find((art) => art.id === id);
+    if (artworkInMainData && artworkInMainData.art_status?.toLowerCase() === "onsale") {
+      toast.info("This artwork is already on sale and available in your listings.");
+      // Move to available tab to show the artwork
+      setSubTab("available");
+      return;
+    }
+
     relistArtwork(id, {
       onSuccess: () => {
         // Show success message
@@ -722,7 +731,8 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
       },
       onError: (error) => {
         console.error("Failed to relist artwork:", error);
-        toast.error("Failed to relist artwork. Please try again.");
+        const errorMessage = error?.response?.data?.detail || "Failed to relist artwork. Please try again.";
+        toast.error(errorMessage);
       },
     });
   };

@@ -74,8 +74,21 @@ const Marketplace = () => {
 
   const filteredArtCards =
     selectedCategoryFilter === "Following"
-      ? (followedArtworksData?.artworks ?? []).filter((art) => {
-          if (art.art_status !== "onSale") return false;
+      ? (followedArtworksData?.artworks ?? []).filter((art: any) => {
+          // Only show artworks that are onSale and Public
+          const status = (art.art_status || "").toLowerCase();
+          const visibility = (art.visibility || "").toLowerCase();
+
+          // Explicitly exclude sold artworks
+          if (status === "sold") return false;
+
+          // Only include onSale artworks
+          if (status !== "onsale") return false;
+
+          // Only include Public artworks
+          if (visibility !== "public") return false;
+
+          // Additional filters
           if (
             selectedArtCategory !== "All" &&
             art.category?.trim().toLowerCase() !== selectedArtCategory.trim().toLowerCase()
@@ -85,7 +98,21 @@ const Marketplace = () => {
           return true;
         })
       : selectedCategoryFilter === "Trending"
-      ? (trendingArtworks ?? []).filter((artwork) => {
+      ? (trendingArtworks ?? []).filter((artwork: any) => {
+          // Only show artworks that are onSale and Public
+          const status = (artwork.art_status || "").toLowerCase();
+          const visibility = (artwork.visibility || "").toLowerCase();
+
+          // Explicitly exclude sold artworks
+          if (status === "sold") return false;
+
+          // Only include onSale artworks
+          if (status !== "onsale") return false;
+
+          // Only include Public artworks
+          if (visibility !== "public") return false;
+
+          // Additional filters
           if (
             selectedArtCategory !== "All" &&
             artwork.category?.trim().toLowerCase() !== selectedArtCategory.trim().toLowerCase()
@@ -95,14 +122,21 @@ const Marketplace = () => {
           return true;
         })
       : safeArtCards
-          .filter((artwork) => {
+          .filter((artwork: any) => {
+            // Only show artworks that are onSale and Public
             const status = (artwork.art_status || "").toLowerCase();
-            const isSold = status === "sold";
-            const isOnSale = status === "onsale";
-            const isOpenEdition = artwork.edition === "Open Edition";
-            const shouldInclude = isOnSale || !isSold || isOpenEdition;
+            const visibility = (artwork.visibility || "").toLowerCase();
 
-            if (!shouldInclude) return false;
+            // Explicitly exclude sold artworks
+            if (status === "sold") return false;
+
+            // Only include onSale artworks
+            if (status !== "onsale") return false;
+
+            // Only include Public artworks
+            if (visibility !== "public") return false;
+
+            // Additional filters
             if (
               selectedArtCategory !== "All" &&
               artwork.category?.trim().toLowerCase() !== selectedArtCategory.trim().toLowerCase()
