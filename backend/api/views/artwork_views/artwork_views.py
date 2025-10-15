@@ -105,6 +105,15 @@ class SellArtworkView(APIView):
         serializer = ArtSerializer(data=request.data)
         if serializer.is_valid():
             art = serializer.save(artist=mongo_user)
+            
+            # Create notification for successful artwork listing
+            from api.utils.notification_utils import notify_artwork_listed_for_sale
+            notify_artwork_listed_for_sale(
+                artist=mongo_user,
+                artwork=art,
+                price=art.price
+            )
+            
             return Response(ArtSerializer(art).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class UpdateArtworkView(APIView):
