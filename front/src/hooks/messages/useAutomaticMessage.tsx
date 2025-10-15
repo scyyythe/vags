@@ -59,10 +59,8 @@ export const useAutomaticMessage = () => {
         // Double-check if conversation was created by another process
         const doubleCheckId = await findExistingConversation(sellerId);
         if (doubleCheckId) {
-          console.log("Conversation found on double-check, using existing:", doubleCheckId);
           convoId = doubleCheckId;
         } else {
-          console.log("Creating new conversation for seller:", sellerId);
           const newConvoRef = doc(collection(db, "conversations"));
           await setDoc(newConvoRef, {
             participants: [userId, sellerId],
@@ -81,7 +79,6 @@ export const useAutomaticMessage = () => {
             archivedBy: [],
           });
           convoId = newConvoRef.id;
-          console.log("Created new conversation:", convoId);
         }
       }
 
@@ -101,6 +98,7 @@ export const useAutomaticMessage = () => {
           artworkTitle: title,
           buyerName: userName,
           orderId: orderId,
+          messageType: "newOrder",
         },
       };
 
@@ -111,8 +109,6 @@ export const useAutomaticMessage = () => {
         const deletedBy = convData.deletedBy || [];
         const deletedAt = convData.deletedAt || {};
 
-        // Only restore the conversation for the receiver (seller) if they deleted it
-        // Don't restore it for the sender (current user) if they deleted it
         if (deletedBy.includes(sellerId)) {
           const updatedDeletedBy = deletedBy.filter((id: string) => id !== sellerId);
           const updatedDeletedAt = { ...deletedAt };
@@ -123,11 +119,6 @@ export const useAutomaticMessage = () => {
             deletedAt: updatedDeletedAt,
           });
         }
-
-        // If the current user (sender) had deleted this conversation, keep it deleted for them
-        // This means the conversation won't appear in their chat list
-        // The conversation will remain deleted for the sender, so they won't see it in their chat list
-        // Only the receiver (seller) will see the conversation if they didn't delete it
       }
 
       const msgRef = await addDoc(collection(db, "conversations", convoId, "messages"), message);

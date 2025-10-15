@@ -23,7 +23,8 @@ export interface Message {
     sellerName: string;
     artworkTitle: string;
     buyerName: string;
-    orderId: string;
+    orderId?: string;
+    messageType?: "newOrder" | "thankYou";
   };
 
   replyTo?: {

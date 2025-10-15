@@ -7,7 +7,7 @@ import SellCardSkeleton from "@/components/skeletons/marketplace/SellCardSkeleto
 import SalesSummary from "@/components/user_dashboard/Marketplace/sales_summary/SalesSummary";
 import useMySellArtCards from "@/hooks/artworks/sell/useMySellArtCards";
 import useUserSellArtCards from "@/hooks/artworks/sell/useUserSellArtCards";
-import { getLoggedInUserId } from "@/auth/decode";
+
 import { memo } from "react";
 import PurchasedArtworkCard from "@/components/user_dashboard/Marketplace/my_purchase/card/PurchasedArtworkCard";
 import OrderDetailsModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/OrderDetailsModal";
@@ -19,6 +19,9 @@ import RefundDetailsModal from "@/components/user_dashboard/Marketplace/my_listi
 import TrackPaymentModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/TrackPaymentModal";
 import { useChat } from "@/context/ChatContext";
 import apiClient from "@/utils/apiClient";
+import { useThankYouMessage } from "@/hooks/messages/useThankYouMessage";
+import { getLoggedInUserId } from "@/auth/decode";
+import useUserQuery from "@/hooks/users/useUserQuery";
 
 import SoldArtworkCard from "@/components/user_dashboard/Marketplace/sold_artworks/card/SoldArtworksCard";
 import { useMyPurchases } from "@/hooks/purchase/useMyPurchases";
@@ -32,6 +35,7 @@ import { useReviewByPurchase } from "@/hooks/review/useReviewByPurchase";
 import { ReviewResponse } from "@/hooks/review/useReviewByPurchase";
 import { useEditReview } from "@/hooks/review/useEditReview";
 import { useDeleteReview } from "@/hooks/review/useDeleteReview";
+// import { useArtworkReviews } from "@/hooks/review/useArtworkReviews"; // Not needed since we fetch on demand
 import useMarkPurchaseCompleted from "@/hooks/purchase/useMarkPurchaseCompleted";
 import useMarkAsShipped from "@/hooks/purchase/useMarkAsShipped";
 type SellTabProps = {
@@ -115,6 +119,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const [showSalesSummary, setShowSalesSummary] = useState(false);
   const [selectedReview, setSelectedReview] = useState<ReviewResponse | null>(null);
   const [showReviewDetailsModal, setShowReviewDetailsModal] = useState(false);
+  // const [selectedArtworkId, setSelectedArtworkId] = useState<string | null>(null); // Not needed since we fetch on demand
 
   const { mutate: fetchReviewByPurchase, isPending } = useReviewByPurchase();
   const { mutateAsync: editReview, isPending: isUpdating } = useEditReview();
@@ -122,6 +127,11 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const { mutate: submitReview } = useSubmitReview();
   const { mutate: markAsCompleted } = useMarkPurchaseCompleted();
   const { mutate: markAsShipped } = useMarkAsShipped();
+  // We'll fetch reviews on demand instead of using the hook with selectedArtworkId
+  const [artworkReviews, setArtworkReviews] = useState<any[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+
+  // Thank you message functionality - will be defined after user data is available
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -486,6 +496,35 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
         })
     : [];
 
+  // Fetch current user's profile data using their ID
+  const { data: currentUserProfile } = useUserQuery(loggedInUserId || "");
+
+  const getCurrentUserData = () => {
+    if (currentUserProfile) {
+      console.log("Current user profile data:", currentUserProfile);
+      return {
+        userId: loggedInUserId || "",
+        userName:
+          currentUserProfile.username ||
+          `${currentUserProfile.first_name || ""} ${currentUserProfile.last_name || ""}`.trim() ||
+          "Artist",
+        userAvatar: currentUserProfile.profile_picture || undefined,
+      };
+    }
+
+    // Fallback if no profile data available
+    return {
+      userId: loggedInUserId || "",
+      userName: "Artist",
+      userAvatar: undefined,
+    };
+  };
+
+  const currentUserData = getCurrentUserData();
+
+  // Thank you message functionality with user data
+  const { handleThankYouWithAutoMessage, isSending: isThankYouSending } = useThankYouMessage(currentUserData);
+
   const filteredSoldArtworksForListings =
     isOwnProfile && subTab === "sold"
       ? Array.isArray(soldArtworks)
@@ -602,24 +641,51 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
     setShowRefundDetailsModal(true);
   };
 
-  const handleViewSellerReview = (artwork) => {
-    if (!artwork.review) {
-      toast.info("No review found for this sale.");
+  const handleViewSellerReview = async (artwork) => {
+    const artworkId = artwork.artwork_id || artwork.id;
+
+    if (!artworkId) {
+      toast.error("Artwork ID not found.");
       return;
     }
 
-    setSelectedReview({
-      ...artwork.review,
-      reviewerName: artwork.buyer,
-      canEdit: false, // seller cannot edit buyer reviews
-      canDelete: false, // seller usually shouldn’t delete reviews
-      artwork: {
-        artworkImage: artwork.artworkImage,
-        title: artwork.title,
-        artist: "You",
-      },
-    });
-    setShowReviewDetailsModal(true);
+    setReviewsLoading(true);
+
+    try {
+      const response = await apiClient.get(`/review/all-by-artwork/${artworkId}/`);
+      const reviews = response.data;
+
+      if (reviews.length === 0) {
+        toast.info("No reviews found for this artwork.");
+        setReviewsLoading(false);
+        return;
+      }
+
+      setArtworkReviews(reviews);
+
+      const firstReview = reviews[0];
+      setSelectedReview({
+        id: firstReview.id,
+        rating: firstReview.score,
+        comment: firstReview.comment,
+        photos: firstReview.images || [],
+        reviewDate: firstReview.created_at,
+        reviewerName: `${firstReview.user.first_name} ${firstReview.user.last_name}`,
+        canEdit: false,
+        canDelete: false,
+        artwork: {
+          artworkImage: artwork.artworkImage,
+          title: artwork.title,
+          artist: "You",
+        },
+      });
+      setShowReviewDetailsModal(true);
+    } catch (error) {
+      console.error("Error fetching artwork reviews:", error);
+      toast.error("Failed to fetch reviews.");
+    } finally {
+      setReviewsLoading(false);
+    }
   };
 
   const handleRelist = (id: string) => {
@@ -648,6 +714,10 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
 
       toast.success("Artwork relisted successfully!", { closeButton: true });
     }, 400);
+  };
+
+  const handleThankBuyer = (artwork: any) => {
+    handleThankYouWithAutoMessage(artwork);
   };
 
   return (
@@ -812,6 +882,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                   onViewReview={() => handleViewSellerReview(artwork)}
                   onViewDetails={(artwork) => handleViewDetails(artwork)}
                   onContactBuyer={(artwork) => handleContactBuyer(artwork)}
+                  onThankBuyer={(artwork) => handleThankBuyer(artwork)}
                   onMarkAsShipped={(artwork) => handleMarkAsShipped(artwork)}
                   onViewPayment={(artwork) => handleViewPayment(artwork)}
                   onProcessRefund={(artwork) => handleProcessRefund(artwork)}
@@ -846,6 +917,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                 isHighlighted={navigationState?.highlightedOrderId === artwork.id}
                 onViewDetails={(art) => handleViewDetails(art)}
                 onContactBuyer={(art) => handleContactBuyer(art)}
+                onThankBuyer={(art) => handleThankBuyer(art)}
                 onMarkAsShipped={(art) => handleMarkAsShipped(art)}
                 onViewPayment={(art) => handleViewPayment(art)}
                 onProcessRefund={(art) => handleProcessRefund(art)}
@@ -1097,9 +1169,70 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
           onClose={() => setShowReviewDetailsModal(false)}
           onEdit={handleEditReview}
           onDelete={handleDeleteReview}
+          onThankBuyer={() => {
+            console.log("=== ONTHANKBUYER DEBUG ===");
+            console.log("selectedReview:", selectedReview);
+            console.log("filteredSoldArtworks:", filteredSoldArtworks);
+
+            // Try to find the sold artwork that matches this review
+            // The review might be associated with a specific sold artwork
+            const soldArtwork = filteredSoldArtworks.find((art) => {
+              console.log("Checking artwork:", {
+                art_id: (art as any).id,
+                art_artwork_id: (art as any).artwork_id,
+                art_title: (art as any).title,
+                review_artwork_id: (selectedReview?.artwork as any)?.id,
+                review_title: (selectedReview?.artwork as any)?.title,
+              });
+
+              // Try multiple ways to match the review with the artwork
+              return (
+                (art as any).artwork?.id === (selectedReview?.artwork as any)?.id ||
+                (art as any).artwork_id === (selectedReview?.artwork as any)?.id ||
+                (art as any).id === (selectedReview?.artwork as any)?.id ||
+                (art as any).artwork?.title === (selectedReview?.artwork as any)?.title
+              );
+            });
+
+            if (soldArtwork) {
+              console.log("✅ Found sold artwork for thank you:", soldArtwork);
+              console.log("Sold artwork buyer info:", {
+                buyer_id: (soldArtwork as any).buyer_id,
+                buyer: (soldArtwork as any).buyer,
+                buyerName: (soldArtwork as any).buyerName,
+              });
+              handleThankBuyer(soldArtwork);
+            } else if (selectedReview?.artwork) {
+              console.log("⚠️ Using selectedReview.artwork:", selectedReview.artwork);
+              console.log("SelectedReview artwork buyer info:", {
+                buyer_id: (selectedReview.artwork as any).buyer_id,
+                buyer: (selectedReview.artwork as any).buyer,
+                buyerName: (selectedReview.artwork as any).buyerName,
+              });
+              handleThankBuyer(selectedReview.artwork);
+            } else {
+              console.log("❌ No artwork data found");
+              toast.error("Unable to find artwork information for thank you message.");
+            }
+          }}
           viewType={mainTab === "myListings" && activeSubGroup === "soldArtworks" ? "seller" : "buyer"}
           review={selectedReview}
           artwork={selectedReview.artwork}
+          allReviews={
+            artworkReviews.length > 0
+              ? artworkReviews.map((review) => ({
+                  id: review.id,
+                  rating: review.score,
+                  comment: review.comment,
+                  photos: review.images || [],
+                  reviewDate: review.created_at,
+                  reviewerName: `${review.user.first_name} ${review.user.last_name}`,
+                  canEdit: false, // seller cannot edit buyer reviews
+                  canDelete: false, // seller usually shouldn't delete reviews
+                }))
+              : undefined
+          }
+          isLoading={reviewsLoading || isThankYouSending}
         />
       )}
 

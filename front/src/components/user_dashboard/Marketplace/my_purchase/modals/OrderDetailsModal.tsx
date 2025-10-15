@@ -139,8 +139,8 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           <DialogTitle className="flex items-center justify-between text-sm mt-3">
             <span>{viewType === "seller" ? "Sale Details" : "Order Details"}</span>
             <div className="flex items-center gap-2">
-              <Badge className={`${getStatusColor(order.status)} text-white text-[10px]`}>
-                {order.status.replace(/_/g, " ").toUpperCase()}
+              <Badge className={`${getStatusColor(order.status || "unknown")} text-white text-[10px]`}>
+                {(order.status || "unknown").replace(/_/g, " ").toUpperCase()}
               </Badge>
             </div>
           </DialogTitle>
@@ -156,19 +156,28 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                 Artwork Details
               </h3>
               <div className="flex gap-4">
-                <img src={order.artworkImage} alt={order.title} className="w-24 h-24 rounded-md object-cover" />
+                <img
+                  src={order.artworkImage || "/placeholder.png"}
+                  alt={order.title || "Artwork"}
+                  className="w-24 h-24 rounded-md object-cover"
+                />
                 <div className="flex-1">
-                  <h4 className="font-semibold text-xs text-foreground mb-0.5">{order.title}</h4>
+                  <h4 className="font-semibold text-xs text-foreground mb-0.5">{order.title || "Untitled"}</h4>
                   <p className="text-[10px] text-black mb-2">
-                    {viewType === "seller" ? `Sold to ${order.buyer}` : `by ${order.artist}`}
+                    {viewType === "seller" ? `Sold to ${order.buyer || "Unknown"}` : `by ${order.artist || "Unknown"}`}
                   </p>
                   <div className="grid grid-cols-2 gap-2 text-[10px] text-muted-foreground">
-                    <div>Size: {order.artwork.size}</div>
-                    <div>Medium: {order.artwork.medium}</div>
-                    <div>Style: {order.artwork.style.charAt(0).toUpperCase() + order.artwork.style.slice(1)}</div>
+                    <div>Size: {order.artwork.size || "Unknown"}</div>
+                    <div>Medium: {order.artwork.medium || "Unknown"}</div>
+                    <div>
+                      Style:{" "}
+                      {order.artwork.style
+                        ? order.artwork.style.charAt(0).toUpperCase() + order.artwork.style.slice(1)
+                        : "Unknown"}
+                    </div>
 
-                    <div>Edition: {order.artwork.edition}</div>
-                    <div>Year: {order.artwork.yearCreated}</div>
+                    <div>Edition: {order.artwork.edition || "Unknown"}</div>
+                    <div>Year: {order.artwork.yearCreated || "Unknown"}</div>
                     <div>
                       {(order.artwork.edition === "Limited Edition" || order.artwork.edition === "Open Edition") &&
                         order.artwork.quantity && <span className="block">Quantity: {order.artwork.quantity}</span>}
@@ -210,7 +219,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   <CreditCard className="w-2.5 h-2.5 text-primary-foreground" />
                 </div>
                 <div>
-                  <p className="text-[11px] font-medium">{order.paymentMethod}</p>
+                  <p className="text-[11px] font-medium">{order.paymentMethod || "Unknown"}</p>
                   <p className="text-[10px] text-muted-foreground">
                     {viewType === "seller" ? "Payment received" : "Payment confirmed"}
                   </p>
@@ -262,7 +271,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                     <p className="text-[10px] text-muted-foreground">
                       {viewType === "seller" ? "Sale Date" : "Order Date"}
                     </p>
-                    <p className="font-medium text-[11px]">{order.saleDate || order.orderDate}</p>
+                    <p className="font-medium text-[11px]">{order.saleDate || order.orderDate || "Unknown"}</p>
                   </div>
                 </div>
 
@@ -272,7 +281,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                     <p className="text-[10px] text-muted-foreground">
                       {viewType === "seller" ? "Sale ID" : "Order ID"}
                     </p>
-                    <p className="font-medium text-[10px]">{order.id}</p>
+                    <p className="font-medium text-[10px]">{order.id || "Unknown"}</p>
                   </div>
                 </div>
 
@@ -291,7 +300,12 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                 <div className="flex justify-between items-center">
                   <span className="text-[11px] font-semibold">Total</span>
                   <span className="text-sm font-bold text-foreground">
-                    ₱{order.price >= 1000 ? `${(order.price / 1000).toFixed(1)}k` : order.price.toLocaleString()}
+                    ₱
+                    {order.price
+                      ? order.price >= 1000
+                        ? `${(order.price / 1000).toFixed(1)}k`
+                        : order.price.toLocaleString()
+                      : "0"}
                   </span>
                 </div>
               </div>

@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Message, Conversation } from "./types/types";
 import { useEffect, useRef } from "react";
 import AutomaticMessageBubble from "../../Marketplace/my_purchase/card/AutomaticMessageBubble";
+import ThankYouMessageBubble from "../../Marketplace/my_purchase/card/ThankYouMessageBubble";
 
 interface MessagesListProps {
   conversation: Conversation;
@@ -181,13 +182,24 @@ export const MessagesList = ({
                             </div>
                           )}
                           {message.type === "automatic" && message.automaticMessageData ? (
-                            <AutomaticMessageBubble
-                              sellerName={message.automaticMessageData.sellerName}
-                              artworkTitle={message.automaticMessageData.artworkTitle}
-                              buyerName={message.automaticMessageData.buyerName}
-                              orderId={message.automaticMessageData.orderId}
-                              isSender={message.senderId === currentUserId}
-                            />
+                            message.automaticMessageData.messageType === "thankYou" ? (
+                              <ThankYouMessageBubble
+                                sellerName={message.automaticMessageData.sellerName}
+                                artworkTitle={message.automaticMessageData.artworkTitle}
+                                buyerName={message.automaticMessageData.buyerName}
+                                isSender={message.senderId === currentUserId}
+                                messageType="thankYou"
+                                orderId={message.automaticMessageData.orderId}
+                              />
+                            ) : (
+                              <AutomaticMessageBubble
+                                sellerName={message.automaticMessageData.sellerName}
+                                artworkTitle={message.automaticMessageData.artworkTitle}
+                                buyerName={message.automaticMessageData.buyerName}
+                                orderId={message.automaticMessageData.orderId}
+                                isSender={message.senderId === currentUserId}
+                              />
+                            )
                           ) : (
                             message.content && <p className="text-[11px]">{message.content}</p>
                           )}
