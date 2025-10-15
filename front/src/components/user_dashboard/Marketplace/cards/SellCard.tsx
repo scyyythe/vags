@@ -6,7 +6,6 @@ import SellMenu from "@/components/user_dashboard/own_profile/menu/sell_card/Men
 import SellCardMenu from "./SellCardMenu";
 import PreviewModal from "../buying_process/preview/PreviewModal";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
-import useArtworkReportStatus from "@/hooks/mutate/report/useArtworkReportStatus";
 import { Badge } from "@/components/ui/badge";
 import ChatDropdown from "../../local_components/chat/ChatDropdown";
 import { useChat } from "@/context/ChatContext";
@@ -76,6 +75,7 @@ const SellCard = ({
   onCardClick,
   isFading = false,
   isWishlistView = false,
+  isReported = false,
 }: SellCardProps) => {
   const loggedInUserId = getLoggedInUserId();
   const isOwner = String(artistId) === String(loggedInUserId);
@@ -89,13 +89,15 @@ const SellCard = ({
   const markAsUnlistedMutation = useMarkArtworkAsUnlisted();
   const [heightValue, widthValue] = size ? size.split("x") : ["", ""];
 
-  const { data: reportStatusData } = useArtworkReportStatus(id);
-  const [localIsReported, setLocalIsReported] = useState(reportStatusData?.reported ?? false);
+  const [localIsReported, setLocalIsReported] = useState(false);
 
-  // Sync local state with report status
+  // Use isReported prop if provided, otherwise default to false
+  const isReportedFromProps = isReported ?? false;
+
+  // Sync local state with prop
   useEffect(() => {
-    setLocalIsReported(reportStatusData?.reported ?? false);
-  }, [reportStatusData?.reported]);
+    setLocalIsReported(isReportedFromProps);
+  }, [isReportedFromProps]);
 
   const formatPrice = (amount: number) => {
     if (amount >= 1_000_000) return `₱${(amount / 1_000_000).toFixed(1)}M`;

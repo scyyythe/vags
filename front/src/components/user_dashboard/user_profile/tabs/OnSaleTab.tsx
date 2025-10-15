@@ -39,6 +39,7 @@ import { useArtworkReviews } from "@/hooks/review/useArtworkReviews";
 import useMarkPurchaseCompleted from "@/hooks/purchase/useMarkPurchaseCompleted";
 import useMarkAsShipped from "@/hooks/purchase/useMarkAsShipped";
 import { useRelistArtwork } from "@/hooks/artworks/relist/useRelistArtwork";
+import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 type SellTabProps = {
   selectedPriceRange?: string;
   selectedStatus?: string;
@@ -60,6 +61,16 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const artCards = isOwnProfile ? myArtCards : userArtCards;
   const isLoading = isOwnProfile ? isMyArtLoading : isUserArtLoading;
   const error = isOwnProfile ? myArtError : userArtError;
+
+  // Get artwork IDs for bulk report status lookup
+  const artworkIds = artCards.map((art) => art.id);
+  const { data: bulkReportStatus } = useBulkReportStatus(artworkIds);
+
+  // Create lookup map for report status
+  const reportStatusMap = React.useMemo(() => {
+    if (!bulkReportStatus) return {};
+    return bulkReportStatus;
+  }, [bulkReportStatus]);
 
   const [mainTab, setMainTab] = useState("myListings");
   const [activeSubGroup, setActiveSubGroup] = useState<"listings" | "soldArtworks">("listings");
@@ -1045,6 +1056,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                   isFading={(art as any).isFading ?? false}
                   onCardClick={() => onCardClick(art.id)}
                   onRelist={() => handleRelist(art.id)} // enables "Relist" button
+                  isReported={reportStatusMap[art.id]?.reported || false}
                 />
               ))}
             </div>
@@ -1085,6 +1097,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                 isMarketplace={true}
                 isOwner={isOwnProfile}
                 onCardClick={() => onCardClick(art.id)}
+                isReported={reportStatusMap[art.id]?.reported || false}
               />
             ))}
           </div>
