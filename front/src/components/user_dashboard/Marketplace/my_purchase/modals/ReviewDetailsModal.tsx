@@ -1,5 +1,5 @@
-import React from "react";
-import { Star, Calendar, Edit, Trash2, Camera } from "lucide-react";
+import React, { useState } from "react";
+import { Star, Calendar, Edit, Trash2, Camera, ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { format } from "date-fns";
@@ -9,6 +9,7 @@ interface ReviewDetailsModalProps {
   onClose: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onThankBuyer?: () => void;
   viewType?: "buyer" | "seller";
   review: {
     id: string;
@@ -25,6 +26,17 @@ interface ReviewDetailsModalProps {
     title: string;
     artist: string;
   };
+  allReviews?: Array<{
+    id: string;
+    rating: number;
+    comment: string;
+    photos: string[];
+    reviewDate: string;
+    reviewerName?: string;
+    canEdit: boolean;
+    canDelete: boolean;
+  }>;
+  isLoading?: boolean;
 }
 
 const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
@@ -32,10 +44,18 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
   onClose,
   onEdit,
   onDelete,
+  onThankBuyer,
   viewType = "buyer",
   review,
   artwork,
+  allReviews = [],
+  isLoading = false,
 }) => {
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+
+  // Use allReviews if available (seller view), otherwise use single review (buyer view)
+  const reviewsToShow = allReviews.length > 0 ? allReviews : [review];
+  const currentReview = reviewsToShow[currentReviewIndex] || review;
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
@@ -44,9 +64,32 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
       >
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between text-sm mt-2">
-            <span>{viewType === "seller" ? "Customer Review" : "Your Review"}</span>
             <div className="flex items-center gap-2">
-              {viewType === "buyer" && review.canEdit && (
+              <span>{viewType === "seller" ? "Customer Reviews" : "Your Review"}</span>
+              {allReviews.length > 1 && (
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <button
+                    onClick={() => setCurrentReviewIndex(Math.max(0, currentReviewIndex - 1))}
+                    disabled={currentReviewIndex === 0}
+                    className="p-1 hover:bg-gray-100 rounded disabled:opacity-50"
+                  >
+                    <ChevronLeft className="w-3 h-3" />
+                  </button>
+                  <span>
+                    {currentReviewIndex + 1} of {allReviews.length}
+                  </span>
+                  <button
+                    onClick={() => setCurrentReviewIndex(Math.min(allReviews.length - 1, currentReviewIndex + 1))}
+                    disabled={currentReviewIndex === allReviews.length - 1}
+                    className="p-1 hover:bg-gray-100 rounded disabled:opacity-50"
+                  >
+                    <ChevronRight className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {viewType === "buyer" && currentReview.canEdit && (
                 <button
                   onClick={onEdit}
                   className="flex text-[10px] py-1 px-4 border rounded-full hover:bg-gray-100 transition-colors"
@@ -55,7 +98,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
                   Edit
                 </button>
               )}
-              {review.canDelete && (
+              {currentReview.canDelete && (
                 <button
                   onClick={onDelete}
                   className="flex text-[10px] text-white py-1 px-4 bg-red-600 rounded-full hover:bg-red-700 transition-colors"
@@ -69,92 +112,107 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Artwork Info */}
-          <div className="flex gap-4 p-4 bg-muted rounded-lg">
-            <img src={artwork.artworkImage} alt={artwork.title} className="w-20 h-20 rounded-md object-cover" />
-            <div className="flex-1">
-              <h3 className="font-semibold text-[11px]">{artwork.title}</h3>
-              <p className="text-[10px] text-muted-foreground mb-2">by {artwork.artist}</p>
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`w-4 h-4 ${star <= review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
-                  />
-                ))}
-                <span className="ml-2 text-[10px] font-medium">{review.rating}/5</span>
-              </div>
+          {isLoading ? (
+            /* Loading State */
+            <div className="flex items-center justify-center py-8">
+              <div className="text-[10px] text-muted-foreground">Loading reviews...</div>
             </div>
-          </div>
-
-          {/* Review Details */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-              <Calendar className="w-3 h-3" />
-              <span>
-                Reviewed on{" "}
-                {review.reviewDate && !isNaN(new Date(review.reviewDate).getTime())
-                  ? format(new Date(review.reviewDate), "MMMM dd, yyyy")
-                  : "Invalid date"}
-                {viewType === "seller" && review.reviewerName && <span> by {review.reviewerName}</span>}
-              </span>
-            </div>
-
-            {/* Comment */}
-            <div className="space-y-2">
-              <h4 className="font-medium text-xs">{viewType === "seller" ? "Customer's Review" : "Your Review"}</h4>
-              <div className="p-4 bg-muted rounded-lg">
-                <p className="text-[10px] leading-relaxed">{review.comment || "No written review provided."}</p>
-              </div>
-            </div>
-
-            {/* Photos */}
-            {review.photos && review.photos.length > 0 && (
-              <div className="space-y-2">
-                <h4 className="font-medium text-xs flex items-center gap-2">
-                  <Camera className="w-3 h-3" />
-                  Photos ({review.photos.length})
-                </h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {review.photos.map((photo, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={photo}
-                        alt={`Review photo ${index + 1}`}
-                        className="w-full h-32 rounded-lg object-cover"
+          ) : (
+            <>
+              {/* Artwork Info */}
+              <div className="flex gap-4 p-4 bg-muted rounded-lg">
+                <img src={artwork.artworkImage} alt={artwork.title} className="w-20 h-20 rounded-md object-cover" />
+                <div className="flex-1">
+                  <h3 className="font-semibold text-[11px]">{artwork.title}</h3>
+                  <p className="text-[10px] text-muted-foreground mb-2">by {artwork.artist}</p>
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`w-4 h-4 ${
+                          star <= currentReview.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                        }`}
                       />
-                    </div>
-                  ))}
+                    ))}
+                    <span className="ml-2 text-[10px] font-medium">{currentReview.rating}/5</span>
+                  </div>
                 </div>
               </div>
-            )}
 
-            {/* Edit/Delete Restrictions */}
-            {viewType === "seller" ? (
-              <div className="p-3 bg-muted rounded-lg">
-                <p className="text-[10px] text-muted-foreground">
-                  As a seller, you can only remove inappropriate reviews. You cannot edit customer reviews.
-                </p>
+              {/* Review Details */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                  <Calendar className="w-3 h-3" />
+                  <span>
+                    Reviewed on{" "}
+                    {currentReview.reviewDate && !isNaN(new Date(currentReview.reviewDate).getTime())
+                      ? format(new Date(currentReview.reviewDate), "MMMM dd, yyyy")
+                      : "Invalid date"}
+                    {viewType === "seller" && currentReview.reviewerName && (
+                      <span> by {currentReview.reviewerName}</span>
+                    )}
+                  </span>
+                </div>
+
+                {/* Comment */}
+                <div className="space-y-2">
+                  <h4 className="font-medium text-xs">{viewType === "seller" ? "Customer's Review" : "Your Review"}</h4>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="text-[10px] leading-relaxed">
+                      {currentReview.comment || "No written review provided."}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Photos */}
+                {currentReview.photos && currentReview.photos.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-xs flex items-center gap-2">
+                      <Camera className="w-3 h-3" />
+                      Photos ({currentReview.photos.length})
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {currentReview.photos.map((photo, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={photo}
+                            alt={`Review photo ${index + 1}`}
+                            className="w-full h-32 rounded-lg object-cover"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Edit/Delete Restrictions */}
+                {viewType === "seller" ? (
+                  <div className="p-3 bg-muted rounded-lg">
+                    <p className="text-[10px] text-muted-foreground">
+                      As a seller, you can only remove inappropriate reviews. You cannot edit customer reviews.
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {!currentReview.canEdit && !currentReview.canDelete && (
+                      <div className="p-3 bg-muted rounded-lg">
+                        <p className="text-[10px] text-muted-foreground">
+                          This review can no longer be edited or deleted as the time limit has expired.
+                        </p>
+                      </div>
+                    )}
+                    {currentReview.canEdit && !currentReview.canDelete && (
+                      <div className="p-3 bg-muted rounded-lg">
+                        <p className="text-[10px] text-muted-foreground">
+                          You can still edit this review, but it can no longer be deleted.
+                        </p>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
-            ) : (
-              <>
-                {!review.canEdit && !review.canDelete && (
-                  <div className="p-3 bg-muted rounded-lg">
-                    <p className="text-[10px] text-muted-foreground">
-                      This review can no longer be edited or deleted as the time limit has expired.
-                    </p>
-                  </div>
-                )}
-                {review.canEdit && !review.canDelete && (
-                  <div className="p-3 bg-muted rounded-lg">
-                    <p className="text-[10px] text-muted-foreground">
-                      You can still edit this review, but it can no longer be deleted.
-                    </p>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+            </>
+          )}
         </div>
       </DialogContent>
     </Dialog>

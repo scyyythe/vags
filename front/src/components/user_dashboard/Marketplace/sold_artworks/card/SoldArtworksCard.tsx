@@ -38,6 +38,7 @@ interface SoldArtworkCardProps {
   isHighlighted?: boolean;
   onViewDetails: (artwork: any) => void;
   onContactBuyer: (artwork: any) => void;
+  onThankBuyer?: (artwork: any) => void;
   onMarkAsShipped?: (artwork: any) => void;
   onViewPayment?: (artwork: any) => void;
   onProcessRefund?: (artwork: any) => void;
@@ -64,6 +65,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
   isHighlighted = false,
   onViewDetails,
   onContactBuyer,
+  onThankBuyer,
   onMarkAsShipped,
   onViewPayment,
   onProcessRefund,
@@ -256,7 +258,15 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
               View Review
             </button>
             <button
-              onClick={() => onContactBuyer(artworkData)}
+              onClick={() => {
+                console.log("🔘 Thank Buyer button clicked in SoldArtworkCard!");
+                if (onThankBuyer) {
+                  onThankBuyer(artworkData);
+                } else {
+                  console.log("⚠️ onThankBuyer not provided, falling back to onContactBuyer");
+                  onContactBuyer(artworkData);
+                }
+              }}
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border"
             >
               <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
