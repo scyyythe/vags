@@ -8,6 +8,8 @@ import usePurchaseArtwork from "@/hooks/purchase/usePurchaseArtwork";
 import useUpdateArtwork from "@/hooks/mutate/artwork/useArtworkMutate";
 import { usePayPalPurchase } from "@/hooks/paypal/usePayPalPurchase";
 import { useLocation } from "react-router-dom";
+import { useArtistPaymentAccounts, type PaymentAccount } from "@/hooks/accounts/useArtistPaymentAccounts";
+import { PurchaseProvider } from "@/context/PurchaseContext";
 
 import { toast } from "sonner";
 interface ReviewPurchaseProps {
@@ -27,6 +29,7 @@ interface ReviewPurchaseProps {
     artworkImage: string;
     title: string;
     artist: string;
+    artistId?: string;
     size: string;
     style: string;
     medium: string;
@@ -54,13 +57,122 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   const updateArtworkMutation = useUpdateArtwork(1, true, "All", "Public");
   const [step, setStep] = useState<"review" | "paypal">("review");
   const [showReceiptPopup, setShowReceiptPopup] = useState(false);
+  const [paymentValidationError, setPaymentValidationError] = useState<string | null>(null);
+
+  // Get artist ID from artwork
+  const artistId = contextArtwork?.artistId || artwork?.artistId;
+  const { accounts: artistAccounts, loading: artistAccountsLoading } = useArtistPaymentAccounts(artistId);
 
   const handleAddressChange = () => {
     navigate("/shipping");
   };
-
+  useEffect(() => {
+    console.log("ReviewPurchase - Artist ID:", artistId);
+    console.log("ReviewPurchase - Context Artwork:", contextArtwork);
+    console.log("ReviewPurchase - Artwork Prop:", artwork);
+    console.log("ReviewPurchase - Artist Accounts:", artistAccounts);
+  }, [artistId, contextArtwork, artwork, artistAccounts]);
   const handlePaymentMethodChange = () => {
     navigate("/payment-method");
+  };
+
+  // Validate if artist supports the selected payment method
+  const validatePaymentMethod = (selectedMethod: string) => {
+    if (!artistAccounts || artistAccounts.length === 0) {
+      return { isValid: false, error: "Artist has no payment methods configured" };
+    }
+
+    const supportedMethods = artistAccounts.map((acc) => acc.type.toLowerCase());
+    const selectedMethodLower = selectedMethod.toLowerCase();
+
+    // Map payment method names to account types
+    const methodMapping: Record<string, string> = {
+      paypal: "paypal",
+      gcash: "gcash",
+      stripe: "stripe",
+      "credit card": "creditcard",
+    };
+
+    const mappedMethod = methodMapping[selectedMethodLower];
+    if (!mappedMethod || !supportedMethods.includes(mappedMethod)) {
+      const supportedMethodNames = supportedMethods
+        .map((method) => {
+          switch (method) {
+            case "paypal":
+              return "PayPal";
+            case "gcash":
+              return "GCash";
+            case "stripe":
+              return "Stripe";
+            case "creditcard":
+              return "Credit Card";
+            default:
+              return method;
+          }
+        })
+        .join(", ");
+
+      return {
+        isValid: false,
+        error: `Artist doesn't support ${selectedMethod}. Supported methods: ${supportedMethodNames}`,
+      };
+    }
+
+    return { isValid: true, error: null };
+  };
+
+  // Get artist's payment account details for display
+  const getArtistPaymentDetails = (paymentMethod: string) => {
+    // If no artistId is available, show error message
+    if (!artistId) {
+      return "Artist payment information not available";
+    }
+
+    if (!artistAccounts || artistAccounts.length === 0) return "No payment details available";
+
+    const methodMapping: Record<string, string> = {
+      paypal: "paypal",
+      gcash: "gcash",
+      stripe: "stripe",
+      "credit card": "creditcard",
+    };
+
+    const mappedMethod = methodMapping[paymentMethod.toLowerCase()];
+    const account = artistAccounts.find((acc) => acc.type.toLowerCase() === mappedMethod);
+
+    if (!account) return "Payment details not available";
+
+    // Display non-sensitive information
+    switch (account.type.toLowerCase()) {
+      case "paypal":
+        // For PayPal, account_info might be the email directly, or check email field
+        if (account.email) {
+          return account.email;
+        }
+        if (typeof account.account_info === "string") {
+          return account.account_info; // If account_info is the email string
+        }
+        if (account.account_info?.email) {
+          return account.account_info.email;
+        }
+        return "PayPal account connected";
+      case "gcash":
+        if (account.name) {
+          return account.name; // Show artist name like "Jil Ibalarrosa"
+        }
+
+        const gcashNumber =
+          account.accountNumber ||
+          (typeof account.account_info === "string" ? account.account_info : account.account_info?.accountNumber);
+        return gcashNumber ? `${gcashNumber.slice(0, 2)}*******${gcashNumber.slice(-2)}` : "GCash account connected";
+      case "stripe":
+        return account.email || account.account_info?.email || "Stripe account connected";
+      case "creditcard":
+        const cardNumber = account.accountNumber || account.account_info?.accountNumber;
+        return cardNumber ? `**** **** **** ${cardNumber.slice(-4)}` : "Credit card connected";
+      default:
+        return "Payment account connected";
+    }
   };
 
   const handleSubmit = async () => {
@@ -76,6 +188,25 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       toast.error("Missing required information.");
       return;
     }
+
+    // Check if artist ID is available for payment validation
+    if (!artistId) {
+      const errorMsg = "Artist payment information is not available. Please contact support or try again later.";
+      setPaymentValidationError(errorMsg);
+      toast.error(errorMsg);
+      return;
+    }
+
+    // Validate payment method compatibility
+    const validation = validatePaymentMethod(paymentMethod);
+    if (!validation.isValid) {
+      setPaymentValidationError(validation.error);
+      toast.error(validation.error);
+      return;
+    }
+
+    // Clear any previous validation errors
+    setPaymentValidationError(null);
 
     // If PayPal → go to PayPal flow
     if (paymentMethod === "PayPal") {
@@ -295,13 +426,24 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
               </div>
 
               <p className="text-[11px] text-gray-600">
-                {defaultPaymentMethod.type.toLowerCase() === "paypal"
-                  ? `Send money to: ${
-                      (defaultArtwork as { default_paypal_email?: string }).default_paypal_email ||
-                      "No PayPal email set"
-                    }`
-                  : defaultPaymentMethod.details}
+                {artistAccountsLoading
+                  ? "Loading payment details..."
+                  : `Send money to: ${getArtistPaymentDetails(defaultPaymentMethod.type)}`}
               </p>
+
+              {/* Payment validation error */}
+              {paymentValidationError && (
+                <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-[10px] text-red-600">
+                  <p className="font-medium">Payment Method Error:</p>
+                  <p>{paymentValidationError}</p>
+                  <button
+                    onClick={handlePaymentMethodChange}
+                    className="mt-1 text-red-700 underline hover:text-red-800"
+                  >
+                    Change Payment Method
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Buyer Protection */}
@@ -443,4 +585,13 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   );
 };
 
-export default ReviewPurchase;
+// Wrapper component to ensure PurchaseProvider context is available
+const ReviewPurchaseWrapper: React.FC<ReviewPurchaseProps> = (props) => {
+  return (
+    <PurchaseProvider>
+      <ReviewPurchase {...props} />
+    </PurchaseProvider>
+  );
+};
+
+export default ReviewPurchaseWrapper;

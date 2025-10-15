@@ -1,7 +1,7 @@
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import type { PaymentFormData, PaymentMethodProps } from "@/components/types/payment";
+import type { PaymentFormData, PaymentMethodProps, PaymentAccount } from "@/components/types/payment";
 import PaymentMethodSelector from "./payment/PaymentMethodSelector";
 import PayPalForm from "./payment/PayPalForm";
 import GCashForm from "./payment/GCashForm";
@@ -9,7 +9,8 @@ import StripeForm from "./payment/StripeForm";
 import CreditCardForm from "./payment/CreditCardForm";
 import Header from "@/components/user_dashboard/navbar/Header";
 
-const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => {
+const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = false, onBack, onContinue }) => {
+  console.log("PaymentMethod received accounts:", accounts);
   const [formData, setFormData] = useState<PaymentFormData>({
     paymentMethod: "paypal",
     cardNumber: "",
@@ -32,6 +33,31 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
   });
 
   const navigate = useNavigate();
+  const [selectedAccount, setSelectedAccount] = useState<PaymentAccount | null>(null);
+
+  // Populate form with selected account data
+  const populateFormWithAccount = useCallback((account: PaymentAccount) => {
+    setFormData((prev) => ({
+      ...prev,
+      paymentMethod: account.type === "card" ? "credit-card" : (account.type as any),
+      ...(account.type === "paypal" && { paypalEmail: account.accountInfo }),
+      ...(account.type === "gcash" && { gcashNumber: account.accountInfo }),
+      ...(account.type === "stripe" && { stripeEmail: account.accountInfo }),
+      ...(account.type === "card" && { cardNumber: account.accountInfo }),
+    }));
+  }, []);
+
+  // Auto-select default account when accounts are loaded
+  useEffect(() => {
+    if (accounts.length > 0 && !selectedAccount) {
+      const defaultAccount = accounts.find((acc) => acc.isDefault);
+      if (defaultAccount) {
+        setSelectedAccount(defaultAccount);
+        // Pre-populate form with default account
+        populateFormWithAccount(defaultAccount);
+      }
+    }
+  }, [accounts, populateFormWithAccount]); // Include populateFormWithAccount dependency
 
   // Identify selected payment details
   const selectedPaymentMethod = {
@@ -63,8 +89,35 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
     navigate("/reviewpurchase", { state: { selectedPaymentMethod } });
   };
 
+  const handleEditAccount = (account: PaymentAccount) => {
+    // Navigate to settings billing page to edit the account
+    navigate("/settings/billing");
+  };
+
   // Determine if an account is set up (used for enabling/disabling the button)
   const hasAccountSetup = () => {
+    // Check if there are existing accounts for the selected payment method
+    const existingAccounts = accounts.filter((acc) => {
+      switch (formData.paymentMethod) {
+        case "paypal":
+          return acc.type === "paypal";
+        case "gcash":
+          return acc.type === "gcash";
+        case "stripe":
+          return acc.type === "stripe";
+        case "credit-card":
+          return acc.type === "card";
+        default:
+          return false;
+      }
+    });
+
+    // If there are existing accounts, allow continue
+    if (existingAccounts.length > 0) {
+      return true;
+    }
+
+    // Otherwise, check if form fields are filled (for new accounts)
     switch (formData.paymentMethod) {
       case "paypal":
         return !!formData.paypalEmail;
@@ -82,16 +135,30 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
   const renderPaymentForm = () => {
     switch (formData.paymentMethod) {
       case "paypal":
-        return <PayPalForm email={formData.paypalEmail} />;
+        return (
+          <PayPalForm
+            email={formData.paypalEmail}
+            accounts={accounts.filter((acc) => acc.type === "paypal")}
+            onEditAccount={handleEditAccount}
+          />
+        );
       case "gcash":
         return (
           <GCashForm
             number={formData.gcashNumber}
             onNumberChange={(value) => handleInputChange("gcashNumber", value)}
+            accounts={accounts.filter((acc) => acc.type === "gcash")}
+            onEditAccount={handleEditAccount}
           />
         );
       case "stripe":
-        return <StripeForm email={formData.stripeEmail} />;
+        return (
+          <StripeForm
+            email={formData.stripeEmail}
+            accounts={accounts.filter((acc) => acc.type === "stripe")}
+            onEditAccount={handleEditAccount}
+          />
+        );
       case "credit-card":
         return (
           <CreditCardForm
@@ -103,6 +170,8 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onBack, onContinue }) => 
             city={formData.city}
             state={formData.state}
             postalCode={formData.postalCode}
+            accounts={accounts.filter((acc) => acc.type === "card")}
+            onEditAccount={handleEditAccount}
           />
         );
       default:

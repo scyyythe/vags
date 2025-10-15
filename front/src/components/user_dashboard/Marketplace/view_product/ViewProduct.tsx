@@ -730,6 +730,7 @@ const ProductViewingContent = () => {
             artworkImage: product.image_urls?.[0] || "/images/placeholder.jpg",
             title: product.title || "Untitled",
             artist: product.artist?.name || "Unknown Artist",
+            artistId: product.artist?.id || artistId,
             medium: product.medium || "Unknown",
             style: product.artwork_style || "Unknown",
             edition: product.edition || "Unknown",
