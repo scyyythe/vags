@@ -26,7 +26,7 @@ def get_user_exclusions(user):
     hidden_artwork_ids = []
     
     if user.is_authenticated and hasattr(user, 'blocked_users'):
-        blocked_user_ids = [user.id for user in user.blocked_users]
+        blocked_user_ids = [str(blocked_user.id) for blocked_user in user.blocked_users]
     
     # Get deactivated and scheduled for deletion user IDs
     deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')

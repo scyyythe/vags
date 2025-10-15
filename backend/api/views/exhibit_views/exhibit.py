@@ -45,7 +45,24 @@ class ExhibitUpdateView(APIView):
 
 class ExhibitListView(APIView):
     def get(self, request):
-        exhibits = Exhibit.objects.all()
+        # Get excluded user IDs (blocked, deactivated, scheduled for deletion)
+        excluded_user_ids = list(User.objects.filter(
+            user_status__in=["deactivated", "scheduled_for_deletion"]
+        ).scalar('id'))
+        
+        # Get blocked user IDs for the current user
+        blocked_user_ids = []
+        if request.user.is_authenticated and hasattr(request.user, 'blocked_users'):
+            blocked_user_ids = [str(blocked_user.id) for blocked_user in request.user.blocked_users]
+        
+        # Start with base query
+        exhibits = Exhibit.objects.filter(visibility='Public')
+        
+        # Apply user exclusion filter if needed
+        all_excluded_user_ids = list(blocked_user_ids) + list(excluded_user_ids)
+        if all_excluded_user_ids:
+            exhibits = exhibits.filter(owner__nin=all_excluded_user_ids)
+        
         serializer = ExhibitSerializer(exhibits, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -57,12 +74,18 @@ class ExhibitCardListView(APIView):
                 user_status__in=["deactivated", "scheduled_for_deletion"]
             ).scalar('id'))
             
+            # Get blocked user IDs for the current user
+            blocked_user_ids = []
+            if request.user.is_authenticated and hasattr(request.user, 'blocked_users'):
+                blocked_user_ids = [str(blocked_user.id) for blocked_user in request.user.blocked_users]
+            
             # Start with optimized base query
             exhibits = Exhibit.objects.filter(visibility='Public')
             
-            # Apply user exclusion filter if needed
-            if excluded_user_ids:
-                exhibits = exhibits.filter(owner__nin=excluded_user_ids)
+            # Apply user exclusion filter if needed (blocked, deactivated, scheduled for deletion)
+            all_excluded_user_ids = list(blocked_user_ids) + list(excluded_user_ids)
+            if all_excluded_user_ids:
+                exhibits = exhibits.filter(owner__nin=all_excluded_user_ids)
             
             # Optimize hidden content filtering
             if request.user.is_authenticated:
@@ -131,10 +154,9 @@ class MyExhibitCardListView(APIView):
             include_hidden = request.query_params.get("include_hidden", "false").lower() == "true"
             include_archived = request.query_params.get("include_archived", "false").lower() == "true"
 
-            # Handle hidden exhibits using HiddenContent model
+        
             if include_hidden:
-                # When include_hidden=true, we want to show only hidden exhibits
-                # Get all exhibits that this user has hidden, regardless of ownership
+             
                 try:
                     hidden_contents = HiddenContent.objects.filter(user=user, content_type='exhibit')
                     if hidden_contents:
@@ -250,6 +272,12 @@ class UserExhibitCardListView(APIView):
 
     def get(self, request, user_id):
         try:
+            # Check if the requested user is blocked by the current user
+            if user_id and request.user.is_authenticated and hasattr(request.user, 'blocked_users'):
+                blocked_user_ids = [str(blocked_user.id) for blocked_user in request.user.blocked_users]
+                if str(user_id) in blocked_user_ids:
+                    return Response([], status=status.HTTP_200_OK)  # Return empty array if user is blocked
+            
             # Get the target user
             target_user = User.objects.get(id=user_id)
             

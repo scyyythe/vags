@@ -374,8 +374,8 @@ class UserArtCardListView(APIView):
     def get(self, request, user_id):
         try:
             if request.user.is_authenticated and hasattr(request.user, 'blocked_users'):
-                blocked_user_ids = [user.id for user in request.user.blocked_users]
-                if str(user_id) in [str(uid) for uid in blocked_user_ids]:
+                blocked_user_ids = [str(user.id) for user in request.user.blocked_users]
+                if str(user_id) in blocked_user_ids:
                     return Response([], status=200)
 
             artworks = Art.objects(
@@ -431,7 +431,7 @@ class ArtBulkListView(generics.ListAPIView):
         valid_statuses = ["Active"]
         blocked_user_ids = []
         if self.request.user.is_authenticated and hasattr(self.request.user, 'blocked_users'):
-            blocked_user_ids = [user.id for user in self.request.user.blocked_users]
+            blocked_user_ids = [str(user.id) for user in self.request.user.blocked_users]
 
         # Get deactivated and scheduled for deletion user IDs to exclude their content
         deactivated_user_ids = User.objects(user_status__iexact="deactivated").scalar('id')
@@ -497,6 +497,12 @@ class ArtListViewSpecificUser(generics.ListAPIView):
         print(f"Received userId: {user_id}")
         valid_statuses = ["Active", "onBid", "Hidden"]
 
+        # Check if the requested user is blocked by the current user
+        if user_id and self.request.user.is_authenticated and hasattr(self.request.user, 'blocked_users'):
+            blocked_user_ids = [str(blocked_user.id) for blocked_user in self.request.user.blocked_users]
+            if str(user_id) in blocked_user_ids:
+                return Art.objects.none()  # Return empty queryset if user is blocked
+
         if user_id:
             try:
                 user = User.objects.get(id=user_id)
@@ -520,6 +526,13 @@ class ArtworksByArtistView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         artist_id = self.kwargs.get('artist_id')
+        
+        # Check if the artist is blocked by the current user
+        if artist_id and self.request.user.is_authenticated and hasattr(self.request.user, 'blocked_users'):
+            blocked_user_ids = [str(blocked_user.id) for blocked_user in self.request.user.blocked_users]
+            if str(artist_id) in blocked_user_ids:
+                raise Http404("No artworks found for this artist")  # Don't reveal that user is blocked
+        
         artworks = Art.objects.filter(artist_id=artist_id)
 
         if not artworks:
@@ -579,6 +592,12 @@ class ArtListByArtistView(generics.ListAPIView):
     def get_queryset(self):
         artist_id = self.kwargs.get("artist_id") 
         if artist_id:
+            # Check if the artist is blocked by the current user
+            if self.request.user.is_authenticated and hasattr(self.request.user, 'blocked_users'):
+                blocked_user_ids = [str(blocked_user.id) for blocked_user in self.request.user.blocked_users]
+                if str(artist_id) in blocked_user_ids:
+                    return Art.objects.none()  # Return empty queryset if artist is blocked
+            
             try:
                 return Art.objects.filter(artist=ObjectId(artist_id)).order_by('-created_at')
             except Exception as e:

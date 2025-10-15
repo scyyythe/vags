@@ -2,7 +2,7 @@
 from django.urls import path
 from api.views.user_views.user_views import (
     RetrieveUserView, UpdateUserDetailsView, UpdateUserView,
-    DeleteUserView, ListAllUsersView, BlockUserView, UnblockUserView
+    DeleteUserView, ListAllUsersView, BlockUserView, UnblockUserView, BlockedUsersListView
 )
 from api.views.user_views.deactivate_view import DeactivateAccountView
 from api.views.user_views.soft_delete_view import SoftDeleteAccountView, PermanentlyDeleteAccountView
@@ -28,6 +28,7 @@ user_urlpatterns = [
 
     path('user/<str:user_id>/block/', BlockUserView.as_view(), name='block_user'),
     path('user/<str:user_id>/unblock/', UnblockUserView.as_view(), name='unblock_user'),
+    path('user/blocked/', BlockedUsersListView.as_view(), name='blocked_users_list'),
     path('users/<str:user_id>/deactivate/', DeactivateAccountView.as_view(), name='deactivate_user'),
     path('users/<str:user_id>/soft-delete/', SoftDeleteAccountView.as_view(), name='soft_delete_user'),
     path('users/<str:user_id>/permanently-delete/', PermanentlyDeleteAccountView.as_view(), name='permanently_delete_user'),

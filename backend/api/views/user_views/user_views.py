@@ -140,6 +140,31 @@ class UnblockUserView(APIView):
             status=status.HTTP_200_OK
         )
 
+
+class BlockedUsersListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            current_user = request.user
+            blocked_users = current_user.blocked_users if hasattr(current_user, 'blocked_users') and current_user.blocked_users else []
+            
+            # Create a simple serialization of blocked users
+            blocked_users_data = []
+            for user in blocked_users:
+                blocked_users_data.append({
+                    "id": str(user.id),
+                    "username": user.username,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "profile_picture": user.profile_picture
+                })
+            
+            return Response(blocked_users_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(f"Error in BlockedUsersListView: {str(e)}")
+            return Response({"error": "Failed to fetch blocked users"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 initialize_firebase()
 
 

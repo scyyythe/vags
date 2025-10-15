@@ -2,24 +2,24 @@ import { useMutation, useQueryClient, UseMutationResult } from "@tanstack/react-
 import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
 
-interface BlockUserResponse {
+interface UnblockUserResponse {
   detail: string;
 }
 
-const blockUser = async (userId: string): Promise<BlockUserResponse> => {
-  const response = await apiClient.post(`/user/${userId}/block/`);
+const unblockUser = async (userId: string): Promise<UnblockUserResponse> => {
+  const response = await apiClient.post(`/user/${userId}/unblock/`);
   return response.data;
 };
 
-const useBlockUser = (): UseMutationResult<BlockUserResponse, Error, string> => {
+const useUnblockUser = (): UseMutationResult<UnblockUserResponse, Error, string> => {
   const queryClient = useQueryClient();
 
-  return useMutation<BlockUserResponse, Error, string>({
-    mutationFn: blockUser,
+  return useMutation<UnblockUserResponse, Error, string>({
+    mutationFn: unblockUser,
     onSuccess: (data, userId) => {
-      toast.success(data.detail || "User blocked successfully!");
+      toast.success(data.detail || "User unblocked successfully!");
 
-      // Invalidate all queries that might show the blocked user's content
+      // Invalidate all queries that might show the unblocked user's content
       queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({ queryKey: ["user", userId] });
       queryClient.invalidateQueries({ queryKey: ["followCounts", userId] });
@@ -48,7 +48,7 @@ const useBlockUser = (): UseMutationResult<BlockUserResponse, Error, string> => 
       queryClient.invalidateQueries({ queryKey: ["exhibits"] });
       queryClient.invalidateQueries({ queryKey: ["user-exhibits"] });
 
-      // Invalidate any queries that might contain the blocked user's content
+      // Invalidate any queries that might contain the unblocked user's content
       queryClient.invalidateQueries({ queryKey: ["feed"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["marketplace"] });
@@ -58,10 +58,10 @@ const useBlockUser = (): UseMutationResult<BlockUserResponse, Error, string> => 
       queryClient.refetchQueries();
     },
     onError: (error: any) => {
-      toast.error(error?.response?.data?.detail || "Failed to block user.");
+      toast.error(error?.response?.data?.detail || "Failed to unblock user.");
       console.error(error);
     },
   });
 };
 
-export default useBlockUser;
+export default useUnblockUser;
