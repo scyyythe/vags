@@ -1,18 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 
-export const useMySoldArtworks = (status?: string) => {
-  return useQuery({
+export interface UseMySoldArtworksOptions {
+  status?: string;
+}
+
+export const useMySoldArtworks = (options: UseMySoldArtworksOptions = {}) => {
+  const { status } = options;
+
+  return useQuery<any[]>({
     queryKey: ["my-sold-artworks", status],
     queryFn: async () => {
-      const { data } = await apiClient.get("/my-sold-artworks/", {
-        params: status ? { status } : {},
-      });
+      const params = new URLSearchParams();
+      if (status) params.append("status", status);
 
-      if (data && data.length > 0) {
-      }
-
+      const { data } = await apiClient.get(`/my-sold-artworks/?${params.toString()}`);
       return data;
     },
+    // Cache for 5 minutes
+    staleTime: 5 * 60 * 1000,
+    // Keep data fresh for 10 minutes
+    gcTime: 10 * 60 * 1000,
   });
 };
