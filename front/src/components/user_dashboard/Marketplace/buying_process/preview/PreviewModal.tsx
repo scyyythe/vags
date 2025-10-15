@@ -12,6 +12,7 @@ interface PreviewModalProps {
     artworkImage: string;
     title: string;
     artist: string;
+    artistId?: string;
     medium: string;
     style: string;
     edition: string;
@@ -79,6 +80,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
     setArtwork({
       ...artwork,
       id: artwork.id,
+      artistId: artwork.artistId, // Include artistId for payment validation
       yearCreated: Number(artwork.yearCreated),
       quantity: quantity,
       price: totalPrice, // Pass the total price

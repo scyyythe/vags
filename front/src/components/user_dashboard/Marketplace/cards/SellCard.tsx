@@ -363,6 +363,7 @@ const SellCard = ({
               artworkImage,
               title,
               artist,
+              artistId,
               medium,
               style: category,
               edition,

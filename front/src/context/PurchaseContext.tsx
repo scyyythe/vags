@@ -5,6 +5,7 @@ interface Artwork {
   artworkImage: string;
   title: string;
   artist: string;
+  artistId?: string;
   size: string;
   style: string;
   medium: string;
