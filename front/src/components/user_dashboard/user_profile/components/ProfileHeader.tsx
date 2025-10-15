@@ -14,6 +14,9 @@ import { useFollowUser } from "@/hooks/follow/useFollowUser";
 import { useUnfollowUser } from "@/hooks/follow/useUnfollowUser";
 import useFollowStatus from "@/hooks/follow/useFollowStatus";
 import useFollowCounts from "@/hooks/follow/useFollowCount";
+import useBlockUser from "@/hooks/users/block/useBlockUser";
+import useUnblockUser from "@/hooks/users/block/useUnblockUser";
+import useBlockedUsers from "@/hooks/users/block/useBlockedUsers";
 import EditProfile from "../../own_profile/edit_profile/EditButton";
 import FollowModals from "@/components/user_dashboard/own_profile/following_&_followers/owners/profile/FollowModals";
 import ProfileHeaderSkeleton from "@/components/skeletons/ProfileHeaderSkeleton";
@@ -37,14 +40,20 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
   const [isLoading, setIsLoading] = useState(false);
   const followMutation = useFollowUser();
   const unfollowMutation = useUnfollowUser();
+  const blockMutation = useBlockUser();
+  const unblockMutation = useUnblockUser();
   const { id } = useParams<{ id: string }>();
   const { data: followCounts, error } = useFollowCounts(id || "");
   const { data: socials = [], isLoading: isSocialsLoading, error: socialsError } = useSocials(profileUserId);
+  const { data: blockedUsers = [] } = useBlockedUsers();
   const { openChat } = useChat();
 
   const [showReportOptions, setShowReportOptions] = useState(false);
 
   const [contactOpen, setContactOpen] = useState(false);
+
+  // Check if the current user is blocked
+  const isUserBlocked = blockedUsers.some((user) => user.id === profileUserId);
 
   // Handle contact button click - open direct conversation
   const handleContact = (e: React.MouseEvent) => {
@@ -52,6 +61,15 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
 
     if (!profileUserId || !name) {
       console.error("Missing profile info", { profileUserId, name });
+      return;
+    }
+
+    // Check if user is blocked - if so, show message instead of opening chat
+    if (isUserBlocked) {
+      toast.error("Cannot message blocked user. Unblock them first to send messages.", {
+        closeButton: true,
+        duration: 4000,
+      });
       return;
     }
 
@@ -111,10 +129,25 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
   }
 
   const handleReportSubmit = async (category: string, reason?: string) => {
-    console.log("Reporting user ID:", profileUserId);
-    console.log("Category:", category);
-    console.log("Reason:", reason);
     setShowReportOptions(false);
+  };
+
+  const handleBlockUser = async () => {
+    try {
+      await blockMutation.mutateAsync(profileUserId);
+      setOptionsOpen(false);
+    } catch (error) {
+      console.error("Failed to block user:", error);
+    }
+  };
+
+  const handleUnblockUser = async () => {
+    try {
+      await unblockMutation.mutateAsync(profileUserId);
+      setOptionsOpen(false);
+    } catch (error) {
+      console.error("Failed to unblock user:", error);
+    }
   };
 
   const socialIcons: Record<string, string> = {
@@ -139,7 +172,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
     twitch: "https://img.icons8.com/color/48/twitch.png",
     discord: "https://img.icons8.com/color/48/discord-new.png",
   };
-
 
   return (
     <div className="w-full px-4">
@@ -187,7 +219,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
         </Avatar>
 
         {/* Name */}
-        <h1 className="text-xl md:text-xl font-bold mt-4">{name}</h1>
+        <div className="flex items-center gap-2 mt-4">
+          <h1 className="text-xl md:text-xl font-bold">{name}</h1>
+          {isUserBlocked && <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">Blocked</span>}
+        </div>
 
         {/* Stats - Replaced with FollowModals component */}
         <div className="flex space-x-2">
@@ -221,8 +256,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
             {/* CONTACT USER */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="rounded-full border border-gray-300 p-2 w-8 h-8">
-                  <i className="bx bx-envelope text-xs"></i>
+                <Button
+                  variant="outline"
+                  className={`rounded-full border p-2 w-8 h-8 ${
+                    isUserBlocked ? "border-red-300 bg-red-50 text-red-600 cursor-not-allowed" : "border-gray-300"
+                  }`}
+                  disabled={isUserBlocked}
+                >
+                  <i className={`bx ${isUserBlocked ? "bx-block" : "bx-envelope"} text-xs`}></i>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -233,10 +274,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
                 forceMount
               >
                 <DropdownMenuItem
-                  className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1"
+                  className={`text-[10px] rounded px-2 py-1 ${
+                    isUserBlocked ? "text-gray-400 cursor-not-allowed" : "cursor-pointer hover:bg-gray-100"
+                  }`}
                   onClick={handleContact}
+                  disabled={isUserBlocked}
                 >
-                  Message
+                  {isUserBlocked ? "User Blocked" : "Message"}
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
                   {email || "user@email.com"}
@@ -258,8 +302,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
                 className="z-50 bg-white p-2 shadow-lg rounded-md min-w-[120px] animate-fade-in"
                 forceMount
               >
-                <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
-                  Block User
+                <DropdownMenuItem
+                  onClick={isUserBlocked ? handleUnblockUser : handleBlockUser}
+                  className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1"
+                >
+                  {isUserBlocked ? "Unblock User" : "Block User"}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {

@@ -157,7 +157,7 @@ class AuctionListView(generics.ListAPIView):
         user = self.request.user
         if user.is_authenticated and hasattr(user, "blocked_users"):
             try:
-                blocked_user_ids = [u.id for u in user.blocked_users]
+                blocked_user_ids = [str(blocked_user.id) for blocked_user in user.blocked_users]
             except Exception as e:
                 print(f"Error reading blocked users: {e}")
                 blocked_user_ids = []
@@ -282,6 +282,12 @@ class AuctionListViewSpecificUser(generics.ListAPIView):
 
         if not user_id:
             return Auction.objects.none()
+
+        # Check if the requested user is blocked by the current user
+        if user_id and self.request.user.is_authenticated and hasattr(self.request.user, 'blocked_users'):
+            blocked_user_ids = [str(blocked_user.id) for blocked_user in self.request.user.blocked_users]
+            if str(user_id) in blocked_user_ids:
+                return Auction.objects.none()  # Return empty queryset if user is blocked
 
         
         user_artworks = Art.objects(artist=user_id).only('id')
@@ -499,7 +505,11 @@ class FollowedAuctionsView(APIView):
 
         followed_users = Follower.objects.filter(follower=user)
         followed_ids = [f.following.id for f in followed_users]
-       
+        
+        # Filter out blocked users from followed list
+        if user.is_authenticated and hasattr(user, 'blocked_users'):
+            blocked_user_ids = [str(blocked_user.id) for blocked_user in user.blocked_users]
+            followed_ids = [fid for fid in followed_ids if str(fid) not in blocked_user_ids]
 
         if not followed_ids:
             return Response([], status=status.HTTP_200_OK)

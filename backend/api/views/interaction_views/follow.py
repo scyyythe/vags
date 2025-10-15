@@ -168,7 +168,7 @@ class FollowerListView(APIView):
         user_id = request.query_params.get('user_id')
         current_user = request.user
 
-        blocked_user_ids = [user.id for user in current_user.blocked_users] if hasattr(current_user, 'blocked_users') else []
+        blocked_user_ids = [str(user.id) for user in current_user.blocked_users] if hasattr(current_user, 'blocked_users') else []
 
         if user_id:
            
@@ -190,7 +190,7 @@ class FollowingListView(APIView):
         current_user = request.user
 
       
-        blocked_user_ids = [user.id for user in current_user.blocked_users] if hasattr(current_user, 'blocked_users') else []
+        blocked_user_ids = [str(user.id) for user in current_user.blocked_users] if hasattr(current_user, 'blocked_users') else []
 
         if user_id:
             following = Follower.objects.filter(follower=user_id)
