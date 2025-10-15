@@ -202,7 +202,7 @@ class ArtListView(generics.ListAPIView):
         # Update serializer caches with prefetched data
         if prefetch_relations:
             # Update likes cache
-            for like_data in prefetch_relations['likes_data']:
+            for like_data in prefetch_relations.get('likes_data', []):
                 ArtSerializer._likes_cache[like_data['_id']] = like_data['count']
             
             # Set likes count to 0 for artworks without likes
@@ -211,8 +211,16 @@ class ArtListView(generics.ListAPIView):
                     ArtSerializer._likes_cache[artwork.id] = 0
             
             # Update PayPal cache
-            for account in prefetch_relations['paypal_accounts']:
+            for account in prefetch_relations.get('paypal_accounts', []):
                 ArtSerializer._paypal_cache[account.user.id] = account.account_info
+            
+            # Update artist cache
+            for artist in prefetch_relations.get('artists', []):
+                ArtSerializer._artist_cache[str(artist.id)] = {
+                    'first_name': artist.first_name,
+                    'last_name': artist.last_name,
+                    'profile_picture': artist.profile_picture
+                }
         
         return artworks_list
 
@@ -231,7 +239,7 @@ class PopularLightweightArtView(APIView):
             # Update serializer caches with prefetched data
             if prefetch_relations:
                 # Update likes cache
-                for like_data in prefetch_relations['likes_data']:
+                for like_data in prefetch_relations.get('likes_data', []):
                     LightweightArtSerializer._likes_cache[like_data['_id']] = like_data['count']
                 
                 # Set likes count to 0 for artworks without likes
@@ -240,13 +248,24 @@ class PopularLightweightArtView(APIView):
                         LightweightArtSerializer._likes_cache[artwork.id] = 0
                 
                 # Update PayPal cache
-                for account in prefetch_relations['paypal_accounts']:
+                for account in prefetch_relations.get('paypal_accounts', []):
                     LightweightArtSerializer._paypal_cache[account.user.id] = account.account_info
+                
+                # Update artist cache
+                for artist in prefetch_relations.get('artists', []):
+                    LightweightArtSerializer._artist_cache[str(artist.id)] = {
+                        'first_name': artist.first_name,
+                        'last_name': artist.last_name,
+                        'profile_picture': artist.profile_picture
+                    }
 
             serializer = LightweightArtSerializer(top_artworks, many=True)
             return Response(serializer.data)
 
         except Exception as e:
+            print(f"Error in PopularLightweightArtView: {e}")
+            import traceback
+            traceback.print_exc()
             return Response({"error": str(e)}, status=500)
 
 
@@ -265,7 +284,7 @@ class ArtCardListView(APIView):
             # Update serializer caches with prefetched data
             if prefetch_relations:
                 # Update likes cache
-                for like_data in prefetch_relations['likes_data']:
+                for like_data in prefetch_relations.get('likes_data', []):
                     ArtCardSerializer._likes_cache[like_data['_id']] = like_data['count']
                 
                 # Set likes count to 0 for artworks without likes
@@ -274,8 +293,16 @@ class ArtCardListView(APIView):
                         ArtCardSerializer._likes_cache[artwork.id] = 0
                 
                 # Update PayPal cache
-                for account in prefetch_relations['paypal_accounts']:
+                for account in prefetch_relations.get('paypal_accounts', []):
                     ArtCardSerializer._paypal_cache[account.user.id] = account.account_info
+                
+                # Update artist cache
+                for artist in prefetch_relations.get('artists', []):
+                    ArtCardSerializer._artist_cache[str(artist.id)] = {
+                        'first_name': artist.first_name,
+                        'last_name': artist.last_name,
+                        'profile_picture': artist.profile_picture
+                    }
             
             # Apply pagination manually since this is an APIView
             paginator = self.pagination_class()
@@ -303,7 +330,36 @@ class MyArtCardListView(APIView):
                 "image_url", "category", "visibility", "art_status", "artist"
             ).order_by("-created_at")
 
-            serializer = ArtCardSerializer(artworks, many=True)
+            # Convert to list for prefetching
+            artworks_list = list(artworks)
+            
+            # Prefetch relations for serialization
+            prefetch_relations = prefetch_artwork_relations(artworks_list)
+            
+            # Update serializer caches with prefetched data
+            if prefetch_relations:
+                # Update likes cache
+                for like_data in prefetch_relations['likes_data']:
+                    ArtCardSerializer._likes_cache[like_data['_id']] = like_data['count']
+                
+                # Set likes count to 0 for artworks without likes
+                for artwork in artworks_list:
+                    if artwork.id not in ArtCardSerializer._likes_cache:
+                        ArtCardSerializer._likes_cache[artwork.id] = 0
+                
+                # Update PayPal cache
+                for account in prefetch_relations['paypal_accounts']:
+                    ArtCardSerializer._paypal_cache[account.user.id] = account.account_info
+                
+                # Update artist cache
+                for artist in prefetch_relations['artists']:
+                    ArtCardSerializer._artist_cache[str(artist.id)] = {
+                        'first_name': artist.first_name,
+                        'last_name': artist.last_name,
+                        'profile_picture': artist.profile_picture
+                    }
+
+            serializer = ArtCardSerializer(artworks_list, many=True)
             return Response(serializer.data, status=200)
         except Exception as e:
             print("Error fetching my art cards:", e)
@@ -328,10 +384,39 @@ class UserArtCardListView(APIView):
                 art_status__in=["onSale", "on Sale"] 
             ).only(
                 "title", "price", "discounted_price", "total_ratings",
-                "image_url", "category", "visibility", "art_status"
+                "image_url", "category", "visibility", "art_status", "artist"
             ).order_by("-created_at")
 
-            serializer = ArtCardSerializer(artworks, many=True)
+            # Convert to list for prefetching
+            artworks_list = list(artworks)
+            
+            # Prefetch relations for serialization
+            prefetch_relations = prefetch_artwork_relations(artworks_list)
+            
+            # Update serializer caches with prefetched data
+            if prefetch_relations:
+                # Update likes cache
+                for like_data in prefetch_relations['likes_data']:
+                    ArtCardSerializer._likes_cache[like_data['_id']] = like_data['count']
+                
+                # Set likes count to 0 for artworks without likes
+                for artwork in artworks_list:
+                    if artwork.id not in ArtCardSerializer._likes_cache:
+                        ArtCardSerializer._likes_cache[artwork.id] = 0
+                
+                # Update PayPal cache
+                for account in prefetch_relations['paypal_accounts']:
+                    ArtCardSerializer._paypal_cache[account.user.id] = account.account_info
+                
+                # Update artist cache
+                for artist in prefetch_relations['artists']:
+                    ArtCardSerializer._artist_cache[str(artist.id)] = {
+                        'first_name': artist.first_name,
+                        'last_name': artist.last_name,
+                        'profile_picture': artist.profile_picture
+                    }
+
+            serializer = ArtCardSerializer(artworks_list, many=True)
             return Response(serializer.data, status=200)
         except Exception as e:
             return Response({"error": str(e)}, status=500)

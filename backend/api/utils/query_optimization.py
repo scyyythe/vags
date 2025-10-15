@@ -126,29 +126,48 @@ def prefetch_artwork_relations(artworks):
     Prefetch related data for multiple artworks to avoid N+1 queries
     """
     if not artworks:
-        return
+        return {
+            'likes_data': [],
+            'paypal_accounts': [],
+            'artists': []
+        }
     
     artwork_ids = [art.id for art in artworks]
     artist_ids = list(set([art.artist.id for art in artworks if art.artist]))
     
-    # Prefetch likes data
-    likes_pipeline = [
-        {'$match': {'art': {'$in': artwork_ids}}},
-        {'$group': {'_id': '$art', 'count': {'$sum': 1}}}
-    ]
-    likes_data = Like.objects.aggregate(likes_pipeline)
-    
-    # Prefetch PayPal accounts
-    paypal_accounts = PaymentAccount.objects.filter(
-        user__in=artist_ids,
-        type="paypal",
-        is_default=True
-    )
-    
-    return {
-        'likes_data': list(likes_data),
-        'paypal_accounts': list(paypal_accounts)
-    }
+    try:
+        # Prefetch likes data
+        likes_pipeline = [
+            {'$match': {'art': {'$in': artwork_ids}}},
+            {'$group': {'_id': '$art', 'count': {'$sum': 1}}}
+        ]
+        likes_data = Like.objects.aggregate(likes_pipeline)
+        
+        # Prefetch PayPal accounts
+        paypal_accounts = PaymentAccount.objects.filter(
+            user__in=artist_ids,
+            type="paypal",
+            is_default=True
+        )
+        
+        # Prefetch artist data
+        from api.models.user_model.user import User
+        artists = User.objects(id__in=artist_ids).only(
+            'id', 'first_name', 'last_name', 'profile_picture'
+        )
+        
+        return {
+            'likes_data': list(likes_data),
+            'paypal_accounts': list(paypal_accounts),
+            'artists': list(artists)
+        }
+    except Exception as e:
+        print(f"Error in prefetch_artwork_relations: {e}")
+        return {
+            'likes_data': [],
+            'paypal_accounts': [],
+            'artists': []
+        }
 
 
 def build_artwork_query_filters(user=None, visibility='public', art_status='active'):

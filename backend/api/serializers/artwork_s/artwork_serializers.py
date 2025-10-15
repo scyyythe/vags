@@ -267,11 +267,22 @@ class ArtSerializer(serializers.Serializer):
     def get_artist(self, obj):
         try:
             if obj.artist:
-                return {
-                    "id": str(obj.artist.id),
-                    "name": f"{obj.artist.first_name} {obj.artist.last_name}",
-                    "profile_picture": str(obj.artist.profile_picture) if obj.artist.profile_picture else ""
-                }
+                # Use cache to avoid N+1 queries
+                artist_id = str(obj.artist.id)
+                if artist_id in self._artist_cache:
+                    cached_data = self._artist_cache[artist_id]
+                    return {
+                        "id": artist_id,
+                        "name": f"{cached_data['first_name']} {cached_data['last_name']}",
+                        "profile_picture": str(cached_data['profile_picture']) if cached_data['profile_picture'] else ""
+                    }
+                else:
+                    # Fallback to direct access if not cached
+                    return {
+                        "id": artist_id,
+                        "name": f"{obj.artist.first_name} {obj.artist.last_name}",
+                        "profile_picture": str(obj.artist.profile_picture) if obj.artist.profile_picture else ""
+                    }
             return None
         except Exception as e:
             print(f"DEBUG: Error serializing artist for artwork {obj.id}: {e}")
@@ -326,10 +337,20 @@ class LightweightArtSerializer(serializers.Serializer):
 
     def get_artist(self, obj):
         if obj.artist:
-            return {
-                "name": f"{obj.artist.first_name} {obj.artist.last_name}",
-                "profile_picture": str(obj.artist.profile_picture or "")
-            }
+            # Use cache to avoid N+1 queries
+            artist_id = str(obj.artist.id)
+            if artist_id in self._artist_cache:
+                cached_data = self._artist_cache[artist_id]
+                return {
+                    "name": f"{cached_data['first_name']} {cached_data['last_name']}",
+                    "profile_picture": str(cached_data['profile_picture'] or "")
+                }
+            else:
+                # Fallback to direct access if not cached
+                return {
+                    "name": f"{obj.artist.first_name} {obj.artist.last_name}",
+                    "profile_picture": str(obj.artist.profile_picture or "")
+                }
         return {
             "name": "",
             "profile_picture": ""
@@ -442,16 +463,31 @@ class ArtCardSerializer(serializers.Serializer):
 
     def get_artist(self, obj):
         if obj.artist:
-            return f"{obj.artist.first_name} {obj.artist.last_name}"
+            # Use cache to avoid N+1 queries
+            artist_id = str(obj.artist.id)
+            if artist_id in self._artist_cache:
+                cached_data = self._artist_cache[artist_id]
+                return f"{cached_data['first_name']} {cached_data['last_name']}"
+            else:
+                # Fallback to direct access if not cached
+                return f"{obj.artist.first_name} {obj.artist.last_name}"
         return "Unknown"
+    
     def get_artist_id(self, obj):
         if obj.artist:
             return str(obj.artist.id) 
         return None
     
     def get_profile_picture(self, obj):  
-        if obj.artist and obj.artist.profile_picture:
-            return str(obj.artist.profile_picture)
+        if obj.artist:
+            # Use cache to avoid N+1 queries
+            artist_id = str(obj.artist.id)
+            if artist_id in self._artist_cache:
+                cached_data = self._artist_cache[artist_id]
+                return str(cached_data['profile_picture']) if cached_data['profile_picture'] else ""
+            else:
+                # Fallback to direct access if not cached
+                return str(obj.artist.profile_picture) if obj.artist.profile_picture else ""
         return ""
 
     def get_category(self, obj):
