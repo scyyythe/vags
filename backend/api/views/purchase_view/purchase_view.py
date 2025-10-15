@@ -6,6 +6,7 @@ from api.serializers.purchase_serializer.purchase_serializer import PurchaseArtw
 from api.models.purchase_model.order import PurchasedArtwork
 from api.serializers.purchase_serializer.purchase_list_serializer import PurchasedArtworkListSerializer
 from api.models.payment_model.payment_accounts import PaymentAccount
+from api.utils.notification_utils import notify_purchase_status_update
 from bson import ObjectId
 from datetime import datetime
 
@@ -91,6 +92,17 @@ class MarkPurchaseCompletedView(APIView):
         purchase.updated_at = datetime.utcnow()
         purchase.save()
 
+        # Create notification for status update
+        if purchase.artwork and purchase.artwork.artist:
+            notify_purchase_status_update(
+                buyer=purchase.buyer,
+                seller=purchase.artwork.artist,
+                artwork=purchase.artwork,
+                purchase_id=str(purchase.id),
+                new_status="Completed",
+                updated_by=request.user
+            )
+
         return Response({"message": "Purchase marked as completed."}, status=status.HTTP_200_OK)
     
 class MarkPurchaseAsShippedView(APIView):
@@ -108,5 +120,16 @@ class MarkPurchaseAsShippedView(APIView):
         purchase.status = "To Receive"
         purchase.updated_at = datetime.utcnow()
         purchase.save()
+
+        # Create notification for shipping update
+        if purchase.artwork and purchase.artwork.artist:
+            notify_purchase_status_update(
+                buyer=purchase.buyer,
+                seller=purchase.artwork.artist,
+                artwork=purchase.artwork,
+                purchase_id=str(purchase.id),
+                new_status="To Receive",
+                updated_by=request.user
+            )
 
         return Response({"message": "Marked as shipped."}, status=status.HTTP_200_OK)
