@@ -151,7 +151,6 @@ def prefetch_artwork_relations(artworks):
         )
         
         # Prefetch artist data
-        from api.models.user_model.user import User
         artists = User.objects(id__in=artist_ids).only(
             'id', 'first_name', 'last_name', 'profile_picture'
         )
