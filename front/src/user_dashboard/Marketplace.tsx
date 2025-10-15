@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
@@ -25,6 +25,7 @@ import {
 import useFetchArtCards from "@/hooks/artworks/sell/useFetchArtCards";
 import type { SellCardProps as Artwork } from "@/components/user_dashboard/Marketplace/cards/SellCard";
 import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
+import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 
 const Marketplace = () => {
   const loggedInUserId = getLoggedInUserId();
@@ -54,6 +55,16 @@ const Marketplace = () => {
 
   // Ensure artCards is always an array
   const safeArtCards = Array.isArray(artCards) ? artCards : [];
+
+  // Get artwork IDs for bulk report status lookup
+  const artworkIds = safeArtCards.map((art) => art.id);
+  const { data: bulkReportStatus } = useBulkReportStatus(artworkIds);
+
+  // Create lookup map for report status
+  const reportStatusMap = React.useMemo(() => {
+    if (!bulkReportStatus) return {};
+    return bulkReportStatus;
+  }, [bulkReportStatus]);
 
   const { wishlist, likedItems, removeFromWishlist, toggleWishlist, isLoading: wishlistApiLoading } = useWishlist();
 
@@ -318,7 +329,7 @@ const Marketplace = () => {
                         quantity={artwork.quantity}
                         isWishlistView={true}
                         onCardClick={() => handleCardClick(artwork)}
-                        isReported={reportedArtworks.has(artwork.id)}
+                        isReported={reportStatusMap[artwork.id]?.reported || false}
                         isOwner={isOwner}
                       />
                     );

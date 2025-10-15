@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import ReactDOM from "react-dom";
 import { Flag, Share2, Search, Undo2 } from "lucide-react";
 import { toast } from "sonner";
 import ShareModal from "../../local_components/share/ShareModal";
@@ -124,13 +125,16 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
       </div>
 
       {/* Report Options */}
-      {showReportOptions && (
-        <ReportOptionsPopup
-          isOpen={showReportOptions}
-          onClose={() => setShowReportOptions(false)}
-          onSubmit={handleReportSubmit}
-        />
-      )}
+      {showReportOptions &&
+        typeof document !== "undefined" &&
+        ReactDOM.createPortal(
+          <ReportOptionsPopup
+            isOpen={showReportOptions}
+            onClose={() => setShowReportOptions(false)}
+            onSubmit={handleReportSubmit}
+          />,
+          document.body
+        )}
     </>
   );
 };
