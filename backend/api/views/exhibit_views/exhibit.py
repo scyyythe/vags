@@ -13,6 +13,7 @@ from datetime import datetime
 from rest_framework import status
 from api.models.exhibit_model.exhibit_contribution import ExhibitContribution
 from api.serializers.artwork_s.artwork_serializers import ArtSerializer
+from api.models.interaction_model.interaction import Like
 from bson import ObjectId
 from api.models.artwork_model.artwork import Art
 
@@ -84,7 +85,36 @@ class ExhibitCardListView(APIView):
             # Order by creation date for consistent results
             exhibits = exhibits.order_by('-created_at')
             
-            serializer = ExhibitCardSerializer(exhibits, many=True, context={'request': request})
+            # Convert to list for prefetching
+            exhibits_list = list(exhibits)
+            
+            # Prefetch likes data to avoid N+1 queries
+            exhibit_ids = [exhibit.id for exhibit in exhibits_list]
+            likes_data = {}
+            user_likes_data = {}
+            
+            if exhibit_ids:
+                # Bulk fetch exhibit likes
+                likes_pipeline = [
+                    {'$match': {'exhibit': {'$in': exhibit_ids}}},
+                    {'$group': {'_id': '$exhibit', 'count': {'$sum': 1}}}
+                ]
+                likes_results = Like.objects.aggregate(likes_pipeline)
+                likes_data = {str(like['_id']): like['count'] for like in likes_results}
+                
+                # Bulk fetch user likes if authenticated
+                if request.user.is_authenticated:
+                    user_likes = Like.objects(user=request.user, exhibit__in=exhibit_ids).only('exhibit')
+                    user_likes_data = {str(like.exhibit.id): True for like in user_likes}
+            
+            # Create context with prefetched data
+            context = {
+                'request': request,
+                'likes_data': likes_data,
+                'user_likes_data': user_likes_data
+            }
+            
+            serializer = ExhibitCardSerializer(exhibits_list, many=True, context=context)
             return Response(serializer.data, status=status.HTTP_200_OK)
             
         except Exception as e:

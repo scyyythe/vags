@@ -79,13 +79,27 @@ class ExhibitCardSerializer(serializers.Serializer):
         return self.context.get("slot_artwork_map", {})
 
     def get_exhibit_likes_count(self, obj):
-        # Use cache to avoid repeated database queries
+        # Use prefetched data to avoid N+1 queries
         exhibit_id = str(obj.id)
+        likes_data = self.context.get('likes_data', {})
+        
+        if exhibit_id in likes_data:
+            return likes_data[exhibit_id]
+        
+        # Fallback to cache if not in prefetched data
         if exhibit_id not in self._likes_cache:
             self._likes_cache[exhibit_id] = Like.objects(exhibit=obj).count()
         return self._likes_cache[exhibit_id]
 
     def get_user_has_liked_exhibit(self, obj):
+        # Use prefetched data to avoid N+1 queries
+        exhibit_id = str(obj.id)
+        user_likes_data = self.context.get('user_likes_data', {})
+        
+        if exhibit_id in user_likes_data:
+            return True
+        
+        # Fallback to cache if not in prefetched data
         request = self.context.get("request", None)
         user = getattr(request, "user", None)
         if user and not user.is_anonymous:
