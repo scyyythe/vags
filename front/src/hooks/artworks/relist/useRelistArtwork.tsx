@@ -19,6 +19,10 @@ export const useRelistArtwork = () => {
       queryClient.invalidateQueries({ queryKey: ["myArtworks"] });
       queryClient.invalidateQueries({ queryKey: ["marketplaceArtworks"] });
       queryClient.invalidateQueries({ queryKey: ["wishlistArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["my-sold-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
     },
     onError: (error: any) => {
       const message = error.response?.data?.detail || "Failed to relist artwork";
