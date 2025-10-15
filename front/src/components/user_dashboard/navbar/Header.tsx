@@ -12,11 +12,13 @@ import useUserDetails from "@/hooks/users/useUserDetails";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { useChat } from "@/context/ChatContext";
 import { useUserConversations } from "@/hooks/messages/useUserConversations";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const Header = () => {
   const location = useLocation();
-  const currentPath = location.pathname;
   const navigate = useNavigate();
+  const currentPath = location.pathname;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -36,14 +38,16 @@ const Header = () => {
   const { isChatOpen, openChat, closeChat, participantId, participantName, participantAvatar } = useChat();
   const [conversations, , isLoadingConversations] = useUserConversations(userId);
 
-  // Calculate total unread messages (only when not loading)
+  const { language } = useLanguage(); // Get current language
+
+  // Calculate total unread messages
   const totalUnreadMessages = isLoadingConversations
     ? 0
     : conversations.reduce((total, conversation) => {
         return total + (conversation.unreadCount || 0);
       }, 0);
 
-  if (!userId) return;
+  if (!userId) return null;
 
   const closeAllDropdowns = () => {
     setIsProfileDropdownOpen(false);
@@ -60,15 +64,23 @@ const Header = () => {
     const isExplorePage = currentPath.includes("/explore");
     const isBiddingPage = currentPath.includes("/bidding");
     const isExhibitPage = currentPath.includes("/exhibits");
-    const isMarketplacePage = currentPath.includes("/exhibits");
+    const isMarketplacePage = currentPath.includes("/marketplace");
 
     if (isExplorePage) navigate(`/explore?${params.toString()}`);
     else if (isBiddingPage) navigate(`/bidding?${params.toString()}`);
-    else if (isExhibitPage) navigate(`/exhibit?${params.toString()}`);
+    else if (isExhibitPage) navigate(`/exhibits?${params.toString()}`);
     else if (isMarketplacePage) navigate(`/marketplace?${params.toString()}`);
 
     setSearchQuery(value);
   };
+
+  // Nav links with translation
+  const navLinks = [
+    { route: "/explore", label: useAutoTranslation("Explore", language) },
+    { route: "/exhibits", label: useAutoTranslation("Exhibits", language) },
+    { route: "/auctions", label: useAutoTranslation("Auctions", language) },
+    { route: "/marketplace", label: useAutoTranslation("Marketplace", language) },
+  ];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border/50">
@@ -88,10 +100,10 @@ const Header = () => {
 
           {/* Nav Links (desktop only) */}
           <nav className="hidden md:flex items-center space-x-16 text-xs ml-16">
-            {["Explore", "Exhibits", "Auctions", "Marketplace"].map((label) => (
+            {navLinks.map(({ route, label }) => (
               <NavLink
-                key={label}
-                to={`/${label.toLowerCase()}`}
+                key={route}
+                to={route}
                 className={({ isActive }) => `${isActive ? "font-semibold" : ""}`}
               >
                 {label}
@@ -108,11 +120,11 @@ const Header = () => {
           </div>
 
           {/* Mobile Search Icon */}
-          <div className="block md:hidden relative top-0.5 right-1 ">
+          <div className="block md:hidden relative top-0.5 right-1">
             <button
               className="button-icon hover:scale-110 transition"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              title="Search"
+              title={useAutoTranslation("Search", language)}
             >
               <Search size={15} />
             </button>
@@ -135,7 +147,7 @@ const Header = () => {
           <div className="relative top-0.5" ref={chatRef}>
             <button
               className="button-icon hover:scale-110 transition"
-              title="ChatDropdown"
+              title={useAutoTranslation("Chat", language)}
               onClick={() => {
                 if (isChatOpen) closeChat();
                 else {
@@ -145,7 +157,6 @@ const Header = () => {
               }}
             >
               <MessageCircle size={15} />
-              {/* Unread message badge */}
               {totalUnreadMessages > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center font-medium min-w-[12px]">
                   {totalUnreadMessages > 9 ? "9+" : totalUnreadMessages}
@@ -159,7 +170,7 @@ const Header = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute -right-[100px] mt-4 z-50"
+                  className="absolute -right-[94px] mt-3 z-50"
                 >
                   <ChatDropdown
                     isOpen={isChatOpen}
@@ -177,7 +188,7 @@ const Header = () => {
           <div className="relative top-0.5" ref={notificationRef}>
             <button
               className="button-icon hover:scale-110 transition"
-              title="Notifications"
+              title={useAutoTranslation("Notifications", language)}
               onClick={() => {
                 if (isNotificationOpen) setIsNotificationOpen(false);
                 else {
@@ -195,7 +206,7 @@ const Header = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute -right-[70px] mt-4 z-50"
+                  className="absolute -right-[60px] mt-3 z-50"
                 >
                   <Notifications isOpen={true} onClose={() => setIsNotificationOpen(false)} />
                 </motion.div>
@@ -224,7 +235,7 @@ const Header = () => {
                 }
               }}
               className="ml-1 z-10"
-              aria-label="Profile menu"
+              aria-label={useAutoTranslation("Profile menu", language)}
             >
               <i className="bx bx-chevron-down text-xl"></i>
             </button>
@@ -235,7 +246,7 @@ const Header = () => {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="absolute left-16 top-10 z-50"
+                  className="absolute left-14 top-10 z-50"
                 >
                   <ProfileDropdown isOpen={true} onClose={() => setIsProfileDropdownOpen(false)} />
                 </motion.div>
@@ -254,10 +265,10 @@ const Header = () => {
             exit={{ height: 0, opacity: 0 }}
             className="md:hidden bg-white shadow px-4 py-4 space-y-3"
           >
-            {["Explore", "Exhibits", "Bidding", "Marketplace"].map((label) => (
+            {navLinks.map(({ route, label }) => (
               <NavLink
-                key={label}
-                to={`/${label.toLowerCase()}`}
+                key={route}
+                to={route}
                 onClick={() => setIsMenuOpen(false)}
                 className={({ isActive }) =>
                   `block text-center text-xs py-2 rounded ${isActive ? "font-semibold text-black" : "text-gray-700"}`

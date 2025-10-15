@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { createPortal } from "react-dom"; // <-- new import
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -8,8 +8,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, MapPin, Star } from "lucide-react";
+import { MoreHorizontal, MapPin } from "lucide-react";
 import { ShippingAddress } from "../accounts_setup/types/shipping";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface ShippingAddressTableProps {
   addresses: ShippingAddress[];
@@ -24,32 +26,42 @@ export const ShippingAddressTable: React.FC<ShippingAddressTableProps> = ({
   onDeleteAddress,
   onSetDefault,
 }) => {
-  // Static labels (no translation)
-  const defaultLabel = "Default";
-  const setAsDefaultLabel = "Set as Default";
-  const editLabel = "Edit";
-  const deleteLabel = "Delete";
+  const { language: selectedLanguage } = useLanguage();
+
+  // Auto-translated labels
+  const defaultLabel = useAutoTranslation("Default", selectedLanguage);
+  const setAsDefaultLabel = useAutoTranslation("Set as Default", selectedLanguage);
+  const editLabel = useAutoTranslation("Edit", selectedLanguage);
+  const deleteLabel = useAutoTranslation("Delete", selectedLanguage);
+  const deletePopupTitle = useAutoTranslation("Delete Address?", selectedLanguage);
+  const deletePopupDesc = useAutoTranslation("Deleted address can't be recovered.", selectedLanguage);
+  const keepBtnLabel = useAutoTranslation("Keep", selectedLanguage);
+  const deleteBtnLabel = useAutoTranslation("Delete", selectedLanguage);
+
+  const cityLabel = useAutoTranslation("City", selectedLanguage);
+  const stateLabel = useAutoTranslation("State", selectedLanguage);
+  const zipLabel = useAutoTranslation("ZIP Code", selectedLanguage);
+  const countryLabel = useAutoTranslation("Country", selectedLanguage);
 
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 
   // Disable scrollbar when delete popup is visible
   useEffect(() => {
-    if (showDeletePopup) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    document.body.style.overflow = showDeletePopup ? "hidden" : "unset";
     return () => {
       document.body.style.overflow = "unset";
     };
   }, [showDeletePopup]);
 
   const formatAddress = (address: ShippingAddress) => {
-    const parts = [address.addressLine1];
-    if (address.addressLine2) parts.push(address.addressLine2);
-    parts.push(`${address.city}, ${address.state} ${address.zipCode}`);
-    parts.push(address.country);
+    const parts = [
+      address.addressLine1,
+      address.addressLine2 ? address.addressLine2 : undefined,
+      `${cityLabel}: ${address.city}, ${stateLabel}: ${address.state} ${zipLabel}: ${address.zipCode}`,
+      `${countryLabel}: ${address.country}`,
+    ].filter(Boolean);
+
     return parts.join(", ");
   };
 
@@ -77,25 +89,18 @@ export const ShippingAddressTable: React.FC<ShippingAddressTableProps> = ({
               <div className="flex items-center gap-2 mb-1">
                 <h4 className="font-medium text-xs">{address.name}</h4>
                 {address.isDefault && (
-                  <Badge
-                    variant="secondary"
-                    className="text-[10px] px-2 py-0.5 flex items-center gap-1"
-                  >
+                  <Badge variant="secondary" className="text-[10px] px-2 py-0.5 flex items-center gap-1">
                     {defaultLabel}
                   </Badge>
                 )}
               </div>
 
-              <p className="text-[11px] text-muted-foreground mb-1">
-                {formatAddress(address)}
-              </p>
-
+              <p className="text-[11px] text-muted-foreground mb-1">{formatAddress(address)}</p>
               <p className="text-[11px] text-muted-foreground">{address.phone}</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Set as Default Button */}
             {!address.isDefault && (
               <button
                 onClick={() => onSetDefault(address.id)}
@@ -105,7 +110,6 @@ export const ShippingAddressTable: React.FC<ShippingAddressTableProps> = ({
               </button>
             )}
 
-            {/* Dropdown Menu for Edit/Delete */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
@@ -134,7 +138,6 @@ export const ShippingAddressTable: React.FC<ShippingAddressTableProps> = ({
         </div>
       ))}
 
-      {/* Delete Popup */}
       {showDeletePopup &&
         typeof document !== "undefined" &&
         createPortal(
@@ -148,24 +151,20 @@ export const ShippingAddressTable: React.FC<ShippingAddressTableProps> = ({
               className="bg-white rounded-lg p-6 w-80 mx-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <p className="text-center text-sm font-semibold text-gray-800 mb-2">
-                Delete Address?
-              </p>
-              <p className="text-center text-xs text-gray-600 mb-5">
-                Deleted address can't be recovered.
-              </p>
+              <p className="text-center text-sm font-semibold text-gray-800 mb-2">{deletePopupTitle}</p>
+              <p className="text-center text-xs text-gray-600 mb-5">{deletePopupDesc}</p>
               <div className="flex justify-between space-x-3">
                 <button
                   className="w-full px-4 py-1.5 text-[11px] rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100"
                   onClick={() => setShowDeletePopup(false)}
                 >
-                  Keep
+                  {keepBtnLabel}
                 </button>
                 <button
                   className="w-full px-4 py-1.5 text-[11px] rounded-full bg-red-800 text-white hover:bg-red-700"
                   onClick={handleDelete}
                 >
-                  Delete
+                  {deleteBtnLabel}
                 </button>
               </div>
             </div>

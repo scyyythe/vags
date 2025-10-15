@@ -6,29 +6,13 @@ import { Plus, Truck, Shield } from "lucide-react";
 import { ShippingAddress, NewShippingAddressState } from "./accounts_setup/types/shipping";
 import { ShippingAddressTable } from "./shipping/ShippingAddressTable";
 import { useShippingAddresses } from "@/hooks/shipping/useShippingAddresses";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const ShippingAddressesTab = () => {
   const navigate = useNavigate();
   const { addresses, isLoading, addOrUpdateAddress, deleteAddress, setDefaultAddress } = useShippingAddresses();
-
-  // Static labels (no translation)
-  const myShippingAddressesLabel = "My Shipping Addresses";
-  const addNewAddressLabel = "Add New Address";
-  const editAddressLabel = "Edit Address";
-  const addNewAddressDesc = "Add a new shipping address for your orders";
-  const editAddressDesc = "Update your shipping address details";
-  const setAsDefaultLabel = "Set as default shipping address";
-  const updateAddressLabel = "Update Address";
-  const addAddressLabel = "Add Address";
-  const noAddressesLabel = "No shipping addresses configured";
-  const addFirstAddressLabel = "Add your first shipping address to get started";
-  const shippingInfoLabel = "Shipping Information";
-  const deliveryProcessLabel = "Delivery Process";
-  const deliveryDescLabel =
-    "Your orders will be shipped to your default address. You can change the shipping address during checkout.";
-  const addressSecurityLabel = "Address Security";
-  const addressSecurityDescLabel =
-    "Your shipping information is stored securely and only used for order fulfillment and delivery purposes.";
+  const { language: selectedLanguage } = useLanguage();
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingAddress, setEditingAddress] = useState<ShippingAddress | null>(null);
@@ -65,11 +49,32 @@ const ShippingAddressesTab = () => {
     setShowAddForm(false);
   };
 
-  // Navigate to edit page instead of opening modal
   const handleEditAddress = (address: ShippingAddress) => {
-    console.log("Editing address:", address);
     navigate(`/edit-address/${address.id}`);
   };
+
+  // Auto-translated labels
+  const myShippingAddressesLabel = useAutoTranslation("My Shipping Addresses", selectedLanguage);
+  const addNewAddressLabel = useAutoTranslation("Add New Address", selectedLanguage);
+  const editAddressLabel = useAutoTranslation("Edit Address", selectedLanguage);
+  const addNewAddressDesc = useAutoTranslation("Add a new shipping address for your orders", selectedLanguage);
+  const editAddressDesc = useAutoTranslation("Update your shipping address details", selectedLanguage);
+  const setAsDefaultLabel = useAutoTranslation("Set as default shipping address", selectedLanguage);
+  const updateAddressLabel = useAutoTranslation("Update Address", selectedLanguage);
+  const addAddressLabel = useAutoTranslation("Add Address", selectedLanguage);
+  const noAddressesLabel = useAutoTranslation("No shipping addresses configured", selectedLanguage);
+  const addFirstAddressLabel = useAutoTranslation("Add your first shipping address to get started", selectedLanguage);
+  const shippingInfoLabel = useAutoTranslation("Shipping Information", selectedLanguage);
+  const deliveryProcessLabel = useAutoTranslation("Delivery Process", selectedLanguage);
+  const deliveryDescLabel = useAutoTranslation(
+    "Your orders will be shipped to your default address. You can change the shipping address during checkout.",
+    selectedLanguage
+  );
+  const addressSecurityLabel = useAutoTranslation("Address Security", selectedLanguage);
+  const addressSecurityDescLabel = useAutoTranslation(
+    "Your shipping information is stored securely and only used for order fulfillment and delivery purposes.",
+    selectedLanguage
+  );
 
   return (
     <div className="space-y-6">
@@ -78,11 +83,14 @@ const ShippingAddressesTab = () => {
         <div>
           <h3 className="text-xs font-semibold text-foreground">{myShippingAddressesLabel}</h3>
           <p className="text-[11px] text-muted-foreground mt-1">
-            Manage your shipping addresses for orders and deliveries. Set a default address for faster checkout.
+            {useAutoTranslation(
+              "Manage your shipping addresses for orders and deliveries. Set a default address for faster checkout.",
+              selectedLanguage
+            )}
           </p>
         </div>
 
-        {/* Add New Address Button with navigation */}
+        {/* Add New Address Button */}
         <button
           onClick={() => navigate("/add-address")}
           className="flex py-2 px-4 gap-2 text-[11px] text-white bg-red-700 rounded-full"
@@ -91,7 +99,6 @@ const ShippingAddressesTab = () => {
           {addNewAddressLabel}
         </button>
 
-        {/* Dialog remains for now (used before for editing) */}
         <Dialog
           open={showAddForm}
           onOpenChange={(open) => {
@@ -135,7 +142,7 @@ const ShippingAddressesTab = () => {
       </div>
 
       {/* Addresses Table */}
-      <div className="">
+      <div>
         <CardContent className="p-0">
           {addresses.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
