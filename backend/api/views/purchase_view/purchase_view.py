@@ -5,6 +5,7 @@ from rest_framework import status
 from api.serializers.purchase_serializer.purchase_serializer import PurchaseArtworkSerializer
 from api.models.purchase_model.order import PurchasedArtwork
 from api.serializers.purchase_serializer.purchase_list_serializer import PurchasedArtworkListSerializer
+from api.models.payment_model.payment_accounts import PaymentAccount
 from bson import ObjectId
 from datetime import datetime
 
@@ -22,15 +23,39 @@ class MyPurchasesView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        status_filter = request.query_params.get("status") 
-        queryset = PurchasedArtwork.objects(buyer=request.user)
+        status_filter = request.query_params.get("status")
+        
+        # Build optimized query with proper field selection for MongoDB
+        queryset = PurchasedArtwork.objects(buyer=request.user).only(
+            'id', 'artwork', 'shipping_address', 'payment_method', 'is_paid',
+            'quantity', 'total_price', 'status', 'created_at', 'updated_at'
+        )
 
         if status_filter:
             queryset = queryset.filter(status=status_filter)
 
+        # Apply ordering
         purchases = queryset.order_by("-created_at")
-
         
+        # Get all unique artist IDs for payment account lookup
+        artist_ids = set()
+        for purchase in purchases:
+            if purchase.artwork and purchase.artwork.artist:
+                artist_ids.add(purchase.artwork.artist.id)
+        
+        # Pre-fetch payment accounts for all artists
+        payment_accounts = {}
+        if artist_ids:
+            accounts = PaymentAccount.objects(
+                user__in=list(artist_ids),
+                type="paypal",
+                is_default=True
+            ).only('user', 'account_info')
+            
+            for account in accounts:
+                payment_accounts[str(account.user.id)] = account.account_info
+        
+        # Build result without pagination for now
         result = []
         for purchase in purchases:
             purchase_data = {

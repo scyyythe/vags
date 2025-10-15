@@ -12,15 +12,36 @@ export interface ArtCard {
   art_status: string;
   visibility: string;
   artist_id: string;
+  size?: string;
+  medium?: string;
+  edition?: string;
+  year_created?: string;
+  quantity?: number;
+  average_rating?: number;
+  profile_picture?: string;
+  artist?: string;
 }
 
-const useMySellArtCards = () => {
-  return useQuery<ArtCard[], Error>({
-    queryKey: ["my-sell-art-cards"],
+export interface UseMySellArtCardsOptions {
+  status?: string;
+}
+
+const useMySellArtCards = (options: UseMySellArtCardsOptions = {}) => {
+  const { status } = options;
+
+  return useQuery<ArtCard[]>({
+    queryKey: ["my-sell-art-cards", status],
     queryFn: async () => {
-      const { data } = await apiClient.get("/art/cards/my/");
+      const params = new URLSearchParams();
+      if (status) params.append("status", status);
+
+      const { data } = await apiClient.get(`/art/cards/my/?${params.toString()}`);
       return data;
     },
+    // Cache for 5 minutes
+    staleTime: 5 * 60 * 1000,
+    // Keep data fresh for 10 minutes
+    gcTime: 10 * 60 * 1000,
   });
 };
 

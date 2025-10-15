@@ -13,38 +13,61 @@ class MySoldArtworksView(APIView):
     def get(self, request):
         status_filter = request.query_params.get("status")
 
-       
+        # Optimized query to get user's artwork IDs
         my_artworks = Art.objects(artist=request.user).only("id")
         my_artwork_ids = [art.id for art in my_artworks]
 
-      
-        queryset = PurchasedArtwork.objects(artwork__in=my_artwork_ids)
+        if not my_artwork_ids:
+            return Response([])
+
+        # Build optimized query with proper field selection for MongoDB
+        queryset = PurchasedArtwork.objects(artwork__in=my_artwork_ids).only(
+            'id', 'artwork', 'buyer', 'shipping_address', 'payment_method', 'is_paid',
+            'quantity', 'total_price', 'status', 'created_at', 'updated_at'
+        )
 
         if status_filter:
             queryset = queryset.filter(status=status_filter)
 
-        queryset = queryset.order_by("-created_at")
-
-        result = []
-        for sale in queryset:
-            artwork = sale.artwork
-
-          
-            review = Review.objects(purchase=sale.id).first()
-            review_data = None
-            if review:
-                review_data = {
+        sales = queryset.order_by("-created_at")
+        
+        # Get all purchase IDs for batch review lookup
+        purchase_ids = [str(sale.id) for sale in sales]
+        
+        # Pre-fetch all reviews for these purchases
+        reviews_data = {}
+        if purchase_ids:
+            reviews = Review.objects(purchase__in=purchase_ids).only(
+                'purchase', 'rating', 'comment', 'photos', 'created_at'
+            )
+            for review in reviews:
+                purchase_id = str(review.purchase)
+                if purchase_id not in reviews_data:
+                    reviews_data[purchase_id] = []
+                reviews_data[purchase_id].append({
                     "id": str(review.id),
                     "rating": review.rating,
                     "comment": review.comment,
                     "photos": review.photos,
                     "created_at": review.created_at,
-                    "buyer_id": str(sale.buyer.id),
-                    "buyer_name": f"{sale.buyer.first_name} {sale.buyer.last_name}",
-                }
+                })
+
+        # Build optimized result without pagination
+        result = []
+        for sale in sales:
+            artwork = sale.artwork
+            sale_id = str(sale.id)
+            
+            # Get review data for this sale
+            review_data = reviews_data.get(sale_id)
+            if review_data:
+                # Add buyer info to the first review
+                review_data[0]["buyer_id"] = str(sale.buyer.id)
+                review_data[0]["buyer_name"] = f"{sale.buyer.first_name} {sale.buyer.last_name}"
+                review_data = review_data[0]  # Take the first review
 
             result.append({
-                "id": str(sale.id),
+                "id": sale_id,
                 "artwork_id": str(artwork.id),
                 "artwork_title": artwork.title,
                 "artwork_image": artwork.image_url[0] if artwork.image_url else "",
@@ -59,14 +82,11 @@ class MySoldArtworksView(APIView):
                 "shipping_address": sale.shipping_address.to_mongo(),
                 "created_at": sale.created_at,
                 "updated_at": sale.updated_at,
-
                 "artwork_size": artwork.size or "",
                 "artwork_medium": artwork.medium or "",
                 "artwork_style": artwork.category or "",
                 "artwork_edition": artwork.edition or "",
                 "artwork_year_created": artwork.year_created,
-
-               
                 "review": review_data,
             })
 

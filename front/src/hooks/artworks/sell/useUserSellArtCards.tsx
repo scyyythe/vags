@@ -2,15 +2,31 @@ import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { ArtCard } from "./useMySellArtCards";
 
-const useUserSellArtCards = (userId: string | undefined) => {
-  return useQuery<ArtCard[], Error>({
-    queryKey: ["user-sell-art-cards", userId],
+export interface UseUserSellArtCardsOptions {
+  status?: string;
+}
+
+const useUserSellArtCards = (userId: string | undefined, options: UseUserSellArtCardsOptions = {}) => {
+  const { status } = options;
+
+  return useQuery<ArtCard[]>({
+    queryKey: ["user-sell-art-cards", userId, status],
     queryFn: async () => {
-      if (!userId) return [];
-      const { data } = await apiClient.get(`/art/cards/user/${userId}/`);
+      if (!userId) {
+        return [];
+      }
+
+      const params = new URLSearchParams();
+      if (status) params.append("status", status);
+
+      const { data } = await apiClient.get(`/art/cards/user/${userId}/?${params.toString()}`);
       return data;
     },
     enabled: !!userId,
+    // Cache for 5 minutes
+    staleTime: 5 * 60 * 1000,
+    // Keep data fresh for 10 minutes
+    gcTime: 10 * 60 * 1000,
   });
 };
 

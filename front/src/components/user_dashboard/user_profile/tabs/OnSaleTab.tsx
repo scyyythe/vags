@@ -464,7 +464,9 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
 
   const shouldPassStatusToBackend = !["completed", "reviews", "reviewed"].includes(normalizedTab);
 
-  const { data: soldArtworks } = useMySoldArtworks(shouldPassStatusToBackend ? mappedStatus : undefined);
+  const { data: soldArtworks = [] } = useMySoldArtworks({
+    status: shouldPassStatusToBackend ? mappedStatus : undefined,
+  });
 
   const filteredSoldArtworks = Array.isArray(soldArtworks)
     ? formatSoldArtworks(soldArtworks)
