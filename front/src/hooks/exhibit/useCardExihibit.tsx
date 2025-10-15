@@ -26,5 +26,10 @@ export const useExhibitCards = () => {
     gcTime: 1000 * 60 * 10,
     refetchOnWindowFocus: false,
     retry: 2,
+
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+
+    refetchInterval: false,
   });
 };
