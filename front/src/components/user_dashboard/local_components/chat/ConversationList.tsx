@@ -1,4 +1,4 @@
-import { Pin, VolumeX, CheckCheck, Check, Archive, Trash2, MoreVertical } from "lucide-react";
+import { Pin, VolumeX, CheckCheck, Check, Archive, Trash2, MoreVertical, Circle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { Conversation } from "./types/types";
 
 interface ConversationListProps {
@@ -59,125 +58,160 @@ export const ConversationList = ({
           if (!a.isPinned && b.isPinned) return 1;
           return b.lastMessageTime.getTime() - a.lastMessageTime.getTime();
         })
-        .map((conversation) => (
-          <div
-            key={conversation.id}
-            onClick={() => onSelectConversation(conversation.id)}
-            className={`p-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 relative group ${
-              selectedConversation === conversation.id ? "bg-blue-50" : ""
-            } ${conversation.isMuted ? "opacity-60" : ""}`}
-          >
-            <div className="flex items-start space-x-3">
-              <div className="relative">
-                <Avatar className="h-6 w-6">
-                  <AvatarImage src={conversation.participantAvatar} />
-                  <AvatarFallback className="text-xs">
-                    {conversation.participantName
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
-                {conversation.isOnline && (
-                  <div className="absolute -bottom-0.5 -right-1 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
-                )}
-              </div>
+        .map((conversation) => {
+          const isUnread = conversation.unreadCount > 0;
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-1">
-                    {conversation.isPinned && <Pin size={10} className="text-blue-600" />}
-                    {conversation.isMuted && <VolumeX size={10} className="text-gray-500" />}
-                    <p className="text-xs font-medium text-gray-900 truncate">{conversation.participantName}</p>
-                  </div>
-                  <span className="text-[10px] text-gray-500">{formatTime(conversation.lastMessageTime)}</span>
+          return (
+            <div
+              key={conversation.id}
+              onClick={() => onSelectConversation(conversation.id)}
+              className={`p-3 cursor-pointer border-b border-gray-100 relative group transition-colors
+                ${selectedConversation === conversation.id ? "bg-blue-50" : ""}
+                ${conversation.isMuted ? "opacity-60" : ""}
+                ${isUnread ? "bg-gray-100" : "hover:bg-gray-50"}`}
+            >
+              <div className="flex items-start space-x-3">
+                <div className="relative">
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage src={conversation.participantAvatar} />
+                    <AvatarFallback className="text-xs">
+                      {conversation.participantName
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </AvatarFallback>
+                  </Avatar>
+                  {conversation.isOnline && (
+                    <div className="absolute -bottom-0.5 -right-1 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
+                  )}
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-1">
-                    <p className="text-[10px] text-gray-600 truncate pr-2">{conversation.lastMessage}</p>
-                  </div>
-                </div>
-              </div>
 
-              {/* MENU ICON - appears on hover */}
-              <div
-                className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="p-1 bg-gray-200 rounded-full shadow-sm" onClick={(e) => e.stopPropagation()}>
-                      <MoreVertical className="w-4 h-4 text-black " />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-32 text-[10px]">
-                    <DropdownMenuItem
-                      className="text-[10px]"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onMarkAsRead(conversation.id);
-                      }}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-1">
+                      {conversation.isPinned && <Pin size={10} className="text-blue-600" />}
+                      {conversation.isMuted && <VolumeX size={10} className="text-gray-500" />}
+                      <p
+                        className={`text-xs truncate ${
+                          isUnread ? "font-bold text-gray-900" : "font-medium text-gray-900"
+                        }`}
+                      >
+                        {conversation.participantName}
+                      </p>
+                    </div>
+                    <span
+                      className={`text-[10px] ${
+                        isUnread ? "text-blue-500 font-semibold" : "text-gray-500"
+                      }`}
                     >
-                      <CheckCheck className="mr-2 h-3 w-3" />
-                      Mark as Read
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-[10px]"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onMarkAsUnread(conversation.id);
-                      }}
+                      {formatTime(conversation.lastMessageTime)}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <p
+                      className={`text-[10px] truncate pr-2 ${
+                        isUnread ? "font-semibold text-gray-800" : "text-gray-600"
+                      }`}
                     >
-                      <Check className="mr-2 h-3 w-3" />
-                      Mark as Unread
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-[10px]"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onTogglePin(conversation.id);
-                      }}
-                    >
-                      <Pin className="mr-2 h-3 w-3" />
-                      {conversation.isPinned ? "Unpin" : "Pin"}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-[10px]"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onToggleMute(conversation.id);
-                      }}
-                    >
-                      <VolumeX className="mr-2 h-3 w-3" />
-                      {conversation.isMuted ? "Unmute" : "Mute"}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-[10px]"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onToggleArchive(conversation.id);
-                      }}
-                    >
-                      <Archive className="mr-2 h-3 w-3" />
-                      {conversation.isArchived ? "Unarchive" : "Archive"}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDeleteConversation(conversation.id);
-                      }}
-                      className="text-red-600 text-[10px] hover:none"
-                    >
-                      <Trash2 className="mr-2 h-3 w-3" />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      {conversation.lastMessage}
+                    </p>
+
+                    {/* Unread indicator (dot + count) */}
+                    {isUnread && (
+                      <div className="flex items-center gap-1">
+                        <Circle size={6} className="text-blue-500 fill-blue-500" />
+                        <span className="text-[9px] text-blue-500 font-semibold">
+                          {conversation.unreadCount}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* MENU ICON */}
+                <div
+                  className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className="p-1 bg-gray-200 rounded-full shadow-sm"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MoreVertical className="w-4 h-4 text-black" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-32">
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onMarkAsRead(conversation.id);
+                        }}
+                        className="text-[10px]"
+                      >
+                        <CheckCheck className="mr-2 h-3 w-3" />
+                        Mark as Read
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onMarkAsUnread(conversation.id);
+                        }}
+                        className="text-[10px]"
+                      >
+                        <Check className="mr-2 h-3 w-3" />
+                        Mark as Unread
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onTogglePin(conversation.id);
+                        }}
+                        className="text-[10px]"
+                      >
+                        <Pin className="mr-2 h-3 w-3" />
+                        {conversation.isPinned ? "Unpin" : "Pin"}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggleMute(conversation.id);
+                        }}
+                        className="text-[10px]"
+                      >
+                        <VolumeX className="mr-2 h-3 w-3" />
+                        {conversation.isMuted ? "Unmute" : "Mute"}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggleArchive(conversation.id);
+                        }}
+                        className="text-[10px]"
+                      >
+                        <Archive className="mr-2 h-3 w-3" />
+                        {conversation.isArchived ? "Unarchive" : "Archive"}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeleteConversation(conversation.id);
+                        }}
+                        className="text-red-600 text-[10px]"
+                      >
+                        <Trash2 className="mr-2 h-3 w-3" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
     </>
   );
 };
