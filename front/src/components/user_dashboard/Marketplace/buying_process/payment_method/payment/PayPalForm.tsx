@@ -1,18 +1,105 @@
-import type React from "react"
-import { Plus } from "lucide-react" 
-import { useNavigate } from "react-router-dom"
-import SecurityNote from "./SecurityNote"
+import type React from "react";
+import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import SecurityNote from "./SecurityNote";
 
-interface PayPalFormProps {
-  email?: string
-  connectedDate?: string
+interface PaymentAccount {
+  id: string;
+  type: "paypal" | "stripe" | "bank" | "gcash" | "payoneer" | "card";
+  name: string;
+  accountInfo: string;
+  qrCodeUrl?: string;
+  maskedInfo: string;
+  isDefault: boolean;
+  status: "verified" | "pending" | "not_verified";
+  dateAdded: string;
+  stripeAccountId?: string;
 }
 
-const PayPalForm: React.FC<PayPalFormProps> = ({ email, connectedDate = "January 15, 2025" }) => {
-  const navigate = useNavigate()
+interface PayPalFormProps {
+  email?: string;
+  connectedDate?: string;
+  accounts?: PaymentAccount[];
+  onEditAccount?: (account: PaymentAccount) => void;
+}
 
-  // Empty state when no account is connected
-  if (!email) {
+const PayPalForm: React.FC<PayPalFormProps> = ({
+  email,
+  connectedDate = "January 15, 2025",
+  accounts = [],
+  onEditAccount,
+}) => {
+  const navigate = useNavigate();
+
+  // Show saved PayPal accounts using existing design or empty state
+  if (accounts.length > 0) {
+    return (
+      <div className="space-y-4">
+        {accounts.map((account) => (
+          <div key={account.id} className="bg-card border border-border rounded-lg px-10 py-8 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-border">
+              <h3 className="text-sm font-semibold text-blue-700">PayPal Account</h3>
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-[10px] font-medium">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Connected
+                </span>
+                {account.isDefault && (
+                  <span className="inline-flex items-center px-2.5 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-medium">
+                    Default
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                  Email Address
+                </label>
+                <p className="text-xs text-foreground font-medium mt-1">{account.accountInfo}</p>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                  Connected Since
+                </label>
+                <p className="text-xs text-foreground font-medium mt-1">
+                  {new Date(account.dateAdded).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-border text-end">
+                <button
+                  type="button"
+                  onClick={() => onEditAccount?.(account)}
+                  className="inline-flex items-center gap-2 px-4 py-1.5 text-blue-700 rounded-full text-[11px] font-medium 
+                          active:scale-[0.98] transition-all duration-200 ease-in-out"
+                >
+                  <i className="bx bx-edit text-[13px]"></i>
+                  <p className="hover:underline">Update Account</p>
+                </button>
+              </div>
+            </div>
+            <SecurityNote type="paypal" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Empty state when no account is connected and no email is provided
+  if (accounts.length === 0 && !email) {
     return (
       <div className="space-y-4">
         <div className="bg-card border border-border rounded-lg p-8 text-center space-y-4">
@@ -37,59 +124,8 @@ const PayPalForm: React.FC<PayPalFormProps> = ({ email, connectedDate = "January
           </button>
         </div>
       </div>
-    )
+    );
   }
+};
 
-  return (
-    <div className="space-y-4">
-      <div className="bg-card border border-border rounded-lg px-10 py-8 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-border">
-          <h3 className="text-sm font-semibold text-blue-700">PayPal Account</h3>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-[10px] font-medium">
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Connected
-            </span>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <div>
-            <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-              Email Address
-            </label>
-            <p className="text-xs text-foreground font-medium mt-1">sample@gmail.com</p>
-          </div>
-
-          <div>
-            <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-              Connected Since
-            </label>
-            <p className="text-xs text-foreground font-medium mt-1">{connectedDate}</p>
-          </div>
-
-          <div className="pt-4 border-t border-border text-end">
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 px-4 py-1.5  text-blue-700 rounded-full text-[11px] font-medium 
-                      active:scale-[0.98] transition-all duration-200 ease-in-out"
-            >
-              <i className="bx bx-edit text-[13px]"></i>
-              <p className=" hover:underline">Update Account</p>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <SecurityNote type="paypal" />
-    </div>
-  )
-}
-
-export default PayPalForm
+export default PayPalForm;

@@ -41,12 +41,13 @@ export const usePaymentAccounts = () => {
           maskedInfo: maskAccountInfo(acc.account_info, acc.type),
           isDefault: acc.is_default,
           status: "pending",
-          qrImageUrl: acc.qr_image_url || null,
+          qrCodeUrl: acc.qr_image_url || null,
           dateAdded,
           details: acc.details || {},
         } as PaymentAccount;
       });
 
+      console.log("Transformed accounts:", transformed);
       setAccounts(transformed);
     } catch (err) {
       console.error("Failed to fetch accounts:", err);
