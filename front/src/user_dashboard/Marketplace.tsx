@@ -85,9 +85,11 @@ const Marketplace = () => {
         })
       : safeArtCards
           .filter((artwork) => {
-            const isSold = artwork.art_status === "Sold";
+            const status = (artwork.art_status || "").toLowerCase();
+            const isSold = status === "sold";
+            const isOnSale = status === "onsale";
             const isOpenEdition = artwork.edition === "Open Edition";
-            const shouldInclude = !isSold || isOpenEdition;
+            const shouldInclude = isOnSale || !isSold || isOpenEdition;
 
             if (!shouldInclude) return false;
             if (
