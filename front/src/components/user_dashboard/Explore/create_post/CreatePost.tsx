@@ -163,15 +163,56 @@ const CreatePost = () => {
         const errors = error.response?.data;
         console.error("Upload error:", errors);
 
+        let errorMessage = "Upload failed";
+
         if (Array.isArray(errors) && errors.length > 0) {
-          toast.error(errors[0], { id: "upload", closeButton: true });
+          const firstError = errors[0];
+          console.log("First error:", firstError, "Type:", typeof firstError);
+
+          // Handle Cloudinary error format
+          if (typeof firstError === "string" && firstError.includes("cloudinary")) {
+            try {
+              // Parse the nested error structure - handle double-encoded strings
+              let parsedError = firstError;
+
+              // Try to parse if it's a string representation of a dict
+              if (firstError.startsWith("{'") && firstError.endsWith("'}")) {
+                // Extract the inner error message
+                const innerMatch = firstError.match(/ErrorDetail\(string="([^"]+)"/);
+                if (innerMatch) {
+                  parsedError = innerMatch[1];
+                }
+              }
+
+              // Look for "Inappropriate image content" or similar messages
+              if (parsedError.includes("Inappropriate image content")) {
+                errorMessage = "Image content was rejected. Please upload a different image.";
+              } else if (parsedError.includes("Upload failed")) {
+                errorMessage = "Image upload failed. Please try again with a different image.";
+              } else {
+                errorMessage = "Image content was rejected. Please upload a different image.";
+              }
+            } catch (parseError) {
+              errorMessage = "Image content was rejected. Please upload a different image.";
+            }
+          } else {
+            errorMessage = firstError;
+          }
         } else if (errors?.detail) {
-          toast.error(errors.detail, { id: "upload", closeButton: true });
+          errorMessage = errors.detail;
         } else if (errors?.images?.length) {
-          toast.error(errors.images[0], { id: "upload", closeButton: true });
-        } else {
-          toast.error("Upload failed", { id: "upload", closeButton: true });
+          errorMessage = errors.images[0];
+        } else if (errors?.error) {
+          // Handle error object format
+          if (Array.isArray(errors.error)) {
+            errorMessage = errors.error[0];
+          } else if (typeof errors.error === "string") {
+            errorMessage = errors.error;
+          }
         }
+
+        console.log("Final error message:", errorMessage);
+        toast.error(errorMessage, { id: "upload", closeButton: true });
       } else {
         toast.error("Unexpected error occurred", { id: "upload", closeButton: true });
       }

@@ -98,9 +98,43 @@ const useSellArtwork = () => {
       toast.success("Artwork listed successfully!", { id: "upload", closeButton: true });
 
       navigate("/marketplace");
-    } catch (err) {
-      toast.error("Failed to list artwork", { id: "upload", closeButton: true });
+    } catch (err: any) {
       console.error("Submit error:", err.response?.data || err.message);
+
+      let errorMessage = "Failed to list artwork";
+      const errors = err.response?.data;
+
+      if (errors) {
+        if (Array.isArray(errors) && errors.length > 0) {
+          const firstError = errors[0];
+
+          // Handle Cloudinary error format
+          if (typeof firstError === "string" && firstError.includes("cloudinary")) {
+            try {
+              const cloudinaryMatch = firstError.match(/ErrorDetail\(string="([^"]+)"/);
+              if (cloudinaryMatch) {
+                errorMessage = cloudinaryMatch[1];
+              } else {
+                errorMessage = "Image content was rejected. Please upload a different image.";
+              }
+            } catch (parseError) {
+              errorMessage = "Image content was rejected. Please upload a different image.";
+            }
+          } else {
+            errorMessage = firstError;
+          }
+        } else if (errors?.detail) {
+          errorMessage = errors.detail;
+        } else if (errors?.error) {
+          if (Array.isArray(errors.error)) {
+            errorMessage = errors.error[0];
+          } else if (typeof errors.error === "string") {
+            errorMessage = errors.error;
+          }
+        }
+      }
+
+      toast.error(errorMessage, { id: "upload", closeButton: true });
     } finally {
       setIsUploading(false);
     }
