@@ -34,11 +34,6 @@ export const useChatMessages = () => {
             deletedAt: updatedDeletedAt,
           });
         }
-
-        // If the current user (sender) had deleted this conversation, keep it deleted for them
-        // This means the conversation won't appear in their chat list
-        // The conversation will remain deleted for the sender, so they won't see it in their chat list
-        // Only the receiver will see the conversation if they didn't delete it
       }
     }
 

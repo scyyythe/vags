@@ -32,7 +32,6 @@ export const useUserConversations = (userId: string) => {
         // If user deleted the conversation, NEVER show it in their chat list
         // Even if the other person sends new messages, the conversation stays hidden
         if (isDeletedByUser) {
-          console.log("Skipping conversation - user deleted it, keeping it hidden permanently");
           continue; // Always skip conversations deleted by the current user
         }
 
