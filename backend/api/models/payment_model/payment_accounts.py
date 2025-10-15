@@ -12,3 +12,7 @@ class PaymentAccount(Document):
     qr_image_url = StringField() 
     created_at = DateTimeField(default=datetime.utcnow)
     updated_at = DateTimeField(default=datetime.utcnow)
+    
+    meta = {
+        'collection': 'payment_account'
+    }
