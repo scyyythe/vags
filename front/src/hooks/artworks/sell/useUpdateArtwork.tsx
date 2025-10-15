@@ -69,11 +69,45 @@ const useUpdateArtwork = () => {
 
       navigate("/marketplace");
     } catch (err: any) {
-      toast.error(err.response?.data?.error || "Failed to update artwork", {
+      console.error("Update error:", err.response?.data || err.message);
+
+      let errorMessage = "Failed to update artwork";
+      const errors = err.response?.data;
+
+      if (errors) {
+        if (Array.isArray(errors) && errors.length > 0) {
+          const firstError = errors[0];
+
+          // Handle Cloudinary error format
+          if (typeof firstError === "string" && firstError.includes("cloudinary")) {
+            try {
+              const cloudinaryMatch = firstError.match(/ErrorDetail\(string="([^"]+)"/);
+              if (cloudinaryMatch) {
+                errorMessage = cloudinaryMatch[1];
+              } else {
+                errorMessage = "Image content was rejected. Please upload a different image.";
+              }
+            } catch (parseError) {
+              errorMessage = "Image content was rejected. Please upload a different image.";
+            }
+          } else {
+            errorMessage = firstError;
+          }
+        } else if (errors?.detail) {
+          errorMessage = errors.detail;
+        } else if (errors?.error) {
+          if (Array.isArray(errors.error)) {
+            errorMessage = errors.error[0];
+          } else if (typeof errors.error === "string") {
+            errorMessage = errors.error;
+          }
+        }
+      }
+
+      toast.error(errorMessage, {
         id: "update",
         closeButton: true,
       });
-      console.error(err);
     } finally {
       setIsUpdating(false);
     }
