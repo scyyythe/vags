@@ -20,13 +20,19 @@ interface PayPalFormProps {
   email?: string;
   connectedDate?: string;
   accounts?: PaymentAccount[];
+  onEditAccount?: (account: PaymentAccount) => void;
 }
 
-const PayPalForm: React.FC<PayPalFormProps> = ({ email, connectedDate = "January 15, 2025", accounts = [] }) => {
+const PayPalForm: React.FC<PayPalFormProps> = ({
+  email,
+  connectedDate = "January 15, 2025",
+  accounts = [],
+  onEditAccount,
+}) => {
   const navigate = useNavigate();
 
   // Show saved PayPal accounts using existing design or empty state
-  if (!email && accounts.length > 0) {
+  if (accounts.length > 0) {
     return (
       <div className="space-y-4">
         {accounts.map((account) => (
@@ -64,12 +70,19 @@ const PayPalForm: React.FC<PayPalFormProps> = ({ email, connectedDate = "January
                 <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
                   Connected Since
                 </label>
-                <p className="text-xs text-foreground font-medium mt-1">{account.dateAdded}</p>
+                <p className="text-xs text-foreground font-medium mt-1">
+                  {new Date(account.dateAdded).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
               </div>
 
               <div className="pt-4 border-t border-border text-end">
                 <button
                   type="button"
+                  onClick={() => onEditAccount?.(account)}
                   className="inline-flex items-center gap-2 px-4 py-1.5 text-blue-700 rounded-full text-[11px] font-medium 
                           active:scale-[0.98] transition-all duration-200 ease-in-out"
                 >
@@ -85,8 +98,8 @@ const PayPalForm: React.FC<PayPalFormProps> = ({ email, connectedDate = "January
     );
   }
 
-  // Empty state when no account is connected
-  if (!email) {
+  // Empty state when no account is connected and no email is provided
+  if (accounts.length === 0 && !email) {
     return (
       <div className="space-y-4">
         <div className="bg-card border border-border rounded-lg p-8 text-center space-y-4">

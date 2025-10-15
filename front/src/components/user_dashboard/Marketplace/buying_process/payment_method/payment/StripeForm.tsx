@@ -21,13 +21,15 @@ interface StripeFormProps {
   accountId?: string;
   connectedDate?: string;
   accounts?: PaymentAccount[];
+  onEditAccount?: (account: PaymentAccount) => void;
 }
 
 const StripeForm: React.FC<StripeFormProps> = ({
-  email,
+  email = "sample@gmail.com",
   accountId = "acct_1234567890",
   connectedDate = "January 20, 2025",
   accounts = [],
+  onEditAccount,
 }) => {
   const navigate = useNavigate();
 
@@ -63,7 +65,7 @@ const StripeForm: React.FC<StripeFormProps> = ({
                 <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
                   Email Address
                 </label>
-                <p className="text-xs text-foreground font-medium mt-1">{account.accountInfo}</p>
+                <p className="text-xs text-foreground font-medium mt-1">{account.name}</p>
               </div>
 
               <div>
@@ -77,12 +79,19 @@ const StripeForm: React.FC<StripeFormProps> = ({
                 <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
                   Connected Since
                 </label>
-                <p className="text-xs text-foreground font-medium mt-1">{account.dateAdded}</p>
+                <p className="text-xs text-foreground font-medium mt-1">
+                  {new Date(account.dateAdded).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
               </div>
 
               <div className="pt-4 border-t border-border text-end">
                 <button
                   type="button"
+                  onClick={() => onEditAccount?.(account)}
                   className="inline-flex items-center gap-2 px-4 py-1.5  text-violet-800 rounded-full text-[11px] font-medium 
                       active:scale-[0.98] transition-all duration-200 ease-in-out"
                 >

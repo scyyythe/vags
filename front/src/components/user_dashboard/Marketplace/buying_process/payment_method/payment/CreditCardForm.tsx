@@ -28,6 +28,7 @@ interface CreditCardFormProps {
   cardType?: "visa" | "mastercard" | "amex" | "discover";
   isDefault?: boolean;
   accounts?: PaymentAccount[];
+  onEditAccount?: (account: PaymentAccount) => void;
 }
 
 const CreditCardForm: React.FC<CreditCardFormProps> = ({
@@ -42,6 +43,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
   cardType = "visa",
   isDefault = true,
   accounts = [],
+  onEditAccount,
 }) => {
   const navigate = useNavigate();
 
@@ -130,6 +132,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
                 <div className="pt-4 border-t border-border text-end">
                   <button
                     type="button"
+                    onClick={() => onEditAccount?.(account)}
                     className="inline-flex items-center gap-2 px-4 py-1.5  text-black rounded-full text-[11px] font-medium 
                             active:scale-[0.98] transition-all duration-200 ease-in-out"
                   >
@@ -143,7 +146,6 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
             <SecurityNote type="credit-card" />
           </div>
         ))}
-    
       </div>
     );
   }

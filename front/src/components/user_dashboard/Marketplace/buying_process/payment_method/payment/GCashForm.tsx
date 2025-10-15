@@ -21,9 +21,16 @@ interface GCashFormProps {
   qrCodeUrl?: string;
   onNumberChange?: (value: string) => void;
   accounts?: PaymentAccount[];
+  onEditAccount?: (account: PaymentAccount) => void;
 }
 
-const GCashForm: React.FC<GCashFormProps> = ({ number, qrCodeUrl = "/pics/qr.jpg", onNumberChange, accounts = [] }) => {
+const GCashForm: React.FC<GCashFormProps> = ({
+  number,
+  qrCodeUrl = "/pics/qr.jpg",
+  onNumberChange,
+  accounts = [],
+  onEditAccount,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
 
@@ -87,6 +94,19 @@ const GCashForm: React.FC<GCashFormProps> = ({ number, qrCodeUrl = "/pics/qr.jpg
                     Default
                   </span>
                 )}
+              </div>
+
+              {/* Update Account Button */}
+              <div className="pt-4 border-t border-border text-center">
+                <button
+                  type="button"
+                  onClick={() => onEditAccount?.(account)}
+                  className="inline-flex items-center gap-2 px-4 py-1.5 text-green-700 rounded-full text-[11px] font-medium 
+                          active:scale-[0.98] transition-all duration-200 ease-in-out"
+                >
+                  <i className="bx bx-edit text-[13px]"></i>
+                  <p className="hover:underline">Update Account</p>
+                </button>
               </div>
             </div>
           ))}
