@@ -207,6 +207,7 @@ const Bell = ({ className }: { className?: string }) => (
 const NotificationItem = ({ n, selectedLanguage, navigate }: any) => {
   const translatedAction = useAutoTranslation(n.action || "", selectedLanguage);
   const translatedTarget = useAutoTranslation(n.target || "", selectedLanguage);
+  const translatedName = useAutoTranslation(n.name || "", selectedLanguage);
   const translatedDonation = useAutoTranslation(n.donation || "", selectedLanguage);
   const translatedForAmount = useAutoTranslation(n.forAmount || "", selectedLanguage);
   const viewOnExplorerText = useAutoTranslation("View on explorer ↗", selectedLanguage);
@@ -311,7 +312,7 @@ const NotificationItem = ({ n, selectedLanguage, navigate }: any) => {
       </div>
 
       <div className="flex-1 min-w-0">
-        {n.name && <p className="font-medium text-gray-900 text-[11px]">{n.name}</p>}
+        {n.name && <p className="font-medium text-gray-900 text-[11px]">{translatedName}</p>}
 
         <p className="text-gray-600 text-[10px] mt-1">
           {translatedAction}
