@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import apiClient from "@/utils/apiClient";
 
-interface PaymentAccount {
+export interface PaymentAccount {
   type: "gcash" | "paypal" | "stripe" | "creditCard";
+  accountName?: string;
+  accountNumber?: string;
+  email?: string;
   account_info?: {
     accountName?: string;
     accountNumber?: string;

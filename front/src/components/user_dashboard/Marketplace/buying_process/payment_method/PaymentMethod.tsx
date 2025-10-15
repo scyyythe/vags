@@ -96,6 +96,28 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
 
   // Determine if an account is set up (used for enabling/disabling the button)
   const hasAccountSetup = () => {
+    // Check if there are existing accounts for the selected payment method
+    const existingAccounts = accounts.filter((acc) => {
+      switch (formData.paymentMethod) {
+        case "paypal":
+          return acc.type === "paypal";
+        case "gcash":
+          return acc.type === "gcash";
+        case "stripe":
+          return acc.type === "stripe";
+        case "credit-card":
+          return acc.type === "card";
+        default:
+          return false;
+      }
+    });
+
+    // If there are existing accounts, allow continue
+    if (existingAccounts.length > 0) {
+      return true;
+    }
+
+    // Otherwise, check if form fields are filled (for new accounts)
     switch (formData.paymentMethod) {
       case "paypal":
         return !!formData.paypalEmail;
