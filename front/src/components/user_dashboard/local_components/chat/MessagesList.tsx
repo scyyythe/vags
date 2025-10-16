@@ -29,6 +29,7 @@ interface MessagesListProps {
   onDeleteMessage: (messageId: string) => void;
   onSetReactionPicker: (messageId: string | null) => void;
   onAddReaction: (messageId: string, emoji: string) => void;
+  onRemoveReaction: (messageId: string) => void;
 }
 
 export const MessagesList = ({
@@ -42,6 +43,7 @@ export const MessagesList = ({
   onDeleteMessage,
   onSetReactionPicker,
   onAddReaction,
+  onRemoveReaction,
 }: MessagesListProps) => {
   const { language } = useLanguage();
 
@@ -255,30 +257,26 @@ export const MessagesList = ({
                         </div>
 
                         {/* REACTIONS OUTSIDE THE BUBBLE */}
-                        {message.reactions && message.reactions.length > 0 && (
-                          <div
-                            className={`absolute flex space-x-1 mt-1 ${
-                              message.senderId === currentUserId
-                                ? "left-2 -bottom-4 justify-end"
-                                : "right-2 -bottom-4 justify-start"
-                            }`}
-                          >
-                            {message.reactions.map((reaction, idx) => {
-                              const hasUserReacted = reaction.users.includes(currentUserId);
-                              return (
-                                <div
-                                  key={idx}
-                                  onClick={() => onAddReaction(message.id, reaction.emoji)}
-                                  className={`text-[12px] cursor-pointer px-2 py-[1px] rounded-full shadow-sm border ${
-                                    hasUserReacted ? "bg-gray-100 border-gray-300" : "bg-white border-gray-300"
-                                  }`}
-                                >
-                                  {reaction.emoji}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
+                        {(() => {
+                          if (!Array.isArray(message.reactions)) return null;
+                          const userReaction = message.reactions.find(r => r.users.includes(currentUserId));
+                          return userReaction ? (
+                            <div
+                              className={`absolute mt-1 ${
+                                message.senderId === currentUserId
+                                  ? "left-2 -bottom-4 justify-end"
+                                  : "right-2 -bottom-4 justify-start"
+                              }`}
+                            >
+                              <div
+                                onClick={() => onRemoveReaction(message.id)} // Remove reaction on click
+                                className="text-[12px] cursor-pointer px-2 py-[1px] rounded-full shadow-sm border bg-gray-100 border-gray-300"
+                              >
+                                {userReaction.emoji}
+                              </div>
+                            </div>
+                          ) : null;
+                        })()}
                       </div>
                     )}
 
