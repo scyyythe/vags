@@ -1,31 +1,27 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  LogOut,
-  Settings,
-  User,
-  Plus,
-  Headphones,
-} from "lucide-react";
+import { LogOut, Settings, User, Plus, Headphones } from "lucide-react";
 import { useModal } from "@/context/ModalContext";
 import useUserDetails from "@/hooks/users/useUserDetails";
 import { getLoggedInUserId } from "@/auth/decode";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLogout } from "@/hooks/auth/useLogout";
 
 export interface ProfileDropdownProps {
   isOpen: boolean;
   onClose: () => void;
+  onLogout?: () => void;
 }
 
-const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
+const ProfileDropdown = ({ isOpen, onClose, onLogout }: ProfileDropdownProps) => {
   const navigate = useNavigate();
   const userId = getLoggedInUserId();
   const { firstName, lastName, profilePicture, email } = useUserDetails(userId);
-  const { setShowLoginModal } = useModal();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { language: selectedLanguage } = useLanguage();
+  const { logout } = useLogout();
 
   const fullName = `${firstName || "Unknown"} ${lastName || ""}`.trim();
 
@@ -57,9 +53,11 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
-    navigate("/");
-    setShowLoginModal(true);
+    if (onLogout) {
+      onLogout();
+    } else {
+      logout();
+    }
     onClose();
   };
 
@@ -87,9 +85,7 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
               <AvatarFallback>{fullName?.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="leading-[14px]">
-              <div className="font-semibold text-black text-[11px] whitespace-nowrap">
-                {translatedFullName}
-              </div>
+              <div className="font-semibold text-black text-[11px] whitespace-nowrap">{translatedFullName}</div>
               <div className="text-[9px] text-gray-400">{translatedEmail}</div>
             </div>
           </div>
@@ -140,9 +136,11 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
               </button>
               <button
                 onClick={() => {
-                  localStorage.clear();
-                  navigate("/");
-                  setShowLoginModal(true);
+                  if (onLogout) {
+                    onLogout();
+                  } else {
+                    logout();
+                  }
                   onClose();
                   setShowLogoutConfirm(false);
                 }}

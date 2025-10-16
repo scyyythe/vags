@@ -597,10 +597,10 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   // Thank you message functionality with user data
   const { handleThankYouWithAutoMessage, isSending: isThankYouSending } = useThankYouMessage(currentUserData);
 
-  // Fetch transaction data for the selected artwork
+  // Fetch transaction data for the selected artwork (pre-fetch when artwork is selected)
   const { data: artworkTransactionData, isLoading: isTransactionLoading } = useTransactionByArtwork({
     artworkId: selectedArtworkForPayment?.artworkId,
-    enabled: !!selectedArtworkForPayment?.artworkId && showPaymentDetailsModal,
+    enabled: !!selectedArtworkForPayment?.artworkId, // Remove showPaymentDetailsModal dependency
   });
 
   const filteredSoldArtworksForListings =
@@ -740,6 +740,19 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
     setSelectedArtworkForPayment(artworkData);
     setSelectedPayment(mockPaymentDetails);
     setShowPaymentDetailsModal(true);
+  };
+
+  // Pre-fetch transaction data on hover for better UX
+  const handlePaymentHover = (artwork) => {
+    const artworkData = {
+      artworkId: artwork.artwork_id || artwork.id,
+      title: artwork.title,
+      artworkImage: artwork.artworkImage,
+      buyer: artwork.buyer,
+    };
+
+    // Pre-fetch by setting the artwork data (this will trigger the hook)
+    setSelectedArtworkForPayment(artworkData);
   };
 
   const handleProcessRefund = (artwork) => {
@@ -1012,6 +1025,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                   onThankBuyer={(artwork) => handleThankBuyer(artwork)}
                   onMarkAsShipped={(artwork) => handleMarkAsShipped(artwork)}
                   onViewPayment={(artwork) => handleViewPayment(artwork)}
+                  onPaymentHover={(artwork) => handlePaymentHover(artwork)}
                   onProcessRefund={(artwork) => handleProcessRefund(artwork)}
                   onTrackProgress={(artwork) => handleTrackProgress(artwork)}
                   onViewSummary={(artwork) => handleViewSummary(artwork)}
@@ -1040,6 +1054,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                   onThankBuyer={(art) => handleThankBuyer(art)}
                   onMarkAsShipped={(art) => handleMarkAsShipped(art)}
                   onViewPayment={(art) => handleViewPayment(art)}
+                  onPaymentHover={(art) => handlePaymentHover(art)}
                   onProcessRefund={(art) => handleProcessRefund(art)}
                   onViewReview={(art) => handleViewSellerReview(art)}
                   onTrackProgress={(art) => handleTrackProgress(art)}
@@ -1270,6 +1285,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
           }}
           payment={artworkTransactionData || selectedPayment} // Use real transaction data if available, fallback to mock
           artworkData={selectedArtworkForPayment}
+          isLoading={isTransactionLoading}
         />
       )}
 
