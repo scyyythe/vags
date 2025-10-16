@@ -82,8 +82,8 @@ const Marketplace = () => {
           // Explicitly exclude sold artworks
           if (status === "sold") return false;
 
-          // Only include onSale artworks
-          if (status !== "onsale") return false;
+          // Only include onSale artworks (handle both "onSale" and "onsale" cases)
+          if (status !== "onsale" && status !== "active") return false;
 
           // Only include Public artworks
           if (visibility !== "public") return false;
@@ -106,8 +106,8 @@ const Marketplace = () => {
           // Explicitly exclude sold artworks
           if (status === "sold") return false;
 
-          // Only include onSale artworks
-          if (status !== "onsale") return false;
+          // Only include onSale artworks (handle both "onSale" and "onsale" cases)
+          if (status !== "onsale" && status !== "active") return false;
 
           // Only include Public artworks
           if (visibility !== "public") return false;
@@ -130,7 +130,7 @@ const Marketplace = () => {
             // Explicitly exclude sold artworks
             if (status === "sold") return false;
 
-            // Only include onSale artworks
+            // Only include onSale artworks (handle both "onSale" and "onsale" cases)
             if (status !== "onsale") return false;
 
             // Only include Public artworks
@@ -143,6 +143,7 @@ const Marketplace = () => {
             )
               return false;
             if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
+
             return true;
           })
           .sort((a, b) => {
@@ -183,16 +184,6 @@ const Marketplace = () => {
       refetchFollowed();
     }
   }, [selectedCategoryFilter, refetchFollowed]);
-
-  // Debug logging
-  useEffect(() => {
-    if (selectedCategoryFilter === "Following") {
-      console.log("Following tab selected");
-      console.log("followedArtworksData:", followedArtworksData);
-      console.log("isFollowedLoading:", isFollowedLoading);
-      console.log("followedError:", followedError);
-    }
-  }, [selectedCategoryFilter, followedArtworksData, isFollowedLoading, followedError]);
 
   return (
     <div className="flex flex-col min-h-screen">

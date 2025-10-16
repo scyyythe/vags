@@ -22,6 +22,21 @@ const useRestoreArtwork = () => {
       });
 
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
+
+      // Invalidate marketplace queries to ensure restored artwork appears in marketplace
+      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["popular-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] });
+      queryClient.invalidateQueries({ queryKey: ["top-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["top-sellers"] });
+      queryClient.invalidateQueries({ queryKey: ["explore"] });
+      queryClient.invalidateQueries({ queryKey: ["feed"] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["user-artworks"] });
     },
     onError: () => {
       toast.error("Failed to restore artwork.");
