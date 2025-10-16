@@ -42,6 +42,7 @@ import useMarkAsShipped from "@/hooks/purchase/useMarkAsShipped";
 import { useRelistArtwork } from "@/hooks/artworks/relist/useRelistArtwork";
 import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
+import { useTransactionByArtwork } from "@/hooks/transaction/useTransactionByArtwork";
 type SellTabProps = {
   selectedPriceRange?: string;
   selectedStatus?: string;
@@ -143,6 +144,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const [reviewingArtwork, setReviewingArtwork] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [selectedRefund, setSelectedRefund] = useState(null);
+  const [selectedArtworkForPayment, setSelectedArtworkForPayment] = useState<any>(null);
 
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [reviewOrder, setReviewOrder] = useState<any | null>(null);
@@ -595,6 +597,12 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   // Thank you message functionality with user data
   const { handleThankYouWithAutoMessage, isSending: isThankYouSending } = useThankYouMessage(currentUserData);
 
+  // Fetch transaction data for the selected artwork
+  const { data: artworkTransactionData, isLoading: isTransactionLoading } = useTransactionByArtwork({
+    artworkId: selectedArtworkForPayment?.artworkId,
+    enabled: !!selectedArtworkForPayment?.artworkId && showPaymentDetailsModal,
+  });
+
   const filteredSoldArtworksForListings =
     isOwnProfile && subTab === "sold"
       ? Array.isArray(soldArtworks)
@@ -722,6 +730,14 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   };
 
   const handleViewPayment = (artwork) => {
+    const artworkData = {
+      artworkId: artwork.artwork_id || artwork.id,
+      title: artwork.title,
+      artworkImage: artwork.artworkImage,
+      buyer: artwork.buyer,
+    };
+
+    setSelectedArtworkForPayment(artworkData);
     setSelectedPayment(mockPaymentDetails);
     setShowPaymentDetailsModal(true);
   };
@@ -972,7 +988,6 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
               <p className="text-muted-foreground">No sold artworks found for this status.</p>
             </div>
           ) : isOwnProfile ? (
-            // Owner: Show detailed SoldArtworkCard with management options
             subTab === "reviews" ? (
               filteredSoldArtworks.map((artwork) => (
                 <SoldArtworkCard
@@ -1248,8 +1263,13 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
       {selectedPayment && (
         <PaymentDetailsModal
           isOpen={showPaymentDetailsModal}
-          onClose={() => setShowPaymentDetailsModal(false)}
-          payment={selectedPayment}
+          onClose={() => {
+            setShowPaymentDetailsModal(false);
+            setSelectedArtworkForPayment(null);
+            setSelectedPayment(null);
+          }}
+          payment={artworkTransactionData || selectedPayment} // Use real transaction data if available, fallback to mock
+          artworkData={selectedArtworkForPayment}
         />
       )}
 
