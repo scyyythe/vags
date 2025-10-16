@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import ArtGrid from "./ArtGrid";
 import { ChevronDown } from "lucide-react";
-import { mediumOptions } from "@/components/user_dashboard/user_profile/components/options/MediumOptions";
+import { useMediumOptions } from "@/components/user_dashboard/user_profile/components/options/MediumOptions";
 import CreatedTab from "@/components/user_dashboard/user_profile/tabs/CreatedTab";
 import ArtCategorySelect from "@/components/user_dashboard/local_components/categories/ArtCategorySelect";
 import { toast } from "sonner";
@@ -47,6 +47,8 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
   const [selectedMedium, setSelectedMedium] = useState("Medium");
   const [selectedPriceRange, setSelectedPriceRange] = useState("Price Range");
   const [selectedSortBy, setSelectedSortBy] = useState("Sort by");
+
+  const translatedMediums = useMediumOptions();
 
   const priceRangeOptions = ["Low to High", "High to Low"];
   const sortByOptions = ["Latest", "Oldest", "Most Viewed", "Most Liked"];
@@ -300,7 +302,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
                       className="bg-white shadow-md rounded-md mt-1 animate-fade-in overflow-y-auto"
                       style={{ maxHeight: "110px" }}
                     >
-                      {mediumOptions.map((option, idx) => (
+                      {translatedMediums.map((option, idx) => (
                         <div
                           key={idx}
                           className="px-3 py-2 cursor-pointer hover:bg-gray-100"
