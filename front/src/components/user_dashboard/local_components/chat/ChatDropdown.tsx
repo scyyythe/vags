@@ -23,6 +23,50 @@ import { uploadChatImageToCloudinary, uploadChatFileToCloudinary } from "@/utils
 import useAllUsersQuery from "@/hooks/users/useAllUsersQuery";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Component for user search items to handle hooks properly
+const UserSearchItem = ({ user, language, chatText, onUserSelect, conversations }: { user: any; language: string; chatText: string; onUserSelect: (user: any) => void; conversations: any[] }) => {
+  const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim();
+  const displayName = fullName || user.username || user.email;
+  const translatedDisplayName = useAutoTranslation(displayName, language);
+  const translatedUsername = useAutoTranslation(user.username || "", language);
+  const existingConv = conversations.find((conv) => conv.participantId === user.id);
+
+  return (
+    <div
+      onClick={() => onUserSelect(user)}
+      className="flex items-center space-x-3 p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+    >
+      <div className="relative">
+        <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+          {user.profile_picture ? (
+            <img
+              src={user.profile_picture}
+              alt={translatedDisplayName}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span className="text-xs font-medium text-gray-600">
+              {translatedDisplayName.charAt(0).toUpperCase()}
+            </span>
+          )}
+        </div>
+        <div className="absolute -bottom-0.5 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center space-x-2">
+          <p className="text-sm font-medium text-gray-900 truncate">{translatedDisplayName}</p>
+          {existingConv && (
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              {chatText}
+            </span>
+          )}
+        </div>
+        {user.username && <p className="text-xs text-gray-500 truncate">@{translatedUsername}</p>}
+      </div>
+    </div>
+  );
+};
 interface ChatDropdownProps {
   isOpen: boolean;
   onClose: () => void;
@@ -927,47 +971,16 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                         <div className="px-3 py-2 text-xs font-medium text-gray-500 border-b border-gray-100">
                           {searchQuery.length > 0 ? `${searchResultsText} "${searchQuery}"` : allUsersText}
                         </div>
-                        {filteredUsers.map((user) => {
-                          const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim();
-                          const displayName = fullName || user.username || user.email;
-                          const existingConv = conversations.find((conv) => conv.participantId === user.id);
-
-                          return (
-                            <div
-                              key={user.id}
-                              onClick={() => handleUserSelect(user)}
-                              className="flex items-center space-x-3 p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
-                            >
-                              <div className="relative">
-                                <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                                  {user.profile_picture ? (
-                                    <img
-                                      src={user.profile_picture}
-                                      alt={displayName}
-                                      className="h-full w-full object-cover"
-                                    />
-                                  ) : (
-                                    <span className="text-xs font-medium text-gray-600">
-                                      {displayName.charAt(0).toUpperCase()}
-                                    </span>
-                                  )}
-                                </div>
-                                <div className="absolute -bottom-0.5 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center space-x-2">
-                                  <p className="text-sm font-medium text-gray-900 truncate">{displayName}</p>
-                                  {existingConv && (
-                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                      Chat
-                                    </span>
-                                  )}
-                                </div>
-                                {user.username && <p className="text-xs text-gray-500 truncate">@{user.username}</p>}
-                              </div>
-                            </div>
-                          );
-                        })}
+                        {filteredUsers.map((user) => (
+                          <UserSearchItem
+                            key={user.id}
+                            user={user}
+                            language={language}
+                            chatText={chatText}
+                            onUserSelect={handleUserSelect}
+                            conversations={conversations}
+                          />
+                        ))}
                       </div>
                     ) : (
                       <div className="p-3 text-center text-gray-500 text-xs">
@@ -986,6 +999,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                     <ConversationList
                       conversations={filteredConversations}
                       selectedConversation={selectedConversation}
+                      currentUserId={userId}
                       onSelectConversation={(convId) => {
                         setSelectedConversation(convId);
                         markAsRead(convId, false);

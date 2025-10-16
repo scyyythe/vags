@@ -6,6 +6,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { Message } from "./types/types";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface MessageInputProps {
   messageInput: string;
@@ -37,6 +39,13 @@ export const MessageInput = ({
   onCameraCapture,
   onVoiceRecord,
 }: MessageInputProps) => {
+  const { language } = useLanguage();
+
+  const replyingToText = useAutoTranslation("Replying to", language);
+  const typeMessageText = useAutoTranslation("Type a message...", language);
+  const attachmentWarningText = useAutoTranslation("You cannot add more than 5 attachments.", language);
+  const replyingMessageText = useAutoTranslation(replyingTo ? (replyingTo.content || replyingTo.text || "") : "", language);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const [warning, setWarning] = useState("");
@@ -49,7 +58,7 @@ export const MessageInput = ({
     const file = e.target.files?.[0];
     if (file) {
       if (attachedFiles.length >= 5) {
-        setWarning("You cannot add more than 5 attachments.");
+        setWarning(attachmentWarningText);
         setTimeout(() => setWarning(""), 10000);
         return;
       }
@@ -75,13 +84,13 @@ export const MessageInput = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Reply size={14} className="text-blue-600" />
-              <span className="text-[11px] text-blue-600">Replying to {replyingTo.senderName}</span>
+              <span className="text-[11px] text-blue-600">{replyingToText} {replyingTo.senderName}</span>
             </div>
             <button onClick={onCancelReply}>
               <X size={12} className="text-gray-500" />
             </button>
           </div>
-          <p className="text-[10px] text-gray-600 truncate mt-1">{replyingTo.content || replyingTo.text}</p>
+          <p className="text-[10px] text-gray-600 truncate mt-1">{replyingMessageText}</p>
         </div>
       )}
 
@@ -149,7 +158,7 @@ export const MessageInput = ({
         </div>
 
         <Input
-          placeholder="Type a message..."
+          placeholder={typeMessageText}
           value={messageInput}
           onChange={(e) => onMessageChange(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && onSendMessage()}

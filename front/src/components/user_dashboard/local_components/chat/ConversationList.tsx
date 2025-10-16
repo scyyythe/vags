@@ -23,6 +23,7 @@ import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface ConversationListProps {
   conversations: Conversation[];
   selectedConversation: string | null;
+  currentUserId: string;
   onSelectConversation: (convId: string) => void;
   onMarkAsRead: (convId: string) => void;
   onMarkAsUnread: (convId: string) => void;
@@ -35,6 +36,7 @@ interface ConversationListProps {
 export const ConversationList = ({
   conversations,
   selectedConversation,
+  currentUserId,
   onSelectConversation,
   onMarkAsRead,
   onMarkAsUnread,
@@ -43,6 +45,8 @@ export const ConversationList = ({
   onToggleArchive,
   onDeleteConversation,
 }: ConversationListProps) => {
+  const { language } = useLanguage();
+
   const formatTime = (date: Date) => {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
@@ -60,9 +64,10 @@ export const ConversationList = ({
   };
 
   if (conversations.length === 0) {
+    const noConversationsText = useAutoTranslation("No conversations found", language);
     return (
       <div className="p-4 text-center text-gray-500 text-sm">
-        No conversations found
+        {noConversationsText}
       </div>
     );
   }
@@ -80,6 +85,7 @@ export const ConversationList = ({
             key={conversation.id}
             conversation={conversation}
             selectedConversation={selectedConversation}
+            currentUserId={currentUserId}
             onSelectConversation={onSelectConversation}
             onMarkAsRead={onMarkAsRead}
             onMarkAsUnread={onMarkAsUnread}
@@ -98,6 +104,7 @@ export const ConversationList = ({
 const ConversationItem = ({
   conversation,
   selectedConversation,
+  currentUserId,
   onSelectConversation,
   onMarkAsRead,
   onMarkAsUnread,
@@ -111,7 +118,12 @@ const ConversationItem = ({
 
   // Apply auto-translation safely here
   const translatedName = useAutoTranslation(conversation.participantName || "", language);
-  const translatedMessage = useAutoTranslation(conversation.lastMessage || "", language);
+
+  // Determine the last message sender and apply translation only if sent by the current user
+  const lastMessageSenderId = conversation.messages?.[conversation.messages.length - 1]?.senderId;
+  const translatedMessage = lastMessageSenderId === currentUserId
+    ? useAutoTranslation(conversation.lastMessage || "", language)
+    : conversation.lastMessage || "";
 
   const rawTime = formatTime(conversation.lastMessageTime);
   const translatedTime = useAutoTranslation(rawTime, language);

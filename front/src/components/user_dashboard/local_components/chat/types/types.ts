@@ -36,6 +36,7 @@ export interface Message {
     fileName?: string;
     imageUrl?: string;
     voiceDuration?: number;
+    translatedContent?: string | null;
   } | null;
 
   reactions?: {
@@ -44,6 +45,7 @@ export interface Message {
   }[];
 
   participantName?: string;
+  translatedContent?: string | null;
 }
 
 export interface Conversation {

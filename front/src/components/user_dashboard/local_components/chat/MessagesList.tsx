@@ -11,9 +11,12 @@ import {
 } from "@/components/ui/context-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Message, Conversation } from "./types/types";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import AutomaticMessageBubble from "../../Marketplace/my_purchase/card/AutomaticMessageBubble";
 import ThankYouMessageBubble from "../../Marketplace/my_purchase/card/ThankYouMessageBubble";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { autoTranslate } from "@/utils/autoTranslate";
 
 interface MessagesListProps {
   conversation: Conversation;
@@ -40,6 +43,52 @@ export const MessagesList = ({
   onSetReactionPicker,
   onAddReaction,
 }: MessagesListProps) => {
+  const { language } = useLanguage();
+
+  // Pre-translate all strings to avoid calling hooks inside loops
+  const sentText = useAutoTranslation("Sent", language);
+  const deliveredText = useAutoTranslation("Delivered", language);
+  const seenText = useAutoTranslation("Seen", language);
+  const imageText = useAutoTranslation("Image", language);
+  const voiceMessageText = useAutoTranslation("Voice message", language);
+  const starText = useAutoTranslation("Star", language);
+  const unstarText = useAutoTranslation("Unstar", language);
+  const copyText = useAutoTranslation("Copy", language);
+  const forwardText = useAutoTranslation("Forward", language);
+  const editText = useAutoTranslation("Edit", language);
+  const deleteText = useAutoTranslation("Delete", language);
+
+  // Translate participant name
+  const translatedParticipantName = useAutoTranslation(conversation.participantName, language);
+
+  // State to hold translated messages
+  const [translatedMessages, setTranslatedMessages] = useState(conversation.messages);
+
+  // Effect to translate messages when language or messages change
+  useEffect(() => {
+    const translateMessages = async () => {
+      const translated = await Promise.all(
+        conversation.messages.map(async (message) => {
+          let translatedContent = null;
+          if (message.content) {
+            translatedContent = await autoTranslate(message.content, language.toLowerCase());
+          }
+
+          let translatedReplyTo = message.replyTo;
+          if (message.replyTo && message.replyTo.content) {
+            const translatedReplyContent = await autoTranslate(message.replyTo.content, language.toLowerCase());
+            translatedReplyTo = { ...message.replyTo, translatedContent: translatedReplyContent };
+          }
+
+          return { ...message, translatedContent, replyTo: translatedReplyTo };
+        })
+      );
+      setTranslatedMessages(translated);
+    };
+
+    translateMessages();
+  }, [conversation.messages, language]);
+
   const formatFullDateTime = (date: Date) => {
     return date.toLocaleString("en-US", {
       month: "short",
@@ -72,16 +121,16 @@ export const MessagesList = ({
 
   const renderDeliveryText = (message: Message) => {
     if (message.senderId !== currentUserId) return null;
-    let statusText = "Sent";
+    let statusText = sentText;
     switch (message.deliveryStatus) {
       case "sent":
-        statusText = "Sent";
+        statusText = sentText;
         break;
       case "delivered":
-        statusText = "Delivered";
+        statusText = deliveredText;
         break;
       case "seen":
-        statusText = "Seen";
+        statusText = seenText;
         break;
     }
     return (
@@ -97,8 +146,8 @@ export const MessagesList = ({
   return (
     <div className="p-4">
       <div className="space-y-6">
-        {conversation.messages.map((message) => {
-          const repliedMessage = message.replyTo ? findRepliedMessage(message.replyTo.messageId) : null;
+        {translatedMessages.map((message) => {
+          const repliedMessage = message.replyTo ? translatedMessages.find((msg) => msg.id === message.replyTo!.messageId) : null;
 
           return (
             <ContextMenu key={message.id}>
@@ -121,7 +170,7 @@ export const MessagesList = ({
                               .join("")}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-[11px] font-medium text-gray-700">{conversation.participantName}</span>
+                        <span className="text-[11px] font-medium text-gray-700">{translatedParticipantName || conversation.participantName}</span>
                       </div>
                     )}
 
@@ -166,10 +215,10 @@ export const MessagesList = ({
                                 <Reply size={10} />
                               </div>
                               <div className="opacity-80 truncate max-w-[200px] text-[10px]">
-                                {message.replyTo.type === "image" && "Image"}
+                                {message.replyTo.type === "image" && imageText}
                                 {message.replyTo.type === "file" && message.replyTo.fileName}
-                                {message.replyTo.type === "voice" && "Voice message"}
-                                {message.replyTo.type === "text" && message.replyTo.content}
+                                {message.replyTo.type === "voice" && voiceMessageText}
+                                {message.replyTo.type === "text" && (message.replyTo.translatedContent || message.replyTo.content)}
                               </div>
                             </div>
                           )}
@@ -201,7 +250,7 @@ export const MessagesList = ({
                               />
                             )
                           ) : (
-                            message.content && <p className="text-[11px]">{message.content}</p>
+                            message.content && <p className="text-[11px]">{message.translatedContent || message.content}</p>
                           )}
                         </div>
 
@@ -302,30 +351,30 @@ export const MessagesList = ({
                               className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded"
                             >
                               <Star className="h-3 w-3" />
-                              {message.isStarred ? "Unstar" : "Star"}
+                              {message.isStarred ? unstarText : starText}
                             </div>
                             {message.content && (
                               <div
                                 onClick={() => navigator.clipboard.writeText(message.content)}
                                 className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded"
                               >
-                                <Copy className="h-3 w-3" /> Copy
+                                <Copy className="h-3 w-3" /> {copyText}
                               </div>
                             )}
                             <div className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded">
-                              <Forward className="h-3 w-3" /> Forward
+                              <Forward className="h-3 w-3" /> {forwardText}
                             </div>
                             {message.senderId === currentUserId && (
                               <>
                                 <div className="border-t border-gray-200 my-1" />
                                 <div className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded">
-                                  <Edit className="h-3 w-3" /> Edit
+                                  <Edit className="h-3 w-3" /> {editText}
                                 </div>
                                 <div
                                   onClick={() => onDeleteMessage(message.id)}
                                   className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded text-red-600"
                                 >
-                                  <Trash2 className="h-3 w-3" /> Delete
+                                  <Trash2 className="h-3 w-3" /> {deleteText}
                                 </div>
                               </>
                             )}
@@ -353,7 +402,7 @@ export const MessagesList = ({
               <ContextMenuContent>
                 <ContextMenuItem onClick={() => onStarMessage(message.id)} className="text-[10px]">
                   <Star className="mr-2 h-3 w-3" />
-                  {message.isStarred ? "Unstar" : "Star"}
+                  {message.isStarred ? unstarText : starText}
                 </ContextMenuItem>
                 {message.content && (
                   <ContextMenuItem
@@ -361,23 +410,23 @@ export const MessagesList = ({
                     className="text-[10px]"
                   >
                     <Copy className="mr-2 h-3 w-3" />
-                    Copy
+                    {copyText}
                   </ContextMenuItem>
                 )}
                 <ContextMenuItem className="text-[10px]">
                   <Forward className="mr-2 h-3 w-3" />
-                  Forward
+                  {forwardText}
                 </ContextMenuItem>
                 {message.senderId === currentUserId && (
                   <>
                     <ContextMenuSeparator />
                     <ContextMenuItem className="text-[10px]">
                       <Edit className="mr-2 h-3 w-3" />
-                      Edit
+                      {editText}
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => onDeleteMessage(message.id)} className="text-red-600 text-[10px]">
                       <Trash2 className="mr-2 h-3 w-3" />
-                      Delete
+                      {deleteText}
                     </ContextMenuItem>
                   </>
                 )}
