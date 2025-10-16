@@ -14,6 +14,7 @@ import { useChat } from "@/context/ChatContext";
 import { useUserConversations } from "@/hooks/messages/useUserConversations";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLogout } from "@/hooks/auth/useLogout";
 
 const Header = () => {
   const location = useLocation();
@@ -25,34 +26,45 @@ const Header = () => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const notificationRef = useRef(null);
   const chatRef = useRef(null);
   const avatarRef = useRef(null);
 
+  // Always call hooks first, before any early returns
   const userId = getLoggedInUserId();
-  const { firstName, profilePicture } = useUserDetails(userId);
+  const { language } = useLanguage(); // Get current language
+  const { logout } = useLogout();
+
+  // These hooks should be called with safe fallbacks
+  const { firstName, profilePicture } = useUserDetails(userId || "");
   const [currentPage] = useState(1);
-  const { data: artworks } = useArtworks(currentPage, undefined, true, "all", "public");
+  const { data: artworks } = useArtworks(currentPage, undefined, !!userId, "all", "public");
 
   const { isChatOpen, openChat, closeChat, participantId, participantName, participantAvatar } = useChat();
-  const [conversations, , isLoadingConversations] = useUserConversations(userId);
+  const [conversations, , isLoadingConversations] = useUserConversations(userId || "");
 
-  const { language } = useLanguage(); // Get current language
+  // Calculate total unread messages with safe fallback
+  const totalUnreadMessages =
+    isLoadingConversations || !conversations
+      ? 0
+      : conversations.reduce((total, conversation) => {
+          return total + (conversation?.unreadCount || 0);
+        }, 0);
 
-  // Calculate total unread messages
-  const totalUnreadMessages = isLoadingConversations
-    ? 0
-    : conversations.reduce((total, conversation) => {
-        return total + (conversation.unreadCount || 0);
-      }, 0);
-
-  if (!userId) return null;
+  // Early return after all hooks have been called
+  if (!userId || isLoggingOut) return null;
 
   const closeAllDropdowns = () => {
     setIsProfileDropdownOpen(false);
     setIsNotificationOpen(false);
     closeChat();
+  };
+
+  const handleLogout = () => {
+    setIsLoggingOut(true);
+    logout();
   };
 
   const handleSearchChange = (value: string) => {
@@ -101,11 +113,7 @@ const Header = () => {
           {/* Nav Links (desktop only) */}
           <nav className="hidden md:flex items-center space-x-16 text-xs ml-16">
             {navLinks.map(({ route, label }) => (
-              <NavLink
-                key={route}
-                to={route}
-                className={({ isActive }) => `${isActive ? "font-semibold" : ""}`}
-              >
+              <NavLink key={route} to={route} className={({ isActive }) => `${isActive ? "font-semibold" : ""}`}>
                 {label}
               </NavLink>
             ))}
@@ -248,7 +256,11 @@ const Header = () => {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="absolute left-14 top-10 z-50"
                 >
-                  <ProfileDropdown isOpen={true} onClose={() => setIsProfileDropdownOpen(false)} />
+                  <ProfileDropdown
+                    isOpen={true}
+                    onClose={() => setIsProfileDropdownOpen(false)}
+                    onLogout={handleLogout}
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
