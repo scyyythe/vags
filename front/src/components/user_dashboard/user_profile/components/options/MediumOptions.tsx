@@ -1,4 +1,8 @@
-export const mediumOptions = [
+import { useState, useEffect } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import { autoTranslate } from "@/utils/autoTranslate";
+
+const MEDIUM_OPTIONS = [
 // Traditional mediums
 "Acrylic",
 "Oil",
@@ -72,4 +76,22 @@ export const mediumOptions = [
 "Light Art",
 "Bio Art",
 "Interactive Media",
-];
+] as const;
+
+export const useMediumOptions = () => {
+  const { language } = useLanguage();
+  const [translatedMediums, setTranslatedMediums] = useState<string[]>([...MEDIUM_OPTIONS]);
+
+  useEffect(() => {
+    const translateMediums = async () => {
+      const translated = await Promise.all(
+        MEDIUM_OPTIONS.map(async (medium) => await autoTranslate(medium, language.toLowerCase()))
+      );
+      setTranslatedMediums(translated);
+    };
+
+    translateMediums();
+  }, [language]);
+
+  return translatedMediums;
+};
