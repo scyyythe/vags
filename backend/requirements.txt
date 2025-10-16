@@ -41,4 +41,5 @@ firebase-admin
 stripe
 pyotp
 qrcode[pil]
+aiohttp>=3.8.0
 

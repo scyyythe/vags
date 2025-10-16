@@ -4,6 +4,8 @@ from datetime import datetime
 from api.models.interaction_model.interaction import Like
 import cloudinary.uploader
 from api.utils.content_moderation import moderate_image
+from api.utils.async_moderation import moderate_images_sync_wrapper
+from api.utils.upload_optimizer import upload_optimizer
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 from api.models.payment_model.payment_accounts import PaymentAccount
@@ -177,20 +179,54 @@ class ArtSerializer(serializers.Serializer):
         if not isinstance(images, list):
             images = [images]
 
-        uploaded_urls = []
-        for img in images:
+        # Use optimized parallel upload
+        upload_results = upload_optimizer.upload_images_parallel(images)
+        
+        # Check for upload failures
+        failed_uploads = [i for i, result in enumerate(upload_results) if not result["success"]]
+        if failed_uploads:
+            # Clean up any successful uploads if some failed
+            upload_optimizer.cleanup_failed_uploads(upload_results)
+            
+            # Get error details from first failed upload
+            first_failure = next((r for r in upload_results if not r["success"]), None)
+            if first_failure:
+                error_msg = first_failure["error"]
+                if "timeout" in error_msg.lower():
+                    raise ValidationError({"cloudinary": "Upload timeout. Please try again with smaller images."})
+                elif "size" in error_msg.lower():
+                    raise ValidationError({"cloudinary": "Image too large. Please use images smaller than 20MB."})
+                else:
+                    raise ValidationError({"cloudinary": f"Upload failed: {error_msg}"})
+        
+        # Extract successful URLs
+        uploaded_urls = [result["url"] for result in upload_results if result["success"]]
+        
+        # Log upload statistics
+        stats = upload_optimizer.get_upload_stats(upload_results)
+        print(f"✅ Upload stats: {stats['successful']}/{stats['total_images']} successful, {stats['total_bytes']} bytes")
+        
+        # Then, moderate all images concurrently (faster than sequential)
+        if uploaded_urls:
             try:
-                result = cloudinary.uploader.unsigned_upload(
-                    img,
-                    upload_preset="user_artwork_uploads",
-                    folder="artworks"
-                )
-                url = result.get("secure_url")
-                if not moderate_image(url):
-                    raise ValidationError("Inappropriate image content.")
-                uploaded_urls.append(url)
+                # Use async moderation for better performance
+                moderation_results = moderate_images_sync_wrapper(uploaded_urls, timeout=5)
+                
+                # Check if any images failed moderation
+                inappropriate_images = [result['url'] for result in moderation_results 
+                                      if not result['is_appropriate']]
+                
+                if inappropriate_images:
+                    raise ValidationError({"cloudinary": "Image content was rejected. Please upload a different image."})
+                    
+            except ValidationError:
+                raise  # Re-raise validation errors
             except Exception as e:
-                raise ValidationError({"cloudinary": f"Upload failed: {str(e)}"})
+                # If moderation fails, log error but allow upload to proceed
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Content moderation failed: {str(e)}")
+                # Continue without moderation to avoid blocking users
 
         validated_data["image_url"] = uploaded_urls
         validated_data.setdefault("visibility", "Public")
@@ -209,17 +245,28 @@ class ArtSerializer(serializers.Serializer):
             uploaded_urls = []
             for img in images:
                 try:
-                    result = cloudinary.uploader.unsigned_upload(
+                    result = cloudinary.uploader.upload(
                         img,
-                        upload_preset="user_artwork_uploads",
-                        folder="artworks"
+                        folder="artworks",
+                        # Optimize images during upload
+                        transformation=[
+                            {"quality": "auto", "fetch_format": "auto"},
+                            {"width": 1920, "height": 1920, "crop": "limit"}
+                        ],
+                        timeout=30
                     )
                     image_url = result.get("secure_url", "")
-                    if not moderate_image(image_url):
-                        raise ValidationError("One of the images was rejected.")
+                    if not moderate_image(image_url, timeout=5):
+                        raise ValidationError({"cloudinary": "Image content was rejected. Please upload a different image."})
                     uploaded_urls.append(image_url)
                 except Exception as e:
-                    raise ValidationError({"cloudinary": f"Upload failed: {str(e)}"})
+                    # More specific error handling
+                    if "timeout" in str(e).lower():
+                        raise ValidationError({"cloudinary": "Upload timeout. Please try again with a smaller image."})
+                    elif "size" in str(e).lower():
+                        raise ValidationError({"cloudinary": "Image too large. Please use an image smaller than 20MB."})
+                    else:
+                        raise ValidationError({"cloudinary": f"Upload failed: {str(e)}"})
   
             instance.image_url = uploaded_urls
 

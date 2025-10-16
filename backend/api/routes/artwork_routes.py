@@ -4,10 +4,14 @@ UpdateArtworkVisibilityView,MyArtCardListView,BulkArtDetailView,PopularLightweig
 DeletePermanentArtwork,UnArchivedArtwork,ArchivedArtwork,RestoreArtwork,DeleteArtwork,ArtListViewSpecificUser,
 UnHideArtworkView,HideArtworkView,BulkUnhideArtworksView,UserArtworksWithHiddenView,ArtCreateView, ArtListView,ArtworksByArtistView, ArtDetailView, ArtUpdateView, 
 ArtListByArtistView,ArtDeleteView,ArtListViewOwner,RelistArtworkView)
+from api.views.cloudinary_views import CloudinarySignatureView
 from api.views.artwork_views.artwork_detail_view import MarketplaceArtDetailView
 from api.views.artwork_views.wishlist_view import ToggleWishlistView,WishlistArtView,WishlistIDListView,MyWishlistView
 from api.views.artwork_views.artwork_trending_view import TrendingArtworksView
 artwork_urlpatterns = [
+    # Cloudinary signature for signed uploads
+    path("cloudinary/signature/", CloudinarySignatureView.as_view(), name="cloudinary-signature"),
+    
      # sell
     path("art/sell/",  SellArtworkView.as_view(), name="art-sell"),
     path("art/update/<str:pk>/", UpdateArtworkView.as_view(), name="art-update"),
