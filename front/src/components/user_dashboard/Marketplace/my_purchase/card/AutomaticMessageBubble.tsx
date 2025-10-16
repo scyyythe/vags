@@ -80,7 +80,9 @@ const AutomaticMessageBubble: React.FC<AutomaticMessageBubbleProps> = ({
 
         <p>
           You've received a new order for your artwork{" "}
-          <span className={`font-semibold ${textHighlight}`}>“{artworkTitle}”</span> from{" "}
+          <span className={`font-semibold transition-colors ${
+            isSender ? "text-yellow-300" : "text-blue-600 hover:text-blue-700"
+          }`}>“{artworkTitle}”</span> from{" "}
           <span className={`font-semibold ${textMain}`}>{buyerName}</span>.
         </p>
 
@@ -92,7 +94,7 @@ const AutomaticMessageBubble: React.FC<AutomaticMessageBubbleProps> = ({
         <button
           onClick={handleViewOrder}
           className={`flex items-center gap-2 underline font-medium mt-3 transition-colors ${
-            isSender ? "text-white hover:text-yellow-400" : "text-blue-600 hover:text-blue-700"
+            isSender ? "text-yellow-300 hover:text-yellow-200" : "text-blue-600 hover:text-blue-500"
           }`}
         >
           <LinkIcon className={`w-4 h-4 ${iconColor}`} />
@@ -104,7 +106,9 @@ const AutomaticMessageBubble: React.FC<AutomaticMessageBubbleProps> = ({
             isSender ? "bg-yellow-400/20 border border-yellow-300/30" : "bg-yellow-100/40 border border-yellow-400/50"
           }`}
         >
-          <p className="text-[9px] text-yellow-700">
+          <p className={`text-[9px] transition-colors ${
+            isSender ? "text-white" : "text-yellow-700"
+          }`}>
             <span className="font-semibold">⚠️ Reminder:</span> Make sure to confirm all delivery details with the buyer
             before sending the artwork.
           </p>
