@@ -154,10 +154,6 @@ img {
 }
 
 /* Explore artwork scrollbar */
-.custom-scrollbars {
-  overflow-y: scroll;
-}
-
 .custom-scrollbars::-webkit-scrollbar {
   width: 1px;
 }

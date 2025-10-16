@@ -303,18 +303,18 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
       <Dialog open={showConfirmation} onOpenChange={closeConfirmation}>
         <DialogContent className="w-full max-w-xs rounded-lg">
           <DialogHeader>
-            <DialogTitle className="flex items-center mb-1 text-xs">Confirm Report Submission</DialogTitle>
+            <DialogTitle className="text-center mb-1 text-xs">Confirm Report Submission</DialogTitle>
             <DialogDescription className="w-full max-w-[270px] text-[10px] text-center text-black">
               Are you sure you want to report this content? This action cannot be easily undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <div className="w-full max-w-xs flex justify-between items-center gap-6">
-              <button className="border border-gray-600 rounded-full py-1 px-4 text-[10px]" onClick={closeConfirmation}>
+            <div className="w-full">
+              {/* <button className="border border-gray-600 rounded-full py-1 px-4 text-[10px]" onClick={closeConfirmation}>
                 Cancel
-              </button>
+              </button> */}
               <button
-                className="bg-red-800 hover:bg-red-700 rounded-full py-1.5 px-4 text-white text-[10px] whitespace-nowrap"
+                className="w-full bg-red-800 hover:bg-red-700 rounded-full py-1.5 px-4 text-white text-[10px] whitespace-nowrap"
                 onClick={() => handleSubmit()}
               >
                 Report Content
