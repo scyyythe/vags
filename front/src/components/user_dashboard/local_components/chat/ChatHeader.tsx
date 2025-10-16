@@ -1,4 +1,4 @@
-import { ArrowLeft, Phone, Pin, MoreVertical, X, Search, Archive, CheckCheck, Check } from "lucide-react";
+import { ArrowLeft, Pin, MoreVertical, Search, Archive, CheckCheck, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,6 +11,8 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { Conversation } from "./types/types";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface ChatHeaderProps {
   selectedConversation: string | null;
@@ -47,6 +49,18 @@ export const ChatHeader = ({
   onSearchFocus,
   onSearchBlur,
 }: ChatHeaderProps) => {
+  const { language } = useLanguage();
+
+  const archived = useAutoTranslation("Archived", language);
+  const messages = useAutoTranslation("Messages", language);
+  const showActiveText = useAutoTranslation("Show Active", language);
+  const showArchivedText = useAutoTranslation("Show Archived", language);
+  const markAllAsRead = useAutoTranslation("Mark All as Read", language);
+  const markAllAsUnread = useAutoTranslation("Mark All as Unread", language);
+  const searchPlaceholder = useAutoTranslation("Search conversations...", language);
+  const online = useAutoTranslation("Online", language);
+  const offline = useAutoTranslation("Offline", language);
+
   return (
     <div className="p-4 border-b border-gray-200">
       <div className="flex items-center justify-between mb-3">
@@ -57,15 +71,12 @@ export const ChatHeader = ({
             </Button>
           )}
           <h3 className="font-semibold text-gray-900 text-sm">
-            {selectedConversation ? selectedConv?.participantName : showArchived ? "Archived" : "Messages"}
+            {selectedConversation ? selectedConv?.participantName : showArchived ? archived : messages}
           </h3>
         </div>
         <div className="flex items-center space-x-2">
           {selectedConversation && selectedConv && (
             <>
-              {/* <Button variant="ghost" size="sm" onClick={onCall}>
-                <Phone size={16} />
-              </Button> */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -84,19 +95,19 @@ export const ChatHeader = ({
                     <MoreVertical size={11} />
                   </button>
                 </MenubarTrigger>
-                <MenubarContent>
+                <MenubarContent className="mr-5" >
                   <MenubarItem onClick={onToggleArchived} className="text-[10px]">
                     <Archive className="mr-2 h-3 w-3" />
-                    {showArchived ? "Show Active" : "Show Archived"}
+                    {showArchived ? showActiveText : showArchivedText}
                   </MenubarItem>
                   <MenubarSeparator />
                   <MenubarItem onClick={onMarkAllAsRead} className="text-[10px]">
                     <CheckCheck className="mr-2 h-3 w-3" />
-                    Mark All as Read
+                    {markAllAsRead}
                   </MenubarItem>
                   <MenubarItem onClick={onMarkAllAsUnread} className="text-[10px]">
                     <Check className="mr-2 h-3 w-3" />
-                    Mark All as Unread
+                    {markAllAsUnread}
                   </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>
@@ -109,12 +120,12 @@ export const ChatHeader = ({
         <div className="relative search-container">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={11} />
           <Input
-            placeholder="Search conversations..."
+            placeholder={searchPlaceholder}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             onFocus={onSearchFocus}
             onBlur={onSearchBlur}
-            className="pl-10 h-9 rounded-full text-xs"
+            className="pl-10 h-9 rounded-full"
             style={{ fontSize: "11px" }}
           />
         </div>
@@ -125,7 +136,7 @@ export const ChatHeader = ({
           <div className="relative">
             <Avatar className="h-8 w-8">
               <AvatarImage src={selectedConv.participantAvatar} />
-              <AvatarFallback className="text-xs">
+              <AvatarFallback className="text-[11px]">
                 {selectedConv?.participantName
                   ? selectedConv.participantName
                       .split(" ")
@@ -140,8 +151,8 @@ export const ChatHeader = ({
             )}
           </div>
           <div>
-            <p className="font-medium text-gray-900 text-xs">{selectedConv.participantName}</p>
-            <p className="text-[10px] text-gray-500">{selectedConv.isOnline ? "Online" : "Offline"}</p>
+            <p className="font-medium text-gray-900 text-[11px]">{selectedConv.participantName}</p>
+            <p className="text-[10px] text-gray-500">{selectedConv.isOnline ? online : offline}</p>
           </div>
         </div>
       )}
