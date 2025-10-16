@@ -15,6 +15,7 @@ export interface ArtCard {
   year_created?: string;
   size?: string;
   art_status?: string;
+  visibility?: string;
   artist_id?: string;
   average_rating: number;
   quantity?: number;

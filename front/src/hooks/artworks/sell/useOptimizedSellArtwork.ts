@@ -1,5 +1,5 @@
-import { useQueryClient, QueryClient } from "@tanstack/react-query";
 import { useState, useCallback } from "react";
+import { useQueryClient, QueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import apiClient from "@/utils/apiClient";
@@ -23,46 +23,88 @@ interface OptimizedSellData extends SellArtworkInput {
   // Additional fields for optimization
 }
 
-const useSellArtwork = () => {
+interface ValidationData {
+  title: string;
+  mainImage: File | null;
+  price: string;
+  medium: string;
+  height: string;
+  width: string;
+  description: string;
+}
+
+interface ValidationResult {
+  isValid: boolean;
+  errors?: string[];
+}
+
+export const validateSellData = (data: ValidationData): ValidationResult => {
+  const errors: string[] = [];
+
+  if (!data.title.trim()) {
+    errors.push("Artwork title is required");
+  }
+
+  if (!data.mainImage) {
+    errors.push("Artwork image is required");
+  }
+
+  if (!data.price || parseFloat(data.price) <= 0) {
+    errors.push("Valid price is required");
+  }
+
+  if (!data.medium.trim()) {
+    errors.push("Medium is required");
+  }
+
+  if (!data.height || !data.width) {
+    errors.push("Artwork dimensions are required");
+  }
+
+  if (!data.description.trim()) {
+    errors.push("Description is required");
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors: errors.length > 0 ? errors : undefined,
+  };
+};
+
+export const useOptimizedSellArtwork = () => {
   const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const sellArtwork = useCallback(
-    async (data: OptimizedSellData): Promise<void> => {
-      const {
-        title,
-        year_created,
-        style,
-        medium,
-        height,
-        width,
-        description,
-        price,
-        edition,
-        quantity,
-        mainImage,
-        additionalImages,
-      } = data;
-
-      // Validation
-      if (!title.trim()) {
-        toast.error("Artwork title is required.");
-        return;
-      }
-      if (!mainImage) {
-        toast.error("Artwork image is required.");
-        return;
-      }
-      if (!price) {
-        toast.error("Price is required.");
+    async (data: OptimizedSellData, queryClient?: QueryClient): Promise<void> => {
+      // Validate data first
+      const validation = validateSellData(data);
+      if (!validation.isValid) {
+        toast.error(validation.errors![0]);
         return;
       }
 
       setIsUploading(true);
-      toast.loading("Listing artwork...", { id: "upload" });
+      toast.loading("Listing artwork...", { id: "sell-upload" });
 
       try {
+        const {
+          title,
+          year_created,
+          style,
+          medium,
+          height,
+          width,
+          description,
+          price,
+          edition,
+          quantity,
+          mainImage,
+          additionalImages,
+        } = data;
+
+        // Prepare form data
         const formData = new FormData();
         formData.append("title", title.trim());
         formData.append("year_created", year_created.slice(0, 10));
@@ -96,35 +138,37 @@ const useSellArtwork = () => {
           timeout: 120000, // 2 minutes
         });
 
-        // Optimized query invalidation - invalidate all relevant queries in parallel
-        await Promise.all([
-          // Invalidate marketplace queries
-          queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] }),
-          queryClient.invalidateQueries({ queryKey: ["trending-artworks"] }),
-          queryClient.invalidateQueries({ queryKey: ["followedArtworks"] }),
-          queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] }),
+        // Invalidate queries for immediate marketplace updates
+        if (queryClient) {
+          await Promise.all([
+            // Invalidate marketplace queries
+            queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] }),
+            queryClient.invalidateQueries({ queryKey: ["trending-artworks"] }),
+            queryClient.invalidateQueries({ queryKey: ["followedArtworks"] }),
+            queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] }),
 
-          // Invalidate all artwork-related queries
-          queryClient.invalidateQueries({ queryKey: ["artworks"] }),
-          queryClient.invalidateQueries({ queryKey: ["popular-artworks"] }),
-          queryClient.invalidateQueries({ queryKey: ["popularArtworks"] }),
-          queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] }),
-          queryClient.invalidateQueries({ queryKey: ["top-artworks"] }),
-          queryClient.invalidateQueries({ queryKey: ["top-sellers"] }),
+            // Invalidate all artwork-related queries
+            queryClient.invalidateQueries({ queryKey: ["artworks"] }),
+            queryClient.invalidateQueries({ queryKey: ["popular-artworks"] }),
+            queryClient.invalidateQueries({ queryKey: ["popularArtworks"] }),
+            queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] }),
+            queryClient.invalidateQueries({ queryKey: ["top-artworks"] }),
+            queryClient.invalidateQueries({ queryKey: ["top-sellers"] }),
 
-          // Invalidate user-specific queries
-          queryClient.invalidateQueries({ queryKey: ["explore"] }),
-          queryClient.invalidateQueries({ queryKey: ["feed"] }),
-          queryClient.invalidateQueries({ queryKey: ["profile"] }),
-          queryClient.invalidateQueries({ queryKey: ["user-artworks"] }),
-        ]);
+            // Invalidate user-specific queries
+            queryClient.invalidateQueries({ queryKey: ["explore"] }),
+            queryClient.invalidateQueries({ queryKey: ["feed"] }),
+            queryClient.invalidateQueries({ queryKey: ["profile"] }),
+            queryClient.invalidateQueries({ queryKey: ["user-artworks"] }),
+          ]);
 
-        // Force refetch marketplace data immediately
-        await queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
+          // Force refetch marketplace data immediately
+          await queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
+        }
 
         // Show success toast
         toast.success("Artwork listed successfully!", {
-          id: "upload",
+          id: "sell-upload",
           closeButton: true,
           duration: 3000,
           description: "Your artwork is now available in the marketplace",
@@ -190,7 +234,7 @@ const useSellArtwork = () => {
         }
 
         toast.error(errorMessage, {
-          id: "upload",
+          id: "sell-upload",
           closeButton: true,
           duration: 5000,
           description: "Please try again or contact support if the issue persists",
@@ -204,7 +248,9 @@ const useSellArtwork = () => {
     [navigate, queryClient]
   );
 
-  return { isUploading, sellArtwork };
+  return {
+    sellArtwork,
+    isUploading,
+    validateSellData,
+  };
 };
-
-export default useSellArtwork;

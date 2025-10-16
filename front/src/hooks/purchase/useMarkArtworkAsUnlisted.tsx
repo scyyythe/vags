@@ -12,10 +12,23 @@ const useMarkArtworkAsUnlisted = () => {
       return data;
     },
     onSuccess: () => {
+      // Invalidate all marketplace and artwork-related queries
       queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
       queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
       queryClient.invalidateQueries({ queryKey: ["my-sold-artworks"] });
       queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["popular-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] });
+      queryClient.invalidateQueries({ queryKey: ["top-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["top-sellers"] });
+      queryClient.invalidateQueries({ queryKey: ["explore"] });
+      queryClient.invalidateQueries({ queryKey: ["feed"] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["user-artworks"] });
     },
     onError: () => {
       toast.error("Failed to update artwork status.", { closeButton: true });

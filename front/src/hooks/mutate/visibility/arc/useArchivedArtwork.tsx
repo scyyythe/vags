@@ -39,6 +39,19 @@ const useArchivedArtwork = () => {
         queryClient.invalidateQueries({ queryKey: ["my-auctions"] });
         queryClient.invalidateQueries({ queryKey: ["myParticipatedAuctions"] });
         queryClient.invalidateQueries({ queryKey: ["auctions"] });
+
+        // Invalidate marketplace queries to ensure archived artwork disappears from marketplace
+        queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
+        queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+        queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+        queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+        queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] });
+        queryClient.invalidateQueries({ queryKey: ["top-artworks"] });
+        queryClient.invalidateQueries({ queryKey: ["top-sellers"] });
+        queryClient.invalidateQueries({ queryKey: ["explore"] });
+        queryClient.invalidateQueries({ queryKey: ["feed"] });
+        queryClient.invalidateQueries({ queryKey: ["profile"] });
+        queryClient.invalidateQueries({ queryKey: ["user-artworks"] });
       }, 100);
     },
     onError: () => {
