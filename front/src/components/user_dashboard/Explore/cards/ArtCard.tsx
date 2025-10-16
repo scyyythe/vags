@@ -21,6 +21,8 @@ import { getLoggedInUserId } from "@/auth/decode";
 import useUpdateArtworkVisibility from "@/hooks/mutate/visibility/private/useUpdateArtworkVisibility";
 import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLanguage } from "@/context/LanguageContext";
 
 export interface ArtCardProps {
   artwork: Artwork;
@@ -58,7 +60,17 @@ const ArtCard = ({
   status = { isLiked: false, isSaved: false },
   report,
 }: ArtCardProps) => {
+  const { language } = useLanguage();
+  const translatedAlreadyReported = useAutoTranslation("You have already reported this artwork.", language);
+  const translatedArtworkPermanentlyDeleted = useAutoTranslation("Artwork permanently deleted", language);
+  const translatedUntitledArtwork = useAutoTranslation("Untitled Artwork", language);
+  const translatedLike = useAutoTranslation("Like", language);
+  const translatedUnlike = useAutoTranslation("Unlike", language);
+
   const { id, artistId, artistName, artistImage, default_paypal_email, artworkImage, title, likesCount = 0 } = artwork;
+
+  const translatedArtistName = useAutoTranslation(artistName, language);
+  const translatedTitle = useAutoTranslation(title, language);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
@@ -128,7 +140,7 @@ const ArtCard = ({
     additionalInfo?: string;
   }) => {
     if (localIsReported || isReportedFromBulk) {
-      toast.error("You have already reported this artwork.", { closeButton: true });
+      toast.error(translatedAlreadyReported, { closeButton: true });
       setMenuOpen(false);
       return;
     }
@@ -168,7 +180,7 @@ const ArtCard = ({
   const handleTipJar = () => {
     openPopup({
       id,
-      title: title || "Untitled Artwork",
+      title: title || translatedUntitledArtwork,
       artistName,
       artworkImage,
       artistId,
@@ -187,11 +199,11 @@ const ArtCard = ({
         <div className="flex items-center space-x-2">
           <Link to={`/userprofile/${artistId}`}>
             <Avatar className="h-5 w-5 border">
-              <AvatarImage src={artistImage} alt={artistName} />
-              <AvatarFallback>{(artistName || "?").charAt(0)}</AvatarFallback>
+              <AvatarImage src={artistImage} alt={translatedArtistName} />
+              <AvatarFallback>{(translatedArtistName || "?").charAt(0)}</AvatarFallback>
             </Avatar>
           </Link>
-          <span className="text-[9px] font-medium">{artistName}</span>
+          <span className="text-[9px] font-medium">{translatedArtistName}</span>
         </div>
 
         <div className="relative text-gray-500" style={{ height: "24px" }}>
@@ -215,7 +227,7 @@ const ArtCard = ({
               }}
               onUnarchive={handleRestore}
               onDelete={() => {
-                toast.success("Artwork permanently deleted", { closeButton: true });
+                toast.success(translatedArtworkPermanentlyDeleted, { closeButton: true });
                 setIsDeletedLocally(true);
                 setMenuOpen(false);
               }}
@@ -282,7 +294,7 @@ const ArtCard = ({
         <div className="aspect-square overflow-hidden py-2 px-1">
           <img
             src={artwork.artworkImage}
-            alt={`Artwork by ${artwork.artistName}`}
+            alt={`Artwork by ${translatedArtistName}`}
             className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
           />
         </div>
@@ -291,7 +303,7 @@ const ArtCard = ({
       <div className="px-1 py-1">
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium">
-            {title ? title.slice(0, 10) + (title.length > 10 ? "..." : "") : "Untitled Artwork"}
+            {translatedTitle ? translatedTitle.slice(0, 10) + (translatedTitle.length > 10 ? "..." : "") : translatedUntitledArtwork}
           </p>
 
           <div className="flex items-center space-x-1">
@@ -300,7 +312,7 @@ const ArtCard = ({
               className={`p-1 rounded-full transition-colors ${
                 localIsLiked ? "text-red-600" : "text-gray-400 hover:text-red-600"
               }`}
-              aria-label={localIsLiked ? "Unlike" : "Like"}
+              aria-label={localIsLiked ? translatedUnlike : translatedLike}
             >
               <Heart
                 size={15}
