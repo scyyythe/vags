@@ -45,17 +45,30 @@ const useSellArtwork = () => {
         additionalImages,
       } = data;
 
-      // Validation
-      if (!title.trim()) {
-        toast.error("Artwork title is required.");
+      // Lenient validation - only check for absolutely essential fields
+      if (!title || title.trim().length === 0) {
+        toast.error("Please enter an artwork title.");
         return;
       }
       if (!mainImage) {
-        toast.error("Artwork image is required.");
+        toast.error("Please upload at least one image of your artwork.");
         return;
       }
-      if (!price) {
-        toast.error("Price is required.");
+      if (!price || price.trim().length === 0) {
+        toast.error("Please set a price for your artwork.");
+        return;
+      }
+
+      // Optional validation with helpful suggestions
+      if (title.trim().length < 3) {
+        toast.error("Title should be at least 3 characters long.");
+        return;
+      }
+
+      // Check if price is a valid number
+      const priceNum = parseFloat(price);
+      if (isNaN(priceNum) || priceNum <= 0) {
+        toast.error("Please enter a valid price greater than 0.");
         return;
       }
 
@@ -65,16 +78,26 @@ const useSellArtwork = () => {
       try {
         const formData = new FormData();
         formData.append("title", title.trim());
-        formData.append("year_created", year_created.slice(0, 10));
-        formData.append("category", style);
-        formData.append("medium", medium.trim());
-        formData.append("size", `${height}x${width}`);
-        formData.append("description", description.trim());
-        formData.append("price", price);
-        formData.append("edition", edition);
-        formData.append("quantity", quantity);
+
+        // Provide defaults for optional fields
+        formData.append("year_created", year_created?.slice(0, 10) || new Date().getFullYear().toString());
+        formData.append("category", style || "General");
+        formData.append("medium", medium?.trim() || "Mixed Media");
+        formData.append("size", `${height || "Unknown"}x${width || "Unknown"}`);
+        formData.append("description", description?.trim() || "Beautiful artwork");
+        formData.append("price", Math.round(priceNum).toString()); // Use validated price number
+        formData.append("edition", edition || "Original (1 of 1)");
+
+        // Handle quantity - provide default for Open Edition
+        if (edition === "Open Edition") {
+          const qty = quantity && !isNaN(parseInt(quantity)) ? parseInt(quantity) : 1;
+          formData.append("quantity", qty.toString());
+        } else if (quantity && !isNaN(parseInt(quantity))) {
+          formData.append("quantity", parseInt(quantity).toString());
+        }
+
         formData.append("images", mainImage);
-        formData.append("visibility", "Public");
+        formData.append("visibility", "Public"); // Capitalized to match backend model
         formData.append("art_status", "onSale");
 
         additionalImages.forEach((img) => {
@@ -96,8 +119,19 @@ const useSellArtwork = () => {
           timeout: 120000, // 2 minutes
         });
 
-        // Optimized query invalidation - invalidate all relevant queries in parallel
-        await Promise.all([
+        // Show success toast immediately
+        toast.success("Artwork listed successfully!", {
+          id: "upload",
+          closeButton: true,
+          duration: 3000,
+          description: "Your artwork is now available in the marketplace",
+        });
+
+        // Navigate to marketplace immediately after successful save
+        navigate("/marketplace");
+
+        // Optimized query invalidation - invalidate all relevant queries in parallel (non-blocking)
+        Promise.all([
           // Invalidate marketplace queries
           queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] }),
           queryClient.invalidateQueries({ queryKey: ["trending-artworks"] }),
@@ -117,21 +151,10 @@ const useSellArtwork = () => {
           queryClient.invalidateQueries({ queryKey: ["feed"] }),
           queryClient.invalidateQueries({ queryKey: ["profile"] }),
           queryClient.invalidateQueries({ queryKey: ["user-artworks"] }),
-        ]);
-
-        // Force refetch marketplace data immediately
-        await queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
-
-        // Show success toast
-        toast.success("Artwork listed successfully!", {
-          id: "upload",
-          closeButton: true,
-          duration: 3000,
-          description: "Your artwork is now available in the marketplace",
+        ]).then(() => {
+          // Force refetch marketplace data after invalidation
+          queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
         });
-
-        // Navigate to marketplace
-        navigate("/marketplace");
 
         return response.data;
       } catch (error: unknown) {
@@ -153,11 +176,27 @@ const useSellArtwork = () => {
 
         // Handle API response errors
         if (error && typeof error === "object" && "response" in error) {
-          const apiError = error as { response?: { data?: any } };
+          const apiError = error as { response?: { data?: any; status?: number } };
           const errors = apiError.response?.data;
+          const status = apiError.response?.status;
 
           if (errors) {
-            if (Array.isArray(errors) && errors.length > 0) {
+            // Handle validation errors (400 Bad Request)
+            if (status === 400) {
+              console.error("Validation Error Details:", errors);
+
+              // Handle field-specific validation errors
+              if (typeof errors === "object" && !Array.isArray(errors)) {
+                const fieldErrors = Object.entries(errors).map(
+                  ([field, message]) => `${field}: ${Array.isArray(message) ? message[0] : message}`
+                );
+                errorMessage = `Validation Error: ${fieldErrors.join(", ")}`;
+              } else if (Array.isArray(errors) && errors.length > 0) {
+                errorMessage = errors[0];
+              } else {
+                errorMessage = "Please check all required fields and try again.";
+              }
+            } else if (Array.isArray(errors) && errors.length > 0) {
               const firstError = errors[0];
 
               // Handle Cloudinary error format
