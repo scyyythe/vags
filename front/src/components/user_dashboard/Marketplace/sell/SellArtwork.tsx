@@ -174,9 +174,6 @@ const SellArtwork = () => {
     }
   };
   const validateForm = (): boolean => {
-    const titleRegex = /^[A-Z][A-Za-z0-9\s.,'-]{2,99}$/;
-    const mediumRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/;
-
     const currentYear = new Date().getFullYear();
 
     // Payment Account Check
@@ -188,17 +185,21 @@ const SellArtwork = () => {
       return false;
     }
 
-    // Title
+    // Title - More lenient validation
     if (!artworkTitle.trim()) {
       toast.error("Please enter an artwork title.");
       return false;
     }
-    if (!titleRegex.test(artworkTitle.trim())) {
-      toast.error("Title must start with a capital letter and be 3-100 characters long.");
+    if (artworkTitle.trim().length < 2) {
+      toast.error("Title should be at least 2 characters long.");
+      return false;
+    }
+    if (artworkTitle.trim().length > 100) {
+      toast.error("Title should be less than 100 characters.");
       return false;
     }
 
-    // Year
+    // Year - Required
     if (!yearCreated) {
       toast.error("Please enter the year the artwork was created.");
       return false;
@@ -209,35 +210,44 @@ const SellArtwork = () => {
       return false;
     }
 
-    // Style
+    // Style - Required
     if (!artworkStyle) {
       toast.error("Please select an artwork style.");
       return false;
     }
 
-    // Medium
+    // Medium - Required
     if (!medium.trim()) {
       toast.error("Please enter the medium used for this artwork.");
       return false;
     }
-    if (!mediumRegex.test(medium.trim())) {
-      toast.error("Medium should contain letters only (e.g., Oil on Canvas, Digital Art).");
+    if (medium.trim().length > 100) {
+      toast.error("Medium description should be less than 100 characters.");
       return false;
     }
 
-    // Dimensions
+    // Dimensions - Required
+    if (!height) {
+      toast.error("Please enter the height of your artwork.");
+      return false;
+    }
     const h = Number(height);
-    const w = Number(width);
-    if (height && (isNaN(h) || h <= 0 || h > 1000)) {
-      toast.error("Height must be a positive number between 1-1000 cm.");
-      return false;
-    }
-    if (width && (isNaN(w) || w <= 0 || w > 1000)) {
-      toast.error("Width must be a positive number between 1-1000 cm.");
+    if (isNaN(h) || h <= 0 || h > 10000) {
+      toast.error("Height must be a positive number between 1-10000 cm.");
       return false;
     }
 
-    // Price
+    if (!width) {
+      toast.error("Please enter the width of your artwork.");
+      return false;
+    }
+    const w = Number(width);
+    if (isNaN(w) || w <= 0 || w > 10000) {
+      toast.error("Width must be a positive number between 1-10000 cm.");
+      return false;
+    }
+
+    // Price - Essential field
     if (!price) {
       toast.error("Please enter a price for your artwork.");
       return false;
@@ -247,12 +257,12 @@ const SellArtwork = () => {
       toast.error("Price must be a positive number.");
       return false;
     }
-    if (price.length > 10) {
-      toast.error("Price cannot exceed 10 digits.");
+    if (p > 10000000) {
+      toast.error("Price seems too high. Please enter a reasonable amount.");
       return false;
     }
 
-    // Quantity
+    // Quantity - Only validate if edition requires it
     if (edition !== "Original (1 of 1)") {
       if (!quantity) {
         toast.error("Please enter the quantity for this edition.");
@@ -263,19 +273,23 @@ const SellArtwork = () => {
         toast.error("Quantity must be a positive number.");
         return false;
       }
-      if (q > 1000) {
-        toast.error("Quantity cannot exceed 1000.");
+      if (q > 10000) {
+        toast.error("Quantity cannot exceed 10000.");
         return false;
       }
     }
 
-    // Description
-    if (description && description.length > 500) {
-      toast.error("Description cannot exceed 500 characters.");
+    // Description - Required
+    if (!description.trim()) {
+      toast.error("Please enter a description for your artwork.");
+      return false;
+    }
+    if (description.length > 1000) {
+      toast.error("Description cannot exceed 1000 characters.");
       return false;
     }
 
-    // Main image
+    // Main image - Essential
     if (!selectedFile) {
       toast.error("Please upload a main image of your artwork.");
       return false;
@@ -285,7 +299,7 @@ const SellArtwork = () => {
       return false;
     }
 
-    // Additional images
+    // Additional images - Optional but if provided, validate
     for (let i = 0; i < additionalImages.length; i++) {
       const file = additionalImages[i];
       if (file) {

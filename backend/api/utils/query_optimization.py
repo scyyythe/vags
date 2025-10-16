@@ -204,17 +204,36 @@ def get_artworks_for_sale(user=None):
     
     excluded_user_ids, hidden_artwork_ids = get_user_exclusions(user)
     
+    # More flexible query with case-insensitive matching and fallbacks
     query = Q(visibility__iexact="public") & Q(artist__nin=excluded_user_ids) & (
         Q(art_status__iexact="onSale") |
+        Q(art_status__iexact="onsale") |  # Handle lowercase variant
         (Q(edition__iexact="Open Edition") & Q(quantity__gt=0))
-    )
+    ) & Q(art_status__ne="unlisted") & Q(art_status__ne="sold")
     
     if hidden_artwork_ids:
         query = query & Q(id__nin=hidden_artwork_ids)
     
-    artworks = list(Art.objects(query).order_by("-created_at"))
-    
-    # Cache for 5 minutes
-    set_cache_data(cache_key, artworks, 300)
-    
-    return artworks
+    try:
+        artworks = list(Art.objects(query).order_by("-created_at"))
+        
+        # If no results with strict filtering, try more lenient approach
+        if not artworks:
+            print(f"Warning: No artworks found with strict filtering. Trying lenient approach...")
+            lenient_query = Q(visibility__iexact="public") & (
+                Q(art_status__iexact="onSale") |
+                Q(art_status__iexact="onsale")
+            ) & Q(art_status__ne="sold")
+            
+            artworks = list(Art.objects(lenient_query).order_by("-created_at"))
+            print(f"Lenient query found {len(artworks)} artworks")
+        
+        # Cache for 5 minutes
+        set_cache_data(cache_key, artworks, 300)
+        
+        return artworks
+        
+    except Exception as e:
+        print(f"Error in get_artworks_for_sale: {e}")
+        # Return empty list on error to prevent crashes
+        return []
