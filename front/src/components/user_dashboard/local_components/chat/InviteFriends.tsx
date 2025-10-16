@@ -3,10 +3,24 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 export const InviteFriends = () => {
   const [copied, setCopied] = useState(false);
   const inviteLink = "https://chat.example.com/invite/abc123";
+  const { language } = useLanguage();
+
+  const inviteFriendsText = useAutoTranslation("Invite your friends", language);
+  const inviteFriendsTitle = useAutoTranslation("Invite Friends", language);
+  const shareDescription = useAutoTranslation("Share this link with your friends to invite them to chat", language);
+  const copiedText = useAutoTranslation("Copied!", language);
+  const copyText = useAutoTranslation("Copy", language);
+  const shareOnSocial = useAutoTranslation("Share on social platforms:", language);
+  const facebookText = useAutoTranslation("Facebook", language);
+  const twitterText = useAutoTranslation("Twitter", language);
+  const whatsappText = useAutoTranslation("WhatsApp", language);
+  const telegramText = useAutoTranslation("Telegram", language);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(inviteLink);
@@ -39,7 +53,7 @@ export const InviteFriends = () => {
           className="w-[300px] m-4 mb-2 flex items-center space-x-2 bg-gray-50 hover:bg-gray-100"
         >
           <UserPlus size={11} />
-          <span className="text-[11px]">Invite your friends</span>
+          <span className="text-[11px]">{inviteFriendsText}</span>
           {/* <span className="text-sm text-gray-500">Connect to start chatting</span> */}
         </Button>
       </DialogTrigger>
@@ -47,12 +61,12 @@ export const InviteFriends = () => {
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2">
             {/* <UserPlus size={15} /> */}
-            <span className="text-sm">Invite Friends</span>
+            <span className="text-sm">{inviteFriendsTitle}</span>
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="text-xs text-gray-600">
-            Share this link with your friends to invite them to chat
+            {shareDescription}
           </div>
           
           <div className="flex items-center space-x-2">
@@ -64,12 +78,12 @@ export const InviteFriends = () => {
             />
             <Button onClick={handleCopyLink} size="sm">
               <i className='bx bx-copy' ></i>
-              <span className="text-[10px]">{copied ? "Copied!" : "Copy"}</span>
+              <span className="text-[10px]">{copied ? copiedText : copyText}</span>
             </Button>
           </div>
 
           <div className="space-y-2">
-            <div className="text-xs font-medium text-gray-700">Share on social platforms:</div>
+            <div className="text-xs font-medium text-gray-700">{shareOnSocial}</div>
             <div className="grid grid-cols-4 gap-2">
               <Button
                 variant="outline"
@@ -78,7 +92,7 @@ export const InviteFriends = () => {
                 className="flex items-center space-x-2"
               >
                 <div className="w-4 h-4 bg-blue-600 rounded"></div>
-                <span className="text-[9px]">Facebook</span>
+                <span className="text-[9px]">{facebookText}</span>
               </Button>
               
               <Button
@@ -88,7 +102,7 @@ export const InviteFriends = () => {
                 className="flex items-center space-x-2"
               >
                 <div className="w-4 h-4 bg-blue-400 rounded"></div>
-                <span className="text-[9px]">Twitter</span>
+                <span className="text-[9px]">{twitterText}</span>
               </Button>
               
               <Button
@@ -98,7 +112,7 @@ export const InviteFriends = () => {
                 className="flex items-center space-x-2"
               >
                 <div className="w-4 h-4 bg-green-500 rounded"></div>
-                <span className="text-[9px]">WhatsApp</span>
+                <span className="text-[9px]">{whatsappText}</span>
               </Button>
               
               <Button
@@ -108,7 +122,7 @@ export const InviteFriends = () => {
                 className="flex items-center space-x-2"
               >
                 <div className="w-4 h-4 bg-blue-500 rounded"></div>
-                <span className="text-[9px]">Telegram</span>
+                <span className="text-[9px]">{telegramText}</span>
               </Button>
             </div>
           </div>
