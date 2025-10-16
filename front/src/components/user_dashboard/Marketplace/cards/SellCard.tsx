@@ -200,7 +200,7 @@ const SellCard = ({
         )}
 
         {/* Icons or Status */}
-        {status === "active" && (isWishlistView || isMarketplace) ? (
+        {(status === "active" || status === "onsale") && !isOwner ? (
           <>
             {/* Message Icon */}
             <button
@@ -230,8 +230,13 @@ const SellCard = ({
               />
             </button>
           </>
+        ) : (status === "active" || status === "onsale") && isOwner ? (
+          // Show status badge for owner's own artworks
+          <div className="absolute top-2 right-2 bg-gray-100 border border-gray-300 text-[10px] text-gray-600 font-medium px-2 py-0.5 rounded-full">
+            On Sale
+          </div>
         ) : (
-          // Show status badge instead
+          // Show status badge for other statuses
           <div className="absolute top-2 right-2 bg-gray-100 border border-gray-300 text-[10px] text-gray-600 font-medium px-2 py-0.5 rounded-full">
             {status === "cancelled"
               ? "Cancelled"
@@ -330,13 +335,15 @@ const SellCard = ({
           {status !== "active" && reason && <p className="text-[10px] text-red-600 mt-1">{reason}</p>}
         </div>
 
-        {status === "active" ? (
-          <button
-            onClick={handleBuyNow}
-            className="text-white text-[9px] bg-red-800 hover:bg-red-700 transition px-4 py-1.5 rounded-full"
-          >
-            Buy Now
-          </button>
+        {status === "active" || status === "onsale" ? (
+          !isOwner && (
+            <button
+              onClick={handleBuyNow}
+              className="text-white text-[9px] bg-red-800 hover:bg-red-700 transition px-4 py-1.5 rounded-full"
+            >
+              Buy Now
+            </button>
+          )
         ) : status === "sold" && onRelist ? (
           <button
             onClick={(e) => {
