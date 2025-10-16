@@ -61,6 +61,9 @@ export const ChatHeader = ({
   const online = useAutoTranslation("Online", language);
   const offline = useAutoTranslation("Offline", language);
 
+  // Translate participant name
+  const translatedParticipantName = useAutoTranslation(selectedConv?.participantName || "", language);
+
   return (
     <div className="p-4 border-b border-gray-200">
       <div className="flex items-center justify-between mb-3">
@@ -71,7 +74,7 @@ export const ChatHeader = ({
             </Button>
           )}
           <h3 className="font-semibold text-gray-900 text-sm">
-            {selectedConversation ? selectedConv?.participantName : showArchived ? archived : messages}
+            {selectedConversation ? translatedParticipantName : showArchived ? archived : messages}
           </h3>
         </div>
         <div className="flex items-center space-x-2">
@@ -151,7 +154,7 @@ export const ChatHeader = ({
             )}
           </div>
           <div>
-            <p className="font-medium text-gray-900 text-[11px]">{selectedConv.participantName}</p>
+            <p className="font-medium text-gray-900 text-[11px]">{translatedParticipantName}</p>
             <p className="text-[10px] text-gray-500">{selectedConv.isOnline ? online : offline}</p>
           </div>
         </div>
