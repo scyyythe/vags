@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import VerticalScrollImage from "./VerticalScrollImage";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Artwork {
   id: string;
@@ -54,6 +56,9 @@ const VerticalMarqueeColumn = ({
 
 const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
   const [showNarration, setShowNarration] = useState(true);
+  const { language } = useLanguage();
+  const popularArtworksTitle = useAutoTranslation("Popular Artworks of the Week", language);
+  const description = useAutoTranslation("Dive into this week's handpicked collection of stunning creations—each piece a bold exploration of imagination, emotion, and visual storytelling.", language);
 
   // Repeat the first 5 artworks to ensure we can fill/overflow
   const base = useMemo(() => artworks.slice(0, 5), [artworks]);
@@ -89,14 +94,14 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <motion.h1
-              className="text-base sm:text-lg lg:text-2xl font-bold leading-tight 
-                        bg-gradient-to-r from-red-500 via-red-400 to-red-300 
+              className="text-base sm:text-lg lg:text-2xl font-bold leading-tight
+                        bg-gradient-to-r from-red-500 via-red-400 to-red-300
                         bg-clip-text text-black"
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
-              Popular Artworks of the Week
+              {popularArtworksTitle}
             </motion.h1>
 
             <motion.p
@@ -105,9 +110,7 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.7 }}
             >
-              Dive into this week's handpicked collection of stunning creations—
-              each piece a bold exploration of imagination, emotion, and visual
-              storytelling.
+              {description}
             </motion.p>
           </motion.div>
 
