@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
 
-const useMarkArtworkAsUnlisted = () => {
+const useMarkArtworkAsUnlisted = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -55,6 +55,17 @@ const useMarkArtworkAsUnlisted = () => {
         return old;
       });
 
+      // Optimistically update OnSaleTab data (my-sell-art-cards and user-sell-art-cards)
+      queryClient.setQueryData(["my-sell-art-cards"], (old: any) => {
+        if (!old || !Array.isArray(old)) return old;
+        return old.filter((artwork: any) => artwork.id !== artworkId);
+      });
+
+      queryClient.setQueryData(["user-sell-art-cards"], (old: any) => {
+        if (!old || !Array.isArray(old)) return old;
+        return old.filter((artwork: any) => artwork.id !== artworkId);
+      });
+
       // Return a context object with the snapshotted values
       return { previousMarketplaceData, previousTrendingData, previousFollowedData };
     },
@@ -76,6 +87,9 @@ const useMarkArtworkAsUnlisted = () => {
       queryClient.invalidateQueries({ queryKey: ["feed"] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       queryClient.invalidateQueries({ queryKey: ["user-artworks"] });
+
+      // Call the success callback for tab switching
+      onSuccessCallback?.();
     },
     onError: (err, artworkId, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back

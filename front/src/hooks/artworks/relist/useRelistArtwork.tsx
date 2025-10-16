@@ -23,6 +23,56 @@ export const useRelistArtwork = () => {
       const previousMySellData = queryClient.getQueryData(["my-sell-art-cards"]);
       const previousUserSellData = queryClient.getQueryData(["user-sell-art-cards"]);
 
+      // Optimistically update OnSaleTab data - remove from current view and add to available
+      queryClient.setQueryData(["my-sell-art-cards"], (old: any) => {
+        if (!old || !Array.isArray(old)) return old;
+        // Remove from current view and update status to "onsale"
+        return old.map((artwork: any) =>
+          artwork.id === artworkId ? { ...artwork, art_status: "onSale", status: "onsale" } : artwork
+        );
+      });
+
+      queryClient.setQueryData(["user-sell-art-cards"], (old: any) => {
+        if (!old || !Array.isArray(old)) return old;
+        // Remove from current view and update status to "onsale"
+        return old.map((artwork: any) =>
+          artwork.id === artworkId ? { ...artwork, art_status: "onSale", status: "onsale" } : artwork
+        );
+      });
+
+      // Optimistically update marketplace data - add the relisted artwork
+      queryClient.setQueryData(["marketplace-art-cards"], (old: any) => {
+        if (!old) return old;
+        if (Array.isArray(old)) {
+          // Check if artwork already exists in marketplace
+          const existingIndex = old.findIndex((artwork: any) => artwork.id === artworkId);
+          if (existingIndex >= 0) {
+            // Update existing artwork status
+            const updated = [...old];
+            updated[existingIndex] = { ...updated[existingIndex], art_status: "onSale", status: "onsale" };
+            return updated;
+          }
+          // If not found, we'll let the refetch handle adding it
+          return old;
+        }
+        if (old.results && Array.isArray(old.results)) {
+          // Handle paginated response
+          const existingIndex = old.results.findIndex((artwork: any) => artwork.id === artworkId);
+          if (existingIndex >= 0) {
+            const updated = { ...old };
+            updated.results = [...old.results];
+            updated.results[existingIndex] = {
+              ...updated.results[existingIndex],
+              art_status: "onSale",
+              status: "onsale",
+            };
+            return updated;
+          }
+          return old;
+        }
+        return old;
+      });
+
       // Return a context object with the snapshotted values
       return { previousMarketplaceData, previousMySellData, previousUserSellData };
     },
@@ -60,6 +110,9 @@ export const useRelistArtwork = () => {
       queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
       queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
       queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
+
+      // Force immediate refetch of marketplace data
+      queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
     },
   });
 };
