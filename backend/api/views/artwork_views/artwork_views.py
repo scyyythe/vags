@@ -51,12 +51,19 @@ def clear_artwork_caches():
     # Clear view-level caches
     cache_keys_to_clear = [
         "popular_artworks_top5",
+        # Clear marketplace-specific caches
+        "artworks_for_sale_anonymous",
         # Add more cache keys as needed
     ]
     
     for key in cache_keys_to_clear:
         from api.utils.cache_utils import delete_cache_data
         delete_cache_data(key)
+    
+    # Clear user-specific marketplace caches (for all users)
+    # This is a more aggressive approach to ensure immediate visibility
+    from api.utils.cache_utils import clear_all_artwork_caches
+    clear_all_artwork_caches()
 
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
@@ -109,6 +116,9 @@ class SellArtworkView(APIView):
         serializer = ArtSerializer(data=request.data)
         if serializer.is_valid():
             art = serializer.save(artist=mongo_user)
+            
+            # Clear artwork caches to ensure new artwork appears immediately
+            clear_artwork_caches()
             
             # Create notification for successful artwork listing
             from api.utils.notification_utils import notify_artwork_listed_for_sale
@@ -673,6 +683,9 @@ class HideArtworkView(APIView):
         )
         hidden_content.save()
 
+        # Clear artwork caches to ensure hidden artwork disappears from marketplace
+        clear_artwork_caches()
+
         return Response({"message": "Artwork hidden successfully."}, status=status.HTTP_200_OK)
     
 class UnHideArtworkView(APIView):
@@ -696,6 +709,8 @@ class UnHideArtworkView(APIView):
 
         if hidden_content:
             hidden_content.delete()
+            # Clear artwork caches to ensure unhidden artwork appears in marketplace
+            clear_artwork_caches()
             return Response({"message": "Artwork unhidden successfully."}, status=status.HTTP_200_OK)
         else:
             return Response({"message": "Artwork was not hidden."}, status=status.HTTP_200_OK)
@@ -715,6 +730,9 @@ class DeleteArtwork(APIView):
             set__visibility="Deleted",
             set__updated_at=datetime.utcnow()
         )
+
+        # Clear artwork caches to ensure deleted artwork disappears from marketplace immediately
+        clear_artwork_caches()
 
         return Response({"message": "Artwork deleted successfully."}, status=status.HTTP_200_OK)
 
@@ -738,6 +756,9 @@ class RestoreArtwork(APIView):
         artwork.visibility = "Public"
         artwork.updated_at = datetime.utcnow()
         artwork.save()
+
+        # Clear artwork caches to ensure restored artwork appears in marketplace immediately
+        clear_artwork_caches()
 
         return Response({"message": "Artwork restored successfully."}, status=status.HTTP_200_OK)
 
@@ -774,6 +795,9 @@ class ArchivedArtwork(APIView):
         artwork.updated_at = datetime.utcnow()
         artwork.save()
 
+        # Clear artwork caches to ensure archived artwork disappears from marketplace
+        clear_artwork_caches()
+
         return Response(
             {"message": "Artwork Archived successfully."},
             status=status.HTTP_200_OK
@@ -797,6 +821,9 @@ class UnArchivedArtwork(APIView):
         artwork.visibility = "Public"
         artwork.updated_at = datetime.utcnow()
         artwork.save()
+
+        # Clear artwork caches to ensure unarchived artwork appears in marketplace
+        clear_artwork_caches()
 
         return Response({"message": "Artwork unarchived successfully."}, status=status.HTTP_200_OK)
     
@@ -824,6 +851,9 @@ class UpdateArtworkVisibilityView(APIView):
         artwork.visibility = new_visibility
         artwork.updated_at = datetime.utcnow()
         artwork.save()
+
+        # Clear artwork caches to ensure visibility changes appear immediately in marketplace
+        clear_artwork_caches()
 
         return Response(
             {"message": f"Artwork visibility updated to {new_visibility}.", "visibility": new_visibility},

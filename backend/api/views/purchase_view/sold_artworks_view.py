@@ -127,6 +127,10 @@ class ToggleArtworkStatusView(APIView):
 
         artwork.save()
 
+        # Clear artwork caches to ensure sold/onSale status changes appear immediately in marketplace
+        from api.views.artwork_views.artwork_views import clear_artwork_caches
+        clear_artwork_caches()
+
         return Response(
             {"message": message, "artwork_id": str(artwork.id), "new_status": artwork.art_status},
             status=status.HTTP_200_OK
@@ -152,6 +156,10 @@ class MarkArtworkAsUnlistedView(APIView):
             message = "Artwork marked as unlisted (private)"
 
         artwork.save()
+
+        # Clear artwork caches to ensure unlist/relist changes appear immediately in marketplace
+        from api.views.artwork_views.artwork_views import clear_artwork_caches
+        clear_artwork_caches()
 
         return Response(
             {
