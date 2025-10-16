@@ -28,6 +28,9 @@ const useToggleArtworkStatus = () => {
       queryClient.invalidateQueries({ queryKey: ["feed"] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       queryClient.invalidateQueries({ queryKey: ["user-artworks"] });
+
+      // Force immediate refetch of marketplace data
+      queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
     },
     onError: () => {
       toast.error("Failed to update artwork status.", { closeButton: true });
