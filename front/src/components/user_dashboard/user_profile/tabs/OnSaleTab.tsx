@@ -770,7 +770,20 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
         // Move to available tab to show the relisted artwork
         setSubTab("available");
 
-        // The data will be refreshed automatically by React Query
+        // Immediately refetch queries to ensure data is up to date
+        if (isOwnProfile) {
+          queryClient.refetchQueries({ queryKey: ["my-sell-art-cards"] });
+        } else {
+          queryClient.refetchQueries({ queryKey: ["user-sell-art-cards"] });
+        }
+
+        // Also refetch marketplace data
+        queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
+
+        // If currently on unlisted tab, also refetch to remove from unlisted view
+        if (subTab === "unlisted") {
+          queryClient.refetchQueries({ queryKey: ["my-sell-art-cards"] });
+        }
       },
       onError: (error) => {
         console.error("Failed to relist artwork:", error);
