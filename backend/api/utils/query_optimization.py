@@ -197,10 +197,14 @@ def get_artworks_for_sale(user=None):
     Get artworks available for sale with optimized query
     """
     cache_key = f"artworks_for_sale_{user.id if user and user.is_authenticated else 'anonymous'}"
+    print(f"DEBUG: Checking cache for key: {cache_key}")
     cached_artworks = get_cached_data(cache_key)
     
     if cached_artworks:
+        print(f"DEBUG: Using cached data with {len(cached_artworks)} artworks")
         return cached_artworks
+    
+    print("DEBUG: No cached data found, fetching fresh data...")
     
     excluded_user_ids, hidden_artwork_ids = get_user_exclusions(user)
     
@@ -230,6 +234,11 @@ def get_artworks_for_sale(user=None):
         
         # Cache for 5 minutes
         set_cache_data(cache_key, artworks, 300)
+        print(f"DEBUG: Cached {len(artworks)} artworks with key: {cache_key}")
+        
+        # Debug: Print first few artwork IDs and statuses
+        for i, artwork in enumerate(artworks[:5]):
+            print(f"DEBUG: Artwork {i+1}: ID={artwork.id}, Status={artwork.art_status}, Visibility={artwork.visibility}")
         
         return artworks
         
