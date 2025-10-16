@@ -22,14 +22,24 @@ import { useDonation } from "@/context/DonationContext";
 import { useStripeTip } from "@/hooks/tips/useStripeTip";
 import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLanguage } from "@/context/LanguageContext";
+import { autoTranslate } from "@/utils/autoTranslate";
 
 const Explore = () => {
   const navigate = useNavigate();
   const { openPopup } = useDonation();
   const { verifyStripePayment } = useStripeTip();
   const [status, setStatus] = useState<string>("");
-  const categories = ["All", "Trending", "Following"];
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const { language } = useLanguage();
+  const translatedAll = useAutoTranslation("All", language);
+  const translatedTrending = useAutoTranslation("Trending", language);
+  const translatedFollowing = useAutoTranslation("Following", language);
+  const translatedCreate = useAutoTranslation("Create", language);
+  const translatedErrorLoading = useAutoTranslation("Error loading artworks", language);
+  const translatedNoArtworks = useAutoTranslation("No artworks found.", language);
+  const categories = [translatedAll, translatedTrending, translatedFollowing];
+  const [selectedCategory, setSelectedCategory] = useState(translatedAll);
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [selectedStyle, setSelectedStyle] = useState("All");
 
@@ -85,13 +95,13 @@ const Explore = () => {
 
     const category = selectedCategory.toLowerCase();
 
-    if (category === "following") {
+    if (category === translatedFollowing.toLowerCase()) {
       return Array.isArray(followedArtworksData) ? followedArtworksData : followedArtworksData?.artworks ?? [];
     }
 
     let filtered = artworks;
 
-    if (category !== "all" && category !== "following" && category !== "trending") {
+    if (category !== translatedAll.toLowerCase() && category !== translatedFollowing.toLowerCase() && category !== translatedTrending.toLowerCase()) {
       filtered = filtered.filter((artwork) => artwork.style.toLowerCase() === category);
     }
 
@@ -103,12 +113,12 @@ const Explore = () => {
       );
     }
 
-    if (category === "trending") {
+    if (category === translatedTrending.toLowerCase()) {
       filtered = [...filtered].sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0));
     }
 
     return filtered;
-  }, [artworks, searchQuery, selectedCategory, followedArtworksData]);
+  }, [artworks, searchQuery, selectedCategory, followedArtworksData, language]);
 
   const handleTipJar = (artwork: (typeof filteredArtworksMemo)[0]) => {
     console.log("Opening tip jar for artwork:", artwork);
@@ -156,7 +166,7 @@ const Explore = () => {
                   categories={categories}
                   onSelectCategory={(category) => {
                     setSelectedCategory(category);
-                    if (category === "Trending" || category === "Following") {
+                    if (category === translatedTrending || category === translatedFollowing) {
                       setSelectedStyle("All");
                     }
                   }}
@@ -175,7 +185,7 @@ const Explore = () => {
                     onClick={handleCreateClick}
                   >
                     <i className="bx bx-plus text-xs"></i>
-                    Create
+                    {translatedCreate}
                   </button>
                 </div>
               </div>
@@ -185,11 +195,11 @@ const Explore = () => {
                   {isLoading ? (
                     Array.from({ length: 10 }).map((_, index) => <ArtCardSkeleton key={index} />)
                   ) : error ? (
-                    <div className="col-span-full text-center text-sm text-gray-500">Error loading artworks</div>
+                    <div className="col-span-full text-center text-sm text-gray-500">{translatedErrorLoading}</div>
                   ) : filteredArtworksMemo.length === 0 && selectedCategory ? (
                     <div className="col-span-full flex flex-col items-center justify-center text-center">
                       <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
-                      <p className="text-sm text-gray-500">No artworks found.</p>
+                      <p className="text-sm text-gray-500">{translatedNoArtworks}</p>
                     </div>
                   ) : (
                     filteredArtworksMemo.map((card) => {
