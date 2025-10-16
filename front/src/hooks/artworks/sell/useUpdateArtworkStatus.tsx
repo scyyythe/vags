@@ -54,6 +54,9 @@ const useUpdateArtworkStatus = (
       });
       queryClient.invalidateQueries({ queryKey: ["my-artworks"] });
       queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
+
+      // Force immediate refetch of marketplace data
+      queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
     },
     onError: () => {
       toast.error("Failed to update artwork.", { closeButton: true });

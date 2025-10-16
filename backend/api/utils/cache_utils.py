@@ -25,17 +25,21 @@ def clear_all_artwork_caches():
     
     # Clear anonymous user cache
     cache.delete("artworks_for_sale_anonymous")
+    print("DEBUG: Cleared anonymous cache")
     
     # Clear popular artworks cache
     cache.delete("popular_artworks_top5")
+    print("DEBUG: Cleared popular artworks cache")
     
     # Clear all user-specific caches (MongoEngine compatible approach)
     try:
         # Get all user IDs using MongoEngine syntax
         users = User.objects.only('id')
+        print(f"DEBUG: Found {users.count()} users to clear caches for")
         for user in users:
             cache_key = f"artworks_for_sale_{user.id}"
             cache.delete(cache_key)
+            print(f"DEBUG: Cleared cache for user: {user.id}")
     except Exception as e:
         print(f"Warning: Could not clear user-specific caches: {e}")
 

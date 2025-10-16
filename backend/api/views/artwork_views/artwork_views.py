@@ -39,14 +39,21 @@ from api.utils.query_optimization import (
 )
 
 class ArtworkPagination(PageNumberPagination):
-    page_size = 20
+    page_size = 100
     page_size_query_param = 'page_size'
     max_page_size = 100
 
+class MarketplacePagination(PageNumberPagination):
+    page_size = 100  
+    page_size_query_param = 'page_size'
+    max_page_size = 500
+
 def clear_artwork_caches():
     """Clear all artwork-related caches"""
+    print("DEBUG: Starting to clear artwork caches...")
     from api.serializers.artwork_s.artwork_serializers import ArtSerializer
     ArtSerializer.clear_cache()
+    print("DEBUG: Cleared serializer caches")
     
     # Clear view-level caches
     cache_keys_to_clear = [
@@ -59,11 +66,13 @@ def clear_artwork_caches():
     for key in cache_keys_to_clear:
         from api.utils.cache_utils import delete_cache_data
         delete_cache_data(key)
+        print(f"DEBUG: Cleared cache key: {key}")
     
     # Clear user-specific marketplace caches (for all users)
     # This is a more aggressive approach to ensure immediate visibility
     from api.utils.cache_utils import clear_all_artwork_caches
     clear_all_artwork_caches()
+    print("DEBUG: Cleared all artwork caches")
 
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
@@ -294,7 +303,7 @@ class PopularLightweightArtView(APIView):
 
 class ArtCardListView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
-    pagination_class = ArtworkPagination
+    pagination_class = MarketplacePagination
 
     def get(self, request):
         try:
@@ -990,6 +999,11 @@ class RelistArtworkView(APIView):
         artwork.visibility = "Public"
         artwork.updated_at = datetime.now(timezone.utc)
         artwork.save()
+
+        # Clear artwork caches to ensure relisted artwork appears immediately in marketplace
+        print(f"DEBUG: Clearing artwork caches after relisting artwork {artwork_id}")
+        clear_artwork_caches()
+        print(f"DEBUG: Artwork caches cleared successfully")
 
         return Response(
             {"message": "Artwork successfully relisted."},

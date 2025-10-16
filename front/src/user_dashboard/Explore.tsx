@@ -183,7 +183,7 @@ const Explore = () => {
               <div className="lg:w-[133%] custom-scrollbars pb-4 pl-2 sm:pl-0">
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                   {isLoading ? (
-                    Array.from({ length: 6 }).map((_, index) => <ArtCardSkeleton key={index} />)
+                    Array.from({ length: 10 }).map((_, index) => <ArtCardSkeleton key={index} />)
                   ) : error ? (
                     <div className="col-span-full text-center text-sm text-gray-500">Error loading artworks</div>
                   ) : filteredArtworksMemo.length === 0 && selectedCategory ? (
