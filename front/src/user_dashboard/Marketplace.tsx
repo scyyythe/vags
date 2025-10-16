@@ -269,7 +269,6 @@ const Marketplace = () => {
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-                  {/* ✅ Desktop Sell button */}
                   <button
                     className="hidden sm:flex py-1 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full items-center gap-1"
                     onClick={handleSellClick}
@@ -284,7 +283,7 @@ const Marketplace = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4">
               {isLoading || (selectedCategoryFilter === "Following" && isFollowedLoading) ? (
                 <>
-                  {Array.from({ length: 5 }).map((_, idx) => (
+                  {Array.from({ length: 10 }).map((_, idx) => (
                     <SellCardSkeleton key={idx} />
                   ))}
                 </>

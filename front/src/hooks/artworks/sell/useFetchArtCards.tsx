@@ -25,7 +25,7 @@ export interface ArtCard {
 
 const fetchArtCards = async () => {
   try {
-    const response = await apiClient.get("/art/cards/");
+    const response = await apiClient.get("/art/cards/?page_size=100");
 
     // Handle paginated response
     if (response.data && typeof response.data === "object" && "results" in response.data) {
