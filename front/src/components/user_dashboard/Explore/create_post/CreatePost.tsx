@@ -9,7 +9,10 @@ import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/Artw
 import { useQueryClient } from "@tanstack/react-query";
 import { validatePostData, submitPost, PostSubmissionData } from "@/hooks/artworks/usePostSubmission";
 import { useOptimizedPostSubmission } from "@/hooks/artworks/useOptimizedPostSubmission";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 const CreatePost = () => {
+  const { language } = useLanguage();
   const navigate = useNavigate();
   const [artworkTitle, setArtworkTitle] = useState("");
   const [artworkStyle, setArtworkStyle] = useState("");
@@ -33,6 +36,29 @@ const CreatePost = () => {
 
   // Use optimized upload hook
   const { submitPost: submitPostOptimized, isUploading: isUploadingOptimized } = useOptimizedPostSubmission();
+
+  // Translations for UI texts
+  const createPostText = useAutoTranslation("Create Post", language);
+  const provideArtworkDetailsText = useAutoTranslation("Provide artwork details.", language);
+  const artworkTitleText = useAutoTranslation("Artwork Title", language);
+  const enterArtworkTitleText = useAutoTranslation("Enter artwork title", language);
+  const artworkStyleText = useAutoTranslation("Artwork Style", language);
+  const selectArtworkStyleText = useAutoTranslation("Select artwork style", language);
+  const mediumText = useAutoTranslation("Medium", language);
+  const enterMediumUsedText = useAutoTranslation("Enter medium used", language);
+  const dimensionsText = useAutoTranslation("Dimensions (cm)", language);
+  const heightText = useAutoTranslation("Height", language);
+  const widthText = useAutoTranslation("Width", language);
+  const aboutThisArtworkText = useAutoTranslation("About this Artwork", language);
+  const addADescriptionText = useAutoTranslation("Add a description", language);
+  const postArtworkText = useAutoTranslation("Post Artwork", language);
+  const uploadingText = useAutoTranslation("Uploading...", language);
+  const chooseAFileOrDragAndDropItHereText = useAutoTranslation("Choose a file or drag and drop it here", language);
+  const chooseFileText = useAutoTranslation("Choose File", language);
+  const weRecommendUsingHighQualityJpgFilesLessThan20MBText = useAutoTranslation("We recommend using high quality .jpg files less than 20MB", language);
+
+  // Translated artwork styles
+  const translatedArtStyles = ART_STYLES.map(style => useAutoTranslation(style, language));
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -126,7 +152,7 @@ const CreatePost = () => {
         <div className="mb-8">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
-            Create Post
+            {createPostText}
           </button>
         </div>
 
@@ -161,16 +187,16 @@ const CreatePost = () => {
                     />
                   </div>
                 </div>
-                <p className="mb-2 text-sm font-medium">Choose a file or drag and drop it here</p>
+                <p className="mb-2 text-sm font-medium">{chooseAFileOrDragAndDropItHereText}</p>
                 <label
                   htmlFor="fileInput"
                   className="cursor-pointer hover:bg-white inline-block mb-6 border border-gray-300 rounded-[6px] p-2 text-xs"
                 >
-                  Choose File
+                  {chooseFileText}
                   <input type="file" id="fileInput" className="hidden" accept="image/*" onChange={handleFileChange} />
                 </label>
                 <p className="relative top-16 text-xs text-gray-500">
-                  We recommend using high quality .jpg files less than 20MB
+                  {weRecommendUsingHighQualityJpgFilesLessThan20MBText}
                 </p>
               </div>
             )}
@@ -179,15 +205,15 @@ const CreatePost = () => {
           <div>
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
-                <h2 className="text-sm font-medium mb-8">Provide artwork details.</h2>
+                <h2 className="text-sm font-medium mb-8">{provideArtworkDetailsText}</h2>
 
                 <div className="mb-6">
                   <label htmlFor="title" className="block mb-4 text-xs">
-                    Artwork Title
+                    {artworkTitleText}
                   </label>
                   <Input
                     id="title"
-                    placeholder="Enter artwork title"
+                    placeholder={enterArtworkTitleText}
                     value={artworkTitle}
                     onChange={(e) => setArtworkTitle(e.target.value)}
                     className="w-full"
@@ -198,7 +224,7 @@ const CreatePost = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                   <div>
                     <label htmlFor="style" className="block mb-4 text-xs">
-                      Artwork Style
+                      {artworkStyleText}
                     </label>
                     <div className="relative">
                       <select
@@ -208,10 +234,10 @@ const CreatePost = () => {
                         className="w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs cursor-pointer"
                       >
                         <option value="" disabled>
-                          Select artwork style
+                          {selectArtworkStyleText}
                         </option>
-                        {ART_STYLES.map((style) => (
-                          <option key={style} value={style.toLowerCase()}>
+                        {translatedArtStyles.map((style, index) => (
+                          <option key={ART_STYLES[index]} value={ART_STYLES[index].toLowerCase()}>
                             {style}
                           </option>
                         ))}
@@ -232,11 +258,11 @@ const CreatePost = () => {
 
                   <div>
                     <label htmlFor="medium" className="block mb-4 text-xs">
-                      Medium
+                      {mediumText}
                     </label>
                     <Input
                       id="medium"
-                      placeholder="Enter medium used"
+                      placeholder={enterMediumUsedText}
                       value={medium}
                       onChange={(e) => setMedium(e.target.value)}
                       className="w-full -py-2"
@@ -246,7 +272,7 @@ const CreatePost = () => {
 
                   <div className="relative">
                     <label htmlFor="medium" className="block mb-4 text-xs">
-                      Dimensions (cm)
+                      {dimensionsText}
                     </label>
                     <div className="grid grid-cols-3">
                       <div className="flex flex-col">
@@ -258,7 +284,7 @@ const CreatePost = () => {
                           value={artworkHeight}
                           onChange={(e) => setArtworkHeight(e.target.value)}
                         />
-                        <label className="text-[9px] text-center mb-1">Height</label>
+                        <label className="text-[9px] text-center mb-1">{heightText}</label>
                       </div>
                       <span className="h-5 w-5 font-bold text-sm flex items-center justify-center mx-auto mt-2">x</span>
                       <div className="flex flex-col">
@@ -270,7 +296,7 @@ const CreatePost = () => {
                           value={artworkWidth}
                           onChange={(e) => setArtworkWidth(e.target.value)}
                         />
-                        <label className="text-[9px] text-center mb-1">Width</label>
+                        <label className="text-[9px] text-center mb-1">{widthText}</label>
                       </div>
                     </div>
                   </div>
@@ -278,11 +304,11 @@ const CreatePost = () => {
 
                 <div className="mb-6">
                   <label htmlFor="description" className="block mb-4 text-xs">
-                    About this Artwork
+                    {aboutThisArtworkText}
                   </label>
                   <Textarea
                     id="description"
-                    placeholder="Add a description"
+                    placeholder={addADescriptionText}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full min-h-[120px] p-1 text-xs"
@@ -312,10 +338,10 @@ const CreatePost = () => {
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                           />
                         </svg>
-                        Uploading...
+                        {uploadingText}
                       </span>
                     ) : (
-                      "Post Artwork"
+                      postArtworkText
                     )}
                   </Button>
                 </div>
