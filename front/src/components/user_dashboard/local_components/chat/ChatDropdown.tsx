@@ -21,6 +21,8 @@ import { addDoc, serverTimestamp, getDocs } from "firebase/firestore";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { uploadChatImageToCloudinary, uploadChatFileToCloudinary } from "@/utils/chatCloudinaryUpload";
 import useAllUsersQuery from "@/hooks/users/useAllUsersQuery";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface ChatDropdownProps {
   isOpen: boolean;
   onClose: () => void;
@@ -59,6 +61,19 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     selectedConversation || "",
     userId
   );
+
+  const { language } = useLanguage();
+
+  const loadingUsersText = useAutoTranslation("Loading users...", language);
+  const searchResultsText = useAutoTranslation("Search results for", language);
+  const allUsersText = useAutoTranslation("All users", language);
+  const noUsersFoundText = useAutoTranslation("No users found for", language);
+  const noUsersAvailableText = useAutoTranslation("No users available", language);
+  const chatText = useAutoTranslation("Chat", language);
+  const noMessagesYetText = useAutoTranslation("No messages yet", language);
+  const startConversationText = useAutoTranslation("Start a conversation by searching above", language);
+  const shareWithFriendsText = useAutoTranslation("Share with Friends", language);
+  const initiatingCallText = useAutoTranslation("Initiating voice call with", language);
 
   useEffect(() => {
     if (isOpen) {
@@ -906,11 +921,11 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                     onClick={(e) => e.stopPropagation()}
                   >
                     {isLoadingUsers ? (
-                      <div className="p-3 text-center text-gray-500 text-xs">Loading users...</div>
+                      <div className="p-3 text-center text-gray-500 text-xs">{loadingUsersText}</div>
                     ) : filteredUsers.length > 0 ? (
                       <div className="py-1">
                         <div className="px-3 py-2 text-xs font-medium text-gray-500 border-b border-gray-100">
-                          {searchQuery.length > 0 ? `Search results for "${searchQuery}"` : "All users"}
+                          {searchQuery.length > 0 ? `${searchResultsText} "${searchQuery}"` : allUsersText}
                         </div>
                         {filteredUsers.map((user) => {
                           const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim();
@@ -956,7 +971,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                       </div>
                     ) : (
                       <div className="p-3 text-center text-gray-500 text-xs">
-                        {searchQuery.length > 0 ? `No users found for "${searchQuery}"` : "No users available"}
+                        {searchQuery.length > 0 ? `${noUsersFoundText} "${searchQuery}"` : noUsersAvailableText}
                       </div>
                     )}
                   </div>
@@ -995,8 +1010,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                         </svg>
                       </div>
                       <div className="text-center space-y-1">
-                        <p className="text-sm font-medium">No messages yet</p>
-                        <p className="text-[10px] text-gray-400">Start a conversation by searching above</p>
+                        <p className="text-sm font-medium">{noMessagesYetText}</p>
+                        <p className="text-[10px] text-gray-400">{startConversationText}</p>
                       </div>
                     </div>
                   )}
@@ -1006,7 +1021,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                     onClick={() => setShareModalOpen(true)}
                     className="w-full bg-black text-white py-2 rounded-lg text-[10px] hover:bg-gray-800 transition"
                   >
-                    Share with Friends
+                    {shareWithFriendsText}
                   </button>
 
                   <ShareModal
