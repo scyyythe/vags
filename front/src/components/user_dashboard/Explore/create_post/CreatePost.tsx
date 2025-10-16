@@ -6,9 +6,9 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/ArtworkStyles";
-import apiClient from "@/utils/apiClient";
-import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import { validatePostData, submitPost, PostSubmissionData } from "@/hooks/artworks/usePostSubmission";
+import { useOptimizedPostSubmission } from "@/hooks/artworks/useOptimizedPostSubmission";
 const CreatePost = () => {
   const navigate = useNavigate();
   const [artworkTitle, setArtworkTitle] = useState("");
@@ -30,6 +30,9 @@ const CreatePost = () => {
   const [artworkWidth, setArtworkWidth] = useState("");
 
   const queryClient = useQueryClient();
+
+  // Use optimized upload hook
+  const { submitPost: submitPostOptimized, isUploading: isUploadingOptimized } = useOptimizedPostSubmission();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -72,150 +75,47 @@ const CreatePost = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const size = `${artworkHeight} x ${artworkWidth}`;
 
-    // Artwork title validation: first letter capital, letters & numbers allowed
-    const titleRegex = /^[A-Z][A-Za-z0-9\s]*$/;
-    if (!artworkTitle.trim()) {
-      toast.error("Please enter an artwork title", { closeButton: true });
-      return;
-    }
-    if (!titleRegex.test(artworkTitle)) {
-      toast.error("Artwork title invalid", {
-        description: "Must start with a capital letter",
-        closeButton: true,
-      });
+    // Validate form data using the separated validation logic
+    const validation = validatePostData({
+      title: artworkTitle,
+      medium,
+      artworkHeight,
+      artworkWidth,
+      category: artworkStyle,
+      selectedFile,
+    });
+
+    if (!validation.isValid) {
+      toast.error(validation.errorMessage!, { closeButton: true });
       return;
     }
 
-    // Medium validation: letters and spaces only
-    const mediumRegex = /^[A-Za-z\s]+$/;
-    if (!medium.trim()) {
-      toast.error("Please enter the medium used", { closeButton: true });
-      return;
-    }
-    if (!mediumRegex.test(medium)) {
-      toast.error("Medium invalid", {
-        description: "Medium must contain letters only",
-        closeButton: true,
-      });
-      return;
-    }
-
-    // Dimensions validation: height & width numbers, reasonable range
-    const heightNum = parseFloat(artworkHeight);
-    const widthNum = parseFloat(artworkWidth);
-    if (!artworkHeight || !artworkWidth || isNaN(heightNum) || isNaN(widthNum)) {
-      toast.error("Please enter valid dimensions", { closeButton: true });
-      return;
-    }
-    if (heightNum <= 0 || widthNum <= 0 || heightNum > 1000 || widthNum > 1000) {
-      toast.error("Dimensions are unrealistic", {
-        description: "Height and width must be positive numbers below 1000cm",
-        closeButton: true,
-      });
-      return;
-    }
-    if (!artworkStyle) {
-      toast.error("Please select an artwork style", { closeButton: true });
-      return;
-    }
-
-    if (!selectedFile) {
-      toast.error("Please upload at least one artwork image", { closeButton: true });
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("title", artworkTitle.trim());
-    formData.append("category", artworkStyle);
-    formData.append("medium", medium.trim());
-    formData.append("art_status", artStatus);
-    formData.append("size", size);
-    formData.append("price", price.toString());
-    formData.append("description", description.trim());
-    formData.append("visibility", visibility);
-    formData.append("images", selectedFile);
-
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      toast.error("You must be logged in to post artwork.", { closeButton: true });
-      return;
-    }
-
-    toast.loading("Uploading artwork...", { id: "upload", closeButton: true });
+    // Prepare submission data for optimized upload
+    const submissionData = {
+      title: artworkTitle,
+      category: artworkStyle,
+      medium,
+      artStatus,
+      size,
+      price,
+      description,
+      visibility,
+      selectedFile: selectedFile!,
+    };
 
     try {
-      const response = await apiClient.post("art/create/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await submitPostOptimized(submissionData, queryClient);
 
-      toast.success("Artwork posted successfully!", { id: "upload", closeButton: true });
+      // Reset form on success
       setSelectedFile(null);
       setPreviewUrl(null);
-      queryClient.invalidateQueries({ queryKey: ["artworks"] });
       navigate("/explore");
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        const errors = error.response?.data;
-        console.error("Upload error:", errors);
-
-        let errorMessage = "Upload failed";
-
-        if (Array.isArray(errors) && errors.length > 0) {
-          const firstError = errors[0];
-          console.log("First error:", firstError, "Type:", typeof firstError);
-
-          // Handle Cloudinary error format
-          if (typeof firstError === "string" && firstError.includes("cloudinary")) {
-            try {
-              // Parse the nested error structure - handle double-encoded strings
-              let parsedError = firstError;
-
-              // Try to parse if it's a string representation of a dict
-              if (firstError.startsWith("{'") && firstError.endsWith("'}")) {
-                // Extract the inner error message
-                const innerMatch = firstError.match(/ErrorDetail\(string="([^"]+)"/);
-                if (innerMatch) {
-                  parsedError = innerMatch[1];
-                }
-              }
-
-              // Look for "Inappropriate image content" or similar messages
-              if (parsedError.includes("Inappropriate image content")) {
-                errorMessage = "Image content was rejected. Please upload a different image.";
-              } else if (parsedError.includes("Upload failed")) {
-                errorMessage = "Image upload failed. Please try again with a different image.";
-              } else {
-                errorMessage = "Image content was rejected. Please upload a different image.";
-              }
-            } catch (parseError) {
-              errorMessage = "Image content was rejected. Please upload a different image.";
-            }
-          } else {
-            errorMessage = firstError;
-          }
-        } else if (errors?.detail) {
-          errorMessage = errors.detail;
-        } else if (errors?.images?.length) {
-          errorMessage = errors.images[0];
-        } else if (errors?.error) {
-          // Handle error object format
-          if (Array.isArray(errors.error)) {
-            errorMessage = errors.error[0];
-          } else if (typeof errors.error === "string") {
-            errorMessage = errors.error;
-          }
-        }
-
-        console.log("Final error message:", errorMessage);
-        toast.error(errorMessage, { id: "upload", closeButton: true });
-      } else {
-        toast.error("Unexpected error occurred", { id: "upload", closeButton: true });
-      }
+      // Error handling is done in the hook
+      console.error("Upload failed:", error);
     }
   };
 
@@ -392,12 +292,12 @@ const CreatePost = () => {
                 <div className="text-right">
                   <Button
                     type="submit"
-                    disabled={isUploading}
+                    disabled={isUploadingOptimized}
                     className={`${
-                      isUploading ? "bg-red-800 cursor-not-allowed" : "bg-red-800 hover:bg-red-700"
+                      isUploadingOptimized ? "bg-red-800 cursor-not-allowed" : "bg-red-800 hover:bg-red-700"
                     } text-white px-6 py-1 text-xs rounded-full transition duration-200`}
                   >
-                    {isUploading ? (
+                    {isUploadingOptimized ? (
                       <span className="flex items-center gap-2">
                         <svg
                           className="animate-spin h-4 w-4 text-white"

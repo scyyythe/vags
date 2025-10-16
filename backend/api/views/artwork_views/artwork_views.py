@@ -1,5 +1,6 @@
 from bson import ObjectId
 from rest_framework import generics, permissions
+from rest_framework.exceptions import ValidationError
 from api.models.artwork_model.artwork import Art
 from api.models.interaction_model.hidden_content import HiddenContent
 from api.models.user_model.users import User
@@ -77,11 +78,14 @@ class ArtCreateView(generics.ListCreateAPIView):
 
         try:
             art = serializer.save(artist=mongo_user)
-            print("✅ Art saved:", art.id)
             # Clear caches after creating new artwork
             clear_artwork_caches()
+        except ValidationError as e:
+            # Re-raise ValidationError as-is to preserve the error structure
+            print("❌ Validation error during serializer.save():", e.detail)
+            raise e
         except Exception as e:
-            print("❌ Error during serializer.save():", e)
+            print("❌ Unexpected error during serializer.save():", e)
             raise ValidationError({"error": str(e)})
 
 
