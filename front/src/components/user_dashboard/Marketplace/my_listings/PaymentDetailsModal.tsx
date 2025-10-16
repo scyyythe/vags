@@ -15,9 +15,16 @@ interface PaymentDetailsModalProps {
     artworkImage?: string;
     buyer?: string;
   };
+  isLoading?: boolean;
 }
 
-const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({ isOpen, onClose, payment, artworkData }) => {
+const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
+  isOpen,
+  onClose,
+  payment,
+  artworkData,
+  isLoading = false,
+}) => {
   const receiptRef = useRef<HTMLDivElement>(null);
 
   // Helper function to normalize payment data from different sources
@@ -163,123 +170,136 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({ isOpen, onClo
         </DialogHeader>
 
         <div ref={receiptRef} className="space-y-6 text-[11px]">
-          {/* Artwork Information */}
-          {normalizedPayment.artwork && (
-            <div className="border border-border rounded-lg p-4">
-              <h3 className="font-semibold text-xs mb-3">Artwork Purchased</h3>
-              <div className="flex items-center gap-3">
-                {normalizedPayment.artwork.image && (
-                  <img
-                    src={normalizedPayment.artwork.image}
-                    alt={normalizedPayment.artwork.title}
-                    className="w-12 h-12 rounded object-cover"
-                  />
-                )}
-                <div>
-                  <p className="text-xs font-medium">{normalizedPayment.artwork.title}</p>
-                </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="flex items-center gap-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
+                <span className="text-sm text-gray-600">Loading payment details...</span>
               </div>
             </div>
-          )}
-
-          {/* Payment Summary */}
-          <div className="border border-border rounded-lg p-4">
-            <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
-              <DollarSign className="w-2.5 h-2.5" />
-              Payment Summary
-            </h3>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-muted-foreground">Transaction ID</span>
-                <span className="text-xs font-mono">{normalizedPayment.transactionId}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-muted-foreground">Amount Paid</span>
-                <span className="text-xs font-semibold">
-                  ₱
-                  {normalizedPayment.amount >= 1000
-                    ? `${(normalizedPayment.amount / 1000).toFixed(1)}k`
-                    : normalizedPayment.amount.toLocaleString()}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-muted-foreground">Processing Fee</span>
-                <span className="text-xs">
-                  -₱
-                  {normalizedPayment.processingFee >= 1000
-                    ? `${(normalizedPayment.processingFee / 1000).toFixed(1)}k`
-                    : normalizedPayment.processingFee.toLocaleString()}
-                </span>
-              </div>
-              <div className="border-t pt-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs font-semibold">Net Amount</span>
-                  <span className="text-sm font-bold text-green-600">
-                    ₱
-                    {normalizedPayment.netAmount >= 1000
-                      ? `${(normalizedPayment.netAmount / 1000).toFixed(1)}k`
-                      : normalizedPayment.netAmount.toLocaleString()}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Payment Method + Buyer Info side-by-side with scroll */}
-          <div className="flex flex-col md:flex-row gap-4 max-h-[260px] overflow-x-auto">
-            {/* Payment Method */}
-            <div className="border border-border rounded-lg p-4 min-w-[300px] overflow-auto">
-              <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
-                <CreditCard className="w-2.5 h-2.5" />
-                Payment Method
-              </h3>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-                  <CreditCard className="w-2.5 h-2.5 text-primary-foreground" />
-                </div>
-                <div>
-                  <p className="text-xs font-medium">{normalizedPayment.paymentMethod}</p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {format(new Date(normalizedPayment.paymentDate), "MMM dd, yyyy 'at' h:mm a")}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Buyer Information */}
-            <div className="border border-border rounded-lg p-4 min-w-[300px] overflow-auto">
-              <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
-                <User className="w-2.5 h-2.5" />
-                Buyer Information
-              </h3>
-              <div className="space-y-2">
-                <div>
-                  <p className="text-xs font-medium">{normalizedPayment.buyer.name}</p>
-                  <p className="text-[11px] text-muted-foreground">{normalizedPayment.buyer.email}</p>
-                </div>
-                {normalizedPayment.billing && (
-                  <div className="pt-2 border-t">
-                    <p className="text-[11px] text-muted-foreground">Billing Address:</p>
-                    <p className="text-xs">{normalizedPayment.billing.address}</p>
-                    <p className="text-xs">
-                      {normalizedPayment.billing.city}, {normalizedPayment.billing.postalCode}
-                    </p>
-                    <p className="text-xs">{normalizedPayment.billing.country}</p>
+          ) : (
+            <>
+              {/* Artwork Information */}
+              {normalizedPayment.artwork && (
+                <div className="border border-border rounded-lg p-4">
+                  <h3 className="font-semibold text-xs mb-3">Artwork Purchased</h3>
+                  <div className="flex items-center gap-3">
+                    {normalizedPayment.artwork.image && (
+                      <img
+                        src={normalizedPayment.artwork.image}
+                        alt={normalizedPayment.artwork.title}
+                        className="w-12 h-12 rounded object-cover"
+                      />
+                    )}
+                    <div>
+                      <p className="text-xs font-medium">{normalizedPayment.artwork.title}</p>
+                    </div>
                   </div>
-                )}
+                </div>
+              )}
+
+              {/* Payment Summary */}
+              <div className="border border-border rounded-lg p-4">
+                <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
+                  <DollarSign className="w-2.5 h-2.5" />
+                  Payment Summary
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-muted-foreground">Transaction ID</span>
+                    <span className="text-xs font-mono">{normalizedPayment.transactionId}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-muted-foreground">Amount Paid</span>
+                    <span className="text-xs font-semibold">
+                      ₱
+                      {normalizedPayment.amount >= 1000
+                        ? `${(normalizedPayment.amount / 1000).toFixed(1)}k`
+                        : normalizedPayment.amount.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-muted-foreground">Processing Fee</span>
+                    <span className="text-xs">
+                      -₱
+                      {normalizedPayment.processingFee >= 1000
+                        ? `${(normalizedPayment.processingFee / 1000).toFixed(1)}k`
+                        : normalizedPayment.processingFee.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="border-t pt-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-semibold">Net Amount</span>
+                      <span className="text-sm font-bold text-green-600">
+                        ₱
+                        {normalizedPayment.netAmount >= 1000
+                          ? `${(normalizedPayment.netAmount / 1000).toFixed(1)}k`
+                          : normalizedPayment.netAmount.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+
+              {/* Payment Method + Buyer Info side-by-side with scroll */}
+              <div className="flex flex-col md:flex-row gap-4 max-h-[260px] overflow-x-auto">
+                {/* Payment Method */}
+                <div className="border border-border rounded-lg p-4 min-w-[300px] overflow-auto">
+                  <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
+                    <CreditCard className="w-2.5 h-2.5" />
+                    Payment Method
+                  </h3>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
+                      <CreditCard className="w-2.5 h-2.5 text-primary-foreground" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium">{normalizedPayment.paymentMethod}</p>
+                      <p className="text-[11px] text-muted-foreground">
+                        {format(new Date(normalizedPayment.paymentDate), "MMM dd, yyyy 'at' h:mm a")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Buyer Information */}
+                <div className="border border-border rounded-lg p-4 min-w-[300px] overflow-auto">
+                  <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
+                    <User className="w-2.5 h-2.5" />
+                    Buyer Information
+                  </h3>
+                  <div className="space-y-2">
+                    <div>
+                      <p className="text-xs font-medium">{normalizedPayment.buyer.name}</p>
+                      <p className="text-[11px] text-muted-foreground">{normalizedPayment.buyer.email}</p>
+                    </div>
+                    {normalizedPayment.billing && (
+                      <div className="pt-2 border-t">
+                        <p className="text-[11px] text-muted-foreground">Billing Address:</p>
+                        <p className="text-xs">{normalizedPayment.billing.address}</p>
+                        <p className="text-xs">
+                          {normalizedPayment.billing.city}, {normalizedPayment.billing.postalCode}
+                        </p>
+                        <p className="text-xs">{normalizedPayment.billing.country}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
-        <div className="flex justify-end">
-          <button
-            onClick={handleDownloadReceipt}
-            className="px-6 py-2 rounded-lg text-[11px] text-white font-medium bg-black"
-          >
-            Download Receipt
-          </button>
-        </div>
+        {!isLoading && (
+          <div className="flex justify-end">
+            <button
+              onClick={handleDownloadReceipt}
+              className="px-6 py-2 rounded-lg text-[11px] text-white font-medium bg-black"
+            >
+              Download Receipt
+            </button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

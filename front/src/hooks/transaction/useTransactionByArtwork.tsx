@@ -140,8 +140,10 @@ export const useTransactionByArtwork = ({ artworkId, purchaseId, enabled = true 
     queryKey: ["transaction-by-artwork", artworkId, purchaseId],
     queryFn: () => fetchTransactionByArtwork(artworkId, purchaseId),
     enabled: enabled && (!!artworkId || !!purchaseId),
-    staleTime: 60 * 1000, // 1 minute
+    staleTime: 5 * 60 * 1000, // 5 minutes - longer cache for better performance
+    gcTime: 10 * 60 * 1000, // 10 minutes - keep in cache longer
     retry: 1,
+    refetchOnWindowFocus: false, // Don't refetch when window regains focus
   });
 };
 
