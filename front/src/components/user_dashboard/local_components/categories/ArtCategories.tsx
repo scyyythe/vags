@@ -1,4 +1,8 @@
-export const ART_CATEGORIES = [
+import { useState, useEffect } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import { autoTranslate } from "@/utils/autoTranslate";
+
+const ART_CATEGORIES = [
   // Visual Arts
   "Painting",
   "Drawing",
@@ -58,3 +62,21 @@ export const ART_CATEGORIES = [
   "Paper Art",
   "Mosaic Art",
 ] as const;
+
+export const useArtCategories = () => {
+  const { language } = useLanguage();
+  const [translatedCategories, setTranslatedCategories] = useState<string[]>([...ART_CATEGORIES]);
+
+  useEffect(() => {
+    const translateCategories = async () => {
+      const translated = await Promise.all(
+        ART_CATEGORIES.map(async (category) => await autoTranslate(category, language.toLowerCase()))
+      );
+      setTranslatedCategories(translated);
+    };
+
+    translateCategories();
+  }, [language]);
+
+  return translatedCategories;
+};
