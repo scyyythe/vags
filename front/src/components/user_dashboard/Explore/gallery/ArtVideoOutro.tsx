@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import ParticleBackground from "./ParticleBg";
-import { cn } from "@/lib/utils"; 
+import { cn } from "@/lib/utils";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLanguage } from "@/context/LanguageContext";
+import { autoTranslate } from "@/utils/autoTranslate";
 
 interface Artwork {
   id: string;
@@ -21,6 +24,20 @@ interface ArtVideoOutroProps {
 const ArtVideoOutro = ({ artworks, onComplete }: ArtVideoOutroProps) => {
   const [currentArtworkIndex, setCurrentArtworkIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [translatedTitles, setTranslatedTitles] = useState<string[]>([]);
+  const [translatedArtists, setTranslatedArtists] = useState<string[]>([]);
+  const { language } = useLanguage();
+  const featuredArtworkText = useAutoTranslation("Featured Artwork", language);
+
+  useEffect(() => {
+    const translate = async () => {
+      const titles = await Promise.all(artworks.map(art => autoTranslate(art.title, language)));
+      const artists = await Promise.all(artworks.map(art => autoTranslate(art.artist.name, language)));
+      setTranslatedTitles(titles);
+      setTranslatedArtists(artists);
+    };
+    translate();
+  }, [artworks, language]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -107,7 +124,7 @@ const ArtVideoOutro = ({ artworks, onComplete }: ArtVideoOutroProps) => {
             className="text-xl font-bold mb-2 animate-fade-in"
             style={{ animationDelay: "0.6s", animationFillMode: "both" }}
           >
-            {artworks[currentArtworkIndex].title}
+            {translatedTitles[currentArtworkIndex] || artworks[currentArtworkIndex].title}
           </h2>
 
           <p
@@ -115,7 +132,7 @@ const ArtVideoOutro = ({ artworks, onComplete }: ArtVideoOutroProps) => {
             className="text-xs text-gray-200 mb-4 animate-fade-in"
             style={{ animationDelay: "0.9s", animationFillMode: "both" }}
           >
-            by {artworks[currentArtworkIndex].artist.name}
+            by {translatedArtists[currentArtworkIndex] || artworks[currentArtworkIndex].artist.name}
           </p>
 
           <div
@@ -131,7 +148,7 @@ const ArtVideoOutro = ({ artworks, onComplete }: ArtVideoOutroProps) => {
             </div>
 
             <div className="text-[10px] text-gray-300 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1">
-              Featured Artwork {currentArtworkIndex + 1} of {artworks.length}
+              {featuredArtworkText} {currentArtworkIndex + 1} of {artworks.length}
             </div>
           </div>
         </div>
