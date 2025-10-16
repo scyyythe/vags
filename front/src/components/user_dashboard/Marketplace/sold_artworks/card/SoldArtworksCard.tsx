@@ -41,6 +41,7 @@ interface SoldArtworkCardProps {
   onThankBuyer?: (artwork: any) => void;
   onMarkAsShipped?: (artwork: any) => void;
   onViewPayment?: (artwork: any) => void;
+  onPaymentHover?: (artwork: any) => void;
   onProcessRefund?: (artwork: any) => void;
   onViewReview?: (artwork: any) => void;
   onTrackProgress?: (artwork: any) => void;
@@ -68,6 +69,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
   onThankBuyer,
   onMarkAsShipped,
   onViewPayment,
+  onPaymentHover,
   onProcessRefund,
   onViewReview,
   onTrackProgress,
@@ -171,6 +173,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
 
             <button
               onClick={() => onViewPayment?.(artworkData)}
+              onMouseEnter={() => onPaymentHover?.(artworkData)}
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100"
             >
               <DollarSign className="w-2.5 h-2.5 mr-1.5 mt-0.5" />

@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from '@/pages/Navbar';
-import Hero from '@/pages/Hero';
-import PopularArtists from '@/pages/PopularArtists';
-import ExploreArtworks from '@/pages/ExploreArtworks';
-import AuctionFeature from '@/pages/AuctionFeature';
-import HotBidsCarousel from '@/pages/HotBidsCarousel';
-import Footer from '@/pages/Footer';
-import { useModal } from '../context/ModalContext';
-import Register from './Register';
-import Login from './Login';
-import ForgotPassword from '../components/forgot_pass/ForgotPassword'; 
-import { X } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import Navbar from "@/pages/Navbar";
+import Hero from "@/pages/Hero";
+import PopularArtists from "@/pages/PopularArtists";
+import ExploreArtworks from "@/pages/ExploreArtworks";
+import AuctionFeature from "@/pages/AuctionFeature";
+import HotBidsCarousel from "@/pages/HotBidsCarousel";
+import Footer from "@/pages/Footer";
+import { useModal } from "../context/ModalContext";
+import Register from "./Register";
+import Login from "./Login";
+import ForgotPassword from "../components/forgot_pass/ForgotPassword";
+import { X } from "lucide-react";
 
 const Index = () => {
   useEffect(() => {
@@ -22,29 +22,29 @@ const Index = () => {
     setShowRegisterModal,
     showLoginModal,
     setShowLoginModal,
-    showForgotPasswordModal, 
-    setShowForgotPasswordModal, 
-  } = useModal(); 
+    showForgotPasswordModal,
+    setShowForgotPasswordModal,
+  } = useModal();
 
   const toggleBodyScroll = () => {
     if (showRegisterModal || showLoginModal || showForgotPasswordModal) {
-      document.body.classList.add('overflow-hidden', 'h-screen');
+      document.body.classList.add("overflow-hidden", "h-screen");
     } else {
-      document.body.classList.remove('overflow-hidden', 'h-screen');
+      document.body.classList.remove("overflow-hidden", "h-screen");
     }
   };
 
   useEffect(() => {
     toggleBodyScroll();
     return () => {
-      document.body.classList.remove('overflow-hidden', 'overflow-x-hidden', 'h-screen');
+      document.body.classList.remove("overflow-hidden", "overflow-x-hidden", "h-screen");
     };
   }, [showRegisterModal, showLoginModal, showForgotPasswordModal]);
 
   // Add overflow-x-hidden to <body> for entire page
   useEffect(() => {
-    document.body.classList.add('overflow-x-hidden');
-    return () => document.body.classList.remove('overflow-x-hidden');
+    document.body.classList.add("overflow-x-hidden");
+    return () => document.body.classList.remove("overflow-x-hidden");
   }, []);
 
   const modalContent = showRegisterModal ? (
@@ -56,7 +56,7 @@ const Index = () => {
   ) : null;
 
   return (
-    <div className='relative w-full'>
+    <div className="relative w-full">
       <Navbar />
       <Hero />
       <PopularArtists />
@@ -66,7 +66,7 @@ const Index = () => {
       <Footer />
 
       {/* Combined Modal */}
-      {(showRegisterModal || showLoginModal || showForgotPasswordModal) && (  
+      {(showRegisterModal || showLoginModal || showForgotPasswordModal) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-2xl shadow-lg w-full max-w-sm relative">
             <button
