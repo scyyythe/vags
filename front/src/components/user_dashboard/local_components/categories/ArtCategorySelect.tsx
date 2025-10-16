@@ -30,7 +30,7 @@ const ArtCategorySelect = ({ selectedCategory, onChange }: Props) => {
         <SelectValue placeholder={selectCategoryText} />
       </SelectTrigger>
       <SelectContent style={{ maxHeight: "50vh" }} className="relative right-14">
-        <SelectItem value="All" className={cn(isMobile ? "text-[10px]" : "text-[10px]")}>
+        <SelectItem value={allText} className={cn(isMobile ? "text-[10px]" : "text-[10px]")}>
           {allText}
         </SelectItem>
         {translatedCategories.map((category) => (
