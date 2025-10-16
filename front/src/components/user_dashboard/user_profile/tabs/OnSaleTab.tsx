@@ -40,6 +40,7 @@ import { useArtworkReviews } from "@/hooks/review/useArtworkReviews";
 import useMarkPurchaseCompleted from "@/hooks/purchase/useMarkPurchaseCompleted";
 import useMarkAsShipped from "@/hooks/purchase/useMarkAsShipped";
 import { useRelistArtwork } from "@/hooks/artworks/relist/useRelistArtwork";
+import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 type SellTabProps = {
   selectedPriceRange?: string;
@@ -164,6 +165,12 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const { mutate: markAsCompleted } = useMarkPurchaseCompleted();
   const { mutate: markAsShipped } = useMarkAsShipped();
   const { mutate: relistArtwork, isPending: isRelisting } = useRelistArtwork();
+
+  // Enhanced unlist hook with tab switching
+  const markAsUnlistedMutation = useMarkArtworkAsUnlisted(() => {
+    // Switch to unlisted tab after successful unlisting
+    setSubTab("unlisted");
+  });
   // Use the artwork reviews hook
   const { artworkReviews, reviewsLoading, fetchArtworkReviews, setArtworkReviews } = useArtworkReviews();
 
@@ -777,8 +784,12 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
           queryClient.refetchQueries({ queryKey: ["user-sell-art-cards"] });
         }
 
-        // Also refetch marketplace data
+        // Also refetch marketplace data immediately
         queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
+
+        // Refetch trending and followed artworks
+        queryClient.refetchQueries({ queryKey: ["trending-artworks"] });
+        queryClient.refetchQueries({ queryKey: ["followedArtworks"] });
 
         // If currently on unlisted tab, also refetch to remove from unlisted view
         if (subTab === "unlisted") {
@@ -791,6 +802,10 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
         toast.error(errorMessage);
       },
     });
+  };
+
+  const handleUnlist = (id: string) => {
+    markAsUnlistedMutation.mutate(id);
   };
 
   const handleThankBuyer = (artwork: any) => {
@@ -1188,10 +1203,12 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                 originalPrice={art.originalPrice}
                 rating={art.rating}
                 category={art.category}
-                status="active"
+                status={art.status}
                 isMarketplace={true}
                 isOwner={isOwnProfile}
                 onCardClick={() => onCardClick(art.id)}
+                onRelist={isOwnProfile && art.status !== "onsale" ? () => handleRelist(art.id) : undefined}
+                onUnlist={isOwnProfile && art.status === "onsale" ? () => handleUnlist(art.id) : undefined}
                 isReported={reportStatusMap[art.id]?.reported || false}
               />
             ))}

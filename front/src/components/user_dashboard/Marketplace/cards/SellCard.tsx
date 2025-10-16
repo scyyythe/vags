@@ -42,6 +42,7 @@ export interface SellCardProps {
   status?: string;
   reason?: string;
   onRelist?: (id: string) => void;
+  onUnlist?: (id: string) => void;
   isWishlistView?: boolean;
   isFading?: boolean;
 }
@@ -69,6 +70,7 @@ const SellCard = ({
   status,
   reason,
   onRelist,
+  onUnlist,
   additionalImages,
   onReportSuccess,
   isMarketplace = false,
@@ -269,7 +271,7 @@ const SellCard = ({
             <SellMenu
               isOpen={menuOpen}
               artworkId={id}
-              isPublic={status === "onSale"}
+              isPublic={status === "onsale"}
               onEdit={() => {
                 navigate(`/sell-update/${id}`, {
                   state: {
@@ -290,8 +292,14 @@ const SellCard = ({
                 });
               }}
               onToggleVisibility={(newVisibility, artworkId) => {
-                if (newVisibility === "Unlisted") {
+                if (newVisibility === "Unlisted" && onUnlist) {
+                  // Use the onUnlist prop if provided, otherwise use the mutation
+                  onUnlist(artworkId);
+                } else if (newVisibility === "Unlisted") {
                   markAsUnlistedMutation.mutate(artworkId);
+                } else if (newVisibility === "Listed" && onRelist) {
+                  // Use the relist functionality when listing an artwork
+                  onRelist(artworkId);
                 } else {
                   toast(`Set visibility to ${newVisibility}`, { closeButton: true });
                 }
