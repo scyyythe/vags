@@ -2,11 +2,12 @@ import { useState } from "react";
 
 interface CategoryFilterProps {
   categories: string[];
+  selectedCategory?: string;
   onSelectCategory?: (category: string) => void;
 }
 
-const CategoryFilter = ({ categories, onSelectCategory }: CategoryFilterProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>(categories[0]);
+const CategoryFilter = ({ categories, selectedCategory: propSelectedCategory, onSelectCategory }: CategoryFilterProps) => {
+  const [selectedCategory, setSelectedCategory] = useState<string>(propSelectedCategory || categories[0]);
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);

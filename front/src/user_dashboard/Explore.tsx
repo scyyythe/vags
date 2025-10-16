@@ -25,6 +25,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLanguage } from "@/context/LanguageContext";
 import { autoTranslate } from "@/utils/autoTranslate";
+import { useArtCategories, ART_CATEGORIES } from "@/components/user_dashboard/local_components/categories/ArtCategories";
 
 const Explore = () => {
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ const Explore = () => {
   const translatedErrorLoading = useAutoTranslation("Error loading artworks", language);
   const translatedNoArtworks = useAutoTranslation("No artworks found.", language);
   const categories = [translatedAll, translatedTrending, translatedFollowing];
+  const [selectedFilterCategory, setSelectedFilterCategory] = useState(translatedAll);
   const [selectedCategory, setSelectedCategory] = useState(translatedAll);
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [selectedStyle, setSelectedStyle] = useState("All");
@@ -90,35 +92,85 @@ const Explore = () => {
 
   const { data: followedArtworksData } = useFollowedArtworks(page);
 
+  const translatedCategories = useArtCategories();
+
   const filteredArtworksMemo = useMemo(() => {
     if (!artworks) return [];
 
+    const filterCategory = selectedFilterCategory.toLowerCase();
     const category = selectedCategory.toLowerCase();
 
-    if (category === translatedFollowing.toLowerCase()) {
-      return Array.isArray(followedArtworksData) ? followedArtworksData : followedArtworksData?.artworks ?? [];
+    // Choose base list: followed artworks when in "Following", otherwise the main artworks list
+    let filtered: any[] = [];
+    if (filterCategory === translatedFollowing.toLowerCase()) {
+      filtered = Array.isArray(followedArtworksData) ? followedArtworksData : followedArtworksData?.artworks ?? [];
+    } else {
+      filtered = artworks;
     }
 
-    let filtered = artworks;
+    // Apply category/style filter only if selectedCategory is not "All"
+    if (selectedCategory.toLowerCase() !== translatedAll.toLowerCase()) {
+      // match either canonical ART_CATEGORIES or the translated ones
+      // find index of a matching translated category or direct match in ART_CATEGORIES
+      let matchedOriginal: string | undefined;
 
-    if (category !== translatedAll.toLowerCase() && category !== translatedFollowing.toLowerCase() && category !== translatedTrending.toLowerCase()) {
-      filtered = filtered.filter((artwork) => artwork.style.toLowerCase() === category);
+      // try direct match to ART_CATEGORIES (in case selectedCategory is already original)
+      const direct = ART_CATEGORIES.find(
+        (c) => c.toLowerCase() === category
+      );
+      if (direct) {
+        matchedOriginal = direct;
+      } else {
+        // try matching against translatedCategories to map back to ART_CATEGORIES
+        const idx = translatedCategories.findIndex((tc) => tc.toLowerCase() === category);
+        if (idx !== -1 && ART_CATEGORIES[idx]) {
+          matchedOriginal = ART_CATEGORIES[idx];
+        }
+      }
+
+      if (matchedOriginal) {
+        filtered = filtered.filter((artwork) => {
+          const artworkCategory = (artwork.category || artwork.style || artwork.artCategory || "").toString().toLowerCase();
+          return artworkCategory === matchedOriginal!.toLowerCase();
+        });
+      } else {
+        // fallback: if no mapping found, try matching selectedCategory directly to artwork fields
+        filtered = filtered.filter((artwork) => {
+          const artworkCategory = (artwork.category || artwork.style || artwork.artCategory || artwork.title || "").toString().toLowerCase();
+          return artworkCategory.includes(category);
+        });
+      }
     }
 
+    // Apply search filtering
     if (searchQuery) {
+      const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (artwork) =>
-          artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          artwork.artistName.toLowerCase().includes(searchQuery.toLowerCase())
+          (artwork.title || "").toLowerCase().includes(q) ||
+          (artwork.artistName || artwork.artist || "").toLowerCase().includes(q)
       );
     }
 
-    if (category === translatedTrending.toLowerCase()) {
-      filtered = [...filtered].sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0));
+    // If the main filter is Trending, sort by likes
+    if (filterCategory === translatedTrending.toLowerCase()) {
+      filtered = [...filtered].sort((a, b) => (b.likesCount || b.likes_count || 0) - (a.likesCount || a.likes_count || 0));
     }
 
     return filtered;
-  }, [artworks, searchQuery, selectedCategory, followedArtworksData, language]);
+  }, [
+    artworks,
+    searchQuery,
+    selectedFilterCategory,
+    selectedCategory,
+    followedArtworksData,
+    language,
+    translatedCategories,
+    translatedAll,
+    translatedTrending,
+    translatedFollowing,
+    translatedCategories
+  ]);
 
   const handleTipJar = (artwork: (typeof filteredArtworksMemo)[0]) => {
     console.log("Opening tip jar for artwork:", artwork);
@@ -148,6 +200,12 @@ const Explore = () => {
     });
   };
 
+  // Reset to "All" when the user first enters Explore
+  useEffect(() => {
+    setSelectedFilterCategory(translatedAll);
+    setSelectedCategory(translatedAll);
+  }, [translatedAll]);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -164,19 +222,24 @@ const Explore = () => {
               <div className="flex items-center justify-between mb-6 lg:w-[133%] pl-2 sm:pl-0">
                 <CategoryFilter
                   categories={categories}
+                  selectedCategory={selectedFilterCategory}
                   onSelectCategory={(category) => {
-                    setSelectedCategory(category);
-                    if (category === translatedTrending || category === translatedFollowing) {
-                      setSelectedStyle("All");
-                    }
+                    setSelectedFilterCategory(category);
+                    setSelectedCategory(translatedAll);
                   }}
                 />
 
                 <div className="flex space-x-2 text-xs">
                   <div className="relative">
-                    <ArtCategorySelect
+                  <ArtCategorySelect
                       selectedCategory={selectedCategory}
-                      onChange={(value) => setSelectedCategory(value)}
+                      onChange={(value) => {
+                        if (value === translatedAll) {
+                          setSelectedCategory(translatedAll);
+                        } else {
+                          setSelectedCategory(value);
+                        }
+                      }}
                     />
                   </div>
 

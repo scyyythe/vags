@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { autoTranslate } from "@/utils/autoTranslate";
 
-const ART_CATEGORIES = [
+export const ART_CATEGORIES = [
   // Visual Arts
   "Painting",
   "Drawing",
