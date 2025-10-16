@@ -43,6 +43,11 @@ const SellMenu: React.FC<SellMenuProps> = ({
     };
   }, [showDeletePopup]);
 
+  // Sync publicStatus with isPublic prop
+  useEffect(() => {
+    setPublicStatus(isPublic);
+  }, [isPublic]);
+
   if (!isOpen) return null;
 
   const handleToggleVisibility = () => {
@@ -53,9 +58,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
     onToggleVisibility(visibilityString, artworkId);
 
     toast.success(
-      newStatus
-        ? `"${artworkTitle ?? "Artwork"}" is now listed.`
-        : `"${artworkTitle ?? "Artwork"}" has been unlisted."`,
+      newStatus ? `"${artworkTitle ?? "Artwork"}" is now listed.` : `"${artworkTitle ?? "Artwork"}" has been unlisted.`,
       { closeButton: true }
     );
   };
@@ -81,7 +84,6 @@ const SellMenu: React.FC<SellMenuProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start gap-1 text-[10px]">
-
           {/* Unlist / Relist Button */}
           <div className="flex items-center relative">
             <button
@@ -110,9 +112,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
               <Pencil size={12} />
             </button>
             {hoveredItem === "edit" && (
-              <span className="absolute left-8 text-[9px] bg-black text-white px-2 py-1 rounded">
-                Edit
-              </span>
+              <span className="absolute left-8 text-[9px] bg-black text-white px-2 py-1 rounded">Edit</span>
             )}
           </div>
 
@@ -127,12 +127,9 @@ const SellMenu: React.FC<SellMenuProps> = ({
               <Trash2 size={12} />
             </button>
             {hoveredItem === "delete" && (
-              <span className="absolute left-8 text-[9px] bg-black text-white px-2 py-1 rounded">
-                Delete
-              </span>
+              <span className="absolute left-8 text-[9px] bg-black text-white px-2 py-1 rounded">Delete</span>
             )}
           </div>
-
         </div>
       </div>
 
