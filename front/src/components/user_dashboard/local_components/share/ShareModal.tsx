@@ -9,6 +9,8 @@ import {
   FaTelegram,
   FaLinkedinIn,
 } from "react-icons/fa6";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -17,6 +19,16 @@ interface ShareModalProps {
 }
 
 const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, linkToShare }) => {
+  const { language } = useLanguage();
+
+  // Pre-translate all strings to avoid calling hooks inside loops
+  const shareWithFriendsText = useAutoTranslation("Share with Friends", language);
+  const shareDescriptionText = useAutoTranslation("Share this piece and let your friends discover new artists!", language);
+  const copyLinkText = useAutoTranslation("Copy link", language);
+  const linkCopiedText = useAutoTranslation("Link copied to clipboard!", language);
+  const failedToCopyText = useAutoTranslation("Failed to copy link", language);
+  const shareToText = useAutoTranslation("Share to", language);
+
   // Prevent background scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -35,9 +47,9 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, linkToShare })
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(linkToShare);
-      toast.success("Link copied to clipboard!", { closeButton: true });
+      toast.success(linkCopiedText, { closeButton: true });
     } catch (err) {
-      toast.error("Failed to copy link", { closeButton: true });
+      toast.error(failedToCopyText, { closeButton: true });
     }
   };
 
@@ -66,12 +78,12 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, linkToShare })
         </button>
 
         <div className="flex flex-col">
-          <h2 className="text-black text-sm text-center font-bold mb-1">Share with Friends</h2>
+          <h2 className="text-black text-sm text-center font-bold mb-1">{shareWithFriendsText}</h2>
           <p className="text-[10px] text-center text-gray-500 mb-4">
-            Share this piece and let your friends discover new artists!
+            {shareDescriptionText}
           </p>
 
-          <span className="text-black text-[10px] text-left font-medium mb-1">Copy link</span>
+          <span className="text-black text-[10px] text-left font-medium mb-1">{copyLinkText}</span>
           <div className="w-full mb-4 flex items-center justify-between bg-gray-100 rounded-lg px-3 py-2">
             <span className="text-[10px] text-gray-600 truncate">{linkToShare}</span>
             <button onClick={copyToClipboard}>
@@ -79,7 +91,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, linkToShare })
             </button>
           </div>
 
-          <div className="text-[10px] text-black font-medium mb-2">Share to</div>
+          <div className="text-[10px] text-black font-medium mb-2">{shareToText}</div>
 
           <div className="flex justify-between">
             {platforms.map((platform) => (
