@@ -6,6 +6,8 @@ import { normalizeReportType } from "@/components/user_dashboard/Bidding/cards/R
 import { ReportOption } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import ShareModal from "../../local_components/share/ShareModal";
 import useUndoArtworkReport from "@/hooks/mutate/report/undo/useUndoArtworkReport";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface ArtCardMenuProps {
   isOpen: boolean;
   onFavorite: () => void;
@@ -43,12 +45,21 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   artworkId,
   className,
 }) => {
+  const { language } = useLanguage();
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const [showReportOptions, setShowReportOptions] = useState(false);
   const { handleUndoReport: undoArtworkReport } = useUndoArtworkReport();
+
+  // Translations for hovering texts
+  const favoriteText = useAutoTranslation("Favorite", language);
+  const shareText = useAutoTranslation("Share", language);
+  const hideText = useAutoTranslation("Hide", language);
+  const unhideText = useAutoTranslation("Unhide", language);
+  const reportText = useAutoTranslation("Report", language);
+  const undoReportText = useAutoTranslation("Undo Report", language);
   const handleReportSubmit = (categoryId: string, optionData?: ReportOption | string) => {
     const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
     if (!selectedCategory) {
@@ -102,7 +113,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             </button>
             {hoveredItem === "favorite" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Favorite
+                {favoriteText}
               </span>
             )}
           </div>
@@ -120,7 +131,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             </button>
             {hoveredItem === "share" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Share
+                {shareText}
               </span>
             )}
           </div>
@@ -145,7 +156,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             </button>
             {hoveredItem === "hide" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                {isHidden ? "Unhide" : "Hide"}
+                {isHidden ? unhideText : hideText}
               </span>
             )}
           </div>
@@ -164,7 +175,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
 
             {hoveredItem === "report" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Report
+                {reportText}
               </span>
             )}
           </div>
@@ -185,7 +196,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
               </button>
               {hoveredItem === "undoReport" && (
                 <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                  Undo Report
+                  {undoReportText}
                 </span>
               )}
             </div>
