@@ -4,6 +4,9 @@ import { Heart } from "lucide-react";
 import ArtVideoIntro from "./ArtVideoIntro";
 import ArtVideoOutro from "./ArtVideoOutro";
 import ParticleBackground from "./ParticleBg";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLanguage } from "@/context/LanguageContext";
+import { autoTranslate } from "@/utils/autoTranslate";
 
 interface Artwork {
   id: string;
@@ -26,7 +29,24 @@ const ArtVideoShowcase = ({ artworks, isLoading = false }: ArtVideoShowcaseProps
   const navigate = useNavigate();
   const [phase, setPhase] = useState<ShowcasePhase>("intro");
   const [spread, setSpread] = useState(false);
+  const [translatedTitles, setTranslatedTitles] = useState<string[]>([]);
+  const [translatedArtists, setTranslatedArtists] = useState<string[]>([]);
   const isMobile = window.innerWidth <= 768; // simple check for mobile
+  const { language } = useLanguage();
+  const loadingText = useAutoTranslation("Loading Popular Artworks...", language);
+  const popularThisWeek = useAutoTranslation("Popular this week", language);
+  const description = useAutoTranslation("Dive into this week's handpicked collection of stunning creations—each piece a bold exploration of imagination, emotion, and visual storytelling.", language);
+
+  useEffect(() => {
+    const translate = async () => {
+      const slicedArtworks = artworks.slice(0, 5);
+      const titles = await Promise.all(slicedArtworks.map(art => autoTranslate(art.title, language)));
+      const artists = await Promise.all(slicedArtworks.map(art => autoTranslate(art.artist.name, language)));
+      setTranslatedTitles(titles);
+      setTranslatedArtists(artists);
+    };
+    translate();
+  }, [artworks, language]);
 
   const handleArtworkClick = (artworkId: string, image_url: string, artistName: string) => {
     navigate(`/artwork/${artworkId}`, { state: { image_url, artistName } });
@@ -63,7 +83,7 @@ const ArtVideoShowcase = ({ artworks, isLoading = false }: ArtVideoShowcaseProps
     return (
       <div className="relative w-full max-w-7xl mx-auto rounded-lg overflow-hidden border bg-white h-[400px] flex flex-col items-center justify-center">
         <ParticleBackground />
-        <h2 className="text-md font-bold pb-2">Loading Popular Artworks...</h2>
+        <h2 className="text-md font-bold pb-2">{loadingText}</h2>
       </div>
     );
   }
@@ -84,13 +104,11 @@ const ArtVideoShowcase = ({ artworks, isLoading = false }: ArtVideoShowcaseProps
       {!isMobile && phase === "main" && (
         <div className="relative text-center h-full flex flex-col">
           <h2 className="text-md font-bold pb-2 text-gray-900 mt-6">
-            Popular this week
+            {popularThisWeek}
           </h2>
           <div className="w-96 mx-auto">
             <p className="text-[10px] text-gray-700 mt-2">
-              Dive into this week's handpicked collection of stunning
-              creations—each piece a bold exploration of imagination, emotion,
-              and visual storytelling.
+              {description}
             </p>
           </div>
 
@@ -162,11 +180,11 @@ const ArtVideoShowcase = ({ artworks, isLoading = false }: ArtVideoShowcaseProps
                       />
                       <div className="absolute left-1/2 bottom-2 transform -translate-x-1/2 bg-white/80 rounded-md px-3 py-2 w-[90%] shadow-md backdrop-blur-sm">
                         <div className="font-semibold text-[11px] leading-tight text-left text-black -mb-0.5 truncate overflow-hidden whitespace-nowrap max-w-28">
-                          {art.title}
+                          {translatedTitles[index] || art.title}
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="text-[8px] text-gray-700 truncate overflow-hidden whitespace-nowrap max-w-[60%]">
-                            by {art.artist.name}
+                            by {translatedArtists[index] || art.artist.name}
                           </div>
                           <div className="flex items-center gap-1">
                             <Heart size={10} className="text-red-700 fill-red-700" />
