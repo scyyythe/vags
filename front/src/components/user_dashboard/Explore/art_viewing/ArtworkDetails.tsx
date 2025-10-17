@@ -609,7 +609,7 @@ const ArtworkDetails = () => {
                     </div>
                   )}
 
-                  <Separator className="my-6" />
+                  <Separator className="my-4" />
 
                   {/* Comment Section */}
                   <CommentSection artworkId={id} />
