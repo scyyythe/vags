@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface CategoryFilterProps {
   categories: string[];
@@ -7,6 +9,8 @@ interface CategoryFilterProps {
 }
 
 const CategoryFilter = ({ categories, selectedCategory: propSelectedCategory, onSelectCategory }: CategoryFilterProps) => {
+  const { language } = useLanguage();
+  const feedText = useAutoTranslation("Feed", language);
   const [selectedCategory, setSelectedCategory] = useState<string>(propSelectedCategory || categories[0]);
 
   const handleCategoryClick = (category: string) => {
@@ -18,7 +22,7 @@ const CategoryFilter = ({ categories, selectedCategory: propSelectedCategory, on
 
   return (
     <div className="flex flex-wrap gap-2">
-      <span className="font-bold mr-3">Feed</span>
+      <span className="font-bold mr-3">{feedText}</span>
       {categories.map((category) => (
         <button
           key={category}
