@@ -69,10 +69,16 @@ export const useArtCategories = () => {
 
   useEffect(() => {
     const translateCategories = async () => {
-      const translated = await Promise.all(
-        ART_CATEGORIES.map(async (category) => await autoTranslate(category, language.toLowerCase()))
-      );
-      setTranslatedCategories(translated);
+      try {
+        const translated = await Promise.all(
+          ART_CATEGORIES.map(async (category) => await autoTranslate(category, language.toLowerCase()))
+        );
+        setTranslatedCategories(translated);
+      } catch (error) {
+        console.warn("Failed to translate categories:", error);
+        // Fallback to original categories if translation fails
+        setTranslatedCategories([...ART_CATEGORIES]);
+      }
     };
 
     translateCategories();
