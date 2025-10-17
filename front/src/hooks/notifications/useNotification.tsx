@@ -44,6 +44,7 @@ interface Notification {
   date: string;
   artworkTitle?: string;
   message?: string;
+  is_read?: boolean;
 }
 // Fetch function for notifications
 const fetchNotifications = async (): Promise<Notification[]> => {
@@ -106,6 +107,9 @@ const useNotifications = () => {
     return matches;
   });
 
+  // Calculate unread notifications count
+  const unreadCount = allNotifications.filter((n) => !n.is_read).length;
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
@@ -130,6 +134,7 @@ const useNotifications = () => {
 
   return {
     displayedNotifications,
+    unreadCount,
     searchQuery,
     date,
     isFilterOpen,
