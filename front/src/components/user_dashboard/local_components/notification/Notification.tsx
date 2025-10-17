@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import useNotifications from "@/hooks/notifications/useNotification";
+import useMarkNotificationAsRead from "@/hooks/notifications/useMarkNotificationAsRead";
 import NotificationSkeleton from "../../../skeletons/notifications/NotificationSkeleton";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
@@ -23,6 +24,7 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const navigate = useNavigate();
   const { displayedNotifications, isLoading, error, refetch } = useNotifications();
+  const markAsReadMutation = useMarkNotificationAsRead();
 
   const { language } = useLanguage();
 
@@ -103,6 +105,7 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
                 language={language}
                 navigate={navigate}
                 onClose={onClose}
+                markAsRead={markAsReadMutation.mutate}
               />
             ))
           )}
@@ -113,7 +116,7 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
 };
 
 // Child component (safe hook usage)
-const NotificationItem = ({ n, language, navigate, onClose }: any) => {
+const NotificationItem = ({ n, language, navigate, onClose, markAsRead }: any) => {
   const translatedName = n.name ? useAutoTranslation(n.name, language) : "";
   const translatedMessage = n.message ? useAutoTranslation(n.message, language) : "";
   const translatedAction = n.action ? useAutoTranslation(n.action, language) : "";
@@ -158,8 +161,14 @@ const NotificationItem = ({ n, language, navigate, onClose }: any) => {
       key={n.id}
       className={cn("flex items-start gap-3 cursor-pointer", {
         "hover:bg-gray-100 p-2 rounded-md transition": n.link,
+        "bg-blue-50 border-l-2 border-blue-500": !n.is_read,
       })}
       onClick={() => {
+        // Mark notification as read if it's unread
+        if (!n.is_read) {
+          markAsRead(n.id);
+        }
+
         if (n.link) {
           navigate(n.link);
           onClose();
@@ -202,9 +211,7 @@ const NotificationItem = ({ n, language, navigate, onClose }: any) => {
             </div>
           </>
         )}
-        <div className="text-[10px] text-muted-foreground mt-1">
-          {formatDateTime(n.created_at)}
-        </div>
+        <div className="text-[10px] text-muted-foreground mt-1">{formatDateTime(n.created_at)}</div>
       </div>
     </div>
   );
@@ -212,13 +219,7 @@ const NotificationItem = ({ n, language, navigate, onClose }: any) => {
 
 // Simple Bell icon
 const Bell = ({ className }: { className?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className={className}
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
