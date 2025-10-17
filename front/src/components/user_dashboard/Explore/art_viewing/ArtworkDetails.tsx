@@ -96,6 +96,11 @@ const ArtworkDetails = () => {
   const tDatePostedDefault = useAutoTranslation("March 25, 2023", language);
   const tCm = useAutoTranslation("cm", language);
   const tInch = useAutoTranslation("″", language);
+  const tExpandedArtwork = useAutoTranslation("Expanded artwork", language);
+  const tTheDistortedFace = useAutoTranslation("The Distorted Face", language);
+  const tAngelGanev = useAutoTranslation("Angel Ganev", language);
+  const tUntitledArtwork = useAutoTranslation("Untitled Artwork", language);
+  const tUnknownArtist = useAutoTranslation("Unknown Artist", language);
 
   const { data: related, error } = useArtworks(currentPage, undefined, true, "all", "public");
   const { data: artwork } = useFetchArtworkById(id);
@@ -105,6 +110,61 @@ const ArtworkDetails = () => {
   const { mutate: archiveArtwork } = useArchivedArtwork();
   const { mutate: submitReport } = useSubmitReport();
   const queryClient = useQueryClient();
+
+  // Call ALL useAutoTranslation hooks unconditionally
+  const artworkTitleTranslation = useAutoTranslation(artwork?.title || "", language);
+  const artistNameTranslation = useAutoTranslation(artwork?.artist || "", language);
+  const artworkStyleTranslation = useAutoTranslation(artwork?.style || "", language);
+  const artworkMediumTranslation = useAutoTranslation(artwork?.medium || "", language);
+  const artworkSizeTranslation = useAutoTranslation(artwork?.size || "", language);
+  const artworkDatePostedTranslation = useAutoTranslation(artwork?.datePosted || "", language);
+  const artworkDescriptionTranslation = useAutoTranslation(artwork?.description || "", language);
+  
+  // Use useMemo to select the correct translation
+  const translatedArtworkTitle = React.useMemo(() => 
+    artwork?.title ? artworkTitleTranslation : tTheDistortedFace, 
+    [artwork?.title, artworkTitleTranslation, tTheDistortedFace]
+  );
+  
+  const translatedArtistName = React.useMemo(() => 
+    artwork?.artist ? artistNameTranslation : tAngelGanev, 
+    [artwork?.artist, artistNameTranslation, tAngelGanev]
+  );
+  
+  const tipJarTitle = React.useMemo(() => 
+    artwork?.title ? artworkTitleTranslation : tUntitledArtwork, 
+    [artwork?.title, artworkTitleTranslation, tUntitledArtwork]
+  );
+  
+  const tipJarArtistName = React.useMemo(() => 
+    artwork?.artist ? artistNameTranslation : tUnknownArtist, 
+    [artwork?.artist, artistNameTranslation, tUnknownArtist]
+  );
+  
+  const translatedArtworkStyle = React.useMemo(() => 
+    artwork?.style ? artworkStyleTranslation : tPainting, 
+    [artwork?.style, artworkStyleTranslation, tPainting]
+  );
+  
+  const translatedArtworkMedium = React.useMemo(() => 
+    artwork?.medium ? artworkMediumTranslation : tAcrylicPaint, 
+    [artwork?.medium, artworkMediumTranslation, tAcrylicPaint]
+  );
+  
+  const translatedArtworkSize = React.useMemo(() => 
+    artwork?.size ? artworkSizeTranslation : tDimensionsDefault, 
+    [artwork?.size, artworkSizeTranslation, tDimensionsDefault]
+  );
+  
+  const translatedArtworkDatePosted = React.useMemo(() => 
+    artwork?.datePosted ? artworkDatePostedTranslation : tDatePostedDefault, 
+    [artwork?.datePosted, artworkDatePostedTranslation, tDatePostedDefault]
+  );
+  
+  const translatedArtworkDescription = React.useMemo(() => 
+    artwork?.description ? artworkDescriptionTranslation : tNoDescriptionAvailable, 
+    [artwork?.description, artworkDescriptionTranslation, tNoDescriptionAvailable]
+  );
 
   const { isLikedFromBulk, isSavedFromBulk, isReportedFromBulk, reportStatusFromBulk } = location.state || {};
   const isOwner = String(loggedInUserId) === String(artwork?.artist_id);
@@ -253,8 +313,8 @@ const ArtworkDetails = () => {
 
     openPopup({
       id,
-      title: artwork.title || "Untitled Artwork",
-      artistName: artwork.artist || "Unknown Artist",
+      title: tipJarTitle,
+      artistName: tipJarArtistName,
       artworkImage: getArtworkImageUrl(artwork.image_url),
       artistId: artwork.artistId,
     });
@@ -437,12 +497,7 @@ const ArtworkDetails = () => {
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">{tArtworkStyle}</h3>
                           <p className="text-[9px] text-gray-700">
-                            {artwork?.style
-                              ? useAutoTranslation(artwork.style
-                                  .split(" ")
-                                  .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                                  .join(" "), language)
-                              : tPainting}
+                            {translatedArtworkStyle}
                           </p>
                         </div>
 
@@ -450,7 +505,7 @@ const ArtworkDetails = () => {
 
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">{tMedium}</h3>
-                          <p className="text-[9px] text-gray-700">{artwork?.medium ? useAutoTranslation(artwork.medium, language) : tAcrylicPaint}</p>
+                          <p className="text-[9px] text-gray-700">{translatedArtworkMedium}</p>
                         </div>
 
                         <Separator className="my-3" />
@@ -458,7 +513,7 @@ const ArtworkDetails = () => {
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">{tDimensions}</h3>
                           <p className="text-[9px] text-gray-700">
-                            {artwork?.size ? useAutoTranslation(artwork.size.split(" x ").join(" x "), language) : tDimensionsDefault} {tCm}
+                            {translatedArtworkSize} {tCm}
                           </p>
                         </div>
 
@@ -466,7 +521,7 @@ const ArtworkDetails = () => {
 
                         <div className="mb-1">
                           <h3 className="text-[9px] font-medium mb-1">{tDatePosted}</h3>
-                          <p className="text-[9px] text-gray-700">{artwork?.datePosted ? useAutoTranslation(artwork.datePosted, language) : tDatePostedDefault}</p>
+                          <p className="text-[9px] text-gray-700">{translatedArtworkDatePosted}</p>
                         </div>
                       </div>
                     </aside>
@@ -585,7 +640,7 @@ const ArtworkDetails = () => {
                   </div>
 
                   <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>
-                    {artwork?.title || "The Distorted Face"}
+                    {translatedArtworkTitle}
                   </h1>
 
                   <p
@@ -593,7 +648,7 @@ const ArtworkDetails = () => {
                     onClick={() => navigate(`/userprofile/${artwork.artist_id}`)}
                     className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
                   >
-                    by {artwork?.artist || "Angel Ganev"}
+                    by {translatedArtistName}
                   </p>
 
                   <div className="relative mt-4">
@@ -602,7 +657,7 @@ const ArtworkDetails = () => {
                       className="text-[10px] text-gray-700 transition-all duration-300 ease-in-out h-[120px] overflow-y-auto"
                       style={{ lineHeight: "1.1rem" }}
                     >
-                      {artwork?.description ? useAutoTranslation(artwork.description, language) : tNoDescriptionAvailable}
+                      {translatedArtworkDescription}
                     </div>
 
                     {/* {isOverflowing && (
@@ -620,24 +675,24 @@ const ArtworkDetails = () => {
                     <div className="w-full py-3 mb-4 grid grid-cols-4 text-center gap-4">
                       <div>
                         <h4 className="text-[10px] font-medium mb-1">{tArtworkStyle}</h4>
-                        <p className="text-[10px] text-gray-700">{artwork?.style ? useAutoTranslation(artwork.style, language) : tPainting}</p>
+                        <p className="text-[10px] text-gray-700">{translatedArtworkStyle}</p>
                       </div>
                       <div>
                         <h4 className="text-[10px] font-medium mb-1">{tMedium}</h4>
-                        <p className="text-[10px] text-gray-700">{artwork?.medium ? useAutoTranslation(artwork.medium, language) : tAcrylicPaint}</p>
+                        <p className="text-[10px] text-gray-700">{translatedArtworkMedium}</p>
                       </div>
                       <div>
                         <h4 className="text-[10px] font-medium mb-1">{tDatePosted}</h4>
-                        <p className="text-[10px] text-gray-700">{artwork?.datePosted ? useAutoTranslation(artwork.datePosted, language) : tDatePostedDefault}</p>
+                        <p className="text-[10px] text-gray-700">{translatedArtworkDatePosted}</p>
                       </div>
                       <div>
                         <h4 className="text-[10px] font-medium mb-1">{tDimensions}</h4>
                         <p className="text-[9px] text-gray-700">
                           {artwork?.size
-                            ? useAutoTranslation(artwork.size
+                            ? translatedArtworkSize
                                 .split(" x ")
                                 .map((dim) => `${dim}${tInch}`)
-                                .join(" x "), language)
+                                .join(" x ")
                             : `${tDimensionsDefault}${tInch}`}
                         </p>
                       </div>
@@ -707,7 +762,7 @@ const ArtworkDetails = () => {
             <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
               <img
                 src={getArtworkImageUrl(artwork?.image_url)}
-                alt="Expanded artwork"
+                alt={tExpandedArtwork}
                 className="max-h-[80vh] max-w-[90vw] object-contain"
               />
             </div>

@@ -33,8 +33,8 @@ const ArtCategorySelect = ({ selectedCategory, onChange }: Props) => {
         <SelectItem value={allText} className={cn(isMobile ? "text-[10px]" : "text-[10px]")}>
           {allText}
         </SelectItem>
-        {translatedCategories.map((category) => (
-          <SelectItem key={category} value={category} className={cn(isMobile ? "text-[10px]" : "text-[10px]")}>
+        {translatedCategories.map((category, index) => (
+          <SelectItem key={`category-${index}`} value={category} className={cn(isMobile ? "text-[10px]" : "text-[10px]")}>
             {category}
           </SelectItem>
         ))}
