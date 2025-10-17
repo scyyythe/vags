@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, MoreHorizontal, Send, Reply } from "lucide-react";
+import { Heart, MoreHorizontal, Send, Reply, X } from "lucide-react";
 import { toZonedTime } from "date-fns-tz";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
@@ -92,7 +92,7 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(({
   const translatedTimeText = useAutoTranslation(timeAgoText, language);
 
   return (
-    <div className={`mb-2 relative ${isReply ? "ml-8 border-l-2 border-gray-100 pl-4" : ""}`}>
+    <div className={`mb-4 relative ${isReply ? "ml-8 border-l-2 border-gray-100 pl-4" : ""}`}>
       <div className="flex items-start justify-between">
         <div className="flex items-start">
           <Avatar className={`${isMobile ? "h-4 w-4 " : "h-3 w-3"} mr-2`}>
@@ -253,6 +253,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   const [showAllComments, setShowAllComments] = useState(false);
   const [showReportOptions, setShowReportOptions] = useState(false);
   const [optionsOpen, setOptionsOpen] = useState(false);
+  const [showCommentsModal, setShowCommentsModal] = useState(false);
+  const [replyContext, setReplyContext] = useState<{ user: string; text: string } | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -308,6 +310,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
           toast.success(tCommentPosted, { closeButton: true });
           setComment("");
           setReplyingTo(null);
+          setReplyContext(null);
           setShowEmojiPicker(false);
         },
       }
@@ -347,9 +350,19 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
     toggleCommentMenu(commentId);
   };
 
-  const handleReply = (commentId: string, user: string) => {
+  const handleReply = (commentId: string, user: string, commentText?: string) => {
     setReplyingTo(commentId);
     setComment(`@${user} `);
+    
+    // If replying from modal, close modal and set reply context
+    if (showCommentsModal && commentText) {
+      setShowCommentsModal(false);
+      setReplyContext({ user, text: commentText });
+    }
+  };
+
+  const handleModalReply = (commentId: string, user: string, commentText: string) => {
+    handleReply(commentId, user, commentText);
   };
 
   const toggleReplies = (commentId: string) => {
@@ -370,11 +383,35 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
 
   const [expandedReplies, setExpandedReplies] = useState<{ [key: string]: boolean }>({});
 
+  // Prevent body scrolling when modal is open
+  useEffect(() => {
+    if (showCommentsModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup function to restore scrolling when component unmounts
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showCommentsModal]);
+
   return (
     <div className={`relative ${isMobile ? "h-56" : "h-[160px]"}`}>
-      <p className="text-[10px] font-semibold mb-2">{tComments}</p>
+      <div className="flex justify-between items-center mb-2">
+        <p className="text-[10px] font-semibold">{tComments}</p>
+        {nestedComments.length > 1 && (
+          <button
+            onClick={() => setShowCommentsModal(true)}
+            className="text-gray-500 hover:text-gray-700 text-[9px]"
+          >
+            {tViewAll + ` ${comments.length - 1} ` + tComment + `${comments.length - 1 > 1 ? "s" : ""}`}
+          </button>
+        )}
+      </div>
       {/* Scrollable comment container */}
-      <div className={`overflow-y-auto h-[45%] custom-scrollbar`}>
+      <div className={`overflow-y-auto h-[69%] custom-scrollbar`}>
         <div
           className={`transition-all duration-300 ${showAllComments ? "max-h-36" : ""}`}
           style={{
@@ -411,21 +448,35 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
             )}
           </div>
         </div>
-
-        {nestedComments.length > 1 && (
-          <button
-            onClick={() => setShowAllComments((prev) => !prev)}
-            className="text-gray-500 hover:text-gray-700 text-[10px] px-4"
-          >
-            {showAllComments
-              ? tHideComments
-              : tViewAll + ` ${comments.length - 1} ` + tComment + `${comments.length - 1 > 1 ? "s" : ""}`}
-          </button>
-        )}
       </div>
 
       {/* Fixed input at bottom */}
-      <form onSubmit={handleCommentSubmit} className="absolute bottom-0 left-0 right-0 bg-white py-3">
+      <form onSubmit={handleCommentSubmit} className="absolute left-0 right-0 bg-white">
+        {/* Reply Context Display */}
+        {replyContext && (
+          <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <p className="text-[9px] text-gray-600 mb-1">
+                  Replying to <span className="font-semibold">{replyContext.user}</span>
+                </p>
+                <p className="text-[9px] text-gray-700 line-clamp-2">{replyContext.text}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setReplyContext(null);
+                  setReplyingTo(null);
+                  setComment("");
+                }}
+                className="text-gray-400 hover:text-gray-600 ml-2"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          </div>
+        )}
+        
         <div className="relative">
           <input
             type="text"
@@ -479,6 +530,50 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
         onClose={() => setShowReportOptions(false)}
         onSubmit={handleReportSubmit}
       />
+
+      {/* Comments Modal */}
+      {showCommentsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg w-[90%] max-w-2xl max-h-[80vh] flex flex-col">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center px-4 py-3">
+              <h3 className="text-sm font-semibold">{tComments}</h3>
+              <button
+                onClick={() => setShowCommentsModal(false)}
+                className="text-gray-500 hover:text-gray-700 p-1"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            
+            {/* Modal Content */}
+            <div className="flex-1 overflow-y-auto px-4 py-2">
+              {nestedComments.map((comment) => (
+                <CommentItem
+                  key={comment.id}
+                  comment={comment}
+                  isReply={false}
+                  isMobile={isMobile}
+                  handleReply={(commentId, user) => handleModalReply(commentId, user, comment.text)}
+                  handleCommentLike={handleCommentLike}
+                  toggleCommentMenu={toggleCommentMenu}
+                  commentMenus={commentMenus}
+                  tReply={tReply}
+                  tBlockUser={tBlockUser}
+                  tReport={tReport}
+                  tBlockedUser={tBlockedUser}
+                  tContentReported={tContentReported}
+                  setShowReportOptions={setShowReportOptions}
+                  tViewAllReplies={tViewAllReplies}
+                  tHideReplies={tHideReplies}
+                  expandedReplies={expandedReplies}
+                  setExpandedReplies={setExpandedReplies}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
