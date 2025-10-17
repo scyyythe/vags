@@ -15,6 +15,7 @@ import { useUserConversations } from "@/hooks/messages/useUserConversations";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLogout } from "@/hooks/auth/useLogout";
+import useNotifications from "@/hooks/notifications/useNotification";
 
 const Header = () => {
   const location = useLocation();
@@ -44,6 +45,7 @@ const Header = () => {
 
   const { isChatOpen, openChat, closeChat, participantId, participantName, participantAvatar } = useChat();
   const [conversations, , isLoadingConversations] = useUserConversations(userId || "");
+  const { unreadCount } = useNotifications();
 
   // Calculate total unread messages with safe fallback
   const totalUnreadMessages =
@@ -206,6 +208,11 @@ const Header = () => {
               }}
             >
               <Bell size={15} />
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center font-medium min-w-[12px]">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
             </button>
 
             <AnimatePresence>
