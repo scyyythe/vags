@@ -64,7 +64,7 @@ export function usePayPalTip({
             console.error("❌ Error:", err);
             if (onError) onError(err);
           }
-          console.log("🟡 Created PayPal Order:", data.orderID);
+          console.log("Created PayPal Order:", data.orderID);
         },
         onError: (err) => {
           console.error("PayPal button error:", err);
