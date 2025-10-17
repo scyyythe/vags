@@ -1,7 +1,7 @@
 from django.urls import path
 from api.views.interaction_views.interaction import ArtworkBulkStatusView,SavedArtworksListView,CommentCreateView,LikeStatusView,ArtworkStatusView,LikeCreateView,SavedStatusView, CartItemCreateView, CartItemDeleteView, CartRetrieveView,SavedCreateView,LikeListView, SavedListView,CommentListView
 from api.views.interaction_views.follow import RemoveFollowerView,FollowedArtworksView,FollowedArtworksViewOnSale,FollowingListView,FollowCreateView,UnfollowView,FollowerListView,FollowStatsView,CheckFollowStatusView,FollowCountsView
-from api.views.interaction_views.notifications import NotificationDeleteView,NotificationListView, NotificationDetailView,NotificationDeleteAllView
+from api.views.interaction_views.notifications import NotificationDeleteView,NotificationListView, NotificationDetailView,NotificationDeleteAllView,MarkNotificationAsReadView,MarkAllNotificationsAsReadView
 from api.views.interaction_views.comment_views import CommentListCreateView,CommentRepliesView,CommentReactionView,CommentLikeView
 
 interaction_urlpatterns = [
@@ -48,6 +48,8 @@ interaction_urlpatterns = [
     path('notifications/<int:pk>/', NotificationDetailView.as_view(), name='notification-detail'),
     path('notifications/<str:pk>/delete/', NotificationDeleteView.as_view(), name='notification-delete'),
     path('notifications/delete-all/', NotificationDeleteAllView.as_view(), name='notifications-delete-all'),
+    path('notifications/<str:pk>/mark-read/', MarkNotificationAsReadView.as_view(), name='notification-mark-read'),
+    path('notifications/mark-all-read/', MarkAllNotificationsAsReadView.as_view(), name='notifications-mark-all-read'),
     
     path("<str:content_type>/<str:object_id>/comments/", CommentListCreateView.as_view(), name="comments-list-create"),
     path("comments/<str:comment_id>/replies/", CommentRepliesView.as_view(), name="comment-replies"),
