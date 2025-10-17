@@ -161,7 +161,7 @@ const NotificationItem = ({ n, language, navigate, onClose, markAsRead }: any) =
       key={n.id}
       className={cn("flex items-start gap-3 cursor-pointer", {
         "hover:bg-gray-100 p-2 rounded-md transition": n.link,
-        "bg-blue-50 border-l-2 border-blue-500": !n.is_read,
+        "bg-blue-50": !n.is_read,
       })}
       onClick={() => {
         // Mark notification as read if it's unread
