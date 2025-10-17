@@ -10,6 +10,8 @@ import { usePayPalTip } from "@/hooks/paypal/usePayPalTip";
 import { useStripeTip } from "@/hooks/tips/useStripeTip";
 import { useGcashTip } from "@/hooks/tips/gcash/useGCashTip";
 import apiClient from "@/utils/apiClient";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useLanguage } from "@/context/LanguageContext";
 interface TipJarPopupProps {
   isOpen: boolean;
   onClose: () => void;
@@ -33,6 +35,46 @@ const TipJarPopup = ({
   default_paypal_email = "",
   artId = "",
 }: TipJarPopupProps) => {
+  const { language } = useLanguage();
+  const unavailableText = useAutoTranslation("Unavailable", language);
+  const paypalText = useAutoTranslation("PayPal", language);
+  const ownerNoPayPalTextPart1 = useAutoTranslation("Owner has not provided a", language);
+  const ownerNoPayPalTextPart2 = useAutoTranslation("account.", language);
+  const ownerNoPayPalText = ownerNoPayPalTextPart1 + " " + paypalText + " " + ownerNoPayPalTextPart2;
+  const tryDifferentMethodText = useAutoTranslation("Please try a different payment method.", language);
+  const confirmDonationText = useAutoTranslation("Confirm Your Donation", language);
+  const toText = useAutoTranslation("To:", language);
+  const amountText = useAutoTranslation("Amount:", language);
+  const paymentMethodText = useAutoTranslation("Payment Method:", language);
+  const scanQrText = useAutoTranslation("Scan this QR to donate", language);
+  const noGcashDetailsText = useAutoTranslation("No GCash details available from this user.", language);
+  const tryPayPalStripeText = useAutoTranslation("Try using PayPal or Stripe instead.", language);
+  const donateText = useAutoTranslation("Donate", language);
+  const howMuchDonateText = useAutoTranslation("How much you wanna donate?", language);
+  const orText = useAutoTranslation("or", language);
+  const enterAmountManuallyText = useAutoTranslation("Enter amount manually", language);
+  const paymentMethodLabelText = useAutoTranslation("payment method", language);
+  const gcashText = useAutoTranslation("GCash", language);
+  const stripeText = useAutoTranslation("Stripe", language);
+  const donateNowText = useAutoTranslation("Donate Now", language);
+  const payWithPayPalText = useAutoTranslation("Pay with PayPal", language);
+  const cancelGoBackText = useAutoTranslation("Cancel and go back", language);
+  const closeExpandedQrText = useAutoTranslation("Close expanded QR", language);
+  const noImageText = useAutoTranslation("No Image", language);
+  const pleaseSelectOrEnterAmountText = useAutoTranslation("Please select or enter an amount", language);
+  const invalidAmountText = useAutoTranslation("Invalid amount.", language);
+  const paypalPaymentFailedText = useAutoTranslation("PayPal payment failed. Please try again.", language);
+  const thankYouForDonationText = useAutoTranslation("Thank you for your donation!", language);
+  const stripePaymentFailedText = useAutoTranslation("Stripe payment failed. Try again.", language);
+  const gcashPaymentFailedText = useAutoTranslation("Gcash payment failed. Try again.", language);
+  const failedToLoadArtistPaymentAccountsText = useAutoTranslation("Failed to load artist payment accounts", language);
+  const closeText = useAutoTranslation("Close", language);
+  const expandQrText = useAutoTranslation("Expand QR", language);
+  const gcashQrCodeText = useAutoTranslation("GCash QR Code", language);
+  const expandedQrCodeText = useAutoTranslation("Expanded QR Code", language);
+  const translatedArtworkTitle = useAutoTranslation(artworkTitle, language);
+  const translatedArtistName = useAutoTranslation(artistName, language);
+  const stripePlaceholderText = useAutoTranslation("********@gmail.com", language);
   const [step, setStep] = useState<"amount" | "confirm" | "paypal">("amount");
   const [selectedAmount, setSelectedAmount] = useState<string | null>(null);
   const [customAmount, setCustomAmount] = useState<string>("");
@@ -64,7 +106,7 @@ const TipJarPopup = ({
         setArtistAccounts(res.data);
       } catch (err) {
         console.error("Failed to fetch artist accounts:", err);
-        toast.error("Failed to load artist payment accounts");
+        toast.error(failedToLoadArtistPaymentAccountsText);
       }
     };
 
@@ -130,7 +172,7 @@ const TipJarPopup = ({
   const handleProceedToDonate = () => {
     const amount = selectedAmount || customAmount;
     if (!amount) {
-      toast.error("Please select or enter an amount", { closeButton: true });
+      toast.error(pleaseSelectOrEnterAmountText, { closeButton: true });
       return;
     }
 
@@ -143,11 +185,11 @@ const TipJarPopup = ({
     artistId: artistId,
     id: artId,
     onSuccess: (details) => {
-      toast.success("Thank you for your donation!", { closeButton: true });
+      toast.success(thankYouForDonationText, { closeButton: true });
       onClose();
     },
     onError: (error) => {
-      toast.error("PayPal payment failed. Please try again.", { closeButton: true });
+      toast.error(paypalPaymentFailedText, { closeButton: true });
       console.error(error);
     },
   });
@@ -155,7 +197,7 @@ const TipJarPopup = ({
   const handleConfirmDonation = async () => {
     const amount = selectedAmount || customAmount;
     if (!amount) {
-      toast.error("Invalid amount.");
+      toast.error(invalidAmountText);
       return;
     }
 
@@ -165,14 +207,14 @@ const TipJarPopup = ({
       try {
         await createStripeSession(amount, artistId, artId);
       } catch (err) {
-        toast.error("Stripe payment failed. Try again.");
+        toast.error(stripePaymentFailedText);
       }
     } else if (paymentMethod === "GCash") {
       try {
         await sendGcashTip(amount, artistId, artId);
         onClose();
       } catch {
-        toast.error("Gcash payment failed. Try again.", { closeButton: true });
+        toast.error(gcashPaymentFailedText, { closeButton: true });
       }
     }
   };
@@ -200,7 +242,7 @@ const TipJarPopup = ({
           <button
             onClick={handleCancel}
             className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10"
-            aria-label="Close"
+            aria-label={closeText}
           >
             <X size={18} />
           </button>
@@ -212,7 +254,7 @@ const TipJarPopup = ({
             <button
               onClick={handleCancel}
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-              aria-label="Close"
+              aria-label={closeText}
             >
               <X size={14} />
             </button>
@@ -220,27 +262,27 @@ const TipJarPopup = ({
             {/* If NO PayPal account */}
             {paymentMethod === "PayPal" && !default_paypal_email ? (
               <div>
-                <p className="text-md font-semibold text-red-700 mb-3">Unavailable</p>
-                <p className="text-xs font-medium text-gray-800">Owner has not provided a PayPal account.</p>
-                <p className="text-[10px] text-gray-500 mt-2">Please try a different payment method.</p>
+                <p className="text-md font-semibold text-red-700 mb-3">{unavailableText}</p>
+                <p className="text-xs font-medium text-gray-800">{ownerNoPayPalText}</p>
+                <p className="text-[10px] text-gray-500 mt-2">{tryDifferentMethodText}</p>
               </div>
             ) : (
               <>
                 {/* If account EXISTS */}
-                <h2 className="text-md font-bold mb-6">Confirm Your Donation</h2>
+                <h2 className="text-md font-bold mb-6">{confirmDonationText}</h2>
 
                 <div className="p-4 rounded-md mb-2 space-y-4">
                   {/* Artist */}
                   <div className="flex justify-between items-center">
-                    <p className="text-[11px] text-black">To:</p>
-                    <p className="text-[12px] font-medium text-right">{artistName}</p>
+                    <p className="text-[11px] text-black">{toText}</p>
+                    <p className="text-[12px] font-medium text-right">{translatedArtistName}</p>
                   </div>
 
                   <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
                   {/* Amount */}
                   <div className="flex justify-between items-center">
-                    <p className="text-[11px] text-black">Amount:</p>
+                    <p className="text-[11px] text-black">{amountText}</p>
                     <p className="text-lg font-bold text-red-700 text-right">₱{selectedAmount || customAmount}</p>
                   </div>
 
@@ -248,13 +290,15 @@ const TipJarPopup = ({
 
                   {/* Payment Method + Detail */}
                   <div className="flex justify-between items-start">
-                    <p className="text-[11px] text-black mt-1">Payment Method:</p>
+                    <p className="text-[11px] text-black mt-1">{paymentMethodText}</p>
                     <div className="flex flex-col items-end">
                       <div className="flex items-center gap-2">
                         {paymentMethod === "PayPal" && <img src={paypalLogo} className="w-4 h-4" />}
                         {paymentMethod === "GCash" && <img src={gcashLogo} className="w-4 h-4" />}
                         {paymentMethod === "Stripe" && <img src={stripeLogo} className="w-4 h-4" />}
-                        <span className="text-xs font-medium">{paymentMethod}</span>
+                        <span className="text-xs font-medium">
+                          {paymentMethod === "PayPal" ? paypalText : paymentMethod === "GCash" ? gcashText : stripeText}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -263,7 +307,7 @@ const TipJarPopup = ({
                   {paymentMethod === "GCash" ? (
                     gcashAccount ? (
                       <div className="flex flex-col items-center justify-center mt-4 w-full">
-                        <p className="text-[11px] text-gray-700 mt-1">Scan this QR to donate</p>
+                        <p className="text-[11px] text-gray-700 mt-1">{scanQrText}</p>
 
                         {/* QR container with hover expand button */}
                         <div className="relative group mt-2">
@@ -294,16 +338,16 @@ const TipJarPopup = ({
                       </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center mt-6 text-center text-gray-600">
-                        <p className="text-md font-semibold text-red-700 mb-2">Unavailable</p>
-                        <p className="text-xs font-medium">No GCash details available from this user.</p>
-                        <p className="text-[10px] text-gray-500 mt-1">Try using PayPal or Stripe instead.</p>
+                        <p className="text-md font-semibold text-red-700 mb-2">{unavailableText}</p>
+                        <p className="text-xs font-medium">{noGcashDetailsText}</p>
+                        <p className="text-[10px] text-gray-500 mt-1">{tryPayPalStripeText}</p>
                       </div>
                     )
                   ) : (
                     <div className="flex items-end justify-end">
                       <p className="text-[11px] text-gray-700">
                         {paymentMethod === "PayPal" && default_paypal_email}
-                        {paymentMethod === "Stripe" && "********@gmail.com"}
+                        {paymentMethod === "Stripe" && stripePlaceholderText}
                       </p>
                     </div>
                   )}
@@ -323,7 +367,7 @@ const TipJarPopup = ({
                       (paymentMethod === "GCash" && !gcashAccount)
                     }
                   >
-                    Donate
+                    {donateText}
                   </Button>
                 </div>
               </>
@@ -332,7 +376,7 @@ const TipJarPopup = ({
         ) : (
           <div className="py-6 px-16">
             <div className="text-center mb-4">
-              <h2 className="text-xl font-bold">{artworkTitle}</h2>
+              <h2 className="text-xl font-bold">{translatedArtworkTitle}</h2>
 
               <div className="flex justify-center my-4">
                 <div className="w-16 h-16 rounded-sm overflow-hidden border border-gray-200 shadow-lg">
@@ -340,13 +384,13 @@ const TipJarPopup = ({
                     <img src={artworkImage} alt={artworkTitle} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
-                      No Image
+                      {noImageText}
                     </div>
                   )}
                 </div>
               </div>
 
-              <p className="text-gray-600 text-xs mb-6">How much you wanna donate?</p>
+              <p className="text-gray-600 text-xs mb-6">{howMuchDonateText}</p>
 
               <div className="grid grid-cols-3 gap-2 mb-4">
                 {predefinedAmounts.slice(0, 3).map((amount) => (
@@ -385,7 +429,7 @@ const TipJarPopup = ({
               {/* Divider */}
               <div className="relative flex items-center justify-center mb-5">
                 <div className="flex-grow border-t border-gray-400"></div>
-                <span className="flex-shrink mx-4 text-gray-500 text-xs">or</span>
+                <span className="flex-shrink mx-4 text-gray-500 text-xs">{orText}</span>
                 <div className="flex-grow border-t border-gray-400"></div>
               </div>
 
@@ -393,17 +437,17 @@ const TipJarPopup = ({
                 type="text"
                 value={customAmount}
                 onChange={handleCustomAmountChange}
-                placeholder="Enter amount manually"
+                placeholder={enterAmountManuallyText}
                 className="w-full p-2 text-[10px] border border-gray-300 rounded-sm text-center mb-6"
               />
 
               <div className="mb-6">
-                <p className="text-left text-xs font-medium mb-4">payment method</p>
+                <p className="text-left text-xs font-medium mb-4">{paymentMethodLabelText}</p>
                 <div className="flex flex-col gap-1">
                   <label className="flex items-center justify-between">
                     <div className="flex gap-4">
                       <img src={paypalLogo} className="w-6 h-6" />
-                      <span className="text-[10px] mt-1">PayPal</span>
+                      <span className="text-[10px] mt-1">{paypalText}</span>
                     </div>
                     <input
                       type="radio"
@@ -415,7 +459,7 @@ const TipJarPopup = ({
                   <label className="flex items-center justify-between">
                     <div className="flex gap-4">
                       <img src={gcashLogo} className="w-6 h-6" />
-                      <span className="text-[10px] mt-1">GCash</span>
+                      <span className="text-[10px] mt-1">{gcashText}</span>
                     </div>
                     <input
                       type="radio"
@@ -427,7 +471,7 @@ const TipJarPopup = ({
                   <label className="flex items-center justify-between">
                     <div className="flex gap-4">
                       <img src={stripeLogo} className="w-6 h-6" />
-                      <span className="text-[10px] mt-1">Stripe</span>
+                      <span className="text-[10px] mt-1">{stripeText}</span>
                     </div>
                     <input
                       type="radio"
@@ -443,7 +487,7 @@ const TipJarPopup = ({
                 onClick={handleProceedToDonate}
                 className="w-full bg-red-800 hover:bg-red-700 text-white text-xs font-medium py-3 rounded-full"
               >
-                Donate Now
+                {donateNowText}
               </Button>
             </div>
           </div>
