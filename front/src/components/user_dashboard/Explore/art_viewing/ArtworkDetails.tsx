@@ -26,10 +26,13 @@ import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import OwnerMenu from "@/components/user_dashboard/own_profile/menu/art_card/Menu";
 import { useQueryClient } from "@tanstack/react-query";
 import { getArtworkImageUrl } from "@/utils/imageUtils";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 const ArtworkDetails = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const loggedInUserId = getLoggedInUserId();
+  const { language } = useLanguage();
 
   const { likedArtworks, likeCounts, toggleLike } = useContext(LikedArtworksContext);
 
@@ -61,6 +64,38 @@ const ArtworkDetails = () => {
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({});
 
   const [currentPage] = useState(1);
+
+  // Translated strings
+  const tArtworkNotFound = useAutoTranslation("Artwork Not Found", language);
+  const tArtworkNotFoundDesc = useAutoTranslation("The artwork you're looking for doesn't exist or has been removed.", language);
+  const tReturnToHome = useAutoTranslation("Return to Home", language);
+  const tArtworkDetails = useAutoTranslation("Artwork Details", language);
+  const tArtworkStyle = useAutoTranslation("Artwork Style", language);
+  const tMedium = useAutoTranslation("Medium", language);
+  const tDimensions = useAutoTranslation("Dimensions", language);
+  const tDatePosted = useAutoTranslation("Date Posted", language);
+  const tPainting = useAutoTranslation("Painting", language);
+  const tAcrylicPaint = useAutoTranslation("Acrylic Paint", language);
+  const tNoDescriptionAvailable = useAutoTranslation("No description available.", language);
+  const tRelatedArtworks = useAutoTranslation("Related Artworks", language);
+  const tNoRelatedArtworksFound = useAutoTranslation("No related artworks found.", language);
+  const tExpand = useAutoTranslation("Expand", language);
+  const tDonate = useAutoTranslation("Donate", language);
+  const tReply = useAutoTranslation("Reply", language);
+  const tBlockUser = useAutoTranslation("Block User", language);
+  const tReportContent = useAutoTranslation("Report Content", language);
+  const tHide = useAutoTranslation("Hide", language);
+  const tView = useAutoTranslation("View", language);
+  const tReplyText = useAutoTranslation("reply", language);
+  const tRepliesText = useAutoTranslation("replies", language);
+  const tBlockedUser = useAutoTranslation("Blocked user", language);
+  const tContentReported = useAutoTranslation("Content reported", language);
+  const tCommentPosted = useAutoTranslation("Comment posted", language);
+  const tAlreadyReported = useAutoTranslation("You have already reported this artwork.", language);
+  const tDimensionsDefault = useAutoTranslation("20 x 20", language);
+  const tDatePostedDefault = useAutoTranslation("March 25, 2023", language);
+  const tCm = useAutoTranslation("cm", language);
+  const tInch = useAutoTranslation("″", language);
 
   const { data: related, error } = useArtworks(currentPage, undefined, true, "all", "public");
   const { data: artwork } = useFetchArtworkById(id);
@@ -133,7 +168,7 @@ const ArtworkDetails = () => {
         ...prev,
         [newComment.id]: 0,
       }));
-      toast("Comment posted", { closeButton: true });
+      toast(tCommentPosted, { closeButton: true });
       setComment("");
     }
   };
@@ -159,7 +194,7 @@ const ArtworkDetails = () => {
     additionalInfo?: string;
   }) => {
     if (localIsReported || isReportedFromBulk) {
-      toast.error("You have already reported this artwork.", { closeButton: true });
+      toast.error(tAlreadyReported, { closeButton: true });
       setMenuOpen(false);
       return;
     }
@@ -271,10 +306,10 @@ const ArtworkDetails = () => {
       <div className="min-h-screen bg-white">
         <Header />
         <div className="container mx-auto pt-24 px-4 text-center">
-          <h2 className="text-sm font-bold mb-4">Artwork Not Found</h2>
-          <p className="mb-8 text-xs">The artwork you're looking for doesn't exist or has been removed.</p>
+          <h2 className="text-sm font-bold mb-4">{tArtworkNotFound}</h2>
+          <p className="mb-8 text-xs">{tArtworkNotFoundDesc}</p>
           <Link to="/explore" className="text-red-600 text-xs hover:underline">
-            Return to Home
+            {tReturnToHome}
           </Link>
         </div>
       </div>
@@ -302,7 +337,7 @@ const ArtworkDetails = () => {
                 className="hover:underline text-gray-500 flex items-center gap-1"
               >
                 <Reply size={isMobile ? 12 : 10} />
-                Reply
+                {tReply}
               </button>
               <span>·</span>
               <button onClick={() => handleCommentLike(commentItem.id)} className="flex items-center gap-1">
@@ -327,20 +362,20 @@ const ArtworkDetails = () => {
                     <button
                       className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[8px]"} hover:bg-gray-100`}
                       onClick={() => {
-                        toast.success(`Blocked user ${commentItem.user}`, { closeButton: true });
+                        toast.success(`${tBlockedUser} ${commentItem.user}`, { closeButton: true });
                         toggleCommentMenu(commentItem.id);
                       }}
                     >
-                      Block User
+                      {tBlockUser}
                     </button>
                     <button
                       className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[9px]"} hover:bg-gray-100`}
                       onClick={() => {
-                        toast.success("Content reported", { closeButton: true });
+                        toast.success(tContentReported, { closeButton: true });
                         toggleCommentMenu(commentItem.id);
                       }}
                     >
-                      Report Content
+                      {tReportContent}
                     </button>
                   </div>
                 )}
@@ -356,8 +391,8 @@ const ArtworkDetails = () => {
             onClick={() => toggleReplies(commentItem.id)}
             className="text-blue-500 hover:text-blue-600 text-[10px] flex items-center gap-1"
           >
-            {expandedComments[commentItem.id] ? "Hide" : "View"} {commentItem.replies.length}{" "}
-            {commentItem.replies.length === 1 ? "reply" : "replies"}
+            {expandedComments[commentItem.id] ? tHide : tView} {commentItem.replies.length}{" "}
+            {commentItem.replies.length === 1 ? tReplyText : tRepliesText}
           </button>
         </div>
       )}
@@ -386,7 +421,7 @@ const ArtworkDetails = () => {
           <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
             <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
               <i className="bx bx-chevron-left text-lg mr-2"></i>
-              Artwork Details
+              {tArtworkDetails}
             </button>
           </div>
 
@@ -400,38 +435,38 @@ const ArtworkDetails = () => {
                     <aside className="absolute top-3 z-20 left-[-250px] hidden lg:block" style={{ width: "150px" }}>
                       <div className="px-3 py-6 text-left">
                         <div className="mb-6">
-                          <h3 className="text-[9px] font-medium mb-1">Artwork Style</h3>
+                          <h3 className="text-[9px] font-medium mb-1">{tArtworkStyle}</h3>
                           <p className="text-[9px] text-gray-700">
                             {artwork?.style
-                              ? artwork?.style
+                              ? useAutoTranslation(artwork.style
                                   .split(" ")
                                   .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                                  .join(" ")
-                              : "Painting"}
+                                  .join(" "), language)
+                              : tPainting}
                           </p>
                         </div>
 
                         <Separator className="my-3" />
 
                         <div className="mb-6">
-                          <h3 className="text-[9px] font-medium mb-1">Medium</h3>
-                          <p className="text-[9px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
+                          <h3 className="text-[9px] font-medium mb-1">{tMedium}</h3>
+                          <p className="text-[9px] text-gray-700">{artwork?.medium ? useAutoTranslation(artwork.medium, language) : tAcrylicPaint}</p>
                         </div>
 
                         <Separator className="my-3" />
 
                         <div className="mb-6">
-                          <h3 className="text-[9px] font-medium mb-1">Dimensions</h3>
+                          <h3 className="text-[9px] font-medium mb-1">{tDimensions}</h3>
                           <p className="text-[9px] text-gray-700">
-                            {artwork?.size ? artwork?.size.split(" x ").join(" x ") : "20 x 20"} cm
+                            {artwork?.size ? useAutoTranslation(artwork.size.split(" x ").join(" x "), language) : tDimensionsDefault} {tCm}
                           </p>
                         </div>
 
                         <Separator className="my-3" />
 
                         <div className="mb-1">
-                          <h3 className="text-[9px] font-medium mb-1">Date Posted</h3>
-                          <p className="text-[9px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
+                          <h3 className="text-[9px] font-medium mb-1">{tDatePosted}</h3>
+                          <p className="text-[9px] text-gray-700">{artwork?.datePosted ? useAutoTranslation(artwork.datePosted, language) : tDatePostedDefault}</p>
                         </div>
                       </div>
                     </aside>
@@ -461,7 +496,7 @@ const ArtworkDetails = () => {
                         >
                           <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
                           <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
-                            Expand
+                            {tExpand}
                           </span>
                         </div>
 
@@ -472,7 +507,7 @@ const ArtworkDetails = () => {
                         >
                           <i className="bx bx-box text-[12px] mr-[6px]"></i>
                           <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700 animate-donate">
-                            Donate
+                            {tDonate}
                           </span>
                         </div>
                       </div>
@@ -567,7 +602,7 @@ const ArtworkDetails = () => {
                       className="text-[10px] text-gray-700 transition-all duration-300 ease-in-out h-[120px] overflow-y-auto"
                       style={{ lineHeight: "1.1rem" }}
                     >
-                      {artwork?.description || "No description available."}
+                      {artwork?.description ? useAutoTranslation(artwork.description, language) : tNoDescriptionAvailable}
                     </div>
 
                     {/* {isOverflowing && (
@@ -584,26 +619,26 @@ const ArtworkDetails = () => {
                   {isMobile && (
                     <div className="w-full py-3 mb-4 grid grid-cols-4 text-center gap-4">
                       <div>
-                        <h4 className="text-[10px] font-medium mb-1">Artwork Style</h4>
-                        <p className="text-[10px] text-gray-700">{artwork?.style || "Painting"}</p>
+                        <h4 className="text-[10px] font-medium mb-1">{tArtworkStyle}</h4>
+                        <p className="text-[10px] text-gray-700">{artwork?.style ? useAutoTranslation(artwork.style, language) : tPainting}</p>
                       </div>
                       <div>
-                        <h4 className="text-[10px] font-medium mb-1">Medium</h4>
-                        <p className="text-[10px] text-gray-700">{artwork?.medium || "Acrylic Paint"}</p>
+                        <h4 className="text-[10px] font-medium mb-1">{tMedium}</h4>
+                        <p className="text-[10px] text-gray-700">{artwork?.medium ? useAutoTranslation(artwork.medium, language) : tAcrylicPaint}</p>
                       </div>
                       <div>
-                        <h4 className="text-[10px] font-medium mb-1">Date Posted</h4>
-                        <p className="text-[10px] text-gray-700">{artwork?.datePosted || "March 25, 2023"}</p>
+                        <h4 className="text-[10px] font-medium mb-1">{tDatePosted}</h4>
+                        <p className="text-[10px] text-gray-700">{artwork?.datePosted ? useAutoTranslation(artwork.datePosted, language) : tDatePostedDefault}</p>
                       </div>
                       <div>
-                        <h4 className="text-[10px] font-medium mb-1">Artwork Size</h4>
+                        <h4 className="text-[10px] font-medium mb-1">{tDimensions}</h4>
                         <p className="text-[9px] text-gray-700">
                           {artwork?.size
-                            ? artwork.size
+                            ? useAutoTranslation(artwork.size
                                 .split(" x ")
-                                .map((dim) => `${dim}″`)
-                                .join(" x ")
-                            : "20 x 20″"}
+                                .map((dim) => `${dim}${tInch}`)
+                                .join(" x "), language)
+                            : `${tDimensionsDefault}${tInch}`}
                         </p>
                       </div>
                     </div>
@@ -630,7 +665,7 @@ const ArtworkDetails = () => {
             related.length > 0 && (
               <div className="container md:px-6 mb-4">
                 <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"}`}>
-                  Related Artworks
+                  {tRelatedArtworks}
                 </h2>
                 {filteredRelated && filteredRelated.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
@@ -651,7 +686,7 @@ const ArtworkDetails = () => {
                   </div>
                 ) : (
                   <div className="flex flex-col justify-center items-center h-32 w-full">
-                    <p className="text-gray-500 text-xs mb-2">No related artworks found.</p>
+                    <p className="text-gray-500 text-xs mb-2">{tNoRelatedArtworksFound}</p>
                   </div>
                 )}
               </div>
