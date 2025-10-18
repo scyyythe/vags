@@ -22,6 +22,7 @@ import useUserQuery from "@/hooks/users/useUserQuery";
 import type { User } from "@/hooks/users/useUserQuery";
 
 import { useCreateExhibit } from "@/hooks/mutate/exhibit/AddExhibit";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Import extracted constants and data
 import { slotColorSchemes, colorNames } from "@/components/constants/slot-color-schemes";
@@ -381,6 +382,7 @@ const AddExhibit = () => {
   }, [selectedEnvironment, exhibitType, collaborators]);
 
   const createExhibitMutation = useCreateExhibit();
+  const queryClient = useQueryClient();
 
   // Create handlers
   const submitHandlers = createSubmitHandler(
@@ -401,6 +403,7 @@ const AddExhibit = () => {
     bannerFile,
     slotArtworkMap,
     slotOwnerMap,
+    queryClient, // Add queryClient
     undefined, // No exhibit ID for new exhibits
     null // No existing banner image for new exhibits
   );

@@ -21,6 +21,7 @@ import type { ViewMode } from "./components/types";
 import useUserQuery from "@/hooks/users/useUserQuery";
 import type { User } from "@/hooks/users/useUserQuery";
 import { useCreateExhibit } from "@/hooks/mutate/exhibit/AddExhibit";
+import { useQueryClient } from "@tanstack/react-query";
 import { slotColorSchemes, colorNames } from "@/components/constants/slot-color-schemes";
 import { mockExhibitData } from "@/components/data/mock-exhibit-data";
 import { environments } from "@/components/data/environments-data";
@@ -41,6 +42,7 @@ const EditExhibit = () => {
   const queryParams = new URLSearchParams(location.search);
   const mode = queryParams.get("mode") || "";
   const updateExhibitMutation = useUpdateExhibit(exhibitId!);
+  const queryClient = useQueryClient();
   const { data: exhibitData, isError } = useExhibitCardDetail(exhibitId);
   // --- States ---
   const [title, setTitle] = useState("");
@@ -387,6 +389,7 @@ const EditExhibit = () => {
     bannerFile,
     slotArtworkMap,
     slotOwnerMap,
+    queryClient, // Add queryClient
     exhibitId, // Pass exhibit ID to detect edit mode
     bannerImage // Pass existing banner image for edit mode
   );
