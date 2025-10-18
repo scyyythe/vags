@@ -354,3 +354,4 @@ const TransactionsTab: React.FC = () => {
 };
 
 export default TransactionsTab;
+
