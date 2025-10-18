@@ -5,6 +5,8 @@ import DeleteConfirmation from "./DeleteConfirmation";
 import RestoreConfirmation from "./RestoreConfirmation";
 import { useDeleteExhibit } from "@/hooks/exhibit/useDeleteExhibit";
 import ShareModal from "../../../local_components/share/ShareModal";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface ExhibitCardMenuProps {
   isOpen: boolean;
@@ -45,6 +47,16 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
   const deleteExhibit = useDeleteExhibit();
   const [showShareModal, setShowShareModal] = useState(false);
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const shareText = useAutoTranslation("Share", language);
+  const unpublishText = useAutoTranslation("Unpublish", language);
+  const publishText = useAutoTranslation("Publish", language);
+  const viewInsightsText = useAutoTranslation("View Insights", language);
+  const editText = useAutoTranslation("Edit", language);
+  const deleteText = useAutoTranslation("Delete", language);
+  const restoreText = useAutoTranslation("Restore", language);
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
@@ -103,7 +115,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
               <Share2 size={11} />
             </button>
             {hoveredItem === "share" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">Share</span>
+              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">{shareText}</span>
             )}
           </div>
 
@@ -122,7 +134,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
             </button>
             {hoveredItem === "visibility" && (
               <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">
-                {publicStatus ? "Unpublish" : "Publish"}
+                {publicStatus ? unpublishText : publishText}
               </span>
             )}
           </div>
@@ -139,7 +151,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
             </button>
             {hoveredItem === "insights" && (
               <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                View Insights
+                {viewInsightsText}
               </span>
             )}
           </div>
@@ -165,7 +177,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
                     }}
                     className="px-3 py-1 text-left text-white"
                   >
-                    Edit
+                    {editText}
                   </button>
                 )}
                 {visibility?.toLowerCase() !== "deleted" && (
@@ -176,7 +188,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
                     }}
                     className="px-3 py-1 text-left text-red-500 hover:text-red-400"
                   >
-                    Delete
+                    {deleteText}
                   </button>
                 )}
                 {visibility?.toLowerCase() === "deleted" && onRestore && (
@@ -188,7 +200,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
                     className="px-3 py-1 text-left text-green-400 hover:text-green-300 flex items-center gap-1"
                   >
                     <RotateCcw size={8} />
-                    Restore
+                    {restoreText}
                   </button>
                 )}
               </div>
