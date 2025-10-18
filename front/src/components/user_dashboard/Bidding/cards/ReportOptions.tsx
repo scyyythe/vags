@@ -9,6 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 type ReportCategory = {
   id: string;
@@ -124,11 +126,59 @@ export const reportCategories: ReportCategory[] = [
 ];
 
 const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose, onSubmit }) => {
+  const { language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ReportCategory | null>(null);
   const [selectedOption, setSelectedOption] = useState<ReportOption | null>(null);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [customReason, setCustomReason] = useState<string>("");
+
+  // Translation hooks - Main UI
+  const reportContentText = useAutoTranslation("Report Content", language);
+  const additionalInfoText = useAutoTranslation("Additional Information", language);
+  const backText = useAutoTranslation("Back", language);
+  const closeText = useAutoTranslation("Close", language);
+  const submitReportText = useAutoTranslation("Submit Report", language);
+  const describeIssueText = useAutoTranslation("Describe the issue...", language);
+  const confirmReportText = useAutoTranslation("Confirm Report Submission", language);
+  const confirmDescText = useAutoTranslation("Are you sure you want to report this content? This action cannot be easily undone.", language);
+  const selectCategoryText = useAutoTranslation("Please select a category.", language);
+  const provideReasonText = useAutoTranslation("Please provide a reason for reporting.", language);
+  const failedSubmitText = useAutoTranslation("Failed to submit report. Please try again.", language);
+
+  // Translation hooks - Report Categories
+  const inappropriateContentText = useAutoTranslation("Inappropriate Content", language);
+  const inappropriateDescText = useAutoTranslation("Report content that you find offensive or inappropriate", language);
+  const intellectualPropertyText = useAutoTranslation("Intellectual Property Violation", language);
+  const intellectualDescText = useAutoTranslation("Report content that infringes on your intellectual property rights", language);
+  const scamOrFraudText = useAutoTranslation("Scam or Fraud", language);
+  const scamDescText = useAutoTranslation("Report content that may be deceptive or fraudulent", language);
+  const spamText = useAutoTranslation("Spam", language);
+  const spamDescText = useAutoTranslation("Report irrelevant or repetitive content", language);
+  const somethingElseText = useAutoTranslation("Something Else", language);
+  const somethingElseDescText = useAutoTranslation("Report any other issues not covered by the categories above", language);
+
+  // Translation hooks - Report Options
+  const nudityText = useAutoTranslation("Nudity or sexual content", language);
+  const nudityInfoText = useAutoTranslation("Content that contains explicit material", language);
+  const hateText = useAutoTranslation("Hate speech or symbols", language);
+  const hateInfoText = useAutoTranslation("Content that promotes hate or discrimination", language);
+  const violenceText = useAutoTranslation("Violence or dangerous acts", language);
+  const violenceInfoText = useAutoTranslation("Content that depicts extreme violence or encourages harmful behavior", language);
+  const harassmentText = useAutoTranslation("Harassment or bullying", language);
+  const harassmentInfoText = useAutoTranslation("Content that targets individuals for abuse", language);
+  const copyrightText = useAutoTranslation("Copyright infringement", language);
+  const copyrightInfoText = useAutoTranslation("Content that uses your copyrighted work without permission", language);
+  const trademarkText = useAutoTranslation("Trademark violation", language);
+  const trademarkInfoText = useAutoTranslation("Content that misuses your registered trademark", language);
+  const plagiarismText = useAutoTranslation("Plagiarism", language);
+  const plagiarismInfoText = useAutoTranslation("Content that copies or closely imitates another's work or ideas without proper attribution", language);
+  const fakeEngagementText = useAutoTranslation("Fake engagement", language);
+  const fakeEngagementInfoText = useAutoTranslation("Content with artificially inflated metrics", language);
+  const scamContentText = useAutoTranslation("Scam or misleading content", language);
+  const scamContentInfoText = useAutoTranslation("Content designed to deceive or defraud users", language);
+  const spamPromotionText = useAutoTranslation("Spam or misleading promotion", language);
+  const spamPromotionInfoText = useAutoTranslation("Content that appears irrelevant, repetitive, or promotional", language);
 
   // Disable page scrolling when modal is open
   useEffect(() => {
@@ -157,14 +207,60 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
     setShowDetails(true);
   };
 
+  // Helper function to get translated category
+  const getCategoryTranslation = (category: ReportCategory) => {
+    switch (category.id) {
+      case "Inappropriate":
+        return { title: inappropriateContentText, description: inappropriateDescText };
+      case "Intellectual":
+        return { title: intellectualPropertyText, description: intellectualDescText };
+      case "Fraud":
+        return { title: scamOrFraudText, description: scamDescText };
+      case "Spam":
+        return { title: spamText, description: spamDescText };
+      case "Other":
+        return { title: somethingElseText, description: somethingElseDescText };
+      default:
+        return { title: category.title, description: category.description };
+    }
+  };
+
+  // Helper function to get translated option
+  const getOptionTranslation = (option: ReportOption) => {
+    switch (option.id) {
+      case "Nudity":
+        return { text: nudityText, additionalInfo: nudityInfoText };
+      case "Hate":
+        return { text: hateText, additionalInfo: hateInfoText };
+      case "Violence":
+        return { text: violenceText, additionalInfo: violenceInfoText };
+      case "Harassment":
+        return { text: harassmentText, additionalInfo: harassmentInfoText };
+      case "Copyright":
+        return { text: copyrightText, additionalInfo: copyrightInfoText };
+      case "Trademark":
+        return { text: trademarkText, additionalInfo: trademarkInfoText };
+      case "Plagiarism":
+        return { text: plagiarismText, additionalInfo: plagiarismInfoText };
+      case "Fake":
+        return { text: fakeEngagementText, additionalInfo: fakeEngagementInfoText };
+      case "Scam":
+        return { text: scamContentText, additionalInfo: scamContentInfoText };
+      case "SpamContent":
+        return { text: spamPromotionText, additionalInfo: spamPromotionInfoText };
+      default:
+        return { text: option.text, additionalInfo: option.additionalInfo || "" };
+    }
+  };
+
   const handleSubmit = async () => {
     if (!selectedCategory) {
-      toast.error("Please select a category.", { closeButton: true })
+      toast.error(selectCategoryText, { closeButton: true })
       return;
     }
 
     if (selectedCategory.id === "Other" && !customReason.trim()) {
-      toast.error("Please provide a reason for reporting.", { closeButton: true })
+      toast.error(provideReasonText, { closeButton: true })
       return;
     }
 
@@ -180,7 +276,7 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
       onClose();
       setCustomReason("");
     } catch {
-      toast.error("Failed to submit report. Please try again.", { closeButton: true })
+      toast.error(failedSubmitText, { closeButton: true })
     } finally {
       setShowConfirmation(false);
     }
@@ -223,19 +319,19 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
                 <button
                   onClick={handleBack}
                   className="px-1 rounded-full hover:bg-gray-100 transition-colors"
-                  aria-label="Back"
+                  aria-label={backText}
                 >
                   <i className="bx bx-chevron-left text-sm text-black"></i>
                 </button>
               )}
               <h2 className="text-xs text-black font-semibold">
-                {showDetails ? "Additional Information" : selectedCategory ? selectedCategory.title : "Report Content"}
+                {showDetails ? additionalInfoText : selectedCategory ? getCategoryTranslation(selectedCategory).title : reportContentText}
               </h2>
             </div>
             <button
               onClick={onClose}
               className="p-1 rounded-full hover:bg-gray-200 transition-colors"
-              aria-label="Close"
+              aria-label={closeText}
             >
               <X size={15} />
             </button>
@@ -244,24 +340,24 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
           <div className="p-4 max-h-[60vh] overflow-y-auto">
             {showDetails && selectedOption ? (
               <div>
-                <p className="text-black text-[10px] mb-4">{selectedOption.additionalInfo}</p>
+                <p className="text-black text-[10px] mb-4">{getOptionTranslation(selectedOption).additionalInfo}</p>
                 <button
                   onClick={openConfirmation}
                   className="w-full bg-red-800 hover:bg-red-700 text-white text-[10px] py-2 px-4 rounded-full transition-colors"
                 >
-                  Submit Report
+                  {submitReportText}
                 </button>
               </div>
             ) : selectedCategory ? (
               <>
-                <p className="text-black text-[10px] mb-4">{selectedCategory.description}</p>
+                <p className="text-black text-[10px] mb-4">{getCategoryTranslation(selectedCategory).description}</p>
                 {selectedCategory.options?.map((option) => (
                   <button
                     key={option.id}
                     onClick={() => handleOptionSelect(option)}
                     className="w-full text-left text-[10px] text-black p-3 mb-2 bg-gray-50 hover:bg-gray-100 rounded flex items-center justify-between"
                   >
-                    <span>{option.text}</span>
+                    <span>{getOptionTranslation(option).text}</span>
                     <span className="text-black text-sm">›</span>
                   </button>
                 ))}
@@ -270,7 +366,7 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
                     <textarea
                       value={customReason}
                       onChange={(e) => setCustomReason(e.target.value)}
-                      placeholder="Describe the issue..."
+                      placeholder={describeIssueText}
                       className="w-full p-2 text-[10px] border rounded bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-300"
                       rows={3}
                     />
@@ -279,7 +375,7 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
                       disabled={!customReason.trim()}
                       className="w-full bg-red-800 hover:bg-red-700 text-white text-[10px] py-2 px-4 rounded-full transition-colors disabled:opacity-50"
                     >
-                      Submit Report
+                      {submitReportText}
                     </button>
                   </div>
                 )}
@@ -291,7 +387,7 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
                   onClick={() => handleCategorySelect(category)}
                   className="w-full text-left text-[10px] text-black p-3 mb-2 bg-gray-50 hover:bg-gray-100 rounded flex items-center justify-between"
                 >
-                  <span>{category.title}</span>
+                  <span>{getCategoryTranslation(category).title}</span>
                   <span className="text-black text-sm">›</span>
                 </button>
               ))
@@ -303,9 +399,9 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
       <Dialog open={showConfirmation} onOpenChange={closeConfirmation}>
         <DialogContent className="w-full max-w-xs rounded-lg">
           <DialogHeader>
-            <DialogTitle className="text-center mb-1 text-xs">Confirm Report Submission</DialogTitle>
+            <DialogTitle className="text-center mb-1 text-xs">{confirmReportText}</DialogTitle>
             <DialogDescription className="w-full max-w-[270px] text-[10px] text-center text-black">
-              Are you sure you want to report this content? This action cannot be easily undone.
+              {confirmDescText}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -317,7 +413,7 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
                 className="w-full bg-red-800 hover:bg-red-700 rounded-full py-1.5 px-4 text-white text-[10px] whitespace-nowrap"
                 onClick={() => handleSubmit()}
               >
-                Report Content
+                {reportContentText}
               </button>
             </div>
           </DialogFooter>
