@@ -93,10 +93,10 @@ const ExhibitDialogs: React.FC<ExhibitDialogsProps> = ({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <div className="w-full flex justify-between px-20">
-              <AlertDialogCancel className="text-[10px] h-7">{cancelText}</AlertDialogCancel>
+            <div className="w-full flex justify-between gap-4">
+              <AlertDialogCancel className="w-full rounded-full text-[10px] h-7">{cancelText}</AlertDialogCancel>
               <AlertDialogAction
-                className="bg-red-700 hover:bg-red-600 text-white text-[10px] h-7"
+                className="w-full bg-red-700 rounded-full hover:bg-red-600 text-white text-[10px] h-7"
                 onClick={sendNotificationsToCollaborators}
               >
                 {sendText}
