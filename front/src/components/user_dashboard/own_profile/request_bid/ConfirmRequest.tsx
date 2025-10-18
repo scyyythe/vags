@@ -32,18 +32,18 @@ const ConfirmationDialog = ({
             <DialogDescription className="text-center text-[10px] mt-1.5">
               This action cannot be undone once the auction starts.
             </DialogDescription>
-            <div className="flex justify-center space-x-6 mt-4">
-              <button
-                onClick={onConfirm}
-                className="bg-red-800 hover:bg-red-700 text-white w-24 text-xs rounded-full p-1"
-              >
-                Yes
-              </button>
+            <div className="flex justify-between mt-4 gap-4">
               <button
                 onClick={() => onOpenChange(false)}
-                className="w-24 border border-black rounded-full p-1 text-xs"
+                className="w-full border border-black rounded-full p-1 text-xs"
               >
                 No
+              </button>
+              <button
+                onClick={onConfirm}
+                className="w-full bg-red-800 hover:bg-red-700 text-white text-xs rounded-full p-1"
+              >
+                Yes
               </button>
             </div>
           </div>
