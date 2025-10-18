@@ -4,6 +4,8 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import { PMREMGenerator } from "three";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface Gallery3DProps {
   slotArtworkMap: Record<number, string>;
@@ -13,11 +15,55 @@ interface Gallery3DProps {
 const Gallery3D: React.FC<Gallery3DProps> = ({ slotArtworkMap, artworks }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const [controlsEnabled, setControlsEnabled] = useState(false);
+  const { language } = useLanguage();
 
   const imageMeshesRef = useRef<Record<string, THREE.Mesh>>({});
   const titleMeshesRef = useRef<Record<string, THREE.Mesh>>({});
   const sceneRef = useRef<THREE.Scene | null>(null);
   const [meshesReady, setMeshesReady] = useState(false);
+  const [translatedArtworks, setTranslatedArtworks] = useState<Record<string, { title: string; artist: string }>>({});
+
+  // Translation hooks
+  const clickToEnterText = useAutoTranslation("Click to enter the gallery and use WASD + mouse to move", language);
+  const untitledText = useAutoTranslation("Untitled", language);
+  const byText = useAutoTranslation("by", language);
+  const unknownText = useAutoTranslation("Unknown", language);
+
+  // Translate artwork titles and artist names
+  useEffect(() => {
+    const translateArtworks = async () => {
+      const { autoTranslate } = await import("@/utils/autoTranslate");
+      const translated: Record<string, { title: string; artist: string }> = {};
+
+      for (const artwork of artworks) {
+        try {
+          const translatedTitle = language.toLowerCase() !== "en" 
+            ? await autoTranslate(artwork.title || "Untitled", language.toLowerCase())
+            : artwork.title || "Untitled";
+          
+          const translatedArtist = language.toLowerCase() !== "en"
+            ? await autoTranslate(artwork.artist || "Unknown", language.toLowerCase())
+            : artwork.artist || "Unknown";
+
+          translated[artwork.id] = {
+            title: translatedTitle,
+            artist: translatedArtist
+          };
+        } catch (error) {
+          translated[artwork.id] = {
+            title: artwork.title || "Untitled",
+            artist: artwork.artist || "Unknown"
+          };
+        }
+      }
+
+      setTranslatedArtworks(translated);
+    };
+
+    if (artworks.length > 0) {
+      translateArtworks();
+    }
+  }, [artworks, language]);
 
   useEffect(() => {
     const mount = mountRef.current!;
@@ -161,15 +207,17 @@ useEffect(() => {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = "#000000";
       ctx.font = "bold 32px Arial";
-      ctx.fillText(artwork.title || "Untitled", 20, 50);
+      const displayTitle = translatedArtworks[artwork.id]?.title || artwork.title || untitledText;
+      ctx.fillText(displayTitle, 20, 50);
       ctx.font = "24px Arial";
-      ctx.fillText("by " + (artwork.artist || "Unknown"), 20, 100);
+      const displayArtist = translatedArtworks[artwork.id]?.artist || artwork.artist || unknownText;
+      ctx.fillText(byText + " " + displayArtist, 20, 100);
 
       const titleTexture = new THREE.CanvasTexture(canvas);
       titleMesh.material = new THREE.MeshBasicMaterial({ map: titleTexture, side: THREE.DoubleSide });
     }
   }
-}, [slotArtworkMap, artworks, meshesReady]);
+}, [slotArtworkMap, artworks, meshesReady, translatedArtworks, untitledText, byText, unknownText]);
 
 
   return (
@@ -192,7 +240,7 @@ useEffect(() => {
             pointerEvents: "none",
           }}
         >
-          <p className="text-xs relative bottom-40">Click to enter the gallery and use WASD + mouse to move</p>
+          <p className="text-xs relative bottom-40">{clickToEnterText}</p>
         </div>
       )}
     </>
