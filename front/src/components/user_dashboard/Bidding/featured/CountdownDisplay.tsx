@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 const calculateTimeRemaining = (targetTime: string | Date) => {
   const end = new Date(targetTime).getTime();
   const now = new Date().getTime();
@@ -30,8 +32,17 @@ const CountdownDisplay = ({
   endTime: string | Date;
   isMobile: boolean;
 }) => {
+  const { language } = useLanguage();
   const [timeRemaining, setTimeRemaining] = useState(() => calculateTimeRemaining(endTime));
   const [now, setNow] = useState(new Date());
+
+  // Translation hooks
+  const auctionWillStartText = useAutoTranslation("Auction will start on", language);
+  const auctionEndedText = useAutoTranslation("Auction has ended", language);
+  const auctionEndsInText = useAutoTranslation("Auction ends in", language);
+  const hrsText = useAutoTranslation("hrs", language);
+  const minsText = useAutoTranslation("mins", language);
+  const secsText = useAutoTranslation("secs", language);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -48,7 +59,7 @@ const CountdownDisplay = ({
   if (hasNotStarted) {
     return (
       <div className="text-gray-600">
-        <p className={cn(isMobile ? "text-[10px]" : "text-xs", "relative bottom-2")}>Auction will start on</p>
+        <p className={cn(isMobile ? "text-[10px]" : "text-xs", "relative bottom-2")}>{auctionWillStartText}</p>
         <p className="text-xs font-semibold text-black mt-1">
           {new Date(startTime).toLocaleString("en-PH", {
             year: "numeric",
@@ -64,17 +75,30 @@ const CountdownDisplay = ({
   }
 
   if (hasEnded) {
-    return <p className="text-sm text-gray-500">Auction has ended</p>;
+    return <p className="text-sm text-gray-500">{auctionEndedText}</p>;
   }
+
+  const getUnitTranslation = (unit: string) => {
+    switch (unit) {
+      case "hrs":
+        return hrsText;
+      case "mins":
+        return minsText;
+      case "secs":
+        return secsText;
+      default:
+        return unit;
+    }
+  };
 
   return (
     <div className="flex flex-col items-center">
-      <span className={cn(isMobile ? "text-[10px]" : "text-xs mb-2", "text-black")}>Auction ends in</span>
+      <span className={cn(isMobile ? "text-[10px]" : "text-xs mb-2", "text-black")}>{auctionEndsInText}</span>
       <div className="flex justify-center items-center gap-8">
         {["hrs", "mins", "secs"].map((unit, idx) => (
           <div key={unit} className="flex flex-col items-center">
             <span className="text-md font-bold text-[#990000]">{timeRemaining[unit]}</span>
-            <span className="text-gray-500 text-[10px] mt-1">{unit}</span>
+            <span className="text-gray-500 text-[10px] mt-1">{getUnitTranslation(unit)}</span>
           </div>
         ))}
       </div>
