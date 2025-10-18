@@ -16,6 +16,8 @@ import { useFetchBiddingArtworks } from "@/hooks/auction/useFetchBiddingArtworks
 import useFollowedAuctions from "@/hooks/auction/followed_users/useFollowedBiddings";
 import useBulkBidReportStatus from "@/hooks/mutate/report/useBulkAuctionReport";
 import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface StaticArtwork {
   id: string;
@@ -33,6 +35,7 @@ interface StaticArtwork {
 
 const Bidding = () => {
   const navigate = useNavigate();
+  const { language } = useLanguage();
   const [staticArtworks, setStaticArtworks] = useState<StaticArtwork[]>([]);
 
   const [searchParams] = useSearchParams();
@@ -43,6 +46,12 @@ const Bidding = () => {
   const [selectedArtCategory, setSelectedArtCategory] = useState("All");
 
   const [showIncoming, setShowIncoming] = useState(false);
+
+  // Translation hooks
+  const upcomingText = useAutoTranslation("Upcoming", language);
+  const failedToFetchText = useAutoTranslation("Failed to fetch bidding artworks.", language);
+  const noUpcomingAuctionsText = useAutoTranslation("No upcoming auctions found.", language);
+  const noUpcomingAuctionsAltText = useAutoTranslation("No Upcoming Auctions", language);
 
   const currentPage = 1;
 
@@ -140,7 +149,7 @@ const Bidding = () => {
                   className={`px-3 rounded-full border border-gray-300 transition-all text-[10px] 
                     ${showIncoming ? "shadow-md font-medium" : "bg-white"}`}
                 >
-                  Upcoming
+                  {upcomingText}
                 </button>
 
                 <div className="relative">
@@ -161,7 +170,7 @@ const Bidding = () => {
                 ))}
               </div>
             )}
-            {isError && <p className="text-center text-red-500 py-10">Failed to fetch bidding artworks.</p>}
+            {isError && <p className="text-center text-red-500 py-10">{failedToFetchText}</p>}
 
             {/* ACTIVE AUCTIONS */}
             {!showIncoming && (
@@ -182,8 +191,8 @@ const Bidding = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {upcomingArtworks.length === 0 && (
                   <div className="col-span-full flex flex-col items-center justify-center text-center py-16">
-                    <img src="/pics/empty.png" alt="No Upcoming Auctions" className="w-48 h-48 mb-4 opacity-70" />
-                    <p className="text-gray-500 text-sm">No upcoming auctions found.</p>
+                    <img src="/pics/empty.png" alt={noUpcomingAuctionsAltText} className="w-48 h-48 mb-4 opacity-70" />
+                    <p className="text-gray-500 text-sm">{noUpcomingAuctionsText}</p>
                   </div>
                 )}
               </div>
