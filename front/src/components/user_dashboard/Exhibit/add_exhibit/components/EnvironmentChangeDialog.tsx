@@ -9,6 +9,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface EnvironmentChangeDialogProps {
   isOpen: boolean;
@@ -29,20 +31,43 @@ const EnvironmentChangeDialog: React.FC<EnvironmentChangeDialogProps> = ({
   collaborators,
   hasSubmittedArtworks,
 }) => {
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const environmentDowngradeText = useAutoTranslation("Environment Downgrade", language);
+  const environmentChangeText = useAutoTranslation("Environment Change", language);
+  const currentEnvironmentText = useAutoTranslation("Current Environment:", language);
+  const newEnvironmentText = useAutoTranslation("New Environment:", language);
+  const slotsText = useAutoTranslation("slots", language);
+  const soloText = useAutoTranslation("solo", language);
+  const distributionText = useAutoTranslation("distribution", language);
+  const hasSubmittedArtworksText = useAutoTranslation("This exhibit already has submitted artworks. Changing environments will redistribute all slots.", language);
+  const cannotSwitchText = useAutoTranslation("Cannot switch to", language);
+  const slotsEnvironmentText = useAutoTranslation("slots environment.", language);
+  const currentCollaboratorsText = useAutoTranslation("Current collaborators", language);
+  const exceedCapacityText = useAutoTranslation("exceed the capacity.", language);
+  const cannotDowngradeText = useAutoTranslation("Cannot downgrade environment when artworks are already submitted.", language);
+  const pleaseRemoveCollaboratorsText = useAutoTranslation("Please remove some collaborators first.", language);
+  const downgradingEnvironmentText = useAutoTranslation("Downgrading environment with submitted artworks.", language);
+  const existingArtworksPreservedText = useAutoTranslation("Existing artworks will be preserved and redistributed.", language);
+  const cancelText = useAutoTranslation("Cancel", language);
+  const cannotChangeText = useAutoTranslation("Cannot Change", language);
+  const confirmChangeText = useAutoTranslation("Confirm Change", language);
+
   const isDowngrade = newSlots < currentSlots;
   const isUpgrade = newSlots > currentSlots;
 
   const getSlotDistribution = (slots: number, collaboratorCount: number) => {
     if (collaboratorCount === 0) {
-      return `${slots} slots (solo)`;
+      return `${slots} ${slotsText} (${soloText})`;
     } else if (collaboratorCount === 1) {
-      if (slots === 4) return "2-2 distribution";
-      if (slots === 6) return "3-3 distribution";
-      if (slots === 10) return "5-5 distribution";
+      if (slots === 4) return `2-2 ${distributionText}`;
+      if (slots === 6) return `3-3 ${distributionText}`;
+      if (slots === 10) return `5-5 ${distributionText}`;
     } else if (collaboratorCount === 2) {
-      if (slots === 10) return "4-3-3 distribution";
+      if (slots === 10) return `4-3-3 ${distributionText}`;
     }
-    return `${slots} slots`;
+    return `${slots} ${slotsText}`;
   };
 
   const canAccommodateCollaborators = (slots: number, collaboratorCount: number) => {
@@ -59,17 +84,17 @@ const EnvironmentChangeDialog: React.FC<EnvironmentChangeDialogProps> = ({
       <AlertDialogContent className="w-full max-w-md rounded-lg">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-sm text-center">
-            {isDowngrade ? "Environment Downgrade" : "Environment Change"}
+            {isDowngrade ? environmentDowngradeText : environmentChangeText}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-[11px] text-center space-y-2">
             <div>
-              <strong>Current Environment:</strong> {currentSlots} slots
+              <strong>{currentEnvironmentText}</strong> {currentSlots} {slotsText}
               <br />
               <span className="text-gray-600">{getSlotDistribution(currentSlots, collaborators.length)}</span>
             </div>
 
             <div>
-              <strong>New Environment:</strong> {newSlots} slots
+              <strong>{newEnvironmentText}</strong> {newSlots} {slotsText}
               <br />
               <span className="text-gray-600">{getSlotDistribution(newSlots, collaborators.length)}</span>
             </div>
@@ -77,7 +102,7 @@ const EnvironmentChangeDialog: React.FC<EnvironmentChangeDialogProps> = ({
             {hasSubmittedArtworks && (
               <div className="p-2 bg-amber-50 rounded-md border border-amber-200">
                 <p className="text-[10px] text-amber-700 font-medium">
-                  This exhibit already has submitted artworks. Changing environments will redistribute all slots.
+                  {hasSubmittedArtworksText}
                 </p>
               </div>
             )}
@@ -85,9 +110,9 @@ const EnvironmentChangeDialog: React.FC<EnvironmentChangeDialogProps> = ({
             {!canChangeEnvironment && (
               <div className="p-2 bg-red-50 rounded-md border border-red-200">
                 <p className="text-[10px] text-red-700 font-medium">
-                  Cannot switch to {newSlots} slots environment.
+                  {cannotSwitchText} {newSlots} {slotsEnvironmentText}
                   <br />
-                  Current collaborators ({collaborators.length}) exceed the capacity.
+                  {currentCollaboratorsText} ({collaborators.length}) {exceedCapacityText}
                 </p>
               </div>
             )}
@@ -95,9 +120,9 @@ const EnvironmentChangeDialog: React.FC<EnvironmentChangeDialogProps> = ({
             {isDowngrade && hasSubmittedArtworks && !canChangeEnvironment && (
               <div className="p-2 bg-red-50 rounded-md border border-red-200">
                 <p className="text-[10px] text-red-700 font-medium">
-                  Cannot downgrade environment when artworks are already submitted.
+                  {cannotDowngradeText}
                   <br />
-                  Please remove some collaborators first.
+                  {pleaseRemoveCollaboratorsText}
                 </p>
               </div>
             )}
@@ -105,9 +130,9 @@ const EnvironmentChangeDialog: React.FC<EnvironmentChangeDialogProps> = ({
             {isDowngrade && hasSubmittedArtworks && canChangeEnvironment && (
               <div className="p-2 bg-amber-50 rounded-md border border-amber-200">
                 <p className="text-[10px] text-amber-700 font-medium">
-                  Downgrading environment with submitted artworks.
+                  {downgradingEnvironmentText}
                   <br />
-                  Existing artworks will be preserved and redistributed.
+                  {existingArtworksPreservedText}
                 </p>
               </div>
             )}
@@ -115,13 +140,13 @@ const EnvironmentChangeDialog: React.FC<EnvironmentChangeDialogProps> = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <div className="w-full flex justify-between px-4">
-            <AlertDialogCancel className="text-[10px] h-7">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="text-[10px] h-7">{cancelText}</AlertDialogCancel>
             <AlertDialogAction
               onClick={onConfirm}
               disabled={!canChangeEnvironment}
               className="text-[10px] h-7 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {!canChangeEnvironment ? "Cannot Change" : "Confirm Change"}
+              {!canChangeEnvironment ? cannotChangeText : confirmChangeText}
             </AlertDialogAction>
           </div>
         </AlertDialogFooter>

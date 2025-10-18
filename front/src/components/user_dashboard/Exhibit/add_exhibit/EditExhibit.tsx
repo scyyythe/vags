@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import AddArtistDialog from "@/components/user_dashboard/Exhibit/add_exhibit/components/AddArtistDialog";
 import Header from "@/components/user_dashboard/navbar/Header";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useUpdateExhibit } from "@/hooks/mutate/exhibit/useUpdateExhibit";
 import BannerUpload from "./components/BannerUpload";
 import EnvironmentSelector from "./components/EnvironmentSelector";
@@ -76,6 +78,42 @@ const EditExhibit = () => {
   const [artworkFiles, setArtworkFiles] = useState<{ id: string; url: string; file?: File }[]>([]);
 
   const currentUserId = getLoggedInUserId();
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const goBackText = useAutoTranslation("Go back", language);
+  const preview3DText = useAutoTranslation("Preview in 3D View", language);
+  const previewDescriptionText = useAutoTranslation("Opens your current selections in an interactive virtual gallery.", language);
+  const submittingText = useAutoTranslation("Submitting...", language);
+  const saveSelectionsText = useAutoTranslation("Save Selections", language);
+  const backToExhibitsText = useAutoTranslation("Back to Exhibits", language);
+  const publishExhibitText = useAutoTranslation("Publish Exhibit", language);
+  const maximumCollaboratorsReachedText = useAutoTranslation("Maximum collaborators reached", language);
+  const maximumCollaboratorsDescText = useAutoTranslation("You can only have a maximum of 2 collaborators per exhibit.", language);
+  const maximumCollaboratorsExceededText = useAutoTranslation("Maximum collaborators exceeded", language);
+  const environmentSupportsText = useAutoTranslation("The", language);
+  const slotsEnvironmentOnlyText = useAutoTranslation("slots environment only supports", language);
+  const collaboratorText = useAutoTranslation("collaborator", language);
+  const collaboratorsText = useAutoTranslation("collaborators", language);
+  const cannotAddMoreText = useAutoTranslation("Cannot add more collaborators.", language);
+  const collaboratorAddedText = useAutoTranslation("Collaborator Added", language);
+  const exhibitStatusPendingText = useAutoTranslation("The exhibit status has been set to Pending. All collaborators will be notified about the changes.", language);
+  const accessDeniedText = useAutoTranslation("Access denied", language);
+  const slotAssignedToAnotherText = useAutoTranslation("This slot is assigned to another participant.", language);
+  const canOnlyRemoveOwnSlotsText = useAutoTranslation("You can only remove artworks from your own slots.", language);
+  const cannotChangeExhibitTypeText = useAutoTranslation("Cannot change exhibit type", language);
+  const soloCannotBeChangedText = useAutoTranslation("Solo exhibits cannot be changed to collaborative exhibits. Please create a new exhibit for collaborative features.", language);
+  const artworkAlreadySelectedText = useAutoTranslation("Artwork already selected", language);
+  const artworkAlreadySelectedDescText = useAutoTranslation("This artwork has already been assigned to a slot.", language);
+  const noAvailableSlotsText = useAutoTranslation("No available slots", language);
+  const noAvailableSlotsDescText = useAutoTranslation("You don't have any available slots for more artwork.", language);
+  const tooManyCollaboratorsText = useAutoTranslation("Too many collaborators for this environment", language);
+  const environmentOnlySupportsText = useAutoTranslation("This environment only supports", language);
+  const pleaseRemoveCollaboratorsText = useAutoTranslation("Please remove some collaborators first.", language);
+  const cannotDowngradeEnvironmentText = useAutoTranslation("Cannot downgrade environment", language);
+  const cannotSwitchToSmallerText = useAutoTranslation("Cannot switch to a smaller environment that cannot accommodate your current collaborators. Please remove some collaborators first.", language);
+  const environmentChangedText = useAutoTranslation("Environment Changed", language);
+
   const { data: artworks = [] } = useArtworks(
     1,
     currentUserId ?? undefined,
@@ -395,8 +433,8 @@ const EditExhibit = () => {
   const handleAddCollaborator = (artist: User) => {
     // Check global maximum first (2 collaborators max)
     if (collaborators.length >= 2) {
-      toast.error("Maximum collaborators reached", {
-        description: "You can only have a maximum of 2 collaborators per exhibit.",
+      toast.error(maximumCollaboratorsReachedText, {
+        description: maximumCollaboratorsDescText,
         closeButton: true,
       });
       return;
@@ -466,12 +504,8 @@ const EditExhibit = () => {
     }
 
     if (newCollaboratorCount > finalMaxCollaborators) {
-      toast.error("Maximum collaborators exceeded", {
-        description: `The ${
-          finalEnvironment?.slots
-        } slots environment only supports ${finalMaxCollaborators} collaborator${
-          finalMaxCollaborators > 1 ? "s" : ""
-        }. Cannot add more collaborators.`,
+      toast.error(maximumCollaboratorsExceededText, {
+        description: `${environmentSupportsText} ${finalEnvironment?.slots} ${slotsEnvironmentOnlyText} ${finalMaxCollaborators} ${finalMaxCollaborators > 1 ? collaboratorsText : collaboratorText}. ${cannotAddMoreText}`,
         closeButton: true,
       });
       return;
@@ -484,8 +518,8 @@ const EditExhibit = () => {
     distributeSlots(newEnvironmentId || selectedEnvironment, newCollaborators, exhibitType);
 
     // Show notification about exhibit status change
-    toast.success("Collaborator Added", {
-      description: "The exhibit status has been set to Pending. All collaborators will be notified about the changes.",
+    toast.success(collaboratorAddedText, {
+      description: exhibitStatusPendingText,
       duration: 5000,
       closeButton: true,
     });
@@ -533,10 +567,8 @@ const EditExhibit = () => {
     }
 
     if (collaborators.length > maxAllowedCollaborators) {
-      toast.error("Too many collaborators for this environment", {
-        description: `This environment only supports ${maxAllowedCollaborators} collaborator${
-          maxAllowedCollaborators > 1 ? "s" : ""
-        }. Please remove some collaborators first.`,
+      toast.error(tooManyCollaboratorsText, {
+        description: `${environmentOnlySupportsText} ${maxAllowedCollaborators} ${maxAllowedCollaborators > 1 ? collaboratorsText : collaboratorText}. ${pleaseRemoveCollaboratorsText}`,
         duration: 4000,
         closeButton: true,
       });
@@ -561,9 +593,8 @@ const EditExhibit = () => {
       }
 
       if (!canAccommodateInNewEnv) {
-        toast.error("Cannot downgrade environment", {
-          description:
-            "Cannot switch to a smaller environment that cannot accommodate your current collaborators. Please remove some collaborators first.",
+        toast.error(cannotDowngradeEnvironmentText, {
+          description: cannotSwitchToSmallerText,
           duration: 4000,
           closeButton: true,
         });
@@ -582,9 +613,8 @@ const EditExhibit = () => {
 
     // Show notification about exhibit status change if there are collaborators
     if (collaborators.length > 0) {
-      toast.success("Environment Changed", {
-        description:
-          "The exhibit status has been set to Pending. All collaborators will be notified about the changes.",
+      toast.success(environmentChangedText, {
+        description: exhibitStatusPendingText,
         duration: 5000,
         closeButton: true,
       });
@@ -635,7 +665,7 @@ const EditExhibit = () => {
         <div className="mb-3">
           <button onClick={() => navigate(-1)} className="flex items-center text-xs font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
-            Go back
+            {goBackText}
           </button>
         </div>
 
@@ -699,8 +729,8 @@ const EditExhibit = () => {
                       if (!currentUserIdForSelection) return;
 
                       if (slotOwnerMap[slotId] !== currentUserIdForSelection.toString()) {
-                        toast.error("Access denied", {
-                          description: "This slot is assigned to another participant.",
+                        toast.error(accessDeniedText, {
+                          description: slotAssignedToAnotherText,
                           closeButton: true,
                         });
                         return;
@@ -729,8 +759,8 @@ const EditExhibit = () => {
 
                       // Only allow clearing slots that belong to the current user
                       if (slotOwnerMap[slotId] !== currentUserIdForSelection.toString()) {
-                        toast.error("Access denied", {
-                          description: "You can only remove artworks from your own slots.",
+                        toast.error(accessDeniedText, {
+                          description: canOnlyRemoveOwnSlotsText,
                           closeButton: true,
                         });
                         return;
@@ -784,10 +814,10 @@ const EditExhibit = () => {
                         navigate(`/gallery3d-preview?slotMap=${encodedSlotMap}&artworks=${encodedArtworks}`);
                       }}
                     >
-                      Preview in 3D View
+                      {preview3DText}
                     </Button>
                     <p className="text-[10px] text-muted-foreground mt-2">
-                      Opens your current selections in an interactive virtual gallery.
+                      {previewDescriptionText}
                     </p>
                   </div>
                 )}
@@ -806,9 +836,8 @@ const EditExhibit = () => {
               handleExhibitTypeChange={(value) => {
                 // Check if trying to change from solo to collaborative in edit mode
                 if (exhibitData?.isSolo && value === "collab") {
-                  toast.error("Cannot change exhibit type", {
-                    description:
-                      "Solo exhibits cannot be changed to collaborative exhibits. Please create a new exhibit for collaborative features.",
+                  toast.error(cannotChangeExhibitTypeText, {
+                    description: soloCannotBeChangedText,
                     duration: 5000,
                     closeButton: true,
                   });
@@ -861,8 +890,8 @@ const EditExhibit = () => {
                   .map(([slotId]) => Number(slotId));
 
                 if (selectedArtworks.includes(artworkId)) {
-                  toast.error("Artwork already selected", {
-                    description: "This artwork has already been assigned to a slot.",
+                  toast.error(artworkAlreadySelectedText, {
+                    description: artworkAlreadySelectedDescText,
                     closeButton: true,
                   });
                   return;
@@ -871,8 +900,8 @@ const EditExhibit = () => {
                 const availableSlot = availableUserSlots[0];
 
                 if (!availableSlot) {
-                  toast.error("No available slots", {
-                    description: "You don't have any available slots for more artwork.",
+                  toast.error(noAvailableSlotsText, {
+                    description: noAvailableSlotsDescText,
                     closeButton: true,
                   });
                   return;
@@ -901,12 +930,12 @@ const EditExhibit = () => {
               className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isUploading
-                ? "Submitting..."
+                ? submittingText
                 : viewMode === "collaborator"
-                ? "Save Selections"
+                ? saveSelectionsText
                 : viewMode === "review" || viewMode === "monitoring" || viewMode === "preview"
-                ? "Back to Exhibits"
-                : "Publish Exhibit"}
+                ? backToExhibitsText
+                : publishExhibitText}
             </button>
           </div>
         </form>

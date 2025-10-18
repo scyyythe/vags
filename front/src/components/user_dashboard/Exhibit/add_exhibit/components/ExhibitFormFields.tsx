@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -7,6 +7,9 @@ import { Avatar } from "@/components/ui/avatar";
 import { ViewMode, Artist, SubmissionStatus } from "../components/types";
 import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/ArtworkStyles";
 import { User } from "@/hooks/users/useUserQuery";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { autoTranslate } from "@/utils/autoTranslate";
 interface ExhibitFormFieldsProps {
   title: string;
   setTitle: (title: string) => void;
@@ -56,6 +59,62 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
   getCollaboratorSubmissionStatus,
   currentCollaborator,
 }) => {
+  const { language } = useLanguage();
+
+  // State for translated art styles
+  const [translatedArtStyles, setTranslatedArtStyles] = useState<string[]>([...ART_STYLES]);
+
+  // Effect to translate art styles when language changes
+  useEffect(() => {
+    const translateStyles = async () => {
+      try {
+        const translated = await Promise.all(
+          ART_STYLES.map(async (style) => await autoTranslate(style, language.toLowerCase()))
+        );
+        setTranslatedArtStyles(translated);
+      } catch (error) {
+        console.warn("Failed to translate art styles:", error);
+        setTranslatedArtStyles([...ART_STYLES]);
+      }
+    };
+
+    if (language.toLowerCase() !== "en") {
+      translateStyles();
+    } else {
+      setTranslatedArtStyles([...ART_STYLES]);
+    }
+  }, [language]);
+
+  // Translation hooks for all text content
+  const exhibitTitleText = useAutoTranslation("Exhibit Title", language);
+  const enterTitleText = useAutoTranslation("Enter title", language);
+  const exhibitTypeText = useAutoTranslation("Exhibit Type", language);
+  const soloText = useAutoTranslation("Solo", language);
+  const collaborativeText = useAutoTranslation("Collaborative", language);
+  const soloExhibitionText = useAutoTranslation("Solo Exhibition", language);
+  const collaborativeExhibitionText = useAutoTranslation("Collaborative Exhibition", language);
+  const noteText = useAutoTranslation("Note:", language);
+  const soloCannotBeChangedText = useAutoTranslation("Solo exhibits cannot be changed to collaborative exhibits. To create a collaborative exhibit, please create a new exhibit instead.", language);
+  const artworkStyleText = useAutoTranslation("Artwork Style", language);
+  const selectArtworkStyleText = useAutoTranslation("Select artwork style", language);
+  const durationText = useAutoTranslation("Duration", language);
+  const startDateText = useAutoTranslation("Start Date", language);
+  const endDateText = useAutoTranslation("End Date", language);
+  const descriptionText = useAutoTranslation("Description", language);
+  const addDescriptionText = useAutoTranslation("Add a description", language);
+  const collaboratorsText = useAutoTranslation("Collaborators", language);
+  const addText = useAutoTranslation("Add", language);
+  const maximumCollaboratorsText = useAutoTranslation("Maximum 2 collaborators allowed", language);
+  const addNewCollaboratorText = useAutoTranslation("Add a new collaborator", language);
+  const newText = useAutoTranslation("New", language);
+  const removeCollaboratorText = useAutoTranslation("Remove collaborator", language);
+  const removeNewlyAddedCollaboratorText = useAutoTranslation("Remove newly added collaborator", language);
+  const noCollaboratorsAddedText = useAutoTranslation("No collaborators added yet. Add up to 2 collaborators.", language);
+  const onlyNewlyAddedText = useAutoTranslation("Only newly added collaborators who haven't submitted artworks can be removed. Adding collaborators may automatically switch to a larger environment.", language);
+  const yourArtworkSelectionText = useAutoTranslation("Your Artwork Selection", language);
+  const slotsFilledText = useAutoTranslation("slots filled", language);
+  const ofText = useAutoTranslation("of", language);
+
   const isEditMode = !!exhibitData;
   const isSoloOriginal = exhibitData?.isSolo ?? false;
 
@@ -63,11 +122,11 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
     <div className="space-y-6">
       <div>
         <label htmlFor="title" className="block text-[11px] font-medium mb-2">
-          Exhibit Title
+          {exhibitTitleText}
         </label>
         <Input
           id="title"
-          placeholder="Enter title"
+          placeholder={enterTitleText}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="w-full focus:outline-none focus:ring-0 h-8"
@@ -80,7 +139,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
 
       {viewMode === "owner" && !isReadOnly && (
         <div>
-          <span className="text-[11px] font-medium mb-2">Exhibit Type</span>
+          <span className="text-[11px] font-medium mb-2">{exhibitTypeText}</span>
           <ToggleGroup
             type="single"
             value={exhibitType}
@@ -107,14 +166,14 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
               className="w-full text-[10px] border rounded-md h-8"
               disabled={isEditMode && !isSoloOriginal}
             >
-              Solo
+              {soloText}
             </ToggleGroupItem>
             <ToggleGroupItem
               value="collab"
               className="w-full text-[10px] border rounded-md h-8"
               disabled={isEditMode && isSoloOriginal}
             >
-              Collaborative
+              {collaborativeText}
             </ToggleGroupItem>
           </ToggleGroup>
 
@@ -122,8 +181,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
           {isEditMode && isSoloOriginal && (
             <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-md">
               <p className="text-[10px] text-amber-700">
-                <strong>Note:</strong> Solo exhibits cannot be changed to collaborative exhibits. To create a
-                collaborative exhibit, please create a new exhibit instead.
+                <strong>{noteText}</strong> {soloCannotBeChangedText}
               </p>
             </div>
           )}
@@ -132,9 +190,9 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
 
       {(viewMode !== "owner" || isReadOnly) && (
         <div>
-          <label className="block text-[11px] font-medium mb-2">Exhibit Type</label>
+          <label className="block text-[11px] font-medium mb-2">{exhibitTypeText}</label>
           <div className="text-xs text-gray-700 border p-2 rounded">
-            {exhibitType === "solo" ? "Solo Exhibition" : "Collaborative Exhibition"}
+            {exhibitType === "solo" ? soloExhibitionText : collaborativeExhibitionText}
           </div>
         </div>
       )}
@@ -142,7 +200,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label htmlFor="style" className="block text-[11px] font-medium mb-2">
-            Artwork Style
+            {artworkStyleText}
           </label>
           <div className="relative">
             <select
@@ -153,10 +211,10 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
               disabled={viewMode === "collaborator" || isReadOnly}
             >
               <option value="" disabled>
-                Select artwork style
+                {selectArtworkStyleText}
               </option>
-              {ART_STYLES.map((style) => (
-                <option key={style} value={style.toLowerCase()}>
+              {translatedArtStyles.map((style, index) => (
+                <option key={ART_STYLES[index]} value={ART_STYLES[index].toLowerCase()}>
                   {style}
                 </option>
               ))}
@@ -177,17 +235,17 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
       </div>
 
       <div>
-        <label className="block text-[11px] font-medium mb-2">Duration</label>
+        <label className="block text-[11px] font-medium mb-2">{durationText}</label>
         <div className="flex items-center space-x-4">
           <div className="w-full">
-            <div className="text-[10px] text-gray-500 mb-1">Start Date</div>
+            <div className="text-[10px] text-gray-500 mb-1">{startDateText}</div>
             <Input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full h-8"
+              className="w-full h-8 date-input-rtl"
               readOnly={viewMode === "collaborator" || isReadOnly}
-              style={{ fontSize: "10px" }}
+              style={{ fontSize: "10px", direction: "ltr" }}
               min={new Date().toISOString().split("T")[0]}
             />
           </div>
@@ -195,14 +253,14 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
           <div className="flex items-center relative top-2">-</div>
 
           <div className="w-full">
-            <div className="text-[10px] text-gray-500 mb-1">End Date</div>
+            <div className="text-[10px] text-gray-500 mb-1">{endDateText}</div>
             <Input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full h-8"
+              className="w-full h-8 date-input-rtl"
               readOnly={viewMode === "collaborator" || isReadOnly}
-              style={{ fontSize: "10px" }}
+              style={{ fontSize: "10px", direction: "ltr" }}
               min={startDate || new Date().toISOString().split("T")[0]}
             />
           </div>
@@ -211,11 +269,11 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
 
       <div>
         <label htmlFor="description" className="block text-[11px] font-medium mb-2">
-          Description
+          {descriptionText}
         </label>
         <Textarea
           id="description"
-          placeholder="Add a description"
+          placeholder={addDescriptionText}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="w-full h-20"
@@ -229,7 +287,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
       {exhibitType === "collab" && (
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-[11px] font-medium">Collaborators</label>
+            <label className="block text-[11px] font-medium">{collaboratorsText}</label>
             {viewMode === "owner" && !isReadOnly && (
               <Button
                 type="button"
@@ -239,9 +297,9 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
                 onClick={onAddCollaborator}
                 disabled={collaborators.length >= 2}
                 style={{ fontSize: "10px" }}
-                title={collaborators.length >= 2 ? "Maximum 2 collaborators allowed" : "Add a new collaborator"}
+                title={collaborators.length >= 2 ? maximumCollaboratorsText : addNewCollaboratorText}
               >
-                <i className="bx bx-plus text-xs"></i> Add
+                <i className="bx bx-plus text-xs"></i> {addText}
               </Button>
             )}
           </div>
@@ -268,7 +326,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
                           {artist.first_name} {artist.last_name || ""}
                         </span>
                         {isEditMode && status.filled === 0 && (
-                          <span className="text-[9px] text-amber-600 font-medium">New</span>
+                          <span className="text-[9px] text-amber-600 font-medium">{newText}</span>
                         )}
                       </div>
                     </div>
@@ -302,8 +360,8 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
                             onClick={() => onRemoveCollaborator(artist)}
                             title={
                               isEditMode && status.filled === 0
-                                ? "Remove newly added collaborator"
-                                : "Remove collaborator"
+                                ? removeNewlyAddedCollaboratorText
+                                : removeCollaboratorText
                             }
                           >
                             <i className="bx bx-x text-xs"></i>
@@ -316,7 +374,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
             </div>
           ) : (
             <div className="text-[10px] text-muted-foreground py-2 p-4 text-center">
-              No collaborators added yet. Add up to 2 collaborators.
+              {noCollaboratorsAddedText}
             </div>
           )}
 
@@ -325,8 +383,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
             <div className="mt-2 p-2 bg-blue-50 rounded-md">
               <p className="text-[9px] text-blue-700">
                 <i className="bx bx-info-circle mr-1"></i>
-                Only newly added collaborators who haven't submitted artworks can be removed. Adding collaborators may
-                automatically switch to a larger environment.
+                {onlyNewlyAddedText}
               </p>
             </div>
           )}
@@ -336,7 +393,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
       {/* Collaborator Selection Status - Only visible in collaborator view */}
       {viewMode === "collaborator" && currentCollaborator && (
         <div className="border rounded-md p-4 bg-gray-50">
-          <h3 className="text-sm font-medium mb-2">Your Artwork Selection</h3>
+          <h3 className="text-sm font-medium mb-2">{yourArtworkSelectionText}</h3>
 
           {/* Count collaborator's assigned slots and selected artworks */}
           {(() => {
@@ -345,7 +402,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
             return (
               <div className="flex items-center justify-between">
                 <span className="text-[10px]">
-                  {status.filled} of {status.total} slots filled
+                  {status.filled} {ofText} {status.total} {slotsFilledText}
                 </span>
                 <div className="w-24 h-1 bg-gray-200 rounded-full overflow-hidden">
                   <div className="h-full text-[10px] bg-[#9b87f5]" style={{ width: `${status.percentage}%` }}></div>

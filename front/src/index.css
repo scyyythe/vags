@@ -392,3 +392,15 @@ body.no-scroll {
 .edit-review-scroll-hidden::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
+
+/* DATE INPUT - Calendar icon on the right */
+input[type="date"].date-input-rtl::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 8px;
+  cursor: pointer;
+}
+
+input[type="date"].date-input-rtl {
+  position: relative;
+  padding-right: 32px;
+}
