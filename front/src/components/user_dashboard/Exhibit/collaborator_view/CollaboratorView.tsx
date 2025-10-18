@@ -11,6 +11,8 @@ import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { getLoggedInUserId } from "@/auth/decode";
 import { useSubmitContributions } from "@/hooks/exhibit/useSubmitContributions";
 import CollaboratorViewSkeleton from "@/components/skeletons/exhibits/CollaboratorViewSkeleton";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 // Color schemes for slots by user
 const slotColorSchemes = [
   "border-primary bg-primary/10",
@@ -58,6 +60,43 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const [currentCollaborator, setCurrentCollaborator] = useState<Artist | null>(null);
   const [hasUserSubmitted, setHasUserSubmitted] = useState(false);
   const { mutate: submitContributions } = useSubmitContributions(exhibitId!);
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const goBackText = useAutoTranslation("Go back", language);
+  const exhibitCollaborationText = useAutoTranslation("Exhibit Collaboration", language);
+  const alreadySubmittedText = useAutoTranslation("You have already submitted your contributions!", language);
+  const cannotEditAnymoreText = useAutoTranslation("You can no longer edit your artworks since they were already submitted to", language);
+  const viewOthersContributionsText = useAutoTranslation("You can view what other collaborators have contributed while waiting for the exhibit to be published.", language);
+  const invitedToContributeText = useAutoTranslation("You are invited to contribute to", language);
+  const selectArtworkText = useAutoTranslation("Please select your artwork for the slots assigned to you below.", language);
+  const availableSlotsText = useAutoTranslation("Available Slots", language);
+  const slotsText = useAutoTranslation("slots", language);
+  const yourSelectionText = useAutoTranslation("Your selection", language);
+  const removeText = useAutoTranslation("Remove", language);
+  const slotText = useAutoTranslation("slot", language);
+  const clickOnArtworkText = useAutoTranslation("Click on an artwork to assign it to this slot", language);
+  const yourArtworkSelectionText = useAutoTranslation("Your Artwork Selection", language);
+  const ofText = useAutoTranslation("of", language);
+  const slotsFilledText = useAutoTranslation("slots filled", language);
+  const preview3DText = useAutoTranslation("Preview in 3D View", language);
+  const previewDescriptionText = useAutoTranslation("Opens your current selections in an interactive virtual gallery.", language);
+  const yourArtworksText = useAutoTranslation("Your Artworks", language);
+  const alreadySubmittedButtonText = useAutoTranslation("Already Submitted", language);
+  const cannotEditSubmittedText = useAutoTranslation("You can no longer edit your artworks since they were already submitted", language);
+  const saveSelectionsText = useAutoTranslation("Save Selections", language);
+  const noAvailableSlotsText = useAutoTranslation("No available slots", language);
+  const noAvailableSlotsDescText = useAutoTranslation("You don't have any available slots for more artwork.", language);
+  const selectionsSavedText = useAutoTranslation("Selections Saved", language);
+  const selectionsSavedDescText = useAutoTranslation("Your artwork selections have been saved to the exhibit!", language);
+  const errorText = useAutoTranslation("Error", language);
+  const failedToSubmitText = useAutoTranslation("Failed to submit contributions.", language);
+  const exhibitNotFoundText = useAutoTranslation("Exhibit not found", language);
+  const unknownText = useAutoTranslation("Unknown", language);
+
+  // Translate exhibit title and description (must be before conditional returns)
+  const translatedTitle = useAutoTranslation(exhibit?.title || "", language);
+  const translatedDescription = useAutoTranslation(exhibit?.description || "", language);
 
   // Filter artworks to show only Active and Public ones with valid images
   const artworks = (userArtworks || []).filter((artwork) => {
@@ -191,7 +230,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   }
 
   if (!exhibit) {
-    return <div className="min-h-screen text-xs flex items-center justify-center">Exhibit not found</div>;
+    return <div className="min-h-screen text-xs flex items-center justify-center">{exhibitNotFoundText}</div>;
   }
 
   const currentEnvironment = environments.find((env) => env.id === exhibit.environment);
@@ -209,8 +248,8 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     const availableSlot = availableUserSlots[0];
 
     if (!availableSlot) {
-      toast.error("No available slots", {
-        description: "You don't have any available slots for more artwork.",
+      toast.error(noAvailableSlotsText, {
+        description: noAvailableSlotsDescText,
         closeButton: true,
       });
       return;
@@ -255,15 +294,15 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
 
     submitContributions(payload, {
       onSuccess: () => {
-        toast.success("Selections Saved", {
-          description: "Your artwork selections have been saved to the exhibit!",
+        toast.success(selectionsSavedText, {
+          description: selectionsSavedDescText,
           closeButton: true,
         });
         navigate("/exhibits");
       },
       onError: (err: any) => {
-        toast.error("Error", {
-          description: err?.response?.data?.detail || "Failed to submit contributions.",
+        toast.error(errorText, {
+          description: err?.response?.data?.detail || failedToSubmitText,
           closeButton: true,
         });
       },
@@ -284,9 +323,9 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     return slotColorSchemes[getColorSchemeIndex(ownerId)];
   };
   const getUserName = (userId: string) => {
-    if (userId === exhibit.owner.id) return `${exhibit.owner.name}'s slot`;
+    if (userId === exhibit.owner.id) return `${exhibit.owner.name}'s ${slotText}`;
     const collaborator = exhibit.collaborators.find((c) => c.id === userId);
-    return collaborator ? `${collaborator.name}'s slot` : "";
+    return collaborator ? `${collaborator.name}'s ${slotText}` : "";
   };
 
   const canInteractWithSlot = (slotId: number) => {
@@ -317,25 +356,23 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
       <div className="container mx-auto pt-20 pb-4">
         <div className="mb-3">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
-            <i className="bx bx-chevron-left text-xl mr-2"></i>Go back
+            <i className="bx bx-chevron-left text-xl mr-2"></i>{goBackText}
           </button>
         </div>
 
         {/* Collaborator View Notice */}
         <div className="mb-6">
-          <h2 className="text-[13px] font-medium mb-1">Exhibit Collaboration</h2>
+          <h2 className="text-[13px] font-medium mb-1">{exhibitCollaborationText}</h2>
           {hasUserSubmitted ? (
             <div className="space-y-2">
-              <p className="text-[11px] text-green-600 font-medium">✓ You have already submitted your contributions!</p>
+              <p className="text-[11px] text-green-600 font-medium">✓ {alreadySubmittedText}</p>
               <p className="text-[11px]">
-                You can no longer edit your artworks since they were already submitted to "{exhibit.title}". You can
-                view what other collaborators have contributed while waiting for the exhibit to be published.
+                {cannotEditAnymoreText} "{translatedTitle}". {viewOthersContributionsText}
               </p>
             </div>
           ) : (
             <p className="text-[11px]">
-              You are invited to contribute to "{exhibit.title}". Please select your artwork for the slots assigned to
-              you below.
+              {invitedToContributeText} "{translatedTitle}". {selectArtworkText}
             </p>
           )}
         </div>
@@ -347,7 +384,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
             style={{ backgroundImage: `url(${exhibit.bannerImage})` }}
           >
             <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center text-white">
-              <h1 className="text-md font-bold mb-2">{exhibit.title}</h1>
+              <h1 className="text-md font-bold mb-2">{translatedTitle}</h1>
               <p className="text-[11px]">
                 {new Date(exhibit.startDate).toLocaleDateString()} - {new Date(exhibit.endDate).toLocaleDateString()}
               </p>
@@ -358,7 +395,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
             {/* Left Column - Slots */}
             <div className="space-y-6">
               <div>
-                <h3 className="text-xs font-medium mb-4">Available Slots</h3>
+                <h3 className="text-xs font-medium mb-4">{availableSlotsText}</h3>
 
                 {/* Color coding legend */}
                 <div className="mb-3 flex flex-wrap gap-3">
@@ -368,7 +405,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                         .replace("border-", "bg-")
                         .replace("/10", "")}`}
                     ></div>
-                    <span className="text-[10px]">{exhibit.owner.name}'s slots</span>
+                    <span className="text-[10px]">{exhibit.owner.name}'s {slotsText}</span>
                   </div>
 
                   {exhibit.collaborators.map((collab, index) => (
@@ -378,7 +415,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                           .replace("border-", "bg-")
                           .replace("/10", "")}`}
                       ></div>
-                      <span className="text-[10px]">{collab.name}'s slots</span>
+                      <span className="text-[10px]">{collab.name}'s {slotsText}</span>
                     </div>
                   ))}
                 </div>
@@ -463,7 +500,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                                 {slotId}
                               </div>
                               <div className="absolute bottom-1 left-1 bg-black/70 text-white text-[7px] px-1 py-0.5 rounded truncate max-w-[80%]">
-                                {contributedSlot.contributor?.name || "Unknown"}
+                                {contributedSlot.contributor?.name || unknownText}
                               </div>
                             </>
                           ) : assignedArtwork ? (
@@ -492,14 +529,14 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                                 {slotId}
                               </div>
                               <div className="absolute bottom-1 left-1 bg-black/70 text-white text-[7px] px-1 py-0.5 rounded truncate max-w-[80%]">
-                                Your selection
+                                {yourSelectionText}
                               </div>
                               {userCanInteract && (
                                 <div
                                   className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
                                   onClick={() => handleClearSlot(slotId)}
                                 >
-                                  <span className="text-white text-[10px]">Remove</span>
+                                  <span className="text-white text-[10px]">{removeText}</span>
                                 </div>
                               )}
                             </>
@@ -516,7 +553,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                                 <p className="text-[10px]">{getUserName(slotOwner)}</p>
                                 {userCanInteract && (
                                   <p className="text-[9px] text-blue-600 mt-1">
-                                    Click on an artwork to assign it to this slot
+                                    {clickOnArtworkText}
                                   </p>
                                 )}
                               </PopoverContent>
@@ -531,10 +568,10 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
 
               {/* Collaborator progress status */}
               <div className="border rounded-md p-4 bg-gray-50">
-                <h3 className="text-[11px] font-medium mb-2">Your Artwork Selection</h3>
+                <h3 className="text-[11px] font-medium mb-2">{yourArtworkSelectionText}</h3>
                 <div className="flex items-center justify-between">
                   <span className="text-[10px]">
-                    {slotStats.filled} of {slotStats.total} slots filled
+                    {slotStats.filled} {ofText} {slotStats.total} {slotsFilledText}
                   </span>
                   <div className="w-24 h-1 bg-gray-200 rounded-full overflow-hidden">
                     <div
@@ -555,17 +592,17 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                     navigate("/gallery3d-preview");
                   }}
                 >
-                  Preview in 3D View
+                  {preview3DText}
                 </button>
                 <p className="text-[10px] text-muted-foreground mt-2">
-                  Opens your current selections in an interactive virtual gallery.
+                  {previewDescriptionText}
                 </p>
               </div>
             </div>
 
             {/* Right Column - Artworks */}
             <div>
-              <h3 className="text-xs font-medium mb-4">Your Artworks</h3>
+              <h3 className="text-xs font-medium mb-4">{yourArtworksText}</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-96 overflow-y-auto pr-1">
                 {artworks.map((artwork) => {
                   const isSelected = selectedArtworks.includes(String(artwork.id));
@@ -608,10 +645,10 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                   disabled
                   className="bg-gray-400 text-white text-[10px] px-8 py-1.5 rounded-full cursor-not-allowed"
                 >
-                  Already Submitted
+                  {alreadySubmittedButtonText}
                 </button>
                 <p className="text-[9px] text-gray-500 mt-1">
-                  You can no longer edit your artworks since they were already submitted
+                  {cannotEditSubmittedText}
                 </p>
               </div>
             ) : (
@@ -619,7 +656,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                 onClick={handleSaveSelections}
                 className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full"
               >
-                Save Selections
+                {saveSelectionsText}
               </button>
             )}
           </div>
