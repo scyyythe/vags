@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface BannerUploadProps {
   bannerImage: string | null;
@@ -19,15 +21,25 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const invalidFileTypeText = useAutoTranslation("Invalid file type", language);
+  const invalidFileTypeDescText = useAutoTranslation("Please select an image file for the banner.", language);
+  const fileTooLargeText = useAutoTranslation("File too large", language);
+  const fileTooLargeDescText = useAutoTranslation("Please select an image smaller than 10MB.", language);
+  const addBannerText = useAutoTranslation("Add a banner", language);
+  const changeBannerText = useAutoTranslation("Change banner", language);
+
   const handleBannerUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      console.log("📂 Selected banner file:", file);
+      console.log("Selected banner file:", file);
 
       // Validate file type
       if (!file.type.startsWith("image/")) {
-        toast.error("Invalid file type", {
-          description: "Please select an image file for the banner.",
+        toast.error(invalidFileTypeText, {
+          description: invalidFileTypeDescText,
           closeButton: true,
         });
         return;
@@ -36,8 +48,8 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
       // Validate file size (max 10MB)
       const maxSize = 10 * 1024 * 1024; // 10MB
       if (file.size > maxSize) {
-        toast.error("File too large", {
-          description: "Please select an image smaller than 10MB.",
+        toast.error(fileTooLargeText, {
+          description: fileTooLargeDescText,
           closeButton: true,
         });
         return;
@@ -75,7 +87,7 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
           <div className="bg-white p-2 rounded-full inline-block mb-2">
             <img width="20" height="20" src="./pics/icons8-cloud-upload.gif" alt="Upload" />
           </div>
-          <p className="text-xs text-gray-600">Add a banner</p>
+          <p className="text-xs text-gray-600">{addBannerText}</p>
         </>
       ) : (
         <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
@@ -86,7 +98,7 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
             onClick={handleClearBanner}
             disabled={isReadOnly}
           >
-            Change banner
+            {changeBannerText}
           </Button>
         </div>
       )}

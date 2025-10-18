@@ -2,6 +2,8 @@ import React from "react";
 import { ViewMode, Artist, SubmissionStatus } from "../components/types";
 import { Avatar } from "@/components/ui/avatar";
 import { User } from "@/hooks/users/useUserQuery";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface ModeStatusDisplayProps {
   viewMode: ViewMode;
   collaborators: User[];
@@ -13,10 +15,23 @@ const ModeStatusDisplay: React.FC<ModeStatusDisplayProps> = ({
   collaborators,
   getCollaboratorSubmissionStatus,
 }) => {
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const reviewModeText = useAutoTranslation("Review Mode", language);
+  const monitoringModeText = useAutoTranslation("Monitoring Mode", language);
+  const previewModeText = useAutoTranslation("Preview Mode", language);
+  const reviewingExhibitText = useAutoTranslation("You are reviewing this collaborative exhibit before publishing.", language);
+  const monitoringProgressText = useAutoTranslation("Monitoring progress:", language);
+  const slotsFilledText = useAutoTranslation("slots filled", language);
+  const completeText = useAutoTranslation("complete", language);
+  const previewExhibitText = useAutoTranslation("Preview of exhibit that is ready for publishing.", language);
+  const collaboratorSubmissionsText = useAutoTranslation("Collaborator Submissions:", language);
+
   // Get the status message for the current mode
   const getModeStatusMessage = () => {
     if (viewMode === "review") {
-      return "You are reviewing this collaborative exhibit before publishing.";
+      return reviewingExhibitText;
     }
 
     if (viewMode === "monitoring") {
@@ -26,11 +41,11 @@ const ModeStatusDisplay: React.FC<ModeStatusDisplayProps> = ({
       const filledSlots = collaboratorStatuses.reduce((sum, status) => sum + status.filled, 0);
       const overallPercentage = totalSlots > 0 ? Math.round((filledSlots / totalSlots) * 100) : 0;
 
-      return `Monitoring progress: ${filledSlots}/${totalSlots} slots filled (${overallPercentage}% complete)`;
+      return `${monitoringProgressText} ${filledSlots}/${totalSlots} ${slotsFilledText} (${overallPercentage}% ${completeText})`;
     }
 
     if (viewMode === "preview") {
-      return "Preview of exhibit that is ready for publishing.";
+      return previewExhibitText;
     }
 
     return "";
@@ -51,14 +66,14 @@ const ModeStatusDisplay: React.FC<ModeStatusDisplayProps> = ({
       }`}
     >
       <h2 className="text-sm font-medium mb-1">
-        {viewMode === "review" ? "Review Mode" : viewMode === "monitoring" ? "Monitoring Mode" : "Preview Mode"}
+        {viewMode === "review" ? reviewModeText : viewMode === "monitoring" ? monitoringModeText : previewModeText}
       </h2>
       <p className="text-xs">{getModeStatusMessage()}</p>
 
       {/* Show collaborator status in monitoring mode */}
       {viewMode === "monitoring" && collaborators.length > 0 && (
         <div className="mt-3 space-y-2">
-          <h3 className="text-xs font-medium">Collaborator Submissions:</h3>
+          <h3 className="text-xs font-medium">{collaboratorSubmissionsText}</h3>
           {collaborators.map((collaborator) => {
             const status = getCollaboratorSubmissionStatus(collaborator.id);
             return (

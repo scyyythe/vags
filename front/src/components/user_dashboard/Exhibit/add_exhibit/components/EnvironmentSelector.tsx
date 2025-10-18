@@ -1,5 +1,7 @@
 import React from "react";
 import { Environment } from "../components/types";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface EnvironmentSelectorProps {
   environments: Environment[];
@@ -18,9 +20,16 @@ const EnvironmentSelector: React.FC<EnvironmentSelectorProps> = ({
   isReadOnly,
   collaboratorCount,
 }) => {
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const virtualEnvironmentText = useAutoTranslation("Virtual Environment", language);
+  const slotsText = useAutoTranslation("slots", language);
+  const tooManyCollaboratorsText = useAutoTranslation("Too many collaborators", language);
+
   return (
     <div>
-      <h3 className="text-xs font-medium mb-4">Virtual Environment</h3>
+      <h3 className="text-xs font-medium mb-4">{virtualEnvironmentText}</h3>
       <div className="grid grid-cols-3 gap-2">
         {environments.map((env) => {
           // Get maximum allowed collaborators for this environment
@@ -51,8 +60,8 @@ const EnvironmentSelector: React.FC<EnvironmentSelectorProps> = ({
             >
               <img src={env.image} alt={`Environment ${env.id}`} className="w-full h-24 object-cover" />
               <div className="p-2 text-[10px] text-center">
-                {env.slots} slots
-                {isDisabled && <p className="text-[9px] text-red-500 mt-1">Too many collaborators</p>}
+                {env.slots} {slotsText}
+                {isDisabled && <p className="text-[9px] text-red-500 mt-1">{tooManyCollaboratorsText}</p>}
               </div>
             </div>
           );

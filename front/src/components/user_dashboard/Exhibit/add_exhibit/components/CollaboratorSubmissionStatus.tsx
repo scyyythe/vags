@@ -5,6 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 type Artist = {
   id: number;
@@ -35,6 +37,29 @@ const CollaboratorSubmissionStatus = ({
   onPublish
 }: CollaboratorSubmissionStatusProps) => {
   const [showPublishDialog, setShowPublishDialog] = React.useState(false);
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const collaboratorSubmissionsText = useAutoTranslation("Collaborator Submissions", language);
+  const overallText = useAutoTranslation("Overall:", language);
+  const completeText = useAutoTranslation("complete", language);
+  const completedText = useAutoTranslation("Completed", language);
+  const inProgressText = useAutoTranslation("In Progress", language);
+  const pendingText = useAutoTranslation("Pending", language);
+  const slotsFilledText = useAutoTranslation("slots filled", language);
+  const requestReviewText = useAutoTranslation("Request Review", language);
+  const publishExhibitText = useAutoTranslation("Publish Exhibit", language);
+  const cannotPublishYetText = useAutoTranslation("Cannot publish yet", language);
+  const notAllSlotsFilledText = useAutoTranslation("Not all slots have been filled. Please wait for collaborators to complete their submissions.", language);
+  const reviewRequestedText = useAutoTranslation("Review requested", language);
+  const reviewRequestSentText = useAutoTranslation("A review request has been sent to the appropriate parties.", language);
+  const readyToPublishText = useAutoTranslation("Ready to Publish", language);
+  const allSlotsFilledText = useAutoTranslation("All slots for", language);
+  const haveBeenFilledText = useAutoTranslation("have been filled. Would you like to publish this exhibit now?", language);
+  const cancelText = useAutoTranslation("Cancel", language);
+
+  // Translate the exhibit title
+  const translatedExhibitTitle = useAutoTranslation(exhibitTitle, language);
   
   // Calculate overall completion status
   const totalSlots = collaborators.reduce((sum, collab) => sum + collab.slotsAssigned, 0);
@@ -45,8 +70,8 @@ const CollaboratorSubmissionStatus = ({
     if (allSlotsCompleted) {
       setShowPublishDialog(true);
     } else {
-      toast.error("Cannot publish yet", {
-        description: "Not all slots have been filled. Please wait for collaborators to complete their submissions.",
+      toast.error(cannotPublishYetText, {
+        description: notAllSlotsFilledText,
         closeButton: true,
       });
     }
@@ -57,8 +82,8 @@ const CollaboratorSubmissionStatus = ({
     onRequestReview();
     
     // Show confirmation toast
-    toast.success("Review requested", {
-      description: "A review request has been sent to the appropriate parties.",
+    toast.success(reviewRequestedText, {
+      description: reviewRequestSentText,
         closeButton: true,
     });
   };
@@ -66,11 +91,11 @@ const CollaboratorSubmissionStatus = ({
   const getStatusLabel = (status: CollaboratorStatus["status"]) => {
     switch (status) {
       case "completed":
-        return <Badge className="bg-green-500">Completed</Badge>;
+        return <Badge className="bg-green-500">{completedText}</Badge>;
       case "partial": 
-        return <Badge className="bg-amber-500">In Progress</Badge>;
+        return <Badge className="bg-amber-500">{inProgressText}</Badge>;
       case "pending":
-        return <Badge variant="outline">Pending</Badge>;
+        return <Badge variant="outline">{pendingText}</Badge>;
       default:
         return null;
     }
@@ -79,11 +104,11 @@ const CollaboratorSubmissionStatus = ({
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-sm font-medium">Collaborator Submissions</h3>
+        <h3 className="text-sm font-medium">{collaboratorSubmissionsText}</h3>
         
         <div className="flex items-center gap-3">
           <span className="text-xs text-gray-600">
-            Overall: {completionPercentage}% complete
+            {overallText} {completionPercentage}% {completeText}
           </span>
           <div className="w-28 h-1.5 bg-gray-200 rounded-full overflow-hidden">
             <div 
@@ -107,7 +132,7 @@ const CollaboratorSubmissionStatus = ({
                   <p className="text-xs font-medium">{collab.artist.name}</p>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-[10px] text-gray-500">
-                      {collab.slotsFilled}/{collab.slotsAssigned} slots filled
+                      {collab.slotsFilled}/{collab.slotsAssigned} {slotsFilledText}
                     </span>
                     <div className="w-16 h-1 bg-gray-200 rounded-full overflow-hidden">
                       <div 
@@ -140,7 +165,7 @@ const CollaboratorSubmissionStatus = ({
           className="text-xs"
           onClick={handleReviewRequest}
         >
-          Request Review
+          {requestReviewText}
         </Button>
         
         <Button
@@ -149,7 +174,7 @@ const CollaboratorSubmissionStatus = ({
           onClick={handlePublishRequest}
           disabled={!allSlotsCompleted}
         >
-          Publish Exhibit
+          {publishExhibitText}
         </Button>
       </div>
 
@@ -157,13 +182,13 @@ const CollaboratorSubmissionStatus = ({
       <AlertDialog open={showPublishDialog} onOpenChange={setShowPublishDialog}>
         <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>Ready to Publish</AlertDialogTitle>
+            <AlertDialogTitle>{readyToPublishText}</AlertDialogTitle>
             <AlertDialogDescription>
-              All slots for "{exhibitTitle}" have been filled. Would you like to publish this exhibit now?
+              {allSlotsFilledText} "{translatedExhibitTitle}" {haveBeenFilledText}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="text-xs">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="text-xs">{cancelText}</AlertDialogCancel>
             <AlertDialogAction 
               className="bg-green-600 hover:bg-green-700 text-xs"
               onClick={() => {
@@ -171,7 +196,7 @@ const CollaboratorSubmissionStatus = ({
                 onPublish();
               }}
             >
-              Publish Exhibit
+              {publishExhibitText}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
