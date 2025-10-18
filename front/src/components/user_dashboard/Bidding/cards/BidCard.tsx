@@ -15,6 +15,8 @@ import { useToggleHideAuction } from "@/hooks/auction/useToggleHideAuction";
 import { useRestoreAuction } from "@/hooks/auction/useRestoreAuction";
 import { useReopenAuction } from "@/hooks/auction/useReopenAuction";
 import { getArtworkImageUrl } from "@/utils/imageUtils";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface ExtendedArtworkAuction extends ArtworkAuction {
   isPaid?: boolean;
   isHighestBidder?: boolean;
@@ -50,6 +52,7 @@ const BidCard: React.FC<BidCardProps> = ({
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
+  const { language } = useLanguage();
   const loggedInUserId = getLoggedInUserId();
   const isOwner = data?.artwork?.artist_id === loggedInUserId;
   const { closeAuction, deleteAuction } = useAuctionActions();
@@ -58,6 +61,41 @@ const BidCard: React.FC<BidCardProps> = ({
   const { mutate: hideAuction } = useToggleHideAuction();
   const { mutate: restoreAuction } = useRestoreAuction();
   const { mutate: reopenAuction } = useReopenAuction();
+  const [translatedTitle, setTranslatedTitle] = useState("");
+
+  // Translation hooks
+  const alreadyReportedText = useAutoTranslation("You have already reported this auction.", language);
+  const bidPlacedText = useAutoTranslation("Bid of", language);
+  const placedSuccessfullyText = useAutoTranslation("placed successfully!", language);
+  const auctionWillStartText = useAutoTranslation("Auction will start on", language);
+  const failedToCloseText = useAutoTranslation("Failed to close bidding", language);
+  const reopenInfoText = useAutoTranslation("Use the menu to reopen this auction", language);
+  const yourBidText = useAutoTranslation("Your Bid", language);
+  const currentBidText = useAutoTranslation("Current Bid", language);
+  const claimText = useAutoTranslation("Claim", language);
+  const placeABidText = useAutoTranslation("Place A Bid", language);
+  const reopenText = useAutoTranslation("Reopen", language);
+  const closedText = useAutoTranslation("Closed", language);
+  const unknownText = useAutoTranslation("Unknown", language);
+
+  // Translate artwork title
+  useEffect(() => {
+    const translateTitle = async () => {
+      const { autoTranslate } = await import("@/utils/autoTranslate");
+      try {
+        const translated = language.toLowerCase() !== "en"
+          ? await autoTranslate(data.artwork.title, language.toLowerCase())
+          : data.artwork.title;
+        setTranslatedTitle(translated);
+      } catch (error) {
+        setTranslatedTitle(data.artwork.title);
+      }
+    };
+
+    if (data.artwork.title) {
+      translateTitle();
+    }
+  }, [data.artwork.title, language]);
 
   useEffect(() => {
     console.log("Top level start_bid_amount:", data.start_bid_amount);
@@ -93,7 +131,7 @@ const BidCard: React.FC<BidCardProps> = ({
     additionalInfo?: string;
   }) => {
     if (reportInfo?.reported) {
-      toast.error("You have already reported this auction.", { closeButton: true });
+      toast.error(alreadyReportedText, { closeButton: true });
       setMenuOpen(false);
       return;
     }
@@ -121,7 +159,7 @@ const BidCard: React.FC<BidCardProps> = ({
 
   const handleBidSubmit = (amount: number) => {
     onPlaceBid?.(data.id, amount);
-    toast(`Bid of ${amount}K placed successfully!`, { closeButton: true });
+    toast(`${bidPlacedText} ${amount}K ${placedSuccessfullyText}`, { closeButton: true });
   };
 
   const hasWon = data.isHighestBidder && data.isPaid;
@@ -149,7 +187,7 @@ const BidCard: React.FC<BidCardProps> = ({
               <div className="absolute top-3.5 left-0 whitespace-nowrap">
                 {/* Incoming auction timer only */}
                 <div className="text-gray-600 text-left bg-white bg-opacity-60 text-[9px] px-3 py-1 rounded-[5px]">
-                  <p className="text-[9px]">Auction will start on</p>
+                  <p className="text-[9px]">{auctionWillStartText}</p>
                   <p className="text-[10px] font-semibold text-black mt-0.5">
                     {new Date(data.start_time).toLocaleString("en-PH", {
                       year: "numeric",
@@ -200,7 +238,7 @@ const BidCard: React.FC<BidCardProps> = ({
                   try {
                     await closeAuction.mutateAsync(data.id);
                   } catch {
-                    toast.error("Failed to close bidding");
+                    toast.error(failedToCloseText);
                   } finally {
                     setMenuOpen(false);
                   }
@@ -240,12 +278,12 @@ const BidCard: React.FC<BidCardProps> = ({
           <div className="absolute bottom-3 left-3 right-3">
             <div className="bg-white bg-opacity-60 backdrop-blur-[3px] h-[69px] px-6 flex items-center justify-between rounded-lg">
               <div className="flex flex-col justify-center">
-                <h2 className="text-xs font-semibold truncate max-w-[100px]" title={data.artwork.title}>
-                  {data.artwork.title}
+                <h2 className="text-xs font-semibold truncate max-w-[100px]" title={translatedTitle || data.artwork.title}>
+                  {translatedTitle || data.artwork.title}
                 </h2>
 
                 <div className="text-gray-700 text-[9px]">
-                  {hasWon ? "Your Bid" : "Current Bid"}{" "}
+                  {hasWon ? yourBidText : currentBidText}{" "}
                   <span className="text-black text-sm font-bold ml-2">
                     {data.highest_bid?.amount ? formatNumber(data.highest_bid.amount) : "0"}
                   </span>
@@ -261,7 +299,7 @@ const BidCard: React.FC<BidCardProps> = ({
                     setShowBidPopup(true);
                   } else if (canReopen) {
                     // Handle reopen functionality - we'll add this to the menu
-                    toast.info("Use the menu to reopen this auction");
+                    toast.info(reopenInfoText);
                   }
                 }}
                 disabled={data.status !== "on_going" && !hasWon && !canReopen}
@@ -275,7 +313,7 @@ const BidCard: React.FC<BidCardProps> = ({
                     : "bg-red-800 hover:bg-red-800"
                 }`}
               >
-                {hasWon ? "Claim" : data.status === "on_going" ? "Place A Bid" : canReopen ? "Reopen" : "Closed"}
+                {hasWon ? claimText : data.status === "on_going" ? placeABidText : canReopen ? reopenText : closedText}
               </button>
             </div>
           </div>
@@ -288,9 +326,9 @@ const BidCard: React.FC<BidCardProps> = ({
           onClose={() => setShowBidPopup(false)}
           data={data}
           artworkId={data.artwork.id}
-          artworkTitle={data.artwork.title}
-          username={user?.username || "Unknown"}
-          fullName={`${user?.first_name || "Unknown"} ${user?.last_name || ""}`}
+          artworkTitle={translatedTitle || data.artwork.title}
+          username={user?.username || unknownText}
+          fullName={`${user?.first_name || unknownText} ${user?.last_name || ""}`}
           start_bid_amount={data.start_bid_amount}
         />
       )}
