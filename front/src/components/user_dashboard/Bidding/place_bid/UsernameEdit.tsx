@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface UsernameEditPopupProps {
   isOpen: boolean;
@@ -15,8 +17,23 @@ const UsernameEditPopup: React.FC<UsernameEditPopupProps> = ({
   onUsernameUpdate,
   currentUsername,
 }) => {
+  const { language } = useLanguage();
   const [username, setUsername] = useState(currentUsername.replace('@', ''));
   const [isLoading, setIsLoading] = useState(false);
+
+  // Translation hooks
+  const editYourUsernameText = useAutoTranslation("Edit Your Username", language);
+  const chooseUniqueUsernameText = useAutoTranslation("Choose a unique username that represents you.", language);
+  const usernameText = useAutoTranslation("Username", language);
+  const enterUsernameText = useAutoTranslation("Enter username", language);
+  const usernameRequirementsText = useAutoTranslation("3-20 characters. Letters, numbers, and underscores only.", language);
+  const updatingText = useAutoTranslation("Updating...", language);
+  const updateUsernameText = useAutoTranslation("Update Username", language);
+  const usernameCannotBeEmptyText = useAutoTranslation("Username cannot be empty", language);
+  const usernameMinLengthText = useAutoTranslation("Username must be at least 3 characters long", language);
+  const usernameMaxLengthText = useAutoTranslation("Username must be 20 characters or less", language);
+  const usernameInvalidCharsText = useAutoTranslation("Username can only contain letters, numbers, and underscores", language);
+  const usernameUpdatedSuccessText = useAutoTranslation("Username updated successfully!", language);
 
   if (!isOpen) return null;
 
@@ -24,22 +41,22 @@ const UsernameEditPopup: React.FC<UsernameEditPopupProps> = ({
     e.preventDefault();
     
     if (!username.trim()) {
-      toast.error("Username cannot be empty", { closeButton: true })
+      toast.error(usernameCannotBeEmptyText, { closeButton: true })
       return;
     }
 
     if (username.length < 3) {
-      toast.error("Username must be at least 3 characters long", { closeButton: true })
+      toast.error(usernameMinLengthText, { closeButton: true })
       return;
     }
 
     if (username.length > 20) {
-      toast.error("Username must be 20 characters or less", { closeButton: true })
+      toast.error(usernameMaxLengthText, { closeButton: true })
       return;
     }
 
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      toast.error("Username can only contain letters, numbers, and underscores", { closeButton: true })
+      toast.error(usernameInvalidCharsText, { closeButton: true })
       return;
     }
 
@@ -48,7 +65,7 @@ const UsernameEditPopup: React.FC<UsernameEditPopupProps> = ({
     // Simulate API call
     setTimeout(() => {
       onUsernameUpdate(username);
-      toast.success("Username updated successfully!", { closeButton: true })
+      toast.success(usernameUpdatedSuccessText, { closeButton: true })
       setIsLoading(false);
       onClose();
     }, 1000);
@@ -64,20 +81,20 @@ const UsernameEditPopup: React.FC<UsernameEditPopupProps> = ({
       <div className="bg-white rounded-2xl w-full max-w-xs mx-4 relative" onClick={(e) => e.stopPropagation()}>
         <div className="py-11 px-8">
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-sm font-bold">Edit Your Username</h2>
+            <h2 className="text-sm font-bold">{editYourUsernameText}</h2>
             <button onClick={handleClose} className="text-gray-600 hover:text-black">
               <X size={17} />
             </button>
           </div>
 
           <p className="text-gray-500 text-[10px] mb-6">
-            Choose a unique username that represents you.
+            {chooseUniqueUsernameText}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-[10px] font-medium text-gray-700 mb-1">
-                Username
+                {usernameText}
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-[10px]">@</span>
@@ -87,13 +104,13 @@ const UsernameEditPopup: React.FC<UsernameEditPopupProps> = ({
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-full text-[10px] focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-transparent"
-                  placeholder="Enter username"
+                  placeholder={enterUsernameText}
                   maxLength={20}
                   disabled={isLoading}
                 />
               </div>
               <p className="text-[9px] text-gray-500 mt-1">
-                3-20 characters. Letters, numbers, and underscores only.
+                {usernameRequirementsText}
               </p>
             </div>
 
@@ -115,7 +132,7 @@ const UsernameEditPopup: React.FC<UsernameEditPopupProps> = ({
                     : "bg-red-800 hover:bg-red-700"
                 }`}
               >
-                {isLoading ? "Updating..." : "Update Username"}
+                {isLoading ? updatingText : updateUsernameText}
               </button>
             </div>
           </form>

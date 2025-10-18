@@ -5,6 +5,8 @@ import { Separator } from "@/components/ui/separator";
 import IdentitySelectionPopup from "./IdentitySelection";
 import { usePlaceBid } from "@/hooks/bid/usePlaceBid";
 import { ArtworkAuction } from "@/hooks/auction/useAuction";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface BidPopupProps {
   isOpen: boolean;
@@ -29,9 +31,42 @@ const BidPopup: React.FC<BidPopupProps> = ({
   start_bid_amount,
   onBidSuccess,
 }) => {
+  const { language } = useLanguage();
   const [bidAmount, setBidAmount] = useState<string>("");
   const [showIdentityPopup, setShowIdentityPopup] = useState(false);
   const { mutate: placeBid } = usePlaceBid();
+  const [translatedTitle, setTranslatedTitle] = useState("");
+
+  // Translation hooks
+  const placeYourBidText = useAutoTranslation("Place your bid", language);
+  const youArePlacingBidText = useAutoTranslation("You're placing a bid for", language);
+  const enterBidAmountText = useAutoTranslation("Enter bid amount", language);
+  const minimumBidText = useAutoTranslation("Minimum bid", language);
+  const placeBidText = useAutoTranslation("Place Bid", language);
+  const auctionNotStartedText = useAutoTranslation("Auction hasn't started yet. It will start on", language);
+  const validNumberText = useAutoTranslation("Please enter a valid number.", language);
+  const minimumBidAmountText = useAutoTranslation("Minimum bid amount is", language);
+  const bidOfText = useAutoTranslation("Bid of", language);
+  const placedAsText = useAutoTranslation("placed as", language);
+
+  // Translate artwork title
+  useEffect(() => {
+    const translateTitle = async () => {
+      const { autoTranslate } = await import("@/utils/autoTranslate");
+      try {
+        const translated = language.toLowerCase() !== "en"
+          ? await autoTranslate(artworkTitle, language.toLowerCase())
+          : artworkTitle;
+        setTranslatedTitle(translated);
+      } catch (error) {
+        setTranslatedTitle(artworkTitle);
+      }
+    };
+
+    if (artworkTitle) {
+      translateTitle();
+    }
+  }, [artworkTitle, language]);
 
   useEffect(() => {
     if (typeof window === "undefined" || !document.body) return;
@@ -55,19 +90,19 @@ const BidPopup: React.FC<BidPopupProps> = ({
         minute: "2-digit",
         hour12: true,
       });
-      toast.error(`Auction hasn't started yet. It will start on ${formattedStart}`, { closeButton: true })
+      toast.error(`${auctionNotStartedText} ${formattedStart}`, { closeButton: true })
       return;
     }
 
     const bid = parseInt(bidAmount);
 
     if (isNaN(bid)) {
-      toast.error("Please enter a valid number.", { closeButton: true })
+      toast.error(validNumberText, { closeButton: true })
       return;
     }
 
     if (bid < start_bid_amount) {
-      toast.warning(`Minimum bid amount is ₱${start_bid_amount}`, { closeButton: true })
+      toast.warning(`${minimumBidAmountText} ₱${start_bid_amount}`, { closeButton: true })
       return;
     }
 
@@ -86,7 +121,7 @@ const BidPopup: React.FC<BidPopupProps> = ({
         },
         {
           onSuccess: () => {
-            toast.success(`Bid of ₱${bid.toLocaleString()} placed as ${identity}`, { closeButton: true })
+            toast.success(`${bidOfText} ₱${bid.toLocaleString()} ${placedAsText} ${identity}`, { closeButton: true })
             setShowIdentityPopup(false);
             setBidAmount("");
             onClose();
@@ -102,7 +137,7 @@ const BidPopup: React.FC<BidPopupProps> = ({
       <div className="bg-white rounded-2xl w-full max-w-xs mx-4 relative" onClick={(e) => e.stopPropagation()}>
         <div className="py-6 px-8">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="relative text-lg font-bold top-5">Place your bid</h2>
+            <h2 className="relative text-lg font-bold top-5">{placeYourBidText}</h2>
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -115,15 +150,15 @@ const BidPopup: React.FC<BidPopupProps> = ({
           </div>
 
           <p className="text-gray-600 text-[10px] mb-8">
-            You're placing a bid for <span className="text-red-900 font-semibold">{artworkTitle}</span>
+            {youArePlacingBidText} <span className="text-red-900 font-semibold">{translatedTitle || artworkTitle}</span>
           </p>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-8 text-[10px]">
-              <label className="block text-xs font-medium mb-2">Enter bid amount</label>
+              <label className="block text-xs font-medium mb-2">{enterBidAmountText}</label>
               <input
                 type="number"
-                placeholder={`Minimum bid ₱${start_bid_amount}`}
+                placeholder={`${minimumBidText} ₱${start_bid_amount}`}
                 value={bidAmount}
                 onChange={(e) => setBidAmount(e.target.value)}
                 className="w-full py-2 px-3 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-red-800"
@@ -135,7 +170,7 @@ const BidPopup: React.FC<BidPopupProps> = ({
               type="submit"
               className="w-full bg-red-800 hover:bg-red-700 text-white text-[10px] py-2 rounded-full font-medium transition-colors"
             >
-              Place Bid
+              {placeBidText}
             </button>
           </form>
         </div>
