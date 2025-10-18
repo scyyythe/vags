@@ -15,6 +15,9 @@ export const useUpdateExhibit = (exhibitId: string) => {
 
       queryClient.invalidateQueries({ queryKey: ["exhibit-cards"] });
       queryClient.invalidateQueries({ queryKey: ["exhibit", exhibitId] });
+      
+      // Invalidate notifications in case new collaborators were added
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
     onError: (error: any) => {
       console.error("❌ Error updating exhibit:", error);
