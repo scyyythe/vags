@@ -6,6 +6,8 @@ import { normalizeReportType } from "./ReportOptions";
 import { ReportOption } from "./ReportOptions";
 import ShareModal from "../../local_components/share/ShareModal";
 import useUndoAuctionReport from "@/hooks/mutate/report/undo/useUndoReport";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface ArtCardMenuProps {
   isOpen: boolean;
   onHide: () => void;
@@ -32,11 +34,18 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
   className,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const { language } = useLanguage();
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showReportOptions, setShowReportOptions] = useState(false);
   const { handleUndoReport } = useUndoAuctionReport();
   const [showShareModal, setShowShareModal] = useState(false);
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+
+  // Translation hooks
+  const shareText = useAutoTranslation("Share", language);
+  const hideText = useAutoTranslation("Hide", language);
+  const reportText = useAutoTranslation("Report", language);
+  const undoReportText = useAutoTranslation("Undo Report", language);
 
   if (!isOpen) return null;
 
@@ -90,7 +99,7 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
             </button>
             {hoveredItem === "share" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Share
+                {shareText}
               </span>
             )}
           </div>
@@ -111,7 +120,7 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
             </button>
             {hoveredItem === "hide" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Hide
+                {hideText}
               </span>
             )}
           </div>
@@ -129,7 +138,7 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
             </button>
             {hoveredItem === "report" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Report
+                {reportText}
               </span>
             )}
           </div>
@@ -148,7 +157,7 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
               </button>
               {hoveredItem === "undoReport" && (
                 <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                  Undo Report
+                  {undoReportText}
                 </span>
               )}
             </div>
