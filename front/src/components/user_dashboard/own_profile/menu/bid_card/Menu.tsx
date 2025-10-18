@@ -4,6 +4,8 @@ import DeleteConfirmationPopup from "./DeletePopup";
 import CloseBidConfirmationPopup from "./CloseBidPopup";
 import ViewBidsModal from "./ViewBidsModal";
 import RestoreConfirmation from "./RestoreConfirmation";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface Bid {
   id?: string;
@@ -45,11 +47,19 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
   canReopen = false,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const { language } = useLanguage();
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showClosePopup, setShowClosePopup] = useState(false);
   const [showRestorePopup, setShowRestorePopup] = useState(false);
   const [showViewBidsModal, setShowViewBidsModal] = useState(false);
+
+  // Translation hooks
+  const viewBidsText = useAutoTranslation("View Bids", language);
+  const reopenAuctionText = useAutoTranslation("Reopen Auction", language);
+  const closeBiddingText = useAutoTranslation("Close Bidding", language);
+  const deleteBidText = useAutoTranslation("Delete Bid", language);
+  const restoreAuctionText = useAutoTranslation("Restore Auction", language);
 
   if (!isOpen) return null;
 
@@ -91,7 +101,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
             </button>
             {hoveredItem === "view" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                View Bids
+                {viewBidsText}
               </span>
             )}
           </div>
@@ -114,7 +124,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
               </button>
               {hoveredItem === "reopen" && (
                 <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                  Reopen Auction
+                  {reopenAuctionText}
                 </span>
               )}
             </div>
@@ -134,7 +144,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
               </button>
               {hoveredItem === "close" && (
                 <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                  Close Bidding
+                  {closeBiddingText}
                 </span>
               )}
             </div>
@@ -154,7 +164,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
               </button>
               {hoveredItem === "delete" && (
                 <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                  Delete Bid
+                  {deleteBidText}
                 </span>
               )}
             </div>
@@ -174,7 +184,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
               </button>
               {hoveredItem === "restore" && (
                 <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                  Restore Auction
+                  {restoreAuctionText}
                 </span>
               )}
             </div>

@@ -9,6 +9,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface RestoreConfirmationProps {
   isOpen: boolean;
@@ -18,24 +20,33 @@ interface RestoreConfirmationProps {
 }
 
 const RestoreConfirmation: React.FC<RestoreConfirmationProps> = ({ isOpen, onCancel, onConfirm, auctionTitle }) => {
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const restoreAuctionText = useAutoTranslation("Restore Auction", language);
+  const areYouSureText = useAutoTranslation("Are you sure you want to restore", language);
+  const thisAuctionText = useAutoTranslation("this auction", language);
+  const madePublicText = useAutoTranslation("? It will be made public again.", language);
+  const cancelText = useAutoTranslation("Cancel", language);
+  const restoreText = useAutoTranslation("Restore", language);
+
   return (
     <AlertDialog open={isOpen} onOpenChange={onCancel}>
       <AlertDialogContent className="w-full max-w-sm rounded-lg">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-center text-sm">Restore Auction</AlertDialogTitle>
+          <AlertDialogTitle className="text-center text-sm">{restoreAuctionText}</AlertDialogTitle>
           <AlertDialogDescription className="text-center text-[10px]">
-            Are you sure you want to restore {auctionTitle ? `"${auctionTitle}"` : "this auction"}? It will be made
-            public again.
+            {areYouSureText} {auctionTitle ? `"${auctionTitle}"` : thisAuctionText}{madePublicText}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <div className="w-full flex flex-row gap-6">
-            <AlertDialogCancel className="h-[28px] w-full text-[9px] rounded-full">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="h-[28px] w-full text-[9px] rounded-full">{cancelText}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-green-600 hover:bg-green-700 w-full h-[28px] text-[9px] rounded-full"
               onClick={onConfirm}
             >
-              Restore
+              {restoreText}
             </AlertDialogAction>
           </div>
         </AlertDialogFooter>
