@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAddressContext } from "../shipping_address/AddressContext";
 import useAllAddresses from "@/hooks/users/address/useAllAddresses";
 import { usePurchase } from "@/context/PurchaseContext";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface PreviewModalProps {
   isOpen: boolean;
@@ -32,6 +34,37 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
   const { data: addresses = [], isLoading, error: addressesError } = useAllAddresses();
   const { setArtwork } = usePurchase();
 
+  // Language and translation hooks
+  const { language } = useLanguage();
+  
+  // Translate dynamic artwork data
+  const translatedTitle = useAutoTranslation(artwork?.title || "", language);
+  const translatedArtist = useAutoTranslation(artwork?.artist || "", language);
+  const translatedStyle = useAutoTranslation(artwork?.style || "", language);
+  const translatedMedium = useAutoTranslation(artwork?.medium || "", language);
+  const translatedEdition = useAutoTranslation(artwork?.edition || "", language);
+  
+  // Static text translations
+  const invalidDataText = useAutoTranslation("Invalid Data", language);
+  const artworkDataInvalidText = useAutoTranslation("Artwork data is invalid or missing.", language);
+  const closeText = useAutoTranslation("Close", language);
+  const untitledText = useAutoTranslation("Untitled", language);
+  const byText = useAutoTranslation("by", language);
+  const unknownArtistText = useAutoTranslation("Unknown Artist", language);
+  const sizeText = useAutoTranslation("Size", language);
+  const styleText = useAutoTranslation("Style", language);
+  const mediumText = useAutoTranslation("Medium", language);
+  const editionText = useAutoTranslation("Edition", language);
+  const yearCreatedText = useAutoTranslation("Year Created", language);
+  const unknownText = useAutoTranslation("Unknown", language);
+  const totalPriceText = useAutoTranslation("TOTAL PRICE", language);
+  const priceText = useAutoTranslation("PRICE", language);
+  const loadingText = useAutoTranslation("Loading...", language);
+  const proceedToCheckoutText = useAutoTranslation("proceed to checkout →", language);
+  const shippingHandledText = useAutoTranslation("Shipping is handled directly by the seller after purchase.", language);
+  const errorText = useAutoTranslation("Error", language);
+  const somethingWentWrongText = useAutoTranslation("Something went wrong loading the preview.", language);
+
   // Disable scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -56,13 +89,13 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
             <i className="bx bx-x"></i>
           </button>
           <div className="text-center">
-            <h2 className="text-lg font-semibold text-red-600 mb-2">Invalid Data</h2>
-            <p className="text-sm text-gray-600 mb-4">Artwork data is invalid or missing.</p>
+            <h2 className="text-lg font-semibold text-red-600 mb-2">{invalidDataText}</h2>
+            <p className="text-sm text-gray-600 mb-4">{artworkDataInvalidText}</p>
             <button
               onClick={onClose}
               className="bg-red-800 text-white rounded-full py-2 px-4 text-sm font-medium hover:bg-red-700"
             >
-              Close
+              {closeText}
             </button>
           </div>
         </div>
@@ -116,7 +149,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
           <div className="flex justify-center">
             <img
               src={artwork.artworkImage || "/images/placeholder.jpg"}
-              alt={artwork.title || "Artwork"}
+              alt={translatedTitle || "Artwork"}
               className="w-36 h-32 object-cover rounded-md"
               onError={(e) => {
                 e.currentTarget.src = "/images/placeholder.jpg";
@@ -125,37 +158,37 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
           </div>
 
           {/* Title & Artist */}
-          <h2 className="text-[14px] font-semibold text-center mt-4">{artwork.title || "Untitled"}</h2>
-          <p className="text-[10px] text-center text-gray-500 mt-1">by {artwork.artist || "Unknown Artist"}</p>
+          <h2 className="text-[14px] font-semibold text-center mt-4">{translatedTitle || untitledText}</h2>
+          <p className="text-[10px] text-center text-gray-500 mt-1">{byText} {translatedArtist || unknownArtistText}</p>
 
           {/* Grid Details */}
           <div className="my-4">
             <div className="border-t border-gray-100 w-[87%] mx-auto" />
             <div className="grid grid-cols-2 text-[10px] text-center py-5">
               <div>
-                <h4 className="text-gray-500">Size</h4>
-                <p className="font-medium">{artwork.size || "Unknown"}</p>
+                <h4 className="text-gray-500">{sizeText}</h4>
+                <p className="font-medium">{artwork.size || unknownText}</p>
               </div>
               <div>
-                <h4 className="text-gray-500">Style</h4>
+                <h4 className="text-gray-500">{styleText}</h4>
                 <p className="font-medium">
-                  {artwork.style ? artwork.style.charAt(0).toUpperCase() + artwork.style.slice(1) : "Unknown"}
+                  {translatedStyle ? translatedStyle.charAt(0).toUpperCase() + translatedStyle.slice(1) : unknownText}
                 </p>
               </div>
               <div className="pt-2 col-span-1">
-                <h4 className="text-gray-500">Medium</h4>
+                <h4 className="text-gray-500">{mediumText}</h4>
                 <p className="font-medium">
-                  {artwork.medium ? artwork.medium.charAt(0).toUpperCase() + artwork.medium.slice(1) : "Unknown"}
+                  {translatedMedium ? translatedMedium.charAt(0).toUpperCase() + translatedMedium.slice(1) : unknownText}
                 </p>
               </div>
 
               <div className="pt-2 col-span-1">
-                <h4 className="text-gray-500">Edition</h4>
-                <p className="font-medium">{artwork.edition || "Unknown"}</p>
+                <h4 className="text-gray-500">{editionText}</h4>
+                <p className="font-medium">{translatedEdition || unknownText}</p>
               </div>
               <div className="pt-2 col-span-2">
-                <h4 className="text-gray-500">Year Created</h4>
-                <p className="font-medium">{artwork.yearCreated || "Unknown"}</p>
+                <h4 className="text-gray-500">{yearCreatedText}</h4>
+                <p className="font-medium">{artwork.yearCreated || unknownText}</p>
               </div>
             </div>
             <div className="border-b border-gray-100 w-[87%] mx-auto" />
@@ -166,8 +199,8 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
             <div className="flex justify-between my-4">
               <p className="text-[15px] font-semibold relative top-1.5">
                 {artwork.edition === "Open Edition" && artwork.quantity && artwork.quantity > 1
-                  ? "TOTAL PRICE"
-                  : "PRICE"}
+                  ? totalPriceText
+                  : priceText}
               </p>
               <div className="text-right">
                 {artwork.edition === "Open Edition" && artwork.quantity && artwork.quantity > 1 ? (
@@ -194,11 +227,11 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
               disabled={isLoading}
               className="w-full bg-red-800 text-white rounded-full py-2.5 text-[11px] font-medium hover:bg-red-700 disabled:opacity-50"
             >
-              {isLoading ? "Loading..." : "proceed to checkout →"}
+              {isLoading ? loadingText : proceedToCheckoutText}
             </button>
 
             <p className="text-[9px] text-gray-400 mt-2 italic">
-              Shipping is handled directly by the seller after purchase.
+              {shippingHandledText}
             </p>
           </div>
         </div>
@@ -212,13 +245,13 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
             <i className="bx bx-x"></i>
           </button>
           <div className="text-center">
-            <h2 className="text-lg font-semibold text-red-600 mb-2">Error</h2>
-            <p className="text-sm text-gray-600 mb-4">Something went wrong loading the preview.</p>
+            <h2 className="text-lg font-semibold text-red-600 mb-2">{errorText}</h2>
+            <p className="text-sm text-gray-600 mb-4">{somethingWentWrongText}</p>
             <button
               onClick={onClose}
               className="bg-red-800 text-white rounded-full py-2 px-4 text-sm font-medium hover:bg-red-700"
             >
-              Close
+              {closeText}
             </button>
           </div>
         </div>
