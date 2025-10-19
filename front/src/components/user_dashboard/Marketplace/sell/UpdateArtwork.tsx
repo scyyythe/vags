@@ -64,12 +64,12 @@ const UpdateArtwork = () => {
 
   // Language and translation
   const { language } = useLanguage();
-  
+
   // Translate fetched artwork data (only fields that don't need exact value matching)
   const translatedFetchedTitle = useAutoTranslation(artworkData?.title || "", language);
   const translatedFetchedMedium = useAutoTranslation(artworkData?.medium || "", language);
   const translatedFetchedDescription = useAutoTranslation(artworkData?.description || "", language);
-  
+
   // UI text translations
   const updateArtworkText = useAutoTranslation("Update Artwork", language);
   const uploadMainImageText = useAutoTranslation("Upload the main artwork image", language);
@@ -91,17 +91,23 @@ const UpdateArtwork = () => {
   const failedToUpdateText = useAutoTranslation("Failed to update artwork", language);
   const imageRemovedText = useAutoTranslation("Image removed successfully", language);
   const failedToDeleteImageText = useAutoTranslation("Failed to delete image", language);
-  
+
   // Edition options translations
   const originalEditionText = useAutoTranslation("Original (1 of 1)", language);
   const limitedEditionText = useAutoTranslation("Limited Edition", language);
   const openEditionText = useAutoTranslation("Open Edition", language);
-  
+
   // Validation messages
-  const titleValidationText = useAutoTranslation("Title must start with a capital letter and be 3-100 characters.", language);
+  const titleValidationText = useAutoTranslation(
+    "Title must start with a capital letter and be 3-100 characters.",
+    language
+  );
   const yearValidationText = useAutoTranslation("Year must be a valid number not in the future", language);
   const artworkStyleRequiredText = useAutoTranslation("Artwork style is required.", language);
-  const mediumValidationText = useAutoTranslation("Medium must be proper name(s), start with a capital letter, letters only.", language);
+  const mediumValidationText = useAutoTranslation(
+    "Medium must be proper name(s), start with a capital letter, letters only.",
+    language
+  );
   const dimensionsValidationText = useAutoTranslation("Dimensions must be positive numbers ≤ 1000 cm.", language);
   const priceValidationText = useAutoTranslation("Price must be a valid number up to 10 digits.", language);
   const quantityValidationText = useAutoTranslation("Quantity must be a positive number ≤ 1000.", language);
@@ -453,14 +459,29 @@ const UpdateArtwork = () => {
                   </div>
                   <div>
                     <label className="block text-[11px] font-medium text-gray-700 mb-2">{mediumText}</label>
-                    <Input value={medium} onChange={(e) => setMedium(e.target.value)} className="h-9" style={{ fontSize: "10px" }} />
+                    <Input
+                      value={medium}
+                      onChange={(e) => setMedium(e.target.value)}
+                      className="h-9"
+                      style={{ fontSize: "10px" }}
+                    />
                   </div>
                   <div>
                     <label className="block text-[11px] font-medium text-gray-700 mb-2">{dimensionsText}</label>
                     <div className="flex items-center space-x-2">
-                      <Input value={height} onChange={(e) => setHeight(e.target.value)} className="h-9" style={{ fontSize: "10px" }} />
+                      <Input
+                        value={height}
+                        onChange={(e) => setHeight(e.target.value)}
+                        className="h-9"
+                        style={{ fontSize: "10px" }}
+                      />
                       <span className="text-sm font-medium">×</span>
-                      <Input value={width} onChange={(e) => setWidth(e.target.value)} className="h-9" style={{ fontSize: "10px" }} />
+                      <Input
+                        value={width}
+                        onChange={(e) => setWidth(e.target.value)}
+                        className="h-9"
+                        style={{ fontSize: "10px" }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -468,7 +489,12 @@ const UpdateArtwork = () => {
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <div>
                     <label className="block text-[11px] font-medium text-gray-700 mb-2">{priceText}</label>
-                    <Input value={price} onChange={(e) => setPrice(e.target.value)} className="h-9" style={{ fontSize: "10px" }} />
+                    <Input
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      className="h-9"
+                      style={{ fontSize: "10px" }}
+                    />
                   </div>
                   <div>
                     <label className="block text-[11px] font-medium text-gray-700 mb-2">{editionText}</label>
@@ -495,7 +521,7 @@ const UpdateArtwork = () => {
                       <Input
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
-                        className="h-9" 
+                        className="h-9"
                         style={{ fontSize: "10px" }}
                         min={1}
                       />

@@ -80,7 +80,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             target=artwork.title,
             icon="purchase",
             created_at=datetime.now(),
-            link=f"/artwork/{artwork.id}/"
+            link=f"/viewproduct/{artwork.id}"
         )
 
         Notification.objects.create(
@@ -92,7 +92,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             target=artwork.title,
             icon="purchase",
             created_at=datetime.now(),
-            link=f"/viewproduct/{purchase.id}/"
+            link=f"/viewproduct/{artwork.id}"
         )
 
         # Insert Transaction record
