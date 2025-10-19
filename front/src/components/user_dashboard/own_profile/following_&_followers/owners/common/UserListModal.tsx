@@ -18,6 +18,8 @@ import { fetchOwnedArtworksCount } from "@/hooks/artworks/fetch_artworks/useArtw
 import useMultipleFollowStatus from "@/hooks/follow/useMultipleFollowStatus";
 import useBlockUser from "@/hooks/users/block/useBlockUser";
 import useSubmitUserReport from "@/hooks/mutate/report/useSubmitUserReport";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface UserListModalProps {
   isOpen: boolean;
@@ -29,6 +31,14 @@ interface UserListModalProps {
   onRemove?: (userId: string) => void;
   isOwner: boolean; // <-- NEW PROP
 }
+
+// Helper component to translate user name
+const TranslatedUserName: React.FC<{ firstName: string; lastName: string }> = ({ firstName, lastName }) => {
+  const { language } = useLanguage();
+  const translatedFirstName = useAutoTranslation(firstName || "", language);
+  const translatedLastName = useAutoTranslation(lastName || "", language);
+  return <>{`${translatedFirstName} ${translatedLastName}`.trim()}</>;
+};
 
 const UserListModal: React.FC<UserListModalProps> = ({
   isOpen,
@@ -47,6 +57,19 @@ const UserListModal: React.FC<UserListModalProps> = ({
   const navigate = useNavigate();
   const blockUser = useBlockUser();
   const submitReport = useSubmitUserReport();
+
+  // Language and translation
+  const { language } = useLanguage();
+  const searchUsersText = useAutoTranslation("Search users", language);
+  const followButtonText = useAutoTranslation("Follow", language);
+  const followingButtonText = useAutoTranslation("Following", language);
+  const removeButtonText = useAutoTranslation("Remove", language);
+  const unfollowButtonText = useAutoTranslation("Unfollow", language);
+  const itemsText = useAutoTranslation("items", language);
+  const viewProfileText = useAutoTranslation("View Profile", language);
+  const blockUserText = useAutoTranslation("Block User", language);
+  const reportText = useAutoTranslation("Report", language);
+  const noUsersFoundText = useAutoTranslation("No users found", language);
 
   const handleReportUser = (userId: string) => {
     submitReport.mutate({
@@ -126,7 +149,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
         <div className="relative px-8">
           <Search className="absolute left-12 top-3.5 transform -translate-y-1/2 text-gray-400 h-3 w-3" />
           <Input
-            placeholder="Search users"
+            placeholder={searchUsersText}
             className="pl-10 pr-4 w-full h-7 rounded-full border border-gray-300 focus:outline-none focus:ring-0 focus:border-transparent"
             style={{ fontSize: "10px" }}
             value={searchTerm}
@@ -154,19 +177,21 @@ const UserListModal: React.FC<UserListModalProps> = ({
                       </Avatar>
                       <div className="flex flex-col">
                         <div className="flex items-center">
-                          <span className="font-medium text-[11px]">{user.name}</span>
+                          <span className="font-medium text-[11px]">
+                            <TranslatedUserName firstName={user.first_name ?? ""} lastName={user.last_name ?? ""} />
+                          </span>
                           {/* For non-owner, show '• Follow' for followers list if not following */}
                           {!isOwner && title === "Followers" && isFollowing === false && (
                             <button
                               onClick={() => onFollow && onFollow(user.id)}
                               className="text-[10px] text-red-600 ml-2 hover:underline cursor-pointer"
                             >
-                              • Follow
+                              • {followButtonText}
                             </button>
                           )}
                         </div>
                         {title === "Following" && (
-                          <span className="text-[10px] text-gray-500">{artworksCounts[user.id] ?? 0} items</span>
+                          <span className="text-[10px] text-gray-500">{artworksCounts[user.id] ?? 0} {itemsText}</span>
                         )}
                       </div>
                     </div>
@@ -179,14 +204,14 @@ const UserListModal: React.FC<UserListModalProps> = ({
                             className="text-[9px] px-4 h-5 rounded-full border hover:bg-gray-100 flex items-center gap-1"
                             onClick={() => onRemove && onRemove(user.id)}
                           >
-                            <span>Remove</span>
+                            <span>{removeButtonText}</span>
                           </button>
                         ) : (
                           <button
                             className="text-[9px] border px-4 py-1 h-5 rounded-full text-red-800 border-red-800 hover:bg-red-50 flex items-center gap-1"
                             onClick={() => onUnfollow && onUnfollow(user.id)}
                           >
-                            <span>Unfollow</span>
+                            <span>{unfollowButtonText}</span>
                           </button>
                         )
                       ) : (
@@ -200,7 +225,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
                                 className="text-[10px] px-4 h-5 rounded-full border border-gray-300 text-gray-700 bg-white hover:bg-gray-100"
                                 disabled
                               >
-                                Following
+                                {followingButtonText}
                               </Button>
                             ) : (
                               <Button
@@ -209,7 +234,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
                                 className="text-[10px] px-4 h-5 rounded-full border border-red-600 text-red-600 bg-white hover:bg-red-50"
                                 onClick={() => onFollow && onFollow(user.id)}
                               >
-                                Follow
+                                {followButtonText}
                               </Button>
                             ))}
                         </>
@@ -245,16 +270,16 @@ const UserListModal: React.FC<UserListModalProps> = ({
                               navigate(`/userprofile/${user.id}`);
                             }}
                           >
-                            View Profile
+                            {viewProfileText}
                           </DropdownMenuItem>
                           <DropdownMenuItem className="text-[9px] cursor-pointer" onClick={handleBlockUser}>
-                            Block User
+                            {blockUserText}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             className="text-[9px] cursor-pointer text-red-600"
                             onClick={() => handleReportUser(user.id)}
                           >
-                            Report
+                            {reportText}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -263,7 +288,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
                 );
               })
             ) : (
-              <div className="text-center py-8 text-gray-500">No users found</div>
+              <div className="text-center py-8 text-gray-500">{noUsersFoundText}</div>
             )}
           </div>
         </ScrollArea>
