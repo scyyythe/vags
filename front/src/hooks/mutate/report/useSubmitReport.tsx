@@ -50,7 +50,7 @@ const useSubmitReport = () => {
       }),
 
     onSuccess: (_, { art_id }) => {
-      toast.success("Auction reported successfully!");
+      toast.success("You this reported successfully!");
       queryClient.invalidateQueries({ queryKey: ["reportStatus", art_id] });
       queryClient.invalidateQueries({ queryKey: ["artworkReportStatus", art_id] });
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
