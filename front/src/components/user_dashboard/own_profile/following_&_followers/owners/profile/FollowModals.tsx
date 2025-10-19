@@ -3,6 +3,8 @@ import UserListModal from "../../owners/common/UserListModal";
 import { useUserLists } from "@/hooks/follow/useUserLists";
 import { useParams } from "react-router-dom";
 import { getLoggedInUserId } from "@/auth/decode";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface FollowModalsProps {
   followersCount: number;
@@ -15,6 +17,13 @@ const FollowModals: React.FC<FollowModalsProps> = ({ followersCount, followingCo
 
   const loggedInUserId = getLoggedInUserId();
   const { id: profileUserId } = useParams();
+
+  // Language and translation
+  const { language } = useLanguage();
+  const followersText = useAutoTranslation("followers", language);
+  const followingText = useAutoTranslation("following", language);
+  const followersModalTitleText = useAutoTranslation("Followers", language);
+  const followingModalTitleText = useAutoTranslation("Following", language);
 
   console.log("profileUserId:", profileUserId, typeof profileUserId);
   console.log("loggedInUserId:", loggedInUserId, typeof loggedInUserId);
@@ -39,21 +48,21 @@ const FollowModals: React.FC<FollowModalsProps> = ({ followersCount, followingCo
           onClick={() => setFollowersModalOpen(true)}
           className="hover:underline cursor-pointer flex items-center space-x-1"
         >
-          <strong>{followersCount}</strong> <span>followers</span>
+          <strong>{followersCount}</strong> <span>{followersText}</span>
         </button>
         <span>•</span>
         <button
           onClick={() => setFollowingModalOpen(true)}
           className="hover:underline cursor-pointer flex items-center space-x-1"
         >
-          <strong>{followingCount}</strong> <span>following</span>
+          <strong>{followingCount}</strong> <span>{followingText}</span>
         </button>
       </div>
 
       <UserListModal
         isOpen={followersModalOpen}
         onClose={() => setFollowersModalOpen(false)}
-        title="Followers"
+        title={followersModalTitleText}
         users={followers}
         onFollow={handleFollow}
         onRemove={handleRemoveFollower}
@@ -63,7 +72,7 @@ const FollowModals: React.FC<FollowModalsProps> = ({ followersCount, followingCo
       <UserListModal
         isOpen={followingModalOpen}
         onClose={() => setFollowingModalOpen(false)}
-        title="Following"
+        title={followingModalTitleText}
         users={following}
         onUnfollow={handleUnfollow}
         isOwner={isOwner}
