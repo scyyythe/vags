@@ -1,7 +1,6 @@
+import { getValidToken } from "./decode";
 
 export const useIsAuthenticated = (): boolean => {
-  const accessToken = localStorage.getItem("access_token");
-
-
+  const accessToken = getValidToken();
   return !!accessToken;
 };

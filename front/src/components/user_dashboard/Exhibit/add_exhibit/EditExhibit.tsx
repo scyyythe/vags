@@ -32,7 +32,7 @@ import {
   getUserName,
   canInteractWithSlot,
   getCollaboratorSubmissionStatus,
-} from "@/utils/exhibit-helpers";
+} from "@/utils/exhibit/exhibit-helpers";
 import { createSubmitHandler } from "@/components/handlers/submit-handlers";
 import apiClient from "@/utils/apiClient";
 import { useExhibitCardDetail } from "@/hooks/exhibit/useCardDetail";
@@ -83,13 +83,19 @@ const EditExhibit = () => {
   // Translation hooks for all text content
   const goBackText = useAutoTranslation("Go back", language);
   const preview3DText = useAutoTranslation("Preview in 3D View", language);
-  const previewDescriptionText = useAutoTranslation("Opens your current selections in an interactive virtual gallery.", language);
+  const previewDescriptionText = useAutoTranslation(
+    "Opens your current selections in an interactive virtual gallery.",
+    language
+  );
   const submittingText = useAutoTranslation("Submitting...", language);
   const saveSelectionsText = useAutoTranslation("Save Selections", language);
   const backToExhibitsText = useAutoTranslation("Back to Exhibits", language);
   const publishExhibitText = useAutoTranslation("Publish Exhibit", language);
   const maximumCollaboratorsReachedText = useAutoTranslation("Maximum collaborators reached", language);
-  const maximumCollaboratorsDescText = useAutoTranslation("You can only have a maximum of 2 collaborators per exhibit.", language);
+  const maximumCollaboratorsDescText = useAutoTranslation(
+    "You can only have a maximum of 2 collaborators per exhibit.",
+    language
+  );
   const maximumCollaboratorsExceededText = useAutoTranslation("Maximum collaborators exceeded", language);
   const environmentSupportsText = useAutoTranslation("The", language);
   const slotsEnvironmentOnlyText = useAutoTranslation("slots environment only supports", language);
@@ -97,21 +103,33 @@ const EditExhibit = () => {
   const collaboratorsText = useAutoTranslation("collaborators", language);
   const cannotAddMoreText = useAutoTranslation("Cannot add more collaborators.", language);
   const collaboratorAddedText = useAutoTranslation("Collaborator Added", language);
-  const exhibitStatusPendingText = useAutoTranslation("The exhibit status has been set to Pending. All collaborators will be notified about the changes.", language);
+  const exhibitStatusPendingText = useAutoTranslation(
+    "The exhibit status has been set to Pending. All collaborators will be notified about the changes.",
+    language
+  );
   const accessDeniedText = useAutoTranslation("Access denied", language);
   const slotAssignedToAnotherText = useAutoTranslation("This slot is assigned to another participant.", language);
   const canOnlyRemoveOwnSlotsText = useAutoTranslation("You can only remove artworks from your own slots.", language);
   const cannotChangeExhibitTypeText = useAutoTranslation("Cannot change exhibit type", language);
-  const soloCannotBeChangedText = useAutoTranslation("Solo exhibits cannot be changed to collaborative exhibits. Please create a new exhibit for collaborative features.", language);
+  const soloCannotBeChangedText = useAutoTranslation(
+    "Solo exhibits cannot be changed to collaborative exhibits. Please create a new exhibit for collaborative features.",
+    language
+  );
   const artworkAlreadySelectedText = useAutoTranslation("Artwork already selected", language);
-  const artworkAlreadySelectedDescText = useAutoTranslation("This artwork has already been assigned to a slot.", language);
+  const artworkAlreadySelectedDescText = useAutoTranslation(
+    "This artwork has already been assigned to a slot.",
+    language
+  );
   const noAvailableSlotsText = useAutoTranslation("No available slots", language);
   const noAvailableSlotsDescText = useAutoTranslation("You don't have any available slots for more artwork.", language);
   const tooManyCollaboratorsText = useAutoTranslation("Too many collaborators for this environment", language);
   const environmentOnlySupportsText = useAutoTranslation("This environment only supports", language);
   const pleaseRemoveCollaboratorsText = useAutoTranslation("Please remove some collaborators first.", language);
   const cannotDowngradeEnvironmentText = useAutoTranslation("Cannot downgrade environment", language);
-  const cannotSwitchToSmallerText = useAutoTranslation("Cannot switch to a smaller environment that cannot accommodate your current collaborators. Please remove some collaborators first.", language);
+  const cannotSwitchToSmallerText = useAutoTranslation(
+    "Cannot switch to a smaller environment that cannot accommodate your current collaborators. Please remove some collaborators first.",
+    language
+  );
   const environmentChangedText = useAutoTranslation("Environment Changed", language);
 
   const { data: artworks = [] } = useArtworks(
@@ -505,7 +523,11 @@ const EditExhibit = () => {
 
     if (newCollaboratorCount > finalMaxCollaborators) {
       toast.error(maximumCollaboratorsExceededText, {
-        description: `${environmentSupportsText} ${finalEnvironment?.slots} ${slotsEnvironmentOnlyText} ${finalMaxCollaborators} ${finalMaxCollaborators > 1 ? collaboratorsText : collaboratorText}. ${cannotAddMoreText}`,
+        description: `${environmentSupportsText} ${
+          finalEnvironment?.slots
+        } ${slotsEnvironmentOnlyText} ${finalMaxCollaborators} ${
+          finalMaxCollaborators > 1 ? collaboratorsText : collaboratorText
+        }. ${cannotAddMoreText}`,
         closeButton: true,
       });
       return;
@@ -568,7 +590,9 @@ const EditExhibit = () => {
 
     if (collaborators.length > maxAllowedCollaborators) {
       toast.error(tooManyCollaboratorsText, {
-        description: `${environmentOnlySupportsText} ${maxAllowedCollaborators} ${maxAllowedCollaborators > 1 ? collaboratorsText : collaboratorText}. ${pleaseRemoveCollaboratorsText}`,
+        description: `${environmentOnlySupportsText} ${maxAllowedCollaborators} ${
+          maxAllowedCollaborators > 1 ? collaboratorsText : collaboratorText
+        }. ${pleaseRemoveCollaboratorsText}`,
         duration: 4000,
         closeButton: true,
       });
@@ -816,9 +840,7 @@ const EditExhibit = () => {
                     >
                       {preview3DText}
                     </Button>
-                    <p className="text-[10px] text-muted-foreground mt-2">
-                      {previewDescriptionText}
-                    </p>
+                    <p className="text-[10px] text-muted-foreground mt-2">{previewDescriptionText}</p>
                   </div>
                 )}
               </div>

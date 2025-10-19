@@ -16,6 +16,7 @@ import ScheduledDeletionPopup from "@/components/auth/ScheduledDeletionPopup";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTwoFactorVerify } from "@/hooks/mutate/users/useTwoFactorMutate";
 import TwoFactorVerification from "@/components/auth/TwoFactorVerification";
+import { secureTokenStorage } from "@/utils/security/secureStorage";
 
 // Translation hooks
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
@@ -207,9 +208,9 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         return;
       }
 
-      // Save Django tokens
-      localStorage.setItem("access_token", access_token);
-      localStorage.setItem("refresh_token", refresh_token);
+      // Save Django tokens using secure storage
+      secureTokenStorage.setAccessToken(access_token);
+      secureTokenStorage.setRefreshToken(refresh_token);
       localStorage.setItem("user_id", user_id);
       localStorage.setItem("email", email);
       localStorage.setItem("role", role);
@@ -274,8 +275,8 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         });
 
         if (data.access_token) {
-          localStorage.setItem("access_token", data.access_token);
-          localStorage.setItem("refresh_token", data.refresh_token);
+          secureTokenStorage.setAccessToken(data.access_token);
+          secureTokenStorage.setRefreshToken(data.refresh_token);
           localStorage.setItem("email", data.user.email);
           localStorage.setItem("user_id", data.user.id);
 
@@ -392,9 +393,9 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       return;
     }
 
-    // Save Django tokens
-    localStorage.setItem("access_token", access_token);
-    localStorage.setItem("refresh_token", refresh_token);
+    // Save Django tokens using secure storage
+    secureTokenStorage.setAccessToken(access_token);
+    secureTokenStorage.setRefreshToken(refresh_token);
     localStorage.setItem("user_id", user_id);
     localStorage.setItem("email", email);
     localStorage.setItem("role", role);
@@ -433,9 +434,9 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     if (!pendingUserData) return;
 
     try {
-      // First, save tokens and authenticate the user
-      localStorage.setItem("access_token", pendingUserData.access_token);
-      localStorage.setItem("refresh_token", pendingUserData.refresh_token);
+      // First, save tokens and authenticate the user using secure storage
+      secureTokenStorage.setAccessToken(pendingUserData.access_token);
+      secureTokenStorage.setRefreshToken(pendingUserData.refresh_token);
       localStorage.setItem("user_id", pendingUserData.user_id);
       localStorage.setItem("email", pendingUserData.email);
       localStorage.setItem("role", pendingUserData.role);
@@ -536,9 +537,9 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     if (!pendingUserData) return;
 
     try {
-      // First, save tokens and authenticate the user
-      localStorage.setItem("access_token", pendingUserData.access_token);
-      localStorage.setItem("refresh_token", pendingUserData.refresh_token);
+      // First, save tokens and authenticate the user using secure storage
+      secureTokenStorage.setAccessToken(pendingUserData.access_token);
+      secureTokenStorage.setRefreshToken(pendingUserData.refresh_token);
       localStorage.setItem("user_id", pendingUserData.user_id);
       localStorage.setItem("email", pendingUserData.email);
       localStorage.setItem("role", pendingUserData.role);

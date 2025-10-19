@@ -1,4 +1,5 @@
 import axios from "axios";
+import { secureTokenStorage } from "./security/secureStorage";
 
 const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
 
@@ -19,7 +20,7 @@ const createAPIClient = (baseURL = API_BASE_URL) => {
     const isLoginOrRefresh = config.url.includes("token") && !config.url.includes("refresh");
 
     if (!isLoginOrRefresh) {
-      const accessToken = localStorage.getItem("access_token");
+      const accessToken = secureTokenStorage.getAccessToken();
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;
       }
@@ -43,7 +44,11 @@ const createAPIClient = (baseURL = API_BASE_URL) => {
         originalRequest._retry = true;
 
         try {
-          const refreshToken = localStorage.getItem("refresh_token");
+          const refreshToken = secureTokenStorage.getRefreshToken();
+          if (!refreshToken) {
+            throw new Error("No refresh token available");
+          }
+
           const response = await axios.post(
             `${baseURL}token/refresh/`,
             { refresh: refreshToken },
@@ -51,13 +56,19 @@ const createAPIClient = (baseURL = API_BASE_URL) => {
           );
 
           const newAccessToken = response.data.access;
-          localStorage.setItem("access_token", newAccessToken);
+          secureTokenStorage.setAccessToken(newAccessToken);
 
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return apiClient(originalRequest);
         } catch (refreshError) {
           console.error("🔒 Refresh token invalid or expired");
+          secureTokenStorage.clearTokens();
+          // Preserve language setting during logout
+          const savedLanguage = localStorage.getItem("language");
           localStorage.clear();
+          if (savedLanguage) {
+            localStorage.setItem("language", savedLanguage);
+          }
           window.location.href = "/";
         }
       }
