@@ -212,7 +212,8 @@ def get_artworks_for_sale(user=None):
     query = Q(visibility__iexact="public") & Q(artist__nin=excluded_user_ids) & (
         Q(art_status__iexact="onSale") |
         Q(art_status__iexact="onsale") |  # Handle lowercase variant
-        (Q(edition__iexact="Open Edition") & Q(quantity__gt=0))
+        (Q(edition__iexact="Open Edition") & Q(quantity__gt=0)) |
+        (Q(edition__iexact="Limited Edition") & Q(quantity__gt=0))
     ) & Q(art_status__ne="unlisted") & Q(art_status__ne="sold")
     
     if hidden_artwork_ids:
