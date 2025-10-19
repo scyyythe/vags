@@ -28,8 +28,10 @@ import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Marketplace = () => {
+  const queryClient = useQueryClient();
   const loggedInUserId = getLoggedInUserId();
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
   const [selectedArtCategory, setSelectedArtCategory] = useState("All");
@@ -198,10 +200,16 @@ const Marketplace = () => {
 
   const handleLike = async (id: string) => {
     await toggleWishlist(id);
+    // Invalidate wishlist queries to update UI immediately
+    queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+    queryClient.invalidateQueries({ queryKey: ["wishlist-art-cards"] });
   };
 
   const handleRemoveFromWishlistModal = (id: string) => {
     removeFromWishlist(id);
+    // Invalidate wishlist queries to update UI immediately
+    queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+    queryClient.invalidateQueries({ queryKey: ["wishlist-art-cards"] });
     toast(removedFromWishlistText, {
       closeButton: true,
     });

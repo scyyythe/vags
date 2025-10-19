@@ -121,7 +121,8 @@ export default function TopSellingArtworks() {
 
   // Client-side filtering as fallback (in case backend filtering isn't perfect)
   const sellers = useMemo(() => {
-    let filtered = rawSellers;
+    const safeSellers = Array.isArray(rawSellers) ? rawSellers : [];
+    let filtered = safeSellers;
 
     // Filter by category
     if (selectedCategory && selectedCategory !== "All") {
@@ -191,7 +192,7 @@ export default function TopSellingArtworks() {
           <TableBody>
             {isLoading ? (
               // Show loading skeleton
-              Array.from({ length: 5 }).map((_, i) => (
+              Array.from({ length: 10 }).map((_, i) => (
                 <TableRow key={i} className="text-sm border-none">
                   <TableCell className="text-xs text-center font-semibold text-muted-foreground">{i + 1}</TableCell>
                   <TableCell className="min-w-[220px]">
@@ -223,7 +224,7 @@ export default function TopSellingArtworks() {
                   </TableCell>
                 </TableRow>
               ))
-            ) : sellers.length > 0 ? (
+            ) : Array.isArray(sellers) && sellers.length > 0 ? (
               sellers.map((art: any, i: number) => (
                 <ArtworkTableRow key={i} art={art} index={i} byText={byText} phpText={phpText} />
               ))
