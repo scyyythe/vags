@@ -26,6 +26,8 @@ import useFetchArtCards from "@/hooks/artworks/sell/useFetchArtCards";
 import type { SellCardProps as Artwork } from "@/components/user_dashboard/Marketplace/cards/SellCard";
 import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const Marketplace = () => {
   const loggedInUserId = getLoggedInUserId();
@@ -37,6 +39,26 @@ const Marketplace = () => {
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const { data: trendingArtworks = [] } = useTrendingArtworks();
 
+  // Translation hooks
+  const { language } = useLanguage();
+  const marketplaceText = useAutoTranslation("Marketplace", language);
+  const wishlistText = useAutoTranslation("Wishlist", language);
+  const sellText = useAutoTranslation("Sell", language);
+  const latestText = useAutoTranslation("Latest", language);
+  const priceLowToHighText = useAutoTranslation("Price: Low to High", language);
+  const priceHighToLowText = useAutoTranslation("Price: High to Low", language);
+  const mostPopularText = useAutoTranslation("Most Popular", language);
+  const original1of1Text = useAutoTranslation("Original (1 of 1)", language);
+  const limitedEditionText = useAutoTranslation("Limited Edition", language);
+  const openEditionText = useAutoTranslation("Open Edition", language);
+  const removedFromWishlistText = useAutoTranslation("Removed from wishlist", language);
+  const errorLoadingFollowedText = useAutoTranslation("Error loading followed artworks. Please try again.", language);
+  const noArtworksFromFollowingsText = useAutoTranslation("No artworks from your followings yet.", language);
+  const noArtworksMatchFiltersText = useAutoTranslation("No artworks match your current filters.", language);
+  const retryText = useAutoTranslation("Retry", language);
+  const errorLoadingArtworksText = useAutoTranslation("Error loading artworks. Please try again.", language);
+  const noArtworksFoundText = useAutoTranslation("No artworks found for this filter.", language);
+
   const {
     data: followedArtworksData,
     isLoading: isFollowedLoading,
@@ -47,8 +69,17 @@ const Marketplace = () => {
   const categories = ["All", "Trending", "Following"];
   const navigate = useNavigate();
 
-  const sortOptions = ["Latest", "Price: Low to High", "Price: High to Low", "Most Popular"];
-  const editionOptions = ["Original (1 of 1)", "Limited Edition", "Open Edition"];
+  const sortOptions = [
+    { value: "Latest", label: latestText },
+    { value: "Price: Low to High", label: priceLowToHighText },
+    { value: "Price: High to Low", label: priceHighToLowText },
+    { value: "Most Popular", label: mostPopularText },
+  ];
+  const editionOptions = [
+    { value: "Original (1 of 1)", label: original1of1Text },
+    { value: "Limited Edition", label: limitedEditionText },
+    { value: "Open Edition", label: openEditionText },
+  ];
 
   const [showWishlist, setShowWishlist] = useState(false);
   const { data: artCards, isLoading, error, refetch } = useFetchArtCards();
@@ -171,7 +202,7 @@ const Marketplace = () => {
 
   const handleRemoveFromWishlistModal = (id: string) => {
     removeFromWishlist(id);
-    toast("Removed from wishlist", {
+    toast(removedFromWishlistText, {
       closeButton: true,
     });
   };
@@ -197,14 +228,14 @@ const Marketplace = () => {
             <div className="mb-6">
               {/* Title + Wishlist + Mobile Sell */}
               <div className="flex items-center justify-between mb-3">
-                <h1 className="text-md font-bold text-gray-900">Marketplace</h1>
+                <h1 className="text-md font-bold text-gray-900">{marketplaceText}</h1>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleWishlistClick}
                     className="text-[10px] text-gray-600 hover:text-gray-900 font-medium"
                   >
-                    Wishlist
+                    {wishlistText}
                   </button>
                   <div
                     onClick={handleWishlistClick}
@@ -227,7 +258,7 @@ const Marketplace = () => {
                     className="sm:hidden py-1 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full flex items-center gap-1"
                     onClick={handleSellClick}
                   >
-                    <i className="bx bx-plus text-xs"></i> Sell
+                    <i className="bx bx-plus text-xs"></i> {sellText}
                   </button>
                 </div>
               </div>
@@ -246,24 +277,30 @@ const Marketplace = () => {
                     <DropdownMenuTrigger asChild>
                       <button className="flex py-1 px-2.5 rounded-full border border-gray-300 gap-2">
                         <i className="bx bx-sort text-xs"></i>
-                        <span className="text-[10px]">{selectedSort}</span>
+                        <span className="text-[10px]">
+                          {sortOptions.find((opt) => opt.value === selectedSort)?.label || selectedSort}
+                        </span>
                         <ChevronDown className="w-3 h-3 relative top-0.5" />
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-white z-0">
                       {sortOptions.map((option) => (
-                        <DropdownMenuItem key={option} className="text-[10px]" onClick={() => handleSortChange(option)}>
-                          {option}
+                        <DropdownMenuItem
+                          key={option.value}
+                          className="text-[10px]"
+                          onClick={() => handleSortChange(option.value)}
+                        >
+                          {option.label}
                         </DropdownMenuItem>
                       ))}
                       <DropdownMenuSeparator />
                       {editionOptions.map((option) => (
                         <DropdownMenuItem
-                          key={option}
+                          key={option.value}
                           className="text-[10px]"
-                          onClick={() => setSelectedEdition(option)}
+                          onClick={() => setSelectedEdition(option.value)}
                         >
-                          {option}
+                          {option.label}
                         </DropdownMenuItem>
                       ))}
                     </DropdownMenuContent>
@@ -273,7 +310,7 @@ const Marketplace = () => {
                     className="hidden sm:flex py-1 px-4 text-[10px] bg-red-700 hover:bg-red-600 text-white rounded-full items-center gap-1"
                     onClick={handleSellClick}
                   >
-                    <i className="bx bx-plus text-xs"></i> Sell
+                    <i className="bx bx-plus text-xs"></i> {sellText}
                   </button>
                 </div>
               </div>
@@ -293,17 +330,17 @@ const Marketplace = () => {
                     <div className="col-span-full text-center py-8">
                       <p className="text-xs text-gray-500 mb-2">
                         {followedError
-                          ? "Error loading followed artworks. Please try again."
+                          ? errorLoadingFollowedText
                           : followedArtworksData?.artworks?.length === 0
-                          ? "No artworks from your followings yet."
-                          : "No artworks match your current filters."}
+                          ? noArtworksFromFollowingsText
+                          : noArtworksMatchFiltersText}
                       </p>
                       {followedError && (
                         <button
                           onClick={() => refetchFollowed()}
                           className="text-xs text-blue-600 hover:text-blue-800 underline"
                         >
-                          Retry
+                          {retryText}
                         </button>
                       )}
                     </div>
@@ -311,14 +348,14 @@ const Marketplace = () => {
                   {selectedCategoryFilter !== "Following" && filteredArtCards.length === 0 && !isLoading && (
                     <div className="col-span-full text-center py-8">
                       <p className="text-xs text-gray-500 mb-2">
-                        {error ? "Error loading artworks. Please try again." : "No artworks found for this filter."}
+                        {error ? errorLoadingArtworksText : noArtworksFoundText}
                       </p>
                       {error && (
                         <button
                           onClick={() => refetch()}
                           className="text-xs text-blue-600 hover:text-blue-800 underline"
                         >
-                          Retry
+                          {retryText}
                         </button>
                       )}
                     </div>
