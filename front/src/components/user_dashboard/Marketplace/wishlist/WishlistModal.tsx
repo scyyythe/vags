@@ -11,6 +11,8 @@ import { useWishlist } from "./WishlistContext";
 import { useIsAuthenticated } from "@/auth/useIsAuthenticated";
 import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface WishlistModalProps {
   isOpen: boolean;
@@ -31,6 +33,11 @@ const WishlistModal = ({
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
 
+  // Translation hooks
+  const { language } = useLanguage();
+  const myWishlistText = useAutoTranslation("My Wishlist", language);
+  const wishlistEmptyText = useAutoTranslation("Your wishlist is empty", language);
+
   if (!isAuthenticated) return null;
 
   const onCardClick = useCallback(
@@ -50,13 +57,13 @@ const WishlistModal = ({
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle className="text-sm font-bold">My Wishlist</DialogTitle>
+          <DialogTitle className="text-sm font-bold">{myWishlistText}</DialogTitle>
         </DialogHeader>
 
         {wishlistItems.length === 0 ? (
           <div className="text-center py-8">
             <Heart className="w-7 h-7 mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500 text-[10px]">Your wishlist is empty</p>
+            <p className="text-gray-500 text-[10px]">{wishlistEmptyText}</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4">
