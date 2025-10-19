@@ -11,6 +11,7 @@ import useSellArtwork from "@/hooks/artworks/sell/useSellArtwork";
 import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/ArtworkStyles";
 const SellArtwork = () => {
   const navigate = useNavigate();
   const [artworkTitle, setArtworkTitle] = useState("");
@@ -109,17 +110,11 @@ const SellArtwork = () => {
   const listingText = useAutoTranslation("Listing...", language);
   const sellNowText = useAutoTranslation("Sell Now", language);
 
-  // Artwork styles translations
-  const abstractText = useAutoTranslation("Abstract", language);
-  const realismText = useAutoTranslation("Realism", language);
-  const impressionismText = useAutoTranslation("Impressionism", language);
-  const modernText = useAutoTranslation("Modern", language);
-  const contemporaryText = useAutoTranslation("Contemporary", language);
-  const popArtText = useAutoTranslation("Pop Art", language);
-  const surrealismText = useAutoTranslation("Surrealism", language);
-  const minimalismText = useAutoTranslation("Minimalism", language);
-  const expressionismText = useAutoTranslation("Expressionism", language);
-  const cubismText = useAutoTranslation("Cubism", language);
+  // Helper component for translating style names in SelectItems
+  const TranslatedStyleOption: React.FC<{ styleName: string }> = ({ styleName }) => {
+    const translatedStyle = useAutoTranslation(styleName, language);
+    return <>{translatedStyle}</>;
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -405,19 +400,6 @@ const SellArtwork = () => {
     return true;
   };
 
-  const artworkStyles = [
-    { value: "abstract", label: abstractText },
-    { value: "realism", label: realismText },
-    { value: "impressionism", label: impressionismText },
-    { value: "modern", label: modernText },
-    { value: "contemporary", label: contemporaryText },
-    { value: "pop art", label: popArtText },
-    { value: "surrealism", label: surrealismText },
-    { value: "minimalism", label: minimalismText },
-    { value: "expressionism", label: expressionismText },
-    { value: "cubism", label: cubismText },
-  ];
-
   const isQuantityVisible = edition !== "Original (1 of 1)";
 
   const handleEditionChange = (value: string) => {
@@ -589,9 +571,9 @@ const SellArtwork = () => {
                         <SelectValue placeholder={selectArtworkStyleText} />
                       </SelectTrigger>
                       <SelectContent className="max-h-64 overflow-y-auto">
-                        {artworkStyles.map((style) => (
-                          <SelectItem key={style.value} value={style.value} className="text-[10px]">
-                            {style.label}
+                        {ART_STYLES.map((style) => (
+                          <SelectItem key={style} value={style.toLowerCase()} className="text-[10px]">
+                            <TranslatedStyleOption styleName={style} />
                           </SelectItem>
                         ))}
                       </SelectContent>

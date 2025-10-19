@@ -308,7 +308,7 @@ const SellCard = ({
                     id,
                     title,
                     year_created: yearCreated || "",
-                    style: category || "",
+                    style: category ? category.toLowerCase() : "",
                     medium: medium || "",
                     height: heightValue,
                     width: widthValue,

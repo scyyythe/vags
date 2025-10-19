@@ -421,7 +421,7 @@ const ProductViewingContent = () => {
                           id: product.id,
                           title: product.title,
                           year_created: product.year_created || "",
-                          style: product.artwork_style || "",
+                          style: product.artwork_style ? product.artwork_style.toLowerCase() : "",
                           medium: product.medium || "",
                           height: product.size?.split("x")?.[0] || "",
                           width: product.size?.split("x")?.[1] || "",
