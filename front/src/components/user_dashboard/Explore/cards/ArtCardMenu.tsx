@@ -60,10 +60,14 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const unhideText = useAutoTranslation("Unhide", language);
   const reportText = useAutoTranslation("Report", language);
   const undoReportText = useAutoTranslation("Undo Report", language);
+  
+  // Console error messages
+  const categoryNotFoundText = useAutoTranslation("Category not found for id:", language);
+  
   const handleReportSubmit = (categoryId: string, optionData?: ReportOption | string) => {
     const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
     if (!selectedCategory) {
-      console.error("Category not found for id:", categoryId);
+      console.error(categoryNotFoundText, categoryId);
       return;
     }
 
@@ -101,7 +105,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             <button
               onClick={onFavorite}
               className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-              aria-label="Favorite"
+              aria-label={favoriteText}
               onMouseEnter={() => setHoveredItem("favorite")}
               onMouseLeave={() => setHoveredItem(null)}
             >
@@ -123,7 +127,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             <button
               onClick={() => setShowShareModal(true)}
               className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-              aria-label="Share"
+              aria-label={shareText}
               onMouseEnter={() => setHoveredItem("share")}
               onMouseLeave={() => setHoveredItem(null)}
             >
@@ -144,7 +148,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             <button
               onClick={onHide}
               className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-              aria-label={isHidden ? "Unhide" : "Hide"}
+              aria-label={isHidden ? unhideText : hideText}
               onMouseEnter={() => setHoveredItem("hide")}
               onMouseLeave={() => setHoveredItem(null)}
             >
@@ -166,7 +170,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             <button
               onClick={() => setShowReportOptions(true)}
               className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-              aria-label="Report"
+              aria-label={reportText}
               onMouseEnter={() => setHoveredItem("report")}
               onMouseLeave={() => setHoveredItem(null)}
             >
@@ -188,7 +192,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
                   undoArtworkReport(e, artworkId, onUndoReport, onUndoReportRevert);
                 }}
                 className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-                aria-label="Undo Report"
+                aria-label={undoReportText}
                 onMouseEnter={() => setHoveredItem("undoReport")}
                 onMouseLeave={() => setHoveredItem(null)}
               >
