@@ -43,8 +43,12 @@ export const useLogout = () => {
         queryClient.removeQueries({ queryKey });
       });
 
-      // Clear localStorage
+      // Clear localStorage but preserve language setting
+      const savedLanguage = localStorage.getItem("language");
       localStorage.clear();
+      if (savedLanguage) {
+        localStorage.setItem("language", savedLanguage);
+      }
 
       // Clear sessionStorage as well (if used)
       sessionStorage.clear();
@@ -64,8 +68,12 @@ export const useLogout = () => {
       // The cache clearing and navigation should be sufficient
     } catch (error) {
       console.error("Error during logout:", error);
-      // Fallback: just clear storage and navigate
+      // Fallback: just clear storage and navigate but preserve language
+      const savedLanguage = localStorage.getItem("language");
       localStorage.clear();
+      if (savedLanguage) {
+        localStorage.setItem("language", savedLanguage);
+      }
       sessionStorage.clear();
       navigate("/", { replace: true });
       setShowLoginModal(true);
