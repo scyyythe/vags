@@ -8,6 +8,8 @@ import { reportCategories } from "@/components/user_dashboard/Bidding/cards/Repo
 import { normalizeReportType } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { ReportOption } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import useUndoArtworkReport from "@/hooks/mutate/report/undo/useUndoArtworkReport";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface SellCardMenuProps {
   isOpen: boolean;
@@ -32,6 +34,15 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
   const [showShareModal, setShowShareModal] = useState(false);
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const { handleUndoReport: undoArtworkReport } = useUndoArtworkReport();
+
+  // Translation hooks
+  const { language } = useLanguage();
+  const shareText = useAutoTranslation("Share", language);
+  const findSimilarText = useAutoTranslation("Find Similar", language);
+  const reportText = useAutoTranslation("Report", language);
+  const undoReportText = useAutoTranslation("Undo Report", language);
+  const noArtworkIdText = useAutoTranslation("No artwork ID provided", language);
+  const showingSimilarText = useAutoTranslation("Showing similar artworks...", language);
 
   const handleReportSubmit = (categoryId: string, optionData?: ReportOption | string) => {
     const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
@@ -71,7 +82,7 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
           {/* Share */}
           <MenuItem
             icon={<Share2 size={10} />}
-            label="Share"
+            label={shareText}
             onHover={setHoveredItem}
             hoveredItem={hoveredItem}
             itemId="share"
@@ -84,17 +95,17 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
           {/* Find Similar */}
           {/* <MenuItem
             icon={<Search size={10} />}
-            label="Find Similar"
+            label={findSimilarText}
             onHover={setHoveredItem}
             hoveredItem={hoveredItem}
             itemId="similar"
-            onClick={() => toast.info("Showing similar artworks...")}
+            onClick={() => toast.info(showingSimilarText)}
           /> */}
 
           {/* Report */}
           <MenuItem
             icon={<Flag size={10} fill={isReported ? "red" : "none"} stroke={isReported ? "red" : "currentColor"} />}
-            label="Report"
+            label={reportText}
             onHover={setHoveredItem}
             hoveredItem={hoveredItem}
             itemId="report"
@@ -105,13 +116,13 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
           {isReported && artworkId && (
             <MenuItem
               icon={<Undo2 size={10} stroke="currentColor" />}
-              label="Undo Report"
+              label={undoReportText}
               onHover={setHoveredItem}
               hoveredItem={hoveredItem}
               itemId="undoReport"
               onClick={(e) => {
                 if (!artworkId) {
-                  toast.error("No artwork ID provided");
+                  toast.error(noArtworkIdText);
                   return;
                 }
                 undoArtworkReport(e, artworkId, onUndoReport, () => {
@@ -160,7 +171,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, label, onClick, onHover, hove
       {icon}
     </button>
     {hoveredItem === itemId && (
-      <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+      <span className="absolute left-10 z-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
         {label}
       </span>
     )}
