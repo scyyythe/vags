@@ -39,6 +39,7 @@ export interface SellCardProps {
   isReported?: boolean;
   onReportSuccess?: () => void;
   isMarketplace?: boolean;
+  isProfileView?: boolean;
   onCardClick?: () => void;
   isOwner?: boolean;
   status?: string;
@@ -76,6 +77,7 @@ const SellCard = ({
   additionalImages,
   onReportSuccess,
   isMarketplace = false,
+  isProfileView = false,
   onCardClick,
   isFading = false,
   isWishlistView = false,
@@ -105,7 +107,7 @@ const SellCard = ({
   const setVisibilityToText = useAutoTranslation("Set visibility to", language);
   const deleteClickedText = useAutoTranslation("Delete clicked", language);
   const viewingInsightsText = useAutoTranslation("Viewing insights", language);
-  
+
   // Translate artwork title
   const translatedTitle = useAutoTranslation(title || "", language);
 
@@ -223,7 +225,7 @@ const SellCard = ({
         )}
 
         {/* Icons or Status */}
-        {(status === "active" || status === "onsale") && !isOwner ? (
+        {(status === "active" || status === "onsale") && (!isOwner || (isOwner && isMarketplace && !isProfileView)) ? (
           <>
             {/* Message Icon */}
             <button
@@ -253,8 +255,8 @@ const SellCard = ({
               />
             </button>
           </>
-        ) : (status === "active" || status === "onsale") && isOwner ? (
-          // Show status badge for owner's own artworks
+        ) : (status === "active" || status === "onsale") && isOwner && isProfileView ? (
+          // Show status badge for owner's own artworks in profile view
           <div className="absolute top-2 right-2 bg-gray-100 border border-gray-300 text-[10px] text-gray-600 font-medium px-2 py-0.5 rounded-full">
             {onSaleText}
           </div>
@@ -353,14 +355,12 @@ const SellCard = ({
 
       <div className="flex justify-between mt-1.5 items-center">
         <div className="flex flex-col">
-          <p className="text-[11px] font-medium mt-0.5 truncate max-w-[110px]">
-            {translatedTitle}
-          </p>
+          <p className="text-[11px] font-medium mt-0.5 truncate max-w-[110px]">{translatedTitle}</p>
           {status !== "active" && reason && <p className="text-[10px] text-red-600 mt-1">{reason}</p>}
         </div>
 
         {status === "active" || status === "onsale" ? (
-          !isOwner && (
+          (!isOwner || (isOwner && isMarketplace && !isProfileView)) && (
             <button
               onClick={handleBuyNow}
               className="text-white text-[9px] bg-red-800 hover:bg-red-700 transition px-4 py-1.5 rounded-full"
