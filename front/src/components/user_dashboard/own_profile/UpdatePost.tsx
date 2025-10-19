@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
 import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/ArtworkStyles";
 import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 import useUpdateArtwork from "@/hooks/mutate/artwork/useArtworkMutate";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const UpdatePost = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,6 +34,66 @@ const UpdatePost = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
+  // Language and translation
+  const { language } = useLanguage();
+  const updatePostText = useAutoTranslation("Update Post", language);
+  const artworkPreviewText = useAutoTranslation("Artwork preview", language);
+  const chooseFileOrDragText = useAutoTranslation("Choose a file or drag and drop it here", language);
+  const chooseFileText = useAutoTranslation("Choose File", language);
+  const recommendationText = useAutoTranslation("We recommend using high quality .jpg files less than 20MB", language);
+  const updateArtworkInfoText = useAutoTranslation("Update your artwork information.", language);
+  const artworkTitleLabelText = useAutoTranslation("Artwork Title", language);
+  const enterArtworkTitleText = useAutoTranslation("Enter artwork title", language);
+  const artworkStyleLabelText = useAutoTranslation("Artwork Style", language);
+  const selectArtworkStyleText = useAutoTranslation("Select artwork style", language);
+  const mediumLabelText = useAutoTranslation("Medium", language);
+  const enterMediumUsedText = useAutoTranslation("Enter medium used", language);
+  const visibilityLabelText = useAutoTranslation("Visibility", language);
+  const publicText = useAutoTranslation("Public", language);
+  const privateText = useAutoTranslation("Private", language);
+  const unlistedText = useAutoTranslation("Unlisted", language);
+  const descriptionLabelText = useAutoTranslation("Description", language);
+  const addDescriptionText = useAutoTranslation("Add a description", language);
+  const updatingText = useAutoTranslation("Updating...", language);
+  const updateArtworkText = useAutoTranslation("Update Artwork", language);
+  
+  // Validation messages
+  const enterArtworkTitleErrorText = useAutoTranslation("Please enter an artwork title", language);
+  const titleInvalidErrorText = useAutoTranslation("Artwork title invalid. Must start with a capital letter", language);
+  const selectStyleErrorText = useAutoTranslation("Please select an artwork style", language);
+  const enterMediumErrorText = useAutoTranslation("Please enter the medium used", language);
+  const mediumInvalidErrorText = useAutoTranslation("Medium invalid. Must contain letters only", language);
+  const fileSizeErrorText = useAutoTranslation("File size must be less than 20MB", language);
+  const artworkUpdatedSuccessText = useAutoTranslation("Artwork updated successfully!", language);
+  const updateFailedErrorText = useAutoTranslation("Failed to update artwork.", language);
+
+  // Translation for fetched data
+  const translatedFetchedTitle = useAutoTranslation(artwork?.title || "", language);
+  const translatedFetchedMedium = useAutoTranslation(artwork?.medium || "", language);
+  const translatedFetchedDescription = useAutoTranslation(artwork?.description || "", language);
+  
+  // Translated artwork styles for dropdown
+  const translatedArtStyles = ART_STYLES.map(style => useAutoTranslation(style, language));
+
+  // Update form fields with translated fetched data
+  useEffect(() => {
+    if (translatedFetchedTitle) {
+      setArtworkTitle(translatedFetchedTitle);
+    }
+  }, [translatedFetchedTitle]);
+
+  useEffect(() => {
+    if (translatedFetchedMedium) {
+      setMedium(translatedFetchedMedium);
+    }
+  }, [translatedFetchedMedium]);
+
+  useEffect(() => {
+    if (translatedFetchedDescription) {
+      setDescription(translatedFetchedDescription);
+    }
+  }, [translatedFetchedDescription]);
+
   useEffect(() => {
     if (artwork && !loaded) {
       setArtworkTitle(artwork?.title || "");
@@ -52,7 +115,7 @@ const UpdatePost = () => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB", {
+        toast.error(fileSizeErrorText, {
           closeButton: true,
         });
         return;
@@ -76,7 +139,7 @@ const UpdatePost = () => {
     const file = e.dataTransfer.files?.[0];
     if (file) {
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB", {
+        toast.error(fileSizeErrorText, {
           closeButton: true,
         });
         return;
@@ -90,45 +153,40 @@ const UpdatePost = () => {
       fileReader.readAsDataURL(file);
     }
   };
-  const handleStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log("Selected Style:", e.target.value);
-    setArtworkStyle(e.target.value);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Artwork title validation: first letter capital, letters/numbers allowed
     const titleRegex = /^[A-Z][A-Za-z0-9\s]*$/;
     if (!artworkTitle.trim()) {
-      toast.error("Please enter an artwork title", { closeButton: true });
+      toast.error(enterArtworkTitleErrorText, { closeButton: true });
       return;
     }
     if (!titleRegex.test(artworkTitle)) {
-      toast.error("Artwork title invalid. Must start with a capital letter", { closeButton: true });
+      toast.error(titleInvalidErrorText, { closeButton: true });
       return;
     }
 
     // Artwork style validation
     if (!artworkStyle) {
-      toast.error("Please select an artwork style", { closeButton: true });
+      toast.error(selectStyleErrorText, { closeButton: true });
       return;
     }
 
     // Medium validation: letters and spaces only
     const mediumRegex = /^[A-Za-z\s]+$/;
     if (!medium.trim()) {
-      toast.error("Please enter the medium used", { closeButton: true });
+      toast.error(enterMediumErrorText, { closeButton: true });
       return;
     }
     if (!mediumRegex.test(medium)) {
-      toast.error("Medium invalid. Must contain letters only", { closeButton: true });
+      toast.error(mediumInvalidErrorText, { closeButton: true });
       return;
     }
 
     // Optional file validation
     if (selectedFile && selectedFile.size > 20 * 1024 * 1024) {
-      toast.error("File size must be less than 20MB", { closeButton: true });
+      toast.error(fileSizeErrorText, { closeButton: true });
       return;
     }
 
@@ -149,12 +207,12 @@ const UpdatePost = () => {
       { id, formData },
       {
         onSuccess: () => {
-          toast.success("Artwork updated successfully!", { closeButton: true });
+          toast.success(artworkUpdatedSuccessText, { closeButton: true });
           navigate("/explore");
         },
         onError: (error) => {
           console.error("Error during update:", error);
-          toast.error("Failed to update artwork.", { closeButton: true });
+          toast.error(updateFailedErrorText, { closeButton: true });
         },
         onSettled: () => {
           setIsUploading(false);
@@ -169,7 +227,7 @@ const UpdatePost = () => {
         <div className="mb-8">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
-            Update Post
+            {updatePostText}
           </button>
         </div>
 
@@ -181,13 +239,13 @@ const UpdatePost = () => {
           >
             {previewUrl ? (
               <div className="relative w-full h-full">
-                <img src={previewUrl} alt="Artwork preview" className="w-full h-full object-contain" />
+                <img src={previewUrl} alt={artworkPreviewText} className="w-full h-full object-contain" />
                 <button
                   onClick={() => {
                     setSelectedFile(null);
                     setPreviewUrl(null);
                   }}
-                  className="absolute top-2 right-2 bg-white rounded-full p-2"
+                  className="absolute top-2 right-2 bg-white rounded-full px-2"
                 >
                   ×
                 </button>
@@ -199,16 +257,16 @@ const UpdatePost = () => {
                     <img width="50" height="50" src="/pics/icons8-cloud-upload.gif" alt="upload icon" />
                   </div>
                 </div>
-                <p className="mb-2 text-sm font-medium">Choose a file or drag and drop it here</p>
+                <p className="mb-2 text-sm font-medium">{chooseFileOrDragText}</p>
                 <label
                   htmlFor="fileInput"
                   className="cursor-pointer hover:bg-white inline-block mb-6 border border-gray-300 rounded-[6px] p-2 text-xs"
                 >
-                  Choose File
+                  {chooseFileText}
                   <input type="file" id="fileInput" className="hidden" accept="image/*" onChange={handleFileChange} />
                 </label>
                 <p className="relative top-16 text-xs text-gray-500">
-                  We recommend using high quality .jpg files less than 20MB
+                  {recommendationText}
                 </p>
               </div>
             )}
@@ -217,15 +275,15 @@ const UpdatePost = () => {
           <div>
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
-                <h2 className="text-sm font-medium mb-8">Update your artwork information.</h2>
+                <h2 className="text-sm font-medium mb-8">{updateArtworkInfoText}</h2>
 
                 <div className="mb-6">
                   <label htmlFor="title" className="block mb-2 text-xs font-medium">
-                    Artwork Title
+                    {artworkTitleLabelText}
                   </label>
                   <Input
                     id="title"
-                    placeholder="Enter artwork title"
+                    placeholder={enterArtworkTitleText}
                     value={artworkTitle}
                     onChange={(e) => setArtworkTitle(e.target.value)}
                     className="w-full"
@@ -236,46 +294,29 @@ const UpdatePost = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div>
                     <label htmlFor="style" className="block mb-2 text-xs font-medium">
-                      Artwork Style
+                      {artworkStyleLabelText}
                     </label>
-                    <div className="relative">
-                      <select
-                        id="style"
-                        value={artworkStyle}
-                        onChange={handleStyleChange}
-                        className="w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs"
-                      >
-                        <option value="" disabled>
-                          Select artwork style
-                        </option>
-                        {ART_STYLES.map((style) => (
-                          <option key={style} value={style.toLowerCase()}>
+                    <Select value={artworkStyle} onValueChange={setArtworkStyle}>
+                      <SelectTrigger className="w-full text-xs h-[35px]">
+                        <SelectValue placeholder={selectArtworkStyleText} />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-64 overflow-y-auto">
+                        {translatedArtStyles.map((style, index) => (
+                          <SelectItem key={ART_STYLES[index]} value={ART_STYLES[index].toLowerCase()} className="text-xs">
                             {style}
-                          </option>
+                          </SelectItem>
                         ))}
-                      </select>
-
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M4 6L8 10L12 6"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div>
                     <label htmlFor="medium" className="block mb-2 text-xs font-medium">
-                      Medium
+                      {mediumLabelText}
                     </label>
                     <Input
                       id="medium"
-                      placeholder="Enter medium used"
+                      placeholder={enterMediumUsedText}
                       value={medium}
                       onChange={(e) => setMedium(e.target.value)}
                       className="w-full"
@@ -285,7 +326,7 @@ const UpdatePost = () => {
 
                   <div>
                     <label htmlFor="visibility" className="block mb-2 text-xs font-medium">
-                      Visibility
+                      {visibilityLabelText}
                     </label>
                     <select
                       id="visibility"
@@ -293,20 +334,20 @@ const UpdatePost = () => {
                       onChange={(e) => setVisibility(e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-md appearance-none text-xs"
                     >
-                      <option value="Public">Public</option>
-                      <option value="Private">Private</option>
-                      <option value="Unlisted">Unlisted</option>
+                      <option value="Public">{publicText}</option>
+                      <option value="Private">{privateText}</option>
+                      <option value="Unlisted">{unlistedText}</option>
                     </select>
                   </div>
                 </div>
 
                 <div className="mb-6">
                   <label htmlFor="description" className="block mb-2 text-xs font-medium">
-                    Description
+                    {descriptionLabelText}
                   </label>
                   <Textarea
                     id="description"
-                    placeholder="Add a description"
+                    placeholder={addDescriptionText}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full min-h-[120px] p-2 text-xs"
@@ -327,10 +368,10 @@ const UpdatePost = () => {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                         </svg>
-                        Updating...
+                        {updatingText}
                       </span>
                     ) : (
-                      "Update Artwork"
+                      updateArtworkText
                     )}
                   </Button>
                 </div>
