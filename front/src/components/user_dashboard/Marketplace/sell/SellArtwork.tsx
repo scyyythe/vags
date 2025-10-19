@@ -36,14 +36,20 @@ const SellArtwork = () => {
   const sellAnArtworkText = useAutoTranslation("Sell an Artwork", language);
   const fileSizeErrorText = useAutoTranslation("File size must be less than 20MB", language);
   const imageFilesOnlyText = useAutoTranslation("Please upload only image files", language);
-  const paymentAccountErrorText = useAutoTranslation("You cannot sell artwork without setting up a payment account. Please add a bank account, PayPal, or other payment method in your account settings to receive payments.", language);
+  const paymentAccountErrorText = useAutoTranslation(
+    "You cannot sell artwork without setting up a payment account. Please add a bank account, PayPal, or other payment method in your account settings to receive payments.",
+    language
+  );
   const enterTitleErrorText = useAutoTranslation("Please enter an artwork title.", language);
   const uploadImageErrorText = useAutoTranslation("Please upload an image of your artwork.", language);
   const enterPriceErrorText = useAutoTranslation("Please enter a price for your artwork.", language);
   const listingArtworkText = useAutoTranslation("Listing artwork for sale...", language);
   const artworkListedSuccessText = useAutoTranslation("Artwork listed successfully!", language);
   const failedToListText = useAutoTranslation("Failed to list artwork", language);
-  const setupPaymentAccountText = useAutoTranslation("You must set up a payment account before selling artwork.", language);
+  const setupPaymentAccountText = useAutoTranslation(
+    "You must set up a payment account before selling artwork.",
+    language
+  );
   const titleRequiredText = useAutoTranslation("Please enter an artwork title.", language);
   const titleMinLengthText = useAutoTranslation("Title should be at least 2 characters long.", language);
   const titleMaxLengthText = useAutoTranslation("Title should be less than 100 characters.", language);
@@ -95,7 +101,10 @@ const SellArtwork = () => {
   const aboutArtworkText = useAutoTranslation("About this Artwork", language);
   const addDescriptionText = useAutoTranslation("Add a description", language);
   const paymentAccountRequiredText = useAutoTranslation("Payment Account Required", language);
-  const setupPaymentAccountDescText = useAutoTranslation("Set up a payment account to receive payments before selling.", language);
+  const setupPaymentAccountDescText = useAutoTranslation(
+    "Set up a payment account to receive payments before selling.",
+    language
+  );
   const setupPaymentAccountButtonText = useAutoTranslation("Set up payment account →", language);
   const listingText = useAutoTranslation("Listing...", language);
   const sellNowText = useAutoTranslation("Sell Now", language);
@@ -188,13 +197,10 @@ const SellArtwork = () => {
 
     // Check if user has payment accounts set up
     if (!accounts || accounts.length === 0) {
-      toast.error(
-        paymentAccountErrorText,
-        {
-          closeButton: true,
-          duration: 6000,
-        }
-      );
+      toast.error(paymentAccountErrorText, {
+        closeButton: true,
+        duration: 6000,
+      });
       return;
     }
 
@@ -418,6 +424,11 @@ const SellArtwork = () => {
     setEdition(value);
     if (value === "Original (1 of 1)") {
       setQuantity("1");
+    } else if (value === "Limited Edition" || value === "Open Edition") {
+      // Set default quantity to 1 if not already set
+      if (!quantity || quantity === "1") {
+        setQuantity("1");
+      }
     }
   };
 
@@ -477,9 +488,7 @@ const SellArtwork = () => {
                     {chooseFileButtonText}
                     <input type="file" id="fileInput" className="hidden" accept="image/*" onChange={handleFileChange} />
                   </label>
-                  <p className="relative top-10 text-[11px] text-gray-500">
-                    {recommendFilesText}
-                  </p>
+                  <p className="relative top-10 text-[11px] text-gray-500">{recommendFilesText}</p>
                 </div>
               )}
             </div>
