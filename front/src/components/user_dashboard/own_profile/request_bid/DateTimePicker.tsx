@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface DateTimePickerProps {
   date: Date | undefined;
@@ -34,6 +36,12 @@ const DateTimePicker = ({
 }: DateTimePickerProps) => {
   const [hoursValue, setHoursValue] = useState(hours.toString());
   const [minutesValue, setMinutesValue] = useState(minutes.toString());
+
+  // Language and translation
+  const { language } = useLanguage();
+  const pickDateText = useAutoTranslation("Pick a date", language);
+  const hrsText = useAutoTranslation("Hrs", language);
+  const minsText = useAutoTranslation("Mins", language);
 
   useEffect(() => {
     setHoursValue(hours.toString());
@@ -71,10 +79,10 @@ const DateTimePicker = ({
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {date ? format(date, "PPP") : <span>Pick a date</span>}
+              {date ? format(date, "PPP") : <span>{pickDateText}</span>}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0 text-[10px]" align="start">
+          <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
               selected={date}
@@ -85,7 +93,24 @@ const DateTimePicker = ({
                 return false;
               }}
               initialFocus
-              className={cn("p-3 pointer-events-auto text-[10px]")}
+              className="p-3"
+              showOutsideDays={false}
+              fixedWeeks={false}
+              classNames={{
+                caption: "flex justify-center pt-1 relative items-center",
+                caption_label: "text-xs font-medium",
+                nav: "space-x-1 flex items-center",
+                nav_button: cn(
+                  "h-6 w-6 bg-transparent p-0 opacity-50 hover:opacity-100"
+                ),
+                nav_button_previous: "absolute left-1",
+                nav_button_next: "absolute right-1",
+                head_cell: "text-muted-foreground rounded-md w-8 font-normal text-[0.7rem]",
+                cell: "h-8 w-8 text-center text-xs p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                day: cn(
+                  "h-8 w-8 p-0 font-normal aria-selected:opacity-100 text-xs"
+                ),
+              }}
             />
             
           </PopoverContent>
@@ -104,7 +129,7 @@ const DateTimePicker = ({
               min={0}
               max={23}
             />
-            <span className="text-[9px] mt-1">Hrs</span>
+            <span className="text-[9px] mt-1">{hrsText}</span>
           </div>
 
           <span className="mx-2 text-xl">:</span>
@@ -119,7 +144,7 @@ const DateTimePicker = ({
               min={0}
               max={59}
             />
-            <span className="text-[9px] mt-1">Mins</span>
+            <span className="text-[9px] mt-1">{minsText}</span>
           </div>
         </div>
       </div>
