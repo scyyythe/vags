@@ -2,6 +2,8 @@ import type React from "react";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SecurityNote from "./SecurityNote";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface PaymentAccount {
   id: string;
@@ -47,6 +49,39 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  // Language and translation
+  const { language } = useLanguage();
+  const visaText = useAutoTranslation("Visa", language);
+  const mastercardText = useAutoTranslation("Mastercard", language);
+  const amexText = useAutoTranslation("Amex", language);
+  const discoverText = useAutoTranslation("Discover", language);
+  const cardText = useAutoTranslation("Card", language);
+  const defaultText = useAutoTranslation("Default", language);
+  const cardNumberText = useAutoTranslation("Card Number", language);
+  const expiresText = useAutoTranslation("Expires", language);
+  const cardholderNameText = useAutoTranslation("Cardholder Name", language);
+  const billingAddressText = useAutoTranslation("Billing Address", language);
+  const updateAccountText = useAutoTranslation("Update Account", language);
+  const noCreditCardText = useAutoTranslation("No Credit Card Saved", language);
+  const addCreditCardDescText = useAutoTranslation("Add a credit card to make purchases quickly and securely", language);
+  const addCreditCardText = useAutoTranslation("Add Credit Card", language);
+
+  // Helper function to get translated card type
+  const getTranslatedCardType = (type: string) => {
+    switch (type.toLowerCase()) {
+      case "visa":
+        return visaText;
+      case "mastercard":
+        return mastercardText;
+      case "amex":
+        return amexText;
+      case "discover":
+        return discoverText;
+      default:
+        return type;
+    }
+  };
+
   // Mask the card number, showing only last 4 digits
   const maskedCardNumber = `•••• •••• •••• 5432${cardNumber.slice(-4)}`;
 
@@ -80,17 +115,24 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
   if (!cardNumber && accounts.length > 0) {
     return (
       <div className="space-y-4">
-        {accounts.map((account, index) => (
+        {accounts.map((account, index) => {
+          // Translation for fetched data
+          const translatedCardholderName = useAutoTranslation(account.name || "", language);
+          const translatedCountry = useAutoTranslation(country || "", language);
+          const translatedAddressLine1 = useAutoTranslation(addressLine1 || "215, Sitio Cabutoy, Pooc, Talisay", language);
+          const translatedCityState = useAutoTranslation(`${city || "Cebu"}, ${state || "Philippines"} ${postalCode || "6045"}`, language);
+          
+          return (
           <div key={account.id}>
             <div className="bg-card border border-border rounded-lg px-10 py-8 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div className="flex items-center gap-3">
                   {cardIcons[cardType]}
-                  <h3 className="text-sm font-semibold text-foreground capitalize">{cardType} Card</h3>
+                  <h3 className="text-sm font-semibold text-foreground capitalize">{getTranslatedCardType(cardType)} {cardText}</h3>
                 </div>
                 {account.isDefault && (
                   <span className="inline-flex items-center px-2.5 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-medium">
-                    Default
+                    {defaultText}
                   </span>
                 )}
               </div>
@@ -99,13 +141,13 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                      Card Number
+                      {cardNumberText}
                     </label>
                     <p className="text-xs text-foreground font-mono font-medium mt-1">{account.maskedInfo}</p>
                   </div>
                   <div>
                     <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                      Expires
+                      {expiresText}
                     </label>
                     <p className="text-xs text-foreground font-mono font-medium mt-1">03 / 23 / 26</p>
                   </div>
@@ -113,19 +155,19 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
 
                 <div>
                   <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                    Cardholder Name
+                    {cardholderNameText}
                   </label>
-                  <p className="text-xs text-foreground font-medium mt-1">{account.name}</p>
+                  <p className="text-xs text-foreground font-medium mt-1">{translatedCardholderName}</p>
                 </div>
 
                 <div className="pt-2 border-t border-border">
                   <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-2 block">
-                    Billing Address
+                    {billingAddressText}
                   </label>
                   <div className="text-xs text-foreground space-y-0.5">
-                    <p>215, Sitio Cabutoy, Pooc, Talisay</p>
-                    <p>Cebu, Philippines 6045</p>
-                    <p>{country}</p>
+                    <p>{translatedAddressLine1}</p>
+                    <p>{translatedCityState}</p>
+                    <p>{translatedCountry}</p>
                   </div>
                 </div>
 
@@ -137,7 +179,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
                             active:scale-[0.98] transition-all duration-200 ease-in-out"
                   >
                     <i className="bx bx-edit text-[13px]"></i>
-                    <p className=" hover:underline">Update Account</p>
+                    <p className=" hover:underline">{updateAccountText}</p>
                   </button>
                 </div>
               </div>
@@ -145,7 +187,8 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
 
             <SecurityNote type="credit-card" />
           </div>
-        ))}
+          );
+        })}
       </div>
     );
   }
@@ -166,8 +209,8 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
             </svg>
           </div>
           <div>
-            <h3 className="text-[15px] font-semibold text-foreground mb-2">No Credit Card Saved</h3>
-            <p className="text-xs text-muted-foreground">Add a credit card to make purchases quickly and securely</p>
+            <h3 className="text-[15px] font-semibold text-foreground mb-2">{noCreditCardText}</h3>
+            <p className="text-xs text-muted-foreground">{addCreditCardDescText}</p>
           </div>
           <button
             type="button"
@@ -175,7 +218,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
             className="inline-flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 font-medium text-[11px] transition-colors"
           >
             <Plus size={14} />
-            Add Credit Card
+            {addCreditCardText}
           </button>
         </div>
       </div>
