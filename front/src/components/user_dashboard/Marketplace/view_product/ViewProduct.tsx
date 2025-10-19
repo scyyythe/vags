@@ -23,6 +23,8 @@ import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import useArtworkReportStatus from "@/hooks/mutate/report/useArtworkReportStatus";
 import useFetchArtCards from "@/hooks/artworks/sell/useFetchArtCards";
 import SellCard from "../cards/SellCard";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 const ProductViewingContent = () => {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, error } = useSellArtworkDetail(id);
@@ -39,6 +41,46 @@ const ProductViewingContent = () => {
   const isOwner = product?.artist?.id && String(product.artist.id) === String(loggedInUserId);
   const location = useLocation();
   const artistId = location.state?.artistId;
+
+  // Language and translation
+  const { language } = useLanguage();
+  const translatedArtworkStyle = useAutoTranslation(product?.artwork_style || "", language);
+  
+  // Static text translations
+  const productDetailsText = useAutoTranslation("Product Details", language);
+  const soldOutText = useAutoTranslation("SOLD OUT", language);
+  const expandText = useAutoTranslation("Expand", language);
+  const artworkStyleText = useAutoTranslation("Artwork Style", language);
+  const dimensionsText = useAutoTranslation("Dimensions", language);
+  const editionText = useAutoTranslation("Edition", language);
+  const yearCreatedText = useAutoTranslation("Year Created", language);
+  const aboutThisArtworkText = useAutoTranslation("About this Artwork", language);
+  const reviewText = useAutoTranslation("Review", language);
+  const mediumText = useAutoTranslation("Medium :", language);
+  const viewAllReviewsText = useAutoTranslation("View all reviews", language);
+  const outOf5Text = useAutoTranslation("out of 5", language);
+  const reviewsText = useAutoTranslation("reviews", language);
+  const remainingStocksText = useAutoTranslation("remaining stocks", language);
+  const buyNowText = useAutoTranslation("Buy Now", language);
+  const relatedArtworksText = useAutoTranslation("Related Artworks", language);
+  const loadingText = useAutoTranslation("Loading...", language);
+  const noOtherArtworksText = useAutoTranslation("No other artworks in this style.", language);
+  const expandedArtworkText = useAutoTranslation("Expanded artwork", language);
+  const artworkNotFoundText = useAutoTranslation("Artwork Not Found", language);
+  const artworkNotExistText = useAutoTranslation("The artwork you're looking for doesn't exist or has been removed.", language);
+  const returnToHomeText = useAutoTranslation("Return to Home", language);
+  const loadingExhibitText = useAutoTranslation("Loading exhibit...", language);
+  const productNotFoundText = useAutoTranslation("Product not found.", language);
+  const removedFromWishlistText = useAutoTranslation("Removed from wishlist", language);
+  const addedToWishlistText = useAutoTranslation("Added to wishlist", language);
+  const cmText = useAutoTranslation("cm", language);
+  
+  // Dynamic content translations (artwork data from API)
+  const translatedTitle = useAutoTranslation(product?.title || "", language);
+  const translatedArtistName = useAutoTranslation(product?.artist?.name || "", language);
+  const translatedEdition = useAutoTranslation(product?.edition || "", language);
+  const translatedMedium = useAutoTranslation(product?.medium || "", language);
+  const translatedDescription = useAutoTranslation(product?.description || "", language);
 
   const markAsSoldMutation = useToggleArtworkStatus();
   const markAsUnlistedMutation = useMarkArtworkAsUnlisted();
@@ -59,7 +101,7 @@ const ProductViewingContent = () => {
   const handleWishlistToggle = () => {
     if (!id) return;
     toggleWishlist(id);
-    toast(likedItems.has(id) ? "Removed from wishlist" : "Added to wishlist");
+    toast(likedItems.has(id) ? removedFromWishlistText : addedToWishlistText);
   };
 
   const handleUndoReport = () => {
@@ -133,7 +175,7 @@ const ProductViewingContent = () => {
   const productStatus = product?.art_status || "active";
 
   if (error || !product) {
-    return <div>Product not found.</div>;
+    return <div>{productNotFoundText}</div>;
   }
 
   const goToPrevious = () => {
@@ -212,10 +254,10 @@ const ProductViewingContent = () => {
       <div className="min-h-screen bg-white">
         <Header />
         <div className="container mx-auto pt-24 px-4 text-center">
-          <h2 className="text-lg font-bold mb-4">Artwork Not Found</h2>
-          <p className="mb-8 text-xs">The artwork you're looking for doesn't exist or has been removed.</p>
+          <h2 className="text-lg font-bold mb-4">{artworkNotFoundText}</h2>
+          <p className="mb-8 text-xs">{artworkNotExistText}</p>
           <Link to="/" className="text-red-600 text-xs hover:underline">
-            Return to Home
+            {returnToHomeText}
           </Link>
         </div>
       </div>
@@ -226,10 +268,10 @@ const ProductViewingContent = () => {
       <div className="min-h-screen bg-white">
         <Header />
         <div className="container mx-auto pt-24 px-4 text-center">
-          <h2 className="text-lg font-bold mb-4">Artwork Not Found</h2>
+          <h2 className="text-lg font-bold mb-4">{artworkNotFoundText}</h2>
           <p className="mb-8 text-xs text-red-500">{error}</p>
           <Link to="/" className="text-red-600 text-xs hover:underline">
-            Return to Home
+            {returnToHomeText}
           </Link>
         </div>
       </div>
@@ -240,7 +282,7 @@ const ProductViewingContent = () => {
     return (
       <div className="min-h-screen flex justify-center items-center">
         <Header />
-        <p className="text-gray-500 text-sm">Loading exhibit...</p>
+        <p className="text-gray-500 text-sm">{loadingExhibitText}</p>
       </div>
     );
   }
@@ -254,7 +296,7 @@ const ProductViewingContent = () => {
         <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
-            Product Details
+            {productDetailsText}
           </button>
         </div>
 
@@ -274,7 +316,7 @@ const ProductViewingContent = () => {
                   {/* Artwork image */}
                   <img
                     src={product.image_urls[currentImageIndex]}
-                    alt={product.title}
+                    alt={translatedTitle}
                     className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
                   />
 
@@ -282,7 +324,7 @@ const ProductViewingContent = () => {
                   {productStatus === "Sold" && (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="bg-black/75 text-white px-6 py-3 rounded-full">
-                        <span className="text-md font-semibold">SOLD OUT</span>
+                        <span className="text-md font-semibold">{soldOutText}</span>
                       </div>
                     </div>
                   )}
@@ -318,7 +360,7 @@ const ProductViewingContent = () => {
                     >
                       <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
                       <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover/expand:translate-x-0 group-hover/expand:opacity-100 transition-all ease-in-out duration-700">
-                        Expand
+                        {expandText}
                       </span>
                     </div>
                   </div>
@@ -334,7 +376,7 @@ const ProductViewingContent = () => {
             {/* Title and Actions */}
             <div className="flex justify-between items-start">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">{translatedTitle}</h1>
                 <div
                   className="flex items-center space-x-2 cursor-pointer"
                   onClick={() => navigate(`/userprofile/${product.artist.id}`)}
@@ -342,12 +384,12 @@ const ProductViewingContent = () => {
                   <Avatar className="w-4 h-4 border">
                     <AvatarImage
                       src={product?.artist?.profile_picture || undefined}
-                      alt={product?.artist?.name || "Artist"}
+                      alt={translatedArtistName || "Artist"}
                     />
-                    <AvatarFallback>{product?.artist?.name?.charAt(0) || "?"}</AvatarFallback>
-                    <span>{product?.artist?.name || "Unknown Artist"}</span>
+                    <AvatarFallback>{translatedArtistName?.charAt(0) || "?"}</AvatarFallback>
+                    <span>{translatedArtistName || "Unknown Artist"}</span>
                   </Avatar>
-                  <span className="text-black text-[10px]">{product.artist.name}</span>
+                  <span className="text-black text-[10px]">{translatedArtistName}</span>
                 </div>
               </div>
               <div className="relative">
@@ -452,22 +494,22 @@ const ProductViewingContent = () => {
             {/* Product Details Grid */}
             <div className="grid grid-cols-4 gap-4 text-center border py-[18px] rounded-md">
               <div>
-                <h3 className="text-[10px] font-medium text-gray-500 mb-1">Artwork Style</h3>
-                <p className="text-[10px] text-gray-900">{capitalizeWords(product.artwork_style)}</p>
+                <h3 className="text-[10px] font-medium text-gray-500 mb-1">{artworkStyleText}</h3>
+                <p className="text-[10px] text-gray-900">{capitalizeWords(translatedArtworkStyle)}</p>
               </div>
 
               <div className="border-l border-gray-300 pl-4">
-                <h3 className="text-[10px] font-medium text-gray-500 mb-1">Dimensions</h3>
-                <p className="text-[10px] text-gray-900">{product.size} cm</p>
+                <h3 className="text-[10px] font-medium text-gray-500 mb-1">{dimensionsText}</h3>
+                <p className="text-[10px] text-gray-900">{product.size} {cmText}</p>
               </div>
 
               <div className="border-l border-gray-300 mr-2">
-                <h3 className="text-[10px] font-medium text-gray-500 mb-1">Edition</h3>
-                <p className="text-[10px] text-gray-900">{product.edition}</p>
+                <h3 className="text-[10px] font-medium text-gray-500 mb-1">{editionText}</h3>
+                <p className="text-[10px] text-gray-900">{translatedEdition}</p>
               </div>
 
               <div className="border-l border-gray-300 mr-2">
-                <h3 className="text-[10px] font-medium text-gray-500 mb-1">Year Created</h3>
+                <h3 className="text-[10px] font-medium text-gray-500 mb-1">{yearCreatedText}</h3>
                 <p className="text-[10px] text-gray-900">{product.year_created}</p>
               </div>
             </div>
@@ -481,7 +523,7 @@ const ProductViewingContent = () => {
                   }`}
                   onClick={() => setActiveTab("description")}
                 >
-                  About this Artwork
+                  {aboutThisArtworkText}
                 </button>
 
                 {product.edition !== "Original (1 of 1)" && product.edition !== "Limited Edition" && (
@@ -491,7 +533,7 @@ const ProductViewingContent = () => {
                     }`}
                     onClick={() => setActiveTab("review")}
                   >
-                    Review
+                    {reviewText}
                   </button>
                 )}
               </div>
@@ -503,12 +545,12 @@ const ProductViewingContent = () => {
                   <div className="pt-2 space-y-2">
                     {/* Medium Info Block */}
                     <div className=" flex gap-2">
-                      <h3 className="text-[10px] font-medium text-gray-500 mb-1">Medium :</h3>
-                      <p className="text-[10px] text-gray-900">{product.medium}</p>
+                      <h3 className="text-[10px] font-medium text-gray-500 mb-1">{mediumText}</h3>
+                      <p className="text-[10px] text-gray-900">{translatedMedium}</p>
                     </div>
 
                     {/* Description Text */}
-                    <p className="text-[10px] text-gray-700 leading-relaxed">{product.description}</p>
+                    <p className="text-[10px] text-gray-700 leading-relaxed">{translatedDescription}</p>
                   </div>
                 )}
 
@@ -523,7 +565,7 @@ const ProductViewingContent = () => {
                           onClick={() => setIsReviewModalOpen(true)}
                           className="text-[9px] text-gray-600 hover:underline flex items-center"
                         >
-                          View all reviews
+                          {viewAllReviewsText}
                           <ChevronRight size={10} className="ml-1" />
                         </button>
                       </div>
@@ -532,12 +574,12 @@ const ProductViewingContent = () => {
                       <div className="min-w-[120px] mt-6 sm:mt-6">
                         <div className="flex items-end space-x-1 mb-1">
                           <span className="text-[24px] font-semibold">{averageRating}</span>
-                          <span className="text-[10px] text-gray-500 mb-1">out of 5</span>
+                          <span className="text-[10px] text-gray-500 mb-1">{outOf5Text}</span>
                         </div>
                         <div className="flex items-center space-x-0.5 mb-1">
                           {renderStars(Math.round(Number(averageRating)))}
                         </div>
-                        <p className="text-[10px] text-gray-500">({reviews?.length || 0} reviews)</p>
+                        <p className="text-[10px] text-gray-500">({reviews?.length || 0} {reviewsText})</p>
                       </div>
 
                       {/* Rating Breakdown */}
@@ -597,7 +639,7 @@ const ProductViewingContent = () => {
                       </button>
                     </div>
                     <p className="text-[10px] text-red-600 text-center">
-                      {product.quantity ? `${product.quantity} remaining stocks` : ""}
+                      {product.quantity ? `${product.quantity} ${remainingStocksText}` : ""}
                     </p>
                   </div>
                 )}
@@ -615,7 +657,7 @@ const ProductViewingContent = () => {
                   disabled={productStatus === "Sold"}
                 >
                   <i className="bx bx-cart text-[15px] relative top-0.5 mr-3"></i>
-                  {productStatus === "Sold" ? "Sold Out" : "Buy Now"}
+                  {productStatus === "Sold" ? soldOutText : buyNowText}
                 </button>
 
                 <button
@@ -641,10 +683,10 @@ const ProductViewingContent = () => {
       {/* Related Artworks Section */}
       <div className="container md:px-6 mb-4">
         <h2 className={`font-medium ${isMobile ? "text-sm -ml-6 mb-4 mt-4" : "text-xs mb-4 -mt-2"}`}>
-          Related Artworks
+          {relatedArtworksText}
         </h2>
         {isLoading ? (
-          <p className="text-sm text-gray-400">Loading...</p>
+          <p className="text-sm text-gray-400">{loadingText}</p>
         ) : relatedArtworks.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {relatedArtworks.slice(0, 8).map((art) => (
@@ -668,7 +710,7 @@ const ProductViewingContent = () => {
             ))}
           </div>
         ) : (
-          <p className="text-xs text-gray-400">No other artworks in this style.</p>
+          <p className="text-xs text-gray-400">{noOtherArtworksText}</p>
         )}
       </div>
 
@@ -685,7 +727,7 @@ const ProductViewingContent = () => {
           <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
             <img
               src={product.image_urls[currentImageIndex]}
-              alt="Expanded artwork"
+              alt={expandedArtworkText}
               className="max-h-[80vh] max-w-[90vw] object-contain"
             />
 
@@ -729,13 +771,13 @@ const ProductViewingContent = () => {
           artwork={{
             id: product.id || "",
             artworkImage: product.image_urls?.[0] || "/images/placeholder.jpg",
-            title: product.title || "Untitled",
-            artist: product.artist?.name || "Unknown Artist",
+            title: translatedTitle || "Untitled",
+            artist: translatedArtistName || "Unknown Artist",
             artistId: product.artist?.id || artistId,
-            medium: product.medium || "Unknown",
-            style: product.artwork_style || "Unknown",
-            edition: product.edition || "Unknown",
-            size: product.size ? `${product.size} cm` : "Unknown",
+            medium: translatedMedium || "Unknown",
+            style: translatedArtworkStyle || "Unknown",
+            edition: translatedEdition || "Unknown",
+            size: product.size ? `${product.size} ${cmText}` : "Unknown",
             yearCreated: product.year_created || "Unknown",
             price: product.price || 0,
             default_paypal_email: product.default_paypal_email,
