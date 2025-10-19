@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { Pencil, EyeOff, Eye, Trash2 } from "lucide-react";
 import DeleteConfirmationPopup from "./DeleteConfirmation";
 import useDeleteArtwork from "@/hooks/mutate/visibility/trash/useDeleteArtwork";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface SellMenuProps {
   isOpen: boolean;
@@ -44,6 +46,18 @@ const SellMenu: React.FC<SellMenuProps> = ({
   const navigate = useNavigate();
   const deleteArtwork = useDeleteArtwork();
 
+  // Language and translation
+  const { language } = useLanguage();
+  const unlistText = useAutoTranslation("Unlist", language);
+  const relistText = useAutoTranslation("Relist", language);
+  const editText = useAutoTranslation("Edit", language);
+  const deleteText = useAutoTranslation("Delete", language);
+  const isNowListedText = useAutoTranslation("is now listed.", language);
+  const hasBeenUnlistedText = useAutoTranslation("has been unlisted.", language);
+  const artworkDeletedSuccessText = useAutoTranslation("Artwork deleted successfully.", language);
+  const failedToDeleteText = useAutoTranslation("Failed to delete artwork.", language);
+  const artworkText = useAutoTranslation("Artwork", language);
+
   // Calculate position for portal
   useEffect(() => {
     if (isOpen && triggerRef.current) {
@@ -76,7 +90,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
     onToggleVisibility(visibilityString, artworkId);
 
     toast.success(
-      newStatus ? `"${artworkTitle ?? "Artwork"}" is now listed.` : `"${artworkTitle ?? "Artwork"}" has been unlisted.`,
+      newStatus ? `"${artworkTitle ?? artworkText}" ${isNowListedText}` : `"${artworkTitle ?? artworkText}" ${hasBeenUnlistedText}`,
       { closeButton: true }
     );
   };
@@ -85,11 +99,11 @@ const SellMenu: React.FC<SellMenuProps> = ({
     deleteArtwork.mutate(artworkId, {
       onSuccess: () => {
         setShowDeletePopup(false);
-        toast.success("Artwork deleted successfully.", { closeButton: true });
+        toast.success(artworkDeletedSuccessText, { closeButton: true });
       },
       onError: () => {
         setShowDeletePopup(false);
-        toast.error("Failed to delete artwork.", { closeButton: true });
+        toast.error(failedToDeleteText, { closeButton: true });
       },
     });
   };
@@ -115,7 +129,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
               {/* Unlist / Relist Button */}
               <MenuItem
                 icon={publicStatus ? <EyeOff size={10} /> : <Eye size={10} />}
-                label={publicStatus ? "Unlist" : "Relist"}
+                label={publicStatus ? unlistText : relistText}
                 onHover={setHoveredItem}
                 hoveredItem={hoveredItem}
                 itemId="visibility"
@@ -125,7 +139,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
               {/* Edit Button */}
               <MenuItem
                 icon={<Pencil size={10} />}
-                label="Edit"
+                label={editText}
                 onHover={setHoveredItem}
                 hoveredItem={hoveredItem}
                 itemId="edit"
@@ -135,7 +149,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
               {/* Delete Button */}
               <MenuItem
                 icon={<Trash2 size={10} />}
-                label="Delete"
+                label={deleteText}
                 onHover={setHoveredItem}
                 hoveredItem={hoveredItem}
                 itemId="delete"
