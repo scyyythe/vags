@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
@@ -226,34 +227,18 @@ const CreatePost = () => {
                     <label htmlFor="style" className="block mb-4 text-xs">
                       {artworkStyleText}
                     </label>
-                    <div className="relative">
-                      <select
-                        id="style"
-                        value={artworkStyle}
-                        onChange={(e) => setArtworkStyle(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs cursor-pointer"
-                      >
-                        <option value="" disabled>
-                          {selectArtworkStyleText}
-                        </option>
+                    <Select value={artworkStyle} onValueChange={setArtworkStyle}>
+                      <SelectTrigger className="w-full text-xs h-[35px]">
+                        <SelectValue placeholder={selectArtworkStyleText} />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-64 overflow-y-auto">
                         {translatedArtStyles.map((style, index) => (
-                          <option key={ART_STYLES[index]} value={ART_STYLES[index].toLowerCase()}>
+                          <SelectItem key={ART_STYLES[index]} value={ART_STYLES[index].toLowerCase()} className="text-xs">
                             {style}
-                          </option>
+                          </SelectItem>
                         ))}
-                      </select>
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M4 6L8 10L12 6"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div>

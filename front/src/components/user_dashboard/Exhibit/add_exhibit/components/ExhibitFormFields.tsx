@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ViewMode, Artist, SubmissionStatus } from "../components/types";
 import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/ArtworkStyles";
 import { User } from "@/hooks/users/useUserQuery";
@@ -202,35 +203,18 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
           <label htmlFor="style" className="block text-[11px] font-medium mb-2">
             {artworkStyleText}
           </label>
-          <div className="relative">
-            <select
-              id="style"
-              value={artworkStyle}
-              onChange={(e) => setArtworkStyle(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md appearance-none pr-18 text-[10px] cursor-pointer"
-              disabled={viewMode === "collaborator" || isReadOnly}
-            >
-              <option value="" disabled>
-                {selectArtworkStyleText}
-              </option>
+          <Select value={artworkStyle} onValueChange={setArtworkStyle} disabled={viewMode === "collaborator" || isReadOnly}>
+            <SelectTrigger className="w-full text-[10px] h-8">
+              <SelectValue placeholder={selectArtworkStyleText} />
+            </SelectTrigger>
+            <SelectContent className="max-h-64 overflow-y-auto">
               {translatedArtStyles.map((style, index) => (
-                <option key={ART_STYLES[index]} value={ART_STYLES[index].toLowerCase()}>
+                <SelectItem key={ART_STYLES[index]} value={ART_STYLES[index].toLowerCase()} className="text-[10px]">
                   {style}
-                </option>
+                </SelectItem>
               ))}
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www3.org/2000/svg">
-                <path
-                  d="M4 6L8 10L12 6"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
