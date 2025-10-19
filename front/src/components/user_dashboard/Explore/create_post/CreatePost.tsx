@@ -57,6 +57,11 @@ const CreatePost = () => {
   const chooseAFileOrDragAndDropItHereText = useAutoTranslation("Choose a file or drag and drop it here", language);
   const chooseFileText = useAutoTranslation("Choose File", language);
   const weRecommendUsingHighQualityJpgFilesLessThan20MBText = useAutoTranslation("We recommend using high quality .jpg files less than 20MB", language);
+  const artworkPreviewText = useAutoTranslation("Artwork preview", language);
+  
+  // Validation messages
+  const fileSizeErrorText = useAutoTranslation("File size must be less than 20MB", language);
+  const uploadFailedText = useAutoTranslation("Upload failed:", language);
 
   // Translated artwork styles
   const translatedArtStyles = ART_STYLES.map(style => useAutoTranslation(style, language));
@@ -65,7 +70,7 @@ const CreatePost = () => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB", { closeButton: true });
+        toast.error(fileSizeErrorText, { closeButton: true });
         return;
       }
 
@@ -87,7 +92,7 @@ const CreatePost = () => {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB", { closeButton: true });
+        toast.error(fileSizeErrorText, { closeButton: true });
         return;
       }
 
@@ -142,7 +147,7 @@ const CreatePost = () => {
       navigate("/explore");
     } catch (error: unknown) {
       // Error handling is done in the hook
-      console.error("Upload failed:", error);
+      console.error(uploadFailedText, error);
     }
   };
 
@@ -165,13 +170,13 @@ const CreatePost = () => {
           >
             {previewUrl ? (
               <div className="relative w-full h-full">
-                <img src={previewUrl} alt="Artwork preview" className="w-full h-full object-contain" />
+                <img src={previewUrl} alt={artworkPreviewText} className="w-full h-full object-contain" />
                 <button
                   onClick={() => {
                     setSelectedFile(null);
                     setPreviewUrl(null);
                   }}
-                  className="absolute top-2 right-2 bg-white rounded-full p-2"
+                  className="absolute top-2 right-2 bg-white rounded-full px-2"
                 >
                   ×
                 </button>
