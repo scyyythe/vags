@@ -15,6 +15,7 @@ import ExhibitCardSkeleton from "@/components/skeletons/exhibits/ExhibitCardSkel
 import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useSearchParams } from "react-router-dom";
 
 type SortOption = "popularity" | "newest" | "oldest";
 type FilterOption = "none" | "trending" | "most-viewed" | "upcoming" | "ongoing" | "ended";
@@ -26,6 +27,9 @@ const Exhibits = () => {
   const [filter, setFilter] = useState<FilterOption>("ongoing");
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
 
   const { data: exhibits = [], isLoading } = useExhibitCards();
 
@@ -61,6 +65,18 @@ const Exhibits = () => {
       selectedCategory === "All" || exhibit.category?.toLowerCase() === selectedCategory.toLowerCase();
 
     if (!matchesType || !matchesCategory) return false;
+
+    // Apply search filter
+    if (searchQuery?.trim()) {
+      const queryLower = searchQuery.toLowerCase();
+      const title = (exhibit.title || "").toLowerCase();
+      const description = (exhibit.description || "").toLowerCase();
+      const category = (exhibit.category || "").toLowerCase();
+
+      if (!title.includes(queryLower) && !description.includes(queryLower) && !category.includes(queryLower)) {
+        return false;
+      }
+    }
 
     if (filter === "trending") return exhibit.likes > 100;
     if (filter === "most-viewed") return exhibit.views > 1.3;
