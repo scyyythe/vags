@@ -28,6 +28,9 @@ import { reportCategories } from "@/components/user_dashboard/Bidding/cards/Repo
 import { useAuctionActions } from "@/hooks/auction/useAuctionActions";
 import { useRestoreAuction } from "@/hooks/auction/useRestoreAuction";
 import { getArtworkImageUrl } from "@/utils/imageUtils";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { autoTranslate } from "@/utils/autoTranslate";
 
 function formatAmount(amount: number): string {
   if (amount >= 1_000_000_000_000_000_000) {
@@ -58,6 +61,61 @@ export interface BidCardData {
   user_has_liked_auction: boolean;
   auction_likes_count: number;
 }
+
+// Component for bid item with translation
+const BidItem = ({
+  bid,
+  byText,
+  isOwner,
+  formatBidDate,
+  isMobile = false,
+}: {
+  bid: any;
+  byText: string;
+  isOwner: boolean;
+  formatBidDate: (dateString: string) => string;
+  isMobile?: boolean;
+}) => {
+  const { language } = useLanguage();
+  const isAnonymous = bid.identity_type === "anonymous";
+  const profilePicture = !isAnonymous && bid.user?.profile_picture ? bid.user.profile_picture : null;
+  const avatarLetter = (bid.bidderFullName?.charAt(0) || "A").toUpperCase();
+  
+  // Translate bidder name
+  const translatedBidderName = useAutoTranslation(bid.bidderFullName || "", language);
+  
+  const sizeClass = isMobile ? "w-5 h-5" : "w-4 h-4";
+  const textSizeClass = isMobile ? "text-[10px]" : "text-[8px]";
+
+  return (
+    <div key={bid.id || bid.timestamp} className="flex items-center gap-2">
+      {profilePicture ? (
+        <img
+          src={profilePicture}
+          alt={translatedBidderName || "Bidder"}
+          className={`${sizeClass} rounded-full object-cover border`}
+        />
+      ) : (
+        <div className={`${sizeClass} rounded-full bg-gray-300 flex items-center justify-center ${textSizeClass} font-semibold text-gray-700 border`}>
+          {avatarLetter}
+        </div>
+      )}
+      <div>
+        <span className="font-semibold text-[11px] mr-1">
+          <i className="bx bx-money text-[8px] text-gray-400"></i> {formatAmount(bid.amount)}
+        </span>
+        <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
+          {byText} <p className="font-medium text-gray-700">{translatedBidderName}</p>
+          {isOwner && isMobile && (
+            <span className="ml-1 text-[9px] text-gray-400">
+              {formatBidDate(bid.timestamp)}
+            </span>
+          )}
+        </span>
+      </div>
+    </div>
+  );
+};
 
 const BidDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -105,20 +163,137 @@ const BidDetails = () => {
   const { closeAuction, deleteAuction } = useAuctionActions();
   const { mutate: restoreAuction } = useRestoreAuction();
 
+  // Translation hooks
+  const { language } = useLanguage();
+  const bidDetailsText = useAutoTranslation("Bid Details", language);
+  const bidsText = useAutoTranslation("Bids", language);
+  const noBidsYetText = useAutoTranslation("No bids yet.", language);
+  const byText = useAutoTranslation("by", language);
+  const expandText = useAutoTranslation("Expand", language);
+  const noArtworkNameText = useAutoTranslation("No artwork name", language);
+  const unknownText = useAutoTranslation("Unknown", language);
+  const noDescriptionText = useAutoTranslation("No description available.", language);
+  const showMoreText = useAutoTranslation("Show More", language);
+  const hideText = useAutoTranslation("Hide", language);
+  const artworkStyleText = useAutoTranslation("Artwork Style", language);
+  const paintingText = useAutoTranslation("Painting", language);
+  const mediumText = useAutoTranslation("Medium", language);
+  const acrylicPaintText = useAutoTranslation("Acrylic Paint", language);
+  const dimensionsText = useAutoTranslation("Dimensions", language);
+  const noSizeText = useAutoTranslation("No Size", language);
+  const cmText = useAutoTranslation("cm", language);
+  const datePostedText = useAutoTranslation("Date Posted", language);
+  const highestBidText = useAutoTranslation("Highest Bid", language);
+  const noBidsText = useAutoTranslation("No bids yet", language);
+  const placeABidText = useAutoTranslation("Place A Bid", language);
+  const auctionClosedText = useAutoTranslation("Auction Closed", language);
+  const relatedBidsText = useAutoTranslation("Related Bids", language);
+  const noRelatedBidsText = useAutoTranslation("No related bids found.", language);
+  const artworkHiddenText = useAutoTranslation("Artwork hidden", language);
+  const alreadyReportedText = useAutoTranslation("You have already reported this auction.", language);
+  const reportSubmittedText = useAutoTranslation("Report submitted successfully. Thank you for your feedback.", language);
+  const failedToCloseBiddingText = useAutoTranslation("Failed to close bidding", language);
+  const reportSubmittedLabelText = useAutoTranslation("Report submitted:", language);
+  const categoryText = useAutoTranslation("Category:", language);
+  const optionText = useAutoTranslation("Option:", language);
+  const infoText = useAutoTranslation("Info:", language);
+  const inappropriateContentText = useAutoTranslation("Artwork contains inappropriate or offensive content.", language);
+  const bidPlacedSuccessText = useAutoTranslation("Bid of", language);
+  const phpPlacedText = useAutoTranslation("php placed successfully!", language);
+  const auctionEndsInText = useAutoTranslation("Auction ends in", language);
+  const hrsText = useAutoTranslation("hrs", language);
+  const minsText = useAutoTranslation("mins", language);
+  const secsText = useAutoTranslation("secs", language);
+  const auctionWillStartOnText = useAutoTranslation("Auction will start on", language);
+  const auctionHasEndedText = useAutoTranslation("Auction has ended", language);
+  const anonymousText = useAutoTranslation("Anonymous", language);
+
+  // Translate dynamic/fetched content
+  const translatedArtworkTitle = useAutoTranslation(item?.artwork?.title || "", language);
+  const translatedArtistName = useAutoTranslation(item?.artwork?.artist || "", language);
+  const translatedDescription = useAutoTranslation(item?.artwork?.description || "", language);
+  const translatedCategory = useAutoTranslation(item?.artwork?.category || "", language);
+  const translatedMedium = useAutoTranslation(item?.artwork?.medium || "", language);
+
+  // Month translations
+  const januaryText = useAutoTranslation("January", language);
+  const februaryText = useAutoTranslation("February", language);
+  const marchText = useAutoTranslation("March", language);
+  const aprilText = useAutoTranslation("April", language);
+  const mayText = useAutoTranslation("May", language);
+  const juneText = useAutoTranslation("June", language);
+  const julyText = useAutoTranslation("July", language);
+  const augustText = useAutoTranslation("August", language);
+  const septemberText = useAutoTranslation("September", language);
+  const octoberText = useAutoTranslation("October", language);
+  const novemberText = useAutoTranslation("November", language);
+  const decemberText = useAutoTranslation("December", language);
+  const janText = useAutoTranslation("Jan", language);
+  const febText = useAutoTranslation("Feb", language);
+  const marText = useAutoTranslation("Mar", language);
+  const aprText = useAutoTranslation("Apr", language);
+  const mayShortText = useAutoTranslation("May", language);
+  const junText = useAutoTranslation("Jun", language);
+  const julText = useAutoTranslation("Jul", language);
+  const augText = useAutoTranslation("Aug", language);
+  const sepText = useAutoTranslation("Sep", language);
+  const octText = useAutoTranslation("Oct", language);
+  const novText = useAutoTranslation("Nov", language);
+  const decText = useAutoTranslation("Dec", language);
+
   //LIST OF BIDS SECTION
+  // Helper function to translate short month names
+  const translateShortMonth = (monthShort: string): string => {
+    const monthMap: { [key: string]: string } = {
+      Jan: janText,
+      Feb: febText,
+      Mar: marText,
+      Apr: aprText,
+      May: mayShortText,
+      Jun: junText,
+      Jul: julText,
+      Aug: augText,
+      Sep: sepText,
+      Oct: octText,
+      Nov: novText,
+      Dec: decText,
+    };
+    return monthMap[monthShort] || monthShort;
+  };
+
+  // Helper function to translate full month names
+  const translateFullMonth = (monthFull: string): string => {
+    const monthMap: { [key: string]: string } = {
+      January: januaryText,
+      February: februaryText,
+      March: marchText,
+      April: aprilText,
+      May: mayText,
+      June: juneText,
+      July: julyText,
+      August: augustText,
+      September: septemberText,
+      October: octoberText,
+      November: novemberText,
+      December: decemberText,
+    };
+    return monthMap[monthFull] || monthFull;
+  };
+
   const formatBidDate = (dateString: string) => {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
     const month = date.toLocaleString("en-US", { month: "short" });
+    const translatedMonth = translateShortMonth(month);
     const year = date.getFullYear();
     const hour = date.getHours().toString().padStart(2, "0");
     const minute = date.getMinutes().toString().padStart(2, "0");
-    return `${day} ${month} ${year}, ${hour}:${minute}`;
+    return `${day} ${translatedMonth} ${year}, ${hour}:${minute}`;
   };
 
   const onReport = (issueDetails: string) => {
     setIsReported(true);
-    toast(`Report submitted: ${issueDetails}`, { closeButton: true });
+    toast(`${reportSubmittedLabelText} ${issueDetails}`, { closeButton: true });
   };
 
   const handleReportSubmit = (categoryId: string, optionId?: string) => {
@@ -126,10 +301,10 @@ const BidDetails = () => {
     const selectedOption = selectedCategory?.options?.find((opt) => opt.id === optionId);
 
     const issueDetails = selectedOption
-      ? `Category: ${selectedCategory?.title} | Option: ${selectedOption.text} | Info: ${selectedOption.additionalInfo}`
+      ? `${categoryText} ${selectedCategory?.title} | ${optionText} ${selectedOption.text} | ${infoText} ${selectedOption.additionalInfo}`
       : selectedCategory
-      ? `Category: ${selectedCategory.title}`
-      : "Artwork contains inappropriate or offensive content.";
+      ? `${categoryText} ${selectedCategory.title}`
+      : inappropriateContentText;
 
     onReport(issueDetails);
     setShowReportOptions(false);
@@ -173,17 +348,17 @@ const BidDetails = () => {
       return "Invalid Date";
     }
 
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    return date.toLocaleDateString("en-US", options);
+    const monthName = date.toLocaleString("en-US", { month: "long" });
+    const translatedMonth = translateFullMonth(monthName);
+    const day = date.getDate();
+    const year = date.getFullYear();
+    
+    return `${translatedMonth} ${day}, ${year}`;
   };
 
   const handleBidSubmit = (amount: number) => {
     if (!item?.id) return;
-    toast.success(`Bid of ${amount}php placed successfully!`, { closeButton: true });
+    toast.success(`${bidPlacedSuccessText} ${amount}${phpPlacedText}`, { closeButton: true });
   };
 
   const handleLike = () => {
@@ -192,7 +367,7 @@ const BidDetails = () => {
 
   const handleHide = () => {
     setIsHidden(true);
-    toast("Artwork hidden", { closeButton: true });
+    toast(artworkHiddenText, { closeButton: true });
     setMenuOpen(false);
   };
   const handleReport = async ({
@@ -207,7 +382,7 @@ const BidDetails = () => {
     additionalInfo?: string;
   }) => {
     if (reportInfo?.reported) {
-      toast.error("You have already reported this auction.", { closeButton: true });
+      toast.error(alreadyReportedText, { closeButton: true });
       setMenuOpen(false);
       return;
     }
@@ -220,7 +395,7 @@ const BidDetails = () => {
         description,
         additionalInfo,
       });
-      toast.success("Report submitted successfully. Thank you for your feedback.", { closeButton: true });
+      toast.success(reportSubmittedText, { closeButton: true });
     } catch (error) {
       console.error("Auction report failed:", error);
     }
@@ -255,7 +430,7 @@ const BidDetails = () => {
           >
             <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
               <i className="bx bx-chevron-left text-lg mr-2"></i>
-              Bid Details
+              {bidDetailsText}
             </button>
           </div>
 
@@ -269,47 +444,21 @@ const BidDetails = () => {
                     <div className="absolute top-3 z-20 left-[-250px] hidden lg:block" style={{ width: "150px" }}>
                       {/* Left Side - Bids Sidebar */}
                       <div className="p-3 text-left rounded-sm">
-                        <h2 className="font-semibold text-xs mb-2">Bids</h2>
+                        <h2 className="font-semibold text-xs mb-2">{bidsText}</h2>
                         <div className="max-h-[440px] overflow-y-auto pr-1 flex flex-col gap-2">
                           {bids.length > 0 ? (
-                            bids.map((bid: any) => {
-                              const isAnonymous = bid.identity_type === "anonymous";
-                              const profilePicture =
-                                !isAnonymous && bid.user?.profile_picture ? bid.user.profile_picture : null;
-                              const avatarLetter = (bid.bidderFullName?.charAt(0) || "A").toUpperCase();
-
-                              return (
-                                <div key={bid.id || bid.timestamp} className="flex items-center gap-2">
-                                  {profilePicture ? (
-                                    <img
-                                      src={profilePicture}
-                                      alt={bid.bidderFullName || "Bidder"}
-                                      className="w-4 h-4 rounded-full object-cover border"
-                                    />
-                                  ) : (
-                                    <div className="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center text-[8px] font-semibold text-gray-700 border">
-                                      {avatarLetter}
-                                    </div>
-                                  )}
-                                  <div>
-                                    <span className="font-semibold text-[11px] mr-1">
-                                      <i className="bx bx-money text-[8px] text-gray-400"></i>{" "}
-                                      {formatAmount(bid.amount)}
-                                    </span>
-                                    <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
-                                      by <p className="font-medium text-gray-700">{bid.bidderFullName}</p>
-                                      {/* {isOwner && (
-                                          <span className="ml-1 text-[9px] text-gray-400">
-                                            {formatBidDate(bid.timestamp)}
-                                          </span>
-                                        )} */}
-                                    </span>
-                                  </div>
-                                </div>
-                              );
-                            })
+                            bids.map((bid: any) => (
+                              <BidItem
+                                key={bid.id || bid.timestamp}
+                                bid={bid}
+                                byText={byText}
+                                isOwner={isOwner}
+                                formatBidDate={formatBidDate}
+                                isMobile={false}
+                              />
+                            ))
                           ) : (
-                            <div className="text-[11px] text-gray-400">No bids yet.</div>
+                            <div className="text-[11px] text-gray-400">{noBidsYetText}</div>
                           )}
                         </div>
                       </div>
@@ -342,7 +491,7 @@ const BidDetails = () => {
                         >
                           <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
                           <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
-                            Expand
+                            {expandText}
                           </span>
                         </div>
                       </div>
@@ -400,7 +549,7 @@ const BidDetails = () => {
                             try {
                               await closeAuction.mutateAsync(item.id);
                             } catch {
-                              toast.error("Failed to close bidding");
+                              toast.error(failedToCloseBiddingText);
                             } finally {
                               setMenuOpen(false);
                             }
@@ -433,7 +582,7 @@ const BidDetails = () => {
                   </div>
 
                   <h1 className={`${isMobile ? "text-lg" : "text-xl"} font-bold mb-2`}>
-                    {item.artwork.title || "No artwork name"}
+                    {translatedArtworkTitle || noArtworkNameText}
                   </h1>
 
                   <p className={`${isMobile ? "text-[10px]" : "text-[10px]"} text-gray-600 mb-1`}>
@@ -441,7 +590,7 @@ const BidDetails = () => {
                       style={{ cursor: "pointer" }}
                       onClick={() => navigate(`/userprofile/${item.artwork.artist_id}`)}
                     >
-                      by {item.artwork.artist || "Unknown"}
+                      {byText} {translatedArtistName || unknownText}
                     </span>
                   </p>
 
@@ -459,7 +608,7 @@ const BidDetails = () => {
                     `}
                       style={{ lineHeight: "1.25rem" }}
                     >
-                      {item.artwork.description || "No description available."}
+                      {translatedDescription || noDescriptionText}
                     </div>
 
                     {isOverflowing && (
@@ -467,7 +616,7 @@ const BidDetails = () => {
                         onClick={() => setShowFullDescription((prev) => !prev)}
                         className="text-[9px] text-blue-500 hover:underline mt-1 block"
                       >
-                        {showFullDescription ? "Hide" : "Show More"}
+                        {showFullDescription ? hideText : showMoreText}
                       </button>
                     )}
                   </div>
@@ -475,25 +624,26 @@ const BidDetails = () => {
                   {/* Horizontal Sidebar Info */}
                   <div className="w-full py-3 mb-4 grid grid-cols-4 gap-4 text-center">
                     <div>
-                      <h3 className="text-[10px] font-medium">Artwork Style</h3>
+                      <h3 className="text-[10px] font-medium">{artworkStyleText}</h3>
                       <p className="text-[10px] text-gray-700">
-                        {(item.artwork.category || "Painting").charAt(0).toUpperCase() +
-                          (item.artwork.category || "Painting").slice(1)}
+                        {translatedCategory
+                          ? translatedCategory.charAt(0).toUpperCase() + translatedCategory.slice(1)
+                          : paintingText}
                       </p>
                     </div>
 
                     <div>
-                      <h3 className="text-[9px] font-medium">Medium</h3>
-                      <p className="text-[9px] text-gray-700">{item.artwork.medium || "Acrylic Paint"}</p>
+                      <h3 className="text-[9px] font-medium">{mediumText}</h3>
+                      <p className="text-[9px] text-gray-700">{translatedMedium || acrylicPaintText}</p>
                     </div>
 
                     <div>
-                      <h3 className="text-[9px] font-medium">Dimensions</h3>
-                      <p className="text-[9px] text-gray-700">{item.artwork.size || "No Size"} cm</p>
+                      <h3 className="text-[9px] font-medium">{dimensionsText}</h3>
+                      <p className="text-[9px] text-gray-700">{item.artwork.size || noSizeText} {cmText}</p>
                     </div>
 
                     <div>
-                      <h3 className="text-[9px] font-medium">Date Posted</h3>
+                      <h3 className="text-[9px] font-medium">{datePostedText}</h3>
                       <p className="text-[9px] text-gray-700">
                         {item.artwork.created_at ? formatDate(item.artwork.created_at) : "March 25, 2023"}
                       </p>
@@ -503,11 +653,11 @@ const BidDetails = () => {
                   <div className="w-full border px-10 py-4 rounded-xl flex justify-between items-center text-center mt-4 mb-2">
                     {/* Highest Bid */}
                     <div className="flex-1">
-                      <p className="text-[10px] text-gray-500 mb-2 -mt-2">Highest Bid</p>
+                      <p className="text-[10px] text-gray-500 mb-2 -mt-2">{highestBidText}</p>
                       <p className="text-lg font-semibold">
                         {item.highest_bid && item.highest_bid.amount != null
                           ? `₱${formatAmount(item.highest_bid.amount)}`
-                          : "No bids yet"}
+                          : noBidsText}
                       </p>
                     </div>
 
@@ -517,7 +667,16 @@ const BidDetails = () => {
                     {/* Auction Timer */}
                     <div>
                       <div className="" style={{ minWidth: "140px", display: "inline-block" }}>
-                        <AuctionCountdown startTime={item.start_time} endTime={item.end_time} />
+                        <AuctionCountdown
+                          startTime={item.start_time}
+                          endTime={item.end_time}
+                          auctionEndsInText={auctionEndsInText}
+                          hrsText={hrsText}
+                          minsText={minsText}
+                          secsText={secsText}
+                          auctionWillStartOnText={auctionWillStartOnText}
+                          auctionHasEndedText={auctionHasEndedText}
+                        />
                       </div>
                     </div>
                   </div>
@@ -533,7 +692,7 @@ const BidDetails = () => {
                       item.status !== "on_going" ? "bg-gray-400 cursor-not-allowed" : "bg-red-800 hover:bg-red-700"
                     }`}
                   >
-                    {item.status === "on_going" ? "Place A Bid" : "Auction Closed"}
+                    {item.status === "on_going" ? placeABidText : auctionClosedText}
                   </button>
                 </div>
 
@@ -541,46 +700,21 @@ const BidDetails = () => {
                 {isMobile && (
                   <div className="mt-6 w-full px-1">
                     <div className="border rounded-lg p-3 text-left">
-                      <h2 className="font-semibold text-xs mb-2">Bids</h2>
+                      <h2 className="font-semibold text-xs mb-2">{bidsText}</h2>
                       <div className="max-h-[300px] overflow-y-auto pr-1 flex flex-col gap-2">
                         {bids.length > 0 ? (
-                          bids.map((bid: any) => {
-                            const isAnonymous = bid.identity_type === "anonymous";
-                            const profilePicture =
-                              !isAnonymous && bid.user?.profile_picture ? bid.user.profile_picture : null;
-                            const avatarLetter = (bid.bidderFullName?.charAt(0) || "A").toUpperCase();
-
-                            return (
-                              <div key={bid.id || bid.timestamp} className="flex items-center gap-2">
-                                {profilePicture ? (
-                                  <img
-                                    src={profilePicture}
-                                    alt={bid.bidderFullName || "Bidder"}
-                                    className="w-5 h-5 rounded-full object-cover border"
-                                  />
-                                ) : (
-                                  <div className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center text-[10px] font-semibold text-gray-700 border">
-                                    {avatarLetter}
-                                  </div>
-                                )}
-                                <div>
-                                  <span className="font-semibold text-[11px] mr-1">
-                                    <i className="bx bx-money text-[8px] text-gray-400"></i> {formatAmount(bid.amount)}
-                                  </span>
-                                  <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
-                                    by <p className="font-medium text-gray-700">{bid.bidderFullName}</p>
-                                    {isOwner && (
-                                      <span className="ml-1 text-[9px] text-gray-400">
-                                        {formatBidDate(bid.timestamp)}
-                                      </span>
-                                    )}
-                                  </span>
-                                </div>
-                              </div>
-                            );
-                          })
+                          bids.map((bid: any) => (
+                            <BidItem
+                              key={bid.id || bid.timestamp}
+                              bid={bid}
+                              byText={byText}
+                              isOwner={isOwner}
+                              formatBidDate={formatBidDate}
+                              isMobile={true}
+                            />
+                          ))
                         ) : (
-                          <div className="text-[11px] text-gray-400">No bids yet.</div>
+                          <div className="text-[11px] text-gray-400">{noBidsYetText}</div>
                         )}
                       </div>
                     </div>
@@ -593,8 +727,8 @@ const BidDetails = () => {
           {/* Related Bids Section */}
           {relatedBids.length > 0 ? (
             <div className="container md:px-6 mt-2 mb-2">
-              <h2 className={`font-medium ${isMobile ? "text-xs mt-8 mb-4 -ml-3" : "text-xs mt-6 mb-6"}`}>
-                Related Bids
+              <h2 className={`font-medium border ${isMobile ? "text-xs mt-8 mb-4 -ml-3" : "text-xs mt-6 mb-6"}`}>
+                {relatedBidsText}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {relatedBids.map((art) => (
@@ -613,8 +747,8 @@ const BidDetails = () => {
             </div>
           ) : (
             <div className="container md:px-6 mt-2 mb-2">
-              <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>Related Bids</h2>
-              <p className="text-gray-500 text-xs mb-2">No related bids found.</p>
+              <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>{relatedBidsText}</h2>
+              <p className="text-gray-500 text-xs mb-2">{noRelatedBidsText}</p>
             </div>
           )}
 
