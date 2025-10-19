@@ -156,7 +156,7 @@ const Header = () => {
           {/* Chat */}
           <div className="relative top-0.5" ref={chatRef}>
             <button
-              className="button-icon hover:scale-110 transition"
+              className="button-icon"
               title={useAutoTranslation("Chat", language)}
               onClick={() => {
                 if (isChatOpen) closeChat();
@@ -197,7 +197,7 @@ const Header = () => {
           {/* Notifications */}
           <div className="relative top-0.5" ref={notificationRef}>
             <button
-              className="button-icon hover:scale-110 transition"
+              className="button-icon"
               title={useAutoTranslation("Notifications", language)}
               onClick={() => {
                 if (isNotificationOpen) setIsNotificationOpen(false);
