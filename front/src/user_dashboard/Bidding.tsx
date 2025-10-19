@@ -108,7 +108,6 @@ const Bidding = () => {
         return true;
       });
     }
-
     return activeArtworks;
   }, [biddingArtworks, followedAuctions, searchQuery, selectedFilterCategory, selectedArtCategory]);
 

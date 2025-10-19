@@ -29,6 +29,7 @@ import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 
 const Marketplace = () => {
   const queryClient = useQueryClient();
@@ -40,6 +41,9 @@ const Marketplace = () => {
   const [reportedArtworks, setReportedArtworks] = useState<Set<string>>(new Set());
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const { data: trendingArtworks = [] } = useTrendingArtworks();
+
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
 
   // Translation hooks
   const { language } = useLanguage();
@@ -105,57 +109,57 @@ const Marketplace = () => {
   const handleArtCategoryChange = (category: string) => setSelectedArtCategory(category);
   const handleSortChange = (option: string) => setSelectedSort(option);
 
-  const filteredArtCards =
-    selectedCategoryFilter === "Following"
-      ? (followedArtworksData?.artworks ?? []).filter((art: any) => {
-          // Only show artworks that are onSale and Public
-          const status = (art.art_status || "").toLowerCase();
-          const visibility = (art.visibility || "").toLowerCase();
+  const filteredArtCards = React.useMemo(() => {
+    let filtered =
+      selectedCategoryFilter === "Following"
+        ? (followedArtworksData?.artworks ?? []).filter((art: any) => {
+            // Only show artworks that are onSale and Public
+            const status = (art.art_status || "").toLowerCase();
+            const visibility = (art.visibility || "").toLowerCase();
 
-          // Explicitly exclude sold artworks
-          if (status === "sold") return false;
+            // Explicitly exclude sold artworks
+            if (status === "sold") return false;
 
-          // Only include onSale artworks (handle both "onSale" and "onsale" cases)
-          if (status !== "onsale" && status !== "active") return false;
+            // Only include onSale artworks (handle both "onSale" and "onsale" cases)
+            if (status !== "onsale" && status !== "active") return false;
 
-          // Only include Public artworks
-          if (visibility !== "public") return false;
+            // Only include Public artworks
+            if (visibility !== "public") return false;
 
-          // Additional filters
-          if (
-            selectedArtCategory !== "All" &&
-            art.category?.trim().toLowerCase() !== selectedArtCategory.trim().toLowerCase()
-          )
-            return false;
-          if (selectedEdition !== "All" && art.edition !== selectedEdition) return false;
-          return true;
-        })
-      : selectedCategoryFilter === "Trending"
-      ? (trendingArtworks ?? []).filter((artwork: any) => {
-          // Only show artworks that are onSale and Public
-          const status = (artwork.art_status || "").toLowerCase();
-          const visibility = (artwork.visibility || "").toLowerCase();
+            // Additional filters
+            if (
+              selectedArtCategory !== "All" &&
+              art.category?.trim().toLowerCase() !== selectedArtCategory.trim().toLowerCase()
+            )
+              return false;
+            if (selectedEdition !== "All" && art.edition !== selectedEdition) return false;
+            return true;
+          })
+        : selectedCategoryFilter === "Trending"
+        ? (trendingArtworks ?? []).filter((artwork: any) => {
+            // Only show artworks that are onSale and Public
+            const status = (artwork.art_status || "").toLowerCase();
+            const visibility = (artwork.visibility || "").toLowerCase();
 
-          // Explicitly exclude sold artworks
-          if (status === "sold") return false;
+            // Explicitly exclude sold artworks
+            if (status === "sold") return false;
 
-          // Only include onSale artworks (handle both "onSale" and "onsale" cases)
-          if (status !== "onsale" && status !== "active") return false;
+            // Only include onSale artworks (handle both "onSale" and "onsale" cases)
+            if (status !== "onsale" && status !== "active") return false;
 
-          // Only include Public artworks
-          if (visibility !== "public") return false;
+            // Only include Public artworks
+            if (visibility !== "public") return false;
 
-          // Additional filters
-          if (
-            selectedArtCategory !== "All" &&
-            artwork.category?.trim().toLowerCase() !== selectedArtCategory.trim().toLowerCase()
-          )
-            return false;
-          if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
-          return true;
-        })
-      : safeArtCards
-          .filter((artwork: any) => {
+            // Additional filters
+            if (
+              selectedArtCategory !== "All" &&
+              artwork.category?.trim().toLowerCase() !== selectedArtCategory.trim().toLowerCase()
+            )
+              return false;
+            if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
+            return true;
+          })
+        : safeArtCards.filter((artwork: any) => {
             // Only show artworks that are onSale and Public
             const status = (artwork.art_status || "").toLowerCase();
             const visibility = (artwork.visibility || "").toLowerCase();
@@ -178,18 +182,40 @@ const Marketplace = () => {
             if (selectedEdition !== "All" && artwork.edition !== selectedEdition) return false;
 
             return true;
-          })
-          .sort((a, b) => {
-            if (selectedSort === "Price: Low to High") {
-              return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
-            } else if (selectedSort === "Price: High to Low") {
-              return (b.discounted_price ?? b.price) - (a.discounted_price ?? a.price);
-            } else if (selectedSort === "Most Popular") {
-              return (b.total_ratings ?? 0) - (a.total_ratings ?? 0);
-            } else {
-              return 0;
-            }
           });
+
+    // Apply search filter
+    if (searchQuery?.trim()) {
+      const queryLower = searchQuery.toLowerCase();
+      filtered = filtered.filter((artwork: any) => {
+        const title = (artwork.title || "").toLowerCase();
+        const artist = (artwork.artist || "").toLowerCase();
+        return title.includes(queryLower) || artist.includes(queryLower);
+      });
+    }
+
+    // Apply sorting
+    return filtered.sort((a, b) => {
+      if (selectedSort === "Price: Low to High") {
+        return (a.discounted_price ?? a.price) - (b.discounted_price ?? b.price);
+      } else if (selectedSort === "Price: High to Low") {
+        return (b.discounted_price ?? b.price) - (a.discounted_price ?? a.price);
+      } else if (selectedSort === "Most Popular") {
+        return (b.total_ratings ?? 0) - (a.total_ratings ?? 0);
+      } else {
+        return 0;
+      }
+    });
+  }, [
+    selectedCategoryFilter,
+    followedArtworksData,
+    trendingArtworks,
+    safeArtCards,
+    selectedArtCategory,
+    selectedEdition,
+    searchQuery,
+    selectedSort,
+  ]);
 
   const handleCardClick = (artwork: Artwork) => {
     setSelectedArtwork(artwork);

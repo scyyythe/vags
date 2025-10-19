@@ -70,18 +70,27 @@ const Header = () => {
   };
 
   const handleSearchChange = (value: string) => {
-    if (!value.trim()) return;
-
-    const params = new URLSearchParams();
-    params.set("q", value);
-
     const isExplorePage = currentPath.includes("/explore");
-    const isBiddingPage = currentPath.includes("/bidding");
+    const isBiddingPage = currentPath.includes("/auctions");
     const isExhibitPage = currentPath.includes("/exhibits");
     const isMarketplacePage = currentPath.includes("/marketplace");
 
+    // If value is empty, navigate without search params to clear the search
+    if (!value.trim()) {
+      if (isExplorePage) navigate("/explore");
+      else if (isBiddingPage) navigate("/auctions");
+      else if (isExhibitPage) navigate("/exhibits");
+      else if (isMarketplacePage) navigate("/marketplace");
+      setSearchQuery("");
+      return;
+    }
+
+    // If value has content, add search params
+    const params = new URLSearchParams();
+    params.set("q", value);
+
     if (isExplorePage) navigate(`/explore?${params.toString()}`);
-    else if (isBiddingPage) navigate(`/bidding?${params.toString()}`);
+    else if (isBiddingPage) navigate(`/auctions?${params.toString()}`);
     else if (isExhibitPage) navigate(`/exhibits?${params.toString()}`);
     else if (isMarketplacePage) navigate(`/marketplace?${params.toString()}`);
 
