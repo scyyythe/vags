@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { Flag, Share2, Search, Undo2 } from "lucide-react";
 import { toast } from "sonner";
@@ -18,6 +18,11 @@ interface SellCardMenuProps {
   artworkId?: string;
   onUndoReport?: () => void;
   className?: string;
+  positionOffset?: {
+    top?: number;
+    left?: number;
+    marginTop?: number;
+  };
 }
 
 const SellCardMenu: React.FC<SellCardMenuProps> = ({
@@ -27,11 +32,14 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
   artworkId,
   onUndoReport,
   className,
+  positionOffset = { top: 8, left: -8, marginTop: -2 },
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showReportOptions, setShowReportOptions] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const { handleUndoReport: undoArtworkReport } = useUndoArtworkReport();
 
@@ -43,6 +51,17 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
   const undoReportText = useAutoTranslation("Undo Report", language);
   const noArtworkIdText = useAutoTranslation("No artwork ID provided", language);
   const showingSimilarText = useAutoTranslation("Showing similar artworks...", language);
+
+  // Calculate position for portal
+  useEffect(() => {
+    if (isOpen && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.bottom + window.scrollY + (positionOffset.top || 8),
+        left: rect.left + window.scrollX + (positionOffset.left || -8),
+      });
+    }
+  }, [isOpen, positionOffset]);
 
   const handleReportSubmit = (categoryId: string, optionData?: ReportOption | string) => {
     const selectedCategory = reportCategories.find((cat) => cat.id === categoryId);
@@ -69,71 +88,82 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
     setShowReportOptions(false);
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) return <div ref={triggerRef} className={className} />;
 
   return (
     <>
-      <div
-        ref={menuRef}
-        className={`absolute z-10 bg-gray-100 rounded-full py-1 px-1.5 shadow-md ${className}`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex flex-col items-start">
-          {/* Share */}
-          <MenuItem
-            icon={<Share2 size={10} />}
-            label={shareText}
-            onHover={setHoveredItem}
-            hoveredItem={hoveredItem}
-            itemId="share"
-            onClick={(e) => setShowShareModal(true)}
-          />
+      <div ref={triggerRef} className={className} />
+      {typeof document !== "undefined" &&
+        ReactDOM.createPortal(
+          <div
+            ref={menuRef}
+            className="absolute z-[9999] bg-gray-100 rounded-full py-1 px-1.5 shadow-md"
+            style={{
+              top: position.top,
+              left: position.left,
+              zIndex: 9999,
+              marginTop: positionOffset.marginTop || -2,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col items-start">
+              {/* Share */}
+              <MenuItem
+                icon={<Share2 size={10} />}
+                label={shareText}
+                onHover={setHoveredItem}
+                hoveredItem={hoveredItem}
+                itemId="share"
+                onClick={(e) => setShowShareModal(true)}
+              />
 
-          {/* Share Modal */}
-          <ShareModal isOpen={showShareModal} onClose={() => setShowShareModal(false)} linkToShare={shareUrl} />
+              {/* Share Modal */}
+              <ShareModal isOpen={showShareModal} onClose={() => setShowShareModal(false)} linkToShare={shareUrl} />
 
-          {/* Find Similar */}
-          {/* <MenuItem
-            icon={<Search size={10} />}
-            label={findSimilarText}
-            onHover={setHoveredItem}
-            hoveredItem={hoveredItem}
-            itemId="similar"
-            onClick={() => toast.info(showingSimilarText)}
-          /> */}
+              {/* Find Similar */}
+              {/* <MenuItem
+                icon={<Search size={10} />}
+                label={findSimilarText}
+                onHover={setHoveredItem}
+                hoveredItem={hoveredItem}
+                itemId="similar"
+                onClick={() => toast.info(showingSimilarText)}
+              /> */}
 
-          {/* Report */}
-          <MenuItem
-            icon={<Flag size={10} fill={isReported ? "red" : "none"} stroke={isReported ? "red" : "currentColor"} />}
-            label={reportText}
-            onHover={setHoveredItem}
-            hoveredItem={hoveredItem}
-            itemId="report"
-            onClick={(e) => setShowReportOptions(true)}
-          />
+              {/* Report */}
+              <MenuItem
+                icon={<Flag size={10} fill={isReported ? "red" : "none"} stroke={isReported ? "red" : "currentColor"} />}
+                label={reportText}
+                onHover={setHoveredItem}
+                hoveredItem={hoveredItem}
+                itemId="report"
+                onClick={(e) => setShowReportOptions(true)}
+              />
 
-          {/* Undo Report - Only show when content is reported */}
-          {isReported && artworkId && (
-            <MenuItem
-              icon={<Undo2 size={10} stroke="currentColor" />}
-              label={undoReportText}
-              onHover={setHoveredItem}
-              hoveredItem={hoveredItem}
-              itemId="undoReport"
-              onClick={(e) => {
-                if (!artworkId) {
-                  toast.error(noArtworkIdText);
-                  return;
-                }
-                undoArtworkReport(e, artworkId, onUndoReport, () => {
-                  // Revert function - this will be called if undo fails
-                  console.log("Undo failed, reverting local state");
-                });
-              }}
-            />
-          )}
-        </div>
-      </div>
+              {/* Undo Report - Only show when content is reported */}
+              {isReported && artworkId && (
+                <MenuItem
+                  icon={<Undo2 size={10} stroke="currentColor" />}
+                  label={undoReportText}
+                  onHover={setHoveredItem}
+                  hoveredItem={hoveredItem}
+                  itemId="undoReport"
+                  onClick={(e) => {
+                    if (!artworkId) {
+                      toast.error(noArtworkIdText);
+                      return;
+                    }
+                    undoArtworkReport(e, artworkId, onUndoReport, () => {
+                      // Revert function - this will be called if undo fails
+                      console.log("Undo failed, reverting local state");
+                    });
+                  }}
+                />
+              )}
+            </div>
+          </div>,
+          document.body
+        )}
 
       {/* Report Options */}
       {showReportOptions &&

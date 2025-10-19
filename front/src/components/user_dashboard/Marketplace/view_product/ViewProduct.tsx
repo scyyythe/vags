@@ -407,6 +407,7 @@ const ProductViewingContent = () => {
                     isReported={localIsReported}
                     artworkId={id}
                     onUndoReport={handleUndoReport}
+                    positionOffset={{ top: 1, left: -4, marginTop: 0 }}
                     onReport={(data) => {
                       if (!id) return;
 
