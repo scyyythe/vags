@@ -7,11 +7,20 @@ import { usePurchase } from "@/context/PurchaseContext";
 import usePurchaseArtwork from "@/hooks/purchase/usePurchaseArtwork";
 import useUpdateArtwork from "@/hooks/mutate/artwork/useArtworkMutate";
 import { usePayPalPurchase } from "@/hooks/paypal/usePayPalPurchase";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useArtistPaymentAccounts, type PaymentAccount } from "@/hooks/accounts/useArtistPaymentAccounts";
 import { PurchaseProvider } from "@/context/PurchaseContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import {
+  usePurchaseOrder,
+  useUpdatePurchaseOrder,
+  useCancelPurchaseOrder,
+  convertPurchaseOrderToPayload,
+} from "@/hooks/purchase/usePurchaseOrder";
+import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
+import { getLoggedInUserId } from "@/auth/decode";
+import { usePayPalPurchaseOrder } from "@/hooks/paypal/usePayPalPurchaseOrder";
 
 import { toast } from "sonner";
 interface ReviewPurchaseProps {
@@ -52,6 +61,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   artwork,
 }) => {
   const navigate = useNavigate();
+  const { orderId } = useParams<{ orderId: string }>();
   const { artwork: contextArtwork, clearArtwork } = usePurchase();
   const { data: defaultAddress, isLoading: isAddressLoading } = useDefaultAddress();
   const { artwork: purchasedArtwork } = usePurchase();
@@ -60,6 +70,14 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   const [step, setStep] = useState<"review" | "paypal">("review");
   const [showReceiptPopup, setShowReceiptPopup] = useState(false);
   const [paymentValidationError, setPaymentValidationError] = useState<string | null>(null);
+
+  // Fetch purchase order data
+  const { data: purchaseOrder, isLoading: isOrderLoading, error: orderError } = usePurchaseOrder(orderId || "");
+  const updatePurchaseOrderMutation = useUpdatePurchaseOrder();
+  const cancelPurchaseOrderMutation = useCancelPurchaseOrder();
+
+  // Fetch artwork details if we have a purchase order
+  const { data: artworkDetails, isLoading: isArtworkLoading } = useFetchArtworkById(purchaseOrder?.artwork || "");
 
   // Language and translation
   const { language } = useLanguage();
@@ -235,18 +253,12 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   };
 
   const handleSubmit = async () => {
-    const defaultArtwork = artwork || purchasedArtwork;
-    const paymentMethod = defaultPaymentMethod?.type; // e.g. "Stripe", "GCash", etc.
-
-    if (!finalAddress || !defaultArtwork?.id || !paymentMethod) {
-      console.error("Missing required information.", {
-        finalAddress,
-        defaultArtwork,
-        paymentMethod,
-      });
+    if (!purchaseOrder || !finalAddress || !defaultPaymentMethod?.type) {
       toast.error(missingInfoText);
       return;
     }
+
+    const paymentMethod = defaultPaymentMethod.type;
 
     // Check if artist ID is available for payment validation
     if (!artistId) {
@@ -266,46 +278,47 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
     // Clear any previous validation errors
     setPaymentValidationError(null);
 
-    // If PayPal → go to PayPal flow
-    if (paymentMethod === "PayPal") {
-      setStep("paypal");
-      return;
-    }
-
-    // If GCash → show receipt popup
-    if (paymentMethod === "GCash") {
-      setShowReceiptPopup(true);
-      setTimeout(() => {
-        setShowReceiptPopup(false);
-      }, 10000);
-    }
-
-    // Otherwise (Stripe, Credit Card) → normal purchase API
-    const payload = {
-      artwork_id: defaultArtwork.id,
-      payment_method: paymentMethod,
-      is_paid: true,
-      quantity: defaultArtwork.quantity || 1,
-      shipping_address: {
-        name: finalAddress.name,
-        address: finalAddress.address,
-        city: finalAddress.city,
-        state: finalAddress.state || "N/A",
-        country: "Philippines",
-        postal_code: finalAddress.postalCode || "0000",
-        phone: finalAddress.phone || "0000-000-0000",
-      },
-    };
-
     try {
-      console.log("Submitting purchase payload:", payload);
+      // Update purchase order with shipping and payment details
+      await updatePurchaseOrderMutation.mutateAsync({
+        orderId: purchaseOrder.id,
+        data: {
+          shipping_address: {
+            name: finalAddress.name,
+            address: finalAddress.address,
+            city: finalAddress.city,
+            state: finalAddress.state || "N/A",
+            country: "Philippines",
+            postal_code: finalAddress.postalCode || "0000",
+            phone: finalAddress.phone || "0000-000-0000",
+          },
+          payment_method: paymentMethod,
+          is_paid: true,
+        },
+      });
 
-      await purchaseMutation.mutateAsync(payload);
+      // If PayPal → go to PayPal flow
+      if (paymentMethod === "PayPal") {
+        setStep("paypal");
+        return;
+      }
+
+      // If GCash → show receipt popup
+      if (paymentMethod === "GCash") {
+        setShowReceiptPopup(true);
+        setTimeout(() => {
+          setShowReceiptPopup(false);
+        }, 10000);
+      }
+
+      // For other payment methods, the purchase order is already updated above
+      // No need to create a new purchase since we're using the purchase order system
 
       toast.success(purchaseSuccessText);
 
       // Clear the artwork data from context and localStorage
       clearArtwork();
+      localStorage.removeItem("current_purchase_order_id");
 
       const userId = localStorage.getItem("user_id");
       if (userId) {
@@ -317,7 +330,20 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
           },
         });
       } else {
-        navigate("/marketplace");
+        // Redirect to My Purchase tab with Paid filter
+        const currentUserId = getLoggedInUserId();
+        if (currentUserId) {
+          navigate(`/userprofile/${currentUserId}`, {
+            state: {
+              activeTab: "onSale",
+              mainTab: "myPurchase",
+              activeSubGroup: "purchasedArtworks",
+              subTab: "paid",
+            },
+          });
+        } else {
+          navigate("/marketplace");
+        }
       }
     } catch (error: any) {
       console.error("Purchase Error Full:", error?.response?.data || error);
@@ -343,23 +369,42 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       details: "(display the major short details of the payment method)",
     };
 
-  const defaultArtwork = contextArtwork ||
-    artwork ||
-    purchasedArtwork || {
-      id: "placeholder-id",
-      artworkImage: "/placeholder.svg?height=200&width=200",
-      title: "Butterfly",
-      artist: "Angie Canete",
-      size: "11 x 8.5 inches",
-      style: "Painting",
-      medium: "Canvas",
-      edition: "Limited Edition",
-      yearCreated: 2025,
-      price: 100000,
-      originalPrice: 100000,
-      default_paypal_email: "no email provided",
-      quantity: 1,
-    };
+  // Use purchase order data if available, otherwise fallback to context
+  const defaultArtwork = purchaseOrder
+    ? {
+        id: purchaseOrder.artwork,
+        artworkImage: Array.isArray(artworkDetails?.image_url)
+          ? artworkDetails.image_url[0]
+          : artworkDetails?.image_url || "/placeholder.svg?height=200&width=200",
+        title: artworkDetails?.title || "Loading...",
+        artist: artworkDetails?.artist || artworkDetails?.artistName || "Loading...",
+        size: artworkDetails?.size || "Loading...",
+        style: artworkDetails?.category || artworkDetails?.style || "Loading...",
+        medium: artworkDetails?.medium || "Loading...",
+        edition: "Limited Edition", // This field doesn't exist in the Artwork interface
+        yearCreated: 2025, // This field doesn't exist in the Artwork interface
+        price: purchaseOrder.total_price,
+        originalPrice: purchaseOrder.total_price,
+        default_paypal_email: artworkDetails?.default_paypal_email || "no email provided",
+        quantity: purchaseOrder.quantity,
+      }
+    : contextArtwork ||
+      artwork ||
+      purchasedArtwork || {
+        id: "placeholder-id",
+        artworkImage: "/placeholder.svg?height=200&width=200",
+        title: "Butterfly",
+        artist: "Angie Canete",
+        size: "11 x 8.5 inches",
+        style: "Painting",
+        medium: "Canvas",
+        edition: "Limited Edition",
+        yearCreated: 2025,
+        price: 100000,
+        originalPrice: 100000,
+        default_paypal_email: "no email provided",
+        quantity: 1,
+      };
 
   // Translation for fetched artwork data
   const translatedArtworkTitle = useAutoTranslation(defaultArtwork?.title || "", language);
@@ -373,29 +418,56 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   const translatedAddressCity = useAutoTranslation(displayAddress?.city || "", language);
   const translatedAddressLine = useAutoTranslation(displayAddress?.address || "", language);
 
-  const { paypalRef, startPayment } = usePayPalPurchase({
+  const { paypalRef, startPayment } = usePayPalPurchaseOrder({
     amount: defaultArtwork?.price || 0, // Price is already the total (price × quantity)
-    buyerId: localStorage.getItem("user_id")!,
-    artworkId: defaultArtwork?.id || "",
     defaultPayPalEmail: defaultArtwork?.default_paypal_email || "",
-    onSuccess: (details) => {
-      toast.success(paymentSuccessText);
+    onSuccess: async (details) => {
+      try {
+        // Update the existing purchase order to mark it as paid
+        if (purchaseOrder) {
+          await updatePurchaseOrderMutation.mutateAsync({
+            orderId: purchaseOrder.id,
+            data: {
+              is_paid: true,
+            },
+          });
+        }
 
-      // Clear the artwork data from context and localStorage
-      clearArtwork();
+        toast.success(paymentSuccessText);
 
-      // Navigate to user profile with MY PURCHASE tab and Paid subtab selected
-      const userId = localStorage.getItem("user_id");
-      if (userId) {
-        navigate(`/userprofile/${userId}`, {
-          state: {
-            mainTab: "myPurchase",
-            subTab: "paid",
-            activeSubGroup: "listings",
-          },
-        });
-      } else {
-        navigate("/marketplace");
+        // Clear the artwork data from context and localStorage
+        clearArtwork();
+        localStorage.removeItem("current_purchase_order_id");
+
+        // Navigate to user profile with MY PURCHASE tab and Paid subtab selected
+        const userId = localStorage.getItem("user_id");
+        if (userId) {
+          navigate(`/userprofile/${userId}`, {
+            state: {
+              mainTab: "myPurchase",
+              subTab: "paid",
+              activeSubGroup: "listings",
+            },
+          });
+        } else {
+          // Redirect to My Purchase tab with Paid filter
+          const currentUserId = getLoggedInUserId();
+          if (currentUserId) {
+            navigate(`/userprofile/${currentUserId}`, {
+              state: {
+                activeTab: "onSale",
+                mainTab: "myPurchase",
+                activeSubGroup: "purchasedArtworks",
+                subTab: "paid",
+              },
+            });
+          } else {
+            navigate("/marketplace");
+          }
+        }
+      } catch (error) {
+        console.error("Failed to update purchase order after PayPal payment:", error);
+        toast.error("Payment successful but failed to update order. Please contact support.");
       }
     },
     onError: (err) => {
@@ -428,6 +500,128 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       document.body.style.overflow = "";
     };
   }, [showReceiptPopup]);
+
+  // Loading state
+  if (isOrderLoading || isArtworkLoading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="container mx-auto px-4 pt-20 max-w-6xl">
+          <div className="mb-8">
+            <div className="flex items-center text-sm font-semibold">
+              <div className="w-4 h-4 bg-gray-300 rounded mr-2 animate-pulse"></div>
+              <div className="h-4 w-32 bg-gray-300 rounded animate-pulse"></div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 px-6">
+            {/* Left Column Skeleton */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Address Section Skeleton */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="space-y-2">
+                    <div className="h-3 w-24 bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-3 w-48 bg-gray-300 rounded animate-pulse"></div>
+                  </div>
+                  <div className="h-3 w-12 bg-gray-300 rounded animate-pulse"></div>
+                </div>
+                <div className="h-3 w-full bg-gray-300 rounded animate-pulse"></div>
+              </div>
+
+              {/* Payment Method Section Skeleton */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="h-3 w-24 bg-gray-300 rounded animate-pulse"></div>
+                  <div className="h-3 w-12 bg-gray-300 rounded animate-pulse"></div>
+                </div>
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-8 h-8 bg-gray-300 rounded animate-pulse"></div>
+                  <div className="h-3 w-16 bg-gray-300 rounded animate-pulse"></div>
+                </div>
+                <div className="h-3 w-40 bg-gray-300 rounded animate-pulse"></div>
+              </div>
+
+              {/* Buyer Protection Skeleton */}
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 bg-gray-300 rounded animate-pulse"></div>
+                <div className="h-3 w-32 bg-gray-300 rounded animate-pulse"></div>
+                <div className="h-3 w-24 bg-gray-300 rounded animate-pulse"></div>
+              </div>
+            </div>
+
+            {/* Right Column Skeleton - Artwork Details */}
+            <div className="lg:col-span-1">
+              <div className="border border-gray-200 rounded-lg py-8 px-10 space-y-4">
+                {/* Artwork Image Skeleton */}
+                <div className="flex justify-center">
+                  <div className="w-32 h-32 bg-gray-300 rounded-lg animate-pulse"></div>
+                </div>
+
+                {/* Artwork Title and Artist Skeleton */}
+                <div className="text-center mb-4 space-y-2">
+                  <div className="h-4 w-32 bg-gray-300 rounded mx-auto animate-pulse"></div>
+                  <div className="h-3 w-24 bg-gray-300 rounded mx-auto animate-pulse"></div>
+                </div>
+
+                {/* Artwork Details Skeleton */}
+                <div className="space-y-2 text-xs pt-6">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="flex justify-between">
+                      <div className="h-3 w-16 bg-gray-300 rounded animate-pulse"></div>
+                      <div className="h-3 w-20 bg-gray-300 rounded animate-pulse"></div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Price Skeleton */}
+                <div className="pt-6">
+                  <div className="flex justify-between items-center">
+                    <div className="h-4 w-16 bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-6 w-20 bg-gray-300 rounded animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Submit Button Skeleton */}
+          <div className="px-6 py-8">
+            <div className="flex flex-col items-start space-y-4">
+              <div className="flex space-x-4">
+                <div className="h-8 w-24 bg-gray-300 rounded-full animate-pulse"></div>
+                <div className="h-8 w-32 bg-gray-300 rounded-full animate-pulse"></div>
+              </div>
+              <div className="h-3 w-64 bg-gray-300 rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (orderError || !purchaseOrder) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="container mx-auto px-4 pt-20 max-w-6xl">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <h2 className="text-xl font-semibold text-red-600 mb-2">Order Not Found</h2>
+              <p className="text-gray-600 mb-4">The purchase order could not be found or has expired.</p>
+              <button
+                onClick={() => navigate("/marketplace")}
+                className="bg-red-800 text-white px-6 py-2 rounded-full hover:bg-red-700"
+              >
+                Back to Marketplace
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -625,12 +819,31 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
         {/* Submit Button */}
         <div className="px-6 py-8">
           <div className="flex flex-col items-start space-y-4">
-            <button
-              onClick={handleSubmit}
-              className="bg-red-800 text-white text-[11px] px-16 py-2.5 rounded-full font-medium hover:bg-red-700 transition-colors"
-            >
-              {submitText}
-            </button>
+            <div className="flex space-x-4">
+              <button
+                onClick={async () => {
+                  if (purchaseOrder) {
+                    try {
+                      await cancelPurchaseOrderMutation.mutateAsync(purchaseOrder.id);
+                      clearArtwork();
+                      localStorage.removeItem("current_purchase_order_id");
+                      navigate("/marketplace");
+                    } catch (error) {
+                      console.error("Failed to cancel order:", error);
+                    }
+                  }
+                }}
+                className="bg-gray-500 text-white text-[11px] px-8 py-2.5 rounded-full font-medium hover:bg-gray-600 transition-colors"
+              >
+                Cancel Order
+              </button>
+              <button
+                onClick={handleSubmit}
+                className="bg-red-800 text-white text-[11px] px-16 py-2.5 rounded-full font-medium hover:bg-red-700 transition-colors"
+              >
+                {submitText}
+              </button>
+            </div>
             <p className="text-[11px] text-gray-500 text-center max-w-md whitespace-nowrap">
               {agreeTermsText}{" "}
               <button className="text-blue-600 underline hover:text-blue-700">{termsConditionsText}</button>
