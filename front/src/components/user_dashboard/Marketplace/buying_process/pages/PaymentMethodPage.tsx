@@ -44,7 +44,7 @@ const PaymentMethodPage = () => {
       onBack={() => navigate("/shipping")}
       onContinue={(formData) => {
         console.log(paymentFormSubmittedText, formData);
-        navigate("/checkout-confirmation");
+        
       }}
     />
   );
