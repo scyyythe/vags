@@ -205,7 +205,7 @@ const SellCard = ({
   return (
     <div
       onClick={onCardClick}
-      className={`sell-card h-full text-xs group rounded-xl bg-white hover:shadow-lg border border-gray-200 px-3 py-3 relative cursor-pointer
+      className={`sell-card h-full text-xs group rounded-xl bg-white hover:shadow-lg border border-gray-200 px-3 py-3 relative cursor-pointer z-0
         transition-all duration-300 ease-in-out transform 
         ${isFading ? "opacity-0 scale-95" : "opacity-100 scale-100"}
       `}
@@ -345,6 +345,7 @@ const SellCard = ({
               artworkId={id}
               onUndoReport={handleUndoReport}
               className="-left-2"
+              positionOffset={{ top: 2, left: -8.5, marginTop: -2 }}
             />
           )}
         </div>
