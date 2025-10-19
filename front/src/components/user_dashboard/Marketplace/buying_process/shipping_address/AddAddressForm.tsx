@@ -7,6 +7,16 @@ import countries from "@/components/data/countries";
 import { useShippingAddresses } from "@/hooks/shipping/useShippingAddresses";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating country names
+const TranslatedCountry: React.FC<{ countryName: string }> = ({ countryName }) => {
+  const { language } = useLanguage();
+  const translatedCountry = useAutoTranslation(countryName, language);
+  return <>{translatedCountry}</>;
+};
+
 interface AddressFormData {
   fullName: string;
   country: string;
@@ -54,6 +64,71 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
     setAsDefault: initialData?.setAsDefault || false,
   });
 
+  // Language and translation
+  const { language } = useLanguage();
+  
+  // Translate fetched address data (for editing mode)
+  const translatedFullName = useAutoTranslation(initialData?.fullName || "", language);
+  const translatedAddress = useAutoTranslation(initialData?.address || "", language);
+  const translatedApartment = useAutoTranslation(initialData?.apartment || "", language);
+  const translatedCity = useAutoTranslation(initialData?.city || "", language);
+  const translatedState = useAutoTranslation(initialData?.state || "", language);
+  
+  // Page text translations
+  const shippingDetailsText = useAutoTranslation("Shipping Details", language);
+  const editAddressText = useAutoTranslation("Edit Address", language);
+  const addAddressText = useAutoTranslation("Add Address", language);
+  const deleteText = useAutoTranslation("Delete", language);
+  const failedToDeleteAddressText = useAutoTranslation("Failed to delete address.", language);
+  
+  // Form labels
+  const fullNameText = useAutoTranslation("Full name", language);
+  const countryText = useAutoTranslation("Country", language);
+  const addressText = useAutoTranslation("Address", language);
+  const stateRegionProvinceText = useAutoTranslation("State, Region or Province", language);
+  const aptFloorSuiteText = useAutoTranslation("Apt, floor, suite, etc.", language);
+  const zipPostalCodeText = useAutoTranslation("ZIP/Postal Code", language);
+  const cityText = useAutoTranslation("City", language);
+  const phoneNumberText = useAutoTranslation("Phone Number", language);
+  const setAsDefaultText = useAutoTranslation("Set as default", language);
+  
+  // Placeholders
+  const enterFullNameText = useAutoTranslation("Enter full name", language);
+  const addressLine1Text = useAutoTranslation("Address line 1", language);
+  const stateRegionPlaceholderText = useAutoTranslation("State, region/province", language);
+  const aptFloorPlaceholderText = useAutoTranslation("Apt, floor, suite, etc.", language);
+  const zipPostalPlaceholderText = useAutoTranslation("ZIP/Postal code", language);
+  const enterCityText = useAutoTranslation("Enter city", language);
+  const enterPhoneText = useAutoTranslation("Enter phone no.", language);
+  
+  // Button text
+  const savingText = useAutoTranslation("Saving...", language);
+  const saveText = useAutoTranslation("Save", language);
+  
+  // Protection text
+  const purchaseProtectedText = useAutoTranslation("Your purchase is protected.", language);
+  const learnMoreText = useAutoTranslation("Learn more about Worxist's buyer protection", language);
+  
+  // Delete popup
+  const deleteAddressQuestionText = useAutoTranslation("Delete Address?", language);
+  const deletedAddressCantRecoverText = useAutoTranslation("Deleted address can't be recovered.", language);
+  const keepText = useAutoTranslation("Keep", language);
+  
+  // Validation messages
+  const fullNameRequiredText = useAutoTranslation("Full name is required.", language);
+  const validFullNameText = useAutoTranslation("Please enter a valid full name (letters, spaces, hyphens, and apostrophes only).", language);
+  const addressRequiredText = useAutoTranslation("Address is required.", language);
+  const validAddressText = useAutoTranslation("Please enter a valid address (minimum 5 characters).", language);
+  const validApartmentText = useAutoTranslation("Please enter a valid apartment/floor/suite information.", language);
+  const cityRequiredText = useAutoTranslation("City is required.", language);
+  const validCityText = useAutoTranslation("Please enter a valid city name.", language);
+  const stateRequiredText = useAutoTranslation("State/Region is required.", language);
+  const validStateText = useAutoTranslation("Please enter a valid state/region name.", language);
+  const postalRequiredText = useAutoTranslation("Postal code is required.", language);
+  const validPostalText = useAutoTranslation("Please enter a valid postal code (3-10 characters).", language);
+  const phoneRequiredText = useAutoTranslation("Phone number is required.", language);
+  const validPhoneText = useAutoTranslation("Please enter a valid phone number (e.g., +639XXXXXXXXX, 09123456789, +1234567890).", language);
+
   const validateForm = (): boolean => {
     const nameRegex = /^[A-Za-z][A-Za-z\s\-'\.]*[A-Za-z]$|^[A-Za-z]$/;
     const cityRegex = /^[A-Za-z][A-Za-z\s\-'.,]*[A-Za-z0-9]$|^[A-Za-z]$/;
@@ -65,67 +140,67 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
 
     // Validate full name
     if (!formData.fullName.trim()) {
-      toast.error("Full name is required.");
+      toast.error(fullNameRequiredText);
       return false;
     }
     if (!nameRegex.test(formData.fullName.trim())) {
-      toast.error("Please enter a valid full name (letters, spaces, hyphens, and apostrophes only).");
+      toast.error(validFullNameText);
       return false;
     }
 
     // Validate address
     if (!formData.address.trim()) {
-      toast.error("Address is required.");
+      toast.error(addressRequiredText);
       return false;
     }
     if (!addressRegex.test(formData.address.trim())) {
-      toast.error("Please enter a valid address (minimum 5 characters).");
+      toast.error(validAddressText);
       return false;
     }
 
     // Validate apartment (optional field)
     if (formData.apartment.trim() && !apartmentRegex.test(formData.apartment.trim())) {
-      toast.error("Please enter a valid apartment/floor/suite information.");
+      toast.error(validApartmentText);
       return false;
     }
 
     // Validate city
     if (!formData.city.trim()) {
-      toast.error("City is required.");
+      toast.error(cityRequiredText);
       return false;
     }
     if (!cityRegex.test(formData.city.trim())) {
-      toast.error("Please enter a valid city name.");
+      toast.error(validCityText);
       return false;
     }
 
     // Validate state
     if (!formData.state.trim()) {
-      toast.error("State/Region is required.");
+      toast.error(stateRequiredText);
       return false;
     }
     if (!stateRegex.test(formData.state.trim())) {
-      toast.error("Please enter a valid state/region name.");
+      toast.error(validStateText);
       return false;
     }
 
     // Validate postal code
     if (!formData.postalCode.trim()) {
-      toast.error("Postal code is required.");
+      toast.error(postalRequiredText);
       return false;
     }
     if (!postalCodeRegex.test(formData.postalCode.trim())) {
-      toast.error("Please enter a valid postal code (3-10 characters).");
+      toast.error(validPostalText);
       return false;
     }
 
     // Validate phone number
     if (!formData.phoneNumber.trim()) {
-      toast.error("Phone number is required.");
+      toast.error(phoneRequiredText);
       return false;
     }
     if (!phoneRegex.test(formData.phoneNumber.trim())) {
-      toast.error("Please enter a valid phone number (e.g., +639XXXXXXXXX, 09123456789, +1234567890).");
+      toast.error(validPhoneText);
       return false;
     }
 
@@ -133,13 +208,21 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
   };
 
   useEffect(() => {
-    if (initialData) {
+    if (initialData && isEditing) {
       setFormData((prev) => ({
         ...prev,
-        ...initialData,
+        fullName: translatedFullName || initialData.fullName || "",
+        country: initialData.country || "Philippines",
+        address: translatedAddress || initialData.address || "",
+        apartment: translatedApartment || initialData.apartment || "",
+        city: translatedCity || initialData.city || "",
+        state: translatedState || initialData.state || "",
+        postalCode: initialData.postalCode || "",
+        phoneNumber: initialData.phoneNumber || "",
+        setAsDefault: initialData.setAsDefault || false,
       }));
     }
-  }, [initialData]);
+  }, [initialData, isEditing, translatedFullName, translatedAddress, translatedApartment, translatedCity, translatedState]);
 
   const navigate = useNavigate();
 
@@ -181,7 +264,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
       queryClient.invalidateQueries({ queryKey: ["shippingAddresses"] });
       navigate("/shipping");
     } catch (err) {
-      alert("Failed to delete address.");
+      toast.error(failedToDeleteAddressText);
     }
   };
   const isFormValid =
@@ -194,20 +277,20 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
         <div className="mb-4">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
-            Shipping Details
+            {shippingDetailsText}
           </button>
         </div>
 
         <div className="px-6 py-3 mx-auto">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xs font-medium text-gray-900">{isEditing ? "Edit Address" : "Add Address"}</h2>
+            <h2 className="text-xs font-medium text-gray-900">{isEditing ? editAddressText : addAddressText}</h2>
             {isEditing && (
               <button
                 type="button"
                 onClick={() => setShowDeletePopup(true)}
                 className="text-xs text-red-600 font-medium hover:text-red-800"
               >
-                Delete
+                {deleteText}
               </button>
             )}
           </div>
@@ -216,18 +299,18 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
             {/* Full Name and Country Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">Full name</label>
+                <label className="block text-xs font-medium text-gray-700 mb-2">{fullNameText}</label>
                 <input
                   type="text"
                   value={formData.fullName}
                   onChange={(e) => handleInputChange("fullName", e.target.value)}
-                  placeholder="Enter full name"
+                  placeholder={enterFullNameText}
                   className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">Country</label>
+                <label className="block text-xs font-medium text-gray-700 mb-2">{countryText}</label>
                 <div className="relative">
                   <button
                     type="button"
@@ -235,7 +318,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
                     className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors text-left flex items-center justify-between"
                     style={{ fontSize: "10px" }}
                   >
-                    <span>{formData.country}</span>
+                    <span><TranslatedCountry countryName={formData.country} /></span>
                     <ChevronDown className="w-3 h-3 text-gray-500" />
                   </button>
                   {isCountryDropdownOpen && (
@@ -250,7 +333,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
                           }}
                           className="w-full px-3 py-2 text-left text-[10px] hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg"
                         >
-                          {country}
+                          <TranslatedCountry countryName={country} />
                         </button>
                       ))}
                     </div>
@@ -262,23 +345,23 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
             {/* Address and State Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">Address</label>
+                <label className="block text-xs font-medium text-gray-700 mb-2">{addressText}</label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => handleInputChange("address", e.target.value)}
-                  placeholder="Address line 1"
+                  placeholder={addressLine1Text}
                   className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">State, Region or Province</label>
+                <label className="block text-xs font-medium text-gray-700 mb-2">{stateRegionProvinceText}</label>
                 <input
                   type="text"
                   value={formData.state}
                   onChange={(e) => handleInputChange("state", e.target.value)}
-                  placeholder="State, region/province"
+                  placeholder={stateRegionPlaceholderText}
                   className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
@@ -288,23 +371,23 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
             {/* Apartment and Postal Code Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">Apt, floor, suite, etc.</label>
+                <label className="block text-xs font-medium text-gray-700 mb-2">{aptFloorSuiteText}</label>
                 <input
                   type="text"
                   value={formData.apartment}
                   onChange={(e) => handleInputChange("apartment", e.target.value)}
-                  placeholder="Apt, floor, suite, etc."
+                  placeholder={aptFloorPlaceholderText}
                   className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">ZIP/Postal Code</label>
+                <label className="block text-xs font-medium text-gray-700 mb-2">{zipPostalCodeText}</label>
                 <input
                   type="text"
                   value={formData.postalCode}
                   onChange={(e) => handleInputChange("postalCode", e.target.value)}
-                  placeholder="ZIP/Postal code"
+                  placeholder={zipPostalPlaceholderText}
                   className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
@@ -314,23 +397,23 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
             {/* City and Phone Number Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">City</label>
+                <label className="block text-xs font-medium text-gray-700 mb-2">{cityText}</label>
                 <input
                   type="text"
                   value={formData.city}
                   onChange={(e) => handleInputChange("city", e.target.value)}
-                  placeholder="Enter city"
+                  placeholder={enterCityText}
                   className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">Phone Number</label>
+                <label className="block text-xs font-medium text-gray-700 mb-2">{phoneNumberText}</label>
                 <input
                   type="tel"
                   value={formData.phoneNumber}
                   onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
-                  placeholder="Enter phone no."
+                  placeholder={enterPhoneText}
                   className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
@@ -347,16 +430,16 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
                 className="w-3 h-3 text-red-800 border-gray-300 rounded focus:ring-red-800"
               />
               <label htmlFor="setAsDefault" className="text-[11px] text-gray-700">
-                Set as default
+                {setAsDefaultText}
               </label>
             </div>
 
             {/* Buyer Protection */}
             <div className="flex items-center space-x-2 text-[10px] text-gray-600">
               <i className="bx bxs-check-circle text-black text-sm"></i>
-              <span>Your purchase is protected.</span>
+              <span>{purchaseProtectedText}</span>
               <button type="button" className="text-blue-600 underline hover:text-blue-700">
-                Learn more about Worxist's buyer protection
+                {learnMoreText}
               </button>
             </div>
 
@@ -367,7 +450,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
                 disabled={!isFormValid || loading}
                 className="bg-red-800 text-white text-[11px] px-10 py-1.5 rounded-full font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
-                {loading ? "Saving..." : "Save"}
+                {loading ? savingText : saveText}
               </button>
             </div>
           </form>
@@ -378,20 +461,20 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
       {showDeletePopup && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-80">
-            <p className="text-center text-sm font-semibold text-gray-800 mb-2">Delete Address?</p>
-            <p className="text-center text-xs text-gray-600 mb-5">Deleted address can't be recovered.</p>
+            <p className="text-center text-sm font-semibold text-gray-800 mb-2">{deleteAddressQuestionText}</p>
+            <p className="text-center text-xs text-gray-600 mb-5">{deletedAddressCantRecoverText}</p>
             <div className="flex justify-between space-x-3">
               <button
                 className="w-full px-4 py-1.5 text-[11px] rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100"
                 onClick={() => setShowDeletePopup(false)}
               >
-                Keep
+                {keepText}
               </button>
               <button
                 className="w-full px-4 py-1.5 text-[11px] rounded-full bg-red-800 text-white hover:bg-red-700"
                 onClick={() => addressId && handleDelete(addressId)}
               >
-                Delete
+                {deleteText}
               </button>
             </div>
           </div>
