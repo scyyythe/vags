@@ -36,7 +36,7 @@ import {
   getUserName,
   canInteractWithSlot,
   getCollaboratorSubmissionStatus,
-} from "@/utils/exhibit-helpers";
+} from "@/utils/exhibit/exhibit-helpers";
 
 // Import extracted handlers
 import { createSubmitHandler } from "@/components/handlers/submit-handlers";
@@ -82,13 +82,19 @@ const AddExhibit = () => {
   // Translation hooks for all text content
   const goBackText = useAutoTranslation("Go back", language);
   const preview3DText = useAutoTranslation("Preview in 3D View", language);
-  const previewDescriptionText = useAutoTranslation("Opens your current selections in an interactive virtual gallery.", language);
+  const previewDescriptionText = useAutoTranslation(
+    "Opens your current selections in an interactive virtual gallery.",
+    language
+  );
   const submittingText = useAutoTranslation("Submitting...", language);
   const saveSelectionsText = useAutoTranslation("Save Selections", language);
   const backToExhibitsText = useAutoTranslation("Back to Exhibits", language);
   const publishExhibitText = useAutoTranslation("Publish Exhibit", language);
   const artworkAlreadySelectedText = useAutoTranslation("Artwork already selected", language);
-  const artworkAlreadySelectedDescText = useAutoTranslation("This artwork has already been assigned to a slot.", language);
+  const artworkAlreadySelectedDescText = useAutoTranslation(
+    "This artwork has already been assigned to a slot.",
+    language
+  );
   const noAvailableSlotsText = useAutoTranslation("No available slots", language);
   const noAvailableSlotsDescText = useAutoTranslation("You don't have any available slots for more artwork.", language);
   const accessDeniedText = useAutoTranslation("Access denied", language);
@@ -99,9 +105,18 @@ const AddExhibit = () => {
   const collaboratorsText = useAutoTranslation("collaborators", language);
   const pleaseRemoveCollaboratorsText = useAutoTranslation("Please remove some collaborators first.", language);
   const maximumCollaboratorsReachedText = useAutoTranslation("Maximum collaborators reached", language);
-  const maximumCollaboratorsDescText = useAutoTranslation("You can only have a maximum of 2 collaborators per exhibit.", language);
-  const addingCollaboratorRequiresText = useAutoTranslation("Adding this collaborator requires switching to the", language);
-  const slotsEnvironmentText = useAutoTranslation("slots environment. This will redistribute all slots among participants. Continue?", language);
+  const maximumCollaboratorsDescText = useAutoTranslation(
+    "You can only have a maximum of 2 collaborators per exhibit.",
+    language
+  );
+  const addingCollaboratorRequiresText = useAutoTranslation(
+    "Adding this collaborator requires switching to the",
+    language
+  );
+  const slotsEnvironmentText = useAutoTranslation(
+    "slots environment. This will redistribute all slots among participants. Continue?",
+    language
+  );
 
   const { data: artworks = [] } = useArtworks(
     1,
@@ -332,7 +347,9 @@ const AddExhibit = () => {
 
     if (collaborators.length > maxAllowedCollaborators) {
       toast.error(tooManyCollaboratorsText, {
-        description: `${tooManyCollaboratorsDescText} ${maxAllowedCollaborators} ${maxAllowedCollaborators > 1 ? collaboratorsText : collaboratorText}. ${pleaseRemoveCollaboratorsText}`,
+        description: `${tooManyCollaboratorsDescText} ${maxAllowedCollaborators} ${
+          maxAllowedCollaborators > 1 ? collaboratorsText : collaboratorText
+        }. ${pleaseRemoveCollaboratorsText}`,
         duration: 4000,
         closeButton: true,
       });
@@ -619,9 +636,7 @@ const AddExhibit = () => {
                     >
                       {preview3DText}
                     </Button>
-                    <p className="text-[10px] text-muted-foreground mt-2">
-                      {previewDescriptionText}
-                    </p>
+                    <p className="text-[10px] text-muted-foreground mt-2">{previewDescriptionText}</p>
                   </div>
                 )}
               </div>

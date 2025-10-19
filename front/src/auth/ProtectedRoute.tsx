@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModal } from "../context/ModalContext";
+import { getValidToken } from "./decode";
 
 interface ProtectedRouteProps {
   allowedRoles?: string[];
@@ -8,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ allowedRoles = ["user"], children }: ProtectedRouteProps) => {
-  const accessToken = localStorage.getItem("access_token");
+  const accessToken = getValidToken();
   const userRole = localStorage.getItem("role");
   const navigate = useNavigate();
   const { setShowLoginModal } = useModal();
