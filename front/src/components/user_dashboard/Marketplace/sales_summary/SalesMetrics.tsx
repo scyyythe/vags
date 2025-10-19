@@ -8,14 +8,16 @@ interface SalesMetricsProps {
     completedSales: number;
     cancelledSales: number;
     refundedSales: number;
+    currentMonthSales?: number;
+    growthPercentage?: number;
   };
 }
 
 const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-PH', {
-      style: 'currency',
-      currency: 'PHP',
+    return new Intl.NumberFormat("en-PH", {
+      style: "currency",
+      currency: "PHP",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -31,12 +33,7 @@ const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
             <p className="text-xl font-bold text-primary">{metrics.totalArtworksSold}</p>
           </div>
           <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-            <svg
-              className="w-4 h-4 text-primary"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -47,7 +44,7 @@ const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
           </div>
         </div>
         <div className="mt-4 flex items-center text-[11px] text-muted-foreground">
-          <span className="text-green-600 font-medium">+{metrics.completedSales}</span>
+          <span className="text-green-600 font-medium">+{metrics.currentMonthSales || metrics.completedSales}</span>
           <span className="ml-1">completed this month</span>
         </div>
       </Card>
@@ -60,12 +57,7 @@ const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
             <p className="text-xl font-bold text-green-700">{formatCurrency(metrics.totalEarnings)}</p>
           </div>
           <div className="w-12 h-12 bg-green-200 rounded-full flex items-center justify-center">
-            <svg
-              className="w-6 h-6 text-green-700"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-6 h-6 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -76,7 +68,10 @@ const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
           </div>
         </div>
         <div className="mt-4 flex items-center text-[11px] text-muted-foreground">
-          <span className="text-green-600 font-medium">+15.2%</span>
+          <span className={`font-medium ${(metrics.growthPercentage || 0) >= 0 ? "text-green-600" : "text-red-600"}`}>
+            {(metrics.growthPercentage || 0) >= 0 ? "+" : ""}
+            {metrics.growthPercentage || 0}%
+          </span>
           <span className="ml-1">from last month</span>
         </div>
       </Card>
@@ -89,12 +84,7 @@ const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
             <p className="text-xl font-bold text-blue-700">Overview</p>
           </div>
           <div className="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center">
-            <svg
-              className="w-4 h-4 text-blue-700"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
