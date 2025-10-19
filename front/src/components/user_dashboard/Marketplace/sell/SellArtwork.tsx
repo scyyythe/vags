@@ -575,35 +575,18 @@ const SellArtwork = () => {
                     <label htmlFor="style" className="block mb-2 text-[11px]">
                       {artworkStyleLabelText}
                     </label>
-                    <div className="relative">
-                      <select
-                        id="style"
-                        value={artworkStyle}
-                        onChange={(e) => setArtworkStyle(e.target.value)}
-                        className="w-full h-9 p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs cursor-pointer"
-                        style={{ fontSize: "10px" }}
-                      >
-                        <option value="" disabled>
-                          {selectArtworkStyleText}
-                        </option>
+                    <Select value={artworkStyle} onValueChange={setArtworkStyle}>
+                      <SelectTrigger className="w-full text-[10px] h-9">
+                        <SelectValue placeholder={selectArtworkStyleText} />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-64 overflow-y-auto">
                         {artworkStyles.map((style) => (
-                          <option key={style.value} value={style.value}>
+                          <SelectItem key={style.value} value={style.value} className="text-[10px]">
                             {style.label}
-                          </option>
+                          </SelectItem>
                         ))}
-                      </select>
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M4 6L8 10L12 6"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div>
