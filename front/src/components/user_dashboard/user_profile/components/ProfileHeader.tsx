@@ -23,6 +23,8 @@ import ProfileHeaderSkeleton from "@/components/skeletons/ProfileHeaderSkeleton"
 import { useChat } from "@/context/ChatContext";
 import { toast } from "sonner";
 import { useSocials } from "@/hooks/users/social/useSocials";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface ProfileHeaderProps {
   profileImage: string;
   name: string;
@@ -52,6 +54,31 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
 
   const [contactOpen, setContactOpen] = useState(false);
 
+  // Language and translation
+  const { language } = useLanguage();
+  const blockedText = useAutoTranslation("Blocked", language);
+  const itemsText = useAutoTranslation("items", language);
+  const loadingText = useAutoTranslation("Loading...", language);
+  const unfollowText = useAutoTranslation("Unfollow", language);
+  const followText = useAutoTranslation("Follow", language);
+  const userBlockedText = useAutoTranslation("User Blocked", language);
+  const messageText = useAutoTranslation("Message", language);
+  const blockUserText = useAutoTranslation("Block User", language);
+  const unblockUserText = useAutoTranslation("Unblock User", language);
+  const reportText = useAutoTranslation("Report", language);
+  
+  // Toast messages
+  const cannotMessageBlockedUserText = useAutoTranslation("Cannot message blocked user. Unblock them first to send messages.", language);
+  const openingConversationText = useAutoTranslation("Opening conversation with", language);
+  
+  // Console error messages
+  const missingProfileInfoText = useAutoTranslation("Missing profile info", language);
+  const errorFetchingFollowCountsText = useAutoTranslation("Error fetching follow counts:", language);
+  const followErrorText = useAutoTranslation("Follow error:", language);
+  const unfollowErrorText = useAutoTranslation("Unfollow error:", language);
+  const failedToBlockUserText = useAutoTranslation("Failed to block user:", language);
+  const failedToUnblockUserText = useAutoTranslation("Failed to unblock user:", language);
+
   // Check if the current user is blocked
   const isUserBlocked = blockedUsers.some((user) => user.id === profileUserId);
 
@@ -60,13 +87,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
     e.stopPropagation();
 
     if (!profileUserId || !name) {
-      console.error("Missing profile info", { profileUserId, name });
+      console.error(missingProfileInfoText, { profileUserId, name });
       return;
     }
 
     // Check if user is blocked - if so, show message instead of opening chat
     if (isUserBlocked) {
-      toast.error("Cannot message blocked user. Unblock them first to send messages.", {
+      toast.error(cannotMessageBlockedUserText, {
         closeButton: true,
         duration: 4000,
       });
@@ -74,11 +101,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
     }
 
     openChat(String(profileUserId), name, profileImage, true);
-    toast(`Opening conversation with ${name}...`, { closeButton: true });
+    toast(`${openingConversationText} ${name}...`, { closeButton: true });
   };
 
   if (error) {
-    console.error("Error fetching follow counts:", error.message);
+    console.error(errorFetchingFollowCountsText, error.message);
   }
 
   const { data, isLoading: isFollowStatusLoading } = useFollowStatus({
@@ -100,7 +127,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
             setIsFollowing(true);
           },
           onError: (error) => {
-            console.error("Follow error:", error);
+            console.error(followErrorText, error);
           },
         }
       );
@@ -112,7 +139,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
             setIsFollowing(false);
           },
           onError: (error) => {
-            console.error("Unfollow error:", error);
+            console.error(unfollowErrorText, error);
           },
         }
       );
@@ -137,7 +164,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
       await blockMutation.mutateAsync(profileUserId);
       setOptionsOpen(false);
     } catch (error) {
-      console.error("Failed to block user:", error);
+      console.error(failedToBlockUserText, error);
     }
   };
 
@@ -146,7 +173,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
       await unblockMutation.mutateAsync(profileUserId);
       setOptionsOpen(false);
     } catch (error) {
-      console.error("Failed to unblock user:", error);
+      console.error(failedToUnblockUserText, error);
     }
   };
 
@@ -221,7 +248,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
         {/* Name */}
         <div className="flex items-center gap-2 mt-4">
           <h1 className="text-xl md:text-xl font-bold">{name}</h1>
-          {isUserBlocked && <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">Blocked</span>}
+          {isUserBlocked && <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">{blockedText}</span>}
         </div>
 
         {/* Stats - Replaced with FollowModals component */}
@@ -232,7 +259,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
           <div className="flex items-center space-x-2 mt-1.5 text-[10px] md:text-[11px]">
             <span>•</span>
             <span>
-              <strong>{items}</strong> items
+              <strong>{items}</strong> {itemsText}
             </span>
           </div>
         </div>
@@ -250,7 +277,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
                   : "bg-red-800 text-white hover:bg-red-700"
               }`}
             >
-              {isLoading ? "Loading..." : isFollowing ? "Unfollow" : "Follow"}
+              {isLoading ? loadingText : isFollowing ? unfollowText : followText}
             </button>
 
             {/* CONTACT USER */}
@@ -280,7 +307,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
                   onClick={handleContact}
                   disabled={isUserBlocked}
                 >
-                  {isUserBlocked ? "User Blocked" : "Message"}
+                  {isUserBlocked ? userBlockedText : messageText}
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1">
                   {email || "user@email.com"}
@@ -306,7 +333,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
                   onClick={isUserBlocked ? handleUnblockUser : handleBlockUser}
                   className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1"
                 >
-                  {isUserBlocked ? "Unblock User" : "Block User"}
+                  {isUserBlocked ? unblockUserText : blockUserText}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
@@ -315,7 +342,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, name, items
                   }}
                   className="cursor-pointer text-[10px] hover:bg-gray-100 rounded px-2 py-1"
                 >
-                  Report
+                  {reportText}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
