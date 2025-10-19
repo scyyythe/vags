@@ -7,9 +7,10 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Upload } from "lucide-react";
 import Header from "@/components/user_dashboard/navbar/Header";
-import { ART_STYLES } from "@/components/user_dashboard/Explore/create_post/ArtworkStyles";
 import useSellArtwork from "@/hooks/artworks/sell/useSellArtwork";
 import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 const SellArtwork = () => {
   const navigate = useNavigate();
   const [artworkTitle, setArtworkTitle] = useState("");
@@ -30,11 +31,92 @@ const SellArtwork = () => {
   const { sellArtwork } = useSellArtwork();
   const { accounts } = usePaymentAccounts();
 
+  // Translation hooks
+  const { language } = useLanguage();
+  const sellAnArtworkText = useAutoTranslation("Sell an Artwork", language);
+  const fileSizeErrorText = useAutoTranslation("File size must be less than 20MB", language);
+  const imageFilesOnlyText = useAutoTranslation("Please upload only image files", language);
+  const paymentAccountErrorText = useAutoTranslation("You cannot sell artwork without setting up a payment account. Please add a bank account, PayPal, or other payment method in your account settings to receive payments.", language);
+  const enterTitleErrorText = useAutoTranslation("Please enter an artwork title.", language);
+  const uploadImageErrorText = useAutoTranslation("Please upload an image of your artwork.", language);
+  const enterPriceErrorText = useAutoTranslation("Please enter a price for your artwork.", language);
+  const listingArtworkText = useAutoTranslation("Listing artwork for sale...", language);
+  const artworkListedSuccessText = useAutoTranslation("Artwork listed successfully!", language);
+  const failedToListText = useAutoTranslation("Failed to list artwork", language);
+  const setupPaymentAccountText = useAutoTranslation("You must set up a payment account before selling artwork.", language);
+  const titleRequiredText = useAutoTranslation("Please enter an artwork title.", language);
+  const titleMinLengthText = useAutoTranslation("Title should be at least 2 characters long.", language);
+  const titleMaxLengthText = useAutoTranslation("Title should be less than 100 characters.", language);
+  const yearRequiredText = useAutoTranslation("Please enter the year the artwork was created.", language);
+  const validYearText = useAutoTranslation("Please enter a valid year between 1000 and", language);
+  const selectStyleText = useAutoTranslation("Please select an artwork style.", language);
+  const enterMediumText = useAutoTranslation("Please enter the medium used for this artwork.", language);
+  const mediumMaxLengthText = useAutoTranslation("Medium description should be less than 100 characters.", language);
+  const enterHeightText = useAutoTranslation("Please enter the height of your artwork.", language);
+  const heightValidText = useAutoTranslation("Height must be a positive number between 1-10000 cm.", language);
+  const enterWidthText = useAutoTranslation("Please enter the width of your artwork.", language);
+  const widthValidText = useAutoTranslation("Width must be a positive number between 1-10000 cm.", language);
+  const priceRequiredText = useAutoTranslation("Please enter a price for your artwork.", language);
+  const pricePositiveText = useAutoTranslation("Price must be a positive number.", language);
+  const priceTooHighText = useAutoTranslation("Price seems too high. Please enter a reasonable amount.", language);
+  const quantityRequiredText = useAutoTranslation("Please enter the quantity for this edition.", language);
+  const quantityPositiveText = useAutoTranslation("Quantity must be a positive number.", language);
+  const quantityMaxText = useAutoTranslation("Quantity cannot exceed 10000.", language);
+  const descriptionRequiredText = useAutoTranslation("Please enter a description for your artwork.", language);
+  const descriptionMaxText = useAutoTranslation("Description cannot exceed 1000 characters.", language);
+  const uploadMainImageText = useAutoTranslation("Please upload a main image of your artwork.", language);
+  const mainImageSizeText = useAutoTranslation("Main image file size must be less than 20MB.", language);
+  const additionalImageValidText = useAutoTranslation("must be a valid image file.", language);
+  const additionalImageSizeText = useAutoTranslation("file size must be less than 20MB.", language);
+  const chooseFileText = useAutoTranslation("Choose a file or drag and drop it here", language);
+  const chooseFileButtonText = useAutoTranslation("Choose File", language);
+  const recommendFilesText = useAutoTranslation("We recommend using high quality .jpg files less than 20MB", language);
+  const addMorePicturesText = useAutoTranslation("Add more pictures (Optional)", language);
+  const removeText = useAutoTranslation("Remove", language);
+  const provideDetailsText = useAutoTranslation("Provide artwork details.", language);
+  const artworkTitleLabelText = useAutoTranslation("Artwork Title", language);
+  const enterArtworkTitleText = useAutoTranslation("Enter artwork title", language);
+  const yearCreatedLabelText = useAutoTranslation("Year Created", language);
+  const enterYearText = useAutoTranslation("Enter year", language);
+  const artworkStyleLabelText = useAutoTranslation("Artwork Style", language);
+  const selectArtworkStyleText = useAutoTranslation("Select artwork style", language);
+  const mediumLabelText = useAutoTranslation("Medium", language);
+  const enterMediumUsedText = useAutoTranslation("Enter medium used", language);
+  const dimensionsLabelText = useAutoTranslation("Dimensions (cm)", language);
+  const heightLabelText = useAutoTranslation("Height", language);
+  const widthLabelText = useAutoTranslation("Width", language);
+  const priceLabelText = useAutoTranslation("Price", language);
+  const enterPriceText = useAutoTranslation("Enter price for artwork", language);
+  const editionLabelText = useAutoTranslation("Edition", language);
+  const original1of1Text = useAutoTranslation("Original (1 of 1)", language);
+  const limitedEditionText = useAutoTranslation("Limited Edition", language);
+  const openEditionText = useAutoTranslation("Open Edition", language);
+  const quantityLabelText = useAutoTranslation("Quantity", language);
+  const aboutArtworkText = useAutoTranslation("About this Artwork", language);
+  const addDescriptionText = useAutoTranslation("Add a description", language);
+  const paymentAccountRequiredText = useAutoTranslation("Payment Account Required", language);
+  const setupPaymentAccountDescText = useAutoTranslation("Set up a payment account to receive payments before selling.", language);
+  const setupPaymentAccountButtonText = useAutoTranslation("Set up payment account →", language);
+  const listingText = useAutoTranslation("Listing...", language);
+  const sellNowText = useAutoTranslation("Sell Now", language);
+
+  // Artwork styles translations
+  const abstractText = useAutoTranslation("Abstract", language);
+  const realismText = useAutoTranslation("Realism", language);
+  const impressionismText = useAutoTranslation("Impressionism", language);
+  const modernText = useAutoTranslation("Modern", language);
+  const contemporaryText = useAutoTranslation("Contemporary", language);
+  const popArtText = useAutoTranslation("Pop Art", language);
+  const surrealismText = useAutoTranslation("Surrealism", language);
+  const minimalismText = useAutoTranslation("Minimalism", language);
+  const expressionismText = useAutoTranslation("Expressionism", language);
+  const cubismText = useAutoTranslation("Cubism", language);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB", {
+        toast.error(fileSizeErrorText, {
           closeButton: true,
         });
         return;
@@ -63,13 +145,13 @@ const SellArtwork = () => {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB", {
+        toast.error(fileSizeErrorText, {
           closeButton: true,
         });
         return;
       }
       if (!file.type.startsWith("image/")) {
-        toast.error("Please upload only image files", {
+        toast.error(imageFilesOnlyText, {
           closeButton: true,
         });
         return;
@@ -90,7 +172,7 @@ const SellArtwork = () => {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB", {
+        toast.error(fileSizeErrorText, {
           closeButton: true,
         });
         return;
@@ -107,7 +189,7 @@ const SellArtwork = () => {
     // Check if user has payment accounts set up
     if (!accounts || accounts.length === 0) {
       toast.error(
-        "You cannot sell artwork without setting up a payment account. Please add a bank account, PayPal, or other payment method in your account settings to receive payments.",
+        paymentAccountErrorText,
         {
           closeButton: true,
           duration: 6000,
@@ -120,28 +202,28 @@ const SellArtwork = () => {
       return;
     }
     if (!artworkTitle.trim()) {
-      toast.error("Please enter an artwork title.", {
+      toast.error(enterTitleErrorText, {
         closeButton: true,
       });
       return;
     }
 
     if (!selectedFile) {
-      toast.error("Please upload an image of your artwork.", {
+      toast.error(uploadImageErrorText, {
         closeButton: true,
       });
       return;
     }
 
     if (!price) {
-      toast.error("Please enter a price for your artwork.", {
+      toast.error(enterPriceErrorText, {
         closeButton: true,
       });
       return;
     }
 
     setIsUploading(true);
-    toast.loading("Listing artwork for sale...", { id: "upload" });
+    toast.loading(listingArtworkText, { id: "upload" });
 
     try {
       // Simulate API call
@@ -159,13 +241,13 @@ const SellArtwork = () => {
         mainImage: selectedFile,
         additionalImages,
       });
-      toast.success("Artwork listed successfully!", {
+      toast.success(artworkListedSuccessText, {
         id: "upload",
         closeButton: true,
       });
       navigate("/marketplace");
     } catch (error) {
-      toast.error("Failed to list artwork", {
+      toast.error(failedToListText, {
         id: "upload",
         closeButton: true,
       });
@@ -178,7 +260,7 @@ const SellArtwork = () => {
 
     // Payment Account Check
     if (!accounts || accounts.length === 0) {
-      toast.error("You must set up a payment account before selling artwork.", {
+      toast.error(setupPaymentAccountText, {
         closeButton: true,
         duration: 5000,
       });
@@ -187,115 +269,115 @@ const SellArtwork = () => {
 
     // Title - More lenient validation
     if (!artworkTitle.trim()) {
-      toast.error("Please enter an artwork title.");
+      toast.error(titleRequiredText);
       return false;
     }
     if (artworkTitle.trim().length < 2) {
-      toast.error("Title should be at least 2 characters long.");
+      toast.error(titleMinLengthText);
       return false;
     }
     if (artworkTitle.trim().length > 100) {
-      toast.error("Title should be less than 100 characters.");
+      toast.error(titleMaxLengthText);
       return false;
     }
 
     // Year - Required
     if (!yearCreated) {
-      toast.error("Please enter the year the artwork was created.");
+      toast.error(yearRequiredText);
       return false;
     }
     const year = Number(yearCreated);
     if (isNaN(year) || year > currentYear || year < 1000) {
-      toast.error(`Please enter a valid year between 1000 and ${currentYear}.`);
+      toast.error(`${validYearText} ${currentYear}.`);
       return false;
     }
 
     // Style - Required
     if (!artworkStyle) {
-      toast.error("Please select an artwork style.");
+      toast.error(selectStyleText);
       return false;
     }
 
     // Medium - Required
     if (!medium.trim()) {
-      toast.error("Please enter the medium used for this artwork.");
+      toast.error(enterMediumText);
       return false;
     }
     if (medium.trim().length > 100) {
-      toast.error("Medium description should be less than 100 characters.");
+      toast.error(mediumMaxLengthText);
       return false;
     }
 
     // Dimensions - Required
     if (!height) {
-      toast.error("Please enter the height of your artwork.");
+      toast.error(enterHeightText);
       return false;
     }
     const h = Number(height);
     if (isNaN(h) || h <= 0 || h > 10000) {
-      toast.error("Height must be a positive number between 1-10000 cm.");
+      toast.error(heightValidText);
       return false;
     }
 
     if (!width) {
-      toast.error("Please enter the width of your artwork.");
+      toast.error(enterWidthText);
       return false;
     }
     const w = Number(width);
     if (isNaN(w) || w <= 0 || w > 10000) {
-      toast.error("Width must be a positive number between 1-10000 cm.");
+      toast.error(widthValidText);
       return false;
     }
 
     // Price - Essential field
     if (!price) {
-      toast.error("Please enter a price for your artwork.");
+      toast.error(priceRequiredText);
       return false;
     }
     const p = Number(price);
     if (isNaN(p) || p <= 0) {
-      toast.error("Price must be a positive number.");
+      toast.error(pricePositiveText);
       return false;
     }
     if (p > 10000000) {
-      toast.error("Price seems too high. Please enter a reasonable amount.");
+      toast.error(priceTooHighText);
       return false;
     }
 
     // Quantity - Only validate if edition requires it
     if (edition !== "Original (1 of 1)") {
       if (!quantity) {
-        toast.error("Please enter the quantity for this edition.");
+        toast.error(quantityRequiredText);
         return false;
       }
       const q = Number(quantity);
       if (isNaN(q) || q <= 0) {
-        toast.error("Quantity must be a positive number.");
+        toast.error(quantityPositiveText);
         return false;
       }
       if (q > 10000) {
-        toast.error("Quantity cannot exceed 10000.");
+        toast.error(quantityMaxText);
         return false;
       }
     }
 
     // Description - Required
     if (!description.trim()) {
-      toast.error("Please enter a description for your artwork.");
+      toast.error(descriptionRequiredText);
       return false;
     }
     if (description.length > 1000) {
-      toast.error("Description cannot exceed 1000 characters.");
+      toast.error(descriptionMaxText);
       return false;
     }
 
     // Main image - Essential
     if (!selectedFile) {
-      toast.error("Please upload a main image of your artwork.");
+      toast.error(uploadMainImageText);
       return false;
     }
     if (selectedFile.size > 20 * 1024 * 1024) {
-      toast.error("Main image file size must be less than 20MB.");
+      toast.error(mainImageSizeText);
       return false;
     }
 
@@ -304,11 +386,11 @@ const SellArtwork = () => {
       const file = additionalImages[i];
       if (file) {
         if (!file.type.startsWith("image/")) {
-          toast.error(`Additional image ${i + 1} must be a valid image file.`);
+          toast.error(`Additional image ${i + 1} ${additionalImageValidText}`);
           return false;
         }
         if (file.size > 20 * 1024 * 1024) {
-          toast.error(`Additional image ${i + 1} file size must be less than 20MB.`);
+          toast.error(`Additional image ${i + 1} ${additionalImageSizeText}`);
           return false;
         }
       }
@@ -318,16 +400,16 @@ const SellArtwork = () => {
   };
 
   const artworkStyles = [
-    "Abstract",
-    "Realism",
-    "Impressionism",
-    "Modern",
-    "Contemporary",
-    "Pop Art",
-    "Surrealism",
-    "Minimalism",
-    "Expressionism",
-    "Cubism",
+    { value: "abstract", label: abstractText },
+    { value: "realism", label: realismText },
+    { value: "impressionism", label: impressionismText },
+    { value: "modern", label: modernText },
+    { value: "contemporary", label: contemporaryText },
+    { value: "pop art", label: popArtText },
+    { value: "surrealism", label: surrealismText },
+    { value: "minimalism", label: minimalismText },
+    { value: "expressionism", label: expressionismText },
+    { value: "cubism", label: cubismText },
   ];
 
   const isQuantityVisible = edition !== "Original (1 of 1)";
@@ -349,7 +431,7 @@ const SellArtwork = () => {
         <div className="mt-12 mb-6">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
-            Sell an Artwork
+            {sellAnArtworkText}
           </button>
         </div>
 
@@ -387,16 +469,16 @@ const SellArtwork = () => {
                       />
                     </div>
                   </div>
-                  <p className="mb-2 text-xs font-medium">Choose a file or drag and drop it here</p>
+                  <p className="mb-2 text-xs font-medium">{chooseFileText}</p>
                   <label
                     htmlFor="fileInput"
                     className="cursor-pointer hover:bg-white inline-block mb-6 border border-gray-300 rounded-[6px] px-2 py-1 text-[11px]"
                   >
-                    Choose File
+                    {chooseFileButtonText}
                     <input type="file" id="fileInput" className="hidden" accept="image/*" onChange={handleFileChange} />
                   </label>
                   <p className="relative top-10 text-[11px] text-gray-500">
-                    We recommend using high quality .jpg files less than 20MB
+                    {recommendFilesText}
                   </p>
                 </div>
               )}
@@ -404,7 +486,7 @@ const SellArtwork = () => {
 
             {/* Additional images */}
             <div>
-              <h3 className="text-[11px] font-medium text-gray-900 mb-3">Add more pictures (Optional)</h3>
+              <h3 className="text-[11px] font-medium text-gray-900 mb-3">{addMorePicturesText}</h3>
               <div className="grid grid-cols-4 gap-4">
                 {additionalImages.map((image, index) => (
                   <div
@@ -428,7 +510,7 @@ const SellArtwork = () => {
                             handleAdditionalImageChange(index, null);
                           }}
                         >
-                          Remove
+                          {removeText}
                         </div>
                       </>
                     ) : (
@@ -461,14 +543,14 @@ const SellArtwork = () => {
           <div>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <h2 className="text-xs text-gray-600 mb-6">Provide artwork details.</h2>
+                <h2 className="text-xs text-gray-600 mb-6">{provideDetailsText}</h2>
 
                 {/* Title and Year */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">Artwork Title</label>
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">{artworkTitleLabelText}</label>
                     <Input
-                      placeholder="Enter artwork title"
+                      placeholder={enterArtworkTitleText}
                       value={artworkTitle}
                       onChange={(e) => setArtworkTitle(e.target.value)}
                       className="h-9"
@@ -476,9 +558,9 @@ const SellArtwork = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">Year Created</label>
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">{yearCreatedLabelText}</label>
                     <Input
-                      placeholder="Enter year"
+                      placeholder={enterYearText}
                       value={yearCreated}
                       onChange={(e) => setYearCreated(e.target.value)}
                       className="h-9"
@@ -491,7 +573,7 @@ const SellArtwork = () => {
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <div>
                     <label htmlFor="style" className="block mb-2 text-[11px]">
-                      Artwork Style
+                      {artworkStyleLabelText}
                     </label>
                     <div className="relative">
                       <select
@@ -502,11 +584,11 @@ const SellArtwork = () => {
                         style={{ fontSize: "10px" }}
                       >
                         <option value="" disabled>
-                          Select artwork style
+                          {selectArtworkStyleText}
                         </option>
-                        {ART_STYLES.map((style) => (
-                          <option key={style} value={style.toLowerCase()}>
-                            {style}
+                        {artworkStyles.map((style) => (
+                          <option key={style.value} value={style.value}>
+                            {style.label}
                           </option>
                         ))}
                       </select>
@@ -525,9 +607,9 @@ const SellArtwork = () => {
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">Medium</label>
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">{mediumLabelText}</label>
                     <Input
-                      placeholder="Enter medium used"
+                      placeholder={enterMediumUsedText}
                       value={medium}
                       onChange={(e) => setMedium(e.target.value)}
                       className="h-9"
@@ -535,7 +617,7 @@ const SellArtwork = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">Dimensions (cm)</label>
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">{dimensionsLabelText}</label>
                     <div className="flex items-center space-x-2">
                       <Input
                         type="number"
@@ -556,8 +638,8 @@ const SellArtwork = () => {
                       />
                     </div>
                     <div className="flex justify-between px-6 pt-2">
-                      <span className="text-[10px] text-gray-500">Height</span>
-                      <span className="text-[10px] text-gray-500">Width</span>
+                      <span className="text-[10px] text-gray-500">{heightLabelText}</span>
+                      <span className="text-[10px] text-gray-500">{widthLabelText}</span>
                     </div>
                   </div>
                 </div>
@@ -565,10 +647,10 @@ const SellArtwork = () => {
                 {/* Price, Edition, Quantity */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">Price</label>
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">{priceLabelText}</label>
                     <Input
                       type="number"
-                      placeholder="Enter price for artwork"
+                      placeholder={enterPriceText}
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
                       className="h-9"
@@ -576,27 +658,27 @@ const SellArtwork = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">Edition</label>
+                    <label className="block text-[11px] font-medium text-gray-700 mb-2">{editionLabelText}</label>
                     <Select value={edition} onValueChange={handleEditionChange}>
                       <SelectTrigger className="w-full text-[10px] h-9">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Original (1 of 1)" className="text-[10px]">
-                          Original (1 of 1)
+                          {original1of1Text}
                         </SelectItem>
                         <SelectItem value="Limited Edition" className="text-[10px]">
-                          Limited Edition
+                          {limitedEditionText}
                         </SelectItem>
                         <SelectItem value="Open Edition" className="text-[10px]">
-                          Open Edition
+                          {openEditionText}
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   {isQuantityVisible && (
                     <div>
-                      <label className="block text-[11px] font-medium text-gray-700 mb-2">Quantity</label>
+                      <label className="block text-[11px] font-medium text-gray-700 mb-2">{quantityLabelText}</label>
                       <Input
                         type="number"
                         value={quantity}
@@ -611,9 +693,9 @@ const SellArtwork = () => {
 
                 {/* Description */}
                 <div className="mb-8">
-                  <label className="block text-[11px] font-medium text-gray-700 mb-2">About this Artwork</label>
+                  <label className="block text-[11px] font-medium text-gray-700 mb-2">{aboutArtworkText}</label>
                   <Textarea
-                    placeholder="Add a description"
+                    placeholder={addDescriptionText}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="min-h-[120px] h-9"
@@ -635,14 +717,14 @@ const SellArtwork = () => {
                         </svg>
                       </div>
                       <div className="ml-2">
-                        <h3 className="text-xs font-medium text-yellow-800">Payment Account Required</h3>
+                        <h3 className="text-xs font-medium text-yellow-800">{paymentAccountRequiredText}</h3>
                         <div className="mt-1 text-xs text-yellow-700">
-                          <p>Set up a payment account to receive payments before selling.</p>
+                          <p>{setupPaymentAccountDescText}</p>
                           <button
                             onClick={() => navigate("/settings")}
                             className="mt-1 text-xs font-medium text-yellow-800 hover:text-yellow-900 underline"
                           >
-                            Set up payment account →
+                            {setupPaymentAccountButtonText}
                           </button>
                         </div>
                       </div>
@@ -672,10 +754,10 @@ const SellArtwork = () => {
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                           />
                         </svg>
-                        Listing...
+                        {listingText}
                       </span>
                     ) : (
-                      "Sell Now"
+                      sellNowText
                     )}
                   </Button>
                 </div>
