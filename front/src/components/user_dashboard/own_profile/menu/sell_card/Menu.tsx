@@ -90,7 +90,9 @@ const SellMenu: React.FC<SellMenuProps> = ({
     onToggleVisibility(visibilityString, artworkId);
 
     toast.success(
-      newStatus ? `"${artworkTitle ?? artworkText}" ${isNowListedText}` : `"${artworkTitle ?? artworkText}" ${hasBeenUnlistedText}`,
+      newStatus
+        ? `"${artworkTitle ?? artworkText}" ${isNowListedText}`
+        : `"${artworkTitle ?? artworkText}" ${hasBeenUnlistedText}`,
       { closeButton: true }
     );
   };
@@ -117,7 +119,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
         ReactDOM.createPortal(
           <div
             ref={menuRef}
-            className="absolute bg-gray-100 rounded-full py-1 px-1.5 shadow-md"
+            className="absolute bg-gray-100 rounded-full py-1 px-1.5 shadow-md z-[60]"
             style={{
               top: position.top,
               left: position.left,

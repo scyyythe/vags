@@ -45,7 +45,7 @@ const ProductViewingContent = () => {
   // Language and translation
   const { language } = useLanguage();
   const translatedArtworkStyle = useAutoTranslation(product?.artwork_style || "", language);
-  
+
   // Static text translations
   const productDetailsText = useAutoTranslation("Product Details", language);
   const soldOutText = useAutoTranslation("SOLD OUT", language);
@@ -67,14 +67,17 @@ const ProductViewingContent = () => {
   const noOtherArtworksText = useAutoTranslation("No other artworks in this style.", language);
   const expandedArtworkText = useAutoTranslation("Expanded artwork", language);
   const artworkNotFoundText = useAutoTranslation("Artwork Not Found", language);
-  const artworkNotExistText = useAutoTranslation("The artwork you're looking for doesn't exist or has been removed.", language);
+  const artworkNotExistText = useAutoTranslation(
+    "The artwork you're looking for doesn't exist or has been removed.",
+    language
+  );
   const returnToHomeText = useAutoTranslation("Return to Home", language);
   const loadingExhibitText = useAutoTranslation("Loading exhibit...", language);
   const productNotFoundText = useAutoTranslation("Product not found.", language);
   const removedFromWishlistText = useAutoTranslation("Removed from wishlist", language);
   const addedToWishlistText = useAutoTranslation("Added to wishlist", language);
   const cmText = useAutoTranslation("cm", language);
-  
+
   // Dynamic content translations (artwork data from API)
   const translatedTitle = useAutoTranslation(product?.title || "", language);
   const translatedArtistName = useAutoTranslation(product?.artist?.name || "", language);
@@ -500,7 +503,9 @@ const ProductViewingContent = () => {
 
               <div className="border-l border-gray-300 pl-4">
                 <h3 className="text-[10px] font-medium text-gray-500 mb-1">{dimensionsText}</h3>
-                <p className="text-[10px] text-gray-900">{product.size} {cmText}</p>
+                <p className="text-[10px] text-gray-900">
+                  {product.size} {cmText}
+                </p>
               </div>
 
               <div className="border-l border-gray-300 mr-2">
@@ -579,7 +584,9 @@ const ProductViewingContent = () => {
                         <div className="flex items-center space-x-0.5 mb-1">
                           {renderStars(Math.round(Number(averageRating)))}
                         </div>
-                        <p className="text-[10px] text-gray-500">({reviews?.length || 0} {reviewsText})</p>
+                        <p className="text-[10px] text-gray-500">
+                          ({reviews?.length || 0} {reviewsText})
+                        </p>
                       </div>
 
                       {/* Rating Breakdown */}
@@ -705,6 +712,7 @@ const ProductViewingContent = () => {
                 category={art.category}
                 onCardClick={() => navigate(`/viewproduct/${art.id}`)}
                 isMarketplace={true}
+                isProfileView={false}
                 status={art.art_status || "active"}
               />
             ))}
