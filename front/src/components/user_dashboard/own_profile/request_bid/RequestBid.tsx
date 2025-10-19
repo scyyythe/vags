@@ -10,6 +10,8 @@ import { addDays } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useCreateAuction } from "@/hooks/auction/useCreateAuction";
 import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface AuctionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -36,9 +38,35 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
   const [startingBid, setStartingBid] = useState("");
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
+  // Language and translation
+  const { language } = useLanguage();
+  const setTermsScheduleText = useAutoTranslation("Set your terms and schedule to start auctioning your artwork", language);
+  const setStartingBidText = useAutoTranslation("Set a starting bid", language);
+  const enterAmountText = useAutoTranslation("Enter amount", language);
+  const setAuctionScheduleText = useAutoTranslation("Set Auction Schedule", language);
+  const auctionStartsOnText = useAutoTranslation("Auction starts on", language);
+  const auctionEndsAfterText = useAutoTranslation("Auction ends after", language);
+  const durationNoteText = useAutoTranslation("Note: Auction duration cannot exceed 3 days", language);
+  const setupPaymentAccountFirstText = useAutoTranslation("Set up payment account first", language);
+  const publishText = useAutoTranslation("Publish", language);
+  const needPaymentAccountText = useAutoTranslation("You need to set up a payment account to receive payments", language);
+  const setupPaymentAccountLinkText = useAutoTranslation("Set up payment account →", language);
+  
+  // Toast messages
+  const setupPaymentBeforeAuctionText = useAutoTranslation("Please set up a payment account before creating an auction", language);
+  const selectEndDateText = useAutoTranslation("Please select an end date for the auction", language);
+  const validStartingBidText = useAutoTranslation("Please enter a valid starting bid amount", language);
+  const endTimeAfterStartText = useAutoTranslation("End time must be after start time", language);
+  const durationExceed3DaysText = useAutoTranslation("Auction duration cannot exceed 3 days", language);
+  const auctionCreatedSuccessText = useAutoTranslation("Auction created successfully", language);
+  const failedToCreateAuctionText = useAutoTranslation("Failed to create auction", language);
+
+  // Translation for fetched artwork title
+  const translatedArtworkTitle = useAutoTranslation(artworkTitle || "", language);
+
   const handlePublish = () => {
     if (paymentAccounts.length === 0) {
-      toast.error("Please set up a payment account before creating an auction", {
+      toast.error(setupPaymentBeforeAuctionText, {
         closeButton: true,
       });
       return;
@@ -50,14 +78,14 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
     }
 
     if (!endDate) {
-      toast.error("Please select an end date for the auction", {
+      toast.error(selectEndDateText, {
         closeButton: true,
       });
       return;
     }
 
     if (!startingBid || isNaN(Number(startingBid)) || Number(startingBid) <= 0) {
-      toast.error("Please enter a valid starting bid amount", {
+      toast.error(validStartingBidText, {
         closeButton: true,
       });
       return;
@@ -70,7 +98,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
     endDateTime.setHours(endHours, endMinutes, 0, 0);
 
     if (endDateTime <= startDateTime) {
-      toast.error("End time must be after start time", {
+      toast.error(endTimeAfterStartText, {
         closeButton: true,
       });
       return;
@@ -80,14 +108,14 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
     const durationDays = durationMs / (1000 * 60 * 60 * 24);
     const maxDurationMs = 3 * 24 * 60 * 60 * 1000;
     if (durationMs > maxDurationMs) {
-      toast.error("Auction duration cannot exceed 3 days", {
+      toast.error(durationExceed3DaysText, {
         closeButton: true,
       });
       return;
     }
 
     if (durationDays > maxDurationMs) {
-      toast.error("Auction duration cannot exceed 3 days", {
+      toast.error(durationExceed3DaysText, {
         closeButton: true,
       });
       return;
@@ -115,14 +143,14 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
       },
       {
         onSuccess: () => {
-          toast.success("Auction created successfully", {
+          toast.success(auctionCreatedSuccessText, {
             closeButton: true,
           });
           setIsConfirmationOpen(false);
           onOpenChange(false);
         },
         onError: (error) => {
-          const message = error.response?.data?.error || error.message || "Failed to create auction";
+          const message = error.response?.data?.error || error.message || failedToCreateAuctionText;
           toast.error(message, {
             closeButton: true,
           });
@@ -147,20 +175,20 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
             <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
               <X className="h-4 w-4" />
             </DialogClose>
-            <DialogTitle className="text-lg font-bold text-left">{artworkTitle}</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-left">{translatedArtworkTitle}</DialogTitle>
           </DialogHeader>
 
-          <p className="text-left text-[10px] -mt-3">Set your terms and schedule to start auctioning your artwork</p>
+          <p className="text-left text-[10px] -mt-3">{setTermsScheduleText}</p>
 
           <div className="space-y-6 mt-3">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <h3 className="font-medium mb-2 text-[11px]">Set a starting bid</h3>
+                <h3 className="font-medium mb-2 text-[11px]">{setStartingBidText}</h3>
                 <div className="space-y-2">
                   <div>
                     <Input
                       id="starting-bid"
-                      placeholder="Enter amount"
+                      placeholder={enterAmountText}
                       style={{ fontSize: "10px", marginTop: "6px", width: "107%" }}
                       value={startingBid}
                       onChange={(e) => setStartingBid(e.target.value)}
@@ -171,9 +199,9 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
             </div>
 
             <div>
-              <h3 className="font-medium mb-3 text-[11px]">Set Auction Schedule</h3>
+              <h3 className="font-medium mb-3 text-[11px]">{setAuctionScheduleText}</h3>
               <div className="mb-2">
-                <p className="text-[10px]">Auction starts on</p>
+                <p className="text-[10px]">{auctionStartsOnText}</p>
                 <DateTimePicker
                   date={startDate}
                   hours={startHours}
@@ -186,7 +214,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
               </div>
 
               <div className="mb-8">
-                <p className="text-[10px]">Auction ends after</p>
+                <p className="text-[10px]">{auctionEndsAfterText}</p>
                 <DateTimePicker
                   date={endDate}
                   hours={endHours}
@@ -198,7 +226,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
                   maxDate={maxEndDate}
                 />
               </div>
-              <p className="text-[10px] text-muted-foreground -mb-3">Note: Auction duration cannot exceed 3 days</p>
+              <p className="text-[10px] text-muted-foreground -mb-3">{durationNoteText}</p>
             </div>
 
             <div className="flex space-x-2">
@@ -209,16 +237,16 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
                 onClick={handlePublish}
                 disabled={paymentAccounts.length === 0}
               >
-                {paymentAccounts.length === 0 ? "Set up payment account first" : "Publish"}
+                {paymentAccounts.length === 0 ? setupPaymentAccountFirstText : publishText}
               </button>
             </div>
 
             {/* Payment account warning and setup button */}
             {paymentAccounts.length === 0 && (
               <div className="mt-2 text-center">
-                <p className="text-[9px] text-red-500 mb-2">You need to set up a payment account to receive payments</p>
+                <p className="text-[9px] text-red-500 mb-2">{needPaymentAccountText}</p>
                 <button onClick={handleSetupAccount} className="text-[9px] text-blue-600 hover:text-blue-800 underline">
-                  Set up payment account →
+                  {setupPaymentAccountLinkText}
                 </button>
               </div>
             )}
