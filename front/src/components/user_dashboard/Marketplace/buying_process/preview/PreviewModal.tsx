@@ -5,6 +5,7 @@ import useAllAddresses from "@/hooks/users/address/useAllAddresses";
 import { usePurchase } from "@/context/PurchaseContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useCreatePurchaseOrder } from "@/hooks/purchase/usePurchaseOrder";
 
 interface PreviewModalProps {
   isOpen: boolean;
@@ -33,6 +34,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
   const navigate = useNavigate();
   const { data: addresses = [], isLoading, error: addressesError } = useAllAddresses();
   const { setArtwork } = usePurchase();
+  const createPurchaseOrderMutation = useCreatePurchaseOrder();
 
   // Language and translation hooks
   const { language } = useLanguage();
@@ -106,33 +108,54 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
     );
   }
 
-  const handleProceed = () => {
-    if (isLoading) return;
+  const handleProceed = async () => {
+    if (isLoading || createPurchaseOrderMutation.isPending) return;
 
-    // Calculate total price based on quantity
-    const quantity = artwork.quantity || 1;
-    const totalPrice = artwork.price * quantity;
+    try {
+      // Calculate total price based on quantity
+      const quantity = artwork.quantity || 1;
+      const totalPrice = artwork.price * quantity;
 
-    setArtwork({
-      id: artwork.id,
-      artworkImage: artwork.artworkImage,
-      title: artwork.title,
-      artist: artwork.artist,
-      artistId: artwork.artistId,
-      size: artwork.size,
-      style: artwork.style,
-      medium: artwork.medium,
-      edition: artwork.edition,
-      yearCreated: Number(artwork.yearCreated),
-      price: totalPrice,
-      originalPrice: artwork.price,
-      default_paypal_email: artwork.default_paypal_email,
-      quantity: quantity,
-      availableQuantity: artwork.availableQuantity || 1,
-    });
+      // Create purchase order in database
+      const orderData = {
+        artwork: artwork.id,
+        quantity: quantity,
+        total_price: totalPrice,
+      };
 
-    const hasAddress = Array.isArray(addresses) && addresses.length > 0;
-    navigate(hasAddress ? "/shipping" : "/add-address");
+      const response = await createPurchaseOrderMutation.mutateAsync(orderData);
+      const orderId = response.purchase_order_id;
+
+      // Store artwork data in context for the flow
+      setArtwork({
+        id: artwork.id,
+        artworkImage: artwork.artworkImage,
+        title: artwork.title,
+        artist: artwork.artist,
+        artistId: artwork.artistId,
+        size: artwork.size,
+        style: artwork.style,
+        medium: artwork.medium,
+        edition: artwork.edition,
+        yearCreated: Number(artwork.yearCreated),
+        price: totalPrice,
+        originalPrice: artwork.price,
+        default_paypal_email: artwork.default_paypal_email,
+        quantity: quantity,
+        availableQuantity: artwork.availableQuantity || 1,
+      });
+
+      // Store order ID in localStorage for retrieval
+      localStorage.setItem("current_purchase_order_id", orderId);
+
+      const hasAddress = Array.isArray(addresses) && addresses.length > 0;
+      navigate(hasAddress ? "/shipping" : "/add-address");
+    } catch (error: any) {
+      console.error("Failed to create purchase order:", error);
+      console.error("Error response:", error.response?.data);
+      console.error("Error status:", error.response?.status);
+      // You might want to show an error toast here
+    }
   };
 
   try {
