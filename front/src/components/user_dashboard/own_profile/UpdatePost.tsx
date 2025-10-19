@@ -328,16 +328,22 @@ const UpdatePost = () => {
                     <label htmlFor="visibility" className="block mb-2 text-xs font-medium">
                       {visibilityLabelText}
                     </label>
-                    <select
-                      id="visibility"
-                      value={visibility}
-                      onChange={(e) => setVisibility(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-md appearance-none text-xs"
-                    >
-                      <option value="Public">{publicText}</option>
-                      <option value="Private">{privateText}</option>
-                      <option value="Unlisted">{unlistedText}</option>
-                    </select>
+                    <Select value={visibility} onValueChange={setVisibility}>
+                      <SelectTrigger className="w-full text-xs h-[35px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Public" className="text-xs">
+                          {publicText}
+                        </SelectItem>
+                        <SelectItem value="Private" className="text-xs">
+                          {privateText}
+                        </SelectItem>
+                        <SelectItem value="Unlisted" className="text-xs">
+                          {unlistedText}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
