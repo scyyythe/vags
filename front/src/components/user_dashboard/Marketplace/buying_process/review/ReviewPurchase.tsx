@@ -52,7 +52,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   artwork,
 }) => {
   const navigate = useNavigate();
-  const { artwork: contextArtwork } = usePurchase();
+  const { artwork: contextArtwork, clearArtwork } = usePurchase();
   const { data: defaultAddress, isLoading: isAddressLoading } = useDefaultAddress();
   const { artwork: purchasedArtwork } = usePurchase();
   const purchaseMutation = usePurchaseArtwork();
@@ -66,7 +66,10 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   const reviewPurchaseText = useAutoTranslation("Review Purchase", language);
   const addressText = useAutoTranslation("Address", language);
   const changeText = useAutoTranslation("Change", language);
-  const orderConfirmedText = useAutoTranslation("After your order is confirmed, a specialist will contact you to coordinate your purchase.", language);
+  const orderConfirmedText = useAutoTranslation(
+    "After your order is confirmed, a specialist will contact you to coordinate your purchase.",
+    language
+  );
   const paymentMethodText = useAutoTranslation("Payment Method", language);
   const sendMoneyToText = useAutoTranslation("Send money to:", language);
   const loadingPaymentDetailsText = useAutoTranslation("Loading payment details...", language);
@@ -92,15 +95,18 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   const paymentMethodErrorText = useAutoTranslation("Payment Method Error:", language);
   const changePaymentMethodText = useAutoTranslation("Change Payment Method", language);
   const byText = useAutoTranslation("by", language);
-  
+
   // Toast messages
   const missingInfoText = useAutoTranslation("Missing required information.", language);
-  const artistPaymentNotAvailableText = useAutoTranslation("Artist payment information is not available. Please contact support or try again later.", language);
+  const artistPaymentNotAvailableText = useAutoTranslation(
+    "Artist payment information is not available. Please contact support or try again later.",
+    language
+  );
   const purchaseSuccessText = useAutoTranslation("Your purchase has been successfully completed!", language);
   const purchaseFailedText = useAutoTranslation("Failed to complete purchase.", language);
   const paymentSuccessText = useAutoTranslation("Payment completed successfully!", language);
   const paymentFailedText = useAutoTranslation("Payment failed, try again.", language);
-  
+
   // Validation messages
   const noPaymentMethodsText = useAutoTranslation("Artist has no payment methods configured", language);
   const artistDoesntSupportText = useAutoTranslation("Artist doesn't support", language);
@@ -109,7 +115,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   const paymentDetailsNotAvailableText = useAutoTranslation("Payment details not available", language);
   const artistPaymentInfoNotAvailableText = useAutoTranslation("Artist payment information not available", language);
   const accountConnectedText = useAutoTranslation("account connected", language);
-  
+
   // Payment method names
   const paypalText = useAutoTranslation("PayPal", language);
   const gcashText = useAutoTranslation("GCash", language);
@@ -123,12 +129,6 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   const handleAddressChange = () => {
     navigate("/shipping");
   };
-  useEffect(() => {
-    console.log("ReviewPurchase - Artist ID:", artistId);
-    console.log("ReviewPurchase - Context Artwork:", contextArtwork);
-    console.log("ReviewPurchase - Artwork Prop:", artwork);
-    console.log("ReviewPurchase - Artist Accounts:", artistAccounts);
-  }, [artistId, contextArtwork, artwork, artistAccounts]);
   const handlePaymentMethodChange = () => {
     navigate("/payment-method");
   };
@@ -221,7 +221,9 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
         const gcashNumber =
           account.accountNumber ||
           (typeof account.account_info === "string" ? account.account_info : account.account_info?.accountNumber);
-        return gcashNumber ? `${gcashNumber.slice(0, 2)}*******${gcashNumber.slice(-2)}` : `${gcashText} ${accountConnectedText}`;
+        return gcashNumber
+          ? `${gcashNumber.slice(0, 2)}*******${gcashNumber.slice(-2)}`
+          : `${gcashText} ${accountConnectedText}`;
       case "stripe":
         return account.email || account.account_info?.email || `${stripeText} ${accountConnectedText}`; // Email not translated
       case "creditcard":
@@ -302,6 +304,9 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
 
       toast.success(purchaseSuccessText);
 
+      // Clear the artwork data from context and localStorage
+      clearArtwork();
+
       const userId = localStorage.getItem("user_id");
       if (userId) {
         navigate(`/userprofile/${userId}`, {
@@ -376,6 +381,9 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
     onSuccess: (details) => {
       toast.success(paymentSuccessText);
 
+      // Clear the artwork data from context and localStorage
+      clearArtwork();
+
       // Navigate to user profile with MY PURCHASE tab and Paid subtab selected
       const userId = localStorage.getItem("user_id");
       if (userId) {
@@ -439,17 +447,19 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
             <div className="border border-gray-200 rounded-lg p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center mb-4 gap-6">
-                {isAddressLoading ? (
-                  <p className="text-[11px] text-gray-400">{loadingAddressText}</p>
-                ) : defaultAddress ? (
-                  <>
-                    <h3 className="text-xs font-semibold text-gray-900">{addressText} [{translatedAddressCity}]</h3>
-                    <p className="text-[11px] text-gray-600">{translatedAddressLine}</p>
-                  </>
-                ) : (
-                  <p className="text-[11px] text-red-600">{noDefaultAddressText}</p>
-                )}
-              </div>
+                  {isAddressLoading ? (
+                    <p className="text-[11px] text-gray-400">{loadingAddressText}</p>
+                  ) : defaultAddress ? (
+                    <>
+                      <h3 className="text-xs font-semibold text-gray-900">
+                        {addressText} [{translatedAddressCity}]
+                      </h3>
+                      <p className="text-[11px] text-gray-600">{translatedAddressLine}</p>
+                    </>
+                  ) : (
+                    <p className="text-[11px] text-red-600">{noDefaultAddressText}</p>
+                  )}
+                </div>
                 <button
                   onClick={handleAddressChange}
                   className="text-xs font-medium text-gray-900 underline hover:text-gray-700"
@@ -457,9 +467,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
                   {changeText}
                 </button>
               </div>
-              <p className="text-[11px] text-gray-600">
-                {orderConfirmedText}
-              </p>
+              <p className="text-[11px] text-gray-600">{orderConfirmedText}</p>
             </div>
 
             {/* Payment Method Section */}
@@ -501,9 +509,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
               </div>
 
               <p className="text-[11px] text-gray-600">
-                {artistAccountsLoading
-                  ? loadingPaymentDetailsText
-                  : `${sendMoneyToText} ${translatedPaymentDetails}`}
+                {artistAccountsLoading ? loadingPaymentDetailsText : `${sendMoneyToText} ${translatedPaymentDetails}`}
               </p>
 
               {/* Payment validation error */}
@@ -525,9 +531,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
             <div className="flex items-center space-x-2 text-[11px] text-gray-600">
               <i className="bx bxs-check-circle text-black text-sm"></i>
               <span>{purchaseProtectedText}</span>
-              <button className="text-blue-600 underline hover:text-blue-700">
-                {learnMoreText}
-              </button>
+              <button className="text-blue-600 underline hover:text-blue-700">{learnMoreText}</button>
             </div>
           </div>
 
@@ -548,7 +552,9 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
               {/* Artwork Title and Artist */}
               <div className="text-center mb-4">
                 <h3 className="text-md font-semibold text-gray-900">{translatedArtworkTitle}</h3>
-                <p className="text-xs text-gray-600">{byText} {translatedArtist}</p>
+                <p className="text-xs text-gray-600">
+                  {byText} {translatedArtist}
+                </p>
               </div>
 
               {/* Artwork Details */}
@@ -627,9 +633,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
             </button>
             <p className="text-[11px] text-gray-500 text-center max-w-md whitespace-nowrap">
               {agreeTermsText}{" "}
-              <button className="text-blue-600 underline hover:text-blue-700">
-                {termsConditionsText}
-              </button>
+              <button className="text-blue-600 underline hover:text-blue-700">{termsConditionsText}</button>
             </p>
           </div>
         </div>
@@ -660,13 +664,4 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   );
 };
 
-// Wrapper component to ensure PurchaseProvider context is available
-const ReviewPurchaseWrapper: React.FC<ReviewPurchaseProps> = (props) => {
-  return (
-    <PurchaseProvider>
-      <ReviewPurchase {...props} />
-    </PurchaseProvider>
-  );
-};
-
-export default ReviewPurchaseWrapper;
+export default ReviewPurchase;
