@@ -8,6 +8,7 @@ export interface ExhibitRequest {
   exhibitId: string;
   isOwner?: boolean;
   type: "pending" | "review" | "ready" | "published" | "contributed";
+  exhibitType?: string;
   collaboratorsSubmitted?: number;
   totalCollaborators?: number;
   hasUserSubmitted?: boolean;

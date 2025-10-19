@@ -137,6 +137,15 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
             closeButton: true,
           });
           setShowPublishDialog(false);
+
+          if (selectedExhibit.exhibitType) {
+            const exhibitType = selectedExhibit.exhibitType.toLowerCase();
+            if (exhibitType === "solo") {
+              setTypeTab("solo");
+            } else if (exhibitType === "collaborative") {
+              setTypeTab("collab");
+            }
+          }
         },
         onError: (error: any) => {
           toast.error("Failed to publish exhibit", {
@@ -153,7 +162,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
 
   // Separate pending requests from contributions
   const actualPendingRequests = pendingRequests.filter((req) => req.type !== "contributed");
-  const contributions = pendingRequests.filter((req) => req.type === "contributed");
+  const contributions = pendingRequests.filter((req) => req.type === "contributed" && !req.isOwner);
 
   const hasContributions = isOwnProfile && contributions.length > 0;
 
@@ -242,10 +251,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                   </button>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent
-                  align="end"
-                  className="rounded-lg shadow-md py-2 text-[10px] bg-white border"
-                >
+                <DropdownMenuContent align="end" className="rounded-lg shadow-md py-2 text-[10px] bg-white border">
                   <DropdownMenuItem
                     onClick={() => setStatusFilter("upcoming")}
                     className={`text-[10px] hover:bg-gray-100 cursor-pointer ${
@@ -275,7 +281,6 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
-
           </div>
         </div>
       </div>
@@ -423,11 +428,23 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                           Collaborator
                         </Badge>
 
-                        {/* Status Badge */}
-                        <Badge className="bg-blue-500 text-white text-[8px] px-1 py-0">Contributed</Badge>
+                        {/* Status Badge - Show different badges based on exhibit status */}
+                        {req.status.toLowerCase().includes("live") || req.status.toLowerCase().includes("published") ? (
+                          <Badge className="bg-green-600 text-white text-[8px] px-1 py-0 flex items-center gap-1">
+                            <i className="bx bx-check-circle text-[7px]"></i>
+                            Published
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-blue-500 text-white text-[8px] px-1 py-0 flex items-center gap-1">
+                            <i className="bx bx-time text-[7px]"></i>
+                            In Progress
+                          </Badge>
+                        )}
                       </div>
                       <p className="text-gray-500 mt-0.5">
-                        You've submitted your contributions. Waiting for others to finish.
+                        {req.status.toLowerCase().includes("live") || req.status.toLowerCase().includes("published")
+                          ? "Exhibit is now live! Your contribution is part of this published exhibit."
+                          : req.status || "You've submitted your contributions. Waiting for others to finish."}
                       </p>
                       {req.collaboratorsSubmitted !== undefined && (
                         <div className="mt-1 flex items-center">
@@ -436,7 +453,12 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                           </span>
                           <div className="w-24 h-1 bg-gray-200 rounded-full">
                             <div
-                              className="h-full bg-blue-500"
+                              className={`h-full ${
+                                req.status.toLowerCase().includes("live") ||
+                                req.status.toLowerCase().includes("published")
+                                  ? "bg-green-500"
+                                  : "bg-blue-500"
+                              }`}
                               style={{ width: `${(req.collaboratorsSubmitted / req.totalCollaborators) * 100}%` }}
                             ></div>
                           </div>
@@ -446,10 +468,16 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
 
                     {/* View Others Button */}
                     <button
-                      onClick={() => handleRequestClick(req)}
-                      className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center"
+                      onClick={() => navigate(`/exhibitreview?id=${req.exhibitId}`)}
+                      className={`h-6 text-[9px] text-white px-3.5 py-1 rounded-full flex items-center justify-center ${
+                        req.status.toLowerCase().includes("live") || req.status.toLowerCase().includes("published")
+                          ? "bg-green-600 hover:bg-green-700"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      }`}
                     >
-                      View Others
+                      {req.status.toLowerCase().includes("live") || req.status.toLowerCase().includes("published")
+                        ? "View Live"
+                        : "View Others"}
                     </button>
                   </div>
                 </li>
