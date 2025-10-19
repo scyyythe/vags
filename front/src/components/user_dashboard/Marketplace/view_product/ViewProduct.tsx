@@ -441,7 +441,7 @@ const ProductViewingContent = () => {
                     onDelete={() => toast("Delete clicked", { closeButton: true })}
                     onMarkAsSold={() => markAsSoldMutation.mutate(id)}
                     onViewInsights={() => toast("Viewing insights", { closeButton: true })}
-                    className="-right-1 top-5"
+                    positionOffset={{ top: 1, left: -4, marginTop: 0 }}
                   />
                 ) : (
                   <SellCardMenu
