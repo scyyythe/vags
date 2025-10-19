@@ -151,11 +151,7 @@ const AppContent = () => {
     location.pathname.startsWith("/moderator") ||
     location.pathname.startsWith("/");
 
-  return (
-    <>
-      {!hideHeader && <Header />}
-    </>
-  );
+  return <>{!hideHeader && <Header />}</>;
 };
 
 const App = () => {
@@ -204,7 +200,7 @@ const App = () => {
                                 <Route path="/edit-address/:id" element={<AddAddressPage isEditing={true} />} />
                                 <Route path="/payment-method" element={<PaymentMethodPage />} />
                                 <Route
-                                  path="/reviewpurchase"
+                                  path="/reviewpurchase/:orderId"
                                   element={<ReviewPurchase onBack={() => {}} onSubmit={() => {}} />}
                                 />
                                 {/* Exhibit */}

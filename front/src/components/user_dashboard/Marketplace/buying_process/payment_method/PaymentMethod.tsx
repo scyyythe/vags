@@ -42,7 +42,10 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
   const paymentMethodText = useAutoTranslation("Payment Method", language);
   const paymentDetailsText = useAutoTranslation("Payment Details", language);
   const noteText = useAutoTranslation("Note:", language);
-  const shippingAddressSharedText = useAutoTranslation("Your shipping address is only shared with the artist after your complete payment.", language);
+  const shippingAddressSharedText = useAutoTranslation(
+    "Your shipping address is only shared with the artist after your complete payment.",
+    language
+  );
   const saveAndContinueText = useAutoTranslation("Save and Continue", language);
 
   // Populate form with selected account data
@@ -96,7 +99,12 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onContinue(formData);
-    navigate("/reviewpurchase", { state: { selectedPaymentMethod } });
+    const orderId = localStorage.getItem("current_purchase_order_id");
+    if (orderId) {
+      navigate(`/reviewpurchase/${orderId}`, { state: { selectedPaymentMethod } });
+    } else {
+      navigate("/reviewpurchase/unknown", { state: { selectedPaymentMethod } });
+    }
   };
 
   const handleEditAccount = (account: PaymentAccount) => {
