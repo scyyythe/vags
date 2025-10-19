@@ -36,14 +36,14 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
 
   // Language and translation hooks
   const { language } = useLanguage();
-  
+
   // Translate dynamic artwork data
   const translatedTitle = useAutoTranslation(artwork?.title || "", language);
   const translatedArtist = useAutoTranslation(artwork?.artist || "", language);
   const translatedStyle = useAutoTranslation(artwork?.style || "", language);
   const translatedMedium = useAutoTranslation(artwork?.medium || "", language);
   const translatedEdition = useAutoTranslation(artwork?.edition || "", language);
-  
+
   // Static text translations
   const invalidDataText = useAutoTranslation("Invalid Data", language);
   const artworkDataInvalidText = useAutoTranslation("Artwork data is invalid or missing.", language);
@@ -61,7 +61,10 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
   const priceText = useAutoTranslation("PRICE", language);
   const loadingText = useAutoTranslation("Loading...", language);
   const proceedToCheckoutText = useAutoTranslation("proceed to checkout →", language);
-  const shippingHandledText = useAutoTranslation("Shipping is handled directly by the seller after purchase.", language);
+  const shippingHandledText = useAutoTranslation(
+    "Shipping is handled directly by the seller after purchase.",
+    language
+  );
   const errorText = useAutoTranslation("Error", language);
   const somethingWentWrongText = useAutoTranslation("Something went wrong loading the preview.", language);
 
@@ -111,13 +114,20 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
     const totalPrice = artwork.price * quantity;
 
     setArtwork({
-      ...artwork,
       id: artwork.id,
-      artistId: artwork.artistId, // Include artistId for payment validation
+      artworkImage: artwork.artworkImage,
+      title: artwork.title,
+      artist: artwork.artist,
+      artistId: artwork.artistId,
+      size: artwork.size,
+      style: artwork.style,
+      medium: artwork.medium,
+      edition: artwork.edition,
       yearCreated: Number(artwork.yearCreated),
+      price: totalPrice,
+      originalPrice: artwork.price,
+      default_paypal_email: artwork.default_paypal_email,
       quantity: quantity,
-      price: totalPrice, // Pass the total price
-      originalPrice: artwork.price, // Keep original price for reference
       availableQuantity: artwork.availableQuantity || 1,
     });
 
@@ -159,7 +169,9 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
 
           {/* Title & Artist */}
           <h2 className="text-[14px] font-semibold text-center mt-4">{translatedTitle || untitledText}</h2>
-          <p className="text-[10px] text-center text-gray-500 mt-1">{byText} {translatedArtist || unknownArtistText}</p>
+          <p className="text-[10px] text-center text-gray-500 mt-1">
+            {byText} {translatedArtist || unknownArtistText}
+          </p>
 
           {/* Grid Details */}
           <div className="my-4">
@@ -178,7 +190,9 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
               <div className="pt-2 col-span-1">
                 <h4 className="text-gray-500">{mediumText}</h4>
                 <p className="font-medium">
-                  {translatedMedium ? translatedMedium.charAt(0).toUpperCase() + translatedMedium.slice(1) : unknownText}
+                  {translatedMedium
+                    ? translatedMedium.charAt(0).toUpperCase() + translatedMedium.slice(1)
+                    : unknownText}
                 </p>
               </div>
 
@@ -230,9 +244,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
               {isLoading ? loadingText : proceedToCheckoutText}
             </button>
 
-            <p className="text-[9px] text-gray-400 mt-2 italic">
-              {shippingHandledText}
-            </p>
+            <p className="text-[9px] text-gray-400 mt-2 italic">{shippingHandledText}</p>
           </div>
         </div>
       </div>
