@@ -97,11 +97,10 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
         ReactDOM.createPortal(
           <div
             ref={menuRef}
-            className="absolute z-[9999] bg-gray-100 rounded-full py-1 px-1.5 shadow-md"
+            className="absolute bg-gray-100 rounded-full py-1 px-1.5 shadow-md"
             style={{
               top: position.top,
               left: position.left,
-              zIndex: 9999,
               marginTop: positionOffset.marginTop || -2,
             }}
             onClick={(e) => e.stopPropagation()}
