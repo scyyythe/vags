@@ -88,12 +88,16 @@ const useSellArtwork = () => {
         formData.append("price", Math.round(priceNum).toString()); // Use validated price number
         formData.append("edition", edition || "Original (1 of 1)");
 
-        // Handle quantity - provide default for Open Edition
+        // Handle quantity based on edition type
         if (edition === "Open Edition") {
           const qty = quantity && !isNaN(parseInt(quantity)) ? parseInt(quantity) : 1;
           formData.append("quantity", qty.toString());
-        } else if (quantity && !isNaN(parseInt(quantity))) {
-          formData.append("quantity", parseInt(quantity).toString());
+        } else if (edition === "Limited Edition") {
+          const qty = quantity && !isNaN(parseInt(quantity)) ? parseInt(quantity) : 1;
+          formData.append("quantity", qty.toString());
+        } else {
+          // Original (1 of 1) - always quantity 1
+          formData.append("quantity", "1");
         }
 
         formData.append("images", mainImage);

@@ -102,7 +102,7 @@ class ToggleArtworkStatusView(APIView):
             return Response({"error": "Artwork not found"}, status=status.HTTP_404_NOT_FOUND)
 
         # Handle status toggle based on edition type
-        if artwork.edition == "Open Edition" and artwork.quantity is not None:
+        if artwork.edition in ["Open Edition", "Limited Edition"] and artwork.quantity is not None:
             # For Open Edition, only allow toggle if quantity > 0
             if artwork.art_status == "Sold":
                 # Can't toggle Sold Out Open Edition back to onSale without quantity
