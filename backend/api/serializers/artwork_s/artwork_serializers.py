@@ -167,9 +167,14 @@ class ArtSerializer(serializers.Serializer):
                 raise ValidationError("Quantity is required for Open Edition.")
             if quantity <= 0:
                 raise ValidationError("Quantity must be a positive number.")
+        elif edition == "Limited Edition":
+            if quantity is None:
+                raise ValidationError("Quantity is required for Limited Edition.")
+            if quantity <= 0:
+                raise ValidationError("Quantity must be a positive number.")
         else:
-      
-            data["quantity"] = None
+            # Original (1 of 1) - set quantity to 1
+            data["quantity"] = 1
 
         return data
 
@@ -364,7 +369,7 @@ class ArtSerializer(serializers.Serializer):
             "edition": instance.edition,
             "year_created": instance.year_created,
             "default_paypal_email": self.get_default_paypal_email(instance),
-            **({"quantity": instance.quantity} if instance.edition == "Open Edition" else {}),
+            **({"quantity": instance.quantity} if instance.edition in ["Open Edition", "Limited Edition"] else {}),
         }
 
 

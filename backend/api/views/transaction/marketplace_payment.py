@@ -99,7 +99,7 @@ class PayPalPurchaseVerifyView(APIView):
         purchased_artwork.save()
 
         # --- Update artwork quantity/status ---
-        if artwork.edition == "Open Edition" and artwork.quantity is not None:
+        if artwork.edition in ["Open Edition", "Limited Edition"] and artwork.quantity is not None:
             artwork.quantity -= 1  # PayPal purchases are typically quantity 1
             if artwork.quantity == 0:
                 artwork.art_status = "Sold"
