@@ -1,5 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface DeleteConfirmationProps {
   isOpen: boolean;
@@ -12,6 +14,13 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
   onCancel,
   onConfirm,
 }) => {
+  // Language and translation
+  const { language } = useLanguage();
+  const deleteProductTitleText = useAutoTranslation("You are about to delete this product", language);
+  const deleteProductDescText = useAutoTranslation("This will permanently remove the product from the dashboard.", language);
+  const cancelText = useAutoTranslation("Cancel", language);
+  const deleteText = useAutoTranslation("Delete", language);
+
   if (!isOpen) return null;
 
    return ReactDOM.createPortal(
@@ -19,20 +28,20 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
     onClick={(e) => e.stopPropagation()}>
       <div className="bg-white rounded-lg py-7 px-8 shadow-xl max-w-sm w-full text-center relative"
       onClick={(e) => e.stopPropagation()}>
-        <h2 className="text-xs font-semibold text-gray-900 mb-2">You are about to delete this product</h2>
-        <p className="text-[10px] text-gray-500 mb-6">This will permanently remove the product from the dashboard.</p>
+        <h2 className="text-xs font-semibold text-gray-900 mb-2">{deleteProductTitleText}</h2>
+        <p className="text-[10px] text-gray-500 mb-6">{deleteProductDescText}</p>
         <div className="flex justify-between gap-6">
           <button
             onClick={onCancel}
             className="w-full text-[10px] px-8 py-1 text-gray-600 hover:text-black border border-gray-500 hover:border-black rounded-full transition-colors duration-200"
           >
-            Cancel
+            {cancelText}
           </button>
           <button
             onClick={onConfirm}
             className="w-full bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1 rounded-full"
           >
-            Delete
+            {deleteText}
           </button>
         </div>
       </div>
