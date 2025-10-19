@@ -727,7 +727,7 @@ const BidDetails = () => {
           {/* Related Bids Section */}
           {relatedBids.length > 0 ? (
             <div className="container md:px-6 mt-2 mb-2">
-              <h2 className={`font-medium border ${isMobile ? "text-xs mt-8 mb-4 -ml-3" : "text-xs mt-6 mb-6"}`}>
+              <h2 className={`font-medium border ${isMobile ? "text-xs mt-12 mb-4 -ml-3" : "text-xs mt-10 mb-6"}`}>
                 {relatedBidsText}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -747,8 +747,8 @@ const BidDetails = () => {
             </div>
           ) : (
             <div className="container md:px-6 mt-2 mb-2">
-              <h2 className={`font-medium ${isMobile ? "text-xs mt-8 ml-4" : "text-xs mb-4"}`}>{relatedBidsText}</h2>
-              <p className="text-gray-500 text-xs mb-2">{noRelatedBidsText}</p>
+              <h2 className={`font-medium ${isMobile ? "text-xs mt-12 mb-4" : "text-xs mt-10 mb-4"}`}>{relatedBidsText}</h2>
+              <p className={`text-gray-500 text-xs text-center ${isMobile ? "mb-6" : "mb-2 mt-2"}`}>{noRelatedBidsText}</p>
             </div>
           )}
 
