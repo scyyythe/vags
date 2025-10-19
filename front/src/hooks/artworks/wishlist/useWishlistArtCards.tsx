@@ -19,14 +19,27 @@ const useWishlistArtCards = (wishlistIds: string[]) => {
       const mappedItems: SellCardProps[] = response.data.map((art: any) => ({
         id: art.id,
         artworkImage: art.image_url?.[0] || "/images/placeholder.jpg",
+        additionalImages: art.image_url?.slice(1) || [],
         price: art.discounted_price ?? art.price,
         originalPrice: art.discounted_price ? art.price : undefined,
         title: art.title,
-        edition: art.edition_type || "",
-        rating: art.total_ratings,
+        artist: art.artist,
+        artistId: art.artist_id,
+        profile_picture: art.profile_picture,
+        category: art.category,
+        edition: art.edition_type || art.edition || "",
+        size: art.size,
+        yearCreated: art.year_created,
+        medium: art.medium,
+        description: art.description,
+        quantity: art.quantity,
+        default_paypal_email: art.default_paypal_email,
+        rating: art.average_rating ?? art.total_ratings ?? 0,
         isLiked: true,
+        status: art.art_status || "active",
         onLike: () => {},
         isMarketplace: true,
+        isProfileView: false,
         onCardClick: () => {},
       }));
       setWishlistItems(mappedItems);
@@ -43,7 +56,7 @@ const useWishlistArtCards = (wishlistIds: string[]) => {
   }, [fetchWishlist]);
 
   const removeLocalItem = useCallback((id: string) => {
-    setWishlistItems(prev => prev.filter(item => item.id !== id));
+    setWishlistItems((prev) => prev.filter((item) => item.id !== id));
   }, []);
 
   const addLocalItem = useCallback(async (id: string) => {
@@ -53,17 +66,30 @@ const useWishlistArtCards = (wishlistIds: string[]) => {
       const newItem: SellCardProps = {
         id: data.id,
         artworkImage: data.image_url?.[0] || "/images/placeholder.jpg",
+        additionalImages: data.image_url?.slice(1) || [],
         price: data.discounted_price ?? data.price,
         originalPrice: data.discounted_price ? data.price : undefined,
         title: data.title,
-        edition: data.edition_type || "",
-        rating: data.total_ratings,
+        artist: data.artist,
+        artistId: data.artist_id,
+        profile_picture: data.profile_picture,
+        category: data.category,
+        edition: data.edition_type || data.edition || "",
+        size: data.size,
+        yearCreated: data.year_created,
+        medium: data.medium,
+        description: data.description,
+        quantity: data.quantity,
+        default_paypal_email: data.default_paypal_email,
+        rating: data.average_rating ?? data.total_ratings ?? 0,
         isLiked: true,
+        status: data.art_status || "active",
         onLike: () => {},
         isMarketplace: true,
+        isProfileView: false,
         onCardClick: () => {},
       };
-      setWishlistItems(prev => [...prev, newItem]);
+      setWishlistItems((prev) => [...prev, newItem]);
     } catch (err) {
       console.error("❌ Failed to add new wishlist item:", err);
     }

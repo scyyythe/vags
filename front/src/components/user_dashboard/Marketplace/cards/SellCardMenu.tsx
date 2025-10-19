@@ -97,7 +97,7 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
         ReactDOM.createPortal(
           <div
             ref={menuRef}
-            className="absolute bg-gray-100 rounded-full py-1 px-1.5 shadow-md"
+            className="absolute bg-gray-100 rounded-full py-1 px-1.5 shadow-md z-[60]"
             style={{
               top: position.top,
               left: position.left,
@@ -131,7 +131,9 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
 
               {/* Report */}
               <MenuItem
-                icon={<Flag size={10} fill={isReported ? "red" : "none"} stroke={isReported ? "red" : "currentColor"} />}
+                icon={
+                  <Flag size={10} fill={isReported ? "red" : "none"} stroke={isReported ? "red" : "currentColor"} />
+                }
                 label={reportText}
                 onHover={setHoveredItem}
                 hoveredItem={hoveredItem}

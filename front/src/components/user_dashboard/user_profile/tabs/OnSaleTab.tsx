@@ -1077,6 +1077,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                   category={artwork.artwork?.style || "Art"}
                   status="sold"
                   isMarketplace={true}
+                  isProfileView={true}
                   artistId={artwork.artist_id}
                   isOwner={false}
                   isFading={false}
@@ -1191,6 +1192,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                   category={artwork.artwork?.style || "Art"}
                   status="sold"
                   isMarketplace={true}
+                  isProfileView={true}
                   artistId={artwork.artist_id}
                   isOwner={isOwnProfile}
                   isFading={false}
@@ -1235,6 +1237,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                 category={art.category}
                 status={art.status}
                 isMarketplace={true}
+                isProfileView={true}
                 isOwner={isOwnProfile}
                 onCardClick={() => onCardClick(art.id)}
                 onRelist={isOwnProfile && art.status !== "onsale" ? () => handleRelist(art.id) : undefined}

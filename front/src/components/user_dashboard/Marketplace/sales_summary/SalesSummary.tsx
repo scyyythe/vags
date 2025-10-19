@@ -14,7 +14,7 @@ const SalesSummary = () => {
     pendingSales: 5,
     completedSales: 19,
     cancelledSales: 3,
-    refundedSales: 1
+    refundedSales: 1,
   };
 
   const latestBuyerActivity = [
@@ -25,7 +25,7 @@ const SalesSummary = () => {
       artworkTitle: "Mystic Forest",
       price: 85000,
       timestamp: "2 hours ago",
-      status: "payment_received"
+      status: "payment_received",
     },
     {
       id: 2,
@@ -34,7 +34,7 @@ const SalesSummary = () => {
       artworkTitle: "Urban Sunset",
       price: 120000,
       timestamp: "5 hours ago",
-      status: "payment_received"
+      status: "payment_received",
     },
     {
       id: 3,
@@ -43,7 +43,7 @@ const SalesSummary = () => {
       artworkTitle: "Ocean Dreams",
       price: 95000,
       timestamp: "1 day ago",
-      status: "in_progress"
+      status: "in_progress",
     },
     {
       id: 4,
@@ -52,7 +52,7 @@ const SalesSummary = () => {
       artworkTitle: "Mountain Vista",
       price: 150000,
       timestamp: "3 days ago",
-      status: "completed"
+      status: "completed",
     },
     {
       id: 5,
@@ -61,8 +61,8 @@ const SalesSummary = () => {
       artworkTitle: "Abstract Emotions",
       price: 75000,
       timestamp: "5 days ago",
-      status: "cancelled"
-    }
+      status: "cancelled",
+    },
   ];
 
   const relistableArtworks = [
@@ -72,7 +72,7 @@ const SalesSummary = () => {
       image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
       originalPrice: 75000,
       status: "cancelled",
-      reason: "Buyer cancelled order"
+      reason: "Buyer cancelled order",
     },
     {
       id: "ART-002",
@@ -80,7 +80,7 @@ const SalesSummary = () => {
       image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop",
       originalPrice: 60000,
       status: "unsold",
-      reason: "Listing expired"
+      reason: "Listing expired",
     },
     {
       id: "ART-003",
@@ -88,8 +88,8 @@ const SalesSummary = () => {
       image: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?w=300&h=300&fit=crop",
       originalPrice: 110000,
       status: "cancelled",
-      reason: "Payment failed"
-    }
+      reason: "Payment failed",
+    },
   ];
 
   const handleRelistArtwork = (artworkId: string) => {
@@ -98,7 +98,7 @@ const SalesSummary = () => {
 
   const getFilteredActivity = () => {
     if (statusFilter === "all") return latestBuyerActivity;
-    return latestBuyerActivity.filter(activity => {
+    return latestBuyerActivity.filter((activity) => {
       switch (statusFilter) {
         case "available":
           return activity.status === "awaiting_payment";
@@ -127,10 +127,18 @@ const SalesSummary = () => {
               <SelectValue placeholder="Filter" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all" className="text-[10px]">All</SelectItem>
-              <SelectItem value="available" className="text-[10px]">Available</SelectItem>
-              <SelectItem value="sold" className="text-[10px]">Sold</SelectItem>
-              <SelectItem value="cancelled" className="text-[10px]">Cancelled</SelectItem>
+              <SelectItem value="all" className="text-[10px]">
+                All
+              </SelectItem>
+              <SelectItem value="available" className="text-[10px]">
+                Available
+              </SelectItem>
+              <SelectItem value="sold" className="text-[10px]">
+                Sold
+              </SelectItem>
+              <SelectItem value="cancelled" className="text-[10px]">
+                Cancelled
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -148,7 +156,7 @@ const SalesSummary = () => {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {relistableArtworks.map((artwork) => (
-            <SalesCard 
+              <SalesCard
                 key={artwork.id}
                 id={artwork.id}
                 title={artwork.title}
@@ -160,7 +168,8 @@ const SalesSummary = () => {
                 onRelist={handleRelistArtwork}
                 isWishlistView={true}
                 isMarketplace={true}
-            />
+                isProfileView={false}
+              />
             ))}
           </div>
         </Card>
