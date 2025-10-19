@@ -1,8 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const EditProfile = () => {
   const navigate = useNavigate();
+
+  // Language and translation
+  const { language } = useLanguage();
+  const editProfileText = useAutoTranslation("Edit Profile", language);
 
   const handleEditProfile = () => {
     navigate("/settings/edit-profile");
@@ -17,7 +23,7 @@ const EditProfile = () => {
           className="flex items-center px-4 py-[6px] rounded-full text-white text-[10px] bg-red-800 hover:bg-red-700"
         >
           <i className="bx bx-edit-alt mr-3"></i>
-          Edit Profile
+          {editProfileText}
         </button>
       </div>
     </div>
