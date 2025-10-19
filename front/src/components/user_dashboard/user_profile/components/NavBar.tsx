@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface CategoryFilterProps {
   categories: string[];
@@ -7,6 +9,15 @@ interface CategoryFilterProps {
 
 const NavBar = ({ categories, onSelectCategory }: CategoryFilterProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>(categories[0]);
+
+  // Language and translation
+  const { language } = useLanguage();
+
+  // Helper component to translate category names
+  const TranslatedCategory: React.FC<{ categoryName: string }> = ({ categoryName }) => {
+    const translatedCategory = useAutoTranslation(categoryName, language);
+    return <>{translatedCategory}</>;
+  };
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
@@ -27,7 +38,7 @@ const NavBar = ({ categories, onSelectCategory }: CategoryFilterProps) => {
           }`}
           onClick={() => handleCategoryClick(category)}
         >
-          {category}
+          <TranslatedCategory categoryName={category} />
         </button>
       ))}
     </div>
