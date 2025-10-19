@@ -335,7 +335,7 @@ const SellCard = ({
               onDelete={() => toast(deleteClickedText, { closeButton: true })}
               onMarkAsSold={() => markAsSoldMutation.mutate(id)}
               onViewInsights={() => toast(viewingInsightsText, { closeButton: true })}
-              className="-right-1 top-5"
+              positionOffset={{ top: 2, left: -8, marginTop: -2 }}
             />
           ) : (
             <SellCardMenu
