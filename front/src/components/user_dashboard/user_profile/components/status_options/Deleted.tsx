@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import { ArchiveRestore, Trash2 } from "lucide-react";
 import DeletePermanently from "@/components/user_dashboard/user_profile/components/status_options/popups/delete/DeletePermanently";
 import useDeletePermanentArtwork from "@/hooks/mutate/visibility/trash/usePermanentDelete";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface ArtCardMenuProps {
   isOpen: boolean;
@@ -20,6 +22,11 @@ const DeletedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onUnarchiv
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const deleteArtwork = useDeletePermanentArtwork();
+
+  // Language and translation
+  const { language } = useLanguage();
+  const restoreText = useAutoTranslation("Restore", language);
+  const deletePermanentlyText = useAutoTranslation("Delete Permanently", language);
   if (!isOpen) return null;
   const handleConfirmDelete = () => {
     deleteArtwork.mutate(artworkId, {
@@ -44,7 +51,7 @@ const DeletedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onUnarchiv
             <button
               onClick={onUnarchive}
               className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-              aria-label="Restore"
+              aria-label={restoreText}
               onMouseEnter={() => setHoveredItem("restore")}
               onMouseLeave={() => setHoveredItem(null)}
             >
@@ -52,7 +59,7 @@ const DeletedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onUnarchiv
             </button>
             {hoveredItem === "restore" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Restore
+                {restoreText}
               </span>
             )}
           </div>
@@ -64,7 +71,7 @@ const DeletedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onUnarchiv
                 setShowDeletePopup(true);
               }}
               className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-              aria-label="Delete Permanently"
+              aria-label={deletePermanentlyText}
               onMouseEnter={() => setHoveredItem("delete")}
               onMouseLeave={() => setHoveredItem(null)}
             >
@@ -72,7 +79,7 @@ const DeletedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onUnarchiv
             </button>
             {hoveredItem === "delete" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Delete Permanently
+                {deletePermanentlyText}
               </span>
             )}
           </div>
