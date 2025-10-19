@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface SellArtworkModalProps {
   isOpen: boolean;
@@ -48,6 +50,40 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
   const { accounts: paymentAccounts } = usePaymentAccounts();
   const navigate = useNavigate();
 
+  // Language and translation
+  const { language } = useLanguage();
+  const setArtworkDetailsText = useAutoTranslation("Set your artwork details and pricing", language);
+  const addMorePicturesText = useAutoTranslation("Add more pictures (Optional)", language);
+  const removeText = useAutoTranslation("Remove", language);
+  const setPriceText = useAutoTranslation("Set price", language);
+  const enterAmountText = useAutoTranslation("Enter amount (e.g., 1000)", language);
+  const yearCreatedText = useAutoTranslation("Year Created", language);
+  const enterYearText = useAutoTranslation("Enter year (e.g., 2023)", language);
+  const selectEditionText = useAutoTranslation("Select Edition", language);
+  const original1of1Text = useAutoTranslation("Original (1 of 1)", language);
+  const limitedEditionText = useAutoTranslation("Limited Edition", language);
+  const openEditionText = useAutoTranslation("Open Edition", language);
+  const setQuantityText = useAutoTranslation("Set quantity", language);
+  const listArtworkForSaleText = useAutoTranslation("List Artwork for Sale", language);
+  const setupPaymentAccountFirstText = useAutoTranslation("Set up payment account first", language);
+  const needPaymentAccountText = useAutoTranslation("You need to set up a payment account to receive payments", language);
+  const setupPaymentAccountLinkText = useAutoTranslation("Set up payment account →", language);
+  
+  // Validation error messages
+  const priceRequiredText = useAutoTranslation("Price is required", language);
+  const validPriceText = useAutoTranslation("Please enter a valid price (positive number, max 2 decimals, ≤", language);
+  const yearRequiredText = useAutoTranslation("Year created is required", language);
+  const validYearText = useAutoTranslation("Please enter a valid year", language);
+  const quantityRequiredText = useAutoTranslation("Quantity is required", language);
+  const quantityAtLeast1Text = useAutoTranslation("Quantity must be at least 1", language);
+  
+  // Toast messages
+  const setupPaymentBeforeListingText = useAutoTranslation("Please set up a payment account before listing artwork for sale", language);
+  const fixErrorsText = useAutoTranslation("Please fix the errors before submitting", language);
+
+  // Translation for fetched artwork title
+  const translatedArtworkTitle = useAutoTranslation(artworkTitle || "", language);
+
   // Disable background scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -69,7 +105,7 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
 
     // Price validation
     if (!formData.price.trim()) {
-      newErrors.price = "Price is required";
+      newErrors.price = priceRequiredText;
     } else {
       const priceNumber = Number(formData.price);
       const priceRegex = /^\d+(\.\d{1,2})?$/;
@@ -81,27 +117,27 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
         priceNumber > MAX_PRICE ||
         !priceRegex.test(formData.price.trim())
       ) {
-        newErrors.price = `Please enter a valid price (positive number, max 2 decimals, ≤ ${MAX_PRICE})`;
+        newErrors.price = `${validPriceText} ${MAX_PRICE})`;
       }
     }
 
     // Year validation
     if (!formData.yearCreated.trim()) {
-      newErrors.yearCreated = "Year created is required";
+      newErrors.yearCreated = yearRequiredText;
     } else {
       const year = Number(formData.yearCreated);
       const currentYear = new Date().getFullYear();
       if (isNaN(year) || year < 1000 || year > currentYear) {
-        newErrors.yearCreated = `Please enter a valid year (1000-${currentYear})`;
+        newErrors.yearCreated = `${validYearText} (1000-${currentYear})`;
       }
     }
 
     // Quantity validation (only if visible)
     if (isQuantityVisible) {
       if (!formData.quantity.trim()) {
-        newErrors.quantity = "Quantity is required";
+        newErrors.quantity = quantityRequiredText;
       } else if (isNaN(Number(formData.quantity)) || Number(formData.quantity) < 1) {
-        newErrors.quantity = "Quantity must be at least 1";
+        newErrors.quantity = quantityAtLeast1Text;
       }
     }
 
@@ -122,7 +158,7 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
 
   const handleSubmit = () => {
     if (paymentAccounts.length === 0) {
-      toast.error("Please set up a payment account before listing artwork for sale", {
+      toast.error(setupPaymentBeforeListingText, {
         closeButton: true,
       });
       return;
@@ -131,7 +167,7 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
     if (validateForm()) {
       onSellArtwork(formData);
     } else {
-      toast.error("Please fix the errors before submitting", {
+      toast.error(fixErrorsText, {
         closeButton: true,
       });
     }
@@ -171,13 +207,13 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
 
         {/* Header */}
         <div className="text-left mb-6">
-          <p className="text-lg text-black font-bold text-left">{artworkTitle}</p>
-          <p className="text-[10px] text-black mt-1">Set your artwork details and pricing</p>
+          <p className="text-lg text-black font-bold text-left">{translatedArtworkTitle}</p>
+          <p className="text-[10px] text-black mt-1">{setArtworkDetailsText}</p>
         </div>
 
         {/* Add more pictures */}
         <div className="mb-6">
-          <h3 className="text-[11px] font-medium text-gray-900 mb-3">Add more pictures (Optional)</h3>
+          <h3 className="text-[11px] font-medium text-gray-900 mb-3">{addMorePicturesText}</h3>
 
           <div className="grid grid-cols-4 gap-3">
             {imageSlots.map((slot, index) => (
@@ -208,7 +244,7 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
                         handleImageUpload(index, null);
                       }}
                     >
-                      Remove
+                      {removeText}
                     </div>
                   </>
                 ) : (
@@ -232,10 +268,10 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
 
         {/* Set price */}
         <div className="mb-4">
-          <label className="block text-[11px] font-medium text-gray-900 mb-2">Set price</label>
+          <label className="block text-[11px] font-medium text-gray-900 mb-2">{setPriceText}</label>
           <Input
             type="text"
-            placeholder="Enter amount (e.g., 1000)"
+            placeholder={enterAmountText}
             value={formData.price}
             onChange={(e) => handleInputChange("price", e.target.value)}
             className={`w-full h-8 ${errors.price ? "" : ""}`}
@@ -246,10 +282,10 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
 
         {/* Year Created */}
         <div className="mb-4">
-          <label className="block text-[11px] font-medium text-gray-900 mb-2">Year Created</label>
+          <label className="block text-[11px] font-medium text-gray-900 mb-2">{yearCreatedText}</label>
           <Input
             type="text"
-            placeholder="Enter year (e.g., 2023)"
+            placeholder={enterYearText}
             value={formData.yearCreated}
             onChange={(e) => handleInputChange("yearCreated", e.target.value)}
             className={`w-full h-8 ${errors.yearCreated ? "" : ""}`}
@@ -261,27 +297,27 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
         {/* Edition and Quantity */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div>
-            <label className="block text-[11px] font-medium text-gray-900 mb-2">Select Edition</label>
+            <label className="block text-[11px] font-medium text-gray-900 mb-2">{selectEditionText}</label>
             <Select value={formData.edition} onValueChange={handleEditionChange}>
               <SelectTrigger className="w-full text-[10px] h-8">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Original (1 of 1)" className="text-[10px]">
-                  Original (1 of 1)
+                  {original1of1Text}
                 </SelectItem>
                 <SelectItem value="Limited Edition" className="text-[10px]">
-                  Limited Edition
+                  {limitedEditionText}
                 </SelectItem>
                 <SelectItem value="Open Edition" className="text-[10px]">
-                  Open Edition
+                  {openEditionText}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
           {isQuantityVisible && (
             <div>
-              <label className="block text-[11px] font-medium text-gray-900 mb-2">Set quantity</label>
+              <label className="block text-[11px] font-medium text-gray-900 mb-2">{setQuantityText}</label>
               <Input
                 type="number"
                 value={formData.quantity}
@@ -303,15 +339,15 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
             paymentAccounts.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-red-800 hover:bg-red-700"
           }`}
         >
-          {paymentAccounts.length === 0 ? "Set up payment account first" : "List Artwork for Sale"}
+          {paymentAccounts.length === 0 ? setupPaymentAccountFirstText : listArtworkForSaleText}
         </Button>
 
         {/* Payment account warning and setup button */}
         {paymentAccounts.length === 0 && (
           <div className="mt-2 text-center">
-            <p className="text-[9px] text-red-500 mb-2">You need to set up a payment account to receive payments</p>
+            <p className="text-[9px] text-red-500 mb-2">{needPaymentAccountText}</p>
             <button onClick={handleSetupAccount} className="text-[9px] text-blue-600 hover:text-blue-800 underline">
-              Set up payment account →
+              {setupPaymentAccountLinkText}
             </button>
           </div>
         )}
