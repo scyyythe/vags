@@ -312,7 +312,7 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
         onClick={(e) => e.stopPropagation()}
         className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       >
-        <div className="bg-white rounded-lg w-full max-w-xs mx-4 overflow-hidden">
+        <div className="bg-white rounded-lg w-full max-w-md mx-4 overflow-hidden">
           <div className="flex items-center justify-between p-4 -mb-4">
             <div className="flex items-center gap-2">
               {(selectedCategory || showDetails) && (
@@ -397,10 +397,10 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
       </div>
 
       <Dialog open={showConfirmation} onOpenChange={closeConfirmation}>
-        <DialogContent className="w-full max-w-xs rounded-lg">
+        <DialogContent className="w-full max-w-lg rounded-lg">
           <DialogHeader>
             <DialogTitle className="text-center mb-1 text-xs">{confirmReportText}</DialogTitle>
-            <DialogDescription className="w-full max-w-[270px] text-[10px] text-center text-black">
+            <DialogDescription className="w-full max-w-[450px] text-[10px] text-center text-black">
               {confirmDescText}
             </DialogDescription>
           </DialogHeader>
