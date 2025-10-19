@@ -46,7 +46,10 @@ const ExhibitReview = () => {
   // Translation hooks for all text content (must be before conditional returns)
   const goBackText = useAutoTranslation("Go back", language);
   const exhibitReviewText = useAutoTranslation("Exhibit Review", language);
-  const reviewDetailsText = useAutoTranslation("Review all details before publishing your exhibit. Make sure collaborators have filled their slots.", language);
+  const reviewDetailsText = useAutoTranslation(
+    "Review all details before publishing your exhibit. Make sure collaborators have filled their slots.",
+    language
+  );
   const exhibitDetailsText = useAutoTranslation("Exhibit Details", language);
   const titleText = useAutoTranslation("Title", language);
   const categoryText = useAutoTranslation("Category", language);
@@ -65,11 +68,17 @@ const ExhibitReview = () => {
   const overallCompletionText = useAutoTranslation("Overall Completion", language);
   const completeText = useAutoTranslation("Complete", language);
   const preview3DText = useAutoTranslation("Preview in 3D View", language);
-  const previewDescriptionText = useAutoTranslation("Opens your current selections in an interactive virtual gallery.", language);
+  const previewDescriptionText = useAutoTranslation(
+    "Opens your current selections in an interactive virtual gallery.",
+    language
+  );
   const editText = useAutoTranslation("Edit", language);
   const publishExhibitText = useAutoTranslation("Publish Exhibit", language);
   const cannotPublishYetText = useAutoTranslation("Cannot publish yet", language);
-  const allCollaboratorSlotsText = useAutoTranslation("All collaborator slots must be filled before publishing.", language);
+  const allCollaboratorSlotsText = useAutoTranslation(
+    "All collaborator slots must be filled before publishing.",
+    language
+  );
   const exhibitPublishedText = useAutoTranslation("Exhibit Published", language);
   const exhibitPublishedDescText = useAutoTranslation("Your exhibit has been successfully published!", language);
   const failedToLoadText = useAutoTranslation("Failed to load exhibit review.", language);
@@ -203,7 +212,8 @@ const ExhibitReview = () => {
       {/* Back button */}
       <div className="ml-8">
         <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
-          <i className="bx bx-chevron-left text-xl mr-2"></i>{goBackText}
+          <i className="bx bx-chevron-left text-xl mr-2"></i>
+          {goBackText}
         </button>
       </div>
 
@@ -211,9 +221,7 @@ const ExhibitReview = () => {
         {/* Exhibit Review Header */}
         <div className="mb-6">
           <h1 className="text-[13px] font-semibold mb-1">{exhibitReviewText}</h1>
-          <p className="text-[11px] text-gray-600">
-            {reviewDetailsText}
-          </p>
+          <p className="text-[11px] text-gray-600">{reviewDetailsText}</p>
         </div>
 
         {/* Banner Image */}
@@ -240,7 +248,9 @@ const ExhibitReview = () => {
                 </div>
                 <div>
                   <p className="text-gray-500 text-[10px] font-medium mb-1">{categoryText}</p>
-                  <p className="text-[11px]">{translatedCategory.charAt(0).toUpperCase() + translatedCategory.slice(1)}</p>
+                  <p className="text-[11px]">
+                    {translatedCategory.charAt(0).toUpperCase() + translatedCategory.slice(1)}
+                  </p>
                 </div>
 
                 <div>
@@ -453,7 +463,9 @@ const ExhibitReview = () => {
               <h3 className="text-xs font-medium mb-2">{overallCompletionText}</h3>
               <Card className="p-4 rounded-xl shadow-sm">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-[11px] font-medium text-blue-900">{completionPercentage}% {completeText}</span>
+                  <span className="text-[11px] font-medium text-blue-900">
+                    {completionPercentage}% {completeText}
+                  </span>
                   <span className="text-[10px] text-gray-500">
                     {filledSlots} {ofText} {totalSlots} {slotsFilledText}
                   </span>
@@ -473,28 +485,28 @@ const ExhibitReview = () => {
               >
                 {preview3DText}
               </button>
-              <p className="text-[10px] text-muted-foreground mt-2">
-                {previewDescriptionText}
-              </p>
+              <p className="text-[10px] text-muted-foreground mt-2">{previewDescriptionText}</p>
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-end gap-4 mt-8">
-          <button className="text-[11px] px-8 py-1.5 border rounded-full" onClick={handleEdit}>
-            {editText}
-          </button>
-          <button
-            onClick={handlePublish}
-            disabled={!isReadyToPublish}
-            className={`text-white text-[11px] px-6 py-1.5 border rounded-full ${
-              isReadyToPublish ? "bg-red-700 hover:bg-red-600" : "bg-red-300 cursor-not-allowed"
-            }`}
-          >
-            {publishExhibitText}
-          </button>
-        </div>
+        {/* Action Buttons - Only show for owners */}
+        {exhibit?.isOwner && (
+          <div className="flex justify-end gap-4 mt-8">
+            <button className="text-[11px] px-8 py-1.5 border rounded-full" onClick={handleEdit}>
+              {editText}
+            </button>
+            <button
+              onClick={handlePublish}
+              disabled={!isReadyToPublish}
+              className={`text-white text-[11px] px-6 py-1.5 border rounded-full ${
+                isReadyToPublish ? "bg-red-700 hover:bg-red-600" : "bg-red-300 cursor-not-allowed"
+              }`}
+            >
+              {publishExhibitText}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

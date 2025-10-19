@@ -27,6 +27,7 @@ class ExhibitReviewSerializer(serializers.Serializer):
     collaborators = serializers.SerializerMethodField()
     chosen_env = serializers.IntegerField() 
     slots = serializers.SerializerMethodField()
+    isOwner = serializers.SerializerMethodField()
 
     def get_owner(self, obj):
         return {
@@ -46,6 +47,12 @@ class ExhibitReviewSerializer(serializers.Serializer):
                 "profile_picture": user.profile_picture if getattr(user, "profile_picture", None) else ""
             })
         return collaborators
+
+    def get_isOwner(self, obj):
+        request = self.context.get('request')
+        if request and request.user:
+            return str(request.user.id) == str(obj.owner.id)
+        return False
 
     def get_slots(self, obj):
         slots = []
