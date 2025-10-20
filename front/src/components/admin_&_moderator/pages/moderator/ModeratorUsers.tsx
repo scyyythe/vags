@@ -232,6 +232,7 @@ const ModeratorUsers = () => {
         </CardHeader>
         <CardContent>
           <div className="border rounded-md overflow-hidden">
+            {/* Fixed header */}
             <table className="w-full">
               <thead>
                 <tr className="bg-muted/50">
@@ -242,7 +243,11 @@ const ModeratorUsers = () => {
                   <th className="text-right p-2 text-xs font-medium">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+            </table>
+            {/* Scrollable body */}
+            <div className="max-h-[350px] overflow-auto">
+              <table className="w-full">
+                <tbody>
                 {filteredUsers.length > 0 ? (
                   filteredUsers.map((user) => (
                     <tr key={user.id} className="border-t">
@@ -255,7 +260,7 @@ const ModeratorUsers = () => {
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-medium text-xs">{user.username}</div>
+                            <div className="font-medium text-[11px]">{user.username}</div>
                             <div className="text-[10px] text-muted-foreground">{user.email}</div>
                           </div>
                         </div>
@@ -308,8 +313,9 @@ const ModeratorUsers = () => {
                     </td>
                   </tr>
                 )}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
         </CardContent>
       </Card>
