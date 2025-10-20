@@ -13,6 +13,14 @@ import { useSubmitContributions } from "@/hooks/exhibit/useSubmitContributions";
 import CollaboratorViewSkeleton from "@/components/skeletons/exhibits/CollaboratorViewSkeleton";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
+
 // Color schemes for slots by user
 const slotColorSchemes = [
   "border-primary bg-primary/10",
@@ -322,10 +330,22 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
 
     return slotColorSchemes[getColorSchemeIndex(ownerId)];
   };
-  const getUserName = (userId: string) => {
-    if (userId === exhibit.owner.id) return `${exhibit.owner.name}'s ${slotText}`;
+  
+  // Component to display user name with slot text (with translation)
+  const UserSlotName = ({ userId }: { userId: string }) => {
+    if (userId === exhibit.owner.id) {
+      return (
+        <>
+          <TranslatedText text={exhibit.owner.name} />'s {slotText}
+        </>
+      );
+    }
     const collaborator = exhibit.collaborators.find((c) => c.id === userId);
-    return collaborator ? `${collaborator.name}'s ${slotText}` : "";
+    return collaborator ? (
+      <>
+        <TranslatedText text={collaborator.name} />'s {slotText}
+      </>
+    ) : null;
   };
 
   const canInteractWithSlot = (slotId: number) => {
@@ -405,7 +425,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                         .replace("border-", "bg-")
                         .replace("/10", "")}`}
                     ></div>
-                    <span className="text-[10px]">{exhibit.owner.name}'s {slotsText}</span>
+                    <span className="text-[10px]"><TranslatedText text={exhibit.owner.name} />'s {slotsText}</span>
                   </div>
 
                   {exhibit.collaborators.map((collab, index) => (
@@ -415,7 +435,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                           .replace("border-", "bg-")
                           .replace("/10", "")}`}
                       ></div>
-                      <span className="text-[10px]">{collab.name}'s {slotsText}</span>
+                      <span className="text-[10px]"><TranslatedText text={collab.name} />'s {slotsText}</span>
                     </div>
                   ))}
                 </div>
@@ -500,7 +520,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                                 {slotId}
                               </div>
                               <div className="absolute bottom-1 left-1 bg-black/70 text-white text-[7px] px-1 py-0.5 rounded truncate max-w-[80%]">
-                                {contributedSlot.contributor?.name || unknownText}
+                                {contributedSlot.contributor?.name ? <TranslatedText text={contributedSlot.contributor.name} /> : unknownText}
                               </div>
                             </>
                           ) : assignedArtwork ? (
@@ -546,11 +566,11 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                               <PopoverTrigger asChild>
                                 <div className="flex flex-col items-center justify-center w-full h-full">
                                   <span className="text-xs font-semibold">{slotId}</span>
-                                  <span className="text-[10px] text-gray-500">{getUserName(slotOwner)}</span>
+                                  <span className="text-[10px] text-gray-500"><UserSlotName userId={slotOwner} /></span>
                                 </div>
                               </PopoverTrigger>
                               <PopoverContent className="w-auto p-2">
-                                <p className="text-[10px]">{getUserName(slotOwner)}</p>
+                                <p className="text-[10px]"><UserSlotName userId={slotOwner} /></p>
                                 {userCanInteract && (
                                   <p className="text-[9px] text-blue-600 mt-1">
                                     {clickOnArtworkText}

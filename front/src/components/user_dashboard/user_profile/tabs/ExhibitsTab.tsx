@@ -2,6 +2,8 @@ import React, { useState, useMemo } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,6 +28,14 @@ import ExhibitCardSkeleton from "@/components/skeletons/exhibits/ExhibitCardSkel
 import { usePendingRequests } from "@/hooks/exhibit/usePendingRequests";
 import { usePublishExhibit } from "@/hooks/mutate/exhibit/usePublishExhibit";
 import { ExhibitRequest } from "@/hooks/exhibit/usePendingRequests";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
+
 type ExhibitsTabProps = {
   selectedStatus: string;
   includeDeleted?: boolean;
@@ -45,6 +55,74 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
   const params = useParams();
   const [typeTab, setTypeTab] = useState<"solo" | "collab">("solo");
   const [statusFilter, setStatusFilter] = useState<"on_going" | "closed" | "upcoming">("on_going");
+
+  // Language and translation
+  const { language } = useLanguage();
+  
+  // Tab labels
+  const soloText = useAutoTranslation("SOLO", language);
+  const collabText = useAutoTranslation("COLLAB", language);
+  
+  // Tooltip texts
+  const pendingRequestsText = useAutoTranslation("Pending Requests", language);
+  const myContributionsText = useAutoTranslation("My Contributions", language);
+  
+  // Filter options
+  const upcomingText = useAutoTranslation("Upcoming", language);
+  const ongoingText = useAutoTranslation("Ongoing", language);
+  const endedText = useAutoTranslation("Ended", language);
+  const filterText = useAutoTranslation("Filter", language);
+  
+  // Section headings
+  const pendingRequestsHeadingText = useAutoTranslation("Pending Requests", language);
+  const myContributionsHeadingText = useAutoTranslation("My Contributions", language);
+  
+  // Badge labels
+  const ownerText = useAutoTranslation("Owner", language);
+  const collaboratorText = useAutoTranslation("Collaborator", language);
+  const pendingText = useAutoTranslation("Pending", language);
+  const publishedText = useAutoTranslation("Published", language);
+  const draftText = useAutoTranslation("Draft", language);
+  const cancelledText = useAutoTranslation("Cancelled", language);
+  const readyText = useAutoTranslation("Ready", language);
+  const inProgressText = useAutoTranslation("In Progress", language);
+  
+  // Progress text
+  const progressText = useAutoTranslation("Progress", language);
+  const submissionsText = useAutoTranslation("submissions", language);
+  
+  // Button labels
+  const publishText = useAutoTranslation("Publish", language);
+  const reviewText = useAutoTranslation("Review", language);
+  const viewText = useAutoTranslation("View", language);
+  const viewLiveText = useAutoTranslation("View Live", language);
+  const viewOthersText = useAutoTranslation("View Others", language);
+  const cancelText = useAutoTranslation("Cancel", language);
+  const publishExhibitText = useAutoTranslation("Publish Exhibit", language);
+  const viewExhibitDetailsText = useAutoTranslation("View Exhibit Details", language);
+  
+  // Empty state messages
+  const noPendingRequestsText = useAutoTranslation("No pending requests at the moment.", language);
+  const noContributionsText = useAutoTranslation("No contributions submitted yet.", language);
+  const noDeletedExhibitsText = useAutoTranslation("No deleted exhibits found.", language);
+  const noUpcomingExhibitsText = useAutoTranslation("No upcoming exhibits found.", language);
+  const noOngoingExhibitsText = useAutoTranslation("No ongoing exhibits found.", language);
+  const noPastExhibitsText = useAutoTranslation("No past exhibits found.", language);
+  
+  // Dialog texts
+  const publishExhibitDialogTitleText = useAutoTranslation("Publish Exhibit", language);
+  const allCollaboratorsSubmittedText = useAutoTranslation("All collaborators have submitted their artwork for", language);
+  const areYouReadyToPublishText = useAutoTranslation("Are you ready to publish this exhibit?", language);
+  
+  // Toast messages
+  const exhibitPublishedText = useAutoTranslation("Exhibit Published", language);
+  const exhibitPublishedDescText = useAutoTranslation("Your exhibit has been published successfully.", language);
+  const failedToPublishText = useAutoTranslation("Failed to publish exhibit", language);
+  const somethingWentWrongText = useAutoTranslation("Something went wrong.", language);
+  
+  // Status messages for contributions
+  const exhibitLiveText = useAutoTranslation("Exhibit is now live! Your contribution is part of this published exhibit.", language);
+  const waitingForOthersText = useAutoTranslation("You've submitted your contributions. Waiting for others to finish.", language);
 
   const [showPending, setShowPending] = useState(false);
   const [showContributions, setShowContributions] = useState(false);
@@ -112,9 +190,9 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
   }, [exhibits, statusFilter, typeTab, selectedStatus, includeHidden]);
 
   const tabEmptyMessages = {
-    upcoming: includeDeleted ? "No deleted exhibits found." : "No upcoming exhibits found.",
-    on_going: includeDeleted ? "No deleted exhibits found." : "No ongoing exhibits found.",
-    closed: includeDeleted ? "No deleted exhibits found." : "No past exhibits found.",
+    upcoming: includeDeleted ? noDeletedExhibitsText : noUpcomingExhibitsText,
+    on_going: includeDeleted ? noDeletedExhibitsText : noOngoingExhibitsText,
+    closed: includeDeleted ? noDeletedExhibitsText : noPastExhibitsText,
   };
 
   const { data: pendingRequests = [], isLoading: isLoadingRequests } = usePendingRequests();
@@ -130,10 +208,13 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
 
   const handlePublishExhibit = () => {
     if (selectedExhibit) {
+      // Get translated title for toast
+      const translatedTitle = selectedExhibit.exhibitTitle;
+      
       publishExhibit(selectedExhibit.exhibitId, {
         onSuccess: () => {
-          toast.success(`Exhibit Published: ${selectedExhibit.exhibitTitle}`, {
-            description: "Your exhibit has been published successfully.",
+          toast.success(`${exhibitPublishedText}: ${translatedTitle}`, {
+            description: exhibitPublishedDescText,
             closeButton: true,
           });
           setShowPublishDialog(false);
@@ -148,8 +229,8 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
           }
         },
         onError: (error: any) => {
-          toast.error("Failed to publish exhibit", {
-            description: error?.response?.data?.detail || "Something went wrong.",
+          toast.error(failedToPublishText, {
+            description: error?.response?.data?.detail || somethingWentWrongText,
             closeButton: true,
           });
         },
@@ -172,17 +253,22 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
       <div className="text-[10px] pl-2 border-gray-300 mb-3">
         <div className="flex justify-between items-center">
           <div className="space-x-8">
-            {["solo", "collab"].map((tab) => (
-              <button
-                key={tab}
-                className={`pb-2 font-medium uppercase ${
-                  typeTab === tab ? "border-b-2 border-red-800 text-red-800" : "text-gray-600"
-                }`}
-                onClick={() => setTypeTab(tab as typeof typeTab)}
-              >
-                {tab.toUpperCase()}
-              </button>
-            ))}
+            <button
+              className={`pb-2 font-medium uppercase ${
+                typeTab === "solo" ? "border-b-2 border-red-800 text-red-800" : "text-gray-600"
+              }`}
+              onClick={() => setTypeTab("solo")}
+            >
+              {soloText}
+            </button>
+            <button
+              className={`pb-2 font-medium uppercase ${
+                typeTab === "collab" ? "border-b-2 border-red-800 text-red-800" : "text-gray-600"
+              }`}
+              onClick={() => setTypeTab("collab")}
+            >
+              {collabText}
+            </button>
           </div>
           <div className="flex items-center space-x-2">
             {typeTab === "collab" && isOwnProfile && selectedStatus !== "Hidden" && (
@@ -207,7 +293,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                   )}
                   {/* Tooltip */}
                   <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-white text-black text-[10px] px-2 py-1 border shadow opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    Pending Requests
+                    {pendingRequestsText}
                   </span>
                 </button>
 
@@ -231,7 +317,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                   )}
                   {/* Tooltip */}
                   <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-white text-black text-[10px] px-2 py-1 border shadow opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    My Contributions
+                    {myContributionsText}
                   </span>
                 </button>
               </>
@@ -244,10 +330,10 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                   <button className="py-1 px-4 rounded-full text-[10px] border border-gray-300 flex items-center gap-1.5">
                     {/* <i className="bx bx-sort text-xs"></i> */}
                     {{
-                      upcoming: "Upcoming",
-                      on_going: "Ongoing",
-                      closed: "Ended",
-                    }[statusFilter] || "Filter"}
+                      upcoming: upcomingText,
+                      on_going: ongoingText,
+                      closed: endedText,
+                    }[statusFilter] || filterText}
                   </button>
                 </DropdownMenuTrigger>
 
@@ -258,7 +344,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                       statusFilter === "upcoming" ? "font-semibold text-gray-800" : "text-gray-600"
                     }`}
                   >
-                    Upcoming
+                    {upcomingText}
                   </DropdownMenuItem>
 
                   <DropdownMenuItem
@@ -267,7 +353,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                       statusFilter === "on_going" ? "font-semibold text-gray-800" : "text-gray-600"
                     }`}
                   >
-                    Ongoing
+                    {ongoingText}
                   </DropdownMenuItem>
 
                   <DropdownMenuItem
@@ -276,7 +362,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                       statusFilter === "closed" ? "font-semibold text-gray-800" : "text-gray-600"
                     }`}
                   >
-                    Ended
+                    {endedText}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -288,7 +374,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
       {/* Pending Section */}
       {typeTab === "collab" && showPending && isOwnProfile && selectedStatus !== "Hidden" && (
         <div className="mb-4 border border-yellow-300 bg-yellow-50 rounded p-3 text-[10px]">
-          <h2 className="font-semibold text-yellow-700 mb-2">Pending Requests</h2>
+          <h2 className="font-semibold text-yellow-700 mb-2">{pendingRequestsHeadingText}</h2>
           {actualPendingRequests.length > 0 ? (
             <ul className="space-y-2">
               {actualPendingRequests.map((req) => (
@@ -301,45 +387,45 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">{req.exhibitTitle}</span>
+                        <span className="font-medium"><TranslatedText text={req.exhibitTitle} /></span>
 
                         {/* Role Badge */}
                         {req.isOwner ? (
                           <Badge variant="outline" className="text-[8px] px-1 py-0 text-blue-600 border-blue-500">
-                            Owner
+                            {ownerText}
                           </Badge>
                         ) : (
                           <Badge variant="outline" className="text-[8px] px-1 py-0 text-purple-700 border-purple-400">
-                            Collaborator
+                            {collaboratorText}
                           </Badge>
                         )}
 
                         {/* Status Tracker */}
                         {req.type === "pending" && (
-                          <Badge className="bg-yellow-500 text-white text-[8px] px-1 py-0">Pending</Badge>
+                          <Badge className="bg-yellow-500 text-white text-[8px] px-1 py-0">{pendingText}</Badge>
                         )}
                         {req.type === "published" && (
-                          <Badge className="bg-red-700 text-white text-[8px] px-1 py-0">Published</Badge>
+                          <Badge className="bg-red-700 text-white text-[8px] px-1 py-0">{publishedText}</Badge>
                         )}
                         {/* {req.type === "review" && (
                           <Badge className="bg-blue-500 text-white text-[8px] px-1 py-0">In Review</Badge>
                         )} */}
                         {/* Extra mocked statuses */}
                         {req.status.toLowerCase().includes("draft") && (
-                          <Badge className="bg-black text-white text-[8px] px-1 py-0">Draft</Badge>
+                          <Badge className="bg-black text-white text-[8px] px-1 py-0">{draftText}</Badge>
                         )}
                         {req.status.toLowerCase().includes("cancelled") && (
-                          <Badge className="bg-gray-400 text-white text-[8px] px-1 py-0">Cancelled</Badge>
+                          <Badge className="bg-gray-400 text-white text-[8px] px-1 py-0">{cancelledText}</Badge>
                         )}
                         {req.type === "ready" && (
-                          <Badge className="bg-green-600 text-white text-[8px] px-1 py-0">Ready</Badge>
+                          <Badge className="bg-green-600 text-white text-[8px] px-1 py-0">{readyText}</Badge>
                         )}
                       </div>
-                      <p className="text-gray-500 mt-0.5">{req.status}</p>
+                      <p className="text-gray-500 mt-0.5"><TranslatedText text={req.status} /></p>
                       {req.isOwner && req.collaboratorsSubmitted !== undefined && (
                         <div className="mt-1 flex items-center">
                           <span className="text-[9px] text-gray-600 mr-2">
-                            Progress: {req.collaboratorsSubmitted}/{req.totalCollaborators} submissions
+                            {progressText}: {req.collaboratorsSubmitted}/{req.totalCollaborators} {submissionsText}
                           </span>
                           <div className="w-24 h-1 bg-gray-200 rounded-full">
                             <div
@@ -381,7 +467,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                             }}
                             className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-green-600 hover:bg-green-700 flex items-center justify-center"
                           >
-                            Publish
+                            {publishText}
                           </button>
                         </div>
                       ) : (
@@ -389,7 +475,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                           to={`/exhibitreview?id=${req.exhibitId}`}
                           className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-amber-600 hover:bg-amber-700 flex items-center justify-center"
                         >
-                          Review
+                          {reviewText}
                         </Link>
                       )
                     ) : (
@@ -397,7 +483,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                         onClick={() => handleRequestClick(req)}
                         className="h-6 text-[9px] text-white px-3.5 py-1 rounded-full bg-[#9b87f5] hover:bg-[#7E69AB] flex items-center justify-center"
                       >
-                        View
+                        {viewText}
                       </button>
                     )}
                   </div>
@@ -405,7 +491,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500 text-[11px]">No pending requests at the moment.</p>
+            <p className="text-gray-500 text-[11px]">{noPendingRequestsText}</p>
           )}
         </div>
       )}
@@ -413,7 +499,7 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
       {/* Contributions Section */}
       {typeTab === "collab" && showContributions && isOwnProfile && selectedStatus !== "Hidden" && (
         <div className="mb-4 border border-blue-300 bg-blue-50 rounded p-3 text-[10px]">
-          <h2 className="font-semibold text-blue-700 mb-2">My Contributions</h2>
+          <h2 className="font-semibold text-blue-700 mb-2">{myContributionsHeadingText}</h2>
           {contributions.length > 0 ? (
             <ul className="space-y-2">
               {contributions.map((req) => (
@@ -421,35 +507,35 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">{req.exhibitTitle}</span>
+                        <span className="font-medium"><TranslatedText text={req.exhibitTitle} /></span>
 
                         {/* Role Badge */}
                         <Badge variant="outline" className="text-[8px] px-1 py-0 text-purple-700 border-purple-400">
-                          Collaborator
+                          {collaboratorText}
                         </Badge>
 
                         {/* Status Badge - Show different badges based on exhibit status */}
                         {req.status.toLowerCase().includes("live") || req.status.toLowerCase().includes("published") ? (
                           <Badge className="bg-green-600 text-white text-[8px] px-1 py-0 flex items-center gap-1">
                             <i className="bx bx-check-circle text-[7px]"></i>
-                            Published
+                            {publishedText}
                           </Badge>
                         ) : (
                           <Badge className="bg-blue-500 text-white text-[8px] px-1 py-0 flex items-center gap-1">
                             <i className="bx bx-time text-[7px]"></i>
-                            In Progress
+                            {inProgressText}
                           </Badge>
                         )}
                       </div>
                       <p className="text-gray-500 mt-0.5">
                         {req.status.toLowerCase().includes("live") || req.status.toLowerCase().includes("published")
-                          ? "Exhibit is now live! Your contribution is part of this published exhibit."
-                          : req.status || "You've submitted your contributions. Waiting for others to finish."}
+                          ? exhibitLiveText
+                          : (req.status ? <TranslatedText text={req.status} /> : waitingForOthersText)}
                       </p>
                       {req.collaboratorsSubmitted !== undefined && (
                         <div className="mt-1 flex items-center">
                           <span className="text-[9px] text-gray-600 mr-2">
-                            Progress: {req.collaboratorsSubmitted}/{req.totalCollaborators} submissions
+                            {progressText}: {req.collaboratorsSubmitted}/{req.totalCollaborators} {submissionsText}
                           </span>
                           <div className="w-24 h-1 bg-gray-200 rounded-full">
                             <div
@@ -476,15 +562,15 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                       }`}
                     >
                       {req.status.toLowerCase().includes("live") || req.status.toLowerCase().includes("published")
-                        ? "View Live"
-                        : "View Others"}
+                        ? viewLiveText
+                        : viewOthersText}
                     </button>
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500 text-[11px]">No contributions submitted yet.</p>
+            <p className="text-gray-500 text-[11px]">{noContributionsText}</p>
           )}
         </div>
       )}
@@ -518,10 +604,9 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
       <AlertDialog open={showPublishDialog} onOpenChange={setShowPublishDialog}>
         <AlertDialogContent className="w-full max-w-sm rounded-lg">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-center text-sm">Publish Exhibit</AlertDialogTitle>
+            <AlertDialogTitle className="text-center text-sm">{publishExhibitDialogTitleText}</AlertDialogTitle>
             <AlertDialogDescription className="text-center text-[10px]">
-              All collaborators have submitted their artwork for "{selectedExhibit?.exhibitTitle}". Are you ready to
-              publish this exhibit?
+              {allCollaboratorsSubmittedText} "{selectedExhibit?.exhibitTitle && <TranslatedText text={selectedExhibit.exhibitTitle} />}". {areYouReadyToPublishText}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex justify-center mb-2">
@@ -530,17 +615,17 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
               className="flex items-center px-2.5 py-1 gap-1 text-[8px] rounded-full border border-gray-300"
               onClick={() => setShowPublishDialog(false)}
             >
-              <i className="bx bx-show-alt"></i> View Exhibit Details
+              <i className="bx bx-show-alt"></i> {viewExhibitDetailsText}
             </Link>
           </div>
           <AlertDialogFooter>
             <div className="w-full flex flex-row gap-6">
-              <AlertDialogCancel className="h-[28px] w-full text-[9px] rounded-full">Cancel</AlertDialogCancel>
+              <AlertDialogCancel className="h-[28px] w-full text-[9px] rounded-full">{cancelText}</AlertDialogCancel>
               <AlertDialogAction
                 className="bg-green-600 hover:bg-green-700 w-full h-[28px] text-[9px] rounded-full"
                 onClick={handlePublishExhibit}
               >
-                Publish Exhibit
+                {publishExhibitText}
               </AlertDialogAction>
             </div>
           </AlertDialogFooter>
