@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -64,13 +64,16 @@ const AdminNotifications = () => {
   const hasUnread = useMemo(() => filtered.some((n) => !n.read), [filtered]);
 
   const typeDotClass = (t: NotifType) =>
-    t === "system" ? "bg-blue-500" : t === "security" ? "bg-red-500" : t === "payment" ? "bg-purple-500" : "bg-emerald-500";
+    t === "system" ? "bg-blue-600" : t === "security" ? "bg-red-600" : t === "payment" ? "bg-purple-600" : "bg-emerald-600";
 
-  const typeBadge = (t: NotifType) => (
-    <Badge className="text-3xs" variant="secondary">
-      {t.charAt(0).toUpperCase() + t.slice(1)}
-    </Badge>
-  );
+  const typeBadge = (t: NotifType) => {
+    const badgeColor = t === "system" ? "bg-blue-600" : t === "security" ? "bg-red-600" : t === "payment" ? "bg-purple-600" : "bg-emerald-600";
+    return (
+      <Badge className={`text-[10px] text-white font-normal ${badgeColor}`} variant="default">
+        {t.charAt(0).toUpperCase() + t.slice(1)}
+      </Badge>
+    );
+  };
 
   const handleMarkRead = (id: string) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
@@ -159,101 +162,110 @@ const AdminNotifications = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex justify-between items-center">
         <div>
           <h1 className="text-md font-bold">Notifications</h1>
           <p className="text-[10px] text-muted-foreground">Browse, filter, and search admin alerts</p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant={view === "inbox" ? "default" : "outline"}
-            size="sm"
-            className="h-7 text-[10px]"
-            onClick={() => setView("inbox")}
-          >
-            Inbox
-          </Button>
-          <Button
-            variant={view === "archived" ? "default" : "outline"}
-            size="sm"
-            className="h-7 text-[10px]"
-            onClick={() => setView("archived")}
-          >
-            Archived
-          </Button>
-        </div>
       </div>
 
-      <Card className="p-3 border-none shadow-none">
-        <div className="flex flex-col sm:flex-row gap-3 justify-between">
-          <div className="relative w-full sm:w-1/2">
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search notifications..."
-              className="pl-7 h-8 rounded-full"
-              style={{ fontSize: "10px" }}
-            />
-          </div>
-
-          <div className="flex items-center gap-2 ml-auto">
-            <div className="w-40">
-              <Select value={type} onValueChange={(v) => setType(v as any)}>
-                <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all" className="text-[10px]">All types</SelectItem>
-                  <SelectItem value="system" className="text-[10px]">System</SelectItem>
-                  <SelectItem value="security" className="text-[10px]">Security</SelectItem>
-                  <SelectItem value="user" className="text-[10px]">User</SelectItem>
-                  <SelectItem value="payment" className="text-[10px]">Payment</SelectItem>
-                </SelectContent>
-              </Select>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2 items-center">
+              <Badge className="bg-red-600 text-[10px]">{notifications.filter(n => !n.read && !n.archived).length}</Badge>
+              <span className="text-xs font-medium">Unread Notifications</span>
             </div>
-            {hasUnread ? (
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 text-[10px] rounded-full"
-                onClick={() => {
-                  const ids = filtered.map((n) => n.id)
-                  setNotifications((prev) => prev.map((n) => (ids.includes(n.id) ? { ...n, read: true } : n)))
-                  toast.success("Marked all as read", { closeButton: true })
-                }}
-              >
-                Mark all as read
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 text-[10px] rounded-full"
-                onClick={() => {
-                  const ids = filtered.map((n) => n.id)
-                  setNotifications((prev) => prev.map((n) => (ids.includes(n.id) ? { ...n, read: false } : n)))
-                  toast.success("Marked all as unread", { closeButton: true })
-                }}
-              >
-                Mark all as unread
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              <div className="relative w-64">
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                <Input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search notifications..."
+                  className="pl-8 h-8 rounded-full"
+                  style={{ fontSize: "10px" }}
+                />
+              </div>
+              <div className="w-40">
+                <Select value={type} onValueChange={(v) => setType(v as any)}>
+                  <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all" className="text-[10px]">All types</SelectItem>
+                    <SelectItem value="system" className="text-[10px]">System</SelectItem>
+                    <SelectItem value="security" className="text-[10px]">Security</SelectItem>
+                    <SelectItem value="user" className="text-[10px]">User</SelectItem>
+                    <SelectItem value="payment" className="text-[10px]">Payment</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="w-40">
+                <Select value={view} onValueChange={(v) => setView(v as any)}>
+                  <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="inbox" className="text-[10px]">Inbox</SelectItem>
+                    <SelectItem value="archived" className="text-[10px]">Archived</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
-        </div>
-      </Card>
 
-      <Card className="p-0">
-        <div className="max-h-[68vh] overflow-auto">
+      <Card className="px-8 pb-6">
+        <CardHeader className="px-3 pt-6 pb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-xs">Notification Center</CardTitle>
+              <CardDescription className="text-[11px]">
+                Recent system messages and alerts
+              </CardDescription>
+            </div>
+            <div>
+              {hasUnread ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-[10px] border-none hover:bg-muted/50 rounded-full h-7"
+                  onClick={() => {
+                    const ids = filtered.map((n) => n.id)
+                    setNotifications((prev) => prev.map((n) => (ids.includes(n.id) ? { ...n, read: true } : n)))
+                    toast.success("Marked all as read", { closeButton: true })
+                  }}
+                >
+                  Mark All as Read
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-[10px] border-none hover:bg-muted/50 rounded-full h-7"
+                  onClick={() => {
+                    const ids = filtered.map((n) => n.id)
+                    setNotifications((prev) => prev.map((n) => (ids.includes(n.id) ? { ...n, read: false } : n)))
+                    toast.success("Marked all as unread", { closeButton: true })
+                  }}
+                >
+                  Mark All as Unread
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        <div className="max-h-[60vh] overflow-auto space-y-4">
           {filtered.map((n) => (
-            <div key={n.id} className={`px-4 py-3 border-b last:border-b-0 ${!n.read ? "bg-muted/70" : "bg-transparent"}`}>
+            <div
+              key={n.id}
+              className={`border rounded-md p-3 hover:bg-muted/50 ${!n.read ? "bg-muted/70 border-l-4 border-l-red-600" : "bg-transparent"}`}
+            >
               <div className="flex items-start gap-2">
                 <span className={`mt-[3px] h-2 w-2 rounded-full ${typeDotClass(n.type)}`} />
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <p className="text-xs font-medium truncate">{n.title}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] font-medium truncate">{n.title}</p>
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] text-muted-foreground whitespace-nowrap">{n.time}</span>
+                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">{n.time}</span>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon" className="h-6 w-6" aria-label="Notification actions">
@@ -277,7 +289,7 @@ const AdminNotifications = () => {
                       </DropdownMenu>
                     </div>
                   </div>
-                  <p className={`text-[11px] ${n.read ? "text-muted-foreground" : "text-foreground"}`}>{n.description}</p>
+                  <p className={`text-[10px] ${n.read ? "text-gray-500" : "text-gray-500"}`}>{n.description}</p>
                   <div className="mt-1 text-[11px]">{typeBadge(n.type)}</div>
                 </div>
               </div>
