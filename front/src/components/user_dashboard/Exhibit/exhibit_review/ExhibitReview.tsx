@@ -13,6 +13,14 @@ import { usePublishExhibit } from "@/hooks/mutate/exhibit/usePublishExhibit";
 import ExhibitReviewSkeleton from "@/components/skeletons/exhibits/ExhibitReviewSkeleton";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
+
 interface Collaborator {
   id: number;
   name: string;
@@ -278,7 +286,7 @@ const ExhibitReview = () => {
                           {exhibit.owner?.name?.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="text-[11px]">{exhibit.owner?.name}</span>
+                      <span className="text-[11px]">{exhibit.owner?.name && <TranslatedText text={exhibit.owner.name} />}</span>
                     </div>
                   </div>
                 </div>
@@ -295,7 +303,7 @@ const ExhibitReview = () => {
                               {collaborator.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
-                          <span className="text-[11px]">{collaborator.name}</span>
+                          <span className="text-[11px]"><TranslatedText text={collaborator.name} /></span>
                         </div>
                       ))}
                     </div>
@@ -323,7 +331,7 @@ const ExhibitReview = () => {
                     return (
                       <div key={person.id || index} className="text-center flex">
                         <div className={`h-2.5 w-2.5 ${colors[index] || "bg-gray-400"} rounded-full mr-2`}></div>
-                        <p className="text-[10px] text-gray-600 truncate">{person.name}</p>
+                        <p className="text-[10px] text-gray-600 truncate"><TranslatedText text={person.name} /></p>
                       </div>
                     );
                   })}
@@ -370,7 +378,7 @@ const ExhibitReview = () => {
                               <p className="text-[8px] text-gray-400">{emptyText}</p>
                             </div>
                           )}
-                          <p className="text-[8px] text-gray-500 truncate w-full">{slotOwner?.name || unknownText}</p>
+                          <p className="text-[8px] text-gray-500 truncate w-full">{slotOwner?.name ? <TranslatedText text={slotOwner.name} /> : unknownText}</p>
                         </div>
                       );
                     })
@@ -400,7 +408,7 @@ const ExhibitReview = () => {
                               className="w-full h-16 object-cover rounded-sm mb-1"
                             />
                             <p className="text-[8px] text-gray-500 truncate w-full">
-                              {existingSlot.contributor?.name || unknownText}
+                              {existingSlot.contributor?.name ? <TranslatedText text={existingSlot.contributor.name} /> : unknownText}
                             </p>
                           </div>
                         );
@@ -438,7 +446,7 @@ const ExhibitReview = () => {
                       </Avatar>
 
                       <div>
-                        <p className="text-[11px] font-medium">{collaborator.name}</p>
+                        <p className="text-[11px] font-medium"><TranslatedText text={collaborator.name} /></p>
                         <p className="text-[10px] text-gray-500">
                           {collaborator.slotsFilled} {ofText} {collaborator.slotsToFill} {slotsFilledText}
                         </p>
