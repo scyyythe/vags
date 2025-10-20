@@ -25,7 +25,7 @@ const useBlockedUsers = () => {
     refetchOnWindowFocus: true,
     refetchOnMount: true,
     refetchOnReconnect: true,
-    refetchInterval: 3000,
+    refetchInterval: 30000, // Poll every 30 seconds for blocked users (lower priority)
     refetchIntervalInBackground: false,
     retry: 1,
   });
