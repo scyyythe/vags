@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Package, Link as LinkIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getLoggedInUserId } from "@/auth/decode";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { autoTranslate } from "@/utils/autoTranslate";
 
 interface AutomaticMessageBubbleProps {
   sellerName: string;
@@ -22,8 +25,54 @@ const AutomaticMessageBubble: React.FC<AutomaticMessageBubbleProps> = ({
 }) => {
   const navigate = useNavigate();
   const currentUserId = getLoggedInUserId();
+  const { language } = useLanguage();
 
-  const handleViewOrder = () => {
+  // State for translated dynamic data
+  const [translatedSellerName, setTranslatedSellerName] = useState(sellerName);
+  const [translatedArtworkTitle, setTranslatedArtworkTitle] = useState(artworkTitle);
+  const [translatedBuyerName, setTranslatedBuyerName] = useState(buyerName);
+
+  // Translation hooks for static text
+  const newOrderReceivedText = useAutoTranslation("New Order Received!", language);
+  const helloText = useAutoTranslation("Hello", language);
+  const youveReceivedText = useAutoTranslation("You've received a new order for your artwork", language);
+  const fromText = useAutoTranslation("from", language);
+  const pleaseCoordinateText = useAutoTranslation("Please coordinate directly with the buyer in this chat to discuss shipment method, delivery fee (if applicable), and expected delivery date.", language);
+  const viewOrderDetailsText = useAutoTranslation("View Order Details", language);
+  const reminderText = useAutoTranslation("⚠️ Reminder:", language);
+  const reminderMessageText = useAutoTranslation("Make sure to confirm all delivery details with the buyer before sending the artwork.", language);
+
+  // Effect to translate dynamic data
+  useEffect(() => {
+    const translateDynamicData = async () => {
+      try {
+        if (language.toLowerCase() !== "en") {
+          const [translatedSeller, translatedArtwork, translatedBuyer] = await Promise.all([
+            autoTranslate(sellerName, language.toLowerCase()),
+            autoTranslate(artworkTitle, language.toLowerCase()),
+            autoTranslate(buyerName, language.toLowerCase())
+          ]);
+          setTranslatedSellerName(translatedSeller);
+          setTranslatedArtworkTitle(translatedArtwork);
+          setTranslatedBuyerName(translatedBuyer);
+        } else {
+          setTranslatedSellerName(sellerName);
+          setTranslatedArtworkTitle(artworkTitle);
+          setTranslatedBuyerName(buyerName);
+        }
+      } catch (error) {
+        console.warn("Failed to translate dynamic data:", error);
+        // Fallback to original data
+        setTranslatedSellerName(sellerName);
+        setTranslatedArtworkTitle(artworkTitle);
+        setTranslatedBuyerName(buyerName);
+      }
+    };
+
+    translateDynamicData();
+  }, [sellerName, artworkTitle, buyerName, language]);
+
+  const handleViewOrder = useCallback(() => {
     if (onViewOrder) {
       onViewOrder();
     } else {
@@ -55,7 +104,7 @@ const AutomaticMessageBubble: React.FC<AutomaticMessageBubbleProps> = ({
         console.log("View order details:", orderId);
       }
     }
-  };
+  }, [onViewOrder, currentUserId, isSender, navigate, orderId, language]);
 
   // Dynamic color setup
   const textMain = isSender ? "text-white" : "text-gray-900";
@@ -69,26 +118,25 @@ const AutomaticMessageBubble: React.FC<AutomaticMessageBubbleProps> = ({
       {/* Header */}
       <div className={`flex items-center gap-2 pb-2 border-b ${borderColor}`}>
         <Package className={`w-4 h-4 ${iconColor}`} />
-        <span className={`font-bold text-xs ${textMain}`}>New Order Received!</span>
+        <span className={`font-bold text-xs ${textMain}`}>{newOrderReceivedText}</span>
       </div>
 
       {/* Body */}
       <div className={`space-y-2.5 text-[11px] leading-relaxed ${textMain}`}>
         <p>
-          Hello <span className={`font-semibold ${textMain}`}>{sellerName}</span>,
+          {helloText} <span className={`font-semibold ${textMain}`}>{translatedSellerName}</span>,
         </p>
 
         <p>
-          You've received a new order for your artwork{" "}
+          {youveReceivedText}{" "}
           <span className={`font-semibold transition-colors ${
             isSender ? "text-yellow-300" : "text-blue-600 hover:text-blue-700"
-          }`}>“{artworkTitle}”</span> from{" "}
-          <span className={`font-semibold ${textMain}`}>{buyerName}</span>.
+          }`}>"{translatedArtworkTitle}"</span> {fromText}{" "}
+          <span className={`font-semibold ${textMain}`}>{translatedBuyerName}</span>.
         </p>
 
         <p className={`italic text-[10px] ${textSecondary}`}>
-          Please coordinate directly with the buyer in this chat to discuss shipment method, delivery fee (if
-          applicable), and expected delivery date.
+          {pleaseCoordinateText}
         </p>
 
         <button
@@ -98,7 +146,7 @@ const AutomaticMessageBubble: React.FC<AutomaticMessageBubbleProps> = ({
           }`}
         >
           <LinkIcon className={`w-4 h-4 ${iconColor}`} />
-          View Order Details
+          {viewOrderDetailsText}
         </button>
 
         <div
@@ -109,8 +157,7 @@ const AutomaticMessageBubble: React.FC<AutomaticMessageBubbleProps> = ({
           <p className={`text-[9px] transition-colors ${
             isSender ? "text-white" : "text-yellow-700"
           }`}>
-            <span className="font-semibold">⚠️ Reminder:</span> Make sure to confirm all delivery details with the buyer
-            before sending the artwork.
+            <span className="font-semibold">{reminderText}</span> {reminderMessageText}
           </p>
         </div>
       </div>
