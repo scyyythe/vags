@@ -213,7 +213,7 @@ const ModeratorNotifications = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-md font-bold">Notifications</h1>
           <p className="text-[10px] text-muted-foreground">
@@ -231,13 +231,13 @@ const ModeratorNotifications = () => {
         </div>
       </div>
 
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex gap-2 items-center">
           <Badge className="bg-red-600 text-[10px]">{unreadCount}</Badge>
           <span className="text-xs font-medium">Unread Notifications</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="relative w-64">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          <div className="relative w-full sm:w-64">
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
             <Input
               placeholder="Search notifications..."
@@ -247,7 +247,7 @@ const ModeratorNotifications = () => {
               style={{fontSize:"10px"}}
             />
           </div>
-          <div className="w-40">
+          <div className="w-full sm:w-40">
             <Select value={type} onValueChange={(v) => setType(v as any)}>
               <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
                 <SelectValue />
@@ -261,7 +261,7 @@ const ModeratorNotifications = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="w-40">
+          <div className="w-full sm:w-40">
             <Select value={view} onValueChange={(v) => setView(v as any)}>
               <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
                 <SelectValue />
@@ -277,7 +277,7 @@ const ModeratorNotifications = () => {
 
       <Card>
         <CardHeader className="pb-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <CardTitle className="text-xs">Notification Center</CardTitle>
               <CardDescription className="text-[11px]">
@@ -325,14 +325,14 @@ const ModeratorNotifications = () => {
                     notification.status === "unread" ? "bg-muted/70 border-l-4 border-l-red-600" : "bg-transparent"
                   }`}
                 >
-                  <div className="flex justify-between">
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
                     <div className="flex items-center gap-2">
                       {getTypeIcon(notification.type)}
                       <h3 className={`text-[11px] ${notification.status === "unread" ? "font-semibold" : ""}`}>
                         {notification.title}
                       </h3>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between sm:justify-end gap-2">
                       <span className="text-[10px] text-muted-foreground">
                         {formatDateTime(notification.createdAt)}
                       </span>
@@ -380,7 +380,7 @@ const ModeratorNotifications = () => {
       </Card>
 
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px] max-w-[400px] rounded-md">
           <DialogHeader>
             <DialogTitle className="text-sm">Create System Notification</DialogTitle>
             <DialogDescription className="text-[11px]">
@@ -427,16 +427,6 @@ const ModeratorNotifications = () => {
                 )}
               />
               <div className="flex justify-end gap-2 pt-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="rounded-full h-8"
-                  onClick={() => setCreateDialogOpen(false)}
-                  style={{fontSize:"10px"}}
-                >
-                  Cancel
-                </Button>
                 <Button type="submit" size="sm" className="rounded-full h-8" style={{fontSize:"10px"}}>
                   Create Notification
                 </Button>
@@ -478,7 +468,7 @@ const ModeratorNotifications = () => {
                 </div>
               )}
 
-              <div className="flex justify-end gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button
                   variant="outline"
                   size="sm"

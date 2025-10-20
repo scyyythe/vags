@@ -115,14 +115,13 @@ const ModeratorDashboard = () => {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 sm:w-auto sm:inline-grid sm:grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="overview" className="text-[10px]">Overview</TabsTrigger>
-          {/* <TabsTrigger value="reports" className="text-[10px]">Active Reports</TabsTrigger> */}
           <TabsTrigger value="content" className="text-[10px]">Flagged Content</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
-          <div className="flex grid-rows-4 space-x-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
               title="Pending Reports"
               value="24"
@@ -266,7 +265,7 @@ const ModeratorDashboard = () => {
             <CardContent>
               <div className="space-y-6 max-h-[90vh] overflow-auto">
                 <div className="border rounded-md p-4 space-y-4">
-                  <div className="flex justify-between items-start">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                     <div>
                       <h3 className="text-xs font-medium">Flagged Artwork: "Dark Nebula"</h3>
                       <p className="text-[11px] text-muted-foreground">ID: art12345</p>
@@ -276,7 +275,7 @@ const ModeratorDashboard = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <button className="text-[10px] px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200">
                         Approve
                       </button>
@@ -298,7 +297,7 @@ const ModeratorDashboard = () => {
                 </div>
 
                 <div className="border rounded-md p-4 space-y-4">
-                  <div className="flex justify-between items-start">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                     <div>
                       <h3 className="text-xs font-medium">Flagged Comment</h3>
                       <p className="text-[11px] text-muted-foreground">On Artwork: "Sunset Dreams"</p>
@@ -308,7 +307,7 @@ const ModeratorDashboard = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <button className="text-[10px] px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200">
                         Keep
                       </button>
@@ -333,7 +332,7 @@ const ModeratorDashboard = () => {
                 </div>
 
                 <div className="border rounded-md p-4 space-y-4">
-                  <div className="flex justify-between items-start">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                     <div>
                       <h3 className="text-xs font-medium">Flagged User Profile</h3>
                       <p className="text-[11px] text-muted-foreground">Username: @artmaster2000</p>
@@ -343,7 +342,7 @@ const ModeratorDashboard = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <button className="text-[10px] px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200">
                         Legitimate
                       </button>
