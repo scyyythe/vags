@@ -9,6 +9,7 @@ import SystemMessage from "../components/page/SystemMessage";
 import { toast } from "sonner";
 import { useGoogleLogin } from "@react-oauth/google";
 import { secureTokenStorage } from "@/utils/security/secureStorage";
+import TermsAndConditionsModal from "../components/modals/TermsAndConditionsModal";
 
 // Auto-translation imports
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
@@ -25,6 +26,8 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   const { setShowLoginModal } = useModal();
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [registrationData, setRegistrationData] = useState<any>(null);
 
   useEffect(() => {
     // Disable scrolling when the Register modal opens
@@ -79,6 +82,14 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   const googleLoginFailed = useAutoTranslation("Google login failed", language);
 
   interface GoogleSignUpResponse {
+    message: string;
+    user: {
+      id: string;
+      email: string;
+      first_name: string;
+      last_name: string;
+      username: string;
+    };
     access_token: string;
     refresh_token: string;
   }
@@ -93,12 +104,21 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
         });
 
         if (data.access_token) {
-          secureTokenStorage.setAccessToken(data.access_token);
-          secureTokenStorage.setRefreshToken(data.refresh_token);
-          toast.success(registrationSuccessful, { closeButton: true });
-
-          closeRegisterModal();
-          setShowLoginModal(true);
+          // Store Google registration data and show success message
+          setRegistrationData({ 
+            response: { data }, 
+            formData: { 
+              firstName: data.user?.first_name || "", 
+              lastName: data.user?.last_name || "", 
+              email: data.user?.email || "", 
+              password: "" 
+            },
+            isGoogleSignUp: true 
+          });
+          toast.success(registrationSuccessful, { description: "Please accept the Terms & Conditions to continue.", closeButton: true });
+          
+          // Show Terms & Conditions modal
+          setShowTermsModal(true);
         } else {
           toast.error(googleSignupFailed, { closeButton: true });
         }
@@ -174,9 +194,12 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
         password,
       });
 
-      toast.success(registrationSuccessful, { description: loginNow, closeButton: true });
-      closeRegisterModal();
-      setShowLoginModal(true);
+      // Store registration data and show success message
+      setRegistrationData({ response, formData: { firstName, lastName, email, password } });
+      toast.success(registrationSuccessful, { description: "Please accept the Terms & Conditions to continue.", closeButton: true });
+      
+      // Show Terms & Conditions modal
+      setShowTermsModal(true);
     } catch (error: unknown) {
       console.error("Registration failed:", error);
       toast.error(registrationFailed, { description: invalidDetails, closeButton: true });
@@ -189,6 +212,26 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   const handleFingerprintClick = () => {
     closeRegisterModal();
     navigate("/fingerprint-register");
+  };
+
+  const handleTermsAgree = () => {
+    if (registrationData?.isGoogleSignUp) {
+      // Handle Google sign-up completion
+      secureTokenStorage.setAccessToken(registrationData.response.data.access_token);
+      secureTokenStorage.setRefreshToken(registrationData.response.data.refresh_token);
+    }
+    
+    // Close terms modal and proceed to login
+    setShowTermsModal(false);
+    closeRegisterModal();
+    setShowLoginModal(true);
+    setRegistrationData(null);
+  };
+
+  const handleTermsExit = () => {
+    // Close terms modal and return to registration
+    setShowTermsModal(false);
+    setRegistrationData(null);
   };
 
   return (
@@ -302,6 +345,13 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
           </p>
         </form>
       </div>
+
+      {/* Terms & Conditions Modal */}
+      <TermsAndConditionsModal
+        isOpen={showTermsModal}
+        onAgree={handleTermsAgree}
+        onExit={handleTermsExit}
+      />
     </div>
   );
 };
