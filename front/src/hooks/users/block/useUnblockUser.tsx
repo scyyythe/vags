@@ -51,6 +51,17 @@ const useUnblockUser = () => {
       queryClient.invalidateQueries({ queryKey: ["marketplace"] });
       queryClient.invalidateQueries({ queryKey: ["explore"] });
 
+      // Invalidate additional query keys
+      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+      queryClient.invalidateQueries({ queryKey: ["wishlist-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["artCards"] });
+      queryClient.invalidateQueries({ queryKey: ["trendingArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["exhibitCards"] });
+      queryClient.invalidateQueries({ queryKey: ["userDetails", userId] });
+
       // Force refetch of all queries to immediately update the UI
       queryClient.refetchQueries();
     },
