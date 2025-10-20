@@ -15,9 +15,30 @@ export const useRestoreAuction = () => {
     mutationFn: restoreAuction,
     onSuccess: () => {
       toast.success("Auction restored successfully!");
-      queryClient.invalidateQueries({ queryKey: ["my-auctions"] });
-      queryClient.invalidateQueries({ queryKey: ["auctions"] });
-      queryClient.invalidateQueries({ queryKey: ["light-auctions"] });
+      // Invalidate all auction-related queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("auctions") ||
+              queryKey.includes("my-auctions") ||
+              queryKey.includes("light-auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks") ||
+              queryKey.includes("myAuctions") ||
+              queryKey.includes("popular-auctions") ||
+              queryKey.includes("hotBids") ||
+              queryKey.includes("myParticipatedAuctions") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks"))
+          );
+        },
+      });
     },
     onError: (error: any) => {
       console.error("Restore auction error", error);

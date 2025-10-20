@@ -31,6 +31,7 @@ import { getArtworkImageUrl } from "@/utils/imageUtils";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { autoTranslate } from "@/utils/autoTranslate";
+import useRealTimeBids from "@/hooks/bid/useRealTimeBids";
 
 function formatAmount(amount: number): string {
   if (amount >= 1_000_000_000_000_000_000) {
@@ -80,10 +81,10 @@ const BidItem = ({
   const isAnonymous = bid.identity_type === "anonymous";
   const profilePicture = !isAnonymous && bid.user?.profile_picture ? bid.user.profile_picture : null;
   const avatarLetter = (bid.bidderFullName?.charAt(0) || "A").toUpperCase();
-  
+
   // Translate bidder name
   const translatedBidderName = useAutoTranslation(bid.bidderFullName || "", language);
-  
+
   const sizeClass = isMobile ? "w-5 h-5" : "w-4 h-4";
   const textSizeClass = isMobile ? "text-[10px]" : "text-[8px]";
 
@@ -96,7 +97,9 @@ const BidItem = ({
           className={`${sizeClass} rounded-full object-cover border`}
         />
       ) : (
-        <div className={`${sizeClass} rounded-full bg-gray-300 flex items-center justify-center ${textSizeClass} font-semibold text-gray-700 border`}>
+        <div
+          className={`${sizeClass} rounded-full bg-gray-300 flex items-center justify-center ${textSizeClass} font-semibold text-gray-700 border`}
+        >
           {avatarLetter}
         </div>
       )}
@@ -106,11 +109,7 @@ const BidItem = ({
         </span>
         <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
           {byText} <p className="font-medium text-gray-700">{translatedBidderName}</p>
-          {isOwner && isMobile && (
-            <span className="ml-1 text-[9px] text-gray-400">
-              {formatBidDate(bid.timestamp)}
-            </span>
-          )}
+          {isOwner && isMobile && <span className="ml-1 text-[9px] text-gray-400">{formatBidDate(bid.timestamp)}</span>}
         </span>
       </div>
     </div>
@@ -159,6 +158,9 @@ const BidDetails = () => {
 
   const { data: bids = [], error } = useBidHistory(artworkId);
 
+  // Real-time bids hook for live updates
+  const { hasNewBids, refreshBids } = useRealTimeBids(artworkId);
+
   // Owner menu hooks
   const { closeAuction, deleteAuction } = useAuctionActions();
   const { mutate: restoreAuction } = useRestoreAuction();
@@ -191,7 +193,10 @@ const BidDetails = () => {
   const noRelatedBidsText = useAutoTranslation("No related bids found.", language);
   const artworkHiddenText = useAutoTranslation("Artwork hidden", language);
   const alreadyReportedText = useAutoTranslation("You have already reported this auction.", language);
-  const reportSubmittedText = useAutoTranslation("Report submitted successfully. Thank you for your feedback.", language);
+  const reportSubmittedText = useAutoTranslation(
+    "Report submitted successfully. Thank you for your feedback.",
+    language
+  );
   const failedToCloseBiddingText = useAutoTranslation("Failed to close bidding", language);
   const reportSubmittedLabelText = useAutoTranslation("Report submitted:", language);
   const categoryText = useAutoTranslation("Category:", language);
@@ -352,7 +357,7 @@ const BidDetails = () => {
     const translatedMonth = translateFullMonth(monthName);
     const day = date.getDate();
     const year = date.getFullYear();
-    
+
     return `${translatedMonth} ${day}, ${year}`;
   };
 
@@ -444,7 +449,15 @@ const BidDetails = () => {
                     <div className="absolute top-3 z-20 left-[-250px] hidden lg:block" style={{ width: "150px" }}>
                       {/* Left Side - Bids Sidebar */}
                       <div className="p-3 text-left rounded-sm">
-                        <h2 className="font-semibold text-xs mb-2">{bidsText}</h2>
+                        <div className="flex items-center gap-2 mb-2">
+                          <h2 className="font-semibold text-xs">{bidsText}</h2>
+                          {hasNewBids && (
+                            <div className="flex items-center gap-1 text-xs text-green-600">
+                              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                              <span>New</span>
+                            </div>
+                          )}
+                        </div>
                         <div className="max-h-[440px] overflow-y-auto pr-1 flex flex-col gap-2">
                           {bids.length > 0 ? (
                             bids.map((bid: any) => (
@@ -639,7 +652,9 @@ const BidDetails = () => {
 
                     <div>
                       <h3 className="text-[9px] font-medium">{dimensionsText}</h3>
-                      <p className="text-[9px] text-gray-700">{item.artwork.size || noSizeText} {cmText}</p>
+                      <p className="text-[9px] text-gray-700">
+                        {item.artwork.size || noSizeText} {cmText}
+                      </p>
                     </div>
 
                     <div>
@@ -700,7 +715,9 @@ const BidDetails = () => {
                 {isMobile && (
                   <div className="mt-6 w-full px-1">
                     <div className="border rounded-lg p-3 text-left">
-                      <h2 className="font-semibold text-xs mb-2">{bidsText}</h2>
+                      <div className="flex items-center gap-2 mb-2">
+                        <h2 className="font-semibold text-xs">{bidsText}</h2>
+                      </div>
                       <div className="max-h-[300px] overflow-y-auto pr-1 flex flex-col gap-2">
                         {bids.length > 0 ? (
                           bids.map((bid: any) => (
@@ -747,8 +764,12 @@ const BidDetails = () => {
             </div>
           ) : (
             <div className="container md:px-6 mt-2 mb-2">
-              <h2 className={`font-medium ${isMobile ? "text-xs mt-12 mb-4" : "text-xs mt-10 mb-4"}`}>{relatedBidsText}</h2>
-              <p className={`text-gray-500 text-xs text-center ${isMobile ? "mb-6" : "mb-2 mt-2"}`}>{noRelatedBidsText}</p>
+              <h2 className={`font-medium ${isMobile ? "text-xs mt-12 mb-4" : "text-xs mt-10 mb-4"}`}>
+                {relatedBidsText}
+              </h2>
+              <p className={`text-gray-500 text-xs text-center ${isMobile ? "mb-6" : "mb-2 mt-2"}`}>
+                {noRelatedBidsText}
+              </p>
             </div>
           )}
 

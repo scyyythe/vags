@@ -17,6 +17,7 @@ import { useReopenAuction } from "@/hooks/auction/useReopenAuction";
 import { getArtworkImageUrl } from "@/utils/imageUtils";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import useRealTimeBids from "@/hooks/bid/useRealTimeBids";
 interface ExtendedArtworkAuction extends ArtworkAuction {
   isPaid?: boolean;
   isHighestBidder?: boolean;
@@ -63,6 +64,9 @@ const BidCard: React.FC<BidCardProps> = ({
   const { mutate: reopenAuction } = useReopenAuction();
   const [translatedTitle, setTranslatedTitle] = useState("");
 
+  // Real-time bids hook for live updates
+  const { hasNewBids } = useRealTimeBids(data?.artwork?.id);
+
   // Translation hooks
   const alreadyReportedText = useAutoTranslation("You have already reported this auction.", language);
   const bidPlacedText = useAutoTranslation("Bid of", language);
@@ -83,9 +87,10 @@ const BidCard: React.FC<BidCardProps> = ({
     const translateTitle = async () => {
       const { autoTranslate } = await import("@/utils/autoTranslate");
       try {
-        const translated = language.toLowerCase() !== "en"
-          ? await autoTranslate(data.artwork.title, language.toLowerCase())
-          : data.artwork.title;
+        const translated =
+          language.toLowerCase() !== "en"
+            ? await autoTranslate(data.artwork.title, language.toLowerCase())
+            : data.artwork.title;
         setTranslatedTitle(translated);
       } catch (error) {
         setTranslatedTitle(data.artwork.title);
@@ -278,15 +283,23 @@ const BidCard: React.FC<BidCardProps> = ({
           <div className="absolute bottom-3 left-3 right-3">
             <div className="bg-white bg-opacity-60 backdrop-blur-[3px] h-[69px] px-6 flex items-center justify-between rounded-lg">
               <div className="flex flex-col justify-center">
-                <h2 className="text-xs font-semibold truncate max-w-[100px]" title={translatedTitle || data.artwork.title}>
+                <h2
+                  className="text-xs font-semibold truncate max-w-[100px]"
+                  title={translatedTitle || data.artwork.title}
+                >
                   {translatedTitle || data.artwork.title}
                 </h2>
 
-                <div className="text-gray-700 text-[9px]">
-                  {hasWon ? yourBidText : currentBidText}{" "}
-                  <span className="text-black text-sm font-bold ml-2">
-                    {data.highest_bid?.amount ? formatNumber(data.highest_bid.amount) : "0"}
+                <div className="text-gray-700 text-[9px] flex items-center gap-2">
+                  <span>
+                    {hasWon ? yourBidText : currentBidText}{" "}
+                    <span className="text-black text-sm font-bold ml-2">
+                      {data.highest_bid?.amount ? formatNumber(data.highest_bid.amount) : "0"}
+                    </span>
                   </span>
+                  {hasNewBids && (
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" title="New bids available"></div>
+                  )}
                 </div>
               </div>
 

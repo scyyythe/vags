@@ -51,7 +51,28 @@ const useSubmitUserReport = () => {
 
     onSuccess: () => {
       toast.success("User reported successfully!");
-      queryClient.invalidateQueries({ queryKey: ["reportStatus"] });
+      // Invalidate all report and user-related queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("reportStatus") ||
+              queryKey.includes("userReportStatus") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks") ||
+              queryKey.includes("exhibits"))
+          );
+        },
+      });
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {

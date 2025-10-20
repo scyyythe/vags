@@ -22,14 +22,13 @@ export const useExhibitCards = () => {
         throw new Error(error?.response?.data?.detail || error.message || "Error fetching exhibit cards");
       }
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
     gcTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
-    retry: 2,
-
+    refetchOnWindowFocus: true,
     refetchOnMount: true,
     refetchOnReconnect: true,
-
-    refetchInterval: false,
+    refetchInterval: 3000,
+    refetchIntervalInBackground: false,
+    retry: 2,
   });
 };

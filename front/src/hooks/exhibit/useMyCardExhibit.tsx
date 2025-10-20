@@ -26,6 +26,12 @@ export const useMyExhibitCards = (
       });
       return response.data;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchInterval: 3000,
+    refetchIntervalInBackground: false,
+    retry: 1,
   });
 };

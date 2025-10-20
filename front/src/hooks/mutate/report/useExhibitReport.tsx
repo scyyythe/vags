@@ -50,9 +50,29 @@ const useExhibitReport = () => {
       }),
 
     onSuccess: (_, { exhibit_id }) => {
-      queryClient.invalidateQueries({ queryKey: ["exhibitReportStatus", exhibit_id] });
-      queryClient.invalidateQueries({ queryKey: ["exhibits"] });
-      queryClient.invalidateQueries({ queryKey: ["exhibitReportStatusBulk"] });
+      // Invalidate all exhibit and report-related queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("exhibitReportStatus") ||
+              queryKey.includes("exhibitReportStatusBulk") ||
+              queryKey.includes("exhibits") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks") ||
+              queryKey.includes("reportStatus"))
+          );
+        },
+      });
 
       toast.success("Exhibit reported successfully!", { duration: 3000 });
     },

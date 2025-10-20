@@ -8,6 +8,14 @@ export const useComments = (contentType: string, objectId: string) => {
       const res = await apiClient.get(`/${contentType}/${objectId}/comments/`);
       return res.data;
     },
+    enabled: !!contentType && !!objectId,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchInterval: 3000,
+    refetchIntervalInBackground: false,
+    retry: 1,
   });
 };
 
@@ -19,8 +27,29 @@ export const useAddComment = (contentType: string, objectId: string) => {
       return res.data;
     },
     onSuccess: () => {
+      // Invalidate all comment and related queries for real-time updates
       queryClient.invalidateQueries({
-        queryKey: ["comments", contentType, objectId],
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("comments") ||
+              queryKey.includes("notifications") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks") ||
+              queryKey.includes("exhibits") ||
+              queryKey.includes("exhibit-cards") ||
+              queryKey.includes("my-exhibit-cards") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks"))
+          );
+        },
       });
     },
     onError: (error: any) => {
@@ -37,8 +66,29 @@ export const useAddReaction = (contentType: string, objectId: string) => {
       return res.data;
     },
     onSuccess: () => {
+      // Invalidate all comment and related queries for real-time updates
       queryClient.invalidateQueries({
-        queryKey: ["comments", contentType, objectId],
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("comments") ||
+              queryKey.includes("notifications") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks") ||
+              queryKey.includes("exhibits") ||
+              queryKey.includes("exhibit-cards") ||
+              queryKey.includes("my-exhibit-cards") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks"))
+          );
+        },
       });
     },
     onError: (error: any) => {
