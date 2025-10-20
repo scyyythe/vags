@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 
-type TransactionType = "all" | "donation" | "purchase" | "auction_claim" | "bid" | "commission";
-type TransactionStatus = "all" | "completed" | "pending" | "failed";
+export type TransactionType = "all" | "donation" | "purchase" | "auction_claim" | "bid" | "commission" | "tip";
+export type TransactionStatus = "all" | "completed" | "pending" | "failed";
 
 interface TransactionLogsFilterProps {
   filter: {
@@ -61,6 +61,7 @@ export function TransactionLogsFilter({ filter, onChange, onSearch }: Transactio
         <SelectContent>
           <SelectItem value="all" className="text-[10px]">All Types</SelectItem>
           <SelectItem value="donation" className="text-[10px]">Donation</SelectItem>
+          <SelectItem value="tip" className="text-[10px]">Tip</SelectItem>
           <SelectItem value="purchase" className="text-[10px]">Purchase</SelectItem>
           <SelectItem value="auction_claim" className="text-[10px]">Auction Claim</SelectItem>
           <SelectItem value="bid" className="text-[10px]">Bid Placed</SelectItem>
