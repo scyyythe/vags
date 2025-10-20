@@ -31,6 +31,7 @@ import Settings from "./components/user_dashboard/Settings/pages/Settings";
 import EditProfile from "./components/user_dashboard/Settings/pages/EditProfile";
 import AccountDetails from "./components/user_dashboard/Settings/pages/AccountDetails";
 import SecuritySettings from "./components/user_dashboard/Settings/pages/Security";
+import PrivacySettings from "./components/user_dashboard/Settings/pages/PrivacySettings";
 import NotificationsSettings from "./components/user_dashboard/Settings/pages/Notifications";
 import BillingSettings from "./components/user_dashboard/Settings/pages/BillingSettings";
 import HelpCenter from "./components/user_dashboard/Settings/pages/HelpCenter";
@@ -234,6 +235,7 @@ const App = () => {
                                     element={<ProtectedRoute children={<AccountDetails />} />}
                                   />
                                   <Route path="security" element={<ProtectedRoute children={<SecuritySettings />} />} />
+                                  <Route path="privacy" element={<ProtectedRoute children={<PrivacySettings />} />} />
                                   <Route
                                     path="notifications"
                                     element={<ProtectedRoute children={<NotificationsSettings />} />}
