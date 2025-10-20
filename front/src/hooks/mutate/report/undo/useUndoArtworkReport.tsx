@@ -28,13 +28,68 @@ const useUndoArtworkReport = () => {
 
     onSuccess: (_, { id }) => {
       toast.success("Artwork report has been undone.");
-      queryClient.invalidateQueries({ queryKey: ["reportStatus", id] });
-      queryClient.invalidateQueries({ queryKey: ["artworkReportStatus", id] });
-      queryClient.invalidateQueries({ queryKey: ["artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["my-sold-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
+
+      // Invalidate all report and artwork queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("reportStatus") ||
+              queryKey.includes("artworkReportStatus") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("artwork") ||
+              queryKey.includes("artwork-cards") ||
+              queryKey.includes("marketplace-art-cards") ||
+              queryKey.includes("my-sell-art-cards") ||
+              queryKey.includes("user-sell-art-cards") ||
+              queryKey.includes("trending-artworks") ||
+              queryKey.includes("trendingArtworks") ||
+              queryKey.includes("popular-artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("popular-artworks-light") ||
+              queryKey.includes("followedArtworks") ||
+              queryKey.includes("followed-artworks") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("myAuctionArtworks") ||
+              queryKey.includes("hotBids") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("followedBiddings") ||
+              queryKey.includes("my-auctions") ||
+              queryKey.includes("myParticipatedAuctions") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("exhibits") ||
+              queryKey.includes("exhibit-cards") ||
+              queryKey.includes("exhibitCards") ||
+              queryKey.includes("my-exhibit-cards") ||
+              queryKey.includes("user-exhibits") ||
+              queryKey.includes("followers") ||
+              queryKey.includes("following") ||
+              queryKey.includes("follow-status") ||
+              queryKey.includes("followStatus") ||
+              queryKey.includes("followCounts") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("dashboard") ||
+              queryKey.includes("marketplace") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks") ||
+              queryKey.includes("top-artworks") ||
+              queryKey.includes("top-sellers") ||
+              queryKey.includes("notifications") ||
+              queryKey.includes("my-purchases") ||
+              queryKey.includes("buyer-activity") ||
+              queryKey.includes("my-sold-artworks") ||
+              queryKey.includes("user-sold-artworks") ||
+              queryKey.includes("purchase-orders") ||
+              queryKey.includes("purchase-order") ||
+              queryKey.includes("reviews") ||
+              queryKey.includes("artwork-reviews") ||
+              queryKey.includes("all-reviews-by-purchase") ||
+              queryKey.includes("blocked-users"))
+          );
+        },
+      });
     },
 
     onError: (error: unknown) => {

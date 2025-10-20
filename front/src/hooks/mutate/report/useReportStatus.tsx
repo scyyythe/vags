@@ -22,7 +22,13 @@ const useBulkReportStatus = (artworkIds: string[]) => {
     queryKey: ["bulkReportStatus", artworkIds],
     queryFn: () => fetchBulkReportStatuses(artworkIds),
     enabled: artworkIds.length > 0,
-    staleTime: 1000 * 60,
+    staleTime: 0, // Always consider data stale for real-time updates
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnMount: true, // Refetch on component mount
+    refetchOnReconnect: true, // Refetch on network reconnect
+    refetchInterval: 30000, // Poll every 30 seconds for report status updates (lower priority)
+    refetchIntervalInBackground: false, // Don't poll when tab is not active
+    retry: 1, // Retry once on failure
   });
 };
 
