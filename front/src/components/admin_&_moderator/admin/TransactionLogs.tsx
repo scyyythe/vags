@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
-import { TransactionLogsFilter } from "./TransactionLogsFilter";
+import { TransactionLogsFilter, type TransactionType, type TransactionStatus } from "./TransactionLogsFilter";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -19,11 +19,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import useAdminTransactions from "@/hooks/admin/useAdminTransactions";
+import TransactionLogsSkeleton from "./TransactionLogsSkeleton";
 
 export type TransactionLog = {
   id: string;
   timestamp: string;
-  type: "donation" | "purchase" | "auction_claim" | "bid" | "commission";
+  type: "donation" | "purchase" | "auction_claim" | "bid" | "commission" | "tip";
   amount: number;
   from: {
     id: string;
@@ -45,9 +47,43 @@ interface TransactionLogsProps {
 
 export function TransactionLogs({ transactions: initialTransactions }: TransactionLogsProps) {
   const [transactions, setTransactions] = useState<TransactionLog[]>(initialTransactions);
-  const [filter, setFilter] = useState<{
-    type: "all" | "donation" | "purchase" | "auction_claim" | "bid" | "commission";
-    status: "all" | "completed" | "pending" | "failed";
+  const { data, isLoading, error } = useAdminTransactions({ last_n_days: 7, limit: 50 });
+
+  // When API data arrives, map it into the TransactionLog shape and replace the local list
+  useEffect(() => {
+    if (!data?.results) return;
+    const mapped: TransactionLog[] = data.results.map((t: any) => {
+      const typeMap: Record<string, TransactionLog["type"]> = {
+        tip: "tip",
+        donation: "donation",
+        purchase: "purchase",
+        auction: "auction_claim",
+        bid: "bid",
+        commission: "commission",
+      };
+      const normalizedType = String(t.type || "").toLowerCase();
+      const mappedType: TransactionLog["type"] = typeMap[normalizedType] || "purchase";
+
+      const normalizedStatus = String(t.status || "pending").toLowerCase() as TransactionLog["status"];
+
+      return {
+        id: String(t.id),
+        timestamp: t.timestamp,
+        type: mappedType,
+        amount: Number(t.amount || 0),
+        from: { id: t.from_user?.id || "-", name: t.from_user?.name || "-" },
+        to: { id: t.to_user?.id || "-", name: t.to_user?.name || "-" },
+        artworkId: t.artworkId || undefined,
+        artworkTitle: t.artworkTitle || undefined,
+        status: normalizedStatus,
+        details: t.artworkTitle ? `Transaction for ${t.artworkTitle}` : "",
+      };
+    });
+    setTransactions(mapped);
+  }, [data]);
+  const [filter, setFilter] = useState<{ 
+    type: TransactionType; 
+    status: TransactionStatus; 
   }>({
     type: "all",
     status: "all",
@@ -71,6 +107,8 @@ export function TransactionLogs({ transactions: initialTransactions }: Transacti
 
   const getTypeBadge = (type: TransactionLog["type"]) => {
     switch (type) {
+      case "tip":
+        return <Badge className="bg-cyan-100 text-cyan-800 hover:bg-cyan-200 text-3xs">Tip</Badge>;
       case "donation":
         return <Badge className="bg-green-100 text-green-800 hover:bg-green-200 text-3xs">Donation</Badge>;
       case "purchase":
@@ -138,7 +176,13 @@ export function TransactionLogs({ transactions: initialTransactions }: Transacti
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredTransactions.length > 0 ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={7} className="p-0">
+                  <TransactionLogsSkeleton />
+                </TableCell>
+              </TableRow>
+            ) : filteredTransactions.length > 0 ? (
               filteredTransactions.map((transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell className="text-[10px]">{transaction.timestamp}</TableCell>

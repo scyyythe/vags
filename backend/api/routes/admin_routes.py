@@ -1,5 +1,7 @@
 from django.urls import path
 from api.views.admin.admin_report import AdminUpdateReportStatusView, AdminReportsListView
+from api.views.admin.admin_overview import AdminOverviewView
+from api.views.admin.admin_transactions import AdminTransactionsView
 from api.views.admin.actions import PromoteUserView,DemoteUserView,SuspendUserView,BanUserView,UnbanUserView,ReinstateUserView
 
 admin_urlpatterns = [
@@ -18,4 +20,9 @@ admin_urlpatterns = [
     # ban user
     path('user/<str:user_id>/ban/', BanUserView.as_view(), name='ban-user'),
     path('user/<str:user_id>/unban/', UnbanUserView.as_view(), name='unban-user'),
+    
+    # admin overview metrics
+    path('admin/overview/', AdminOverviewView.as_view(), name='admin-overview'),
+    # admin transactions
+    path('admin/transactions/', AdminTransactionsView.as_view(), name='admin-transactions'),
 ]
