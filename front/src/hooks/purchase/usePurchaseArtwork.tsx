@@ -25,19 +25,39 @@ const usePurchaseArtwork = () => {
       return apiClient.post("/purchase/", payload);
     },
     onSuccess: () => {
-      // Invalidate all relevant marketplace queries to refresh the data
-      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["popular-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] });
-      queryClient.invalidateQueries({ queryKey: ["top-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["top-sellers"] });
-      queryClient.invalidateQueries({ queryKey: ["my-purchases"] });
-      queryClient.invalidateQueries({ queryKey: ["my-sold-artworks"] });
+      // Invalidate all purchase and marketplace queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("marketplace-art-cards") ||
+              queryKey.includes("trending-artworks") ||
+              queryKey.includes("followedArtworks") ||
+              queryKey.includes("my-sell-art-cards") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("popular-artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("popular-artworks-light") ||
+              queryKey.includes("top-artworks") ||
+              queryKey.includes("top-sellers") ||
+              queryKey.includes("my-purchases") ||
+              queryKey.includes("my-sold-artworks") ||
+              queryKey.includes("user-sold-artworks") ||
+              queryKey.includes("buyer-activity") ||
+              queryKey.includes("purchase-orders") ||
+              queryKey.includes("purchase-order") ||
+              queryKey.includes("notifications") ||
+              queryKey.includes("exhibits") ||
+              queryKey.includes("exhibit-cards") ||
+              queryKey.includes("my-exhibit-cards") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks"))
+          );
+        },
+      });
     },
   });
 };

@@ -17,9 +17,12 @@ export const useMyPurchases = (options: UseMyPurchasesOptions = {}) => {
       const { data } = await apiClient.get(`/my-purchases/?${params.toString()}`);
       return data;
     },
-    // Cache for 5 minutes
-    staleTime: 5 * 60 * 1000,
-    // Keep data fresh for 10 minutes
-    gcTime: 10 * 60 * 1000,
+    staleTime: 0, // Always consider data stale for real-time updates
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnMount: true, // Refetch on component mount
+    refetchOnReconnect: true, // Refetch on network reconnect
+    refetchInterval: 3000, // Poll every 3 seconds for purchase updates
+    refetchIntervalInBackground: false, // Don't poll when tab is not active
+    retry: 1, // Retry once on failure
   });
 };

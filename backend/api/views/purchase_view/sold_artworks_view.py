@@ -127,6 +127,37 @@ class ToggleArtworkStatusView(APIView):
 
         artwork.save()
 
+        # Create notification for artwork status change
+        from api.models.interaction_model.notification import Notification
+        from datetime import datetime
+        
+        if artwork.art_status == "Sold":
+            # Notify followers that artwork is now sold
+            Notification.objects.create(
+                user=artwork.artist,
+                actor=artwork.artist,
+                message=f"Your artwork '{artwork.title}' has been marked as sold",
+                name=f"{artwork.artist.first_name} {artwork.artist.last_name}",
+                action="marked artwork as sold",
+                target=artwork.title,
+                icon="sold",
+                created_at=datetime.now(),
+                link=f"/viewproduct/{artwork.id}"
+            )
+        elif artwork.art_status == "onSale":
+            # Notify followers that artwork is back on sale
+            Notification.objects.create(
+                user=artwork.artist,
+                actor=artwork.artist,
+                message=f"Your artwork '{artwork.title}' is now available for sale",
+                name=f"{artwork.artist.first_name} {artwork.artist.last_name}",
+                action="made artwork available for sale",
+                target=artwork.title,
+                icon="sale",
+                created_at=datetime.now(),
+                link=f"/viewproduct/{artwork.id}"
+            )
+
         # Clear artwork caches to ensure sold/onSale status changes appear immediately in marketplace
         from api.views.artwork_views.artwork_views import clear_artwork_caches
         clear_artwork_caches()
@@ -156,6 +187,37 @@ class MarkArtworkAsUnlistedView(APIView):
             message = "Artwork marked as unlisted (private)"
 
         artwork.save()
+
+        # Create notification for artwork visibility change
+        from api.models.interaction_model.notification import Notification
+        from datetime import datetime
+        
+        if artwork.art_status == "Unlisted":
+            # Notify artist that artwork is now unlisted
+            Notification.objects.create(
+                user=artwork.artist,
+                actor=artwork.artist,
+                message=f"Your artwork '{artwork.title}' has been unlisted and is now private",
+                name=f"{artwork.artist.first_name} {artwork.artist.last_name}",
+                action="unlisted artwork",
+                target=artwork.title,
+                icon="unlisted",
+                created_at=datetime.now(),
+                link=f"/viewproduct/{artwork.id}"
+            )
+        elif artwork.art_status == "onSale":
+            # Notify artist that artwork is now public and on sale
+            Notification.objects.create(
+                user=artwork.artist,
+                actor=artwork.artist,
+                message=f"Your artwork '{artwork.title}' is now public and available for sale",
+                name=f"{artwork.artist.first_name} {artwork.artist.last_name}",
+                action="relisted artwork for sale",
+                target=artwork.title,
+                icon="sale",
+                created_at=datetime.now(),
+                link=f"/viewproduct/{artwork.id}"
+            )
 
         # Clear artwork caches to ensure unlist/relist changes appear immediately in marketplace
         from api.views.artwork_views.artwork_views import clear_artwork_caches
