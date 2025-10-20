@@ -211,7 +211,9 @@ const AdminProfileSettings = () => {
                   id="firstName"
                   value={profileData.firstName}
                   onChange={(e) => setProfileData({ ...profileData, firstName: e.target.value })}
-                  className="h-8 text-[10px]"
+                  className="h-8"
+                  style={{ fontSize: '10px' }}
+                  placeholder="Enter your first name"
                 />
               </div>
               <div className="space-y-2">
@@ -220,7 +222,9 @@ const AdminProfileSettings = () => {
                   id="lastName"
                   value={profileData.lastName}
                   onChange={(e) => setProfileData({ ...profileData, lastName: e.target.value })}
-                  className="h-8 text-[10px]"
+                  className="h-8"
+                  style={{ fontSize: '10px' }}
+                  placeholder="Enter your last name"
                 />
               </div>
             </div>
@@ -235,7 +239,9 @@ const AdminProfileSettings = () => {
                 type="email"
                 value={profileData.email}
                 onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                className="h-8 text-[10px]"
+                className="h-8"
+                style={{ fontSize: '10px' }}
+                placeholder="Enter your email address"
               />
             </div>
 
@@ -248,7 +254,9 @@ const AdminProfileSettings = () => {
                 id="phone"
                 value={profileData.phone}
                 onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-                className="h-8 text-[10px]"
+                className="h-8"
+                style={{ fontSize: '10px' }}
+                placeholder="Enter your phone number"
               />
             </div>
 
@@ -258,7 +266,8 @@ const AdminProfileSettings = () => {
                 id="bio"
                 value={profileData.bio}
                 onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
-                className="text-[10px] h-20"
+                className="h-20"
+                style={{ fontSize: '10px'}}
                 placeholder="Tell us about yourself..."
               />
             </div>
@@ -373,6 +382,7 @@ const AdminProfileSettings = () => {
                 <Switch
                   checked={notificationSettings.emailNotifications}
                   onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, emailNotifications: checked })}
+                  className="scale-75"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -383,6 +393,7 @@ const AdminProfileSettings = () => {
                 <Switch
                   checked={notificationSettings.systemAlerts}
                   onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, systemAlerts: checked })}
+                  className="scale-75"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -393,6 +404,7 @@ const AdminProfileSettings = () => {
                 <Switch
                   checked={notificationSettings.securityAlerts}
                   onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, securityAlerts: checked })}
+                  className="scale-75"
                 />
               </div>
             </div>
@@ -405,6 +417,7 @@ const AdminProfileSettings = () => {
                 <Switch
                   checked={notificationSettings.userReports}
                   onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, userReports: checked })}
+                  className="scale-75"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -415,6 +428,7 @@ const AdminProfileSettings = () => {
                 <Switch
                   checked={notificationSettings.paymentAlerts}
                   onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, paymentAlerts: checked })}
+                  className="scale-75"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -425,6 +439,7 @@ const AdminProfileSettings = () => {
                 <Switch
                   checked={notificationSettings.maintenanceAlerts}
                   onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, maintenanceAlerts: checked })}
+                  className="scale-75"
                 />
               </div>
             </div>
@@ -515,7 +530,7 @@ const AdminProfileSettings = () => {
       <Dialog open={changePhotoOpen} onOpenChange={setChangePhotoOpen}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
-            <DialogTitle className="text-xs">Change Profile Photo</DialogTitle>
+            <DialogTitle className="text-[13px]">Change Profile Photo</DialogTitle>
             <DialogDescription className="text-[10px]">
               Upload a new profile photo. Maximum file size is 2MB.
             </DialogDescription>
@@ -544,16 +559,8 @@ const AdminProfileSettings = () => {
           </div>
           <DialogFooter>
             <Button
-              variant="outline"
               size="sm"
-              className="text-[10px] rounded-full h-7"
-              onClick={() => setChangePhotoOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              size="sm"
-              className="text-[10px] rounded-full h-7"
+              className="text-[11px] rounded-full h-7"
               onClick={handlePhotoUpload}
               disabled={!selectedFile}
             >
@@ -567,7 +574,7 @@ const AdminProfileSettings = () => {
       <Dialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
-            <DialogTitle className="text-xs">Change Password</DialogTitle>
+            <DialogTitle className="text-[13px]">Change Password</DialogTitle>
             <DialogDescription className="text-[10px]">
               Enter your current password and choose a new one.
             </DialogDescription>
@@ -580,7 +587,9 @@ const AdminProfileSettings = () => {
                   type={showPasswords.current ? "text" : "password"}
                   value={passwordForm.currentPassword}
                   onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                  className="h-8 text-[10px] pr-8"
+                  className="h-8 pr-8"
+                  style={{ fontSize: '10px' }}
+                  placeholder="Enter your current password"
                 />
                 <Button
                   type="button"
@@ -600,7 +609,9 @@ const AdminProfileSettings = () => {
                   type={showPasswords.new ? "text" : "password"}
                   value={passwordForm.newPassword}
                   onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                  className="h-8 text-[10px] pr-8"
+                  className="h-8 pr-8"
+                  style={{ fontSize: '10px' }}
+                  placeholder="Enter your new password"
                 />
                 <Button
                   type="button"
@@ -620,7 +631,9 @@ const AdminProfileSettings = () => {
                   type={showPasswords.confirm ? "text" : "password"}
                   value={passwordForm.confirmPassword}
                   onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                  className="h-8 text-[10px] pr-8"
+                  className="h-8 pr-8"
+                  style={{ fontSize: '10px' }}
+                  placeholder="Confirm your new password"
                 />
                 <Button
                   type="button"
@@ -636,16 +649,8 @@ const AdminProfileSettings = () => {
           </div>
           <DialogFooter>
             <Button
-              variant="outline"
               size="sm"
-              className="text-[10px] rounded-full h-7"
-              onClick={() => setChangePasswordOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              size="sm"
-              className="text-[10px] rounded-full h-7"
+              className="text-[11px] rounded-full h-7"
               onClick={handlePasswordChange}
               disabled={!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
             >
@@ -659,7 +664,7 @@ const AdminProfileSettings = () => {
       <Dialog open={securitySettingsOpen} onOpenChange={setSecuritySettingsOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle className="text-xs">Security Settings</DialogTitle>
+            <DialogTitle className="text-[13px]">Security Settings</DialogTitle>
             <DialogDescription className="text-[10px]">
               Configure your account security preferences.
             </DialogDescription>
@@ -719,14 +724,6 @@ const AdminProfileSettings = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-[10px] rounded-full h-7"
-              onClick={() => setSecuritySettingsOpen(false)}
-            >
-              Cancel
-            </Button>
             <Button
               size="sm"
               className="text-[10px] rounded-full h-7"
