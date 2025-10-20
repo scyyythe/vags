@@ -236,14 +236,14 @@ class CustomTokenObtainPairView(APIView):
             })
             return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
 
-        # Access token (60 minutes)
+        # Access token (120 minutes / 2 hours)
         access_token = generate_token({
             "user_id": str(user.id),
             "email": user.email,
             "role": user.role,
             "jti": f"{user.id}_access",
             "token_type": "access"
-        }, timedelta(minutes=60))
+        }, timedelta(minutes=120))
 
         # Refresh token (7 days)
         refresh_token = generate_token({
@@ -360,13 +360,13 @@ class CustomTokenRefreshView(APIView):
                 })
                 return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
 
-            # Issue new access token (60 minutes)
+            # Issue new access token (120 minutes / 2 hours)
             access_token = generate_token({
                 "user_id": str(user.id),
                 "email": user.email,
                 "jti": f"{user.id}_access",
                 "token_type": "access"
-            }, timedelta(minutes=60))
+            }, timedelta(minutes=120))
 
             # Rotate refresh token (7 days)
             new_refresh_token = generate_token({
