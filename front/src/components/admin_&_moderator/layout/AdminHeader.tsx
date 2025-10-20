@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useModal } from "@/context/ModalContext";
 import useUserQuery from "@/hooks/users/useUserQuery";
 import { getLoggedInUserId } from "@/auth/decode";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 // Removed modal-based view-all; using full page instead
 type AdminHeaderProps = {
   role: "admin" | "moderator";
@@ -50,6 +51,7 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
     setShowLoginModal(true);
     onClose();
   };
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   
   // Mock notifications for admin
   const notifications: Array<{
@@ -205,13 +207,33 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-xs text-destructive" onClick={handleLogout}>
+            <DropdownMenuItem className="text-xs text-destructive" onClick={() => setIsLogoutOpen(true)}>
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
       </div>
+
+      {/* Confirm Logout */}
+      <Dialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen}>
+        <DialogContent className="text-xs">
+          <DialogHeader>
+            <DialogTitle className="text-sm">Confirm Logout</DialogTitle>
+            <DialogDescription className="text-[10px]">
+              Are you sure you want to log out of the {role === "admin" ? "Admin" : "Moderator"} panel?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" size="sm" className="h-7 text-[10px]" onClick={() => setIsLogoutOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" size="sm" className="h-7 text-[10px]" onClick={handleLogout}>
+              Log out
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 }
