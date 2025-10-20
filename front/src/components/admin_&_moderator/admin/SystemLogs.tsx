@@ -119,6 +119,7 @@ export function SystemLogs({ logs: initialLogs }: SystemLogsProps) {
       />
 
       <div className="border rounded-md overflow-hidden">
+        {/* Fixed header (not scrollable) */}
         <Table>
           <TableHeader>
             <TableRow>
@@ -130,7 +131,12 @@ export function SystemLogs({ logs: initialLogs }: SystemLogsProps) {
               <TableHead className="text-xs text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+        </Table>
+
+        {/* Scrollable body only */}
+        <div className="max-h-[350px] overflow-auto">
+          <Table>
+            <TableBody>
             {filteredLogs.length > 0 ? (
               filteredLogs.map((log) => (
                 <TableRow key={log.id}>
@@ -164,8 +170,9 @@ export function SystemLogs({ logs: initialLogs }: SystemLogsProps) {
                 </TableCell>
               </TableRow>
             )}
-          </TableBody>
-        </Table>
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       {/* <div className="flex justify-end">
