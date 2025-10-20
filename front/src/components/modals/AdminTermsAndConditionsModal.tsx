@@ -134,27 +134,27 @@ const AdminTermsAndConditionsModal: React.FC<AdminTermsAndConditionsModalProps> 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 px-4 sm:px-6">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="px-6 pt-5 relative">
-          <h2 className="text-md font-semibold text-gray-900 mb-2">
+          <p className="text-sm font-semibold text-gray-900 mb-2">
             {titleText}
-          </h2>
-          <button
+          </p>
+          {/* <button
             onClick={handleExit}
             className="absolute top-3 right-4 text-gray-400 hover:text-gray-600 transition-colors"
             aria-label={closeText}
           >
             <X className="h-5 w-5" />
-          </button>
+          </button> */}
         </div>
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto px-6 py-2">
-          <div className="text-xs text-gray-700 leading-relaxed space-y-4">
+          <div className="text-[11px] text-gray-700 leading-relaxed space-y-4">
             <div className="space-y-4">
               <section>
-                <p className="text-xs text-gray-500 mb-4">
+                <p className="text-[11px] text-gray-500 mb-4">
                   {lastUpdatedText} October 20, 2025
                 </p>
                 <p className="font-semibold text-gray-900 mb-2">
@@ -338,11 +338,11 @@ const AdminTermsAndConditionsModal: React.FC<AdminTermsAndConditionsModalProps> 
                 id="admin-terms-agreement"
                 checked={isAgreed}
                 onCheckedChange={(checked) => setIsAgreed(checked as boolean)}
-                className="h-3 w-3"
+                className="h-[15px] w-[15px]  data-[state=checked]:bg-red-900 data-[state=checked]:border-red-900"
               />
               <label
                 htmlFor="admin-terms-agreement"
-                className="text-[10px] text-gray-700 cursor-pointer"
+                className="text-[9px] text-gray-700 cursor-pointer"
               >
                 {agreeCheckboxLabel}
               </label>
@@ -352,7 +352,7 @@ const AdminTermsAndConditionsModal: React.FC<AdminTermsAndConditionsModalProps> 
             <button
               onClick={handleAgree}
               disabled={!isAgreed}
-              className="px-8 py-1 rounded-full bg-red-900 hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs"
+              className="px-8 py-1 rounded-full bg-red-900 hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed text-white text-[11px] whitespace-nowrap"
             >
               {agreeButtonText}
             </button>
