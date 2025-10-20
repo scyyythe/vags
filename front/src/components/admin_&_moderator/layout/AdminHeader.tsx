@@ -1,4 +1,5 @@
 import { Bell, Search, PanelLeft, MoreVertical } from "lucide-react";
+import { useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useModal } from "@/context/ModalContext";
 import useUserQuery from "@/hooks/users/useUserQuery";
 import { getLoggedInUserId } from "@/auth/decode";
+// Removed modal-based view-all; using full page instead
 type AdminHeaderProps = {
   role: "admin" | "moderator";
   user: {
@@ -56,6 +58,8 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
     description: string;
     time: string;
     type: "system" | "security" | "user" | "payment";
+    read?: boolean;
+    archived?: boolean;
   }> = [
     { id: "1", title: "System maintenance scheduled", description: "Tonight at 11:00 PM UTC.", time: "5m ago", type: "system" },
     { id: "2", title: "New user registered", description: "Curator account pending review.", time: "12m ago", type: "user" },
@@ -76,6 +80,21 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
     { id: "17", title: "User appeal received", description: "Suspension appeal from user #992.", time: "20h ago", type: "user" },
     { id: "18", title: "Password policy updated", description: "Minimum length increased to 12.", time: "1d ago", type: "security" },
   ];
+  // Dropdown notifications state: support read/archived and inbox/archive views
+  const [dropdownNotifications, setDropdownNotifications] = useState(
+    notifications.map((n) => ({ ...n, read: n.read ?? false, archived: n.archived ?? false }))
+  );
+  // Show only non-archived items in dropdown; archive view is available on full page
+  const visibleDropdownNotifications = useMemo(
+    () => dropdownNotifications.filter((n) => !n.archived),
+    [dropdownNotifications]
+  );
+
+  const markDropdownRead = (id: string) =>
+    setDropdownNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+  const archiveDropdown = (id: string) =>
+    setDropdownNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, archived: true } : n)));
+
   return (
     <header className="sticky top-0 z-40 border-b bg-white h-14 px-4 flex items-center justify-between">
       <div className="flex-1 flex items-center">
@@ -102,7 +121,7 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-80 p-0" align="end" forceMount>
-            <div className="px-3 py-3 flex items-center justify-between">
+            <div className="px-3 py-3 flex items-center justify-between gap-2">
               <p className="text-sm font-semibold">Notifications</p>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -114,13 +133,24 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
                   <DropdownMenuItem className="text-[10px]">
                     <Link to={`/${role}/notifications`} className="w-full">View all</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-[10px]">Mark all as read</DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-[10px]"
+                    onClick={() => setDropdownNotifications((prev) => prev.map((n) => ({ ...n, read: true })))}
+                  >
+                    Mark all as read
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-[10px]"
+                    onClick={() => setDropdownNotifications((prev) => prev.map((n) => ({ ...n, read: false })))}
+                  >
+                    Mark all as unread
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
             <div className="max-h-[510px] overflow-auto">
-              {notifications.map((n) => (
-                <div key={n.id} className="px-3 py-2 hover:bg-muted/40 transition-colors">
+              {visibleDropdownNotifications.map((n) => (
+                <div key={n.id} className={`px-3 py-2 hover:bg-muted/40 transition-colors ${!n.read ? "bg-muted/60" : ""}`}>
                   <div className="flex items-start gap-2">
                     <span
                       className={`mt-[2px] h-2 w-2 rounded-full ${
@@ -141,7 +171,7 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
                   </div>
                 </div>
               ))}
-              {notifications.length === 0 && (
+              {visibleDropdownNotifications.length === 0 && (
                 <div className="px-3 py-6 text-center text-[11px] text-muted-foreground">No notifications</div>
               )}
             </div>
@@ -180,6 +210,7 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
       </div>
     </header>
   );
