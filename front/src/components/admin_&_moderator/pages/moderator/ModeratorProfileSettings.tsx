@@ -630,7 +630,7 @@ const ModeratorProfileSettings = () => {
 
       {/* Change Photo Modal */}
       <Dialog open={changePhotoOpen} onOpenChange={setChangePhotoOpen}>
-        <DialogContent className="sm:max-w-[400px]">
+        <DialogContent className="sm:max-w-[400px] max-w-[400px] rounded-md">
           <DialogHeader>
             <DialogTitle className="text-[13px]">Change Profile Photo</DialogTitle>
             <DialogDescription className="text-[10px]">

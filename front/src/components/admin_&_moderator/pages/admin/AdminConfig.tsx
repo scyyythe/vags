@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { PolicyViewer } from "@/components/admin_&_moderator/admin/PolicyViewer";
 import { PolicyLogsList, PolicyLog } from "@/components/admin_&_moderator/admin/PolicyLogsList";
@@ -19,6 +20,7 @@ const AdminConfig = () => {
   const [selectedTerm, setSelectedTerm] = useState<PolicyLog | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [termsViewerOpen, setTermsViewerOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("general");
 
   const viewPolicy = (log: PolicyLog) => {
     setSelectedPolicy(log);
@@ -30,6 +32,46 @@ const AdminConfig = () => {
     setTermsViewerOpen(true);
   };
 
+  const tabOptions = [
+    { value: "general", label: "General Settings" },
+    { value: "financial", label: "Financial Settings" },
+    { value: "policy", label: "Policy Settings" },
+    { value: "terms", label: "Terms & Conditions" },
+    { value: "environment", label: "Environment Settings" },
+    { value: "maintenance", label: "Maintenance" },
+  ];
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "general":
+        return <GeneralSettings />;
+      case "financial":
+        return <FinancialSettings />;
+      case "policy":
+        return (
+          <PolicySettings
+            policyLogs={policyLogs}
+            setPolicyLogs={setPolicyLogs}
+            onView={viewPolicy}
+          />
+        );
+      case "terms":
+        return (
+          <TermsAndConditions
+            termsLogs={termsLogs}
+            setTermsLogs={setTermsLogs}
+            onView={viewTerm}
+          />
+        );
+      case "environment":
+        return <EnvironmentSettings />;
+      case "maintenance":
+        return <MaintenanceSettings />;
+      default:
+        return <GeneralSettings />;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -39,66 +81,41 @@ const AdminConfig = () => {
         </p>
       </div>
 
-      <Tabs defaultValue="general" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6 sm:w-auto sm:inline-grid sm:grid-cols-6">
-          <TabsTrigger value="general" className="text-[10px]">
-            General Settings
-          </TabsTrigger>
-          <TabsTrigger value="financial" className="text-[10px]">
-            Financial Settings
-          </TabsTrigger>
-          <TabsTrigger value="policy" className="text-[10px]">
-            Policy Settings
-          </TabsTrigger>
-          <TabsTrigger value="terms" className="text-[10px]">
-            Terms & Conditions
-          </TabsTrigger>
-          <TabsTrigger value="environment" className="text-[10px]">
-            Environment Settings
-          </TabsTrigger>
-          <TabsTrigger value="maintenance" className="text-[10px]">
-            Maintenance
-          </TabsTrigger>
-        </TabsList>
+      <div className="space-y-4">
+        {/* Mobile Dropdown */}
+        <div className="block sm:hidden">
+          <Select value={activeTab} onValueChange={setActiveTab}>
+            <SelectTrigger className="w-full" style={{fontSize:"11px"}}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {tabOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value} className="text-[11px]">
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        {/* General Settings */}
-        <TabsContent value="general">
-          <GeneralSettings />
-        </TabsContent>
+        {/* Desktop Tabs */}
+        <div className="hidden sm:block">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+            <TabsList className="grid w-full grid-cols-6">
+              {tabOptions.map((option) => (
+                <TabsTrigger key={option.value} value={option.value} className="text-[10px]">
+                  {option.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
 
-        {/* Financial Settings */}
-        <TabsContent value="financial">
-          <FinancialSettings />
-        </TabsContent>
-
-        {/* Policy Settings */}
-        <TabsContent value="policy">
-          <PolicySettings
-            policyLogs={policyLogs}
-            setPolicyLogs={setPolicyLogs}
-            onView={viewPolicy}
-          />
-        </TabsContent>
-
-        {/* Terms & Conditions */}
-        <TabsContent value="terms">
-          <TermsAndConditions
-            termsLogs={termsLogs}
-            setTermsLogs={setTermsLogs}
-            onView={viewTerm}
-          />
-        </TabsContent>
-
-        {/* Environment Settings */}
-        <TabsContent value="environment">
-          <EnvironmentSettings />
-        </TabsContent>
-
-        {/* Maintenance Settings */}
-        <TabsContent value="maintenance">
-          <MaintenanceSettings />
-        </TabsContent>
-      </Tabs>
+        {/* Content */}
+        <div className="mt-4">
+          {renderTabContent()}
+        </div>
+      </div>
 
       {/* Policy Viewer */}
       {selectedPolicy && (

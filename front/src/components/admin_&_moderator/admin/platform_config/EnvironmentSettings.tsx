@@ -258,7 +258,7 @@ const EnvironmentSettings = () => {
 
       {/* Upload Dialog */}
       <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
-        <DialogContent className="text-xs">
+        <DialogContent className="text-xs max-w-[400px] rounded-md">
           <DialogHeader>
             <DialogTitle className="text-xs">Upload New Environment</DialogTitle>
             <DialogDescription className="text-[10px]">

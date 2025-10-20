@@ -218,60 +218,60 @@ const AdminNotifications = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-md font-bold">Notifications</h1>
           <p className="text-[10px] text-muted-foreground">Browse, filter, and search admin alerts</p>
         </div>
       </div>
 
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2 items-center">
-              <Badge className="bg-red-600 text-[10px]">{notifications.filter(n => !n.read && !n.archived).length}</Badge>
-              <span className="text-xs font-medium">Unread Notifications</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="relative w-64">
-                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
-                <Input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search notifications..."
-                  className="pl-8 h-8 rounded-full"
-                  style={{ fontSize: "10px" }}
-                />
-              </div>
-              <div className="w-40">
-                <Select value={type} onValueChange={(v) => setType(v as any)}>
-                  <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all" className="text-[10px]">All types</SelectItem>
-                    <SelectItem value="system" className="text-[10px]">System</SelectItem>
-                    <SelectItem value="security" className="text-[10px]">Security</SelectItem>
-                    <SelectItem value="user" className="text-[10px]">User</SelectItem>
-                    <SelectItem value="payment" className="text-[10px]">Payment</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="w-40">
-                <Select value={view} onValueChange={(v) => setView(v as any)}>
-                  <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="inbox" className="text-[10px]">Inbox</SelectItem>
-                    <SelectItem value="archived" className="text-[10px]">Archived</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex gap-2 items-center">
+          <Badge className="bg-red-600 text-[10px]">{notifications.filter(n => !n.read && !n.archived).length}</Badge>
+          <span className="text-xs font-medium">Unread Notifications</span>
+        </div>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search notifications..."
+              className="pl-8 h-8 rounded-full"
+              style={{ fontSize: "10px" }}
+            />
           </div>
+          <div className="w-full sm:w-40">
+            <Select value={type} onValueChange={(v) => setType(v as any)}>
+              <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all" className="text-[10px]">All types</SelectItem>
+                <SelectItem value="system" className="text-[10px]">System</SelectItem>
+                <SelectItem value="security" className="text-[10px]">Security</SelectItem>
+                <SelectItem value="user" className="text-[10px]">User</SelectItem>
+                <SelectItem value="payment" className="text-[10px]">Payment</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="w-full sm:w-40">
+            <Select value={view} onValueChange={(v) => setView(v as any)}>
+              <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="inbox" className="text-[10px]">Inbox</SelectItem>
+                <SelectItem value="archived" className="text-[10px]">Archived</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
 
       <Card className="px-8 pb-6">
         <CardHeader className="px-3 pt-6 pb-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <CardTitle className="text-xs">Notification Center</CardTitle>
               <CardDescription className="text-[11px]">
@@ -318,9 +318,9 @@ const AdminNotifications = () => {
               <div className="flex items-start gap-2">
                 <span className={`mt-[3px] h-2 w-2 rounded-full ${typeDotClass(n.type)}`} />
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <p className="text-[11px] font-medium truncate">{n.title}</p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between sm:justify-end gap-2">
                       <span className="text-[10px] text-muted-foreground whitespace-nowrap">{n.time}</span>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -389,7 +389,7 @@ const AdminNotifications = () => {
                 </div>
               )}
 
-              <div className="flex justify-end gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button
                   variant="outline"
                   size="sm"

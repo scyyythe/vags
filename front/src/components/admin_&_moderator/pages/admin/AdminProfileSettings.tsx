@@ -528,7 +528,7 @@ const AdminProfileSettings = () => {
 
       {/* Change Photo Modal */}
       <Dialog open={changePhotoOpen} onOpenChange={setChangePhotoOpen}>
-        <DialogContent className="sm:max-w-[400px]">
+        <DialogContent className="sm:max-w-[400px] max-w-[400px] rounded-md">
           <DialogHeader>
             <DialogTitle className="text-[13px]">Change Profile Photo</DialogTitle>
             <DialogDescription className="text-[10px]">
@@ -572,7 +572,7 @@ const AdminProfileSettings = () => {
 
       {/* Change Password Modal */}
       <Dialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen}>
-        <DialogContent className="sm:max-w-[400px]">
+        <DialogContent className="sm:max-w-[400px] max-w-[400px] rounded-md">
           <DialogHeader>
             <DialogTitle className="text-[13px]">Change Password</DialogTitle>
             <DialogDescription className="text-[10px]">
@@ -662,7 +662,7 @@ const AdminProfileSettings = () => {
 
       {/* Security Settings Modal */}
       <Dialog open={securitySettingsOpen} onOpenChange={setSecuritySettingsOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px] max-w-[400px] rounded-md">
           <DialogHeader>
             <DialogTitle className="text-[13px]">Security Settings</DialogTitle>
             <DialogDescription className="text-[10px]">
