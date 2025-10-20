@@ -50,9 +50,8 @@ interface Notification {
 // Fetch function for notifications
 const fetchNotifications = async (): Promise<Notification[]> => {
   try {
-    console.log("Fetching notifications from API...");
     const response = await apiClient.get("/notifications/");
-    console.log("Notifications response:", response.data);
+
     return response.data;
   } catch (error) {
     console.error("Failed to fetch notifications", error);
@@ -62,7 +61,7 @@ const fetchNotifications = async (): Promise<Notification[]> => {
       statusText: error.response?.statusText,
       data: error.response?.data,
       url: error.config?.url,
-      baseURL: error.config?.baseURL
+      baseURL: error.config?.baseURL,
     });
     toast.error("Failed to fetch notifications");
     throw error;
@@ -95,14 +94,14 @@ const useNotifications = () => {
     refetchInterval: (data) => {
       // Only poll if user is active
       if (!isActive) return false;
-      
+
       // Ensure data is an array before calling .some()
       if (!Array.isArray(data)) {
         return 10000; // Default polling interval if data is not ready
       }
-      
+
       // Poll more frequently if there are unread notifications
-      const hasUnread = data.some(n => !n.is_read);
+      const hasUnread = data.some((n) => !n.is_read);
       return hasUnread ? 5000 : 10000; // Poll every 5s if unread, 10s if all read
     },
     refetchIntervalInBackground: false, // Don't poll when tab is not active
