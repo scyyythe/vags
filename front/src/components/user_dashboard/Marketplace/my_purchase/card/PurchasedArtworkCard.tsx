@@ -247,7 +247,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
   return (
     <div
       className={`bg-card border rounded-lg py-4 px-6 group transition-all duration-300 cursor-pointer hover:shadow-lg ${
-        isHighlighted ? "border-red-400 border-2 bg-red-50 shadow-lg ring-2 ring-red-200" : "border-border"
+        isHighlighted ? "border border-red-300 shadow-[0_0_6px_rgba(239,68,68,0.7)]" : "border-border"
       }`}
       onClick={onViewDetails}
     >
@@ -255,11 +255,11 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
         {/* Image */}
         <div className="relative">
           <img src={artworkImage} alt={title} className="w-20 h-20 rounded-md object-cover" />
-          {isHighlighted && (
+          {/* {isHighlighted && (
             <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-400 rounded-full border-2 border-white flex items-center justify-center">
               <div className="w-2 h-2 bg-red-600 rounded-full"></div>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Info */}

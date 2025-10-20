@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, User, DollarSign, Package, MessageCircle, Eye, CheckCircle, XCircle, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { autoTranslate } from "@/utils/autoTranslate";
 
 interface SoldArtworkCardProps {
   id: string;
@@ -75,6 +78,93 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
   onTrackProgress,
   onViewSummary,
 }) => {
+  const { language } = useLanguage();
+
+  // State for translated dynamic data
+  const [translatedTitle, setTranslatedTitle] = useState(title);
+  const [translatedBuyer, setTranslatedBuyer] = useState(buyer);
+  const [translatedStatusLabels, setTranslatedStatusLabels] = useState<Record<string, string>>({});
+
+  // Translation hooks for static text
+  const orderText = useAutoTranslation("Order", language);
+  const priceText = useAutoTranslation("Price", language);
+  const netEarningsText = useAutoTranslation("Net Earnings", language);
+  const contactBuyerText = useAutoTranslation("Contact Buyer", language);
+  const viewDetailsText = useAutoTranslation("View Details", language);
+  const markAsShippedText = useAutoTranslation("Mark as Shipped", language);
+  const markedAsShippedText = useAutoTranslation("Marked as Shipped", language);
+  const viewPaymentText = useAutoTranslation("View Payment", language);
+  const trackProgressText = useAutoTranslation("Track Progress", language);
+  const viewSummaryText = useAutoTranslation("View Summary", language);
+  const refundDetailsText = useAutoTranslation("Refund Details", language);
+  const viewReviewText = useAutoTranslation("View Review", language);
+  const thankBuyerText = useAutoTranslation("Thank Buyer", language);
+
+  // Effect to translate dynamic data
+  useEffect(() => {
+    const translateDynamicData = async () => {
+      try {
+        if (language.toLowerCase() !== "en") {
+          const [translatedTitleResult, translatedBuyerResult] = await Promise.all([
+            autoTranslate(title, language.toLowerCase()),
+            autoTranslate(buyer, language.toLowerCase())
+          ]);
+          setTranslatedTitle(translatedTitleResult);
+          setTranslatedBuyer(translatedBuyerResult);
+        } else {
+          setTranslatedTitle(title);
+          setTranslatedBuyer(buyer);
+        }
+      } catch (error) {
+        console.warn("Failed to translate dynamic data:", error);
+        setTranslatedTitle(title);
+        setTranslatedBuyer(buyer);
+      }
+    };
+
+    translateDynamicData();
+  }, [title, buyer, language]);
+
+  // Effect to translate status labels
+  useEffect(() => {
+    const translateStatusLabels = async () => {
+      try {
+        const statusLabels = {
+          "Awaiting Payment": "Awaiting Payment",
+          "Payment Received": "Payment Received", 
+          "In Progress": "In Progress",
+          "Completed": "Completed",
+          "Cancelled": "Cancelled",
+          "Refunded": "Refunded",
+          "Reviewed": "Reviewed"
+        };
+
+        if (language.toLowerCase() !== "en") {
+          const translatedLabels: Record<string, string> = {};
+          for (const [key, value] of Object.entries(statusLabels)) {
+            translatedLabels[key] = await autoTranslate(value, language.toLowerCase());
+          }
+          setTranslatedStatusLabels(translatedLabels);
+        } else {
+          setTranslatedStatusLabels(statusLabels);
+        }
+      } catch (error) {
+        console.warn("Failed to translate status labels:", error);
+        setTranslatedStatusLabels({
+          "Awaiting Payment": "Awaiting Payment",
+          "Payment Received": "Payment Received", 
+          "In Progress": "In Progress",
+          "Completed": "Completed",
+          "Cancelled": "Cancelled",
+          "Refunded": "Refunded",
+          "Reviewed": "Reviewed"
+        });
+      }
+    };
+
+    translateStatusLabels();
+  }, [language]);
+
   const artworkData = {
     id,
     artworkImage,
@@ -101,26 +191,19 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
     const normalizedStatus = status.toLowerCase();
 
     const statusConfig = {
-      awaiting_payment: { label: "Awaiting Payment", variant: "secondary" as const },
-      payment_received: { label: "Payment Received", variant: "default" as const },
-      in_progress: { label: "In Progress", variant: "outline" as const },
-      to_receive: { label: "In Progress", variant: "outline" as const },
-      completed: { label: "Completed", variant: "default" as const },
-      cancelled: { label: "Cancelled", variant: "destructive" as const },
-      refunded: { label: "Refunded", variant: "secondary" as const },
-      reviews: { label: "Reviewed", variant: "default" as const },
-      reviewed: { label: "Reviewed", variant: "default" as const },
+      awaiting_payment: { label: translatedStatusLabels["Awaiting Payment"] || "Awaiting Payment", variant: "secondary" as const },
+      payment_received: { label: translatedStatusLabels["Payment Received"] || "Payment Received", variant: "default" as const },
+      in_progress: { label: translatedStatusLabels["In Progress"] || "In Progress", variant: "outline" as const },
+      to_receive: { label: translatedStatusLabels["In Progress"] || "In Progress", variant: "outline" as const },
+      completed: { label: translatedStatusLabels["Completed"] || "Completed", variant: "default" as const },
+      cancelled: { label: translatedStatusLabels["Cancelled"] || "Cancelled", variant: "destructive" as const },
+      refunded: { label: translatedStatusLabels["Refunded"] || "Refunded", variant: "secondary" as const },
+      reviews: { label: translatedStatusLabels["Reviewed"] || "Reviewed", variant: "default" as const },
+      reviewed: { label: translatedStatusLabels["Reviewed"] || "Reviewed", variant: "default" as const },
     };
 
     return (
       statusConfig[normalizedStatus as keyof typeof statusConfig] || {
-        label: status,
-        variant: "default" as const,
-      }
-    );
-
-    return (
-      statusConfig[status as keyof typeof statusConfig] || {
         label: status,
         variant: "default" as const,
       }
@@ -139,14 +222,14 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border"
             >
               <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Contact Buyer
+              {contactBuyerText}
             </button>
             <button
               onClick={() => onViewDetails(artworkData)}
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
             >
               <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              View Details
+              {viewDetailsText}
             </button>
           </div>
         );
@@ -168,7 +251,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
                 ${shippedArtworks[id] ? "bg-black text-white" : "text-black border"}`}
             >
               <Package className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              {shippedArtworks[id] ? "Marked as Shipped" : "Mark as Shipped"}
+              {shippedArtworks[id] ? markedAsShippedText : markAsShippedText}
             </button>
 
             <button
@@ -177,7 +260,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100"
             >
               <DollarSign className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              View Payment
+              {viewPaymentText}
             </button>
           </div>
         );
@@ -189,14 +272,14 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border"
             >
               <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Contact Buyer
+              {contactBuyerText}
             </button>
             <button
               onClick={() => onTrackProgress?.(artworkData)}
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
             >
               <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Track Progress
+              {trackProgressText}
             </button>
           </div>
         );
@@ -208,14 +291,14 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
             >
               <CheckCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              View Summary
+              {viewSummaryText}
             </button>
             <button
               onClick={() => onContactBuyer(artworkData)}
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border"
             >
               <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Contact Buyer
+              {contactBuyerText}
             </button>
           </div>
         );
@@ -227,7 +310,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
             >
               <XCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              View Details
+              {viewDetailsText}
             </button>
           </div>
         );
@@ -239,14 +322,14 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border"
             >
               <RotateCcw className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Refund Details
+              {refundDetailsText}
             </button>
             <button
               onClick={() => onViewDetails(artworkData)}
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
             >
               <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              View Details
+              {viewDetailsText}
             </button>
           </div>
         );
@@ -258,7 +341,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
               className="flex text-[10px] text-white font-medium py-1.5 px-4 rounded-full bg-black"
             >
               <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              View Review
+              {viewReviewText}
             </button>
             <button
               onClick={() => {
@@ -273,7 +356,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
               className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full border"
             >
               <MessageCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Thank Buyer
+              {thankBuyerText}
             </button>
           </div>
         );
@@ -284,7 +367,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
             className="flex text-[10px] text-black font-medium py-1.5 px-4 rounded-full bg-gray-100 hover:bg-gray-200"
           >
             <Eye className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-            View Details
+            {viewDetailsText}
           </button>
         );
     }
@@ -311,8 +394,8 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
         <div className="flex-1 min-w-0 flex flex-col justify-between">
           <div className="flex items-start justify-between mb-2">
             <div>
-              <h3 className="font-semibold text-[13px] truncate">{title}</h3>
-              <p className="text-[11px] text-muted-foreground">Order #{id}</p>
+              <h3 className="font-semibold text-[13px] truncate">{translatedTitle}</h3>
+              <p className="text-[11px] text-muted-foreground">{orderText} #{id}</p>
             </div>
             {/* <Badge variant={statusBadge.variant} className="text-[11px]">
               {statusBadge.label}
@@ -324,10 +407,10 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-[11px]">
               <div className="flex items-center gap-1 text-gray-700">
                 <User className="w-2.5 h-2.5" />
-                <span className="truncate">{buyer}</span>
+                <span className="truncate">{translatedBuyer}</span>
               </div>
               <div className="flex items-center gap-1">
-                <p>Price: </p>
+                <p>{priceText}: </p>
                 <DollarSign className="w-2.5 h-2.5" />
                 <span className="font-semibold">{price >= 1000 ? `${(price / 1000).toFixed(0)}k` : price}</span>
               </div>
@@ -338,7 +421,7 @@ const SoldArtworkCard: React.FC<SoldArtworkCardProps> = ({
                 </span>
               </div>
               <div className="flex items-center gap-1">
-                <p>Net Earnings: </p>
+                <p>{netEarningsText}: </p>
                 <span className="text-green-600 font-semibold">
                   +₱{netEarnings >= 1000 ? `${(netEarnings / 1000).toFixed(0)}k` : Math.round(netEarnings)}
                 </span>

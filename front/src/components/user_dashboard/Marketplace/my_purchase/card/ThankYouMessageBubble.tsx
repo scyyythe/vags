@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Heart, MessageCircle, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getLoggedInUserId } from "@/auth/decode";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { autoTranslate } from "@/utils/autoTranslate";
 
 interface ThankYouMessageBubbleProps {
   sellerName: string;
@@ -26,6 +29,53 @@ const ThankYouMessageBubble: React.FC<ThankYouMessageBubbleProps> = ({
 }) => {
   const navigate = useNavigate();
   const currentUserId = getLoggedInUserId();
+  const { language } = useLanguage();
+
+  // State for translated dynamic data
+  const [translatedSellerName, setTranslatedSellerName] = useState(sellerName);
+  const [translatedArtworkTitle, setTranslatedArtworkTitle] = useState(artworkTitle);
+  const [translatedBuyerName, setTranslatedBuyerName] = useState(buyerName);
+
+  // Translation hooks for static text
+  const thankYouMessageText = useAutoTranslation("Thank You Message!", language);
+  const helloText = useAutoTranslation("Hello", language);
+  const thankYouForPurchasingText = useAutoTranslation("Thank you for purchasing", language);
+  const supportMeansText = useAutoTranslation("Your support means the world to me. I hope you love your new piece!✨", language);
+  const yourRatingText = useAutoTranslation("Your rating:", language);
+  const yourPurchaseHelpsText = useAutoTranslation("Your purchase helps me continue creating art and brings joy to collectors like you. Thank you for choosing my work!", language);
+  const fromTheArtistText = useAutoTranslation("From the Artist:", language);
+  const artistSupportText = useAutoTranslation("Your support means everything to me. Thank you for believing in my art and helping me continue this creative journey.", language);
+  const viewReviewDetailsText = useAutoTranslation("View Review Details", language);
+
+  // Effect to translate dynamic data
+  useEffect(() => {
+    const translateDynamicData = async () => {
+      try {
+        if (language.toLowerCase() !== "en") {
+          const [translatedSeller, translatedArtwork, translatedBuyer] = await Promise.all([
+            autoTranslate(sellerName, language.toLowerCase()),
+            autoTranslate(artworkTitle, language.toLowerCase()),
+            autoTranslate(buyerName, language.toLowerCase())
+          ]);
+          setTranslatedSellerName(translatedSeller);
+          setTranslatedArtworkTitle(translatedArtwork);
+          setTranslatedBuyerName(translatedBuyer);
+        } else {
+          setTranslatedSellerName(sellerName);
+          setTranslatedArtworkTitle(artworkTitle);
+          setTranslatedBuyerName(buyerName);
+        }
+      } catch (error) {
+        console.warn("Failed to translate dynamic data:", error);
+        // Fallback to original data
+        setTranslatedSellerName(sellerName);
+        setTranslatedArtworkTitle(artworkTitle);
+        setTranslatedBuyerName(buyerName);
+      }
+    };
+
+    translateDynamicData();
+  }, [sellerName, artworkTitle, buyerName, language]);
 
   const handleViewReview = () => {
     if (onViewReview) {
@@ -72,23 +122,22 @@ const ThankYouMessageBubble: React.FC<ThankYouMessageBubbleProps> = ({
       {/* Header */}
       <div className={`flex items-center gap-2 pb-2 border-b ${borderColor}`}>
         <Heart className={`w-4 h-4 ${iconColor}`} />
-        <span className={`font-bold text-xs ${textMain}`}>Thank You Message!</span>
+        <span className={`font-bold text-xs ${textMain}`}>{thankYouMessageText}</span>
       </div>
 
       {/* Body */}
       <div className={`space-y-2.5 text-[11px] leading-relaxed ${textMain}`}>
         <p>
-          Hello <span className={`font-semibold ${textMain}`}>{buyerName}</span>,
+          {helloText} <span className={`font-semibold ${textMain}`}>{translatedBuyerName}</span>,
         </p>
 
         <p>
-          Thank you for purchasing <span className={`font-semibold ${textHighlight}`}>"{artworkTitle}"</span>! Your
-          support means the world to me. I hope you love your new piece!✨
+          {thankYouForPurchasingText} <span className={`font-semibold ${textHighlight}`}>"{translatedArtworkTitle}"</span>! {supportMeansText}
         </p>
 
         {rating && (
           <div className="flex items-center gap-2">
-            <span className={textSecondary}>Your rating:</span>
+            <span className={textSecondary}>{yourRatingText}</span>
             <div className="flex items-center gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star
@@ -102,8 +151,7 @@ const ThankYouMessageBubble: React.FC<ThankYouMessageBubbleProps> = ({
         )}
 
         <p className={`italic text-[10px] ${textSecondary}`}>
-          Your purchase helps me continue creating art and brings joy to collectors like you. Thank you for choosing my
-          work!
+          {yourPurchaseHelpsText}
         </p>
 
         <button
@@ -113,7 +161,7 @@ const ThankYouMessageBubble: React.FC<ThankYouMessageBubbleProps> = ({
           }`}
         >
           <MessageCircle className={`w-4 h-4 ${iconColor}`} />
-          View Review Details
+          {viewReviewDetailsText}
         </button>
 
         <div
@@ -122,8 +170,7 @@ const ThankYouMessageBubble: React.FC<ThankYouMessageBubbleProps> = ({
           }`}
         >
           <p className="text-[9px] text-pink-700">
-            <span className="font-semibold">From the Artist:</span> Your support means everything to me. Thank you for
-            believing in my art and helping me continue this creative journey.
+            <span className="font-semibold">{fromTheArtistText}</span> {artistSupportText}
           </p>
         </div>
       </div>
