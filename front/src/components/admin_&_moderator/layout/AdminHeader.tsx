@@ -49,7 +49,7 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
     onClose();
   };
   return (
-    <header className="border-b bg-white h-14 px-4 flex items-center justify-between">
+    <header className="sticky top-0 z-40 border-b bg-white h-14 px-4 flex items-center justify-between">
       <div className="flex-1 flex items-center">
         {/* Add an additional sidebar trigger in the header for easier access */}
         <SidebarTrigger className="mr-2" aria-label="Toggle sidebar" />
