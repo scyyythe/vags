@@ -151,7 +151,7 @@ const AdminUsers = () => {
               Add User
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[425px] max-w-[425px] rounded-md">
             <DialogHeader>
               <DialogTitle className="text-sm">Add New User</DialogTitle>
               <DialogDescription className="text-[10px]">
