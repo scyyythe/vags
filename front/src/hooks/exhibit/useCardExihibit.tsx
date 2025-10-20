@@ -22,14 +22,13 @@ export const useExhibitCards = () => {
         throw new Error(error?.response?.data?.detail || error.message || "Error fetching exhibit cards");
       }
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0, // Always consider data stale for real-time updates
     gcTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnMount: true, // Refetch on component mount
+    refetchOnReconnect: true, // Refetch on network reconnect
+    refetchInterval: 3000, // Poll every 3 seconds for new exhibits
+    refetchIntervalInBackground: false, // Don't poll when tab is not active
     retry: 2,
-
-    refetchOnMount: true,
-    refetchOnReconnect: true,
-
-    refetchInterval: false,
   });
 };

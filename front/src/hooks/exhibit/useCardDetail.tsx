@@ -21,14 +21,16 @@ export const useExhibitCardDetail = (id: string | undefined) => {
       } catch (error: any) {
         toast.error("Failed to load exhibit details.");
         console.error("Error fetching exhibit detail:", error);
-        throw new Error(
-          error?.response?.data?.detail ||
-          error.message ||
-          "Error fetching exhibit details"
-        );
+        throw new Error(error?.response?.data?.detail || error.message || "Error fetching exhibit details");
       }
     },
     enabled: !!id,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0, // Always consider data stale for real-time updates
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnMount: true, // Refetch on component mount
+    refetchOnReconnect: true, // Refetch on network reconnect
+    refetchInterval: 3000, // Poll every 3 seconds for exhibit detail updates
+    refetchIntervalInBackground: false, // Don't poll when tab is not active
+    retry: 1, // Retry once on failure
   });
 };

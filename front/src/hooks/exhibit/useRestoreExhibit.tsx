@@ -19,10 +19,32 @@ export const useRestoreExhibit = (onSuccessCallback?: () => void) => {
     onSuccess: (_, exhibitId) => {
       toast.success("Exhibit restored successfully");
 
-      // Invalidate queries to refresh the data
-      queryClient.invalidateQueries({ queryKey: ["my-exhibit-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["exhibit-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["exhibit-card", exhibitId] });
+      // Invalidate all exhibit and related queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("exhibit-cards") ||
+              queryKey.includes("my-exhibit-cards") ||
+              queryKey.includes("exhibit-card") ||
+              queryKey.includes("exhibit-review") ||
+              queryKey.includes("collaborator-exhibit-view") ||
+              queryKey.includes("exhibits") ||
+              queryKey.includes("notifications") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks"))
+          );
+        },
+      });
 
       if (onSuccessCallback) onSuccessCallback();
     },
