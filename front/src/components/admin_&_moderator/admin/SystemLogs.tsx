@@ -123,12 +123,12 @@ export function SystemLogs({ logs: initialLogs }: SystemLogsProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-xs">Timestamp</TableHead>
-              <TableHead className="text-xs">Action</TableHead>
-              <TableHead className="text-xs">Performer</TableHead>
-              <TableHead className="text-xs">Severity</TableHead>
-              <TableHead className="text-xs">Details</TableHead>
-              <TableHead className="text-xs text-right">Actions</TableHead>
+              <TableHead className="text-[11px]">Timestamp</TableHead>
+              <TableHead className="text-[11px]">Action</TableHead>
+              <TableHead className="text-[11px]">Performer</TableHead>
+              <TableHead className="text-[11px]">Severity</TableHead>
+              <TableHead className="text-[11px]">Details</TableHead>
+              <TableHead className="text-[11px] text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
         </Table>

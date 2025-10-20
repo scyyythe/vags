@@ -180,11 +180,11 @@ export function UserTable({ initialUsers, onPromoteUser, onSuspendUser, onBanUse
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-xs">User</TableHead>
-              <TableHead className="text-xs">Role</TableHead>
-              <TableHead className="text-xs">Status</TableHead>
-              <TableHead className="text-xs">Joined</TableHead>
-              <TableHead className="text-xs text-right">Actions</TableHead>
+              <TableHead className="text-[11px]">User</TableHead>
+              <TableHead className="text-[11px]">Role</TableHead>
+              <TableHead className="text-[11px]">Status</TableHead>
+              <TableHead className="text-[11px]">Joined</TableHead>
+              <TableHead className="text-[11px] text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
         </Table>
