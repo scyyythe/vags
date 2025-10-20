@@ -10,7 +10,11 @@ export const useCreateExhibit = () => {
     onSuccess: () => {
       toast.success("Exhibit created successfully!");
 
+      // Invalidate exhibit queries
       queryClient.invalidateQueries({ queryKey: ["exhibit-cards"] });
+      
+      // Invalidate notifications query so collaborators see the new notification
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
 
     onError: (error: any) => {
