@@ -18,8 +18,21 @@ const ArtCategorySelect = ({ selectedCategory, onChange }: Props) => {
   const selectCategoryText = useAutoTranslation("Select Category", language);
   const allText = useAutoTranslation("All", language);
 
+  // Handle value change to ensure "All" is properly handled
+  const handleValueChange = (value: string) => {
+    // If the selected value is the translated "All" text, pass "All" to parent
+    if (value === allText) {
+      onChange("All");
+    } else {
+      onChange(value);
+    }
+  };
+
+  // Determine the display value - if selectedCategory is "All", show translated "All"
+  const displayValue = selectedCategory === "All" ? allText : selectedCategory;
+
   return (
-    <Select value={selectedCategory} onValueChange={onChange}>
+    <Select value={displayValue} onValueChange={handleValueChange}>
       <SelectTrigger
         className={cn(
           "bg-transparent h-[26px] w-35 px-3 focus:ring-0 focus:ring-offset-0 rounded-full border border-gray-300",

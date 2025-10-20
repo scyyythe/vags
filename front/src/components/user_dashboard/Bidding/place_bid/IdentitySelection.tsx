@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import useUpdateUserDetails from "@/hooks/mutate/users/useUserMutate";
 import { getLoggedInUserId } from "@/auth/decode";
 import useUserQuery from "@/hooks/users/useUserQuery";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 type Identity = "anonymous" | "username" | "fullName";
 
@@ -21,6 +23,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
   onConfirm,
   username = "",
 }) => {
+  const { language } = useLanguage();
   const [selectedIdentity, setSelectedIdentity] = useState<Identity | null>(null);
   const [showUsernameSetup, setShowUsernameSetup] = useState(false);
   const [showUsernameEdit, setShowUsernameEdit] = useState(false);
@@ -34,6 +37,41 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
   const hasUsername = !!user?.username;
 
   const navigate = useNavigate();
+
+  // Translation hooks - Main UI
+  const placeYourBidText = useAutoTranslation("Place Your Bid", language);
+  const chooseNameText = useAutoTranslation("Choose how you want your name to appear on this bid.", language);
+  const useMyUsernameText = useAutoTranslation("Use My Username", language);
+  const editText = useAutoTranslation("Edit", language);
+  const setUpUsernameText = useAutoTranslation("Set up username first", language);
+  const bidAnonymouslyText = useAutoTranslation("Bid Anonymously", language);
+  const learnMoreText = useAutoTranslation("Learn more about bid privacy and security", language);
+  const privacyInfoText = useAutoTranslation("Privacy information displayed", language);
+  const cancelText = useAutoTranslation("Cancel", language);
+  const confirmText = useAutoTranslation("Confirm", language);
+  const setUsernameText = useAutoTranslation("Set Username", language);
+
+  // Translation hooks - Username Setup Form
+  const usernameText = useAutoTranslation("Username", language);
+  const enterUsernameText = useAutoTranslation("Enter username", language);
+  const usernameRequirementsText = useAutoTranslation("3-20 characters. Letters, numbers, and underscores only.", language);
+  const settingText = useAutoTranslation("Setting...", language);
+  const setUsernameButtonText = useAutoTranslation("Set Username", language);
+
+  // Translation hooks - Username Edit Form
+  const updatingText = useAutoTranslation("Updating...", language);
+  const updateUsernameText = useAutoTranslation("Update Username", language);
+
+  // Translation hooks - Toast Messages
+  const couldNotSetUsernameText = useAutoTranslation("Could not set username.", language);
+  const couldNotUpdateUsernameText = useAutoTranslation("Could not update username.", language);
+  const pleaseEnterUsernameText = useAutoTranslation("Please enter a username", language);
+  const usernameMinLengthText = useAutoTranslation("Username must be at least 3 characters long", language);
+  const usernameSetSuccessText = useAutoTranslation("Username set successfully!", language);
+  const usernameCannotBeEmptyText = useAutoTranslation("Username cannot be empty", language);
+  const usernameMaxLengthText = useAutoTranslation("Username must be 20 characters or less", language);
+  const usernameInvalidCharsText = useAutoTranslation("Username can only contain letters, numbers, and underscores", language);
+  const usernameUpdatedSuccessText = useAutoTranslation("Username updated successfully!", language);
 
   if (!isOpen) return null;
 
@@ -64,7 +102,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
         setSelectedIdentity("username");
       },
       onError: () => {
-        toast.error("Could not set username.", { closeButton: true });
+        toast.error(couldNotSetUsernameText, { closeButton: true });
       },
     });
   };
@@ -79,7 +117,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
         setShowUsernameEdit(false);
       },
       onError: () => {
-        toast.error("Could not update username.", { closeButton: true });
+        toast.error(couldNotUpdateUsernameText, { closeButton: true });
       },
     });
   };
@@ -91,18 +129,18 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       if (!usernameInput.trim()) {
-        toast.error("Please enter a username", { closeButton: true });
+        toast.error(pleaseEnterUsernameText, { closeButton: true });
         return;
       }
       if (usernameInput.length < 3) {
-        toast.error("Username must be at least 3 characters long", { closeButton: true });
+        toast.error(usernameMinLengthText, { closeButton: true });
         return;
       }
 
       setIsLoading(true);
       setTimeout(() => {
         handleUsernameSet(usernameInput.trim());
-        toast.success("Username set successfully!", { closeButton: true });
+        toast.success(usernameSetSuccessText, { closeButton: true });
         setIsLoading(false);
         setUsernameInput("");
       }, 1000);
@@ -111,20 +149,20 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
     return (
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
         <div>
-          <label className="block text-[10px] font-medium text-gray-700 mb-2">Username</label>
+          <label className="block text-[10px] font-medium text-gray-700 mb-2">{usernameText}</label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-[10px]">@</span>
             <input
               type="text"
               value={usernameInput}
               onChange={(e) => setUsernameInput(e.target.value)}
-              placeholder="Enter username"
+              placeholder={enterUsernameText}
               className="w-full pl-8 pr-4 py-2 border border-gray-200 rounded-full text-[10px] focus:outline-none focus:border-red-800 focus:ring-1 focus:ring-red-800"
               maxLength={20}
               disabled={isLoading}
             />
           </div>
-          <p className="text-[9px] text-gray-500 mt-1">3-20 characters. Letters, numbers, and underscores only.</p>
+          <p className="text-[9px] text-gray-500 mt-1">{usernameRequirementsText}</p>
         </div>
         <div className="flex gap-3 pt-4">
           <button
@@ -133,7 +171,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
             disabled={isLoading}
             className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-[10px] py-2 rounded-full font-medium transition-colors disabled:opacity-50"
           >
-            Cancel
+            {cancelText}
           </button>
           <button
             type="submit"
@@ -144,7 +182,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                 : "bg-red-800 hover:bg-red-700"
             }`}
           >
-            {isLoading ? "Setting..." : "Set Username"}
+            {isLoading ? settingText : setUsernameButtonText}
           </button>
         </div>
       </form>
@@ -158,26 +196,26 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       if (!usernameInput.trim()) {
-        toast.error("Username cannot be empty", { closeButton: true });
+        toast.error(usernameCannotBeEmptyText, { closeButton: true });
         return;
       }
       if (usernameInput.length < 3) {
-        toast.error("Username must be at least 3 characters long", { closeButton: true });
+        toast.error(usernameMinLengthText, { closeButton: true });
         return;
       }
       if (usernameInput.length > 20) {
-        toast.error("Username must be 20 characters or less", { closeButton: true });
+        toast.error(usernameMaxLengthText, { closeButton: true });
         return;
       }
       if (!/^[a-zA-Z0-9_]+$/.test(usernameInput)) {
-        toast.error("Username can only contain letters, numbers, and underscores", { closeButton: true });
+        toast.error(usernameInvalidCharsText, { closeButton: true });
         return;
       }
 
       setIsLoading(true);
       setTimeout(() => {
         handleUsernameUpdate(usernameInput);
-        toast.success("Username updated successfully!", { closeButton: true });
+        toast.success(usernameUpdatedSuccessText, { closeButton: true });
         setIsLoading(false);
       }, 1000);
     };
@@ -185,7 +223,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
     return (
       <form onSubmit={handleSubmit} className="space-y-7 mt-4">
         <div>
-          <label className="block text-[10px] font-medium text-gray-700 mb-1">Username</label>
+          <label className="block text-[10px] font-medium text-gray-700 mb-1">{usernameText}</label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-[10px]">@</span>
             <input
@@ -193,12 +231,12 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
               value={usernameInput}
               onChange={(e) => setUsernameInput(e.target.value)}
               className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-full text-[10px] focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-transparent"
-              placeholder="Enter username"
+              placeholder={enterUsernameText}
               maxLength={20}
               disabled={isLoading}
             />
           </div>
-          <p className="text-[9px] text-gray-500 mt-1">3-20 characters. Letters, numbers, and underscores only.</p>
+          <p className="text-[9px] text-gray-500 mt-1">{usernameRequirementsText}</p>
         </div>
         <div className="flex gap-3 pt-4">
           <button
@@ -210,7 +248,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                 : "bg-red-800 hover:bg-red-700"
             }`}
           >
-            {isLoading ? "Updating..." : "Update Username"}
+            {isLoading ? updatingText : updateUsernameText}
           </button>
         </div>
       </form>
@@ -224,13 +262,13 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
         <div className="bg-white rounded-2xl w-full max-w-xs mx-4 relative" onClick={(e) => e.stopPropagation()}>
           <div className="py-6 px-8">
             <div className="flex justify-between items-center mb-2">
-              <h2 className="text-sm font-bold">Place Your Bid</h2>
+              <h2 className="text-sm font-bold">{placeYourBidText}</h2>
               <button onClick={onClose} className="text-gray-600 hover:text-black">
                 <X size={17} />
               </button>
             </div>
 
-            <p className="text-gray-500 text-[10px]">Choose how you want your name to appear on this bid.</p>
+            <p className="text-gray-500 text-[10px]">{chooseNameText}</p>
 
             {/* Username / Anonymous Options */}
             {!showUsernameSetup && !showUsernameEdit && (
@@ -248,20 +286,20 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                     <i className="bx bx-user"></i>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-medium text-[10px]">Use My Username</h3>
+                        <h3 className="font-medium text-[10px]">{useMyUsernameText}</h3>
                         {hasUsername && (
                           <button
                             onClick={handleEditUsername}
                             className="text-red-800 text-[10px] flex items-center gap-1 hover:underline"
                           >
-                            <Pencil size={10} /> Edit
+                            <Pencil size={10} /> {editText}
                           </button>
                         )}
                       </div>
                       {!hasUsername && (
                         <span className="text-black mt-1 block">
                           <button onClick={() => setShowUsernameSetup(true)} className="font-medium text-[10px] hover:underline">
-                            Set up username first
+                            {setUpUsernameText}
                           </button>
                         </span>
                       )}
@@ -281,7 +319,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                   <div className="flex items-start gap-3">
                     <i className="bx bx-hide"></i>
                     <div className="flex-1">
-                      <h3 className="font-medium text-[10px]">Bid Anonymously</h3>
+                      <h3 className="font-medium text-[10px]">{bidAnonymouslyText}</h3>
                     </div>
                   </div>
                 </div>
@@ -302,10 +340,10 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                     className="text-red-800 hover:underline"
                     onClick={(e) => {
                       e.preventDefault();
-                      toast.info("Privacy information displayed", { closeButton: true });
+                      toast.info(privacyInfoText, { closeButton: true });
                     }}
                   >
-                    Learn more about bid privacy and security
+                    {learnMoreText}
                   </a>
                 </div>
 
@@ -314,7 +352,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                     onClick={onClose}
                     className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-[10px] py-2 rounded-full font-medium transition-colors"
                   >
-                    Cancel
+                    {cancelText}
                   </button>
                   <button
                     onClick={handleConfirm}
@@ -323,7 +361,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                       selectedIdentity ? "bg-red-800 hover:bg-red-700" : "bg-gray-300 cursor-not-allowed"
                     }`}
                   >
-                    {selectedIdentity === "username" && !hasUsername ? "Set Username" : "Confirm"}
+                    {selectedIdentity === "username" && !hasUsername ? setUsernameText : confirmText}
                   </button>
                 </div>
               </>

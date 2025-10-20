@@ -4,7 +4,16 @@ import { Label } from "@/components/ui/label";
 import { usePayPalAuction } from "@/hooks/paypal/usePayPalAuction";
 import { toast } from "sonner";
 import { createPortal } from "react-dom";
-import { X } from "lucide-react"; 
+import { X } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
 
 export const PayPalPayment = ({
   artId,
@@ -23,6 +32,18 @@ export const PayPalPayment = ({
   const [paypalContainer, setPaypalContainer] = useState<HTMLDivElement | null>(null);
   const [showPaypalOverlay, setShowPaypalOverlay] = useState(false);
   const [readyToRender, setReadyToRender] = useState(false);
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const paymentSuccessfulText = useAutoTranslation("Payment successful!", language);
+  const paymentFailedText = useAutoTranslation("Payment failed. Please try again.", language);
+  const unavailableText = useAutoTranslation("Unavailable", language);
+  const ownerNoPaypalText = useAutoTranslation("Owner has not provided a PayPal account.", language);
+  const tryDifferentMethodText = useAutoTranslation("Please try a different payment method.", language);
+  const paypalPaymentText = useAutoTranslation("PayPal Payment", language);
+  const paypalEmailText = useAutoTranslation("PayPal Email", language);
+  const redirectNoticeText = useAutoTranslation("You'll be redirected to PayPal checkout outside this modal.", language);
+  const payWithPaypalText = useAutoTranslation("Pay with PayPal", language);
 
   const { paypalRef, startPayment } = usePayPalAuction({
     amount,
@@ -32,12 +53,12 @@ export const PayPalPayment = ({
     auctionId,
     onSuccess: () => {
       setSuccess(true);
-      toast.success("Payment successful!");
+      toast.success(paymentSuccessfulText);
       setShowPaypalOverlay(false);
       if (paypalContainer) paypalContainer.remove();
     },
     onError: () => {
-      toast.error("Payment failed. Please try again.");
+      toast.error(paymentFailedText);
       setShowPaypalOverlay(false);
     },
   });
@@ -75,7 +96,7 @@ export const PayPalPayment = ({
   if (success)
     return (
       <div className="text-center p-4 text-green-600 text-[11px]">
-        Payment successful!
+        {paymentSuccessfulText}
       </div>
     );
 
@@ -83,12 +104,12 @@ export const PayPalPayment = ({
   if (!default_paypal_email) {
     return (
       <div className="py-5 px-2 text-center">
-        <p className="text-md font-semibold text-red-700 mb-3">Unavailable</p>
+        <p className="text-md font-semibold text-red-700 mb-3">{unavailableText}</p>
         <p className="text-xs font-medium text-gray-800">
-          Owner has not provided a PayPal account.
+          {ownerNoPaypalText}
         </p>
         <p className="text-[10px] text-gray-500 mt-2">
-          Please try a different payment method.
+          {tryDifferentMethodText}
         </p>
       </div>
     );
@@ -99,27 +120,27 @@ export const PayPalPayment = ({
       {/* Original layout */}
       <div className="overflow-hidden relative">
         <div className="p-4 text-center text-xs text-gray-900 font-semibold border-none -mb-6">
-          PayPal Payment
+          {paypalPaymentText}
         </div>
 
         <div className="p-6 space-y-5">
           <div className="space-y-2">
             <Label htmlFor="paypalEmail" className="text-gray-700 text-[11px]">
-              PayPal Email
+              {paypalEmailText}
             </Label>
             <div
               id="paypalEmail"
               className="flex h-8 items-center text-gray-800"
               style={{ fontSize: "10px" }}
             >
-              {default_paypal_email}
+              <TranslatedText text={default_paypal_email} />
             </div>
           </div>
 
           <div className="flex items-center justify-center my-4">
             <div className="bg-gray-100 rounded-xl p-4 w-full text-center">
               <p className="text-[10px] text-gray-600">
-                You'll be redirected to PayPal checkout outside this modal.
+                {redirectNoticeText}
               </p>
             </div>
           </div>
@@ -129,7 +150,7 @@ export const PayPalPayment = ({
             onClick={handleOpenPayPal}
             className="w-full h-9 bg-blue-700 hover:bg-blue-600 rounded-full text-[11px]"
           >
-            Pay with PayPal
+            {payWithPaypalText}
           </Button>
         </div>
       </div>
@@ -138,8 +159,13 @@ export const PayPalPayment = ({
       {showPaypalOverlay &&
         paypalContainer &&
         createPortal(
-          <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
-            <div className="relative bg-white rounded-xl p-6 shadow-xl w-full max-w-md">
+          <div 
+            className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4"
+            onClick={handleClosePayPal}
+          >
+            <div 
+              className="relative bg-white rounded-xl p-6 shadow-xl w-full max-w-md"
+            >
               {/* Cancel (X) button */}
               <button
                 onClick={handleClosePayPal}

@@ -7,6 +7,11 @@ from api.views.purchase_view.review_view import SubmitReviewView,AllReviewsByArt
 from api.views.payment_views.payment_accounts import ListPaymentAccounts,AddOrUpdatePaymentAccount,DeletePaymentAccount,GetArtistPaymentAccounts
 from api.views.transaction.auction_payment import PayPalVerifyAuctionPaymentView
 from api.views.transaction.marketplace_payment import PayPalPurchaseVerifyView
+from api.views.purchase_view.purchase_order_views import (
+    create_purchase_order, get_purchase_order, update_purchase_order, cancel_purchase_order
+)
+from api.views.purchase_view.sales_metrics_view import SalesMetricsView
+from api.views.purchase_view.buyer_activity_view import BuyerActivityView
 purchase_urlpatterns = [
 
 # purchases
@@ -47,4 +52,16 @@ purchase_urlpatterns = [
      
    #paypal marketpkace
    path("paypal/verify-purchase/", PayPalPurchaseVerifyView.as_view(), name="paypal-verify-purchase"),
+   
+   # purchase order routes
+   path("purchase-order/create/", create_purchase_order, name="create-purchase-order"),
+   path("purchase-order/<str:order_id>/", get_purchase_order, name="get-purchase-order"),
+   path("purchase-order/<str:order_id>/update/", update_purchase_order, name="update-purchase-order"),
+   path("purchase-order/<str:order_id>/cancel/", cancel_purchase_order, name="cancel-purchase-order"),
+   
+   # sales metrics
+   path("sales-metrics/", SalesMetricsView.as_view(), name="sales-metrics"),
+   
+   # buyer activity
+   path("buyer-activity/", BuyerActivityView.as_view(), name="buyer-activity"),
 ]

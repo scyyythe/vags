@@ -6,6 +6,9 @@ import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
 import { getLoggedInUserId } from "@/auth/decode";
 import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
@@ -13,6 +16,12 @@ type CreatedTabProps = {
 
 const CreatedTab = ({ filteredArtworks, isLoading }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
+  const { language } = useLanguage();
+  
+  // Translation hooks
+  const noArtworksCreatedText = useAutoTranslation("No artworks have been created yet.", language);
+  const noArtworksFoundText = useAutoTranslation("No artworks found.", language);
+  
   const artworkIds = useMemo(() => filteredArtworks.map((art) => art.id), [filteredArtworks]);
 
   const { data: bulkStatus, isLoading: statusLoading } = useBulkArtworkStatus(artworkIds);
@@ -39,7 +48,7 @@ const CreatedTab = ({ filteredArtworks, isLoading }: CreatedTabProps) => {
     return (
       <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
         <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
-        <p className="text-sm text-gray-500">No artworks have been created yet.</p>
+        <p className="text-sm text-gray-500">{noArtworksCreatedText}</p>
       </div>
     );
   }
@@ -49,7 +58,7 @@ const CreatedTab = ({ filteredArtworks, isLoading }: CreatedTabProps) => {
       {isLoading ? (
         <ArtCardSkeleton />
       ) : allArtworks.length === 0 ? (
-        <p className="text-center text-sm text-gray-500 col-span-full">No artworks found.</p>
+        <p className="text-center text-sm text-gray-500 col-span-full">{noArtworksFoundText}</p>
       ) : (
         allArtworks.map((art) => {
           const isExplore = String(art.artistId) !== String(loggedInUserId);

@@ -9,6 +9,8 @@ import SellConfirmationModal from "@/components/user_dashboard/own_profile/sell_
 import useDeleteArtwork from "@/hooks/mutate/visibility/trash/useDeleteArtwork";
 import useArchivedArtwork from "@/hooks/mutate/visibility/arc/useArchivedArtwork";
 import useUpdateArtwork from "@/hooks/artworks/sell/useUpdateArtwork";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface ArtCardMenuProps {
   isOpen: boolean;
   artworkId: string;
@@ -48,6 +50,18 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   const { mutate: archiveArtwork } = useArchivedArtwork();
 
   const { updateArtwork, isUpdating } = useUpdateArtwork();
+
+  // Language and translation
+  const { language } = useLanguage();
+  const requestToAuctionText = useAutoTranslation("Request to Auction", language);
+  const sellArtworkText = useAutoTranslation("Sell Artwork", language);
+  const publicText = useAutoTranslation("Public", language);
+  const privateText = useAutoTranslation("Private", language);
+  const moreText = useAutoTranslation("more", language);
+  const editText = useAutoTranslation("Edit", language);
+  const archiveText = useAutoTranslation("Archive", language);
+  const deleteText = useAutoTranslation("Delete", language);
+  const artworkListedSuccessText = useAutoTranslation("Artwork listed for sale successfully", language);
 
   useEffect(() => {
     const shouldHideScroll = showAuctionPopup || showDeletePopup;
@@ -120,7 +134,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
         year_created: sellArtworkData.yearCreated,
       });
 
-      toast.success("Artwork listed for sale successfully");
+      toast.success(artworkListedSuccessText);
       setShowSellConfirmation(false);
       setSellArtworkData(null);
       onSell();
@@ -152,7 +166,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             </button>
             {hoveredItem === "bid" && (
               <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Request to Auction
+                {requestToAuctionText}
               </span>
             )}
           </div>
@@ -169,7 +183,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             </button>
             {hoveredItem === "sell" && (
               <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Sell Artwork
+                {sellArtworkText}
               </span>
             )}
           </div>
@@ -190,7 +204,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             </button>
             {hoveredItem === "visibility" && (
               <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">
-                {publicStatus ? "Public" : "Private"}
+                {publicStatus ? publicText : privateText}
               </span>
             )}
           </div>
@@ -207,7 +221,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             </button>
 
             {hoveredItem === "edit" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">more</span>
+              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">{moreText}</span>
             )}
 
             {isEditOpen && (
@@ -219,7 +233,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
                   }}
                   className="px-3 py-1 text-left text-white"
                 >
-                  Edit
+                  {editText}
                 </button>
                 <button
                   onClick={() => {
@@ -228,7 +242,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
                   }}
                   className="px-3 py-1 text-left text-white"
                 >
-                  Archive
+                  {archiveText}
                 </button>
 
                 <button
@@ -238,7 +252,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
                   }}
                   className="px-3 py-1 text-left text-red-500 hover:text-red-400"
                 >
-                  Delete
+                  {deleteText}
                 </button>
               </div>
             )}

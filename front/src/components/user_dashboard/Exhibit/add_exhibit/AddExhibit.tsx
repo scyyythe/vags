@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import AddArtistDialog from "@/components/user_dashboard/Exhibit/add_exhibit/components/AddArtistDialog";
 import Header from "@/components/user_dashboard/navbar/Header";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 // Import new components
 import BannerUpload from "./components/BannerUpload";
@@ -35,7 +37,7 @@ import {
   getUserName,
   canInteractWithSlot,
   getCollaboratorSubmissionStatus,
-} from "@/utils/exhibit-helpers";
+} from "@/utils/exhibit/exhibit-helpers";
 
 // Import extracted handlers
 import { createSubmitHandler } from "@/components/handlers/submit-handlers";
@@ -75,6 +77,47 @@ const AddExhibit = () => {
   const [showNotificationDialog, setShowNotificationDialog] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const currentUserId = getLoggedInUserId();
+
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const goBackText = useAutoTranslation("Go back", language);
+  const preview3DText = useAutoTranslation("Preview in 3D View", language);
+  const previewDescriptionText = useAutoTranslation(
+    "Opens your current selections in an interactive virtual gallery.",
+    language
+  );
+  const submittingText = useAutoTranslation("Submitting...", language);
+  const saveSelectionsText = useAutoTranslation("Save Selections", language);
+  const backToExhibitsText = useAutoTranslation("Back to Exhibits", language);
+  const publishExhibitText = useAutoTranslation("Publish Exhibit", language);
+  const artworkAlreadySelectedText = useAutoTranslation("Artwork already selected", language);
+  const artworkAlreadySelectedDescText = useAutoTranslation(
+    "This artwork has already been assigned to a slot.",
+    language
+  );
+  const noAvailableSlotsText = useAutoTranslation("No available slots", language);
+  const noAvailableSlotsDescText = useAutoTranslation("You don't have any available slots for more artwork.", language);
+  const accessDeniedText = useAutoTranslation("Access denied", language);
+  const accessDeniedDescText = useAutoTranslation("This slot is assigned to another participant.", language);
+  const tooManyCollaboratorsText = useAutoTranslation("Too many collaborators for this environment", language);
+  const tooManyCollaboratorsDescText = useAutoTranslation("This environment only supports", language);
+  const collaboratorText = useAutoTranslation("collaborator", language);
+  const collaboratorsText = useAutoTranslation("collaborators", language);
+  const pleaseRemoveCollaboratorsText = useAutoTranslation("Please remove some collaborators first.", language);
+  const maximumCollaboratorsReachedText = useAutoTranslation("Maximum collaborators reached", language);
+  const maximumCollaboratorsDescText = useAutoTranslation(
+    "You can only have a maximum of 2 collaborators per exhibit.",
+    language
+  );
+  const addingCollaboratorRequiresText = useAutoTranslation(
+    "Adding this collaborator requires switching to the",
+    language
+  );
+  const slotsEnvironmentText = useAutoTranslation(
+    "slots environment. This will redistribute all slots among participants. Continue?",
+    language
+  );
 
   const { data: artworks = [] } = useArtworks(
     1,
@@ -207,8 +250,8 @@ const AddExhibit = () => {
       .map(([slotId]) => Number(slotId));
 
     if (selectedArtworks.includes(artworkId)) {
-      toast.error("Artwork already selected", {
-        description: "This artwork has already been assigned to a slot.",
+      toast.error(artworkAlreadySelectedText, {
+        description: artworkAlreadySelectedDescText,
         closeButton: true,
       });
       return;
@@ -217,8 +260,8 @@ const AddExhibit = () => {
     const availableSlot = availableUserSlots[0];
 
     if (!availableSlot) {
-      toast.error("No available slots", {
-        description: "You don't have any available slots for more artwork.",
+      toast.error(noAvailableSlotsText, {
+        description: noAvailableSlotsDescText,
         closeButton: true,
       });
       return;
@@ -243,8 +286,8 @@ const AddExhibit = () => {
     if (!currentUserIdForSelection) return;
 
     if (slotOwnerMap[slotId] !== currentUserIdForSelection.toString()) {
-      toast.error("Access denied", {
-        description: "This slot is assigned to another participant.",
+      toast.error(accessDeniedText, {
+        description: accessDeniedDescText,
         closeButton: true,
       });
       return;
@@ -304,10 +347,10 @@ const AddExhibit = () => {
     }
 
     if (collaborators.length > maxAllowedCollaborators) {
-      toast.error("Too many collaborators for this environment", {
-        description: `This environment only supports ${maxAllowedCollaborators} collaborator${
-          maxAllowedCollaborators > 1 ? "s" : ""
-        }. Please remove some collaborators first.`,
+      toast.error(tooManyCollaboratorsText, {
+        description: `${tooManyCollaboratorsDescText} ${maxAllowedCollaborators} ${
+          maxAllowedCollaborators > 1 ? collaboratorsText : collaboratorText
+        }. ${pleaseRemoveCollaboratorsText}`,
         duration: 4000,
         closeButton: true,
       });
@@ -412,8 +455,8 @@ const AddExhibit = () => {
   const handleAddCollaborator = (artist: User) => {
     // Check global maximum first (2 collaborators max)
     if (collaborators.length >= 2) {
-      toast.error("Maximum collaborators reached", {
-        description: "You can only have a maximum of 2 collaborators per exhibit.",
+      toast.error(maximumCollaboratorsReachedText, {
+        description: maximumCollaboratorsDescText,
         closeButton: true,
       });
       return;
@@ -460,7 +503,7 @@ const AddExhibit = () => {
       if (newEnvironmentId !== selectedEnvironment) {
         const newEnv = environments.find((env) => env.id === newEnvironmentId);
         const confirmChange = window.confirm(
-          `Adding this collaborator requires switching to the ${newEnv?.slots} slots environment. This will redistribute all slots among participants. Continue?`
+          `${addingCollaboratorRequiresText} ${newEnv?.slots} ${slotsEnvironmentText}`
         );
 
         if (!confirmChange) {
@@ -506,7 +549,7 @@ const AddExhibit = () => {
         <div className="mb-3">
           <button onClick={() => navigate(-1)} className="flex items-center text-xs font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
-            Go back
+            {goBackText}
           </button>
         </div>
 
@@ -594,11 +637,9 @@ const AddExhibit = () => {
                         navigate(`/gallery3d-preview?slotMap=${encodedSlotMap}&artworks=${encodedArtworks}`);
                       }}
                     >
-                      Preview in 3D View
+                      {preview3DText}
                     </Button>
-                    <p className="text-[10px] text-muted-foreground mt-2">
-                      Opens your current selections in an interactive virtual gallery.
-                    </p>
+                    <p className="text-[10px] text-muted-foreground mt-2">{previewDescriptionText}</p>
                   </div>
                 )}
               </div>
@@ -658,12 +699,12 @@ const AddExhibit = () => {
               className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isUploading
-                ? "Submitting..."
+                ? submittingText
                 : viewMode === "collaborator"
-                ? "Save Selections"
+                ? saveSelectionsText
                 : viewMode === "review" || viewMode === "monitoring" || viewMode === "preview"
-                ? "Back to Exhibits"
-                : "Publish Exhibit"}
+                ? backToExhibitsText
+                : publishExhibitText}
             </button>
           </div>
         </form>

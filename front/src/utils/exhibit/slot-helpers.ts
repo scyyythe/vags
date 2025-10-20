@@ -1,7 +1,8 @@
 import type { User } from "@/hooks/users/useUserQuery";
-import type { SubmissionStatus } from "../components/types";
-import { slotColorSchemes } from "./exhibit-constants";
+import type { SubmissionStatus } from "../../components/types";
+import { slotColorSchemes } from "@/components/constants/slot-color-schemes";
 
+// Get slot color based on owner - only for collaborative exhibits
 export const getSlotColor = (
   slotId: number,
   exhibitType: string,
@@ -19,14 +20,13 @@ export const getSlotColor = (
 
     const collaboratorIndex = collaborators.findIndex((c) => String(c.id) === userId);
 
-    return collaboratorIndex >= 0 ? collaboratorIndex + 1 : 0;
+    return collaboratorIndex + 1;
   };
 
-  const colorIndex = getColorSchemeIndex(ownerId);
-
-  return slotColorSchemes[colorIndex] || slotColorSchemes[0];
+  return slotColorSchemes[getColorSchemeIndex(ownerId)];
 };
 
+// Get user name by ID
 export const getUserName = (userId: string, currentUser: User | undefined, collaborators: User[]) => {
   if (userId === currentUser?.id?.toString()) return "Your slot";
 
@@ -52,6 +52,7 @@ export const canInteractWithSlot = (
     : ownerId === currentCollaborator?.id?.toString();
 };
 
+// Function to get collaborator submission status
 export const getCollaboratorSubmissionStatus = (
   collaboratorId: string,
   slotOwnerMap: Record<number, string>,

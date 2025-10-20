@@ -57,7 +57,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
         )
 
         # Update artwork quantity/status
-        if artwork.edition == "Open Edition" and artwork.quantity is not None:
+        if artwork.edition in ["Open Edition", "Limited Edition"] and artwork.quantity is not None:
             artwork.quantity -= quantity
             if artwork.quantity == 0:
                 artwork.art_status = "Sold"  
@@ -80,7 +80,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             target=artwork.title,
             icon="purchase",
             created_at=datetime.now(),
-            link=f"/artwork/{artwork.id}/"
+            link=f"/viewproduct/{artwork.id}"
         )
 
         Notification.objects.create(
@@ -92,7 +92,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             target=artwork.title,
             icon="purchase",
             created_at=datetime.now(),
-            link=f"/viewproduct/{purchase.id}/"
+            link=f"/viewproduct/{artwork.id}"
         )
 
         # Insert Transaction record

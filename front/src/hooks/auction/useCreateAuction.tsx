@@ -37,7 +37,17 @@ export const useCreateAuction = () => {
 
     onSuccess: () => {
       toast.success("Auction created successfully!");
-      queryClient.refetchQueries({ queryKey: ["auctions"] });
+      // Invalidate all auction-related queries
+      queryClient.invalidateQueries({ queryKey: ["auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["my-auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["light-auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["popular-auctions"] });
+      queryClient.invalidateQueries({ queryKey: ["hotBids"] });
+      queryClient.invalidateQueries({ queryKey: ["myAuctionArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["myParticipatedAuctions"] });
+      queryClient.invalidateQueries({ queryKey: ["followedAuctions"] });
+      queryClient.invalidateQueries({ queryKey: ["auction"] });
+      // Invalidate artwork-related queries
       queryClient.refetchQueries({ queryKey: ["artworks"] });
       queryClient.refetchQueries({ queryKey: ["biddingArtworks"] });
     },

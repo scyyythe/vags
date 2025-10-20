@@ -22,7 +22,11 @@ class TransactionSerializer(serializers.Serializer):
     timestamp = serializers.DateTimeField()
     
     activity = serializers.SerializerMethodField()  
-    type = serializers.SerializerMethodField()      
+    type = serializers.SerializerMethodField()
+    
+    # Additional fields for buyer activity
+    artwork = serializers.SerializerMethodField()
+    sender_details = serializers.SerializerMethodField()
 
     def get_sender_id(self, obj):
         return str(obj.sender.id) if obj.sender else None
@@ -91,3 +95,11 @@ class TransactionSerializer(serializers.Serializer):
             if request_user and str(request_user.id) == str(obj.receiver.id):
                 return f"Received payment from {sender_name}"
             return f"Sending payment to {receiver_name}"
+    
+    def get_artwork(self, obj):
+        """Return artwork details if available"""
+        return getattr(obj, 'artwork', None)
+    
+    def get_sender_details(self, obj):
+        """Return sender details if available"""
+        return getattr(obj, 'sender_details', None)

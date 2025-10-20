@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Plus, Maximize2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SecurityNote from "./SecurityNote";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface PaymentAccount {
   id: string;
@@ -34,6 +36,20 @@ const GCashForm: React.FC<GCashFormProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
 
+  // Language and translation
+  const { language } = useLanguage();
+  const scanToPayText = useAutoTranslation("Scan to Pay via QR Code", language);
+  const gcashQrCodeText = useAutoTranslation("GCash QR Code", language);
+  const expandQrText = useAutoTranslation("Expand QR", language);
+  const gcashMobileNumberText = useAutoTranslation("GCash Mobile Number", language);
+  const defaultText = useAutoTranslation("Default", language);
+  const updateAccountText = useAutoTranslation("Update Account", language);
+  const expandedQrCodeText = useAutoTranslation("Expanded QR Code", language);
+  const closeExpandedQrText = useAutoTranslation("Close expanded QR", language);
+  const noGcashAccountText = useAutoTranslation("No GCash Account Added", language);
+  const addGcashDescText = useAutoTranslation("Add your GCash QR or mobile number to receive payments easily", language);
+  const setupGcashText = useAutoTranslation("Set Up GCash Account", language);
+
   // Disable scrolling when expanded
   useEffect(() => {
     document.body.style.overflow = isExpanded ? "hidden" : "";
@@ -49,16 +65,34 @@ const GCashForm: React.FC<GCashFormProps> = ({
       <>
         <div className="space-y-4">
           {accounts.map((account) => (
-            <div key={account.id}>
+            <div key={account.id} className="bg-card px-10 pb-6 space-y-4">
+              {/* Header with Default Badge and Update Account */}
+              <div className="flex items-center justify-end gap-2 pb-3">
+                {account.isDefault && (
+                  <span className="inline-flex items-center px-2.5 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-medium">
+                    {defaultText}
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => onEditAccount?.(account)}
+                  className="inline-flex items-center gap-2 px-4 py-1.5 text-green-700 rounded-full text-[11px] font-medium 
+                          active:scale-[0.98] transition-all duration-200 ease-in-out"
+                >
+                  <i className="bx bx-edit text-[13px]"></i>
+                  <p className="hover:underline">{updateAccountText}</p>
+                </button>
+              </div>
+
               {/* QR Code Section */}
               <div className="flex justify-center mb-2.5">
                 <div className="relative inline-block group">
-                  <p className="text-gray-700 text-[11px] text-center mb-2">Scan to Pay via QR Code</p>
+                  <p className="text-gray-700 text-[11px] text-center mb-2">{scanToPayText}</p>
 
                   {/* QR Image (Click to Expand) */}
                   <img
                     src={account.qrCodeUrl || "/pics/qr.jpg"}
-                    alt="GCash QR Code"
+                    alt={gcashQrCodeText}
                     className="w-60 h-60 object-cover rounded-md border border-gray-200 cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
@@ -75,7 +109,7 @@ const GCashForm: React.FC<GCashFormProps> = ({
                       e.stopPropagation();
                       setIsExpanded(true);
                     }}
-                    aria-label="Expand QR"
+                    aria-label={expandQrText}
                     className="absolute bottom-2 right-2 rounded-full p-2 bg-black/70 text-white 
                                opacity-0 scale-95 pointer-events-none transition-all duration-200 
                                group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto"
@@ -87,26 +121,8 @@ const GCashForm: React.FC<GCashFormProps> = ({
 
               {/* GCash Number */}
               <div className="text-center space-y-2">
-                <p className="text-gray-700 text-[10px]">GCash Mobile Number</p>
+                <p className="text-gray-700 text-[10px]">{gcashMobileNumberText}</p>
                 <p className="text-[13px] font-semibold text-black">{account.accountInfo}</p>
-                {account.isDefault && (
-                  <span className="inline-flex items-center px-2.5 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-medium">
-                    Default
-                  </span>
-                )}
-              </div>
-
-              {/* Update Account Button */}
-              <div className="pt-4 border-t border-border text-center">
-                <button
-                  type="button"
-                  onClick={() => onEditAccount?.(account)}
-                  className="inline-flex items-center gap-2 px-4 py-1.5 text-green-700 rounded-full text-[11px] font-medium 
-                          active:scale-[0.98] transition-all duration-200 ease-in-out"
-                >
-                  <i className="bx bx-edit text-[13px]"></i>
-                  <p className="hover:underline">Update Account</p>
-                </button>
               </div>
             </div>
           ))}
@@ -120,7 +136,7 @@ const GCashForm: React.FC<GCashFormProps> = ({
             <button
               onClick={() => setIsExpanded(false)}
               className="absolute top-4 right-6 z-[60] bg-white rounded-full p-1.5 shadow-md transition-colors duration-200"
-              aria-label="Close expanded QR"
+              aria-label={closeExpandedQrText}
             >
               <X className="w-4 h-4 text-gray-900" />
             </button>
@@ -128,7 +144,7 @@ const GCashForm: React.FC<GCashFormProps> = ({
             <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
               <img
                 src={accounts[0]?.qrCodeUrl || "/pics/qr.jpg"}
-                alt="Expanded QR Code"
+                alt={expandedQrCodeText}
                 className="max-h-[80vh] max-w-[90vw] object-contain rounded-lg shadow-lg"
               />
             </div>
@@ -150,9 +166,9 @@ const GCashForm: React.FC<GCashFormProps> = ({
             </svg>
           </div>
           <div>
-            <h3 className="text-[15px] font-semibold text-foreground mb-2">No GCash Account Added</h3>
+            <h3 className="text-[15px] font-semibold text-foreground mb-2">{noGcashAccountText}</h3>
             <p className="text-xs text-muted-foreground">
-              Add your GCash QR or mobile number to receive payments easily
+              {addGcashDescText}
             </p>
           </div>
           <button
@@ -161,7 +177,7 @@ const GCashForm: React.FC<GCashFormProps> = ({
             className="inline-flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 font-medium text-[11px] transition-colors"
           >
             <Plus size={14} />
-            Set Up GCash Account
+            {setupGcashText}
           </button>
         </div>
       </div>

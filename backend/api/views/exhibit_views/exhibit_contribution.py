@@ -37,8 +37,8 @@ class SubmitCollaboratorContributionView(APIView):
             return Response({"detail": "Invalid format. 'artworks' must be a list."}, status=400)
 
         try:
-            # Optimized query: Only fetch necessary fields
-            exhibit = Exhibit.objects.only('id', 'title', 'owner', 'collaborators').get(id=exhibit_id)
+            # Optimized query: Fetch necessary fields including slot distribution data
+            exhibit = Exhibit.objects.only('id', 'title', 'owner', 'collaborators', 'chosen_env', 'exhibit_type').get(id=exhibit_id)
         except DoesNotExist:
             return Response({"detail": "Exhibit not found."}, status=404)
 
@@ -99,18 +99,18 @@ class SubmitCollaboratorContributionView(APIView):
         artworks_count = len(artworks_data)
         
         # Notify the exhibit owner
-        if str(exhibit.owner.id) != str(user.id):  # Don't notify self
+        if str(exhibit.owner.id) != str(user.id):  
             Notification.objects.create(
                 user=exhibit.owner,
                 actor=user,
-                message=f"{contributor_name} contributed {artworks_count} artwork{'s' if artworks_count > 1 else ''} to '{exhibit_title}'. You can check the exhibit now!",
+                message=f"contributed {artworks_count} artwork{'s' if artworks_count > 1 else ''} to '{exhibit_title}'. You can check the exhibit now!",
                 exhibit=exhibit,
                 name=contributor_name,
                 action="contributed to your exhibit",
                 target=exhibit_title,
                 icon="collaborate",
-                link=f"/exhibits/{exhibit.id}/",
-                created_at=datetime.utcnow()
+                link=f"/exhibitreview?id={exhibit.id}",
+                created_at=datetime.now()
             )
         
         # Notify other collaborators
@@ -119,13 +119,13 @@ class SubmitCollaboratorContributionView(APIView):
                 Notification.objects.create(
                     user=collaborator,
                     actor=user,
-                    message=f"{contributor_name} contributed {artworks_count} artwork{'s' if artworks_count > 1 else ''} to '{exhibit_title}'. You can check the exhibit now!",
+                    message=f"contributed {artworks_count} artwork{'s' if artworks_count > 1 else ''} to '{exhibit_title}'. You can check the exhibit now!",
                     exhibit=exhibit,
                     name=contributor_name,
                     action="contributed to the exhibit",
                     target=exhibit_title,
                     icon="collaborate",
-                    link=f"/exhibits/{exhibit.id}/",
+                    link=f"/exhibitreview?id={exhibit.id}",
                     created_at=datetime.utcnow()
                 )
 

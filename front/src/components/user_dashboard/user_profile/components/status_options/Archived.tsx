@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { Pencil, ArchiveRestore, Trash2 } from "lucide-react";
 import DeleteConfirmationPopup from "@/components/user_dashboard/own_profile/menu/art_card/DeletePopup";
 import useDeleteArtwork from "@/hooks/mutate/visibility/trash/useDeleteArtwork";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface ArtCardMenuProps {
   isOpen: boolean;
   onEdit: () => void;
@@ -22,6 +24,12 @@ const ArchivedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onEdit, o
   const navigate = useNavigate();
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const deleteArtwork = useDeleteArtwork();
+
+  // Language and translation
+  const { language } = useLanguage();
+  const editText = useAutoTranslation("Edit", language);
+  const unarchiveText = useAutoTranslation("Unarchive", language);
+  const deleteText = useAutoTranslation("Delete", language);
   if (!isOpen) return null;
 
   const handleUpdateClick = () => {
@@ -53,7 +61,7 @@ const ArchivedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onEdit, o
                 setIsEditOpen(false);
               }}
               className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-              aria-label="Edit"
+              aria-label={editText}
               onMouseEnter={() => setHoveredItem("edit")}
               onMouseLeave={() => setHoveredItem(null)}
             >
@@ -61,7 +69,7 @@ const ArchivedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onEdit, o
             </button>
             {hoveredItem === "edit" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Edit
+                {editText}
               </span>
             )}
           </div>
@@ -71,7 +79,7 @@ const ArchivedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onEdit, o
             <button
               onClick={onUnarchive}
               className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-              aria-label="Unarchive"
+              aria-label={unarchiveText}
               onMouseEnter={() => setHoveredItem("unarchive")}
               onMouseLeave={() => setHoveredItem(null)}
             >
@@ -79,7 +87,7 @@ const ArchivedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onEdit, o
             </button>
             {hoveredItem === "unarchive" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Unarchive
+                {unarchiveText}
               </span>
             )}
           </div>
@@ -92,7 +100,7 @@ const ArchivedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onEdit, o
                 setIsEditOpen(false);
               }}
               className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
-              aria-label="Delete"
+              aria-label={deleteText}
               onMouseEnter={() => setHoveredItem("delete")}
               onMouseLeave={() => setHoveredItem(null)}
             >
@@ -100,7 +108,7 @@ const ArchivedMenu: React.FC<ArtCardMenuProps> = ({ isOpen, artworkId, onEdit, o
             </button>
             {hoveredItem === "delete" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Delete
+                {deleteText}
               </span>
             )}
           </div>

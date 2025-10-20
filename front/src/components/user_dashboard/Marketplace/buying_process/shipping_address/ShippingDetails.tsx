@@ -1,6 +1,15 @@
 import type React from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating address fields
+const TranslatedAddressField: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text || "", language);
+  return <>{translatedText}</>;
+};
 
 interface Address {
   id: string;
@@ -33,6 +42,14 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  // Language and translation
+  const { language } = useLanguage();
+  const shippingDetailsText = useAutoTranslation("Shipping Details", language);
+  const deliveryAddressText = useAutoTranslation("Delivery Address", language);
+  const editText = useAutoTranslation("Edit", language);
+  const addNewAddressText = useAutoTranslation("Add a new address", language);
+  const saveAndContinueText = useAutoTranslation("Save and Continue", language);
+
   const handleContinue = () => {
     if (selectedAddressId) {
       const selectedAddress = addresses.find((addr) => addr.id === selectedAddressId);
@@ -47,12 +64,12 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
         <div className="mb-2">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
-            Shipping Details
+            {shippingDetailsText}
           </button>
         </div>
 
         <div className="px-6 py-4 mx-auto">
-          <h2 className="text-xs font-medium text-gray-900 mb-6">Delivery Address</h2>
+          <h2 className="text-xs font-medium text-gray-900 mb-6">{deliveryAddressText}</h2>
 
           {/* Address List */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -73,9 +90,15 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
                       />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-1 text-[13px] mt-1.5">{address.name}</h3>
-                      <p className="text-[11px] text-gray-600 mb-1">{address.address}</p>
-                      <p className="text-[11px] text-gray-600 mb-1">{address.city}</p>
+                      <h3 className="font-semibold text-gray-900 mb-1 text-[13px] mt-1.5">
+                        <TranslatedAddressField text={address.name} />
+                      </h3>
+                      <p className="text-[11px] text-gray-600 mb-1">
+                        <TranslatedAddressField text={address.address} />
+                      </p>
+                      <p className="text-[11px] text-gray-600 mb-1">
+                        <TranslatedAddressField text={address.city} />
+                      </p>
                       <p className="text-[11px] text-gray-600">{address.phone}</p>
                     </div>
                   </div>
@@ -86,7 +109,7 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
                     }}
                     className="text-blue-700 text-xs font-semibold hover:text-blue-800 underline mt-1.5"
                   >
-                    Edit
+                    {editText}
                   </button>
                 </div>
               </div>
@@ -98,7 +121,7 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
             onClick={onAddNewAddress}
             className="text-gray-900 text-xs font-medium underline hover:text-gray-700 mb-8"
           >
-            Add a new address
+            {addNewAddressText}
           </button>
 
           {/* Continue Button */}
@@ -108,7 +131,7 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
               disabled={!selectedAddressId}
               className="bg-red-800 text-white text-[11px] px-10 py-2.5 rounded-full font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
             >
-              Save and Continue
+              {saveAndContinueText}
             </button>
           </div>
         </div>

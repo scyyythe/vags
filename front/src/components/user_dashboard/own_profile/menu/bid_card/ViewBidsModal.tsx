@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { X } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface Bid {
   id?: string;
@@ -27,6 +29,15 @@ const ViewBidsModal: React.FC<ViewBidsModalProps> = ({
   isOwner = true,
   formatBidDate = (date) => new Date(date).toLocaleString(),
 }) => {
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const bidsText = useAutoTranslation("Bids", language);
+  const closeText = useAutoTranslation("Close", language);
+  const byText = useAutoTranslation("by", language);
+  const noBidsYetText = useAutoTranslation("No bids yet.", language);
+  const bidderText = useAutoTranslation("Bidder", language);
+
   // Prevent background scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -52,11 +63,11 @@ const ViewBidsModal: React.FC<ViewBidsModalProps> = ({
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 flex-shrink-0">
-          <h2 className="font-semibold text-sm">Bids</h2>
+          <h2 className="font-semibold text-sm">{bidsText}</h2>
           <button
             onClick={onClose}
             className="p-1 rounded-full hover:bg-gray-100 transition-colors"
-            aria-label="Close"
+            aria-label={closeText}
           >
             <X size={18} />
           </button>
@@ -84,7 +95,7 @@ const ViewBidsModal: React.FC<ViewBidsModalProps> = ({
                     {profilePicture ? (
                       <img
                         src={profilePicture}
-                        alt={bid.bidderFullName || "Bidder"}
+                        alt={bid.bidderFullName || bidderText}
                         className="w-8 h-8 rounded-full object-cover border border-gray-200"
                       />
                     ) : (
@@ -100,7 +111,7 @@ const ViewBidsModal: React.FC<ViewBidsModalProps> = ({
                         </span>
                       </div>
                       <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
-                        <span>by</span>
+                        <span>{byText}</span>
                         <span className="font-medium text-gray-700">
                           {bid.bidderFullName}
                         </span>
@@ -116,7 +127,7 @@ const ViewBidsModal: React.FC<ViewBidsModalProps> = ({
               })
             ) : (
               <div className="text-center py-8 text-xs text-gray-400">
-                No bids yet.
+                {noBidsYetText}
               </div>
             )}
           </div>

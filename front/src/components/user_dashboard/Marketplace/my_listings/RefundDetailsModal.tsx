@@ -4,6 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { format } from "date-fns";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
 
 interface RefundDetailsModalProps {
   isOpen: boolean;
@@ -38,6 +47,24 @@ const RefundDetailsModal: React.FC<RefundDetailsModalProps> = ({
   onClose,
   refund,
 }) => {
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const refundDetailsText = useAutoTranslation("Refund Details", language);
+  const refundSummaryText = useAutoTranslation("Refund Summary", language);
+  const refundIdText = useAutoTranslation("Refund ID", language);
+  const originalTransactionText = useAutoTranslation("Original Transaction", language);
+  const originalAmountText = useAutoTranslation("Original Amount", language);
+  const refundAmountText = useAutoTranslation("Refund Amount", language);
+  const refundMethodText = useAutoTranslation("Refund Method", language);
+  const refundReasonText = useAutoTranslation("Refund Reason", language);
+  const buyerInformationText = useAutoTranslation("Buyer Information", language);
+  const refundTimelineText = useAutoTranslation("Refund Timeline", language);
+  const importantDatesText = useAutoTranslation("Important Dates", language);
+  const requestDateText = useAutoTranslation("Request Date", language);
+  const processedDateText = useAutoTranslation("Processed Date", language);
+  const downloadReportText = useAutoTranslation("Download Report", language);
+
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "completed":
@@ -60,7 +87,7 @@ const RefundDetailsModal: React.FC<RefundDetailsModalProps> = ({
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}>
             <DialogHeader>
             <DialogTitle className="flex items-center justify-between text-sm">
-                <span className="text-sm">Refund Details</span>
+                <span className="text-sm">{refundDetailsText}</span>
             </DialogTitle>
             </DialogHeader>
 
@@ -69,32 +96,32 @@ const RefundDetailsModal: React.FC<RefundDetailsModalProps> = ({
             <div className="border border-border rounded-lg p-4">
                 <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
                 <DollarSign className="w-2.5 h-2.5" />
-                Refund Summary
+                {refundSummaryText}
                 </h3>
                 <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                    <span className="text-[11px] text-muted-foreground">Refund ID</span>
-                    <span className="text-xs font-mono">{refund.id}</span>
+                    <span className="text-[11px] text-muted-foreground">{refundIdText}</span>
+                    <span className="text-xs font-mono"><TranslatedText text={refund.id} /></span>
                 </div>
                 <div className="flex justify-between items-center">
-                    <span className="text-[11px] text-muted-foreground">Original Transaction</span>
-                    <span className="text-xs font-mono">{refund.originalTransactionId}</span>
+                    <span className="text-[11px] text-muted-foreground">{originalTransactionText}</span>
+                    <span className="text-xs font-mono"><TranslatedText text={refund.originalTransactionId} /></span>
                 </div>
                 <div className="flex justify-between items-center">
-                    <span className="text-[11px] text-muted-foreground">Original Amount</span>
+                    <span className="text-[11px] text-muted-foreground">{originalAmountText}</span>
                     <span>
                     ₱{refund.originalAmount >= 1000 ? `${(refund.originalAmount / 1000).toFixed(1)}k` : refund.originalAmount.toLocaleString()}
                     </span>
                 </div>
                 <div className="flex justify-between items-center">
-                    <span className="text-[11px] text-muted-foreground">Refund Amount</span>
+                    <span className="text-[11px] text-muted-foreground">{refundAmountText}</span>
                     <span className="text-sm font-bold text-red-600">
                     -₱{refund.refundAmount >= 1000 ? `${(refund.refundAmount / 1000).toFixed(1)}k` : refund.refundAmount.toLocaleString()}
                     </span>
                 </div>
                 <div className="flex justify-between items-center">
-                    <span className="text-[11px] text-muted-foreground">Refund Method</span>
-                    <span className="text-xs">{refund.refundMethod}</span>
+                    <span className="text-[11px] text-muted-foreground">{refundMethodText}</span>
+                    <span className="text-xs"><TranslatedText text={refund.refundMethod} /></span>
                 </div>
                 </div>
             </div>
@@ -103,20 +130,26 @@ const RefundDetailsModal: React.FC<RefundDetailsModalProps> = ({
             <div className="border border-border rounded-lg p-4">
                 <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
                 <AlertCircle className="w-2.5 h-2.5" />
-                Refund Reason
+                {refundReasonText}
                 </h3>
-                <p className="text-[11px] text-muted-foreground">{refund.reason}</p>
+                <p className="text-[11px] text-muted-foreground">
+                  <TranslatedText text={refund.reason} />
+                </p>
             </div>
 
             {/* Buyer Information */}
             <div className="border border-border rounded-lg p-4">
                 <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
                 <User className="w-2.5 h-2.5" />
-                Buyer Information
+                {buyerInformationText}
                 </h3>
                 <div>
-                <p className="text-[11px] font-medium">{refund.buyer.name}</p>
-                <p className="text-[10px] text-muted-foreground">{refund.buyer.email}</p>
+                <p className="text-[11px] font-medium">
+                  <TranslatedText text={refund.buyer.name} />
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  <TranslatedText text={refund.buyer.email} />
+                </p>
                 </div>
             </div>
 
@@ -124,7 +157,7 @@ const RefundDetailsModal: React.FC<RefundDetailsModalProps> = ({
             <div className="border border-border rounded-lg p-4">
                 <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
                 <RotateCcw className="w-2.5 h-2.5" />
-                Refund Timeline
+                {refundTimelineText}
                 </h3>
                 <div className="space-y-3">
                 {refund.timeline.map((item, index) => (
@@ -133,10 +166,16 @@ const RefundDetailsModal: React.FC<RefundDetailsModalProps> = ({
                     <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-start">
                         <div>
-                            <p className="text-xs font-medium">{item.status}</p>
-                            <p className="text-[10px] text-muted-foreground">{item.description}</p>
+                            <p className="text-xs font-medium">
+                              <TranslatedText text={item.status} />
+                            </p>
+                            <p className="text-[10px] text-muted-foreground">
+                              <TranslatedText text={item.description} />
+                            </p>
                         </div>
-                        <p className="text-[10px] text-muted-foreground">{item.date}</p>
+                        <p className="text-[10px] text-muted-foreground">
+                          <TranslatedText text={item.date} />
+                        </p>
                         </div>
                     </div>
                     </div>
@@ -148,16 +187,16 @@ const RefundDetailsModal: React.FC<RefundDetailsModalProps> = ({
             <div className="border border-border rounded-lg p-4">
                 <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
                 <Calendar className="w-2.5 h-2.5" />
-                Important Dates
+                {importantDatesText}
                 </h3>
                 <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                    <span className="text-[11px] text-muted-foreground">Request Date</span>
+                    <span className="text-[11px] text-muted-foreground">{requestDateText}</span>
                     <span>{format(new Date(refund.requestDate), "MMM dd, yyyy")}</span>
                 </div>
                 {refund.processedDate && (
                     <div className="flex justify-between items-center">
-                    <span className="text-[11px] text-muted-foreground">Processed Date</span>
+                    <span className="text-[11px] text-muted-foreground">{processedDateText}</span>
                     <span>{format(new Date(refund.processedDate), "MMM dd, yyyy")}</span>
                     </div>
                 )}
@@ -167,7 +206,7 @@ const RefundDetailsModal: React.FC<RefundDetailsModalProps> = ({
             {/* Actions */}
             <div className="flex justify-end">
                 <button className="px-6 py-2 rounded-lg text-[11px] text-white font-medium bg-black">
-                Download Report
+                {downloadReportText}
                 </button>
             </div>
             </div>

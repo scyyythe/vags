@@ -12,6 +12,8 @@ import { getLoggedInUserId } from "@/auth/decode";
 import useExhibitReportStatus from "@/hooks/mutate/report/useExhibitReportStatus";
 import { useToggleHideExhibit } from "@/hooks/exhibit/useToggleHideExhibit";
 import { useToggleVisibilityExhibit } from "@/hooks/exhibit/useToggleVisibilityExhibit";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface ExhibitProps {
   exhibit: {
     id: string;
@@ -43,6 +45,30 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const exhibitNotAvailableText = useAutoTranslation("Exhibit not available yet", language);
+  const endedText = useAutoTranslation("ENDED", language);
+  const dayText = useAutoTranslation("day", language);
+  const daysText = useAutoTranslation("days", language);
+  const leftText = useAutoTranslation("left", language);
+  const ongoingText = useAutoTranslation("ONGOING", language);
+  const ownerText = useAutoTranslation("Owner", language);
+  const collaboratorText = useAutoTranslation("Collaborator", language);
+  const deleteConfirmText = useAutoTranslation("Are you sure you want to delete this exhibit?", language);
+  const movedToTrashText = useAutoTranslation("Exhibit moved to trash", language);
+  const permanentlyDeletedText = useAutoTranslation("Exhibit permanently deleted", language);
+  const deletedSuccessfullyText = useAutoTranslation("Exhibit deleted successfully", language);
+  const alreadyReportedText = useAutoTranslation("You have already reported this exhibit.", language);
+  const inappropriateContentText = useAutoTranslation("Inappropriate Content", language);
+  const prohibitedContentText = useAutoTranslation("The exhibit contains prohibited content", language);
+
+  // Translation hooks for dynamic content
+  const translatedTitle = useAutoTranslation(exhibit.title, language);
+  const translatedDescription = useAutoTranslation(exhibit.description, language);
+  const translatedCategory = useAutoTranslation(exhibit.category, language);
 
   // Debug logging
   console.log("ExhibitCard Debug:", {
@@ -101,15 +127,15 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
       return `${startFormatted} - ${endFormatted}`;
     }
 
-    if (end && now > end) return "ENDED";
+    if (end && now > end) return endedText;
 
     if (start && end && now >= start && now <= end) {
       const timeDiff = end.getTime() - now.getTime();
       const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-      return daysLeft <= 5 ? `${daysLeft} day${daysLeft > 1 ? "s" : ""} left` : "ONGOING";
+      return daysLeft <= 5 ? `${daysLeft} ${daysLeft > 1 ? daysText : dayText} ${leftText}` : ongoingText;
     }
 
-    return "ONGOING";
+    return ongoingText;
   };
 
   return (
@@ -125,7 +151,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
     >
       {showTooltip && (
         <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 bg-gray-800 text-white text-[10px] px-2 py-1 rounded-md shadow-md whitespace-nowrap">
-          Exhibit not available yet
+          {exhibitNotAvailableText}
         </div>
       )}
 
@@ -133,7 +159,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
         <img src={exhibit.image} alt={exhibit.title} className="w-full h-40 object-cover rounded-lg" />
 
         <div className="absolute top-3 right-3 bg-white bg-opacity-90 rounded-full px-2 pb-0.5">
-          <span className="text-[10px] font-medium">{exhibit.category}</span>
+          <span className="text-[10px] font-medium">{translatedCategory}</span>
         </div>
 
         {!exhibit.isSolo && (
@@ -166,7 +192,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
       <div className="px-5 py-4 rounded-b-lg">
         <div className="flex justify-between items-start relative">
           <div className="flex flex-col">
-            <h2 className="font-semibold text-xs">"{exhibit.title}"</h2>
+            <h2 className="font-semibold text-xs">"{translatedTitle}"</h2>
             {exhibit.isShared &&
               ((isOwnProfile && exhibit.userRole === "collaborator") || (!isOwnProfile && exhibit.targetUserRole)) && (
                 <span
@@ -176,7 +202,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                       : "bg-purple-100 text-purple-700"
                   }`}
                 >
-                  {(isOwnProfile ? exhibit.userRole : exhibit.targetUserRole) === "owner" ? "Owner" : "Collaborator"}
+                  {(isOwnProfile ? exhibit.userRole : exhibit.targetUserRole) === "owner" ? ownerText : collaboratorText}
                 </span>
               )}
           </div>
@@ -210,15 +236,15 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                   }}
                   onViewInsights={(id) => console.log("View insights for:", id)}
                   onDelete={(id) => {
-                    if (confirm("Are you sure you want to delete this exhibit?")) {
+                    if (confirm(deleteConfirmText)) {
                       deleteExhibit(id, {
                         onSuccess: (data: { detail: string }) => {
                           if (data.detail.includes("trash")) {
-                            toast.success("Exhibit moved to trash");
+                            toast.success(movedToTrashText);
                           } else if (data.detail.includes("permanently")) {
-                            toast.success("Exhibit permanently deleted");
+                            toast.success(permanentlyDeletedText);
                           } else {
-                            toast.success("Exhibit deleted successfully");
+                            toast.success(deletedSuccessfullyText);
                           }
                         },
                       });
@@ -243,12 +269,12 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                   }}
                   onReport={() => {
                     if (reportStatusData?.reported) {
-                      toast.error("You have already reported this exhibit.", { closeButton: true });
+                      toast.error(alreadyReportedText, { closeButton: true });
                     } else {
                       submitExhibitReport({
                         exhibit_id: exhibit.id,
-                        category: "Inappropriate Content",
-                        description: "The exhibit contains prohibited content",
+                        category: inappropriateContentText,
+                        description: prohibitedContentText,
                       });
                     }
                     setMenuOpen(false);
@@ -262,7 +288,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
           </div>
         </div>
 
-        <p className="text-[9px] text-gray-600 line-clamp-2">{exhibit.description}</p>
+        <p className="text-[9px] text-gray-600 line-clamp-2">{translatedDescription}</p>
       </div>
     </div>
   );

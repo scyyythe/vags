@@ -1,42 +1,63 @@
 import type React from "react"
+import { useLanguage } from "@/context/LanguageContext"
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation"
 
 interface SecurityNoteProps {
   type: "paypal" | "gcash" | "stripe" | "credit-card"
 }
 
 const SecurityNote: React.FC<SecurityNoteProps> = ({ type }) => {
+  // Language and translation
+  const { language } = useLanguage();
+  
+  // PayPal translations
+  const paypalTitleText = useAutoTranslation("Secure PayPal Payment", language);
+  const paypalDescText = useAutoTranslation("Your payment will be processed securely through PayPal. You can also pay with your credit card through PayPal without creating an account.", language);
+  
+  // GCash translations
+  const gcashTitleText = useAutoTranslation("Secure GCash Payment", language);
+  const gcashDescText = useAutoTranslation("Your payment is protected by GCash's advanced security features including biometric authentication and real-time fraud monitoring.", language);
+  
+  // Stripe translations
+  const stripeTitleText = useAutoTranslation("Secure Stripe Payment", language);
+  const stripeDescText = useAutoTranslation("Stripe uses industry-leading security measures including PCI DSS compliance and advanced fraud detection to protect your payment information.", language);
+  
+  // Credit Card translations
+  const creditCardTitleText = useAutoTranslation("Secure Credit Card Payment", language);
+  const creditCardDescText = useAutoTranslation("Your credit card information is encrypted and processed securely. We use SSL encryption and are PCI DSS compliant to protect your financial data.", language);
+
   const securityNotes = {
     paypal: {
       bgColor: "bg-blue-50 border-blue-200",
       iconColor: "text-blue-600",
       titleColor: "text-blue-800",
       textColor: "text-blue-700",
-      title: "Secure PayPal Payment",
-      text: "Your payment will be processed securely through PayPal. You can also pay with your credit card through PayPal without creating an account.",
+      title: paypalTitleText,
+      text: paypalDescText,
     },
     gcash: {
       bgColor: "bg-green-50 border-green-200",
       iconColor: "text-green-600",
       titleColor: "text-green-800",
       textColor: "text-green-700",
-      title: "Secure GCash Payment",
-      text: "Your payment is protected by GCash's advanced security features including biometric authentication and real-time fraud monitoring.",
+      title: gcashTitleText,
+      text: gcashDescText,
     },
     stripe: {
       bgColor: "bg-purple-50 border-purple-200",
       iconColor: "text-purple-600",
       titleColor: "text-purple-800",
       textColor: "text-purple-700",
-      title: "Secure Stripe Payment",
-      text: "Stripe uses industry-leading security measures including PCI DSS compliance and advanced fraud detection to protect your payment information.",
+      title: stripeTitleText,
+      text: stripeDescText,
     },
     "credit-card": {
       bgColor: "bg-gray-50 border-gray-200",
       iconColor: "text-gray-600",
       titleColor: "text-gray-800",
       textColor: "text-gray-700",
-      title: "Secure Credit Card Payment",
-      text: "Your credit card information is encrypted and processed securely. We use SSL encryption and are PCI DSS compliant to protect your financial data.",
+      title: creditCardTitleText,
+      text: creditCardDescText,
     },
   }
 

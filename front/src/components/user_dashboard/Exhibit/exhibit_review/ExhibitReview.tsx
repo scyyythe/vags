@@ -11,6 +11,16 @@ import Header from "@/components/user_dashboard/navbar/Header";
 import { useExhibitReview } from "@/hooks/exhibit/useExhibitReview";
 import { usePublishExhibit } from "@/hooks/mutate/exhibit/usePublishExhibit";
 import ExhibitReviewSkeleton from "@/components/skeletons/exhibits/ExhibitReviewSkeleton";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
+
 interface Collaborator {
   id: number;
   name: string;
@@ -39,6 +49,53 @@ const ExhibitReview = () => {
   const exhibitId = new URLSearchParams(location.search).get("id");
   const { data: exhibit, isLoading, error } = useExhibitReview(exhibitId || "");
   const { mutate: publishExhibit } = usePublishExhibit();
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content (must be before conditional returns)
+  const goBackText = useAutoTranslation("Go back", language);
+  const exhibitReviewText = useAutoTranslation("Exhibit Review", language);
+  const reviewDetailsText = useAutoTranslation(
+    "Review all details before publishing your exhibit. Make sure collaborators have filled their slots.",
+    language
+  );
+  const exhibitDetailsText = useAutoTranslation("Exhibit Details", language);
+  const titleText = useAutoTranslation("Title", language);
+  const categoryText = useAutoTranslation("Category", language);
+  const exhibitTypeText = useAutoTranslation("Exhibit Type", language);
+  const durationText = useAutoTranslation("Duration", language);
+  const descriptionText = useAutoTranslation("Description", language);
+  const ownerText = useAutoTranslation("Owner", language);
+  const collaboratorsText = useAutoTranslation("Collaborators", language);
+  const environmentSlotsText = useAutoTranslation("Environment & Slots", language);
+  const emptyText = useAutoTranslation("Empty", language);
+  const unknownText = useAutoTranslation("Unknown", language);
+  const collaboratorStatusText = useAutoTranslation("Collaborator Status", language);
+  const ofText = useAutoTranslation("of", language);
+  const slotsFilledText = useAutoTranslation("slots filled", language);
+  const inProgressText = useAutoTranslation("In Progress", language);
+  const overallCompletionText = useAutoTranslation("Overall Completion", language);
+  const completeText = useAutoTranslation("Complete", language);
+  const preview3DText = useAutoTranslation("Preview in 3D View", language);
+  const previewDescriptionText = useAutoTranslation(
+    "Opens your current selections in an interactive virtual gallery.",
+    language
+  );
+  const editText = useAutoTranslation("Edit", language);
+  const publishExhibitText = useAutoTranslation("Publish Exhibit", language);
+  const cannotPublishYetText = useAutoTranslation("Cannot publish yet", language);
+  const allCollaboratorSlotsText = useAutoTranslation(
+    "All collaborator slots must be filled before publishing.",
+    language
+  );
+  const exhibitPublishedText = useAutoTranslation("Exhibit Published", language);
+  const exhibitPublishedDescText = useAutoTranslation("Your exhibit has been successfully published!", language);
+  const failedToLoadText = useAutoTranslation("Failed to load exhibit review.", language);
+
+  // Translate dynamic content (exhibit title, description, category)
+  const translatedTitle = useAutoTranslation(exhibit?.title || "", language);
+  const translatedDescription = useAutoTranslation(exhibit?.description || "", language);
+  const translatedCategory = useAutoTranslation(exhibit?.category || "", language);
+  const translatedType = useAutoTranslation(exhibit?.type || "", language);
 
   const exhibitMode: ExhibitMode = "review";
 
@@ -66,8 +123,8 @@ const ExhibitReview = () => {
 
   const handlePublish = () => {
     if (!isReadyToPublish || !exhibitId) {
-      toast.error("Cannot publish yet", {
-        description: "All collaborator slots must be filled before publishing.",
+      toast.error(cannotPublishYetText, {
+        description: allCollaboratorSlotsText,
         closeButton: true,
       });
       return;
@@ -75,8 +132,8 @@ const ExhibitReview = () => {
 
     publishExhibit(exhibitId, {
       onSuccess: () => {
-        toast.success("Exhibit Published", {
-          description: "Your exhibit has been successfully published!",
+        toast.success(exhibitPublishedText, {
+          description: exhibitPublishedDescText,
           closeButton: true,
         });
         navigate("/exhibits");
@@ -89,7 +146,7 @@ const ExhibitReview = () => {
   }
 
   if (error || !exhibit) {
-    return <div className="p-10 text-sm text-red-600">Failed to load exhibit review.</div>;
+    return <div className="p-10 text-sm text-red-600">{failedToLoadText}</div>;
   }
 
   // Use backend-calculated collaborator status if available, otherwise fallback to frontend calculation
@@ -163,17 +220,16 @@ const ExhibitReview = () => {
       {/* Back button */}
       <div className="ml-8">
         <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
-          <i className="bx bx-chevron-left text-xl mr-2"></i>Go back
+          <i className="bx bx-chevron-left text-xl mr-2"></i>
+          {goBackText}
         </button>
       </div>
 
       <div className="mx-auto px-10 py-6">
         {/* Exhibit Review Header */}
         <div className="mb-6">
-          <h1 className="text-[13px] font-semibold mb-1">Exhibit Review</h1>
-          <p className="text-[11px] text-gray-600">
-            Review all details before publishing your exhibit. Make sure collaborators have filled their slots.
-          </p>
+          <h1 className="text-[13px] font-semibold mb-1">{exhibitReviewText}</h1>
+          <p className="text-[11px] text-gray-600">{reviewDetailsText}</p>
         </div>
 
         {/* Banner Image */}
@@ -181,7 +237,7 @@ const ExhibitReview = () => {
           <img src={exhibit.banner} alt="Exhibit Gallery Preview" className="w-full h-full object-cover" />
 
           <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center text-white">
-            <h1 className="text-md font-bold mb-2">{exhibit.title}</h1>
+            <h1 className="text-md font-bold mb-2">{translatedTitle}</h1>
             <p className="text-[11px]">
               {new Date(exhibit.startDate).toLocaleDateString()} - {new Date(exhibit.endDate).toLocaleDateString()}
             </p>
@@ -191,35 +247,37 @@ const ExhibitReview = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Exhibit Details */}
           <div>
-            <h3 className="text-xs font-medium mb-4">Exhibit Details</h3>
+            <h3 className="text-xs font-medium mb-4">{exhibitDetailsText}</h3>
             <Card className="p-5">
               <div className="space-y-4">
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">Title</p>
-                  <p className="text-[11px]">{exhibit.title}</p>
+                  <p className="text-gray-500 text-[10px] font-medium mb-1">{titleText}</p>
+                  <p className="text-[11px]">{translatedTitle}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">Category</p>
-                  <p className="text-[11px]">{exhibit.category.charAt(0).toUpperCase() + exhibit.category.slice(1)}</p>
-                </div>
-
-                <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">Exhibit Type</p>
-                  <p className="text-[11px]">{exhibit.type}</p>
+                  <p className="text-gray-500 text-[10px] font-medium mb-1">{categoryText}</p>
+                  <p className="text-[11px]">
+                    {translatedCategory.charAt(0).toUpperCase() + translatedCategory.slice(1)}
+                  </p>
                 </div>
 
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">Duration</p>
+                  <p className="text-gray-500 text-[10px] font-medium mb-1">{exhibitTypeText}</p>
+                  <p className="text-[11px]">{translatedType}</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500 text-[10px] font-medium mb-1">{durationText}</p>
                   <p className="text-[11px]">{formatDateRange(exhibit.startDate, exhibit.endDate)}</p>
                 </div>
 
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">Description</p>
-                  <p className="text-[11px]">{exhibit.description}</p>
+                  <p className="text-gray-500 text-[10px] font-medium mb-1">{descriptionText}</p>
+                  <p className="text-[11px]">{translatedDescription}</p>
                 </div>
 
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">Owner</p>
+                  <p className="text-gray-500 text-[10px] font-medium mb-1">{ownerText}</p>
                   <div className="flex flex-col gap-2 mt-1">
                     <div className="flex items-center gap-2">
                       <Avatar className="w-4 h-4">
@@ -228,14 +286,14 @@ const ExhibitReview = () => {
                           {exhibit.owner?.name?.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="text-[11px]">{exhibit.owner?.name}</span>
+                      <span className="text-[11px]">{exhibit.owner?.name && <TranslatedText text={exhibit.owner.name} />}</span>
                     </div>
                   </div>
                 </div>
 
                 {exhibit.collaborators && exhibit.collaborators.length > 0 && (
                   <div>
-                    <p className="text-gray-500 text-[10px] font-medium mb-1">Collaborators</p>
+                    <p className="text-gray-500 text-[10px] font-medium mb-1">{collaboratorsText}</p>
                     <div className="flex flex-col gap-2 mt-1">
                       {exhibit.collaborators.map((collaborator, index) => (
                         <div key={index} className="flex items-center gap-2">
@@ -245,7 +303,7 @@ const ExhibitReview = () => {
                               {collaborator.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
-                          <span className="text-[11px]">{collaborator.name}</span>
+                          <span className="text-[11px]"><TranslatedText text={collaborator.name} /></span>
                         </div>
                       ))}
                     </div>
@@ -257,7 +315,7 @@ const ExhibitReview = () => {
 
           {/* Environment & Slots */}
           <div>
-            <h3 className="text-xs font-medium mb-4">Environment & Slots</h3>
+            <h3 className="text-xs font-medium mb-4">{environmentSlotsText}</h3>
             <Card className="p-5">
               <div className="mb-4">
                 <img src={exhibit.banner} alt="Gallery Space" className="w-full h-32 object-cover rounded-md" />
@@ -273,7 +331,7 @@ const ExhibitReview = () => {
                     return (
                       <div key={person.id || index} className="text-center flex">
                         <div className={`h-2.5 w-2.5 ${colors[index] || "bg-gray-400"} rounded-full mr-2`}></div>
-                        <p className="text-[10px] text-gray-600 truncate">{person.name}</p>
+                        <p className="text-[10px] text-gray-600 truncate"><TranslatedText text={person.name} /></p>
                       </div>
                     );
                   })}
@@ -317,10 +375,10 @@ const ExhibitReview = () => {
                             />
                           ) : (
                             <div className="w-full h-16 bg-gray-100 border-2 border-dashed border-gray-300 rounded-sm mb-1 flex items-center justify-center">
-                              <p className="text-[8px] text-gray-400">Empty</p>
+                              <p className="text-[8px] text-gray-400">{emptyText}</p>
                             </div>
                           )}
-                          <p className="text-[8px] text-gray-500 truncate w-full">{slotOwner?.name || "Unknown"}</p>
+                          <p className="text-[8px] text-gray-500 truncate w-full">{slotOwner?.name ? <TranslatedText text={slotOwner.name} /> : unknownText}</p>
                         </div>
                       );
                     })
@@ -350,7 +408,7 @@ const ExhibitReview = () => {
                               className="w-full h-16 object-cover rounded-sm mb-1"
                             />
                             <p className="text-[8px] text-gray-500 truncate w-full">
-                              {existingSlot.contributor?.name || "Unknown"}
+                              {existingSlot.contributor?.name ? <TranslatedText text={existingSlot.contributor.name} /> : unknownText}
                             </p>
                           </div>
                         );
@@ -362,7 +420,7 @@ const ExhibitReview = () => {
                             className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start"
                           >
                             <div className="w-full h-16 bg-gray-100 border-2 border-dashed border-gray-300 rounded-sm mb-1 flex items-center justify-center">
-                              <p className="text-[8px] text-gray-400">Empty</p>
+                              <p className="text-[8px] text-gray-400">{emptyText}</p>
                             </div>
                           </div>
                         );
@@ -374,7 +432,7 @@ const ExhibitReview = () => {
 
           {/* Collaborator Status */}
           <div>
-            <h3 className="text-xs font-medium mb-4">Collaborator Status</h3>
+            <h3 className="text-xs font-medium mb-4">{collaboratorStatusText}</h3>
             <div className="space-y-4">
               {collaborators.map((collaborator) => (
                 <Card key={collaborator.id} className="p-4 rounded-xl shadow-sm">
@@ -388,15 +446,15 @@ const ExhibitReview = () => {
                       </Avatar>
 
                       <div>
-                        <p className="text-[11px] font-medium">{collaborator.name}</p>
+                        <p className="text-[11px] font-medium"><TranslatedText text={collaborator.name} /></p>
                         <p className="text-[10px] text-gray-500">
-                          {collaborator.slotsFilled} of {collaborator.slotsToFill} slots filled
+                          {collaborator.slotsFilled} {ofText} {collaborator.slotsToFill} {slotsFilledText}
                         </p>
                       </div>
                     </div>
                     {collaborator.inProgress && (
                       <Badge className="bg-yellow-100 text-yellow-800 text-[10px] font-medium px-2 py-0.5 rounded-full">
-                        In Progress
+                        {inProgressText}
                       </Badge>
                     )}
                   </div>
@@ -410,12 +468,14 @@ const ExhibitReview = () => {
 
             {/* Overall Completion */}
             <div className="mt-10">
-              <h3 className="text-xs font-medium mb-2">Overall Completion</h3>
+              <h3 className="text-xs font-medium mb-2">{overallCompletionText}</h3>
               <Card className="p-4 rounded-xl shadow-sm">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-[11px] font-medium text-blue-900">{completionPercentage}% Complete</span>
+                  <span className="text-[11px] font-medium text-blue-900">
+                    {completionPercentage}% {completeText}
+                  </span>
                   <span className="text-[10px] text-gray-500">
-                    {filledSlots} of {totalSlots} slots filled
+                    {filledSlots} {ofText} {totalSlots} {slotsFilledText}
                   </span>
                 </div>
                 <Progress value={completionPercentage} className="h-1.5 bg-gray-200 [&>*]:bg-yellow-500" />
@@ -431,30 +491,30 @@ const ExhibitReview = () => {
                   navigate("/gallery3d-preview");
                 }}
               >
-                Preview in 3D View
+                {preview3DText}
               </button>
-              <p className="text-[10px] text-muted-foreground mt-2">
-                Opens your current selections in an interactive virtual gallery.
-              </p>
+              <p className="text-[10px] text-muted-foreground mt-2">{previewDescriptionText}</p>
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-end gap-4 mt-8">
-          <button className="text-[11px] px-8 py-1.5 border rounded-full" onClick={handleEdit}>
-            Edit
-          </button>
-          <button
-            onClick={handlePublish}
-            disabled={!isReadyToPublish}
-            className={`text-white text-[11px] px-6 py-1.5 border rounded-full ${
-              isReadyToPublish ? "bg-red-700 hover:bg-red-600" : "bg-red-300 cursor-not-allowed"
-            }`}
-          >
-            Publish Exhibit
-          </button>
-        </div>
+        {/* Action Buttons - Only show for owners */}
+        {exhibit?.isOwner && (
+          <div className="flex justify-end gap-4 mt-8">
+            <button className="text-[11px] px-8 py-1.5 border rounded-full" onClick={handleEdit}>
+              {editText}
+            </button>
+            <button
+              onClick={handlePublish}
+              disabled={!isReadyToPublish}
+              className={`text-white text-[11px] px-6 py-1.5 border rounded-full ${
+                isReadyToPublish ? "bg-red-700 hover:bg-red-600" : "bg-red-300 cursor-not-allowed"
+              }`}
+            >
+              {publishExhibitText}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

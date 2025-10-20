@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
@@ -56,6 +57,11 @@ const CreatePost = () => {
   const chooseAFileOrDragAndDropItHereText = useAutoTranslation("Choose a file or drag and drop it here", language);
   const chooseFileText = useAutoTranslation("Choose File", language);
   const weRecommendUsingHighQualityJpgFilesLessThan20MBText = useAutoTranslation("We recommend using high quality .jpg files less than 20MB", language);
+  const artworkPreviewText = useAutoTranslation("Artwork preview", language);
+  
+  // Validation messages
+  const fileSizeErrorText = useAutoTranslation("File size must be less than 20MB", language);
+  const uploadFailedText = useAutoTranslation("Upload failed:", language);
 
   // Translated artwork styles
   const translatedArtStyles = ART_STYLES.map(style => useAutoTranslation(style, language));
@@ -64,7 +70,7 @@ const CreatePost = () => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB", { closeButton: true });
+        toast.error(fileSizeErrorText, { closeButton: true });
         return;
       }
 
@@ -86,7 +92,7 @@ const CreatePost = () => {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size must be less than 20MB", { closeButton: true });
+        toast.error(fileSizeErrorText, { closeButton: true });
         return;
       }
 
@@ -141,7 +147,7 @@ const CreatePost = () => {
       navigate("/explore");
     } catch (error: unknown) {
       // Error handling is done in the hook
-      console.error("Upload failed:", error);
+      console.error(uploadFailedText, error);
     }
   };
 
@@ -164,13 +170,13 @@ const CreatePost = () => {
           >
             {previewUrl ? (
               <div className="relative w-full h-full">
-                <img src={previewUrl} alt="Artwork preview" className="w-full h-full object-contain" />
+                <img src={previewUrl} alt={artworkPreviewText} className="w-full h-full object-contain" />
                 <button
                   onClick={() => {
                     setSelectedFile(null);
                     setPreviewUrl(null);
                   }}
-                  className="absolute top-2 right-2 bg-white rounded-full p-2"
+                  className="absolute top-2 right-2 bg-white rounded-full px-2"
                 >
                   ×
                 </button>
@@ -226,34 +232,18 @@ const CreatePost = () => {
                     <label htmlFor="style" className="block mb-4 text-xs">
                       {artworkStyleText}
                     </label>
-                    <div className="relative">
-                      <select
-                        id="style"
-                        value={artworkStyle}
-                        onChange={(e) => setArtworkStyle(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-xs cursor-pointer"
-                      >
-                        <option value="" disabled>
-                          {selectArtworkStyleText}
-                        </option>
+                    <Select value={artworkStyle} onValueChange={setArtworkStyle}>
+                      <SelectTrigger className="w-full text-xs h-[35px]">
+                        <SelectValue placeholder={selectArtworkStyleText} />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-64 overflow-y-auto">
                         {translatedArtStyles.map((style, index) => (
-                          <option key={ART_STYLES[index]} value={ART_STYLES[index].toLowerCase()}>
+                          <SelectItem key={ART_STYLES[index]} value={ART_STYLES[index].toLowerCase()} className="text-xs">
                             {style}
-                          </option>
+                          </SelectItem>
                         ))}
-                      </select>
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M4 6L8 10L12 6"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div>

@@ -1,23 +1,40 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
 
 interface BuyerActivityProps {
   activities: Array<{
-    id: number;
+    id: string;
     buyerName: string;
     action: string;
     artworkTitle: string;
     price: number;
     timestamp: string;
     status: string;
+    artworkId?: string;
+    transactionId?: string;
+    paymentMethod?: string;
   }>;
 }
 
 const BuyerActivity = ({ activities }: BuyerActivityProps) => {
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const noBuyerActivityText = useAutoTranslation("No buyer activity found for this filter.", language);
+
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-PH', {
-      style: 'currency',
-      currency: 'PHP',
+    return new Intl.NumberFormat("en-PH", {
+      style: "currency",
+      currency: "PHP",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -25,48 +42,63 @@ const BuyerActivity = ({ activities }: BuyerActivityProps) => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'payment_received':
-        return 'bg-green-100 text-green-800';
-      case 'in_progress':
-        return 'bg-blue-100 text-blue-800';
-      case 'completed':
-        return 'bg-purple-100 text-purple-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
-      case 'awaiting_payment':
-        return 'bg-orange-100 text-orange-800';
+      case "payment_received":
+        return "bg-green-100 text-green-800";
+      case "in_progress":
+        return "bg-blue-100 text-blue-800";
+      case "completed":
+        return "bg-purple-100 text-purple-800";
+      case "cancelled":
+        return "bg-red-100 text-red-800";
+      case "awaiting_payment":
+        return "bg-orange-100 text-orange-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getActionIcon = (action: string) => {
     switch (action) {
-      case 'Purchased':
+      case "Purchased":
         return (
           <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+            />
           </svg>
         );
-      case 'Payment Confirmed':
+      case "Payment Confirmed":
         return (
           <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+            />
           </svg>
         );
-      case 'Order Shipped':
+      case "Order Shipped":
         return (
           <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+            />
           </svg>
         );
-      case 'Order Completed':
+      case "Order Completed":
         return (
           <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         );
-      case 'Order Cancelled':
+      case "Order Cancelled":
         return (
           <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -75,7 +107,12 @@ const BuyerActivity = ({ activities }: BuyerActivityProps) => {
       default:
         return (
           <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
         );
     }
@@ -86,12 +123,7 @@ const BuyerActivity = ({ activities }: BuyerActivityProps) => {
       <Card className="p-8">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 opacity-50">
-            <svg
-              className="w-full h-full text-muted-foreground"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-full h-full text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -100,7 +132,7 @@ const BuyerActivity = ({ activities }: BuyerActivityProps) => {
               />
             </svg>
           </div>
-          <p className="text-xs text-muted-foreground">No buyer activity found for this filter.</p>
+          <p className="text-xs text-muted-foreground">{noBuyerActivityText}</p>
         </div>
       </Card>
     );
@@ -120,18 +152,22 @@ const BuyerActivity = ({ activities }: BuyerActivityProps) => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="text-xs font-medium text-foreground">{activity.buyerName}</p>
+                  <p className="text-xs font-medium text-foreground">
+                    <TranslatedText text={activity.buyerName} />
+                  </p>
                   <Badge variant="secondary" className={`text-[11px] ${getStatusColor(activity.status)}`}>
-                    {activity.status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                    <TranslatedText text={activity.status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} />
                   </Badge>
                 </div>
                 <p className="text-[11px] text-muted-foreground">
-                  {activity.action} "{activity.artworkTitle}" • {formatCurrency(activity.price)}
+                  <TranslatedText text={activity.action} /> "<TranslatedText text={activity.artworkTitle} />" • {formatCurrency(activity.price)}
                 </p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-[11px] text-muted-foreground">{activity.timestamp}</p>
+              <p className="text-[11px] text-muted-foreground">
+                <TranslatedText text={activity.timestamp} />
+              </p>
             </div>
           </div>
         ))}

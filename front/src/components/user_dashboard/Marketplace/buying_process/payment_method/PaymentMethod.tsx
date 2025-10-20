@@ -8,6 +8,8 @@ import GCashForm from "./payment/GCashForm";
 import StripeForm from "./payment/StripeForm";
 import CreditCardForm from "./payment/CreditCardForm";
 import Header from "@/components/user_dashboard/navbar/Header";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = false, onBack, onContinue }) => {
   console.log("PaymentMethod received accounts:", accounts);
@@ -34,6 +36,17 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
 
   const navigate = useNavigate();
   const [selectedAccount, setSelectedAccount] = useState<PaymentAccount | null>(null);
+
+  // Language and translation
+  const { language } = useLanguage();
+  const paymentMethodText = useAutoTranslation("Payment Method", language);
+  const paymentDetailsText = useAutoTranslation("Payment Details", language);
+  const noteText = useAutoTranslation("Note:", language);
+  const shippingAddressSharedText = useAutoTranslation(
+    "Your shipping address is only shared with the artist after your complete payment.",
+    language
+  );
+  const saveAndContinueText = useAutoTranslation("Save and Continue", language);
 
   // Populate form with selected account data
   const populateFormWithAccount = useCallback((account: PaymentAccount) => {
@@ -86,7 +99,12 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onContinue(formData);
-    navigate("/reviewpurchase", { state: { selectedPaymentMethod } });
+    const orderId = localStorage.getItem("current_purchase_order_id");
+    if (orderId) {
+      navigate(`/reviewpurchase/${orderId}`, { state: { selectedPaymentMethod } });
+    } else {
+      navigate("/reviewpurchase/unknown", { state: { selectedPaymentMethod } });
+    }
   };
 
   const handleEditAccount = (account: PaymentAccount) => {
@@ -187,7 +205,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
         <div className="mb-8">
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
-            Payment Method
+            {paymentMethodText}
           </button>
         </div>
 
@@ -200,14 +218,14 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
 
           {/* Payment Details */}
           <div className="mb-8">
-            <h3 className="text-xs font-medium text-gray-900 mb-6">Payment Details</h3>
+            <h3 className="text-xs font-medium text-gray-900 mb-6">{paymentDetailsText}</h3>
             {renderPaymentForm()}
           </div>
 
           {/* Note and Continue Button */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 mb-4">
             <p className="text-[11px] text-gray-600 italic">
-              <strong>Note:</strong> Your shipping address is only shared with the artist after your complete payment.
+              <strong>{noteText}</strong> {shippingAddressSharedText}
             </p>
             <button
               type="submit"
@@ -218,7 +236,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
-              Save and Continue
+              {saveAndContinueText}
             </button>
           </div>
         </form>

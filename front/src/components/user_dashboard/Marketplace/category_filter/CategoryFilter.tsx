@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface CategoryFilterProps {
   categories: string[];
@@ -8,6 +10,22 @@ interface CategoryFilterProps {
 
 const CategoryFilter = ({ categories, onSelectCategory }: CategoryFilterProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>(categories[0]);
+
+  // Translation hooks
+  const { language } = useLanguage();
+  const allText = useAutoTranslation("All", language);
+  const trendingText = useAutoTranslation("Trending", language);
+  const followingText = useAutoTranslation("Following", language);
+
+  // Function to translate category names
+  const translateCategory = (category: string): string => {
+    const categoryMap: { [key: string]: string } = {
+      All: allText,
+      Trending: trendingText,
+      Following: followingText,
+    };
+    return categoryMap[category] || category;
+  };
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
@@ -30,7 +48,7 @@ const CategoryFilter = ({ categories, onSelectCategory }: CategoryFilterProps) =
           }`}
           onClick={() => handleCategoryClick(category)}
         >
-          {category}
+          {translateCategory(category)}
         </button>
       ))}
     </div>

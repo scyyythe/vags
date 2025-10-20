@@ -3,11 +3,20 @@ import AddAddressForm from "../shipping_address/AddAddressForm";
 import { useAddress } from "@/hooks/users/address/useAddress";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { address, saveAddress, error, loading } = useAddress(id);
   const queryClient = useQueryClient();
+
+  // Language and translation
+  const { language } = useLanguage();
+  const addressUpdatedText = useAutoTranslation("Address updated successfully!", language);
+  const addressAddedText = useAutoTranslation("Address added successfully!", language);
+  const failedToSaveAddressText = useAutoTranslation("Failed to save address.", language);
+
   const parseInitialData = () => {
     if (!address) return undefined;
 
@@ -42,11 +51,11 @@ const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
 
       queryClient.invalidateQueries({ queryKey: ["allAddresses"] });
 
-      toast.success(isEditing ? "Address updated successfully!" : "Address added successfully!");
+      toast.success(isEditing ? addressUpdatedText : addressAddedText);
 
       navigate("/shipping");
     } catch (err) {
-      toast.error("Failed to save address.");
+      toast.error(failedToSaveAddressText);
     }
   };
 

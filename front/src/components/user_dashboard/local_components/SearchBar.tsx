@@ -3,10 +3,18 @@ import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useSearchParams } from "react-router-dom";
 
 const SearchBar = ({ onSearchChange }: { onSearchChange: (value: string) => void }) => {
+  const [searchParams] = useSearchParams();
   const [value, setValue] = useState("");
   const { language } = useLanguage(); // Get current language
+
+  // Sync with URL search params
+  useEffect(() => {
+    const urlQuery = searchParams.get("q") || "";
+    setValue(urlQuery);
+  }, [searchParams]);
 
   useEffect(() => {
     const handler = setTimeout(() => {

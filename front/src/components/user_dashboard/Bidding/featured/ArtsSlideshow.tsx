@@ -11,6 +11,8 @@ import { User } from "@/hooks/users/useUserQuery";
 import FeaturedAuctionSkeleton from "@/components/skeletons/bidding/FeaturedAuction";
 import { formatCurrency } from "@/utils/numberFormat";
 import { getArtworkImageUrl } from "@/utils/imageUtils";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface ArtSlideshowProps {
   artworks?: Artwork[];
   autoPlay?: boolean;
@@ -21,10 +23,22 @@ interface ArtSlideshowProps {
 const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }: ArtSlideshowProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const isMobile = useIsMobile();
+  const { language } = useLanguage();
   const [showBidPopup, setShowBidPopup] = useState(false);
   const [bidArtworkIndex, setBidArtworkIndex] = useState<number | null>(null);
   const { data, isLoading, isError } = usePopularAuctions();
   const navigate = useNavigate();
+  const [translatedArtworks, setTranslatedArtworks] = useState<Record<string, { title: string; artist: string }>>({});
+
+  // Translation hooks
+  const failedToLoadText = useAutoTranslation("Failed to load auctions.", language);
+  const noAuctionsText = useAutoTranslation("No auctions to display", language);
+  const ownedByText = useAutoTranslation("Owned By", language);
+  const currentBidText = useAutoTranslation("Current Bid", language);
+  const bidNowText = useAutoTranslation("Bid Now", language);
+  const viewItemText = useAutoTranslation("View item", language);
+  const goToSlideText = useAutoTranslation("Go to slide", language);
+  const unknownText = useAutoTranslation("Unknown", language);
 
   const handleBidSubmit = (amount: number) => {
     setShowBidPopup(false);
@@ -36,6 +50,42 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
   };
 
   const auctions = data ?? [];
+
+  // Translate artwork titles and artist names
+  useEffect(() => {
+    const translateArtworks = async () => {
+      const { autoTranslate } = await import("@/utils/autoTranslate");
+      const translated: Record<string, { title: string; artist: string }> = {};
+
+      for (const auction of auctions) {
+        try {
+          const translatedTitle = language.toLowerCase() !== "en" 
+            ? await autoTranslate(auction.artwork.title, language.toLowerCase())
+            : auction.artwork.title;
+          
+          const translatedArtist = language.toLowerCase() !== "en"
+            ? await autoTranslate(auction.artwork.artist, language.toLowerCase())
+            : auction.artwork.artist;
+
+          translated[auction.id] = {
+            title: translatedTitle,
+            artist: translatedArtist
+          };
+        } catch (error) {
+          translated[auction.id] = {
+            title: auction.artwork.title,
+            artist: auction.artwork.artist
+          };
+        }
+      }
+
+      setTranslatedArtworks(translated);
+    };
+
+    if (auctions.length > 0) {
+      translateArtworks();
+    }
+  }, [auctions, language]);
 
   useEffect(() => {
     if (!autoPlay) return;
@@ -49,11 +99,11 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
   }, [autoPlay, interval, auctions.length]);
 
   if (isLoading) return <FeaturedAuctionSkeleton />;
-  if (isError) return <p>Failed to load auctions.</p>;
+  if (isError) return <p>{failedToLoadText}</p>;
   if (!data || data.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="text-muted-foreground">No auctions to display</p>
+        <p className="text-muted-foreground">{noAuctionsText}</p>
       </div>
     );
   }
@@ -96,20 +146,20 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
                 isMobile ? "text-xl mb-1" : "text-3xl"
               )}
             >
-              {artwork.artwork.title}
+              {translatedArtworks[artwork.id]?.title || artwork.artwork.title}
             </h2>
 
             <div className="flex items-center gap-2 mb-3">
-              <span className={cn("text-gray-600", isMobile ? "text-[11px]" : "text-xs")}>Owned By</span>
+              <span className={cn("text-gray-600", isMobile ? "text-[11px]" : "text-xs")}>{ownedByText}</span>
               <div className="flex items-center gap-2 whitespace-nowrap">
                 <Link to={`/userprofile/${artwork.artwork.artist_id}`} className="flex items-center gap-2">
                   <img
                     src={artwork.artwork.profile_picture}
-                    alt={artwork.artwork.artist}
+                    alt={translatedArtworks[artwork.id]?.artist || artwork.artwork.artist}
                     className={cn("rounded-full", isMobile ? "w-3.5 h-3.5" : "w-4 h-4")}
                   />
                   <span className={cn("text-black font-medium", isMobile ? "text-[11px]" : "text-xs")}>
-                    {artwork.artwork.artist}
+                    {translatedArtworks[artwork.id]?.artist || artwork.artwork.artist}
                   </span>
                 </Link>
               </div>
@@ -120,7 +170,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
             >
               <div className="flex w-full">
                 <div className="flex-1 text-center pl-1">
-                  <p className="text-[11px] text-black mb-3 whitespace-nowrap">Current Bid</p>
+                  <p className="text-[11px] text-black mb-3 whitespace-nowrap">{currentBidText}</p>
                   <p className={cn("text-black font-semibold whitespace-nowrap", isMobile ? "text-lg" : "text-2xl")}>
                     {formatCurrency(artwork.highest_bid?.amount)}
                   </p>
@@ -145,7 +195,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
                   isMobile ? "w-60 px-3 py-2 text-[11px] " : "w-[38%] px-8 py-2 text-sm"
                 )}
               >
-                Bid Now
+                {bidNowText}
               </button>
               <button
                 onClick={() => navigate(`/bid/${artwork.id}/`)}
@@ -154,7 +204,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
                   isMobile ? "w-60 px-3 py-2 text-[11px]" : "w-[38%] px-8 py-2 text-sm"
                 )}
               >
-                View item
+                {viewItemText}
               </button>
             </div>
           </div>
@@ -168,8 +218,8 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
           data={selectedArtwork}
           artworkId={selectedArtwork.artwork.id}
           artworkTitle={selectedArtwork.artwork.title}
-          username={user?.username || "Unknown"}
-          fullName={`${user?.first_name || "Unknown"} ${user?.last_name || ""}`}
+          username={user?.username || unknownText}
+          fullName={`${user?.first_name || unknownText} ${user?.last_name || ""}`}
           start_bid_amount={selectedArtwork.start_bid_amount}
         />
       )}
@@ -187,7 +237,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
               isMobile ? "w-1 h-1" : "w-1 h-1",
               index === currentIndex ? "bg-gray-300 w-3" : "bg-black/50 hover:bg-white/70"
             )}
-            aria-label={`Go to slide ${index + 1}`}
+            aria-label={`${goToSlideText} ${index + 1}`}
           />
         ))}
       </div>

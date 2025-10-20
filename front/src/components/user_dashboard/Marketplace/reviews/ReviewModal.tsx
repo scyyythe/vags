@@ -2,6 +2,15 @@ import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
 
 interface ArtworkReview {
   id: string;
@@ -26,6 +35,20 @@ interface ReviewModalProps {
 
 const ReviewModal = ({ isOpen, onClose, reviews, totalReviews }: ReviewModalProps) => {
   const [sortBy, setSortBy] = useState("newest");
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const reviewListText = useAutoTranslation("Review List", language);
+  const showingText = useAutoTranslation("Showing", language);
+  const ofText = useAutoTranslation("of", language);
+  const resultsText = useAutoTranslation("results", language);
+  const sortByText = useAutoTranslation("Sort by :", language);
+  const newestText = useAutoTranslation("Newest", language);
+  const oldestText = useAutoTranslation("Oldest", language);
+  const highestRatedText = useAutoTranslation("Highest Rated", language);
+  const lowestRatedText = useAutoTranslation("Lowest Rated", language);
+  const noReviewsYetText = useAutoTranslation("No reviews yet", language);
+  const verifiedText = useAutoTranslation("Verified", language);
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }).map((_, index) => (
@@ -59,30 +82,30 @@ const ReviewModal = ({ isOpen, onClose, reviews, totalReviews }: ReviewModalProp
       >
         <DialogHeader className="pb-4 border-gray-100 flex-shrink-0">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-sm font-semibold">Review List</DialogTitle>
+            <DialogTitle className="text-sm font-semibold">{reviewListText}</DialogTitle>
           </div>
           <div className="flex items-center justify-between mt-4">
             <p className="text-[10px] text-gray-600">
-              Showing {reviews.length} of {totalReviews} results
+              {showingText} {reviews.length} {ofText} {totalReviews} {resultsText}
             </p>
             <div className="flex items-center space-x-2">
-              <span className="text-[10px] text-gray-600">Sort by :</span>
+              <span className="text-[10px] text-gray-600">{sortByText}</span>
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-24 h-7 text-[10px] border-gray-300">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
                   <SelectItem value="newest" className="text-[10px]">
-                    Newest
+                    {newestText}
                   </SelectItem>
                   <SelectItem value="oldest" className="text-[10px]">
-                    Oldest
+                    {oldestText}
                   </SelectItem>
                   <SelectItem value="highest" className="text-[10px]">
-                    Highest Rated
+                    {highestRatedText}
                   </SelectItem>
                   <SelectItem value="lowest" className="text-[10px]">
-                    Lowest Rated
+                    {lowestRatedText}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -93,7 +116,7 @@ const ReviewModal = ({ isOpen, onClose, reviews, totalReviews }: ReviewModalProp
         <div className="-mb-4 bg-white h-[420px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-hide">
           <div className="space-y-6 py-2">
             {sortedReviews.length === 0 ? (
-              <p className="text-center text-[11px] text-gray-500">No reviews yet</p>
+              <p className="text-center text-[11px] text-gray-500">{noReviewsYetText}</p>
             ) : (
               sortedReviews.map((review) => (
                 <div key={review.id} className="border-b border-gray-100 pb-6 last:border-b-0">
@@ -111,9 +134,9 @@ const ReviewModal = ({ isOpen, onClose, reviews, totalReviews }: ReviewModalProp
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center space-x-2">
                           <h4 className="font-medium text-[11px]">
-                            {review.user?.first_name} {review.user?.last_name}
+                            <TranslatedText text={review.user?.first_name} /> <TranslatedText text={review.user?.last_name} />
                           </h4>
-                          {review.user?.is_verified && <span className="text-[9px] text-gray-500">(Verified)</span>}
+                          {review.user?.is_verified && <span className="text-[9px] text-gray-500">({verifiedText})</span>}
                         </div>
                         <span className="text-[10px] text-gray-400">
                           {new Date(review.created_at).toLocaleDateString("en-US", {
@@ -126,7 +149,9 @@ const ReviewModal = ({ isOpen, onClose, reviews, totalReviews }: ReviewModalProp
 
                       <div className="flex items-center mb-1">{renderStars(review.score)}</div>
 
-                      <p className="text-[10px] text-gray-600 mb-2">{review.comment}</p>
+                      <p className="text-[10px] text-gray-600 mb-2">
+                        <TranslatedText text={review.comment} />
+                      </p>
 
                       {/* Review images */}
                       {review.images && review.images.length > 0 && (

@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "@/utils/apiClient";
 import { useIsAuthenticated } from "@/auth/useIsAuthenticated";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface Address {
   id: string;
@@ -28,6 +30,10 @@ export const AddressProvider = ({ children }: { children: React.ReactNode }) => 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const isAuthenticated = useIsAuthenticated();
+
+  // Language and translation
+  const { language } = useLanguage();
+  const failedToLoadAddressesText = useAutoTranslation("Failed to load addresses", language);
 
   const addOrUpdateAddress = (newAddress: Address) => {
     setAddresses((prev) => {
@@ -62,7 +68,7 @@ export const AddressProvider = ({ children }: { children: React.ReactNode }) => 
         }
       } catch (err: any) {
         if (err.response?.status !== 401) {
-          console.error("Failed to load addresses", err);
+          console.error(failedToLoadAddressesText, err);
         }
       } finally {
         setLoading(false);

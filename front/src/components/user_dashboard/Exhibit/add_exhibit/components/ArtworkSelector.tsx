@@ -2,6 +2,8 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { User } from "@/hooks/users/useUserQuery";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface ArtworkSelectorProps {
   artworks: Artwork[];
@@ -18,10 +20,16 @@ const ArtworkSelector: React.FC<ArtworkSelectorProps> = ({
   currentCollaborator,
   viewMode,
 }) => {
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const artworksText = useAutoTranslation("Artworks", language);
+  const yourArtworksText = useAutoTranslation("Your Artworks", language);
+
   return (
     <div>
       <h3 className="text-xs font-medium mb-4">
-        {viewMode === "collaborator" ? `${currentCollaborator?.first_name}'s Artworks` : "Your Artworks"}
+        {viewMode === "collaborator" ? `${currentCollaborator?.first_name}'s ${artworksText}` : yourArtworksText}
       </h3>
 
       <div className="max-h-64 overflow-y-auto pr-1">

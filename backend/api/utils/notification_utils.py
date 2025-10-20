@@ -57,7 +57,7 @@ def notify_purchase_created(buyer, seller, artwork, purchase_id, total_price):
         action="purchased your artwork",
         target=artwork.title,
         icon="purchase",
-        link=f"/artwork/{artwork.id}/",
+        link=f"/viewproduct/{artwork.id}",
         amount=f"₱{total_price:,.2f}",
         artwork=artwork
     )
@@ -72,7 +72,7 @@ def notify_purchase_created(buyer, seller, artwork, purchase_id, total_price):
         action="purchased an artwork",
         target=artwork.title,
         icon="purchase",
-        link=f"/viewproduct/{purchase_id}/",
+        link=f"/viewproduct/{artwork.id}",
         amount=f"₱{total_price:,.2f}",
         artwork=artwork
     )
@@ -94,7 +94,7 @@ def notify_purchase_status_update(buyer, seller, artwork, purchase_id, new_statu
             action="shipped your order",
             target=artwork.title,
             icon="shipping",
-            link=f"/viewproduct/{purchase_id}/",
+            link=f"/viewproduct/{artwork.id}",
             artwork=artwork
         )
         if buyer_notification:
@@ -109,7 +109,7 @@ def notify_purchase_status_update(buyer, seller, artwork, purchase_id, new_statu
             action="completed your order",
             target=artwork.title,
             icon="completed",
-            link=f"/artwork/{artwork.id}/",
+            link=f"/viewproduct/{artwork.id}",
             artwork=artwork
         )
         if seller_notification:
@@ -129,7 +129,7 @@ def notify_review_submitted(reviewer, seller, artwork, review_id, rating):
         action="reviewed your artwork",
         target=artwork.title,
         icon="review",
-        link=f"/artwork/{artwork.id}/",
+        link=f"/viewproduct/{artwork.id}",
         amount=f"{rating} stars",
         artwork=artwork
     )
@@ -150,7 +150,7 @@ def notify_review_updated(reviewer, seller, artwork, review_id, rating):
         action="updated their review",
         target=artwork.title,
         icon="review",
-        link=f"/artwork/{artwork.id}/",
+        link=f"/viewproduct/{artwork.id}",
         amount=f"{rating} stars",
         artwork=artwork
     )
@@ -171,7 +171,7 @@ def notify_review_deleted(reviewer, seller, artwork):
         action="deleted their review",
         target=artwork.title,
         icon="review",
-        link=f"/artwork/{artwork.id}/",
+        link=f"/viewproduct/{artwork.id}",
         artwork=artwork
     )
     if seller_notification:
@@ -191,7 +191,7 @@ def notify_artwork_listed_for_sale(artist, artwork, price):
         action="listed artwork for sale",
         target=artwork.title,
         icon="sale",
-        link=f"/artwork/{artwork.id}/",
+        link=f"/viewproduct/{artwork.id}",
         amount=f"₱{price:,.2f}",
         artwork=artwork
     )

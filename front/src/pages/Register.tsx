@@ -8,6 +8,7 @@ import apiClient from "../utils/apiClient";
 import SystemMessage from "../components/page/SystemMessage";
 import { toast } from "sonner";
 import { useGoogleLogin } from "@react-oauth/google";
+import { secureTokenStorage } from "@/utils/security/secureStorage";
 
 // Auto-translation imports
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
@@ -34,7 +35,6 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
       document.body.style.overflow = "auto";
     };
   }, []);
-
 
   // Language context
   const { language } = useLanguage();
@@ -93,8 +93,8 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
         });
 
         if (data.access_token) {
-          localStorage.setItem("access_token", data.access_token);
-          localStorage.setItem("refresh_token", data.refresh_token);
+          secureTokenStorage.setAccessToken(data.access_token);
+          secureTokenStorage.setRefreshToken(data.refresh_token);
           toast.success(registrationSuccessful, { closeButton: true });
 
           closeRegisterModal();

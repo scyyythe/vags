@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Footer } from "@/components/user_dashboard/footer/Footer";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/user_dashboard/navbar/Header";
@@ -13,18 +13,42 @@ import {
 import { useExhibitCards } from "@/hooks/exhibit/useCardExihibit";
 import ExhibitCardSkeleton from "@/components/skeletons/exhibits/ExhibitCardSkeleton";
 import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useSearchParams } from "react-router-dom";
 
 type SortOption = "popularity" | "newest" | "oldest";
 type FilterOption = "none" | "trending" | "most-viewed" | "upcoming" | "ongoing" | "ended";
 
 const Exhibits = () => {
   const navigate = useNavigate();
+  const { language } = useLanguage();
   const [baseType, setBaseType] = useState<"solo" | "collab">("solo");
   const [filter, setFilter] = useState<FilterOption>("ongoing");
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
+
   const { data: exhibits = [], isLoading } = useExhibitCards();
+
+  // Reset category to "All" when switching between Solo and Collab tabs
+  useEffect(() => {
+    setSelectedCategory("All");
+  }, [baseType]);
+
+  // Translation hooks for all text content
+  const exhibitsText = useAutoTranslation("Exhibits", language);
+  const soloText = useAutoTranslation("Solo", language);
+  const collabText = useAutoTranslation("Collab", language);
+  const trendingText = useAutoTranslation("Trending", language);
+  const mostViewedText = useAutoTranslation("Most Viewed", language);
+  const upcomingText = useAutoTranslation("Upcoming", language);
+  const ongoingText = useAutoTranslation("Ongoing", language);
+  const endedText = useAutoTranslation("Ended", language);
+  const filterText = useAutoTranslation("Filter", language);
+  const createText = useAutoTranslation("Create", language);
 
   const now = new Date();
 
@@ -41,6 +65,18 @@ const Exhibits = () => {
       selectedCategory === "All" || exhibit.category?.toLowerCase() === selectedCategory.toLowerCase();
 
     if (!matchesType || !matchesCategory) return false;
+
+    // Apply search filter
+    if (searchQuery?.trim()) {
+      const queryLower = searchQuery.toLowerCase();
+      const title = (exhibit.title || "").toLowerCase();
+      const description = (exhibit.description || "").toLowerCase();
+      const category = (exhibit.category || "").toLowerCase();
+
+      if (!title.includes(queryLower) && !description.includes(queryLower) && !category.includes(queryLower)) {
+        return false;
+      }
+    }
 
     if (filter === "trending") return exhibit.likes > 100;
     if (filter === "most-viewed") return exhibit.views > 1.3;
@@ -65,24 +101,31 @@ const Exhibits = () => {
         <div className="container mx-auto px-6">
           <ActiveAccountOnly>
             <div className="mb-8 mt-20">
-              <span className="font-bold">Exhibits</span>
+              <span className="font-bold">{exhibitsText}</span>
 
               <div className="flex flex-wrap items-center justify-between gap-4 my-4">
                 {/* SOLO / COLLAB TOGGLE */}
                 <div className="flex flex-wrap gap-2">
-                  {["solo", "collab"].map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setBaseType(type as "solo" | "collab")}
-                      className={`py-[5px] px-4 rounded-full text-[10px] font-small transition-colors ${
-                        baseType === type
-                          ? "border border-gray-300 font-medium shadow-md"
-                          : "bg-white border border-gray-200 hover:bg-gray-100"
-                      }`}
-                    >
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </button>
-                  ))}
+                  <button
+                    onClick={() => setBaseType("solo")}
+                    className={`py-[5px] px-4 rounded-full text-[10px] font-small transition-colors ${
+                      baseType === "solo"
+                        ? "border border-gray-300 font-medium shadow-md"
+                        : "bg-white border border-gray-200 hover:bg-gray-100"
+                    }`}
+                  >
+                    {soloText}
+                  </button>
+                  <button
+                    onClick={() => setBaseType("collab")}
+                    className={`py-[5px] px-4 rounded-full text-[10px] font-small transition-colors ${
+                      baseType === "collab"
+                        ? "border border-gray-300 font-medium shadow-md"
+                        : "bg-white border border-gray-200 hover:bg-gray-100"
+                    }`}
+                  >
+                    {collabText}
+                  </button>
                 </div>
 
                 {/* FILTER DROPDOWN */}
@@ -96,29 +139,29 @@ const Exhibits = () => {
                       <button className="py-1 px-4 rounded-full text-[10px] border border-gray-300">
                         <i className="bx bx-sort text-xs mr-1.5"></i>
                         {{
-                          trending: "Trending",
-                          "most-viewed": "Most Viewed",
-                          upcoming: "Upcoming",
-                          ongoing: "Ongoing",
-                          ended: "Ended",
-                        }[filter] || "Filter"}
+                          trending: trendingText,
+                          "most-viewed": mostViewedText,
+                          upcoming: upcomingText,
+                          ongoing: ongoingText,
+                          ended: endedText,
+                        }[filter] || filterText}
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => setFilter("trending")} className="text-[10px]">
-                        Trending
+                        {trendingText}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setFilter("most-viewed")} className="text-[10px]">
-                        Most Viewed
+                        {mostViewedText}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setFilter("upcoming")} className="text-[10px]">
-                        Upcoming
+                        {upcomingText}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setFilter("ongoing")} className="text-[10px]">
-                        Ongoing
+                        {ongoingText}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setFilter("ended")} className="text-[10px]">
-                        Ended
+                        {endedText}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -129,7 +172,7 @@ const Exhibits = () => {
                     onClick={() => navigate("/add-exhibit")}
                   >
                     <i className="bx bx-plus text-xs"></i>
-                    Create
+                    {createText}
                   </button>
                 </div>
               </div>
