@@ -112,9 +112,9 @@ const ProfileDropdown = ({ isOpen, onClose, onLogout }: ProfileDropdownProps) =>
 
         {/* Bottom actions */}
         <div className="flex flex-col px-4 gap-3 pb-4 text-gray-700 text-[10px]">
-          <button className="flex items-center gap-3 hover:text-black">
+          {/* <button className="flex items-center gap-3 hover:text-black">
             <Plus size={14} /> {addAccountLabel}
-          </button>
+          </button> */}
 
           <button onClick={() => setShowLogoutConfirm(true)} className="flex items-center gap-3 hover:text-black">
             <LogOut size={14} /> {logoutLabel}
