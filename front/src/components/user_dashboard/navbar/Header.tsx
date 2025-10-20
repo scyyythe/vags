@@ -208,7 +208,7 @@ const Header = () => {
           {/* Notifications */}
           <div className="relative top-0.5" ref={notificationRef}>
             <button
-              className={`button-icon ${hasNewNotifications ? 'animate-pulse' : ''}`}
+              className="button-icon"
               title={useAutoTranslation("Notifications", language)}
               onClick={() => {
                 if (isNotificationOpen) setIsNotificationOpen(false);
@@ -218,11 +218,9 @@ const Header = () => {
                 }
               }}
             >
-              <Bell size={15} className={hasNewNotifications ? 'text-blue-500' : ''} />
+              <Bell size={15} />
               {unreadCount > 0 && (
-                <span className={`absolute -top-0.5 -right-0.5 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center font-medium min-w-[12px] ${
-                  hasNewNotifications ? 'bg-blue-500 animate-bounce' : 'bg-red-500'
-                }`}>
+                <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center font-medium min-w-[12px]">
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
