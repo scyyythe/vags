@@ -37,7 +37,7 @@ const UnblockConfirmationModal: React.FC<UnblockConfirmationModalProps> = ({
         
         <div className="py-4">
           <p className="text-xs text-gray-600 mb-2">
-            {username} will be able to message you, view your profile, and interact with your posts again.
+            {useAutoTranslation(`${username} will be able to message you, view your profile, and interact with your posts again.`, selectedLanguage)}
           </p>
         </div>
 
