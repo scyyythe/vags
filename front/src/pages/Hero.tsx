@@ -4,6 +4,7 @@ import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPop
 import PopularArtworksSkeleton from "@/components/skeletons/artworks/PopularArtworksSkeleton";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLanguage } from "@/context/LanguageContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const ArtworkCard = ({ artwork, index }: { artwork: any; index: number }) => {
   const { language } = useLanguage();
@@ -49,7 +50,8 @@ const ArtworkCard = ({ artwork, index }: { artwork: any; index: number }) => {
               <img
                 src={artwork.artist.profile_picture}
                 alt={artwork.artist.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
+                style={{ objectFit: 'contain' }}
               />
             ) : (
               <span className="text-xs font-medium text-gray-600">
