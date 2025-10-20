@@ -53,8 +53,8 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
   };
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   
-  // Mock notifications for admin
-  const notifications: Array<{
+  // Mock notifications per role
+  type DropdownNotif = {
     id: string;
     title: string;
     description: string;
@@ -62,26 +62,29 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
     type: "system" | "security" | "user" | "payment";
     read?: boolean;
     archived?: boolean;
-  }> = [
-    { id: "1", title: "System maintenance scheduled", description: "Tonight at 11:00 PM UTC.", time: "5m ago", type: "system" },
-    { id: "2", title: "New user registered", description: "Curator account pending review.", time: "12m ago", type: "user" },
-    { id: "3", title: "Security log alert", description: "3 failed login attempts detected.", time: "1h ago", type: "security" },
-    { id: "4", title: "Payment dispute opened", description: "Order #2043 requires attention.", time: "2h ago", type: "payment" },
-    { id: "5", title: "Policy updated", description: "Privacy Policy v2.3 published.", time: "3h ago", type: "system" },
-    { id: "6", title: "Moderator report", description: "Content flagged for review (ID: 8841).", time: "3h ago", type: "user" },
-    { id: "7", title: "Backup completed", description: "Nightly backup finished successfully.", time: "4h ago", type: "system" },
-    { id: "8", title: "High error rate", description: "API 5xx spiked above threshold.", time: "4h ago", type: "security" },
-    { id: "9", title: "Payout processed", description: "Artist J. Cruz payout sent.", time: "5h ago", type: "payment" },
-    { id: "10", title: "Role change requested", description: "User 1294 requested Moderator access.", time: "6h ago", type: "user" },
-    { id: "11", title: "New exhibit created", description: "“Autumn Forms” pending approval.", time: "7h ago", type: "user" },
-    { id: "12", title: "Terms accepted", description: "All moderators acknowledged latest terms.", time: "9h ago", type: "system" },
-    { id: "13", title: "Chargeback notice", description: "Payment dispute for Order #2019.", time: "12h ago", type: "payment" },
-    { id: "14", title: "Suspicious activity", description: "Unusual IP change on admin account.", time: "13h ago", type: "security" },
-    { id: "15", title: "Large transaction", description: "$2,300 purchase approved.", time: "15h ago", type: "payment" },
-    { id: "16", title: "Integration warning", description: "Webhook retries exceeded for Mailer.", time: "18h ago", type: "system" },
-    { id: "17", title: "User appeal received", description: "Suspension appeal from user #992.", time: "20h ago", type: "user" },
-    { id: "18", title: "Password policy updated", description: "Minimum length increased to 12.", time: "1d ago", type: "security" },
+  };
+
+  const adminNotifications: DropdownNotif[] = [
+    { id: "a1", title: "System maintenance scheduled", description: "Tonight at 11:00 PM UTC.", time: "5m ago", type: "system" },
+    { id: "a2", title: "Policy updated", description: "Privacy Policy v2.3 published.", time: "20m ago", type: "system" },
+    { id: "a3", title: "High error rate", description: "API 5xx spiked above threshold.", time: "1h ago", type: "security" },
+    { id: "a4", title: "Payment dispute opened", description: "Order #2043 requires attention.", time: "2h ago", type: "payment" },
+    { id: "a5", title: "Payout processed", description: "Artist J. Cruz payout sent.", time: "3h ago", type: "payment" },
+    { id: "a6", title: "Role change requested", description: "User 1294 requested Moderator access.", time: "4h ago", type: "user" },
+    { id: "a7", title: "New exhibit created", description: "‘Autumn Forms’ pending approval.", time: "6h ago", type: "user" },
+    { id: "a8", title: "Password policy updated", description: "Minimum length now 12 characters.", time: "1d ago", type: "security" },
   ];
+
+  const moderatorNotifications: DropdownNotif[] = [
+    { id: "m1", title: "New report submitted", description: "Report on artwork ‘Dark Shadows’.", time: "3m ago", type: "user" },
+    { id: "m2", title: "User warning issued", description: "Warning sent to @creative456.", time: "25m ago", type: "user" },
+    { id: "m3", title: "Auto-removed content", description: "Comment removed for prohibited language.", time: "1h ago", type: "system" },
+    { id: "m4", title: "High priority: copyright strike", description: "DMCA takedown received for ‘Blue Waves’.", time: "2h ago", type: "security" },
+    { id: "m5", title: "Multiple reports for user", description: "@pixelmaster has 5 reports today.", time: "4h ago", type: "user" },
+    { id: "m6", title: "Maintenance complete", description: "All moderation tools operational.", time: "1d ago", type: "system" },
+  ];
+
+  const notifications: DropdownNotif[] = role === "admin" ? adminNotifications : moderatorNotifications;
   // Dropdown notifications state: support read/archived and inbox/archive views
   const [dropdownNotifications, setDropdownNotifications] = useState(
     notifications.map((n) => ({ ...n, read: n.read ?? false, archived: n.archived ?? false }))
