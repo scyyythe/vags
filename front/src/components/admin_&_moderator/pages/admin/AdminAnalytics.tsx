@@ -20,6 +20,13 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const userActivityData = [
   { name: "Jan", total: 1231 },
@@ -59,11 +66,16 @@ const deviceData = [
 
 const AdminAnalytics = () => {
   const [timeRange, setTimeRange] = useState("7d");
+  const [fullReportOpen, setFullReportOpen] = useState(false);
   
   const handleExport = (format: string) => {
     toast.success(`Report exported as ${format.toUpperCase()}`, {
       closeButton: true,
     });
+  };
+
+  const handleViewFullReport = () => {
+    setFullReportOpen(true);
   };
 
   return (
@@ -245,7 +257,7 @@ const AdminAnalytics = () => {
               Summary of platform performance for {timeRange === "7d" ? "the last 7 days" : timeRange === "30d" ? "the last 30 days" : "the selected period"}
             </CardDescription>
           </div>
-          <Button variant="outline" size="sm" className="text-[10px] rounded-full h-8">
+          <Button variant="outline" size="sm" className="text-[10px] rounded-full h-8" onClick={handleViewFullReport}>
             View Full Report
           </Button>
         </CardHeader>
@@ -294,6 +306,202 @@ const AdminAnalytics = () => {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={fullReportOpen} onOpenChange={setFullReportOpen}>
+        <DialogContent className="sm:max-w-[70vw] max-h-[90vh] rounded-lg">
+          <DialogHeader>
+            <DialogTitle className="text-sm">Full Analytics Report</DialogTitle>
+            <DialogDescription className="text-[11px]">
+              Comprehensive platform analytics for {timeRange === "7d" ? "the last 7 days" : timeRange === "30d" ? "the last 30 days" : "the selected period"}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 max-h-[calc(90vh-120px)] overflow-y-auto">
+            {/* Detailed Key Performance Metrics */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xs">Detailed Key Performance Metrics</CardTitle>
+                <CardDescription className="text-[10px]">
+                  Comprehensive breakdown of platform performance for {timeRange === "7d" ? "the last 7 days" : timeRange === "30d" ? "the last 30 days" : "the selected period"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted-foreground">Total Users</p>
+                    <p className="text-sm font-bold">8,942</p>
+                    <p className="text-[10px] text-green-600">+12% vs. last period</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted-foreground">New Artworks</p>
+                    <p className="text-sm font-bold">1,257</p>
+                    <p className="text-[10px] text-green-600">+8% vs. last period</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted-foreground">Total Sales</p>
+                    <p className="text-sm font-bold">$324,581</p>
+                    <p className="text-[10px] text-green-600">+15% vs. last period</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted-foreground">Platform Revenue</p>
+                    <p className="text-sm font-bold">$32,458</p>
+                    <p className="text-[10px] text-green-600">+15% vs. last period</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted-foreground">Avg. Bid Amount</p>
+                    <p className="text-sm font-bold">$428</p>
+                    <p className="text-[10px] text-red-600">-3% vs. last period</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted-foreground">Active Auctions</p>
+                    <p className="text-sm font-bold">432</p>
+                    <p className="text-[10px] text-green-600">+7% vs. last period</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted-foreground">Completed Auctions</p>
+                    <p className="text-sm font-bold">187</p>
+                    <p className="text-[10px] text-green-600">+5% vs. last period</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted-foreground">Avg. Time on Site</p>
+                    <p className="text-sm font-bold">12m 37s</p>
+                    <p className="text-[10px] text-green-600">+8% vs. last period</p>
+                  </div>
+                </div>
+
+                {/* Additional Advanced Metrics */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted-foreground">User Retention Rate</p>
+                    <p className="text-sm font-bold text-green-600">78.5%</p>
+                    <p className="text-[10px] text-green-600">+5.2% vs. last period</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted-foreground">Conversion Rate</p>
+                    <p className="text-sm font-bold text-blue-600">12.3%</p>
+                    <p className="text-[10px] text-green-600">+2.1% vs. last period</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted-foreground">Average Session Duration</p>
+                    <p className="text-sm font-bold text-purple-600">18m 42s</p>
+                    <p className="text-[10px] text-green-600">+3.2m vs. last period</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted-foreground">Bounce Rate</p>
+                    <p className="text-sm font-bold text-orange-600">24.8%</p>
+                    <p className="text-[10px] text-red-600">+1.5% vs. last period</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Geographic and Category Analysis */}
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xs">Geographic Distribution</CardTitle>
+                  <CardDescription className="text-[10px]">
+                    User activity by region
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[11px]">North America</span>
+                      <span className="text-[11px] font-semibold">42.5%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-[11px]">Europe</span>
+                      <span className="text-[11px] font-semibold">31.2%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-[11px]">Asia Pacific</span>
+                      <span className="text-[11px] font-semibold">18.7%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-[11px]">Other</span>
+                      <span className="text-[11px] font-semibold">7.6%</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xs">Top Performing Categories</CardTitle>
+                  <CardDescription className="text-[10px]">
+                    Highest revenue generating categories
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[200px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={categoryData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                          style={{fontSize:"10px"}}
+                          label={({ name, percent }) => 
+                            `${name}: ${(percent * 100).toFixed(0)}%`
+                          }
+                        >
+                          {categoryData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip contentStyle={{ fontSize: 10 }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Export Options */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xs">Export Report</CardTitle>
+                <CardDescription className="text-[10px]">
+                  Download this report in your preferred format
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex gap-3">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-[10px] rounded-full"
+                    onClick={() => handleExport("pdf")}
+                  >
+                    Export as PDF
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-[10px] rounded-full"
+                    onClick={() => handleExport("csv")}
+                  >
+                    Export as CSV
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-[10px] rounded-full"
+                    onClick={() => handleExport("xlsx")}
+                  >
+                    Export as Excel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
