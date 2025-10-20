@@ -1,4 +1,6 @@
 import { Card } from "@/components/ui/card";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface SalesMetricsProps {
   metrics: {
@@ -14,6 +16,19 @@ interface SalesMetricsProps {
 }
 
 const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const totalArtworksSoldText = useAutoTranslation("Total Artworks Sold", language);
+  const completedThisMonthText = useAutoTranslation("completed this month", language);
+  const totalEarningsText = useAutoTranslation("Total Earnings", language);
+  const fromLastMonthText = useAutoTranslation("from last month", language);
+  const salesStatusText = useAutoTranslation("Sales Status", language);
+  const overviewText = useAutoTranslation("Overview", language);
+  const pendingText = useAutoTranslation("Pending", language);
+  const completedText = useAutoTranslation("Completed", language);
+  const cancelledText = useAutoTranslation("Cancelled", language);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-PH", {
       style: "currency",
@@ -29,7 +44,7 @@ const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
       <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-medium text-muted-foreground">Total Artworks Sold</p>
+            <p className="text-xs font-medium text-muted-foreground">{totalArtworksSoldText}</p>
             <p className="text-xl font-bold text-primary">{metrics.totalArtworksSold}</p>
           </div>
           <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
@@ -45,7 +60,7 @@ const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
         </div>
         <div className="mt-4 flex items-center text-[11px] text-muted-foreground">
           <span className="text-green-600 font-medium">+{metrics.currentMonthSales || metrics.completedSales}</span>
-          <span className="ml-1">completed this month</span>
+          <span className="ml-1">{completedThisMonthText}</span>
         </div>
       </Card>
 
@@ -53,7 +68,7 @@ const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
       <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-medium text-muted-foreground">Total Earnings</p>
+            <p className="text-xs font-medium text-muted-foreground">{totalEarningsText}</p>
             <p className="text-xl font-bold text-green-700">{formatCurrency(metrics.totalEarnings)}</p>
           </div>
           <div className="w-12 h-12 bg-green-200 rounded-full flex items-center justify-center">
@@ -72,7 +87,7 @@ const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
             {(metrics.growthPercentage || 0) >= 0 ? "+" : ""}
             {metrics.growthPercentage || 0}%
           </span>
-          <span className="ml-1">from last month</span>
+          <span className="ml-1">{fromLastMonthText}</span>
         </div>
       </Card>
 
@@ -80,8 +95,8 @@ const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
       <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <p className="text-xs font-medium text-muted-foreground">Sales Status</p>
-            <p className="text-xl font-bold text-blue-700">Overview</p>
+            <p className="text-xs font-medium text-muted-foreground">{salesStatusText}</p>
+            <p className="text-xl font-bold text-blue-700">{overviewText}</p>
           </div>
           <div className="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center">
             <svg className="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,15 +111,15 @@ const SalesMetrics = ({ metrics }: SalesMetricsProps) => {
         </div>
         <div className="space-y-2">
           <div className="flex justify-between items-center text-[11px]">
-            <span className="text-muted-foreground">Pending</span>
+            <span className="text-muted-foreground">{pendingText}</span>
             <span className="font-medium text-orange-600">{metrics.pendingSales}</span>
           </div>
           <div className="flex justify-between items-center text-[11px]">
-            <span className="text-muted-foreground">Completed</span>
+            <span className="text-muted-foreground">{completedText}</span>
             <span className="font-medium text-green-600">{metrics.completedSales}</span>
           </div>
           <div className="flex justify-between items-center text-[11px]">
-            <span className="text-muted-foreground">Cancelled</span>
+            <span className="text-muted-foreground">{cancelledText}</span>
             <span className="font-medium text-red-600">{metrics.cancelledSales}</span>
           </div>
         </div>

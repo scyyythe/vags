@@ -7,8 +7,17 @@ import SellCardSkeleton from "@/components/skeletons/marketplace/SellCardSkeleto
 import SalesSummary from "@/components/user_dashboard/Marketplace/sales_summary/SalesSummary";
 import useMySellArtCards from "@/hooks/artworks/sell/useMySellArtCards";
 import useUserSellArtCards from "@/hooks/artworks/sell/useUserSellArtCards";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 import { memo } from "react";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
 import PurchasedArtworkCard from "@/components/user_dashboard/Marketplace/my_purchase/card/PurchasedArtworkCard";
 import OrderDetailsModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/OrderDetailsModal";
 import ReviewModal from "@/components/user_dashboard/Marketplace/my_purchase/modals/ReviewModal";
@@ -56,6 +65,67 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const { data: myPurchases, isLoading: isMyPurchasesLoading } = useMyPurchases();
   const { openChat } = useChat();
   const queryClient = useQueryClient();
+  const { language } = useLanguage();
+
+  // Translation hooks for toast messages
+  const missingPurchaseIdText = useAutoTranslation("Missing purchase ID for review.", language);
+  const missingArtworkIdText = useAutoTranslation("Missing artwork ID for review.", language);
+  const reviewSubmittedText = useAutoTranslation("Review submitted successfully!", language);
+  const failedToSubmitReviewText = useAutoTranslation("Failed to submit review.", language);
+  const unableToContactSellerIdText = useAutoTranslation("Unable to contact seller - seller ID not found", language);
+  const unableToContactSellerNameText = useAutoTranslation("Unable to contact seller - seller name not found", language);
+  const openingConversationText = useAutoTranslation("Opening conversation with", language);
+  const refundRequestInitiatedText = useAutoTranslation("Refund request initiated...", language);
+  const artworkReorderedText = useAutoTranslation("Artwork reordered successfully!", language);
+  const viewInPendingOrdersText = useAutoTranslation("You can view it in your pending orders.", language);
+  const orderCancelledText = useAutoTranslation("Order cancelled successfully", language);
+  const failedToLoadReviewText = useAutoTranslation("Failed to load review.", language);
+  const noReviewSelectedDeleteText = useAutoTranslation("No review selected to delete.", language);
+  const reviewDeletedText = useAutoTranslation("Review deleted successfully!", language);
+  const failedToDeleteReviewText = useAutoTranslation("Failed to delete review.", language);
+  const noReviewSelectedUpdateText = useAutoTranslation("No review selected to update.", language);
+  const reviewUpdatedText = useAutoTranslation("Review updated successfully!", language);
+  const failedToUpdateReviewText = useAutoTranslation("Failed to update review.", language);
+  const artworkAlreadyOnSaleText = useAutoTranslation("This artwork is already on sale and available in your listings.", language);
+  const artworkRelistedText = useAutoTranslation("Artwork relisted successfully!", language);
+  const failedToRelistText = useAutoTranslation("Failed to relist artwork. Please try again.", language);
+  const unableToContactBuyerIdText = useAutoTranslation("Unable to contact buyer - buyer ID not found", language);
+  const unableToContactBuyerNameText = useAutoTranslation("Unable to contact buyer - buyer name not found", language);
+  const unableToFindArtworkText = useAutoTranslation("Unable to find artwork information for thank you message.", language);
+
+  // Translation hooks for tab labels
+  const myListingsText = useAutoTranslation("MY LISTINGS", language);
+  const myPurchaseText = useAutoTranslation("MY PURCHASE", language);
+  const salesSummaryText = useAutoTranslation("SALES SUMMARY", language);
+  const listingsText = useAutoTranslation("Listings", language);
+  const soldText = useAutoTranslation("Sold", language);
+  const availableText = useAutoTranslation("AVAILABLE", language);
+  const unlistedText = useAutoTranslation("UNLISTED", language);
+  const soldUpperText = useAutoTranslation("SOLD", language);
+
+  // Translation hooks for subtab labels
+  const paymentReceivedText = useAutoTranslation("PAYMENT RECEIVED", language);
+  const inProgressText = useAutoTranslation("IN PROGRESS", language);
+  const completedText = useAutoTranslation("COMPLETED", language);
+  const cancelledText = useAutoTranslation("CANCELLED", language);
+  const refundedText = useAutoTranslation("REFUNDED", language);
+  const reviewsText = useAutoTranslation("REVIEWS", language);
+  const paidText = useAutoTranslation("PAID", language);
+  const failedText = useAutoTranslation("FAILED", language);
+  const toReceiveText = useAutoTranslation("TO RECEIVE", language);
+  const reviewedText = useAutoTranslation("REVIEWED", language);
+
+  // Translation hooks for empty state messages
+  const noSoldArtworksForStatusText = useAutoTranslation("No sold artworks found for this status.", language);
+  const noOrdersFoundText = useAutoTranslation("No orders found for this status.", language);
+  const noSoldArtworksFoundText = useAutoTranslation("No sold artworks found.", language);
+  const noActiveArtworksFoundText = useAutoTranslation("No active artworks found for this user.", language);
+
+  // Translation hooks for fallback values
+  const unknownText = useAutoTranslation("Unknown", language);
+  const untitledText = useAutoTranslation("Untitled", language);
+  const youText = useAutoTranslation("You", language);
+  const artistText = useAutoTranslation("Artist", language);
 
   const {
     data: myArtCards = [],
@@ -229,20 +299,20 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
       };
 
       if (!payload.purchase_id) {
-        toast.error("Missing purchase ID for review.");
+        toast.error(missingPurchaseIdText);
         return;
       }
       if (!payload.artwork_id) {
-        toast.error("Missing artwork ID for review.");
+        toast.error(missingArtworkIdText);
         return;
       }
 
       await submitReview(payload);
-      toast.success("Review submitted successfully!", { closeButton: true });
+      toast.success(reviewSubmittedText, { closeButton: true });
       setReviewModalOpen(false);
     } catch (err) {
       console.error("❌ Review submission failed", err);
-      toast.error("Failed to submit review.");
+      toast.error(failedToSubmitReviewText);
     } finally {
       setIsSubmitting(false);
     }
@@ -253,17 +323,17 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
     const sellerName = order.artwork?.artist_name;
 
     if (!sellerId) {
-      toast.error("Unable to contact seller - seller ID not found");
+      toast.error(unableToContactSellerIdText);
       return;
     }
 
     if (!sellerName) {
-      toast.error("Unable to contact seller - seller name not found");
+      toast.error(unableToContactSellerNameText);
       return;
     }
 
     openChat(String(sellerId), sellerName, undefined, true);
-    toast(`Opening conversation with ${sellerName}...`, { closeButton: true });
+    toast(`${openingConversationText} ${sellerName}...`, { closeButton: true });
   };
 
   const handleTrackOrder = (order) => {
@@ -272,18 +342,18 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   };
 
   const handleRequestRefund = () =>
-    toast.info("Refund request initiated...", {
+    toast.info(refundRequestInitiatedText, {
       closeButton: true,
     });
 
   const handleReorder = () =>
-    toast.success("Artwork reordered successfully!", {
+    toast.success(artworkReorderedText, {
       closeButton: true,
-      description: "You can view it in your pending orders.",
+      description: viewInPendingOrdersText,
     });
 
   const handleCancelOrder = () =>
-    toast.warning("Order cancelled successfully", {
+    toast.warning(orderCancelledText, {
       closeButton: true,
     });
 
@@ -294,14 +364,14 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
           ...data,
           artwork: {
             artworkImage: order.artwork?.image_url?.[0] || "",
-            title: order.artwork?.title || "Untitled",
-            artist: order.artwork?.artist_name || "Unknown",
+            title: order.artwork?.title || untitledText,
+            artist: order.artwork?.artist_name || unknownText,
           },
         });
         setShowReviewDetailsModal(true);
       },
       onError: (err) => {
-        toast.error("Failed to load review.");
+        toast.error(failedToLoadReviewText);
         console.error(err);
       },
     });
@@ -314,13 +384,13 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
 
   const handleDeleteReview = async () => {
     if (!selectedReview?.id) {
-      toast.error("No review selected to delete.");
+      toast.error(noReviewSelectedDeleteText);
       return;
     }
 
     try {
       await deleteReview(selectedReview.id);
-      toast.warning("Review deleted successfully!", {
+      toast.warning(reviewDeletedText, {
         closeButton: true,
       });
 
@@ -328,7 +398,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
       setSelectedReview(null);
     } catch (err) {
       console.error("❌ Failed to delete review:", err);
-      toast.error("Failed to delete review.");
+      toast.error(failedToDeleteReviewText);
     }
   };
 
@@ -341,7 +411,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   );
   const handleUpdateReview = async (reviewData: { rating: number; comment: string; photos: string[] }) => {
     if (!selectedReview?.id) {
-      toast.error("No review selected to update.");
+      toast.error(noReviewSelectedUpdateText);
       return;
     }
 
@@ -353,7 +423,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
         photos: reviewData.photos,
       });
 
-      toast.success("Review updated successfully!", {
+      toast.success(reviewUpdatedText, {
         closeButton: true,
       });
 
@@ -361,7 +431,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
       setSelectedReview(null);
     } catch (err) {
       console.error("Review update failed", err);
-      toast.error("Failed to update review.");
+      toast.error(failedToUpdateReviewText);
     }
   };
 
@@ -579,7 +649,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
         userName:
           currentUserProfile.username ||
           `${currentUserProfile.first_name || ""} ${currentUserProfile.last_name || ""}`.trim() ||
-          "Artist",
+          artistText,
         userAvatar: currentUserProfile.profile_picture || undefined,
       };
     }
@@ -587,7 +657,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
     // Fallback if no profile data available
     return {
       userId: loggedInUserId || "",
-      userName: "Artist",
+      userName: artistText,
       userAvatar: undefined,
     };
   };
@@ -701,18 +771,18 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
     const buyerName = artwork.buyer;
 
     if (!buyerId) {
-      toast.error("Unable to contact buyer - buyer ID not found");
+      toast.error(unableToContactBuyerIdText);
       return;
     }
 
     if (!buyerName) {
-      toast.error("Unable to contact buyer - buyer name not found");
+      toast.error(unableToContactBuyerNameText);
       return;
     }
 
     // Open direct conversation with buyer
     openChat(String(buyerId), buyerName, undefined, true);
-    toast(`Opening conversation with ${buyerName}...`, { closeButton: true });
+    toast(`${openingConversationText} ${buyerName}...`, { closeButton: true });
   };
 
   const handleMarkAsShipped = (artwork) => {
@@ -779,7 +849,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
         artwork: {
           artworkImage: artwork.artworkImage,
           title: artwork.title,
-          artist: "You",
+          artist: youText,
         },
       });
       setShowReviewDetailsModal(true);
@@ -790,7 +860,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
     // Check if the artwork is already onSale in the main artCards data
     const artworkInMainData = artCards.find((art) => art.id === id);
     if (artworkInMainData && artworkInMainData.art_status?.toLowerCase() === "onsale") {
-      toast.info("This artwork is already on sale and available in your listings.");
+      toast.info(artworkAlreadyOnSaleText);
       // Move to available tab to show the artwork
       setSubTab("available");
       return;
@@ -799,7 +869,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
     relistArtwork(id, {
       onSuccess: () => {
         // Show success message
-        toast.success("Artwork relisted successfully!", {
+        toast.success(artworkRelistedText, {
           closeButton: true,
         });
 
@@ -827,7 +897,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
       },
       onError: (error) => {
         console.error("Failed to relist artwork:", error);
-        const errorMessage = error?.response?.data?.detail || "Failed to relist artwork. Please try again.";
+        const errorMessage = error?.response?.data?.detail || failedToRelistText;
         toast.error(errorMessage);
       },
     });
@@ -839,6 +909,41 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
 
   const handleThankBuyer = (artwork: any) => {
     handleThankYouWithAutoMessage(artwork);
+  };
+
+  // Helper function to get translated subtab label
+  const getSubTabLabel = (tab: string): string => {
+    const normalizedTab = tab.toLowerCase().replace(/_/g, " ");
+    switch (tab) {
+      case "available":
+        return availableText;
+      case "unlisted":
+        return unlistedText;
+      case "sold":
+        return soldUpperText;
+      case "payment_received":
+        return paymentReceivedText;
+      case "in_progress":
+        return inProgressText;
+      case "completed":
+        return completedText;
+      case "cancelled":
+        return cancelledText;
+      case "refunded":
+        return refundedText;
+      case "reviews":
+        return reviewsText;
+      case "paid":
+        return paidText;
+      case "failed":
+        return failedText;
+      case "to receive":
+        return toReceiveText;
+      case "reviewed":
+        return reviewedText;
+      default:
+        return tab.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    }
   };
 
   return (
@@ -859,7 +964,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
               }
             }}
           >
-            MY LISTINGS
+            {myListingsText}
           </button>
           {isOwnProfile && (
             <button
@@ -874,7 +979,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                 }
               }}
             >
-              MY PURCHASE
+              {myPurchaseText}
             </button>
           )}
         </div>
@@ -887,7 +992,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
             }
           }}
         >
-          SALES SUMMARY
+          {salesSummaryText}
         </button>
       </div>
 
@@ -902,7 +1007,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                   className="flex items-center space-x-1 px-3 py-1 border border-gray-300 rounded-full text-gray-700"
                   onClick={() => setShowDropdown(!showDropdown)}
                 >
-                  <span>{activeSubGroup === "listings" ? "Listings" : "Sold Artworks"}</span>
+                  <span>{activeSubGroup === "listings" ? listingsText : soldText}</span>
                   <svg
                     className={`w-3 h-3 transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`}
                     fill="none"
@@ -928,7 +1033,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                           clearArtworkCache();
                         }}
                       >
-                        {option === "listings" ? "Listings" : "Sold"}
+                        {option === "listings" ? listingsText : soldText}
                       </button>
                     ))}
                   </div>
@@ -949,7 +1054,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                       }
                     }}
                   >
-                    {tab.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                    {getSubTabLabel(tab)}
                   </button>
                 ))}
               </div>
@@ -968,7 +1073,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                     clearArtworkCache();
                   }}
                 >
-                  {tab.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                  {getSubTabLabel(tab)}
                 </button>
               ))}
             </div>
@@ -984,7 +1089,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                 }`}
                 onClick={() => setSubTab(tab)}
               >
-                {tab.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                {getSubTabLabel(tab)}
               </button>
             ))}
           </div>
@@ -998,7 +1103,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
           filteredSoldArtworks.length === 0 ? (
             <div className="text-xs text-center py-12">
               <div className="w-24 h-24 mx-auto mb-4 opacity-50">{/* icon svg */}</div>
-              <p className="text-muted-foreground">No sold artworks found for this status.</p>
+              <p className="text-muted-foreground">{noSoldArtworksForStatusText}</p>
             </div>
           ) : isOwnProfile ? (
             subTab === "reviews" ? (
@@ -1105,7 +1210,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                   />
                 </svg>
               </div>
-              <p className="text-muted-foreground">No orders found for this status.</p>
+              <p className="text-muted-foreground">{noOrdersFoundText}</p>
             </div>
           ) : (
             filteredOrders.map((order) => (
@@ -1113,21 +1218,21 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                 key={order.id}
                 id={order.id}
                 artworkImage={order.artwork.image_url?.[0]}
-                title={order.artwork?.title || "Untitled"}
-                artist={order.artwork?.artist_name || "Unknown"}
+                title={order.artwork?.title || untitledText}
+                artist={order.artwork?.artist_name || unknownText}
                 artistId={order.artwork?.artist_id}
                 price={order.artwork?.price ?? 0}
                 status={
                   order.status === "Pending" ? "pending_payment" : order.status?.toLowerCase().replace(/\s+/g, "_")
                 }
-                orderDate={order.created_at ? new Date(order.created_at).toLocaleDateString() : "Unknown"}
+                orderDate={order.created_at ? new Date(order.created_at).toLocaleDateString() : unknownText}
                 completedDate="2025-07-10T10:00:00Z"
                 expectedDelivery={
                   order.expectedDelivery
                     ? new Date(order.expectedDelivery).toLocaleDateString()
                     : order.created_at
                     ? new Date(new Date(order.created_at).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()
-                    : "Unknown"
+                    : unknownText
                 }
                 isHighlighted={highlightedOrderId === order.id}
                 onViewDetails={() => handleViewDetails(order)}
@@ -1136,8 +1241,8 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                     {
                       artworkId: order.artwork._id,
                       artworkImage: order.artwork.image_url?.[0],
-                      title: order.artwork?.title || "Untitled",
-                      artist: order.artwork?.artist_name || "Unknown",
+                      title: order.artwork?.title || untitledText,
+                      artist: order.artwork?.artist_name || unknownText,
                     },
                     order
                   )
@@ -1176,7 +1281,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                   />
                 </svg>
               </div>
-              <p className="text-muted-foreground">No sold artworks found.</p>
+              <p className="text-muted-foreground">{noSoldArtworksFoundText}</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
@@ -1220,7 +1325,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                 />
               </svg>
             </div>
-            <p className="text-muted-foreground">No active artworks found for this user.</p>
+            <p className="text-muted-foreground">{noActiveArtworksFoundText}</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
@@ -1271,7 +1376,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
               artworkId: order.artwork?._id || order.artwork?.id,
               artworkImage: order.artwork?.image_url?.[0] || order.artworkImage,
               title: order.artwork?.title || order.title,
-              artist: order.artwork?.artist_name || order.artist || "Unknown",
+              artist: order.artwork?.artist_name || order.artist || unknownText,
             });
           }}
         />
@@ -1303,14 +1408,14 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
           order={{
             id: selectedOrderForTracking.id,
             artworkImage: selectedOrderForTracking.artwork.image_url?.[0] || "",
-            title: selectedOrderForTracking.artwork?.title || "Untitled",
-            artist: selectedOrderForTracking.artwork?.artist_name || "Unknown",
+            title: selectedOrderForTracking.artwork?.title || untitledText,
+            artist: selectedOrderForTracking.artwork?.artist_name || unknownText,
             price: selectedOrderForTracking.artwork?.price ?? 0,
             status: selectedOrderForTracking.status,
             orderDate: selectedOrderForTracking.created_at
               ? new Date(selectedOrderForTracking.created_at).toLocaleDateString()
-              : "Unknown",
-            paymentMethod: selectedOrderForTracking.payment_method || "Unknown",
+              : unknownText,
+            paymentMethod: selectedOrderForTracking.payment_method || unknownText,
           }}
         />
       )}
@@ -1358,7 +1463,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
               handleThankBuyer(selectedReview.artwork);
             } else {
               console.log("❌ No artwork data found");
-              toast.error("Unable to find artwork information for thank you message.");
+              toast.error(unableToFindArtworkText);
             }
           }}
           viewType={mainTab === "myListings" && activeSubGroup === "soldArtworks" ? "seller" : "buyer"}

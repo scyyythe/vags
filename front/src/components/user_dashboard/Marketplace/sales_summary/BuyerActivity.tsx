@@ -1,5 +1,14 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
 
 interface BuyerActivityProps {
   activities: Array<{
@@ -17,6 +26,11 @@ interface BuyerActivityProps {
 }
 
 const BuyerActivity = ({ activities }: BuyerActivityProps) => {
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const noBuyerActivityText = useAutoTranslation("No buyer activity found for this filter.", language);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-PH", {
       style: "currency",
@@ -118,7 +132,7 @@ const BuyerActivity = ({ activities }: BuyerActivityProps) => {
               />
             </svg>
           </div>
-          <p className="text-xs text-muted-foreground">No buyer activity found for this filter.</p>
+          <p className="text-xs text-muted-foreground">{noBuyerActivityText}</p>
         </div>
       </Card>
     );
@@ -138,18 +152,22 @@ const BuyerActivity = ({ activities }: BuyerActivityProps) => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="text-xs font-medium text-foreground">{activity.buyerName}</p>
+                  <p className="text-xs font-medium text-foreground">
+                    <TranslatedText text={activity.buyerName} />
+                  </p>
                   <Badge variant="secondary" className={`text-[11px] ${getStatusColor(activity.status)}`}>
-                    {activity.status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                    <TranslatedText text={activity.status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} />
                   </Badge>
                 </div>
                 <p className="text-[11px] text-muted-foreground">
-                  {activity.action} "{activity.artworkTitle}" • {formatCurrency(activity.price)}
+                  <TranslatedText text={activity.action} /> "<TranslatedText text={activity.artworkTitle} />" • {formatCurrency(activity.price)}
                 </p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-[11px] text-muted-foreground">{activity.timestamp}</p>
+              <p className="text-[11px] text-muted-foreground">
+                <TranslatedText text={activity.timestamp} />
+              </p>
             </div>
           </div>
         ))}
