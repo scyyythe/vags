@@ -3,6 +3,16 @@ import { X, Calendar, Package, MapPin, CreditCard, Palette, Clock, CheckCircle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
+
 interface OrderDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -59,6 +69,87 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
   onMarkAsShipped,
   onLeaveReview,
 }) => {
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const saleDetailsText = useAutoTranslation("Sale Details", language);
+  const orderDetailsText = useAutoTranslation("Order Details", language);
+  const artworkDetailsText = useAutoTranslation("Artwork Details", language);
+  const untitledText = useAutoTranslation("Untitled", language);
+  const soldToText = useAutoTranslation("Sold to", language);
+  const byText = useAutoTranslation("by", language);
+  const unknownText = useAutoTranslation("Unknown", language);
+  const sizeText = useAutoTranslation("Size:", language);
+  const mediumText = useAutoTranslation("Medium:", language);
+  const styleText = useAutoTranslation("Style:", language);
+  const editionText = useAutoTranslation("Edition:", language);
+  const yearText = useAutoTranslation("Year:", language);
+  const quantityText = useAutoTranslation("Quantity:", language);
+  const buyerAddressText = useAutoTranslation("Buyer Address", language);
+  const shippingAddressText = useAutoTranslation("Shipping Address", language);
+  const shippingNotAvailableText = useAutoTranslation("Shipping address not available.", language);
+  const paymentInformationText = useAutoTranslation("Payment Information", language);
+  const paymentReceivedText = useAutoTranslation("Payment received", language);
+  const paymentConfirmedText = useAutoTranslation("Payment confirmed", language);
+  const paymentInitiatedText = useAutoTranslation("Payment Initiated", language);
+  const paymentInitiatedDescText = useAutoTranslation("Payment request sent to payment gateway", language);
+  const paymentProcessingText = useAutoTranslation("Payment Processing", language);
+  const paymentProcessingDescText = useAutoTranslation("Payment being processed by bank", language);
+  const paymentVerifiedText = useAutoTranslation("Payment Verified", language);
+  const paymentVerifiedDescText = useAutoTranslation("Payment verification completed", language);
+  const orderConfirmedText = useAutoTranslation("Order Confirmed", language);
+  const orderConfirmedDescText = useAutoTranslation("Order confirmed and sent to seller", language);
+  const saleSummaryText = useAutoTranslation("Sale Summary", language);
+  const orderSummaryText = useAutoTranslation("Order Summary", language);
+  const saleDateText = useAutoTranslation("Sale Date", language);
+  const orderDateText = useAutoTranslation("Order Date", language);
+  const saleIdText = useAutoTranslation("Sale ID", language);
+  const orderIdText = useAutoTranslation("Order ID", language);
+  const expectedDeliveryText = useAutoTranslation("Expected Delivery", language);
+  const totalText = useAutoTranslation("Total", language);
+  const contactBuyerText = useAutoTranslation("Contact Buyer", language);
+  const viewPaymentDetailsText = useAutoTranslation("View Payment Details", language);
+  const markAsShippedText = useAutoTranslation("Mark as Shipped", language);
+  const markedAsShippedText = useAutoTranslation("Marked as Shipped", language);
+  const contactSellerText = useAutoTranslation("Contact Seller", language);
+  const trackPaymentText = useAutoTranslation("Track Payment", language);
+  const leaveReviewText = useAutoTranslation("Leave Review", language);
+
+  // Status translations
+  const pendingPaymentText = useAutoTranslation("PENDING PAYMENT", language);
+  const paymentProcessingStatusText = useAutoTranslation("PAYMENT PROCESSING", language);
+  const paidText = useAutoTranslation("PAID", language);
+  const completedText = useAutoTranslation("COMPLETED", language);
+  const failedText = useAutoTranslation("FAILED", language);
+  const cancelledText = useAutoTranslation("CANCELLED", language);
+  const refundedText = useAutoTranslation("REFUNDED", language);
+  const reviewedText = useAutoTranslation("REVIEWED", language);
+  const unknownStatusText = useAutoTranslation("UNKNOWN", language);
+
+  // Helper function to get translated status text
+  const getTranslatedStatus = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "pending_payment":
+        return pendingPaymentText;
+      case "payment_processing":
+        return paymentProcessingStatusText;
+      case "paid":
+        return paidText;
+      case "completed":
+        return completedText;
+      case "failed":
+        return failedText;
+      case "cancelled":
+        return cancelledText;
+      case "refunded":
+        return refundedText;
+      case "reviewed":
+        return reviewedText;
+      default:
+        return unknownStatusText;
+    }
+  };
+
   const computedOrder = {
     ...order,
     paymentMethod: order.paymentMethod,
@@ -67,34 +158,34 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
     netAmount: +(order.price * 0.95).toFixed(2),
     timeline: [
       {
-        status: "Payment Initiated",
+        status: paymentInitiatedText,
         date: order.orderDate,
         time: "10:30 AM",
-        description: "Payment request sent to payment gateway",
+        description: paymentInitiatedDescText,
         completed: true,
         icon: <CreditCard className="w-3 h-3" />,
       },
       {
-        status: "Payment Processing",
+        status: paymentProcessingText,
         date: order.orderDate,
         time: "10:31 AM",
-        description: "Payment being processed by bank",
+        description: paymentProcessingDescText,
         completed: order.status.toLowerCase() !== "pending_payment",
         icon: <Clock className="w-3 h-3" />,
       },
       {
-        status: "Payment Verified",
+        status: paymentVerifiedText,
         date: order.orderDate,
         time: "10:35 AM",
-        description: "Payment verification completed",
+        description: paymentVerifiedDescText,
         completed: ["paid", "completed", "reviewed"].includes(order.status.toLowerCase()),
         icon: <CheckCircle className="w-3 h-3" />,
       },
       {
-        status: "Order Confirmed",
+        status: orderConfirmedText,
         date: order.orderDate,
         time: "10:36 AM",
-        description: "Order confirmed and sent to seller",
+        description: orderConfirmedDescText,
         completed: ["paid", "completed", "reviewed"].includes(order.status.toLowerCase()),
         icon: <Package className="w-3 h-3" />,
       },
@@ -137,10 +228,10 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
       >
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between text-sm mt-3">
-            <span>{viewType === "seller" ? "Sale Details" : "Order Details"}</span>
+            <span>{viewType === "seller" ? saleDetailsText : orderDetailsText}</span>
             <div className="flex items-center gap-2">
               <Badge className={`${getStatusColor(order.status || "unknown")} text-white text-[10px]`}>
-                {(order.status || "unknown").replace(/_/g, " ").toUpperCase()}
+                {getTranslatedStatus(order.status || "unknown")}
               </Badge>
             </div>
           </DialogTitle>
@@ -153,7 +244,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
             <div className="border border-border rounded-lg p-4">
               <h3 className="font-semibold text-sm mb-4 flex items-center gap-2">
                 <Palette className="w-2.5 h-2.5" />
-                Artwork Details
+                {artworkDetailsText}
               </h3>
               <div className="flex gap-4">
                 <img
@@ -162,25 +253,43 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   className="w-24 h-24 rounded-md object-cover"
                 />
                 <div className="flex-1">
-                  <h4 className="font-semibold text-xs text-foreground mb-0.5">{order.title || "Untitled"}</h4>
+                  <h4 className="font-semibold text-xs text-foreground mb-0.5">
+                    {order.title ? <TranslatedText text={order.title} /> : untitledText}
+                  </h4>
                   <p className="text-[10px] text-black mb-2">
-                    {viewType === "seller" ? `Sold to ${order.buyer || "Unknown"}` : `by ${order.artist || "Unknown"}`}
+                    {viewType === "seller" ? (
+                      <>
+                        {soldToText} {order.buyer ? <TranslatedText text={order.buyer} /> : unknownText}
+                      </>
+                    ) : (
+                      <>
+                        {byText} {order.artist ? <TranslatedText text={order.artist} /> : unknownText}
+                      </>
+                    )}
                   </p>
                   <div className="grid grid-cols-2 gap-2 text-[10px] text-muted-foreground">
-                    <div>Size: {order.artwork.size || "Unknown"}</div>
-                    <div>Medium: {order.artwork.medium || "Unknown"}</div>
                     <div>
-                      Style:{" "}
+                      {sizeText} {order.artwork.size ? <TranslatedText text={order.artwork.size} /> : unknownText}
+                    </div>
+                    <div>
+                      {mediumText} {order.artwork.medium ? <TranslatedText text={order.artwork.medium} /> : unknownText}
+                    </div>
+                    <div>
+                      {styleText}{" "}
                       {order.artwork.style
-                        ? order.artwork.style.charAt(0).toUpperCase() + order.artwork.style.slice(1)
-                        : "Unknown"}
+                        ? <TranslatedText text={order.artwork.style.charAt(0).toUpperCase() + order.artwork.style.slice(1)} />
+                        : unknownText}
                     </div>
 
-                    <div>Edition: {order.artwork.edition || "Unknown"}</div>
-                    <div>Year: {order.artwork.yearCreated || "Unknown"}</div>
+                    <div>
+                      {editionText} {order.artwork.edition ? <TranslatedText text={order.artwork.edition} /> : unknownText}
+                    </div>
+                    <div>
+                      {yearText} {order.artwork.yearCreated || unknownText}
+                    </div>
                     <div>
                       {(order.artwork.edition === "Limited Edition" || order.artwork.edition === "Open Edition") &&
-                        order.artwork.quantity && <span className="block">Quantity: {order.artwork.quantity}</span>}
+                        order.artwork.quantity && <span className="block">{quantityText} {order.artwork.quantity}</span>}
                     </div>
                   </div>
                 </div>
@@ -192,19 +301,23 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
             <div className="border border-border rounded-lg p-4">
               <h3 className="font-semibold text-sm mb-4 flex items-center gap-2">
                 <MapPin className="w-2.5 h-2.5" />
-                {viewType === "seller" ? "Buyer Address" : "Shipping Address"}
+                {viewType === "seller" ? buyerAddressText : shippingAddressText}
               </h3>
               {order.shippingAddress ? (
                 <div className="leading-snug">
-                  <p className="font-medium text-xs">{order.shippingAddress.name}</p>
-                  <p className="text-muted-foreground text-[10px]">{order.shippingAddress.address}</p>
+                  <p className="font-medium text-xs">
+                    <TranslatedText text={order.shippingAddress.name} />
+                  </p>
                   <p className="text-muted-foreground text-[10px]">
-                    {order.shippingAddress.city}
+                    <TranslatedText text={order.shippingAddress.address} />
+                  </p>
+                  <p className="text-muted-foreground text-[10px]">
+                    <TranslatedText text={order.shippingAddress.city} />
                     {order.shippingAddress.postalCode ? `, ${order.shippingAddress.postalCode}` : ""}
                   </p>
                 </div>
               ) : (
-                <p className="text-[10px] text-muted-foreground">Shipping address not available.</p>
+                <p className="text-[10px] text-muted-foreground">{shippingNotAvailableText}</p>
               )}
             </div>
 
@@ -212,16 +325,18 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
             <div className="border border-border rounded-lg p-4">
               <h3 className="font-semibold text-sm mb-4 flex items-center gap-2">
                 <CreditCard className="w-2.5 h-2.5" />
-                Payment Information
+                {paymentInformationText}
               </h3>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
                   <CreditCard className="w-2.5 h-2.5 text-primary-foreground" />
                 </div>
                 <div>
-                  <p className="text-[11px] font-medium">{order.paymentMethod || "Unknown"}</p>
+                  <p className="text-[11px] font-medium">
+                    {order.paymentMethod ? <TranslatedText text={order.paymentMethod} /> : unknownText}
+                  </p>
                   <p className="text-[10px] text-muted-foreground">
-                    {viewType === "seller" ? "Payment received" : "Payment confirmed"}
+                    {viewType === "seller" ? paymentReceivedText : paymentConfirmedText}
                   </p>
                 </div>
               </div>
@@ -262,16 +377,18 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           {/* Right Column - Summary */}
           <div className="lg:col-span-1">
             <div className="border border-border rounded-lg p-4 space-y-4">
-              <h3 className="font-semibold text-sm">{viewType === "seller" ? "Sale Summary" : "Order Summary"}</h3>
+              <h3 className="font-semibold text-sm">{viewType === "seller" ? saleSummaryText : orderSummaryText}</h3>
 
               <div className="space-y-3 text-[10px]">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-2.5 h-2.5 text-muted-foreground" />
                   <div>
                     <p className="text-[10px] text-muted-foreground">
-                      {viewType === "seller" ? "Sale Date" : "Order Date"}
+                      {viewType === "seller" ? saleDateText : orderDateText}
                     </p>
-                    <p className="font-medium text-[11px]">{order.saleDate || order.orderDate || "Unknown"}</p>
+                    <p className="font-medium text-[11px]">
+                      <TranslatedText text={order.saleDate || order.orderDate || unknownText} />
+                    </p>
                   </div>
                 </div>
 
@@ -279,9 +396,11 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   <Package className="w-2.5 h-2.5 text-muted-foreground" />
                   <div>
                     <p className="text-[10px] text-muted-foreground">
-                      {viewType === "seller" ? "Sale ID" : "Order ID"}
+                      {viewType === "seller" ? saleIdText : orderIdText}
                     </p>
-                    <p className="font-medium text-[10px]">{order.id || "Unknown"}</p>
+                    <p className="font-medium text-[10px]">
+                      <TranslatedText text={order.id || unknownText} />
+                    </p>
                   </div>
                 </div>
 
@@ -289,8 +408,10 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   <div className="flex items-center gap-2">
                     <Calendar className="w-2.5 h-2.5 text-muted-foreground" />
                     <div>
-                      <p className="text-[10px] text-muted-foreground">Expected Delivery</p>
-                      <p className="font-medium text-[11px]">{order.expectedDelivery}</p>
+                      <p className="text-[10px] text-muted-foreground">{expectedDeliveryText}</p>
+                      <p className="font-medium text-[11px]">
+                        <TranslatedText text={order.expectedDelivery} />
+                      </p>
                     </div>
                   </div>
                 )}
@@ -298,7 +419,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
 
               <div className="border-t pt-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-[11px] font-semibold">Total</span>
+                  <span className="text-[11px] font-semibold">{totalText}</span>
                   <span className="text-sm font-bold text-foreground">
                     ₱
                     {order.price
@@ -317,13 +438,13 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                       className="w-full py-2 rounded-lg text-[11px] text-black font-medium border"
                       onClick={onContactBuyer}
                     >
-                      Contact Buyer
+                      {contactBuyerText}
                     </button>
                     <button
                       className="w-full py-2 rounded-lg text-[11px] text-black font-medium bg-gray-100"
                       onClick={onViewPayment}
                     >
-                      View Payment Details
+                      {viewPaymentDetailsText}
                     </button>
                     {(order.status === "payment_received" || order.status === "in_progress") && (
                       <button
@@ -332,24 +453,24 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                         }`}
                         onClick={() => setIsShipped(!isShipped)}
                       >
-                        {isShipped ? "Marked as Shipped" : "Mark as Shipped"}
+                        {isShipped ? markedAsShippedText : markAsShippedText}
                       </button>
                     )}
                   </>
                 ) : (
                   <>
                     <button className="w-full py-2 rounded-lg text-[11px] text-white font-medium bg-black">
-                      Contact Seller
+                      {contactSellerText}
                     </button>
                     <button className="w-full py-2 rounded-lg text-[11px] text-black font-medium border">
-                      Track Payment
+                      {trackPaymentText}
                     </button>
                     {order.status === "Completed" && (
                       <button
                         className="w-full py-2 rounded-lg text-[11px] text-black font-medium bg-gray-100"
                         onClick={() => onLeaveReview?.(order)}
                       >
-                        Leave Review
+                        {leaveReviewText}
                       </button>
                     )}
                   </>
