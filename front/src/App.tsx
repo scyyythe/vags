@@ -62,6 +62,7 @@ import ReviewPurchase from "@/components/user_dashboard/Marketplace/buying_proce
 import { PurchaseProvider } from "./context/PurchaseContext";
 //ADMIN & MODERATOR
 import { AdminLayout } from "@/components/admin_&_moderator/layout/AdminLayout";
+import AdminTermsWrapper from "@/components/admin_&_moderator/AdminTermsWrapper";
 
 // Admin routes
 import AdminDashboard from "@/components/admin_&_moderator/pages/admin/AdminDashboard";
@@ -250,9 +251,11 @@ const App = () => {
                                   path="/admin"
                                   element={
                                     <ProtectedRoute allowedRoles={["admin"]}>
-                                      <AdminLayout role="admin">
-                                        <AdminDashboard />
-                                      </AdminLayout>
+                                      <AdminTermsWrapper role="admin">
+                                        <AdminLayout role="admin">
+                                          <AdminDashboard />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
                                     </ProtectedRoute>
                                   }
                                 />
@@ -260,9 +263,11 @@ const App = () => {
                                   path="/admin/users"
                                   element={
                                     <ProtectedRoute allowedRoles={["admin"]}>
-                                      <AdminLayout role="admin">
-                                        <AdminUsers />
-                                      </AdminLayout>
+                                      <AdminTermsWrapper role="admin">
+                                        <AdminLayout role="admin">
+                                          <AdminUsers />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
                                     </ProtectedRoute>
                                   }
                                 />
@@ -270,9 +275,11 @@ const App = () => {
                                   path="/admin/config"
                                   element={
                                     <ProtectedRoute allowedRoles={["admin"]}>
-                                      <AdminLayout role="admin">
-                                        <AdminConfig />
-                                      </AdminLayout>
+                                      <AdminTermsWrapper role="admin">
+                                        <AdminLayout role="admin">
+                                          <AdminConfig />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
                                     </ProtectedRoute>
                                   }
                                 />
@@ -280,9 +287,11 @@ const App = () => {
                                   path="/admin/security"
                                   element={
                                     <ProtectedRoute allowedRoles={["admin"]}>
-                                      <AdminLayout role="admin">
-                                        <AdminSecurity />
-                                      </AdminLayout>
+                                      <AdminTermsWrapper role="admin">
+                                        <AdminLayout role="admin">
+                                          <AdminSecurity />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
                                     </ProtectedRoute>
                                   }
                                 />
@@ -290,9 +299,11 @@ const App = () => {
                                   path="/admin/analytics"
                                   element={
                                     <ProtectedRoute allowedRoles={["admin"]}>
-                                      <AdminLayout role="admin">
-                                        <AdminAnalytics />
-                                      </AdminLayout>
+                                      <AdminTermsWrapper role="admin">
+                                        <AdminLayout role="admin">
+                                          <AdminAnalytics />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
                                     </ProtectedRoute>
                                   }
                                 />
@@ -301,9 +312,11 @@ const App = () => {
                                   path="/moderator"
                                   element={
                                     <ProtectedRoute allowedRoles={["moderator"]}>
-                                      <AdminLayout role="moderator">
-                                        <ModeratorDashboard />
-                                      </AdminLayout>
+                                      <AdminTermsWrapper role="moderator">
+                                        <AdminLayout role="moderator">
+                                          <ModeratorDashboard />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
                                     </ProtectedRoute>
                                   }
                                 />
@@ -312,9 +325,11 @@ const App = () => {
                                   path="/moderator/reports"
                                   element={
                                     <ProtectedRoute allowedRoles={["moderator"]}>
-                                      <AdminLayout role="moderator">
-                                        <ModeratorReports />
-                                      </AdminLayout>
+                                      <AdminTermsWrapper role="moderator">
+                                        <AdminLayout role="moderator">
+                                          <ModeratorReports />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
                                     </ProtectedRoute>
                                   }
                                 />
@@ -323,9 +338,11 @@ const App = () => {
                                   path="/moderator/content"
                                   element={
                                     <ProtectedRoute allowedRoles={["moderator"]}>
-                                      <AdminLayout role="moderator">
-                                        <ModeratorContent />
-                                      </AdminLayout>
+                                      <AdminTermsWrapper role="moderator">
+                                        <AdminLayout role="moderator">
+                                          <ModeratorContent />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
                                     </ProtectedRoute>
                                   }
                                 />
@@ -334,9 +351,11 @@ const App = () => {
                                   path="/moderator/users"
                                   element={
                                     <ProtectedRoute allowedRoles={["moderator"]}>
-                                      <AdminLayout role="moderator">
-                                        <ModeratorUsers />
-                                      </AdminLayout>
+                                      <AdminTermsWrapper role="moderator">
+                                        <AdminLayout role="moderator">
+                                          <ModeratorUsers />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
                                     </ProtectedRoute>
                                   }
                                 />
@@ -345,9 +364,11 @@ const App = () => {
                                   path="/moderator/notifications"
                                   element={
                                     <ProtectedRoute allowedRoles={["moderator"]}>
-                                      <AdminLayout role="moderator">
-                                        <ModeratorNotifications />
-                                      </AdminLayout>
+                                      <AdminTermsWrapper role="moderator">
+                                        <AdminLayout role="moderator">
+                                          <ModeratorNotifications />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
                                     </ProtectedRoute>
                                   }
                                 />

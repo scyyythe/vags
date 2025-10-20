@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import apiClient from "../utils/apiClient";
 import { useModal } from "../context/ModalContext";
 import SystemMessage from "../components/page/SystemMessage";
+import TermsAndConditionsModal from "../components/modals/TermsAndConditionsModal";
 
 const FingerprintRegister = () => {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ const FingerprintRegister = () => {
 
   const [validationState, setValidationState] = useState<"idle" | "validating" | "valid" | "invalid">("idle");
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [registrationData, setRegistrationData] = useState<any>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,6 +37,22 @@ const FingerprintRegister = () => {
     navigate("/");
     setValidationState("valid");
     setMessage({ type: "success", text: "Registration successful!" });
+  };
+
+  const handleTermsAgree = () => {
+    // Close terms modal and proceed to login
+    setShowTermsModal(false);
+    setShowLoginModal(true);
+    navigate("/");
+    setRegistrationData(null);
+  };
+
+  const handleTermsExit = () => {
+    // Close terms modal and return to registration
+    setShowTermsModal(false);
+    setRegistrationData(null);
+    setValidationState("idle");
+    setMessage(null);
   };
   
   const handleFingerprintRegistration = async () => {
@@ -84,12 +103,27 @@ const FingerprintRegister = () => {
 
         console.log("Fingerprint registration successful:", registerResponse.data);
 
+        // Store registration data and show success message
+        setRegistrationData({ 
+          response: registerResponse, 
+          formData: { 
+            firstName: formData.firstName, 
+            lastName: formData.lastName, 
+            email: formData.email, 
+            password: securePassword 
+          },
+          isFingerprintSignUp: true 
+        });
+        
         setValidationState("valid");
         setMessage({ type: "success", text: "Registration successful!" });
 
         toast.success("Registration successful!", {
-          description: "You can now log in with your fingerprint.",
+          description: "Please accept the Terms & Conditions to continue.",
         });
+
+        // Show Terms & Conditions modal
+        setShowTermsModal(true);
       } else {
         setValidationState("invalid");
         setMessage({ type: "error", text: "Fingerprint registration failed." });
@@ -228,6 +262,13 @@ const FingerprintRegister = () => {
           Back to registration
         </button>
       </div>
+
+      {/* Terms & Conditions Modal */}
+      <TermsAndConditionsModal
+        isOpen={showTermsModal}
+        onAgree={handleTermsAgree}
+        onExit={handleTermsExit}
+      />
     </div>
   );
 };

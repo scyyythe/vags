@@ -99,13 +99,12 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   interface GoogleLoginResponse {
     access_token: string;
     refresh_token: string;
-    user: {
-      id: string;
-      email: string;
-      first_name: string;
-      last_name: string;
-      username: string;
-    };
+    user_id: string;
+    email: string;
+    role: string;
+    user_status: string;
+    scheduled_for_deletion?: string;
+    firebase_token: string;
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -151,6 +150,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         firebase_token,
         requires_2fa,
         enabled_methods,
+        primary_method,
       } = response.data;
 
       // Check if 2FA is required first
@@ -277,8 +277,8 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         if (data.access_token) {
           secureTokenStorage.setAccessToken(data.access_token);
           secureTokenStorage.setRefreshToken(data.refresh_token);
-          localStorage.setItem("email", data.user.email);
-          localStorage.setItem("user_id", data.user.id);
+          localStorage.setItem("email", data.email);
+          localStorage.setItem("user_id", data.user_id);
 
           toast.success(loginSuccessTitle, {
             description: firebaseSuccessDesc,
