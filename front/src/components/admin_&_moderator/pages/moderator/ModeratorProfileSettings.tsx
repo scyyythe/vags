@@ -224,6 +224,8 @@ const ModeratorProfileSettings = () => {
                   value={profileData.firstName}
                   onChange={(e) => setProfileData({ ...profileData, firstName: e.target.value })}
                   className="h-8 text-[10px]"
+                  placeholder="Enter your first name"
+                  style={{ fontSize: '10px' }}
                 />
               </div>
               <div className="space-y-2">
@@ -233,6 +235,8 @@ const ModeratorProfileSettings = () => {
                   value={profileData.lastName}
                   onChange={(e) => setProfileData({ ...profileData, lastName: e.target.value })}
                   className="h-8 text-[10px]"
+                  placeholder="Enter your last name"
+                  style={{ fontSize: '10px' }}
                 />
               </div>
             </div>
@@ -248,6 +252,8 @@ const ModeratorProfileSettings = () => {
                 value={profileData.email}
                 onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
                 className="h-8 text-[10px]"
+                placeholder="Enter your email address"
+                style={{ fontSize: '10px' }}
               />
             </div>
 
@@ -261,6 +267,8 @@ const ModeratorProfileSettings = () => {
                 value={profileData.phone}
                 onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
                 className="h-8 text-[10px]"
+                placeholder="Enter your phone number"
+                style={{ fontSize: '10px' }}
               />
             </div>
 
@@ -272,6 +280,7 @@ const ModeratorProfileSettings = () => {
                 onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
                 className="text-[10px] h-20"
                 placeholder="Tell us about yourself..."
+                style={{ fontSize: '10px' }}
               />
             </div>
 
@@ -389,6 +398,7 @@ const ModeratorProfileSettings = () => {
                 <Switch
                   checked={moderationSettings.autoApprove}
                   onCheckedChange={(checked) => setModerationSettings({ ...moderationSettings, autoApprove: checked })}
+                  className="scale-75"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -399,6 +409,7 @@ const ModeratorProfileSettings = () => {
                 <Switch
                   checked={moderationSettings.strictMode}
                   onCheckedChange={(checked) => setModerationSettings({ ...moderationSettings, strictMode: checked })}
+                  className="scale-75"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -409,6 +420,7 @@ const ModeratorProfileSettings = () => {
                 <Switch
                   checked={moderationSettings.contentReviewQueue}
                   onCheckedChange={(checked) => setModerationSettings({ ...moderationSettings, contentReviewQueue: checked })}
+                  className="scale-75"
                 />
               </div>
             </div>
@@ -472,6 +484,7 @@ const ModeratorProfileSettings = () => {
                 <Switch
                   checked={notificationSettings.emailNotifications}
                   onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, emailNotifications: checked })}
+                  className="scale-75"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -482,6 +495,7 @@ const ModeratorProfileSettings = () => {
                 <Switch
                   checked={notificationSettings.systemAlerts}
                   onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, systemAlerts: checked })}
+                  className="scale-75"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -492,6 +506,7 @@ const ModeratorProfileSettings = () => {
                 <Switch
                   checked={notificationSettings.contentReports}
                   onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, contentReports: checked })}
+                  className="scale-75"
                 />
               </div>
             </div>
@@ -504,6 +519,7 @@ const ModeratorProfileSettings = () => {
                 <Switch
                   checked={notificationSettings.userViolations}
                   onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, userViolations: checked })}
+                  className="scale-75"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -514,6 +530,7 @@ const ModeratorProfileSettings = () => {
                 <Switch
                   checked={notificationSettings.autoModeration}
                   onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, autoModeration: checked })}
+                  className="scale-75"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -524,6 +541,7 @@ const ModeratorProfileSettings = () => {
                 <Switch
                   checked={notificationSettings.escalationAlerts}
                   onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, escalationAlerts: checked })}
+                  className="scale-75"
                 />
               </div>
             </div>
@@ -614,7 +632,7 @@ const ModeratorProfileSettings = () => {
       <Dialog open={changePhotoOpen} onOpenChange={setChangePhotoOpen}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
-            <DialogTitle className="text-xs">Change Profile Photo</DialogTitle>
+            <DialogTitle className="text-[13px]">Change Profile Photo</DialogTitle>
             <DialogDescription className="text-[10px]">
               Upload a new profile photo. Maximum file size is 2MB.
             </DialogDescription>
@@ -643,16 +661,8 @@ const ModeratorProfileSettings = () => {
           </div>
           <DialogFooter>
             <Button
-              variant="outline"
               size="sm"
-              className="text-[10px] rounded-full h-7"
-              onClick={() => setChangePhotoOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              size="sm"
-              className="text-[10px] rounded-full h-7"
+              className="text-[11px] rounded-full h-7"
               onClick={handlePhotoUpload}
               disabled={!selectedFile}
             >
@@ -666,7 +676,7 @@ const ModeratorProfileSettings = () => {
       <Dialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
-            <DialogTitle className="text-xs">Change Password</DialogTitle>
+            <DialogTitle className="text-[13px]">Change Password</DialogTitle>
             <DialogDescription className="text-[10px]">
               Enter your current password and choose a new one.
             </DialogDescription>
@@ -680,6 +690,8 @@ const ModeratorProfileSettings = () => {
                   value={passwordForm.currentPassword}
                   onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
                   className="h-8 text-[10px] pr-8"
+                  placeholder="Enter your current password"
+                  style={{ fontSize: '10px' }}
                 />
                 <Button
                   type="button"
@@ -700,6 +712,8 @@ const ModeratorProfileSettings = () => {
                   value={passwordForm.newPassword}
                   onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
                   className="h-8 text-[10px] pr-8"
+                  placeholder="Enter your new password"
+                  style={{ fontSize: '10px' }}
                 />
                 <Button
                   type="button"
@@ -720,6 +734,8 @@ const ModeratorProfileSettings = () => {
                   value={passwordForm.confirmPassword}
                   onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
                   className="h-8 text-[10px] pr-8"
+                  placeholder="Confirm your new password"
+                  style={{ fontSize: '10px' }}
                 />
                 <Button
                   type="button"
@@ -735,16 +751,8 @@ const ModeratorProfileSettings = () => {
           </div>
           <DialogFooter>
             <Button
-              variant="outline"
               size="sm"
-              className="text-[10px] rounded-full h-7"
-              onClick={() => setChangePasswordOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              size="sm"
-              className="text-[10px] rounded-full h-7"
+              className="text-[11px] rounded-full h-7"
               onClick={handlePasswordChange}
               disabled={!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
             >
@@ -758,7 +766,7 @@ const ModeratorProfileSettings = () => {
       <Dialog open={securitySettingsOpen} onOpenChange={setSecuritySettingsOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle className="text-xs">Security Settings</DialogTitle>
+            <DialogTitle className="text-[13px]">Security Settings</DialogTitle>
             <DialogDescription className="text-[10px]">
               Configure your account security preferences.
             </DialogDescription>
@@ -818,14 +826,6 @@ const ModeratorProfileSettings = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-[10px] rounded-full h-7"
-              onClick={() => setSecuritySettingsOpen(false)}
-            >
-              Cancel
-            </Button>
             <Button
               size="sm"
               className="text-[10px] rounded-full h-7"
