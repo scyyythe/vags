@@ -70,6 +70,7 @@ import AdminUsers from "@/components/admin_&_moderator/pages/admin/AdminUsers";
 import AdminConfig from "@/components/admin_&_moderator/pages/admin/AdminConfig";
 import AdminSecurity from "@/components/admin_&_moderator/pages/admin/AdminSecurity";
 import AdminAnalytics from "@/components/admin_&_moderator/pages/admin/AdminAnalytics";
+import AdminNotifications from "@/components/admin_&_moderator/pages/admin/AdminNotifications";
 
 // Moderator routes
 import ModeratorDashboard from "@/components/admin_&_moderator/pages/moderator/ModeratorDashboard";
@@ -302,6 +303,18 @@ const App = () => {
                                       <AdminTermsWrapper role="admin">
                                         <AdminLayout role="admin">
                                           <AdminAnalytics />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
+                                    </ProtectedRoute>
+                                  }
+                                />
+                                <Route
+                                  path="/admin/notifications"
+                                  element={
+                                    <ProtectedRoute allowedRoles={["admin"]}>
+                                      <AdminTermsWrapper role="admin">
+                                        <AdminLayout role="admin">
+                                          <AdminNotifications />
                                         </AdminLayout>
                                       </AdminTermsWrapper>
                                     </ProtectedRoute>
