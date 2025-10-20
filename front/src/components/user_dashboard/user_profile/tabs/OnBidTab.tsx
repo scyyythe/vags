@@ -6,6 +6,8 @@ import BidCard from "../../Bidding/cards/BidCard";
 import useAuctions, { ArtworkAuction } from "@/hooks/auction/useAuction";
 import { useMyAuctions } from "@/hooks/auction/useMyAuctions";
 import { useRestoreAllAuctions } from "@/hooks/auction/useRestoreAllAuctions";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 type ExtendedAuction = ArtworkAuction & {
   isPaid?: boolean;
@@ -32,6 +34,38 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
   const { id: visitedUserId } = useParams();
   const loggedInUserId = getLoggedInUserId();
   const isMyProfile = !visitedUserId || visitedUserId === loggedInUserId;
+  const { language } = useLanguage();
+
+  // Translation hooks for status headers
+  const deletedAuctionsText = useAutoTranslation("Deleted Auctions", language);
+  const hiddenAuctionsText = useAutoTranslation("Hidden Auctions", language);
+  const archivedAuctionsText = useAutoTranslation("Archived Auctions", language);
+  const privateAuctionsText = useAutoTranslation("Private Auctions", language);
+
+  // Translation hooks for buttons
+  const restoreAllText = useAutoTranslation("Restore All", language);
+  const unhideAllText = useAutoTranslation("Unhide All", language);
+
+  // Translation hooks for tabs
+  const onGoingText = useAutoTranslation("ON GOING", language);
+  const soldText = useAutoTranslation("SOLD", language);
+  const closedText = useAutoTranslation("CLOSED", language);
+  const myBidsText = useAutoTranslation("MY BIDS", language);
+
+  // Translation hooks for filters
+  const allText = useAutoTranslation("ALL", language);
+  const activeText = useAutoTranslation("ACTIVE", language);
+  const wonText = useAutoTranslation("WON", language);
+  const lostText = useAutoTranslation("LOST", language);
+
+  // Translation hooks for empty state messages
+  const noArtworksOnBidText = useAutoTranslation("No artworks are currently on bid.", language);
+  const noArtworksSoldText = useAutoTranslation("No artworks have been sold yet.", language);
+  const noArtworksWithoutBiddersText = useAutoTranslation("No artworks without bidders.", language);
+  const notJoinedAuctionsText = useAutoTranslation("You haven't joined any auctions yet.", language);
+  const noActiveWinningBidsText = useAutoTranslation("No active winning bids.", language);
+  const noConfirmedBidsText = useAutoTranslation("No confirmed bids yet.", language);
+  const notLostAuctionsText = useAutoTranslation("You haven't lost any auctions yet.", language);
   const { data: participatedAuctions = [], isLoading: isLoadingParticipated } = useAuctions(
     1,
     loggedInUserId,
@@ -122,14 +156,14 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
   }, [auctionsToDisplay, selectedStatus, activeTab, myBidFilter]);
 
   const tabEmptyMessages = {
-    on_going: "No artworks are currently on bid.",
-    sold: "No artworks have been sold yet.",
-    closed: "No artworks without bidders.",
+    on_going: noArtworksOnBidText,
+    sold: noArtworksSoldText,
+    closed: noArtworksWithoutBiddersText,
     my_bids: {
-      all: "You haven't joined any auctions yet.",
-      active: "No active winning bids.",
-      won: "No confirmed bids yet.",
-      lost: "You haven't lost any auctions yet.",
+      all: notJoinedAuctionsText,
+      active: noActiveWinningBidsText,
+      won: noConfirmedBidsText,
+      lost: notLostAuctionsText,
     },
   };
 
@@ -141,16 +175,44 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
     [navigate]
   );
 
+  // Helper function to get translated tab label
+  const getTabLabel = (tab: string): string => {
+    switch (tab) {
+      case "on_going":
+        return onGoingText;
+      case "sold":
+        return soldText;
+      case "closed":
+        return closedText;
+      default:
+        return tab.replace("_", " ").toUpperCase();
+    }
+  };
+
+  // Helper function to get translated filter label
+  const getFilterLabel = (filter: MyBidFilter): string => {
+    switch (filter) {
+      case "all":
+        return allText;
+      case "active":
+        return activeText;
+      case "won":
+        return wonText;
+      case "lost":
+        return lostText;
+    }
+  };
+
   return (
     <div>
       {/* Status Filter Header */}
       {selectedStatus !== "Active" && (
         <div className="flex justify-between items-center my-4">
           <h2 className="text-sm font-semibold">
-            {selectedStatus === "Deleted" && "Deleted Auctions"}
-            {selectedStatus === "Hidden" && "Hidden Auctions"}
-            {selectedStatus === "Archived" && "Archived Auctions"}
-            {selectedStatus === "Private" && "Private Auctions"}
+            {selectedStatus === "Deleted" && deletedAuctionsText}
+            {selectedStatus === "Hidden" && hiddenAuctionsText}
+            {selectedStatus === "Archived" && archivedAuctionsText}
+            {selectedStatus === "Private" && privateAuctionsText}
           </h2>
           <div className="flex gap-2">
             {/* Restore All button for Deleted status */}
@@ -159,7 +221,7 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
                 onClick={onShowRestoreAllPopup}
                 className="text-[10px] py-2 pr-2 text-green-700 hover:text-green-600 font-medium"
               >
-                Restore All
+                {restoreAllText}
               </button>
             )}
             {/* Unhide All button for Hidden status */}
@@ -168,7 +230,7 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
                 onClick={onShowUnhidePopup}
                 className="text-[10px] py-2 pr-2 text-blue-700 hover:text-blue-600 font-medium"
               >
-                Unhide All
+                {unhideAllText}
               </button>
             )}
           </div>
@@ -189,7 +251,7 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
                 setShowDropdown(false);
               }}
             >
-              {tab.replace("_", " ").toUpperCase()}
+              {getTabLabel(tab)}
             </button>
           ))}
 
@@ -206,7 +268,7 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
                   setMyBidFilter("all");
                 }}
               >
-                MY BIDS ({myBidFilter.toUpperCase()})
+                {myBidsText} ({getFilterLabel(myBidFilter)})
               </button>
 
               {activeTab === "my_bids" && (
@@ -236,7 +298,7 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
                         setShowDropdown(false);
                       }}
                     >
-                      {option.toUpperCase()}
+                      {getFilterLabel(option)}
                     </button>
                   ))}
                 </div>

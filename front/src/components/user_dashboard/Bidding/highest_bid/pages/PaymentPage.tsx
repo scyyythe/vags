@@ -8,10 +8,18 @@ import { GCashPayment } from "@/components/user_dashboard/Bidding/highest_bid/pa
 import { StripePayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/Stripe";
 import { PayPalPayment } from "@/components/user_dashboard/Bidding/highest_bid/payment/PayPal";
 import Header from "@/components/user_dashboard/navbar/Header";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const PaymentContent = () => {
   const navigate = useNavigate();
   const { selectedPaymentMethod } = usePayment();
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const selectPaymentMethodFirstText = useAutoTranslation("Please select a payment method from the bid winner page first.", language);
+  const goBackToSelectPaymentText = useAutoTranslation("Go Back to Select Payment Method", language);
+  const backToOrderSummaryText = useAutoTranslation("Back to Order Summary", language);
 
   const renderPaymentForm = () => {
     switch (selectedPaymentMethod) {
@@ -26,12 +34,12 @@ const PaymentContent = () => {
       default:
         return (
           <div className="text-center py-8">
-            <p className="text-gray-500">Please select a payment method from the bid winner page first.</p>
+            <p className="text-gray-500">{selectPaymentMethodFirstText}</p>
             <Button 
               className="mt-4 bg-red-500 hover:bg-red-600" 
               onClick={() => navigate("/bid-winner")}
             >
-              Go Back to Select Payment Method
+              {goBackToSelectPaymentText}
             </Button>
           </div>
         );
@@ -51,7 +59,7 @@ const PaymentContent = () => {
           onClick={() => navigate("/bid-winner")}
           className="mb-6 hover:bg-transparent hover:text-red-500 pl-0 text-gray-600"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Order Summary
+          <ArrowLeft className="mr-2 h-4 w-4" /> {backToOrderSummaryText}
         </Button>
         
         {renderPaymentForm()}

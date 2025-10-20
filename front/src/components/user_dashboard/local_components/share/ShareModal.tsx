@@ -72,7 +72,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, linkToShare })
 
   return ReactDOM.createPortal(
     <div className="fixed inset-0 z-[100] bg-black bg-opacity-60 flex items-center justify-center overflow-hidden">
-      <div className="bg-white p-6 rounded-xl max-w-xs shadow-xl relative">
+      <div className="bg-white p-6 rounded-xl w-full max-w-xs shadow-xl relative">
         <button onClick={onClose} className="absolute top-3 right-3">
           <X className="w-4 h-4 text-gray-500 hover:text-black" />
         </button>

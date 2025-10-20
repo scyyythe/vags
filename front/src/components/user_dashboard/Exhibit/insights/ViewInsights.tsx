@@ -13,6 +13,8 @@ import {
   Search,
   UserCheck,
 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import {
   BarChart,
   Bar,
@@ -30,6 +32,48 @@ import {
 
 const ViewInsights = () => {
   const navigate = useNavigate();
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const viewInsightsText = useAutoTranslation("View Insights", language);
+  const detailedAnalyticsText = useAutoTranslation("Detailed analytics for", language);
+  const explore3DGalleryText = useAutoTranslation("Explore 3D Gallery", language);
+  const totalViewsText = useAutoTranslation("Total Views", language);
+  const thisWeekText = useAutoTranslation("This week", language);
+  const likesFavoritesText = useAutoTranslation("Likes & Favorites", language);
+  const totalEngagementText = useAutoTranslation("Total engagement", language);
+  const sharesText = useAutoTranslation("Shares", language);
+  const socialReachText = useAutoTranslation("Social reach", language);
+  const commentsText = useAutoTranslation("Comments", language);
+  const communityFeedbackText = useAutoTranslation("Community feedback", language);
+  const weeklyActivityText = useAutoTranslation("Weekly Activity", language);
+  const trafficSourcesText = useAutoTranslation("Traffic Sources", language);
+  const directVisitText = useAutoTranslation("Direct Visit", language);
+  const socialMediaText = useAutoTranslation("Social Media", language);
+  const searchText = useAutoTranslation("Search", language);
+  const sharedLinkText = useAutoTranslation("Shared Link", language);
+  const averageTimeSpentText = useAutoTranslation("Average Time Spent", language);
+  const usersSpendAverageText = useAutoTranslation("Users spend an average of 4 minutes and 32 seconds viewing this exhibit", language);
+  const engagementByTimeText = useAutoTranslation("Engagement by Time of Day", language);
+  const trafficSourcesBreakdownText = useAutoTranslation("Traffic Sources Breakdown", language);
+  const recentCommentsText = useAutoTranslation("Recent Comments", language);
+  const completionRateText = useAutoTranslation("Completion Rate", language);
+  const averageRatingText = useAutoTranslation("Average Rating", language);
+  const returnVisitorsText = useAutoTranslation("Return Visitors", language);
+  const countriesReachedText = useAutoTranslation("Countries Reached", language);
+
+  // Translate exhibit title
+  const translatedExhibitTitle = useAutoTranslation("Digital Renaissance Collection", language);
+
+  // Translate comment texts
+  const comment1Text = useAutoTranslation("Absolutely stunning collection! The detail in these pieces is incredible.", language);
+  const comment2Text = useAutoTranslation("The way light plays in these digital works reminds me of classical masters.", language);
+  const comment3Text = useAutoTranslation("This exhibition changed my perspective on digital art.", language);
+  
+  // Translate time stamps
+  const hoursAgoText = useAutoTranslation("hours ago", language);
+  const dayAgoText = useAutoTranslation("day ago", language);
+
   // Mock data for demonstrations
   const exhibitData = {
     title: "Digital Renaissance Collection",
@@ -56,10 +100,10 @@ const ViewInsights = () => {
   ];
 
   const trafficSources = [
-    { name: 'Direct Visit', value: 45, color: '#DC2626' },
-    { name: 'Social Media', value: 25, color: '#f87171' },
-    { name: 'Search', value: 20, color: '#fca5a5' },
-    { name: 'Shared Link', value: 10, color: '#fecaca' }
+    { name: directVisitText, value: 45, color: '#DC2626' },
+    { name: socialMediaText, value: 25, color: '#f87171' },
+    { name: searchText, value: 20, color: '#fca5a5' },
+    { name: sharedLinkText, value: 10, color: '#fecaca' }
   ];
 
   const timeSpentData = [
@@ -72,9 +116,9 @@ const ViewInsights = () => {
   ];
 
   const recentComments = [
-    { user: "ArtLover92", comment: "Absolutely stunning collection! The detail in these pieces is incredible.", time: "2 hours ago", likes: 12 },
-    { user: "DigitalCritic", comment: "The way light plays in these digital works reminds me of classical masters.", time: "5 hours ago", likes: 8 },
-    { user: "ModernArt", comment: "This exhibition changed my perspective on digital art.", time: "1 day ago", likes: 15 },
+    { user: "ArtLover92", comment: comment1Text, time: `2 ${hoursAgoText}`, likes: 12 },
+    { user: "DigitalCritic", comment: comment2Text, time: `5 ${hoursAgoText}`, likes: 8 },
+    { user: "ModernArt", comment: comment3Text, time: `1 ${dayAgoText}`, likes: 15 },
   ];
 
   const TrendIndicator = ({ value, className = "" }: { value: number; className?: string }) => {
@@ -135,10 +179,10 @@ const ViewInsights = () => {
           <div className="mt-12">
             <h1 className="text-lg font-bold text-black mb-2">
               <i onClick={() => navigate(-1)} className="bx bx-chevron-left text-xl mr-2 text-black relative top-0.5 cursor-pointer"></i>
-              View Insights
+              {viewInsightsText}
             </h1>
             <p className="text-xs text-gray-600 pl-8">
-              Detailed analytics for "{exhibitData.title}"
+              {detailedAnalyticsText} "{translatedExhibitTitle}"
             </p>
 
           </div>
@@ -147,7 +191,7 @@ const ViewInsights = () => {
             onClick={() => navigate("/gallery-3d")}
             className="md:mt-10 py-1 px-5 bg-red-800 text-white hover:bg-red-700 transition-colors rounded-full "
           >
-            <span className="text-xs">Explore 3D Gallery</span>
+            <span className="text-xs">{explore3DGalleryText}</span>
             <i className='bx bx-chevron-right relative top-0.5 left-1'></i>
           </button>
         </div>
@@ -155,32 +199,32 @@ const ViewInsights = () => {
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <MetricCard
-            title="Total Views"
+            title={totalViewsText}
             value={exhibitData.totalViews}
             trend={exhibitData.viewsTrend}
             icon={Eye}
-            subtitle="This week"
+            subtitle={thisWeekText}
           />
           <MetricCard
-            title="Likes & Favorites"
+            title={likesFavoritesText}
             value={exhibitData.likes}
             trend={exhibitData.likesTrend}
             icon={Heart}
-            subtitle="Total engagement"
+            subtitle={totalEngagementText}
           />
           <MetricCard
-            title="Shares"
+            title={sharesText}
             value={exhibitData.shares}
             trend={exhibitData.sharesTrend}
             icon={Share2}
-            subtitle="Social reach"
+            subtitle={socialReachText}
           />
           <MetricCard
-            title="Comments"
+            title={commentsText}
             value={exhibitData.comments}
             trend={exhibitData.commentsTrend}
             icon={MessageCircle}
-            subtitle="Community feedback"
+            subtitle={communityFeedbackText}
           />
         </div>
 
@@ -190,7 +234,7 @@ const ViewInsights = () => {
           <Card className="col-span-1 bg-white border-gray-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[13px] text-black">
-                Weekly Activity
+                {weeklyActivityText}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -217,7 +261,7 @@ const ViewInsights = () => {
           <Card className="col-span-1 bg-white border-gray-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[13px] text-black">
-                Traffic Sources
+                {trafficSourcesText}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -251,7 +295,7 @@ const ViewInsights = () => {
           <Card className="bg-white border-gray-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[13px] text-black">
-                Average Time Spent
+                {averageTimeSpentText}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -260,7 +304,7 @@ const ViewInsights = () => {
               </div>
               <TrendIndicator value={exhibitData.timeTrend} />
               <div className="mt-4 text-xs text-gray-600">
-                Users spend an average of 4 minutes and 32 seconds viewing this exhibit
+                {usersSpendAverageText}
               </div>
             </CardContent>
           </Card>
@@ -268,7 +312,7 @@ const ViewInsights = () => {
           {/* Time Distribution Chart */}
           <Card className="lg:col-span-2 bg-white border-gray-200">
             <CardHeader>
-              <CardTitle className="text-[13px] text-black">Engagement by Time of Day</CardTitle>
+              <CardTitle className="text-[13px] text-black">{engagementByTimeText}</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={200}>
@@ -296,17 +340,17 @@ const ViewInsights = () => {
           <Card className="bg-white border-gray-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[13px] text-black">
-                Traffic Sources Breakdown
+                {trafficSourcesBreakdownText}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {trafficSources.map((source, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    {source.name === 'Direct Visit' && <UserCheck className="h-4 w-4 text-gray-600" />}
-                    {source.name === 'Social Media' && <Share2 className="h-4 w-4 text-gray-600" />}
-                    {source.name === 'Search' && <Search className="h-4 w-4 text-gray-600" />}
-                    {source.name === 'Shared Link' && <ExternalLink className="h-4 w-4 text-gray-600" />}
+                    {source.name === directVisitText && <UserCheck className="h-4 w-4 text-gray-600" />}
+                    {source.name === socialMediaText && <Share2 className="h-4 w-4 text-gray-600" />}
+                    {source.name === searchText && <Search className="h-4 w-4 text-gray-600" />}
+                    {source.name === sharedLinkText && <ExternalLink className="h-4 w-4 text-gray-600" />}
                     <span className="text-xs font-medium text-gray-800">{source.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -327,7 +371,7 @@ const ViewInsights = () => {
           <Card className="bg-white border-gray-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[13px] text-black">
-                Recent Comments
+                {recentCommentsText}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 max-h-96 overflow-y-auto">
@@ -356,19 +400,19 @@ const ViewInsights = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-white">
               <div className="text-center">
                 <div className="text-xl font-bold">98.5%</div>
-                <div className="text-[11px] opacity-90">Completion Rate</div>
+                <div className="text-[11px] opacity-90">{completionRateText}</div>
               </div>
               <div className="text-center">
                 <div className="text-xl font-bold">4.8/5</div>
-                <div className="text-[11px] opacity-90">Average Rating</div>
+                <div className="text-[11px] opacity-90">{averageRatingText}</div>
               </div>
               <div className="text-center">
                 <div className="text-xl font-bold">67%</div>
-                <div className="text-[11px] opacity-90">Return Visitors</div>
+                <div className="text-[11px] opacity-90">{returnVisitorsText}</div>
               </div>
               <div className="text-center">
                 <div className="text-xl font-bold">23</div>
-                <div className="text-[11px] opacity-90">Countries Reached</div>
+                <div className="text-[11px] opacity-90">{countriesReachedText}</div>
               </div>
             </div>
           </CardContent>

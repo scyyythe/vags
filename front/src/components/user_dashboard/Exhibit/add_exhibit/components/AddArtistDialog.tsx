@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { User } from "@/hooks/users/useUserQuery";
 import useAllUsersQuery from "@/hooks/users/useAllUsersQuery";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface AddArtistDialogProps {
   open: boolean;
@@ -16,6 +18,15 @@ interface AddArtistDialogProps {
 const AddArtistDialog = ({ open, onOpenChange, onSelect, selectedArtists }: AddArtistDialogProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { data: users = [], isLoading, isError } = useAllUsersQuery();
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const addCollaboratorText = useAutoTranslation("Add Collaborator", language);
+  const searchArtistsText = useAutoTranslation("Search artists...", language);
+  const loadingArtistsText = useAutoTranslation("Loading artists...", language);
+  const failedToLoadArtistsText = useAutoTranslation("Failed to load artists", language);
+  const noArtistsFoundText = useAutoTranslation("No artists found", language);
+  const noAvailableArtistsText = useAutoTranslation("No available artists", language);
 
   const filteredArtists = users.filter(
     (user) =>
@@ -34,12 +45,12 @@ const AddArtistDialog = ({ open, onOpenChange, onSelect, selectedArtists }: AddA
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm rounded-lg">
         <DialogHeader>
-          <DialogTitle className="text-center text-xs">Add Collaborator</DialogTitle>
+          <DialogTitle className="text-center text-xs">{addCollaboratorText}</DialogTitle>
         </DialogHeader>
 
         <div className="w-full max-w-sm space-y-4 py-0.5">
           <Input
-            placeholder="Search artists..."
+            placeholder={searchArtistsText}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{ fontSize: "10px" }}
@@ -47,9 +58,9 @@ const AddArtistDialog = ({ open, onOpenChange, onSelect, selectedArtists }: AddA
           />
 
           {isLoading ? (
-            <div className="py-4 text-center text-xs text-gray-500">Loading artists...</div>
+            <div className="py-4 text-center text-xs text-gray-500">{loadingArtistsText}</div>
           ) : isError ? (
-            <div className="py-4 text-center text-xs text-red-500">Failed to load artists</div>
+            <div className="py-4 text-center text-xs text-red-500">{failedToLoadArtistsText}</div>
           ) : filteredArtists.length > 0 ? (
             <div className="max-h-[240px] overflow-y-auto">
               {filteredArtists.map((artist) => (
@@ -85,7 +96,7 @@ const AddArtistDialog = ({ open, onOpenChange, onSelect, selectedArtists }: AddA
             </div>
           ) : (
             <div className="py-4 text-center text-xs text-gray-500">
-              {searchQuery ? "No artists found" : "No available artists"}
+              {searchQuery ? noArtistsFoundText : noAvailableArtistsText}
             </div>
           )}
         </div>

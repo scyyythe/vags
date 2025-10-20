@@ -5,10 +5,16 @@ import useAllAddresses from "@/hooks/users/address/useAllAddresses";
 import ShippingSkeleton from "@/components/skeletons/shipping/ShippingSkeleton";
 import useSetDefaultAddress from "@/hooks/users/address/useSetDefaultAddress";
 import { getLoggedInUserId } from "@/auth/decode";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 const ShippingPage = () => {
   const navigate = useNavigate();
   const { mutate: makeDefaultAddress } = useSetDefaultAddress();
   const userId = getLoggedInUserId();
+
+  // Language and translation
+  const { language } = useLanguage();
+  const failedToLoadAddressesText = useAutoTranslation("Failed to load addresses.", language);
 
   const { data: addresses = [], isLoading, isError, error } = useAllAddresses({ enabled: !!userId });
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -25,7 +31,7 @@ const ShippingPage = () => {
 
   if (isLoading) return <ShippingSkeleton />;
   if (isError)
-    return <p className="text-center mt-10 text-sm text-red-600">{error?.message || "Failed to load addresses."}</p>;
+    return <p className="text-center mt-10 text-sm text-red-600">{error?.message || failedToLoadAddressesText}</p>;
 
   return (
     <ShippingDetails

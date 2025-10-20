@@ -13,6 +13,8 @@ import useToggleArtworkStatus from "@/hooks/purchase/useMarkArtworkAsSold";
 import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";
 import { getLoggedInUserId } from "@/auth/decode";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 export interface SellCardProps {
   id: string;
   artworkImage: string;
@@ -37,6 +39,7 @@ export interface SellCardProps {
   isReported?: boolean;
   onReportSuccess?: () => void;
   isMarketplace?: boolean;
+  isProfileView?: boolean;
   onCardClick?: () => void;
   isOwner?: boolean;
   status?: string;
@@ -74,6 +77,7 @@ const SellCard = ({
   additionalImages,
   onReportSuccess,
   isMarketplace = false,
+  isProfileView = false,
   onCardClick,
   isFading = false,
   isWishlistView = false,
@@ -85,6 +89,27 @@ const SellCard = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Translation hooks
+  const { language } = useLanguage();
+  const addedToWishlistText = useAutoTranslation("Added to wishlist", language);
+  const removedFromWishlistText = useAutoTranslation("Removed from wishlist", language);
+  const redirectingToContactText = useAutoTranslation("Redirecting to contact", language);
+  const reportSubmittedText = useAutoTranslation("Report submitted successfully", language);
+  const soldOutText = useAutoTranslation("Sold Out", language);
+  const onSaleText = useAutoTranslation("On Sale", language);
+  const cancelledText = useAutoTranslation("Cancelled", language);
+  const expiredText = useAutoTranslation("Expired", language);
+  const unsoldText = useAutoTranslation("Unsold", language);
+  const unavailableText = useAutoTranslation("Unavailable", language);
+  const buyNowText = useAutoTranslation("Buy Now", language);
+  const relistText = useAutoTranslation("Relist", language);
+  const setVisibilityToText = useAutoTranslation("Set visibility to", language);
+  const deleteClickedText = useAutoTranslation("Delete clicked", language);
+  const viewingInsightsText = useAutoTranslation("Viewing insights", language);
+
+  // Translate artwork title
+  const translatedTitle = useAutoTranslation(title || "", language);
 
   const { mutate: submitReport } = useSubmitReport();
   const markAsSoldMutation = useToggleArtworkStatus();
@@ -111,7 +136,7 @@ const SellCard = ({
 
   const toggleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toast(!isLiked ? "Added to wishlist" : "Removed from wishlist", {
+    toast(!isLiked ? addedToWishlistText : removedFromWishlistText, {
       closeButton: true,
     });
     onLike?.();
@@ -128,7 +153,7 @@ const SellCard = ({
 
     openChat(String(artistId), artist, profile_picture, true);
 
-    toast(`Redirecting to contact ${artist}...`, { closeButton: true });
+    toast(`${redirectingToContactText} ${artist}...`, { closeButton: true });
   };
 
   const handleMenuClick = (e: React.MouseEvent) => {
@@ -158,7 +183,7 @@ const SellCard = ({
       {
         onSuccess: () => {
           onReportSuccess?.();
-          toast.success("Report submitted successfully", { closeButton: true });
+          toast.success(reportSubmittedText, { closeButton: true });
         },
         onError: () => {
           // Revert local state if submission fails
@@ -182,25 +207,25 @@ const SellCard = ({
   return (
     <div
       onClick={onCardClick}
-      className={`sell-card h-full text-xs group rounded-xl bg-white hover:shadow-lg border border-gray-200 px-3 py-3 relative cursor-pointer
+      className={`sell-card h-full text-xs group rounded-xl bg-white hover:shadow-lg border border-gray-200 px-3 py-3 relative cursor-pointer z-0
         transition-all duration-300 ease-in-out transform 
         ${isFading ? "opacity-0 scale-95" : "opacity-100 scale-100"}
       `}
     >
       <div className="relative">
-        <img src={artworkImage} alt={title} className="rounded-md w-full h-44 object-cover" />
+        <img src={artworkImage} alt={translatedTitle} className="rounded-md w-full h-44 object-cover" />
 
         {/* SOLD OUT Overlay (only for non-owner users) */}
         {!isOwner && status === "sold" && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="bg-black/60 rounded-full px-6 py-6 flex items-center justify-center">
-              <span className="text-white text-[12px] font-medium">Sold Out</span>
+              <span className="text-white text-[12px] font-medium">{soldOutText}</span>
             </div>
           </div>
         )}
 
         {/* Icons or Status */}
-        {(status === "active" || status === "onsale") && !isOwner ? (
+        {(status === "active" || status === "onsale") && (!isOwner || (isOwner && isMarketplace && !isProfileView)) ? (
           <>
             {/* Message Icon */}
             <button
@@ -230,21 +255,21 @@ const SellCard = ({
               />
             </button>
           </>
-        ) : (status === "active" || status === "onsale") && isOwner ? (
-          // Show status badge for owner's own artworks
+        ) : (status === "active" || status === "onsale") && isOwner && isProfileView ? (
+          // Show status badge for owner's own artworks in profile view
           <div className="absolute top-2 right-2 bg-gray-100 border border-gray-300 text-[10px] text-gray-600 font-medium px-2 py-0.5 rounded-full">
-            On Sale
+            {onSaleText}
           </div>
         ) : (
           // Show status badge for other statuses
           <div className="absolute top-2 right-2 bg-gray-100 border border-gray-300 text-[10px] text-gray-600 font-medium px-2 py-0.5 rounded-full">
             {status === "cancelled"
-              ? "Cancelled"
+              ? cancelledText
               : status === "expired"
-              ? "Expired"
+              ? expiredText
               : status === "unsold"
-              ? "Unsold"
-              : status?.charAt(0).toUpperCase() + status?.slice(1) || "Unavailable"}
+              ? unsoldText
+              : status?.charAt(0).toUpperCase() + status?.slice(1) || unavailableText}
           </div>
         )}
 
@@ -283,7 +308,7 @@ const SellCard = ({
                     id,
                     title,
                     year_created: yearCreated || "",
-                    style: category || "",
+                    style: category ? category.toLowerCase() : "",
                     medium: medium || "",
                     height: heightValue,
                     width: widthValue,
@@ -306,13 +331,13 @@ const SellCard = ({
                   // Use the relist functionality when listing an artwork
                   onRelist(artworkId);
                 } else {
-                  toast(`Set visibility to ${newVisibility}`, { closeButton: true });
+                  toast(`${setVisibilityToText} ${newVisibility}`, { closeButton: true });
                 }
               }}
-              onDelete={() => toast("Delete clicked", { closeButton: true })}
+              onDelete={() => toast(deleteClickedText, { closeButton: true })}
               onMarkAsSold={() => markAsSoldMutation.mutate(id)}
-              onViewInsights={() => toast("Viewing insights", { closeButton: true })}
-              className="-right-1 top-5"
+              onViewInsights={() => toast(viewingInsightsText, { closeButton: true })}
+              positionOffset={{ top: 2, left: -8, marginTop: -2 }}
             />
           ) : (
             <SellCardMenu
@@ -322,6 +347,7 @@ const SellCard = ({
               artworkId={id}
               onUndoReport={handleUndoReport}
               className="-left-2"
+              positionOffset={{ top: 2, left: -8.5, marginTop: -2 }}
             />
           )}
         </div>
@@ -329,19 +355,17 @@ const SellCard = ({
 
       <div className="flex justify-between mt-1.5 items-center">
         <div className="flex flex-col">
-          <p className="text-[11px] font-medium mt-0.5 truncate max-w-[110px]" title={title}>
-            {title}
-          </p>
+          <p className="text-[11px] font-medium mt-0.5 truncate max-w-[110px]">{translatedTitle}</p>
           {status !== "active" && reason && <p className="text-[10px] text-red-600 mt-1">{reason}</p>}
         </div>
 
         {status === "active" || status === "onsale" ? (
-          !isOwner && (
+          (!isOwner || (isOwner && isMarketplace && !isProfileView)) && (
             <button
               onClick={handleBuyNow}
               className="text-white text-[9px] bg-red-800 hover:bg-red-700 transition px-4 py-1.5 rounded-full"
             >
-              Buy Now
+              {buyNowText}
             </button>
           )
         ) : status === "sold" && onRelist ? (
@@ -352,7 +376,7 @@ const SellCard = ({
             }}
             className="text-white text-[10px] bg-blue-600 hover:bg-blue-500 transition px-4 py-1.5 rounded-full"
           >
-            Relist
+            {relistText}
           </button>
         ) : onRelist ? (
           <button
@@ -362,7 +386,7 @@ const SellCard = ({
             }}
             className="text-white text-[9px] bg-blue-600 hover:bg-blue-500 transition px-4 py-1.5 rounded-full"
           >
-            Relist
+            {relistText}
           </button>
         ) : null}
       </div>

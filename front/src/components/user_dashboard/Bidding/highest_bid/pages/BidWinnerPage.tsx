@@ -19,6 +19,9 @@ import { useFetchBiddingArtworkById } from "@/hooks/auction/useFetchAuctionDetai
 import ArtworkSummarySkeleton from "@/components/skeletons/artworks/ArtworkSummarySkeleton";
 import BidDetailsSkeleton from "@/components/skeletons/bidding/BidDetailsSkeleton";
 import { useArtistPaymentAccounts } from "@/hooks/accounts/useArtistPaymentAccounts";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
 const BidWinnerPageContent = () => {
   const { selectedPaymentMethod } = usePayment();
   const [showModal, setShowModal] = useState(false);
@@ -27,6 +30,19 @@ const BidWinnerPageContent = () => {
   const { data: auctionData, isLoading, error } = useFetchBiddingArtworkById(auctionId || "");
   const artistId = auctionData?.artwork?.artist_id;
   const { accounts, loading: accountsLoading, error: accountsError } = useArtistPaymentAccounts(artistId ?? null);
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const backText = useAutoTranslation("Back", language);
+  const congratulationsText = useAutoTranslation("Congratulations! You're the highest bidder", language);
+  const completePurchaseText = useAutoTranslation("Complete your purchase to claim this artwork", language);
+  const selectPaymentMethodText = useAutoTranslation("Please select a payment method before proceeding.", language);
+  const confirmPurchaseText = useAutoTranslation("Confirm Purchase", language);
+  const paymentCompleteText = useAutoTranslation("Payment Complete!", language);
+  const sendReceiptText = useAutoTranslation("You can now send your receipt to the owner as proof.", language);
+  const errorText = useAutoTranslation("Error", language);
+  const noAuctionFoundText = useAutoTranslation("No auction found.", language);
+  const noPaymentMethodText = useAutoTranslation("No payment method selected.", language);
   // Disable scrolling when modal OR receipt popup is open
   useEffect(() => {
     if (showModal || showReceiptPopup) {
@@ -59,8 +75,8 @@ const BidWinnerPageContent = () => {
       </div>
     );
 
-  if (error) return <div className="text-red-600">Error: {error.message}</div>;
-  if (!auctionData) return <div>No auction found.</div>;
+  if (error) return <div className="text-red-600">{errorText}: {error.message}</div>;
+  if (!auctionData) return <div>{noAuctionFoundText}</div>;
 
   const renderSelectedPaymentComponent = () => {
     switch (selectedPaymentMethod) {
@@ -90,7 +106,7 @@ const BidWinnerPageContent = () => {
       case "stripe":
         return <StripePayment />;
       default:
-        return <div className="text-center text-sm text-gray-600 p-4">No payment method selected.</div>;
+        return <div className="text-center text-sm text-gray-600 p-4">{noPaymentMethodText}</div>;
     }
   };
 
@@ -103,14 +119,14 @@ const BidWinnerPageContent = () => {
       <div className="mb-3 ml-10">
         <button onClick={() => window.history.back()} className="flex items-center text-xs font-semibold">
           <i className="bx bx-chevron-left text-lg mr-2"></i>
-          Back
+          {backText}
         </button>
       </div>
 
       <div className="container px-10 max-w-7xl">
         <div className="text-center mb-8">
-          <h1 className="text-sm md:text-md font-bold text-gray-900">Congratulations! You're the highest bidder</h1>
-          <p className="text-[11px] text-gray-600 mt-2">Complete your purchase to claim this artwork</p>
+          <h1 className="text-sm md:text-md font-bold text-gray-900">{congratulationsText}</h1>
+          <p className="text-[11px] text-gray-600 mt-2">{completePurchaseText}</p>
         </div>
 
         <div className="space-y-8">
@@ -136,24 +152,25 @@ const BidWinnerPageContent = () => {
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden">
-            <TermsReminder />
-          </div>
-
           <div className="flex justify-end -mt-4">
             <div
               onClick={() => {
                 if (!selectedPaymentMethod) {
-                  toast("Please select a payment method before proceeding.", { closeButton: true });
+                  toast(selectPaymentMethodText, { closeButton: true });
                 } else {
                   setShowModal(true);
                 }
               }}
               className="w-44 text-center bg-red-700 hover:bg-red-600 text-[11px] text-white px-2 py-2 rounded-full cursor-pointer overflow-hidden"
             >
-              Confirm Purchase
+              {confirmPurchaseText}
             </div>
           </div>
+          
+          <div className="bg-white overflow-hidden">
+            <TermsReminder />
+          </div>
+
         </div>
       </div>
 
@@ -176,8 +193,8 @@ const BidWinnerPageContent = () => {
       {showReceiptPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 animate-fadeIn">
           <div className="bg-white rounded-lg shadow-xl p-6 text-center max-w-xs mx-auto">
-            <h2 className="text-sm font-semibold text-red-700 mb-2">Payment Complete!</h2>
-            <p className="text-xs text-black">You can now send your receipt to the owner as proof.</p>
+            <h2 className="text-sm font-semibold text-red-700 mb-2">{paymentCompleteText}</h2>
+            <p className="text-xs text-black">{sendReceiptText}</p>
           </div>
         </div>
       )}

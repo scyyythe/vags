@@ -24,8 +24,11 @@ import useExhibitReport from "@/hooks/mutate/report/useExhibitReport";
 import useExhibitReportStatus from "@/hooks/mutate/report/useExhibitReportStatus";
 import { useToggleHideExhibit } from "@/hooks/exhibit/useToggleHideExhibit";
 import { useToggleVisibilityExhibit } from "@/hooks/exhibit/useToggleVisibilityExhibit";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 const ExhibitViewing = () => {
   const { id } = useParams<{ id: string }>();
+  const { language } = useLanguage();
 
   const { data: exhibit, isLoading } = useExhibitCardDetail(id);
   const { data: exhibits = [] } = useExhibitCards();
@@ -71,6 +74,40 @@ const ExhibitViewing = () => {
   const [commentMenus, setCommentMenus] = useState<{ [commentId: string]: boolean }>({});
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({});
 
+  // Translation hooks
+  const artworkNotFoundText = useAutoTranslation("Artwork Not Found", language);
+  const artworkNotFoundDescText = useAutoTranslation("The artwork you're looking for doesn't exist or has been removed.", language);
+  const returnToHomeText = useAutoTranslation("Return to Home", language);
+  const exhibitDetailsText = useAutoTranslation("Exhibit Details", language);
+  const exploreGalleryText = useAutoTranslation("Explore Gallery", language);
+  const byText = useAutoTranslation("by", language);
+  const noDescriptionText = useAutoTranslation("No description available.", language);
+  const showLessText = useAutoTranslation("Show Less", language);
+  const showMoreText = useAutoTranslation("Show More", language);
+  const exhibitEndedText = useAutoTranslation("This exhibit has ended. Commenting is disabled.", language);
+  const relatedExhibitsText = useAutoTranslation("Related Exhibits", language);
+  const noRelatedExhibitsText = useAutoTranslation("No related exhibits found.", language);
+  const commentPostedText = useAutoTranslation("Comment posted", language);
+  const artworkHiddenText = useAutoTranslation("Artwork hidden", language);
+  const artworkReportedText = useAutoTranslation("Artwork reported", language);
+  const artworkReportRemovedText = useAutoTranslation("Artwork report removed", language);
+  const replyText = useAutoTranslation("Reply", language);
+  const hideText = useAutoTranslation("Hide", language);
+  const viewText = useAutoTranslation("View", language);
+  const replyLowerText = useAutoTranslation("reply", language);
+  const repliesText = useAutoTranslation("replies", language);
+  const blockUserText = useAutoTranslation("Block User", language);
+  const blockedUserText = useAutoTranslation("Blocked user", language);
+  const reportContentText = useAutoTranslation("Report Content", language);
+  const contentReportedText = useAutoTranslation("Content reported", language);
+  const deleteConfirmText = useAutoTranslation("Are you sure you want to delete this exhibit?", language);
+  const exhibitDeletedText = useAutoTranslation("Exhibit deleted successfully", language);
+  
+  // Dynamic content translations
+  const translatedTitle = useAutoTranslation(exhibit?.title || "", language);
+  const translatedDescription = useAutoTranslation(exhibit?.description || "", language);
+  const translatedOwnerName = useAutoTranslation(exhibit?.owner?.name || "", language);
+
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (comment.trim()) {
@@ -89,14 +126,14 @@ const ExhibitViewing = () => {
         ...prev,
         [newComment.id]: 0,
       }));
-      toast("Comment posted", { closeButton: true });
+      toast(commentPostedText, { closeButton: true });
       setComment("");
     }
   };
 
   const handleHide = () => {
     setIsHidden(true);
-    toast("Artwork hidden", { closeButton: true });
+    toast(artworkHiddenText, { closeButton: true });
     setMenuOpen(false);
   };
 
@@ -108,7 +145,7 @@ const ExhibitViewing = () => {
 
   const handleReport = () => {
     setIsReported(!isReported);
-    toast(isReported ? "Artwork report removed" : "Artwork reported", { closeButton: true });
+    toast(isReported ? artworkReportRemovedText : artworkReportedText, { closeButton: true });
     setMenuOpen(false);
   };
 
@@ -162,10 +199,10 @@ const ExhibitViewing = () => {
       <div className="min-h-screen bg-white">
         <Header />
         <div className="container mx-auto pt-24 px-4 text-center">
-          <h2 className="text-lg font-bold mb-4">Artwork Not Found</h2>
-          <p className="mb-8 text-xs">The artwork you're looking for doesn't exist or has been removed.</p>
+          <h2 className="text-lg font-bold mb-4">{artworkNotFoundText}</h2>
+          <p className="mb-8 text-xs">{artworkNotFoundDescText}</p>
           <Link to="/explore" className="text-red-600 text-xs hover:underline">
-            Return to Home
+            {returnToHomeText}
           </Link>
         </div>
       </div>
@@ -193,7 +230,7 @@ const ExhibitViewing = () => {
                 className="hover:underline text-gray-500 flex items-center gap-1"
               >
                 <Reply size={isMobile ? 12 : 10} />
-                Reply
+                {replyText}
               </button>
               <span>·</span>
               <button onClick={() => handleCommentLike(commentItem.id)} className="flex items-center gap-1">
@@ -218,20 +255,20 @@ const ExhibitViewing = () => {
                     <button
                       className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[8px]"} hover:bg-gray-100`}
                       onClick={() => {
-                        toast.success(`Blocked user ${commentItem.user}`, { closeButton: true });
+                        toast.success(`${blockedUserText} ${commentItem.user}`, { closeButton: true });
                         toggleCommentMenu(commentItem.id);
                       }}
                     >
-                      Block User
+                      {blockUserText}
                     </button>
                     <button
                       className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[9px]"} hover:bg-gray-100`}
                       onClick={() => {
-                        toast.success("Content reported", { closeButton: true });
+                        toast.success(contentReportedText, { closeButton: true });
                         toggleCommentMenu(commentItem.id);
                       }}
                     >
-                      Report Content
+                      {reportContentText}
                     </button>
                   </div>
                 )}
@@ -247,8 +284,8 @@ const ExhibitViewing = () => {
             onClick={() => toggleReplies(commentItem.id)}
             className="text-blue-500 hover:text-blue-600 text-[10px] flex items-center gap-1"
           >
-            {expandedComments[commentItem.id] ? "Hide" : "View"} {commentItem.replies.length}{" "}
-            {commentItem.replies.length === 1 ? "reply" : "replies"}
+            {expandedComments[commentItem.id] ? hideText : viewText} {commentItem.replies.length}{" "}
+            {commentItem.replies.length === 1 ? replyLowerText : repliesText}
           </button>
         </div>
       )}
@@ -277,7 +314,7 @@ const ExhibitViewing = () => {
           <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
             <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
               <i className="bx bx-chevron-left text-lg mr-2"></i>
-              Exhibit Details
+              {exhibitDetailsText}
             </button>
           </div>
 
@@ -311,7 +348,7 @@ const ExhibitViewing = () => {
                         >
                           <i className="bx bx-cube-alt text-[13px] mr-[6px]"></i>
                           <span className="mr-2 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
-                            Explore Gallery
+                            {exploreGalleryText}
                           </span>
                         </div>
                       </div>
@@ -370,15 +407,15 @@ const ExhibitViewing = () => {
                               onToggleVisibility={(newVisibility, id) => toggleVisibilityExhibit(id)}
                               onViewInsights={(id) => console.log("View insights for:", id)}
                               onDelete={(id) => {
-                                if (confirm("Are you sure you want to delete this exhibit?")) {
+                                if (confirm(deleteConfirmText)) {
                                   deleteExhibit(id, {
                                     onSuccess: (data) => {
-                                      toast.success("Exhibit deleted successfully");
+                                      toast.success(exhibitDeletedText);
                                     },
                                   });
                                 }
                               }}
-                              className="-left-1.5 top-5"
+                              className="-left-2 top-7"
                             />
                           ) : (
                             <ExhibitMenu
@@ -399,7 +436,7 @@ const ExhibitViewing = () => {
                   </div>
 
                   <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>
-                    {exhibit.title || "The Distorted Face"}
+                    {translatedTitle || exhibit.title || "The Distorted Face"}
                   </h1>
 
                   <p
@@ -407,7 +444,7 @@ const ExhibitViewing = () => {
                     onClick={() => navigate(`/userprofile/${exhibit.artistId}`)}
                     className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
                   >
-                    by {exhibit.owner.name || "Angel Ganev"}
+                    {byText} {translatedOwnerName || exhibit.owner.name || "Angel Ganev"}
                   </p>
 
                   <div className="relative mt-4">
@@ -416,7 +453,7 @@ const ExhibitViewing = () => {
                       className="text-[10px] text-gray-700 transition-all duration-300 ease-in-out h-[100px] overflow-y-auto"
                       style={{ lineHeight: "1.1rem" }}
                     >
-                      {exhibit.description || "No description available."}
+                      {translatedDescription || exhibit.description || noDescriptionText}
                     </div>
 
                     {isOverflowing && (
@@ -424,7 +461,7 @@ const ExhibitViewing = () => {
                         onClick={() => setShowFullDescription((prev) => !prev)}
                         className="text-[9px] text-blue-500 hover:underline mt-1 block"
                       >
-                        {showFullDescription ? "Show Less" : "Show More"}
+                        {showFullDescription ? showLessText : showMoreText}
                       </button>
                     )}
                   </div>
@@ -434,7 +471,7 @@ const ExhibitViewing = () => {
                   {/* Comment Section */}
                   {isExhibitEnded ? (
                     <div className="text-[10px] text-gray-500 italic">
-                      This exhibit has ended. Commenting is disabled.
+                      {exhibitEndedText}
                     </div>
                   ) : (
                     <CommentSection artworkId={id} />
@@ -448,7 +485,7 @@ const ExhibitViewing = () => {
         {/* Related Artworks Section */}
         {exhibit && exhibit.category && exhibits && exhibits.length > 0 && (
           <div className="container md:px-6 mt-4 mb-6">
-            <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"}`}>Related Exhibits</h2>
+            <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"}`}>{relatedExhibitsText}</h2>
 
             {(() => {
               const normalizedCategory = exhibit.category.trim().toLowerCase();
@@ -473,7 +510,7 @@ const ExhibitViewing = () => {
                 </div>
               ) : (
                 <div className="flex flex-col justify-center items-center h-32 w-full">
-                  <p className="text-gray-500 text-xs mb-2">No related exhibits found.</p>
+                  <p className="text-gray-500 text-xs mb-2">{noRelatedExhibitsText}</p>
                 </div>
               );
             })()}

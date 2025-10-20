@@ -2,6 +2,8 @@ import type React from "react";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SecurityNote from "./SecurityNote";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface PaymentAccount {
   id: string;
@@ -31,6 +33,18 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  // Language and translation
+  const { language } = useLanguage();
+  const paypalAccountText = useAutoTranslation("PayPal Account", language);
+  const connectedText = useAutoTranslation("Connected", language);
+  const defaultText = useAutoTranslation("Default", language);
+  const emailAddressText = useAutoTranslation("Email Address", language);
+  const connectedSinceText = useAutoTranslation("Connected Since", language);
+  const updateAccountText = useAutoTranslation("Update Account", language);
+  const noPaypalAccountText = useAutoTranslation("No PayPal Account Connected", language);
+  const connectPaypalDescText = useAutoTranslation("Connect your PayPal account to enable quick and secure payments", language);
+  const setupPaypalText = useAutoTranslation("Set Up PayPal Account", language);
+
   // Show saved PayPal accounts using existing design or empty state
   if (accounts.length > 0) {
     return (
@@ -38,7 +52,7 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
         {accounts.map((account) => (
           <div key={account.id} className="bg-card border border-border rounded-lg px-10 py-8 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-border">
-              <h3 className="text-sm font-semibold text-blue-700">PayPal Account</h3>
+              <h3 className="text-sm font-semibold text-blue-700">{paypalAccountText}</h3>
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-[10px] font-medium">
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -48,11 +62,11 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
                       clipRule="evenodd"
                     />
                   </svg>
-                  Connected
+                  {connectedText}
                 </span>
                 {account.isDefault && (
                   <span className="inline-flex items-center px-2.5 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-medium">
-                    Default
+                    {defaultText}
                   </span>
                 )}
               </div>
@@ -61,17 +75,17 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
             <div className="space-y-3">
               <div>
                 <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                  Email Address
+                  {emailAddressText}
                 </label>
                 <p className="text-xs text-foreground font-medium mt-1">{account.accountInfo}</p>
               </div>
 
               <div>
                 <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                  Connected Since
+                  {connectedSinceText}
                 </label>
                 <p className="text-xs text-foreground font-medium mt-1">
-                  {new Date(account.dateAdded).toLocaleDateString("en-US", {
+                  {new Date(account.dateAdded).toLocaleDateString(language === "EN" ? "en-US" : language.toLowerCase(), {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
@@ -87,7 +101,7 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
                           active:scale-[0.98] transition-all duration-200 ease-in-out"
                 >
                   <i className="bx bx-edit text-[13px]"></i>
-                  <p className="hover:underline">Update Account</p>
+                  <p className="hover:underline">{updateAccountText}</p>
                 </button>
               </div>
             </div>
@@ -109,9 +123,9 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
             </svg>
           </div>
           <div>
-            <h3 className="text-[15px] font-semibold text-foreground mb-2">No PayPal Account Connected</h3>
+            <h3 className="text-[15px] font-semibold text-foreground mb-2">{noPaypalAccountText}</h3>
             <p className="text-xs text-muted-foreground">
-              Connect your PayPal account to enable quick and secure payments
+              {connectPaypalDescText}
             </p>
           </div>
           <button
@@ -120,7 +134,7 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
             className="inline-flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 font-medium text-[11px] transition-colors"
           >
             <Plus size={14} />
-            Set Up PayPal Account
+            {setupPaypalText}
           </button>
         </div>
       </div>

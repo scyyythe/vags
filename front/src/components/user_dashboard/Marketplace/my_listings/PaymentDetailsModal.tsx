@@ -5,6 +5,15 @@ import { format } from "date-fns";
 import html2canvas from "html2canvas";
 import { Transaction } from "@/hooks/transaction/useTransactions";
 import { CombinedTransactionData } from "@/hooks/transaction/useTransactionByArtwork";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
 
 interface PaymentDetailsModalProps {
   isOpen: boolean;
@@ -26,6 +35,27 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
   isLoading = false,
 }) => {
   const receiptRef = useRef<HTMLDivElement>(null);
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const paymentDetailsText = useAutoTranslation("Payment Details", language);
+  const noPaymentInfoText = useAutoTranslation("No payment information available.", language);
+  const loadingPaymentDetailsText = useAutoTranslation("Loading payment details...", language);
+  const artworkPurchasedText = useAutoTranslation("Artwork Purchased", language);
+  const paymentSummaryText = useAutoTranslation("Payment Summary", language);
+  const transactionIdText = useAutoTranslation("Transaction ID", language);
+  const amountPaidText = useAutoTranslation("Amount Paid", language);
+  const processingFeeText = useAutoTranslation("Processing Fee", language);
+  const netAmountText = useAutoTranslation("Net Amount", language);
+  const paymentMethodText = useAutoTranslation("Payment Method", language);
+  const buyerInformationText = useAutoTranslation("Buyer Information", language);
+  const billingAddressText = useAutoTranslation("Billing Address:", language);
+  const downloadReceiptText = useAutoTranslation("Download Receipt", language);
+  const unknownBuyerText = useAutoTranslation("Unknown Buyer", language);
+  const noEmailProvidedText = useAutoTranslation("No email provided", language);
+  const unknownArtworkText = useAutoTranslation("Unknown Artwork", language);
+  const philippinesText = useAutoTranslation("Philippines", language);
+  const atText = useAutoTranslation("at", language);
 
   // Helper function to normalize payment data from different sources
   const normalizePaymentData = () => {
@@ -49,8 +79,8 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
         processingFee: processingFee,
         netAmount: netAmount,
         buyer: {
-          name: purchase.shipping_address.name || "Unknown Buyer",
-          email: "No email provided", // Email not available in current data structure
+          name: purchase.shipping_address.name || unknownBuyerText,
+          email: noEmailProvidedText, // Email not available in current data structure
         },
         billing: {
           address: purchase.shipping_address.address,
@@ -59,7 +89,7 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
           country: purchase.shipping_address.country,
         },
         artwork: {
-          title: artworkData?.title || "Unknown Artwork",
+          title: artworkData?.title || unknownArtworkText,
           image: artworkData?.artworkImage || "",
         },
       };
@@ -86,19 +116,19 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
           name:
             transaction.receiver_first_name && transaction.receiver_last_name
               ? `${transaction.receiver_first_name} ${transaction.receiver_last_name}`
-              : transaction.receiver_first_name || "Unknown Buyer",
-          email: transaction.extra_data?.buyer_email || "No email provided",
+              : transaction.receiver_first_name || unknownBuyerText,
+          email: transaction.extra_data?.buyer_email || noEmailProvidedText,
         },
         billing: transaction.extra_data?.billing_address
           ? {
               address: transaction.extra_data.billing_address.address || "",
               city: transaction.extra_data.billing_address.city || "",
               postalCode: transaction.extra_data.billing_address.postal_code || "",
-              country: transaction.extra_data.billing_address.country || "Philippines",
+              country: transaction.extra_data.billing_address.country || philippinesText,
             }
           : undefined,
         artwork: {
-          title: artworkData?.title || transaction.extra_data?.artwork_title || "Unknown Artwork",
+          title: artworkData?.title || transaction.extra_data?.artwork_title || unknownArtworkText,
           image: artworkData?.artworkImage || transaction.extra_data?.artwork_image || "",
         },
       };
@@ -108,7 +138,7 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
     return {
       ...payment,
       artwork: {
-        title: artworkData?.title || payment.artwork?.title || "Unknown Artwork",
+        title: artworkData?.title || payment.artwork?.title || unknownArtworkText,
         image: artworkData?.artworkImage || payment.artwork?.image || "",
       },
     };
@@ -150,10 +180,10 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Payment Details</DialogTitle>
+            <DialogTitle>{paymentDetailsText}</DialogTitle>
           </DialogHeader>
           <div className="text-center py-8">
-            <p className="text-muted-foreground">No payment information available.</p>
+            <p className="text-muted-foreground">{noPaymentInfoText}</p>
           </div>
         </DialogContent>
       </Dialog>
@@ -165,7 +195,7 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
       <DialogContent className="max-w-2xl" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between text-sm">
-            <span>Payment Details</span>
+            <span>{paymentDetailsText}</span>
           </DialogTitle>
         </DialogHeader>
 
@@ -174,7 +204,7 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
             <div className="flex items-center justify-center py-8">
               <div className="flex items-center gap-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
-                <span className="text-sm text-gray-600">Loading payment details...</span>
+                <span className="text-sm text-gray-600">{loadingPaymentDetailsText}</span>
               </div>
             </div>
           ) : (
@@ -182,7 +212,7 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
               {/* Artwork Information */}
               {normalizedPayment.artwork && (
                 <div className="border border-border rounded-lg p-4">
-                  <h3 className="font-semibold text-xs mb-3">Artwork Purchased</h3>
+                  <h3 className="font-semibold text-xs mb-3">{artworkPurchasedText}</h3>
                   <div className="flex items-center gap-3">
                     {normalizedPayment.artwork.image && (
                       <img
@@ -192,7 +222,9 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
                       />
                     )}
                     <div>
-                      <p className="text-xs font-medium">{normalizedPayment.artwork.title}</p>
+                      <p className="text-xs font-medium">
+                        <TranslatedText text={normalizedPayment.artwork.title} />
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -202,15 +234,15 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
               <div className="border border-border rounded-lg p-4">
                 <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
                   <DollarSign className="w-2.5 h-2.5" />
-                  Payment Summary
+                  {paymentSummaryText}
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">Transaction ID</span>
+                    <span className="text-xs text-muted-foreground">{transactionIdText}</span>
                     <span className="text-xs font-mono">{normalizedPayment.transactionId}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">Amount Paid</span>
+                    <span className="text-xs text-muted-foreground">{amountPaidText}</span>
                     <span className="text-xs font-semibold">
                       ₱
                       {normalizedPayment.amount >= 1000
@@ -219,7 +251,7 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">Processing Fee</span>
+                    <span className="text-xs text-muted-foreground">{processingFeeText}</span>
                     <span className="text-xs">
                       -₱
                       {normalizedPayment.processingFee >= 1000
@@ -229,7 +261,7 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
                   </div>
                   <div className="border-t pt-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-xs font-semibold">Net Amount</span>
+                      <span className="text-xs font-semibold">{netAmountText}</span>
                       <span className="text-sm font-bold text-green-600">
                         ₱
                         {normalizedPayment.netAmount >= 1000
@@ -247,16 +279,18 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
                 <div className="border border-border rounded-lg p-4 min-w-[300px] overflow-auto">
                   <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
                     <CreditCard className="w-2.5 h-2.5" />
-                    Payment Method
+                    {paymentMethodText}
                   </h3>
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
                       <CreditCard className="w-2.5 h-2.5 text-primary-foreground" />
                     </div>
                     <div>
-                      <p className="text-xs font-medium">{normalizedPayment.paymentMethod}</p>
+                      <p className="text-xs font-medium">
+                        <TranslatedText text={normalizedPayment.paymentMethod} />
+                      </p>
                       <p className="text-[11px] text-muted-foreground">
-                        {format(new Date(normalizedPayment.paymentDate), "MMM dd, yyyy 'at' h:mm a")}
+                        {format(new Date(normalizedPayment.paymentDate), `MMM dd, yyyy '${atText}' h:mm a`)}
                       </p>
                     </div>
                   </div>
@@ -266,21 +300,29 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
                 <div className="border border-border rounded-lg p-4 min-w-[300px] overflow-auto">
                   <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
                     <User className="w-2.5 h-2.5" />
-                    Buyer Information
+                    {buyerInformationText}
                   </h3>
                   <div className="space-y-2">
                     <div>
-                      <p className="text-xs font-medium">{normalizedPayment.buyer.name}</p>
-                      <p className="text-[11px] text-muted-foreground">{normalizedPayment.buyer.email}</p>
+                      <p className="text-xs font-medium">
+                        <TranslatedText text={normalizedPayment.buyer.name} />
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">
+                        <TranslatedText text={normalizedPayment.buyer.email} />
+                      </p>
                     </div>
                     {normalizedPayment.billing && (
                       <div className="pt-2 border-t">
-                        <p className="text-[11px] text-muted-foreground">Billing Address:</p>
-                        <p className="text-xs">{normalizedPayment.billing.address}</p>
+                        <p className="text-[11px] text-muted-foreground">{billingAddressText}</p>
                         <p className="text-xs">
-                          {normalizedPayment.billing.city}, {normalizedPayment.billing.postalCode}
+                          <TranslatedText text={normalizedPayment.billing.address} />
                         </p>
-                        <p className="text-xs">{normalizedPayment.billing.country}</p>
+                        <p className="text-xs">
+                          <TranslatedText text={normalizedPayment.billing.city} />, <TranslatedText text={normalizedPayment.billing.postalCode} />
+                        </p>
+                        <p className="text-xs">
+                          <TranslatedText text={normalizedPayment.billing.country} />
+                        </p>
                       </div>
                     )}
                   </div>
@@ -296,7 +338,7 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
               onClick={handleDownloadReceipt}
               className="px-6 py-2 rounded-lg text-[11px] text-white font-medium bg-black"
             >
-              Download Receipt
+              {downloadReceiptText}
             </button>
           </div>
         )}

@@ -3,6 +3,8 @@ import { EyeOff, Flag, Undo2, Share2 } from "lucide-react";
 import ShareModal from "../../local_components/share/ShareModal";
 import ReportOptionsPopup from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import useUndoExhibitReport from "@/hooks/mutate/report/undo/useUndoExhibitReport";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface ExhibitMenuProps {
   exhibitId: string;
@@ -34,6 +36,14 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
   const [showReportOptions, setShowReportOptions] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+
+  const { language } = useLanguage();
+
+  // Translation hooks for all text content
+  const shareText = useAutoTranslation("Share", language);
+  const hideText = useAutoTranslation("Hide", language);
+  const reportText = useAutoTranslation("Report", language);
+  const undoReportText = useAutoTranslation("Undo Report", language);
 
   const { handleUndoReport } = useUndoExhibitReport();
 
@@ -70,7 +80,7 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
             </button>
             {hoveredItem === "share" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Share
+                {shareText}
               </span>
             )}
           </div>
@@ -90,7 +100,7 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
             </button>
             {hoveredItem === "hide" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Hide
+                {hideText}
               </span>
             )}
           </div>
@@ -108,7 +118,7 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
             </button>
             {hoveredItem === "report" && (
               <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                Report
+                {reportText}
               </span>
             )}
           </div>
@@ -127,7 +137,7 @@ const ExhibitMenu: React.FC<ExhibitMenuProps> = ({
               </button>
               {hoveredItem === "undoReport" && (
                 <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
-                  Undo Report
+                  {undoReportText}
                 </span>
               )}
             </div>

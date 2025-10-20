@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Artist } from "../components/types";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { User } from "@/hooks/users/useUserQuery";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { autoTranslate } from "@/utils/autoTranslate";
 interface ExhibitSlotsProps {
   selectedEnvironment: number | null;
   environments: { id: number; image: string; slots: number }[];
@@ -44,6 +47,40 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
   slotColorSchemes,
   mode,
 }) => {
+  const { language } = useLanguage();
+
+  // State for translated color names
+  const [translatedColorNames, setTranslatedColorNames] = useState<string[]>([...colorNames]);
+
+  // Effect to translate color names when language changes
+  useEffect(() => {
+    const translateColorNames = async () => {
+      try {
+        const translated = await Promise.all(
+          colorNames.map(async (colorName) => await autoTranslate(colorName, language.toLowerCase()))
+        );
+        setTranslatedColorNames(translated);
+      } catch (error) {
+        console.warn("Failed to translate color names:", error);
+        setTranslatedColorNames([...colorNames]);
+      }
+    };
+
+    if (language.toLowerCase() !== "en") {
+      translateColorNames();
+    } else {
+      setTranslatedColorNames([...colorNames]);
+    }
+  }, [language, colorNames]);
+
+  // Translation hooks for all text content
+  const availableSlotsText = useAutoTranslation("Available Slots", language);
+  const yourSlotsText = useAutoTranslation("Your slots", language);
+  const slotsText = useAutoTranslation("slots", language);
+  const removeText = useAutoTranslation("Remove", language);
+  const slotsEvenlyDistributedText = useAutoTranslation("Slots are evenly distributed among collaborators", language);
+  const selectSlotsText = useAutoTranslation("Select slots for your artwork placement", language);
+
   if (!selectedEnvironment) return null;
 
   const currentEnvironment = environments.find((env) => env.id === selectedEnvironment);
@@ -64,7 +101,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
 
   return (
     <div>
-      <h3 className="text-xs font-medium mb-4">Available Slots</h3>
+      <h3 className="text-xs font-medium mb-4">{availableSlotsText}</h3>
 
       {/* Color coding legend - only for collaborative exhibits */}
       {exhibitType === "collab" && (
@@ -72,7 +109,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
           {/* Show color legend for current participants */}
           <div className="flex items-center">
             <div className={`w-3 h-3 mr-1 rounded-full ${getBgColorClass(slotColorSchemes[0])}`}></div>
-            <span className="text-[10px]">{colorNames[0] || "Your slots"}</span>
+            <span className="text-[10px]">{translatedColorNames[0] || yourSlotsText}</span>
           </div>
 
           {collaborators.map((collab, index) => {
@@ -83,7 +120,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
             return (
               <div key={collab.id} className="flex items-center">
                 <div className={`w-4 h-4 mr-1 rounded-full ${getBgColorClass(colorScheme)}`}></div>
-                <span className="text-[10px]">{`${collab.first_name} ${collab.last_name || ""}`.trim()}'s slots</span>
+                <span className="text-[10px]">{`${collab.first_name} ${collab.last_name || ""}`.trim()}'s {slotsText}</span>
               </div>
             );
           })}
@@ -134,7 +171,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
                         handleClearSlot(slotId);
                       }}
                     >
-                      <span className="text-white text-[10px]">Remove</span>
+                      <span className="text-white text-[10px]">{removeText}</span>
                     </div>
                   )}
                 </>
@@ -157,8 +194,8 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
       </div>
       <div className="mt-2 text-[10px] text-gray-500">
         {exhibitType === "collab"
-          ? "Slots are evenly distributed among collaborators"
-          : "Select slots for your artwork placement"}
+          ? slotsEvenlyDistributedText
+          : selectSlotsText}
       </div>
     </div>
   );

@@ -55,6 +55,10 @@ const useTopArtworks = (filters?: TopArtworksFilters) => {
   return useQuery<TopArtwork[]>({
     queryKey: ["top-artworks", filters],
     queryFn: () => fetchTopArtworks(filters),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 };
 

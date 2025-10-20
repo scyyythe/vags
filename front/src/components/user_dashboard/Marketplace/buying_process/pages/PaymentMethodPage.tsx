@@ -2,11 +2,19 @@ import { useNavigate } from "react-router-dom";
 import PaymentMethod from "@/components/user_dashboard/Marketplace/buying_process/payment_method/PaymentMethod";
 import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const PaymentMethodPage = () => {
   const navigate = useNavigate();
   const { accounts, fetchAccounts } = usePaymentAccounts();
   const [loading, setLoading] = useState(true);
+
+  // Language and translation
+  const { language } = useLanguage();
+  const paymentAccountsLoadedText = useAutoTranslation("Payment accounts loaded:", language);
+  const failedToLoadPaymentAccountsText = useAutoTranslation("Failed to load payment accounts:", language);
+  const paymentFormSubmittedText = useAutoTranslation("Payment Form Submitted:", language);
 
   useEffect(() => {
     const loadAccounts = async () => {
@@ -15,9 +23,9 @@ const PaymentMethodPage = () => {
         setLoading(true);
         try {
           await fetchAccounts();
-          console.log("Payment accounts loaded:", accounts);
+          console.log(paymentAccountsLoadedText, accounts);
         } catch (error) {
-          console.error("Failed to load payment accounts:", error);
+          console.error(failedToLoadPaymentAccountsText, error);
         } finally {
           setLoading(false);
         }
@@ -35,8 +43,8 @@ const PaymentMethodPage = () => {
       loading={loading}
       onBack={() => navigate("/shipping")}
       onContinue={(formData) => {
-        console.log("Payment Form Submitted:", formData);
-        navigate("/checkout-confirmation");
+        console.log(paymentFormSubmittedText, formData);
+        
       }}
     />
   );

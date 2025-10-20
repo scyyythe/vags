@@ -8,6 +8,8 @@ import ArtGrid from "@/components/user_dashboard/user_profile/components/ArtGrid
 import useUserDetails from "@/hooks/users/useUserDetails";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import useOwnedArtworksCount from "@/hooks/artworks/fetch_artworks/useOwnedArtworksCount ";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const Index = () => {
   const { id } = useParams();
@@ -18,8 +20,16 @@ const Index = () => {
     return sessionStorage.getItem("lastActiveTab") || "created";
   });
 
+  // Language and translation
+  const { language } = useLanguage();
+
   const { firstName, lastName, profilePicture, cover_photo, email } = useUserDetails(id);
-  const userName = `${firstName} ${lastName}`;
+  
+  // Translation for fetched user data
+  const translatedFirstName = useAutoTranslation(firstName || "", language);
+  const translatedLastName = useAutoTranslation(lastName || "", language);
+  const userName = `${translatedFirstName} ${translatedLastName}`;
+  
   const ownedArtworksCount = useOwnedArtworksCount(id!);
   const { data, isLoading } = useArtworks(1, id, true, "specific-user");
   const [createdArtworksCount, setCreatedArtworksCount] = useState(0);

@@ -25,7 +25,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLanguage } from "@/context/LanguageContext";
 import { autoTranslate } from "@/utils/autoTranslate";
-import { useArtCategories, ART_CATEGORIES } from "@/components/user_dashboard/local_components/categories/ArtCategories";
+import {
+  useArtCategories,
+  ART_CATEGORIES,
+} from "@/components/user_dashboard/local_components/categories/ArtCategories";
 
 const Explore = () => {
   const navigate = useNavigate();
@@ -115,9 +118,7 @@ const Explore = () => {
       let matchedOriginal: string | undefined;
 
       // try direct match to ART_CATEGORIES (in case selectedCategory is already original)
-      const direct = ART_CATEGORIES.find(
-        (c) => c.toLowerCase() === category
-      );
+      const direct = ART_CATEGORIES.find((c) => c.toLowerCase() === category);
       if (direct) {
         matchedOriginal = direct;
       } else {
@@ -130,20 +131,24 @@ const Explore = () => {
 
       if (matchedOriginal) {
         filtered = filtered.filter((artwork) => {
-          const artworkCategory = (artwork.category || artwork.style || artwork.artCategory || "").toString().toLowerCase();
+          const artworkCategory = (artwork.category || artwork.style || artwork.artCategory || "")
+            .toString()
+            .toLowerCase();
           return artworkCategory === matchedOriginal!.toLowerCase();
         });
       } else {
         // fallback: if no mapping found, try matching selectedCategory directly to artwork fields
         filtered = filtered.filter((artwork) => {
-          const artworkCategory = (artwork.category || artwork.style || artwork.artCategory || artwork.title || "").toString().toLowerCase();
+          const artworkCategory = (artwork.category || artwork.style || artwork.artCategory || artwork.title || "")
+            .toString()
+            .toLowerCase();
           return artworkCategory.includes(category);
         });
       }
     }
 
     // Apply search filtering
-    if (searchQuery) {
+    if (searchQuery?.trim()) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (artwork) =>
@@ -154,7 +159,9 @@ const Explore = () => {
 
     // If the main filter is Trending, sort by likes
     if (filterCategory === translatedTrending.toLowerCase()) {
-      filtered = [...filtered].sort((a, b) => (b.likesCount || b.likes_count || 0) - (a.likesCount || a.likes_count || 0));
+      filtered = [...filtered].sort(
+        (a, b) => (b.likesCount || b.likes_count || 0) - (a.likesCount || a.likes_count || 0)
+      );
     }
 
     return filtered;
@@ -169,7 +176,7 @@ const Explore = () => {
     translatedAll,
     translatedTrending,
     translatedFollowing,
-    translatedCategories
+    translatedCategories,
   ]);
 
   const handleTipJar = (artwork: (typeof filteredArtworksMemo)[0]) => {
@@ -231,7 +238,7 @@ const Explore = () => {
 
                 <div className="flex space-x-2 text-xs">
                   <div className="relative">
-                  <ArtCategorySelect
+                    <ArtCategorySelect
                       selectedCategory={selectedCategory}
                       onChange={(value) => {
                         if (value === translatedAll) {

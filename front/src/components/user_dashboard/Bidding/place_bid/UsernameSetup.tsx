@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 interface UsernameSetupPopupProps {
   isOpen: boolean;
@@ -13,8 +15,22 @@ const UsernameSetupPopup: React.FC<UsernameSetupPopupProps> = ({
   onClose,
   onUsernameSet,
 }) => {
+  const { language } = useLanguage();
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Translation hooks
+  const setUpYourUsernameText = useAutoTranslation("Set Up Your Username", language);
+  const chooseUniqueUsernameText = useAutoTranslation("Choose a unique username that will represent you in the auction.", language);
+  const usernameText = useAutoTranslation("Username", language);
+  const enterUsernameText = useAutoTranslation("Enter username", language);
+  const usernameRequirementsText = useAutoTranslation("3-20 characters. Letters, numbers, and underscores only.", language);
+  const cancelText = useAutoTranslation("Cancel", language);
+  const settingText = useAutoTranslation("Setting...", language);
+  const setUsernameText = useAutoTranslation("Set Username", language);
+  const pleaseEnterUsernameText = useAutoTranslation("Please enter a username", language);
+  const usernameMinLengthText = useAutoTranslation("Username must be at least 3 characters long", language);
+  const usernameSetSuccessText = useAutoTranslation("Username set successfully!", language);
 
   if (!isOpen) return null;
 
@@ -22,12 +38,12 @@ const UsernameSetupPopup: React.FC<UsernameSetupPopupProps> = ({
     e.preventDefault();
     
     if (!username.trim()) {
-      toast.error("Please enter a username", { closeButton: true })
+      toast.error(pleaseEnterUsernameText, { closeButton: true })
       return;
     }
 
     if (username.length < 3) {
-      toast.error("Username must be at least 3 characters long", { closeButton: true })
+      toast.error(usernameMinLengthText, { closeButton: true })
       return;
     }
 
@@ -36,7 +52,7 @@ const UsernameSetupPopup: React.FC<UsernameSetupPopupProps> = ({
     // Simulate API call
     setTimeout(() => {
       onUsernameSet(username.trim());
-      toast.success("Username set successfully!", { closeButton: true })
+      toast.success(usernameSetSuccessText, { closeButton: true })
       setIsLoading(false);
       onClose();
       setUsername("");
@@ -48,20 +64,20 @@ const UsernameSetupPopup: React.FC<UsernameSetupPopupProps> = ({
       <div className="bg-white rounded-2xl w-full max-w-xs mx-4 relative" onClick={(e) => e.stopPropagation()}>
         <div className="py-6 px-8">
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-sm font-bold">Set Up Your Username</h2>
+            <h2 className="text-sm font-bold">{setUpYourUsernameText}</h2>
             <button onClick={onClose} className="text-gray-600 hover:text-black">
               <X size={17} />
             </button>
           </div>
 
           <p className="text-gray-500 text-[10px] mb-6">
-            Choose a unique username that will represent you in the auction.
+            {chooseUniqueUsernameText}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-[10px] font-medium text-gray-700 mb-2">
-                Username
+                {usernameText}
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-[10px]">
@@ -71,14 +87,14 @@ const UsernameSetupPopup: React.FC<UsernameSetupPopupProps> = ({
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter username"
+                  placeholder={enterUsernameText}
                   className="w-full pl-8 pr-4 py-2 border border-gray-200 rounded-full text-[10px] focus:outline-none focus:border-red-800 focus:ring-1 focus:ring-red-800"
                   maxLength={20}
                   disabled={isLoading}
                 />
               </div>
               <p className="text-[9px] text-gray-500 mt-1">
-                3-20 characters. Letters, numbers, and underscores only.
+                {usernameRequirementsText}
               </p>
             </div>
 
@@ -89,7 +105,7 @@ const UsernameSetupPopup: React.FC<UsernameSetupPopupProps> = ({
                 disabled={isLoading}
                 className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-[10px] py-2 rounded-full font-medium transition-colors disabled:opacity-50"
               >
-                Cancel
+                {cancelText}
               </button>
               <button
                 type="submit"
@@ -100,7 +116,7 @@ const UsernameSetupPopup: React.FC<UsernameSetupPopupProps> = ({
                     : "bg-red-800 hover:bg-red-700"
                 }`}
               >
-                {isLoading ? "Setting..." : "Set Username"}
+                {isLoading ? settingText : setUsernameText}
               </button>
             </div>
           </form>

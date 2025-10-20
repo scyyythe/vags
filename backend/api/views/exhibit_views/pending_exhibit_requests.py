@@ -35,6 +35,7 @@ class MyPendingExhibitRequestView(APIView):
                     "exhibitId": str(exhibit.id),
                     "isOwner": True,
                     "type": "pending",
+                    "exhibitType": exhibit.exhibit_type,
                     "collaboratorsSubmitted": submitted_count,
                     "totalCollaborators": total
                 })
@@ -46,6 +47,7 @@ class MyPendingExhibitRequestView(APIView):
                     "exhibitId": str(exhibit.id),
                     "isOwner": True,
                     "type": "ready",
+                    "exhibitType": exhibit.exhibit_type,
                     "collaboratorsSubmitted": submitted_count,
                     "totalCollaborators": total
                 })
@@ -61,20 +63,19 @@ class MyPendingExhibitRequestView(APIView):
                 "status": "Pending invitation acceptance",
                 "exhibitId": str(exhibit.id),
                 "isOwner": False,
-                "type": "pending"
+                "type": "pending",
+                "exhibitType": exhibit.exhibit_type
             })
         
-        # 3. User is in exhibit.collaborators - optimized query with prefetch
+        # 3. User is in exhibit.collaborators - include both published and non-published exhibits
         collaborative_exhibits = Exhibit.objects(
             collaborators=user,
-            exhibit_type="Collaborative",
-            visibility__ne="Public"
-        ).only('id', 'title', 'collaborators')  # Only fetch needed fields
+            exhibit_type="Collaborative"
+        ).only('id', 'title', 'collaborators', 'visibility')
 
         # Pre-fetch all user contributions to avoid N+1 queries
-        user_contributions = set(
-            str(contrib.exhibit.id) for contrib in ExhibitContribution.objects(contributor=user).only('exhibit')
-        )
+        user_contributions_query = ExhibitContribution.objects(contributor=user).only('exhibit')
+        user_contributions = set(str(contrib.exhibit.id) for contrib in user_contributions_query)
 
         for exhibit in collaborative_exhibits:
             has_submitted = str(exhibit.id) in user_contributions
@@ -87,15 +88,30 @@ class MyPendingExhibitRequestView(APIView):
                     "status": "Pending your contribution",
                     "exhibitId": str(exhibit.id),
                     "isOwner": False,
-                    "type": "pending"
+                    "type": "pending",
+                    "exhibitType": exhibit.exhibit_type
                 })
             else:
-                # User has submitted, check if all collaborators have submitted
+                # User has submitted, check exhibit status
                 total_collaborators = len(exhibit.collaborators)
                 submitted_contributors = ExhibitContribution.objects(exhibit=exhibit).distinct('contributor')
                 submitted_count = len(submitted_contributors)
                 
-                if submitted_count < total_collaborators:
+                if exhibit.visibility == "Public":
+                    # Exhibit is published - show as contributed
+                    pending_requests.append({
+                        "id": str(exhibit.id),
+                        "exhibitTitle": exhibit.title,
+                        "status": "Exhibit is now live! Your contribution is part of this published exhibit.",
+                        "exhibitId": str(exhibit.id),
+                        "isOwner": False,
+                        "type": "contributed",
+                        "exhibitType": exhibit.exhibit_type,
+                        "collaboratorsSubmitted": submitted_count,
+                        "totalCollaborators": total_collaborators,
+                        "hasUserSubmitted": True
+                    })
+                elif submitted_count < total_collaborators:
                     # User has submitted but others haven't finished yet
                     pending_requests.append({
                         "id": str(exhibit.id),
@@ -104,11 +120,12 @@ class MyPendingExhibitRequestView(APIView):
                         "exhibitId": str(exhibit.id),
                         "isOwner": False,
                         "type": "contributed",
+                        "exhibitType": exhibit.exhibit_type,
                         "collaboratorsSubmitted": submitted_count,
                         "totalCollaborators": total_collaborators,
                         "hasUserSubmitted": True
                     })
-                # If all have submitted, the owner will see it as "ready" in section 1
+                # If all have submitted but not published, the owner will see it as "ready" in section 1
 
         # Serialize and return
         serializer = PendingExhibitRequestSerializer(pending_requests, many=True)
