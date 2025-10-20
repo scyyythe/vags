@@ -5,13 +5,17 @@ from rest_framework.response import Response
 from api.models.purchase_model.order import PurchasedArtwork, ShippingSnapshot
 from api.models.artwork_model.artwork import Art
 from api.models.user_model.users import User
+from api.serializers.purchase_serializer.purchase_serializer import PurchaseArtworkSerializer
+from api.models.transaction_model.transaction import Transaction
+from api.models.interaction_model.notification import Notification
 from bson import ObjectId
+from datetime import datetime
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_purchase_order(request):
-    """Create a new purchase order with artwork details only"""
+    """Create a new purchase order using PurchaseArtworkSerializer"""
     try:
         data = request.data.copy()
         
@@ -23,7 +27,7 @@ def create_purchase_order(request):
                 'error': 'Invalid data'
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # Convert artwork ID to ObjectId
+        # Convert artwork ID to ObjectId for validation
         try:
             artwork_id = ObjectId(data['artwork'])
         except Exception:
@@ -33,7 +37,7 @@ def create_purchase_order(request):
                 'error': 'Invalid artwork ID'
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # Get the artwork
+        # Get the artwork for validation
         try:
             artwork = Art.objects.get(id=artwork_id)
         except Art.DoesNotExist:
@@ -43,45 +47,54 @@ def create_purchase_order(request):
                 'error': 'Artwork does not exist'
             }, status=status.HTTP_404_NOT_FOUND)
         
-        # Create a minimal shipping address for now (will be updated later)
-        shipping_address = ShippingSnapshot(
-            name="Temporary",
-            address="Temporary",
-            city="Temporary",
-            state="Temporary",
-            country="Philippines",
-            postal_code="0000",
-            phone="0000-000-0000"
-        )
+        # Create a temporary shipping address for the order (will be updated later)
+        data['shipping_address'] = {
+            'name': 'Temporary',
+            'address': 'Temporary',
+            'city': 'Temporary',
+            'state': 'Temporary',
+            'country': 'Philippines',
+            'postal_code': '0000',
+            'phone': '0000-000-0000'
+        }
         
-        # Create PurchasedArtwork with status "Ordering"
-        purchased_artwork = PurchasedArtwork(
-            buyer=request.user,
-            artwork=artwork,
-            shipping_address=shipping_address,
-            payment_method="PayPal",  # Default to PayPal, will be updated later
-            is_paid=False,
-            quantity=int(data['quantity']),
-            total_price=float(data['total_price']),
-            status="Ordering"
-        )
-        purchased_artwork.save()
+        # Set default payment method and status for order creation
+        data['payment_method'] = data.get('payment_method', 'PayPal')
+        data['is_paid'] = False
+        data['artwork_id'] = data['artwork']  # Rename for serializer
+        data['is_purchase_order'] = True  # Flag to indicate this is a purchase order
         
-        return Response({
-            'success': True,
-            'message': 'Purchase order created successfully',
-            'purchase_order_id': str(purchased_artwork.id),
-            'data': {
-                'id': str(purchased_artwork.id),
-                'buyer': str(purchased_artwork.buyer.id),
-                'artwork': str(purchased_artwork.artwork.id),
-                'quantity': purchased_artwork.quantity,
-                'total_price': purchased_artwork.total_price,
-                'status': purchased_artwork.status,
-                'created_at': purchased_artwork.created_at.isoformat(),
-                'updated_at': purchased_artwork.updated_at.isoformat()
-            }
-        }, status=status.HTTP_201_CREATED)
+        # Use the PurchaseArtworkSerializer to create the purchase order
+        serializer = PurchaseArtworkSerializer(data=data, context={"request": request})
+        
+        if serializer.is_valid():
+            # Override the status to "Ordering" for purchase orders
+            purchased_artwork = serializer.save()
+            purchased_artwork.status = "Ordering"
+            purchased_artwork.save()
+            
+            return Response({
+                'success': True,
+                'message': 'Purchase order created successfully',
+                'purchase_order_id': str(purchased_artwork.id),
+                'data': {
+                    'id': str(purchased_artwork.id),
+                    'buyer': str(purchased_artwork.buyer.id),
+                    'artwork': str(purchased_artwork.artwork.id),
+                    'quantity': purchased_artwork.quantity,
+                    'total_price': purchased_artwork.total_price,
+                    'status': purchased_artwork.status,
+                    'created_at': purchased_artwork.created_at.isoformat(),
+                    'updated_at': purchased_artwork.updated_at.isoformat()
+                }
+            }, status=status.HTTP_201_CREATED)
+        else:
+            return Response({
+                'success': False,
+                'message': 'Validation failed',
+                'errors': serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+            
     except Exception as e:
         return Response({
             'success': False,
@@ -156,18 +169,83 @@ def update_purchase_order(request, order_id):
                 postal_code=shipping_data.get('postal_code', ''),
                 phone=shipping_data.get('phone', '')
             )
-            purchased_artwork.status = 'Shipping'
+            # Update status to "Shipping" when shipping address is provided
+            if purchased_artwork.status == "Ordering":
+                purchased_artwork.status = 'Shipping'
         
         # Update payment method if provided
         if 'payment_method' in request.data:
             purchased_artwork.payment_method = request.data['payment_method']
-            purchased_artwork.status = 'Payment'
+            # Update status to "Payment" when payment method is provided
+            if purchased_artwork.status in ["Ordering", "Shipping"]:
+                purchased_artwork.status = 'Payment'
         
         # Update payment status if provided
         if 'is_paid' in request.data:
             purchased_artwork.is_paid = request.data['is_paid']
             if request.data['is_paid']:
-                purchased_artwork.status = 'Completed'
+                purchased_artwork.status = 'Paid'
+                
+                # When payment is completed, mark artwork as sold and create transaction
+                artwork = purchased_artwork.artwork
+                
+                # Update artwork quantity/status
+                if artwork.edition in ["Open Edition", "Limited Edition"] and artwork.quantity is not None:
+                    artwork.quantity -= purchased_artwork.quantity
+                    if artwork.quantity == 0:
+                        artwork.art_status = "Sold"  
+                    else:
+                        artwork.art_status = "onSale" 
+                else:
+                    # For non-Open Edition artworks, mark as Sold
+                    artwork.art_status = "Sold"
+                artwork.save()
+                
+                # Create transaction record for completed payment
+                Transaction(
+                    sender=purchased_artwork.buyer,
+                    receiver=artwork.artist,
+                    art=artwork,
+                    transaction_type="Purchase",
+                    amount=purchased_artwork.total_price,
+                    currency="PHP",
+                    payment_method=purchased_artwork.payment_method,
+                    payment_status="Completed",
+                    transaction_id=str(ObjectId()),
+                    extra_data={"purchase_id": str(purchased_artwork.id)},
+                    timestamp=datetime.now()
+                ).save()
+                
+                # Create notifications for completed payment
+                Notification.objects.create(
+                    user=artwork.artist,
+                    actor=purchased_artwork.buyer,
+                    message=f"{purchased_artwork.buyer.first_name} {purchased_artwork.buyer.last_name} completed payment for: '{artwork.title}'",
+                    name=f"{purchased_artwork.buyer.first_name} {purchased_artwork.buyer.last_name}",
+                    action="completed payment for your artwork",
+                    target=artwork.title,
+                    icon="purchase",
+                    created_at=datetime.now(),
+                    link=f"/viewproduct/{artwork.id}"
+                )
+
+                Notification.objects.create(
+                    user=purchased_artwork.buyer,
+                    actor=purchased_artwork.buyer,
+                    message=f"Payment completed for: '{artwork.title}'",
+                    name=f"{purchased_artwork.buyer.first_name} {purchased_artwork.buyer.last_name}",
+                    action="completed payment",
+                    target=artwork.title,
+                    icon="purchase",
+                    created_at=datetime.now(),
+                    link=f"/viewproduct/{artwork.id}"
+                )
+        
+        # Update quantity if provided
+        if 'quantity' in request.data:
+            purchased_artwork.quantity = int(request.data['quantity'])
+            # Recalculate total price based on new quantity
+            purchased_artwork.total_price = purchased_artwork.artwork.price * purchased_artwork.quantity
         
         purchased_artwork.save()
         

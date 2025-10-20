@@ -78,18 +78,44 @@ export const useRelistArtwork = () => {
     },
     onSuccess: (data, artworkId) => {
       toast.success(data.message || "Artwork relisted successfully!");
-      // Invalidate relevant queries to refresh the data
-      queryClient.invalidateQueries({ queryKey: ["artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["myArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["marketplaceArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["wishlistArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["my-sold-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
-      // Also invalidate trending artworks and followed artworks
-      queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+      // Invalidate all artwork and marketplace queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("artworks") ||
+              queryKey.includes("myArtworks") ||
+              queryKey.includes("marketplaceArtworks") ||
+              queryKey.includes("wishlistArtworks") ||
+              queryKey.includes("my-sold-artworks") ||
+              queryKey.includes("user-sold-artworks") ||
+              queryKey.includes("my-sell-art-cards") ||
+              queryKey.includes("user-sell-art-cards") ||
+              queryKey.includes("marketplace-art-cards") ||
+              queryKey.includes("trending-artworks") ||
+              queryKey.includes("followedArtworks") ||
+              queryKey.includes("relistable-artworks") ||
+              queryKey.includes("popular-artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("popular-artworks-light") ||
+              queryKey.includes("top-artworks") ||
+              queryKey.includes("top-sellers") ||
+              queryKey.includes("my-purchases") ||
+              queryKey.includes("buyer-activity") ||
+              queryKey.includes("purchase-orders") ||
+              queryKey.includes("purchase-order") ||
+              queryKey.includes("notifications") ||
+              queryKey.includes("exhibits") ||
+              queryKey.includes("exhibit-cards") ||
+              queryKey.includes("my-exhibit-cards") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks"))
+          );
+        },
+      });
     },
     onError: (error: any, artworkId, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
@@ -107,9 +133,22 @@ export const useRelistArtwork = () => {
     },
     onSettled: () => {
       // Always refetch after error or success to ensure we have the latest data
-      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("marketplace-art-cards") ||
+              queryKey.includes("my-sell-art-cards") ||
+              queryKey.includes("user-sell-art-cards") ||
+              queryKey.includes("relistable-artworks") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("myArtworks") ||
+              queryKey.includes("trending-artworks") ||
+              queryKey.includes("followedArtworks"))
+          );
+        },
+      });
 
       // Force immediate refetch of marketplace data
       queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
