@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { getLoggedInUserId } from "@/auth/decode";
+import useUserActivity from "@/hooks/useUserActivity";
 
 interface User {
   id: string;
@@ -49,10 +50,20 @@ interface Notification {
 // Fetch function for notifications
 const fetchNotifications = async (): Promise<Notification[]> => {
   try {
+    console.log("Fetching notifications from API...");
     const response = await apiClient.get("/notifications/");
+    console.log("Notifications response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch notifications", error);
+    console.error("Error details:", {
+      message: error.message,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      url: error.config?.url,
+      baseURL: error.config?.baseURL
+    });
     toast.error("Failed to fetch notifications");
     throw error;
   }
@@ -65,8 +76,9 @@ const useNotifications = () => {
 
   const userId = getLoggedInUserId();
   const queryClient = useQueryClient();
+  const { isActive } = useUserActivity();
 
-  // Use React Query to fetch notifications with caching
+  // Use React Query to fetch notifications with smart polling
   const {
     data: allNotifications = [],
     isLoading,
@@ -76,10 +88,24 @@ const useNotifications = () => {
     queryKey: ["notifications", userId],
     queryFn: fetchNotifications,
     enabled: !!userId, // Only fetch if user is authenticated
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-    refetchOnWindowFocus: false, // Don't refetch when window gains focus
-    refetchOnMount: false, // Don't refetch on component mount if data exists
+    staleTime: 0, // Always consider data stale for real-time updates
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnMount: true, // Refetch on component mount
     refetchOnReconnect: true, // Refetch on network reconnect
+    refetchInterval: (data) => {
+      // Only poll if user is active
+      if (!isActive) return false;
+      
+      // Ensure data is an array before calling .some()
+      if (!Array.isArray(data)) {
+        return 10000; // Default polling interval if data is not ready
+      }
+      
+      // Poll more frequently if there are unread notifications
+      const hasUnread = data.some(n => !n.is_read);
+      return hasUnread ? 5000 : 10000; // Poll every 5s if unread, 10s if all read
+    },
+    refetchIntervalInBackground: false, // Don't poll when tab is not active
     retry: 1, // Retry once on failure
   });
 

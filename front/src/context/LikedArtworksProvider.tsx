@@ -54,6 +54,12 @@ export const LikedArtworksProvider = ({ children }: { children: ReactNode }) => 
         likeCount: like_count !== undefined ? like_count : oldData?.likeCount,
       }));
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
+      
+      // Invalidate notifications to trigger refresh
+      if (is_liked) {
+        queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      }
+      
       toast(detail || (is_liked ? "You liked this artwork." : "You unliked this artwork."), {
         closeButton: true,
       });

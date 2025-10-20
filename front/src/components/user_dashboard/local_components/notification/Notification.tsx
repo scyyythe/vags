@@ -48,6 +48,34 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
     onClose();
   };
 
+  const handleNotificationClick = (notification: any) => {
+    // Mark notification as read if it's unread
+    if (!notification.is_read) {
+      markAsReadMutation.mutate(notification.id, {
+        onSuccess: () => {
+          // Optional: Add a small delay to show the visual change before navigation
+          if (notification.link) {
+            setTimeout(() => {
+              navigate(notification.link);
+              onClose();
+            }, 100);
+          }
+        },
+        onError: () => {
+          // If marking as read fails, still allow navigation
+          if (notification.link) {
+            navigate(notification.link);
+            onClose();
+          }
+        }
+      });
+    } else if (notification.link) {
+      // If already read, navigate immediately
+      navigate(notification.link);
+      onClose();
+    }
+  };
+
   return (
     <div className="w-[330px] max-h-[540px] rounded-xl bg-white shadow-md">
       <div className="flex items-center justify-between p-4 border-b">
@@ -105,7 +133,7 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
                 language={language}
                 navigate={navigate}
                 onClose={onClose}
-                markAsRead={markAsReadMutation.mutate}
+                onNotificationClick={handleNotificationClick}
               />
             ))
           )}
@@ -116,7 +144,7 @@ const Notification = ({ isOpen, onClose }: NotificationsProps) => {
 };
 
 // Child component (safe hook usage)
-const NotificationItem = ({ n, language, navigate, onClose, markAsRead }: any) => {
+const NotificationItem = ({ n, language, navigate, onClose, onNotificationClick }: any) => {
   const translatedName = n.name ? useAutoTranslation(n.name, language) : "";
   const translatedMessage = n.message ? useAutoTranslation(n.message, language) : "";
   const translatedAction = n.action ? useAutoTranslation(n.action, language) : "";
@@ -163,17 +191,7 @@ const NotificationItem = ({ n, language, navigate, onClose, markAsRead }: any) =
         "hover:bg-gray-100 p-2 rounded-md transition": n.link,
         "bg-blue-50": !n.is_read,
       })}
-      onClick={() => {
-        // Mark notification as read if it's unread
-        if (!n.is_read) {
-          markAsRead(n.id);
-        }
-
-        if (n.link) {
-          navigate(n.link);
-          onClose();
-        }
-      }}
+      onClick={() => onNotificationClick(n)}
     >
       {n.actor && n.actor.profile_picture ? (
         <img src={n.actor.profile_picture} alt={n.name} className="w-6 h-6 rounded-full object-cover" />
