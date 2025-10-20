@@ -167,13 +167,13 @@ export function TransactionLogs({ transactions: initialTransactions }: Transacti
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-xs">Timestamp</TableHead>
-              <TableHead className="text-xs">Type</TableHead>
-              <TableHead className="text-xs">From</TableHead>
-              <TableHead className="text-xs">To</TableHead>
-              <TableHead className="text-xs">Amount</TableHead>
-              <TableHead className="text-xs">Status</TableHead>
-              <TableHead className="text-xs text-right">Actions</TableHead>
+              <TableHead className="text-[11px]">Timestamp</TableHead>
+              <TableHead className="text-[11px]">Type</TableHead>
+              <TableHead className="text-[11px]">From</TableHead>
+              <TableHead className="text-[11px]">To</TableHead>
+              <TableHead className="text-[11px]">Amount</TableHead>
+              <TableHead className="text-[11px]">Status</TableHead>
+              <TableHead className="text-[11px] text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
         </Table>
