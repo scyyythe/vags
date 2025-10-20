@@ -20,6 +20,10 @@ user_urlpatterns = [
     path("sessions/clear-all/", ClearAllSessionsView.as_view(), name="clear-all-sessions"),
     path("sessions/<str:session_id>/", SessionDeleteView.as_view(), name="session-delete"),
     
+    # Specific user routes that must come before generic user/<str:pk>/ routes
+    path('user/blocked/', BlockedUsersListView.as_view(), name='blocked_users_list'),
+    
+    # Generic user routes
     path('user/<str:pk>/', RetrieveUserView.as_view(), name='retrieve_user'),
     path('user/<str:pk>/update/', UpdateUserView.as_view(), name='update_user'),
     path('user/<str:pk>/delete/', DeleteUserView.as_view(), name='delete_user'),
@@ -28,7 +32,6 @@ user_urlpatterns = [
 
     path('user/<str:user_id>/block/', BlockUserView.as_view(), name='block_user'),
     path('user/<str:user_id>/unblock/', UnblockUserView.as_view(), name='unblock_user'),
-    path('user/blocked/', BlockedUsersListView.as_view(), name='blocked_users_list'),
     path('users/<str:user_id>/deactivate/', DeactivateAccountView.as_view(), name='deactivate_user'),
     path('users/<str:user_id>/soft-delete/', SoftDeleteAccountView.as_view(), name='soft_delete_user'),
     path('users/<str:user_id>/permanently-delete/', PermanentlyDeleteAccountView.as_view(), name='permanently_delete_user'),

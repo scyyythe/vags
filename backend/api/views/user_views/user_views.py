@@ -147,23 +147,37 @@ class BlockedUsersListView(APIView):
     def get(self, request):
         try:
             current_user = request.user
-            blocked_users = current_user.blocked_users if hasattr(current_user, 'blocked_users') and current_user.blocked_users else []
             
-            # Create a simple serialization of blocked users
+            # Initialize blocked_users if it doesn't exist
+            if not hasattr(current_user, 'blocked_users') or current_user.blocked_users is None:
+                current_user.blocked_users = []
+                current_user.save()
+            
+            # Process blocked users
             blocked_users_data = []
-            for user in blocked_users:
-                blocked_users_data.append({
-                    "id": str(user.id),
-                    "username": user.username,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "profile_picture": user.profile_picture
-                })
+            if current_user.blocked_users:
+                for user in current_user.blocked_users:
+                    try:
+                        # Check if user is a valid User object
+                        if hasattr(user, 'username'):
+                            blocked_users_data.append({
+                                "id": str(user.id),
+                                "username": user.username,
+                                "first_name": user.first_name or "",
+                                "last_name": user.last_name or "",
+                                "profile_picture": user.profile_picture or ""
+                            })
+                    except Exception as user_error:
+                        print(f"Error processing blocked user {user}: {str(user_error)}")
+                        continue
             
             return Response(blocked_users_data, status=status.HTTP_200_OK)
+            
         except Exception as e:
             print(f"Error in BlockedUsersListView: {str(e)}")
             return Response({"error": "Failed to fetch blocked users"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 initialize_firebase()
 

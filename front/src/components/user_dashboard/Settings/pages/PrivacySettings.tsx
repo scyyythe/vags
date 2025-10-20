@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import useBlockedUsers from "@/hooks/users/block/useBlockedUsers";
@@ -18,11 +18,16 @@ interface BlockedUser {
 
 const PrivacySettings = () => {
   const { language: selectedLanguage } = useLanguage();
-  const { data: blockedUsers = [], isLoading, error } = useBlockedUsers();
+  const { data: blockedUsers = [], isLoading, error, refetch } = useBlockedUsers();
   const unblockUserMutation = useUnblockUser();
   
   const [showUnblockModal, setShowUnblockModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<BlockedUser | null>(null);
+
+  // Refetch blocked users when component mounts
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   // Auto-translated labels
   const privacySettingsLabel = useAutoTranslation("Privacy Settings", selectedLanguage);
