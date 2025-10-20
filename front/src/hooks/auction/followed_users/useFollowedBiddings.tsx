@@ -8,9 +8,13 @@ const useFollowedAuctions = (page: number) => {
       const response = await apiClient.get(`/auctions/following?page=${page}`);
       return response.data;
     },
-    staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    staleTime: 0, // Always consider data stale for real-time updates
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnMount: true, // Refetch on component mount
+    refetchOnReconnect: true, // Refetch on network reconnect
+    refetchInterval: 3000, // Poll every 3 seconds for followed auctions
+    refetchIntervalInBackground: false, // Don't poll when tab is not active
+    retry: 1, // Retry once on failure
   });
 };
 

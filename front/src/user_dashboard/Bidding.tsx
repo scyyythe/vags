@@ -18,6 +18,8 @@ import useBulkBidReportStatus from "@/hooks/mutate/report/useBulkAuctionReport";
 import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import useRealTimeAuctions from "@/hooks/auction/useRealTimeAuctions";
+import useRealTimeBids from "@/hooks/bid/useRealTimeBids";
 
 interface StaticArtwork {
   id: string;
@@ -63,6 +65,13 @@ const Bidding = () => {
 
   const [page, setPage] = useState(1);
   const { data: followedAuctions = [] } = useFollowedAuctions(page);
+
+  // Real-time auctions hook for live updates
+  const { hasNewAuctions, refreshAuctions } = useRealTimeAuctions();
+
+  // Real-time bids hook for live updates
+  const { hasNewBids, refreshBids } = useRealTimeBids();
+
   const filteredArtworks = useMemo(() => {
     const now = new Date();
     let activeArtworks: ArtworkAuction[] = [];
@@ -140,7 +149,9 @@ const Bidding = () => {
               <ArtsContainer artworks={staticArtworks} />
             </section>
             <div className="flex items-center justify-between -ml-7 mb-6 w-[114%] md:w-[105%] lg:w-[105%] pl-2 sm:pl-0">
-              <CategoryFilter categories={categories} onSelectCategory={setSelectedFilterCategory} />
+              <div className="flex items-center gap-3">
+                <CategoryFilter categories={categories} onSelectCategory={setSelectedFilterCategory} />
+              </div>
               <div className="flex space-x-2 text-xs">
                 {/* Incoming Auctions */}
                 <button

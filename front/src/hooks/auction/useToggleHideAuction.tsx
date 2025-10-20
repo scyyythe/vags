@@ -12,14 +12,30 @@ export const useToggleHideAuction = () => {
     },
     onSuccess: (data, auctionId) => {
       toast.success(data.detail);
-      // Invalidate all auction-related queries
-      queryClient.invalidateQueries({ queryKey: ["auctions"] });
-      queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["followedAuctions"] });
-      queryClient.invalidateQueries({ queryKey: ["my-auctions"] });
-      queryClient.invalidateQueries({ queryKey: ["myParticipatedAuctions"] });
-      queryClient.invalidateQueries({ queryKey: ["myAuctionArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["hotBids"] });
+      // Invalidate all auction-related queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("my-auctions") ||
+              queryKey.includes("myParticipatedAuctions") ||
+              queryKey.includes("myAuctionArtworks") ||
+              queryKey.includes("myAuctions") ||
+              queryKey.includes("light-auctions") ||
+              queryKey.includes("popular-auctions") ||
+              queryKey.includes("hotBids") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks"))
+          );
+        },
+      });
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.detail || "Failed to toggle auction hidden state.");
