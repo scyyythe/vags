@@ -22,7 +22,7 @@ const DeletePermanentlyPopup: React.FC<DeletePermanentlyPopupProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 overflow-hidden">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-hidden">
       <div className="bg-white rounded-lg py-7 px-6 shadow-xl max-w-sm w-full text-center relative">
         <p className="text-xs text-black mb-6">{deleteArtworkPermanentlyText}</p>
         <div className="flex justify-between gap-4">
