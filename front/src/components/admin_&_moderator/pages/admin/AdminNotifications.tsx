@@ -7,6 +7,13 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Search, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type NotifType = "system" | "security" | "user" | "payment";
 
@@ -18,6 +25,7 @@ type AdminNotification = {
   type: NotifType;
   read?: boolean;
   archived?: boolean;
+  relatedId?: string;
 };
 
 const MOCK_NOTIFICATIONS: AdminNotification[] = [
@@ -48,6 +56,8 @@ const AdminNotifications = () => {
   const [mutedTypes, setMutedTypes] = useState<Set<NotifType>>(new Set());
   const [subscribedTypes, setSubscribedTypes] = useState<Set<NotifType>>(new Set());
   const [view, setView] = useState<"inbox" | "archived">("inbox");
+  const [selectedNotification, setSelectedNotification] = useState<AdminNotification | null>(null);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return notifications.filter((n) => {
@@ -118,11 +128,57 @@ const AdminNotifications = () => {
     toast.info(label, { closeButton: true });
   };
 
+  const handleViewNotification = (notification: AdminNotification) => {
+    const updatedNotifications = notifications.map(n => {
+      if (n.id === notification.id && !n.read) {
+        return { ...n, read: true };
+      }
+      return n;
+    });
+    setNotifications(updatedNotifications);
+    setSelectedNotification(notification);
+    setViewDialogOpen(true);
+  };
+
+  const formatDateTime = (timeString: string) => {
+    // Convert relative time to actual date for display
+    const now = new Date();
+    const timeMap: { [key: string]: number } = {
+      "5m ago": 5 * 60 * 1000,
+      "12m ago": 12 * 60 * 1000,
+      "1h ago": 60 * 60 * 1000,
+      "2h ago": 2 * 60 * 60 * 1000,
+      "3h ago": 3 * 60 * 60 * 1000,
+      "4h ago": 4 * 60 * 60 * 1000,
+      "5h ago": 5 * 60 * 60 * 1000,
+      "6h ago": 6 * 60 * 60 * 1000,
+      "7h ago": 7 * 60 * 60 * 1000,
+      "9h ago": 9 * 60 * 60 * 1000,
+      "12h ago": 12 * 60 * 60 * 1000,
+      "13h ago": 13 * 60 * 60 * 1000,
+      "15h ago": 15 * 60 * 60 * 1000,
+      "18h ago": 18 * 60 * 60 * 1000,
+      "20h ago": 20 * 60 * 60 * 1000,
+      "1d ago": 24 * 60 * 60 * 1000,
+    };
+    
+    const timeAgo = timeMap[timeString] || 0;
+    const date = new Date(now.getTime() - timeAgo);
+    
+    return date.toLocaleString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
   const actionsFor = (n: AdminNotification) => {
     if (n.type === "system") {
       return (
         <>
-          <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Opening system update details")}>View details</DropdownMenuItem>
+          <DropdownMenuItem className="text-[10px]" onClick={() => handleViewNotification(n)}>View details</DropdownMenuItem>
           <DropdownMenuItem className="text-[10px]" onClick={() => handleSubscribeType(n.type)}>Subscribe to updates</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="text-[10px]" onClick={() => handleMuteType(n.type)}>Mute this type</DropdownMenuItem>
@@ -132,7 +188,7 @@ const AdminNotifications = () => {
     if (n.type === "security") {
       return (
         <>
-          <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Opening security logs")}>View security logs</DropdownMenuItem>
+          <DropdownMenuItem className="text-[10px]" onClick={() => handleViewNotification(n)}>View details</DropdownMenuItem>
           <DropdownMenuItem className="text-[10px]" onClick={() => handleResolve(n.id)}>Mark as resolved</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Enforcing password reset for affected users")}>Force password reset</DropdownMenuItem>
@@ -142,7 +198,7 @@ const AdminNotifications = () => {
     if (n.type === "user") {
       return (
         <>
-          <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Opening user profile")}>View user</DropdownMenuItem>
+          <DropdownMenuItem className="text-[10px]" onClick={() => handleViewNotification(n)}>View details</DropdownMenuItem>
           <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Reviewing reported content")}>Review report</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Approving role change request")}>Approve role change</DropdownMenuItem>
@@ -152,7 +208,7 @@ const AdminNotifications = () => {
     // payment
     return (
       <>
-        <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Opening transaction details")}>View transaction</DropdownMenuItem>
+        <DropdownMenuItem className="text-[10px]" onClick={() => handleViewNotification(n)}>View details</DropdownMenuItem>
         <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Resolving dispute")}>Resolve dispute</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Issuing refund")}>Issue refund</DropdownMenuItem>
@@ -300,6 +356,67 @@ const AdminNotifications = () => {
           )}
         </div>
       </Card>
+
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="text-sm">
+              {selectedNotification?.title}
+            </DialogTitle>
+            {selectedNotification && (
+              <DialogDescription className="text-[11px] flex justify-between">
+                <span>
+                  {selectedNotification.type.charAt(0).toUpperCase() + selectedNotification.type.slice(1)} Notification
+                </span>
+                <span className="text-[10px]">
+                  {formatDateTime(selectedNotification.time)}
+                </span>
+              </DialogDescription>
+            )}
+          </DialogHeader>
+
+          {selectedNotification && (
+            <div className="space-y-4">
+              <div className="bg-muted/20 p-3 rounded-md">
+                <p className="text-xs">{selectedNotification.description}</p>
+              </div>
+
+              {selectedNotification.relatedId && (
+                <div>
+                  <p className="text-[11px] text-muted-foreground">
+                    Reference ID: {selectedNotification.relatedId}
+                  </p>
+                </div>
+              )}
+
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full h-8"
+                  onClick={() => handleArchive(selectedNotification.id)}
+                  style={{fontSize:"10px"}}
+                >
+                  Archive
+                </Button>
+                {selectedNotification.relatedId && (
+                  <Button
+                    size="sm"
+                    className="rounded-full h-8"
+                    style={{fontSize:"10px"}}
+                    onClick={() => {
+                      toast.success("Opening related content", { closeButton: true });
+                      setViewDialogOpen(false);
+                    }}
+                  >
+                    View Related Content
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
