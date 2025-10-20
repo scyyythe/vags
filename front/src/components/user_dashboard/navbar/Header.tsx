@@ -16,6 +16,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLogout } from "@/hooks/auth/useLogout";
 import useNotifications from "@/hooks/notifications/useNotification";
+import useRealTimeNotifications from "@/hooks/notifications/useRealTimeNotifications";
 
 const Header = () => {
   const location = useLocation();
@@ -46,6 +47,7 @@ const Header = () => {
   const { isChatOpen, openChat, closeChat, participantId, participantName, participantAvatar } = useChat();
   const [conversations, , isLoadingConversations] = useUserConversations(userId || "");
   const { unreadCount } = useNotifications();
+  const { hasNewNotifications } = useRealTimeNotifications();
 
   // Calculate total unread messages with safe fallback
   const totalUnreadMessages =
@@ -206,7 +208,7 @@ const Header = () => {
           {/* Notifications */}
           <div className="relative top-0.5" ref={notificationRef}>
             <button
-              className="button-icon"
+              className={`button-icon ${hasNewNotifications ? 'animate-pulse' : ''}`}
               title={useAutoTranslation("Notifications", language)}
               onClick={() => {
                 if (isNotificationOpen) setIsNotificationOpen(false);
@@ -216,9 +218,11 @@ const Header = () => {
                 }
               }}
             >
-              <Bell size={15} />
+              <Bell size={15} className={hasNewNotifications ? 'text-blue-500' : ''} />
               {unreadCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center font-medium min-w-[12px]">
+                <span className={`absolute -top-0.5 -right-0.5 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center font-medium min-w-[12px] ${
+                  hasNewNotifications ? 'bg-blue-500 animate-bounce' : 'bg-red-500'
+                }`}>
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
