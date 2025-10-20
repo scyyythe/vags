@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { User } from "@/hooks/users/useUserQuery";
 import useAllUsersQuery from "@/hooks/users/useAllUsersQuery"; 
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import useAdminOverview from "@/hooks/admin/useAdminOverview";
 
 const mockLogs: SystemLog[] = [
   {
@@ -261,30 +262,7 @@ const AdminDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
-          <div className="stats-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard
-              title="Total Users"
-              value="1,284"
-              description="Active accounts on platform"
-              icon={Users}
-              trend={{ value: 12, positive: true }}
-            />
-            <StatCard
-              title="Active Listings"
-              value="457"
-              description="Artworks currently for sale"
-              icon={FileCheck}
-              trend={{ value: 8, positive: true }}
-            />
-            <StatCard title="System Status" value="Healthy" description="All systems operational" icon={Cog} />
-            <StatCard
-              title="Sales Volume (7d)"
-              value="$24,389"
-              description="Total transaction value"
-              icon={ArrowUp}
-              trend={{ value: 5, positive: true }}
-            />
-          </div>
+          <OverviewStats />
 
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
@@ -374,3 +352,49 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+// Local component to render live overview stats
+const OverviewStats = () => {
+  const { data, isLoading, error } = useAdminOverview();
+
+  const formatCurrency = (amount?: number) => {
+    if (amount === undefined) return "-";
+    try {
+      return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(amount);
+    } catch {
+      return `$${Math.round(amount).toLocaleString()}`;
+    }
+  };
+
+  return (
+    <div className="stats-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <StatCard
+        title="Total Users"
+        value={isLoading ? "..." : String(data?.totalUsers ?? "-")}
+        description="Active accounts on platform"
+        icon={Users}
+        trend={{ value: 0, positive: true }}
+      />
+      <StatCard
+        title="Active Listings"
+        value={isLoading ? "..." : String(data?.activeListings ?? "-")}
+        description="Artworks currently for sale"
+        icon={FileCheck}
+        trend={{ value: 0, positive: true }}
+      />
+      <StatCard
+        title="System Status"
+        value="Healthy"
+        description="All systems operational"
+        icon={Cog}
+      />
+      <StatCard
+        title="Sales Volume (7d)"
+        value={isLoading ? "..." : formatCurrency(data?.salesVolume7d)}
+        description="Total transaction value"
+        icon={ArrowUp}
+        trend={{ value: 0, positive: true }}
+      />
+    </div>
+  );
+};
