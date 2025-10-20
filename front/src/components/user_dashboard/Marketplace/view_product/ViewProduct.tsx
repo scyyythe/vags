@@ -716,7 +716,7 @@ const ProductViewingContent = () => {
             ))}
           </div>
         ) : (
-          <p className="text-xs text-gray-400">{noOtherArtworksText}</p>
+          <p className="text-xs text-gray-400 text-center">{noOtherArtworksText}</p>
         )}
       </div>
 
