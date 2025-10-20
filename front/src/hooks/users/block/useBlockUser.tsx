@@ -19,11 +19,14 @@ const useBlockUser = (): UseMutationResult<BlockUserResponse, Error, string> => 
     onSuccess: (data, userId) => {
       toast.success(data.detail || "User blocked successfully!");
 
+      // Invalidate blocked users query first to immediately update the blocked users list
+      queryClient.invalidateQueries({ queryKey: ["blocked-users"] });
+      queryClient.refetchQueries({ queryKey: ["blocked-users"] });
+
       // Invalidate all queries that might show the blocked user's content
       queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({ queryKey: ["user", userId] });
       queryClient.invalidateQueries({ queryKey: ["followCounts", userId] });
-      queryClient.invalidateQueries({ queryKey: ["blocked-users"] });
 
       // Invalidate artwork-related queries
       queryClient.invalidateQueries({ queryKey: ["artworks"] });
@@ -53,6 +56,17 @@ const useBlockUser = (): UseMutationResult<BlockUserResponse, Error, string> => 
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["marketplace"] });
       queryClient.invalidateQueries({ queryKey: ["explore"] });
+
+      // Invalidate additional query keys
+      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+      queryClient.invalidateQueries({ queryKey: ["wishlist-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["artCards"] });
+      queryClient.invalidateQueries({ queryKey: ["trendingArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["exhibitCards"] });
+      queryClient.invalidateQueries({ queryKey: ["userDetails", userId] });
 
       // Force refetch of all queries to immediately update the UI
       queryClient.refetchQueries();
