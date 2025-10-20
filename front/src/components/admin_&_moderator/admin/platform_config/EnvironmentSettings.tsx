@@ -220,6 +220,7 @@ const EnvironmentSettings = () => {
                           <Switch
                             checked={env.isActive}
                             onCheckedChange={() => handleToggleStatus(env.id)}
+                            className="scale-75"
                           />
                           <span className="text-[11px]">
                             {env.isActive ? "Active" : "Inactive"}
