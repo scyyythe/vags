@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { X, Link as LinkIcon, Package } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { autoTranslate } from "@/utils/autoTranslate";
 
 interface AutomaticMessageDialogProps {
   open: boolean;
@@ -19,10 +22,59 @@ const AutomaticMessageDialog: React.FC<AutomaticMessageDialogProps> = ({
   buyerName = "Buyer Name",
   orderId = "ORDER123",
 }) => {
-  const handleViewOrder = () => {
+  const { language } = useLanguage();
+
+  // State for translated dynamic data
+  const [translatedSellerName, setTranslatedSellerName] = useState(sellerName);
+  const [translatedArtworkTitle, setTranslatedArtworkTitle] = useState(artworkTitle);
+  const [translatedBuyerName, setTranslatedBuyerName] = useState(buyerName);
+
+  // Translation hooks for static text
+  const automaticMessageText = useAutoTranslation("Automatic Message", language);
+  const systemText = useAutoTranslation("System", language);
+  const newOrderReceivedText = useAutoTranslation("New Order Received!", language);
+  const helloText = useAutoTranslation("Hello", language);
+  const youveReceivedText = useAutoTranslation("You've received a new order for your artwork", language);
+  const fromText = useAutoTranslation("from", language);
+  const pleaseCoordinateText = useAutoTranslation("Please coordinate directly with the buyer in this chat to discuss shipment method, delivery fee (if applicable), and expected delivery date.", language);
+  const viewOrderDetailsText = useAutoTranslation("View Order Details", language);
+  const reminderText = useAutoTranslation("⚠️ Reminder:", language);
+  const reminderMessageText = useAutoTranslation("Make sure to confirm all delivery details with the buyer before sending the artwork.", language);
+
+  // Effect to translate dynamic data
+  useEffect(() => {
+    const translateDynamicData = async () => {
+      try {
+        if (language.toLowerCase() !== "en") {
+          const [translatedSeller, translatedArtwork, translatedBuyer] = await Promise.all([
+            autoTranslate(sellerName, language.toLowerCase()),
+            autoTranslate(artworkTitle, language.toLowerCase()),
+            autoTranslate(buyerName, language.toLowerCase())
+          ]);
+          setTranslatedSellerName(translatedSeller);
+          setTranslatedArtworkTitle(translatedArtwork);
+          setTranslatedBuyerName(translatedBuyer);
+        } else {
+          setTranslatedSellerName(sellerName);
+          setTranslatedArtworkTitle(artworkTitle);
+          setTranslatedBuyerName(buyerName);
+        }
+      } catch (error) {
+        console.warn("Failed to translate dynamic data:", error);
+        // Fallback to original data
+        setTranslatedSellerName(sellerName);
+        setTranslatedArtworkTitle(artworkTitle);
+        setTranslatedBuyerName(buyerName);
+      }
+    };
+
+    translateDynamicData();
+  }, [sellerName, artworkTitle, buyerName, language]);
+
+  const handleViewOrder = useCallback(() => {
     console.log("View order details:", orderId);
     // Handle navigation or action here
-  };
+  }, [orderId, language]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -30,7 +82,7 @@ const AutomaticMessageDialog: React.FC<AutomaticMessageDialogProps> = ({
         {/* Chat Header */}
         <DialogHeader className="px-4 py-3 flex-row items-center justify-between space-y-0">
           <DialogTitle className="text-base font-semibold">
-            Automatic Message
+            {automaticMessageText}
           </DialogTitle>
         </DialogHeader>
         
@@ -43,7 +95,7 @@ const AutomaticMessageDialog: React.FC<AutomaticMessageDialogProps> = ({
               <div className="max-w-[50%]">
                 {/* Sender Label */}
                 <div className="text-xs text-muted-foreground mb-1 px-1">
-                  System
+                  {systemText}
                 </div>
                 
                 {/* Message Bubble */}
@@ -51,24 +103,23 @@ const AutomaticMessageDialog: React.FC<AutomaticMessageDialogProps> = ({
                   {/* Message Header */}
                   <div className="flex items-center gap-2 pb-2 border-b">
                     <Package className="w-4 h-4" />
-                    <span className="font-bold text-xs">New Order Received!</span>
+                    <span className="font-bold text-xs">{newOrderReceivedText}</span>
                   </div>
                   
                   {/* Message Content */}
                   <div className="space-y-2.5 text-[11px] leading-relaxed">
                     <p>
-                      Hello <span className="font-semibold">{sellerName}</span>,
+                      {helloText} <span className="font-semibold">{translatedSellerName}</span>,
                     </p>
                     
                     <p>
-                      You've received a new order for your artwork{" "}
-                      <span className="font-semibold text-primary">"{artworkTitle}"</span> from{" "}
-                      <span className="font-semibold">{buyerName}</span>.
+                      {youveReceivedText}{" "}
+                      <span className="font-semibold text-primary">"{translatedArtworkTitle}"</span> {fromText}{" "}
+                      <span className="font-semibold">{translatedBuyerName}</span>.
                     </p>
                     
                     <p className="italic text-[10px] text-muted-foreground">
-                      Please coordinate directly with the buyer in this chat to discuss shipment method, 
-                      delivery fee (if applicable), and expected delivery date.
+                      {pleaseCoordinateText}
                     </p>
 
                     {/* Order Link */}
@@ -77,13 +128,13 @@ const AutomaticMessageDialog: React.FC<AutomaticMessageDialogProps> = ({
                       className="flex items-center gap-2 text-blue-600 underline font-medium mt-3"
                     >
                       <LinkIcon className="w-4 h-4 text-blue-600" />
-                      View Order Details
+                      {viewOrderDetailsText}
                     </button>
 
                     {/* Warning Box */}
                     <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 rounded-lg p-3 mt-4">
                       <p className="text-[9px] text-amber-900 dark:text-amber-200">
-                        <span className="font-semibold">⚠️ Reminder:</span> Make sure to confirm all delivery details with the buyer before sending the artwork.
+                        <span className="font-semibold">{reminderText}</span> {reminderMessageText}
                       </p>
                     </div>
                   </div>
