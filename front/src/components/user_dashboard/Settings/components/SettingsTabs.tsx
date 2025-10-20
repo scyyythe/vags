@@ -1,6 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { User, Bell, CreditCard, HelpCircle } from "lucide-react";
+import { User, Bell, CreditCard, HelpCircle, Shield } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
@@ -27,6 +27,11 @@ const SettingsTabs = () => {
       name: useAutoTranslation("Security", selectedLanguage),
       path: "/settings/security",
       icon: <i className='bx bxs-devices mr-2'></i>
+    },
+    {
+      name: useAutoTranslation("Privacy", selectedLanguage),
+      path: "/settings/privacy",
+      icon: <Shield className="w-3 h-3 mr-2" />
     },
     {
       name: useAutoTranslation("Notifications", selectedLanguage),
