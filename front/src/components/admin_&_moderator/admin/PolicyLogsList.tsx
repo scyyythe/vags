@@ -68,7 +68,7 @@ export const PolicyLogsList = ({ logs, onView, onDelete, onEdit, onDownloadPDF }
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm">Policy Logs</CardTitle>
+        <CardTitle className="text-xs">Policy Logs</CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-4">
@@ -82,6 +82,7 @@ export const PolicyLogsList = ({ logs, onView, onDelete, onEdit, onDownloadPDF }
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-7 h-8 text-xs"
+              style={{ fontSize: "11px" }}
             />
           </div>
 
@@ -90,13 +91,13 @@ export const PolicyLogsList = ({ logs, onView, onDelete, onEdit, onDownloadPDF }
             value={filterStatus}
             onValueChange={(value) => setFilterStatus(value as "all" | "draft" | "saved")}
           >
-            <SelectTrigger className="w-[130px] h-8 text-xs">
+            <SelectTrigger className="w-[130px] h-8 text-[11px]">
               <SelectValue placeholder="Filter by" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All ({logs.length})</SelectItem>
-              <SelectItem value="draft">Drafts ({logs.filter(l => l.status === "draft").length})</SelectItem>
-              <SelectItem value="saved">Published ({logs.filter(l => l.status === "saved").length})</SelectItem>
+              <SelectItem value="all" className="text-[11px]">All ({logs.length})</SelectItem>
+              <SelectItem value="draft" className="text-[11px]">Drafts ({logs.filter(l => l.status === "draft").length})</SelectItem>
+              <SelectItem value="saved" className="text-[11px]">Published ({logs.filter(l => l.status === "saved").length})</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -45,7 +45,7 @@ const TermsAndConditions = ({ termsLogs, setTermsLogs, onView }: TermsAndConditi
     },
   });
 
-  // ✅ Save or Update Terms
+  // Save or Update Terms
   const saveTerms = (type: string, title: string, content: string, status: "draft" | "saved") => {
     if (editingTermId) {
       setTermsLogs((logs) =>
@@ -84,16 +84,16 @@ const TermsAndConditions = ({ termsLogs, setTermsLogs, onView }: TermsAndConditi
         ? `${title} published as v${nextVersion}`
         : `${title} saved as draft`
     );
-    termsForm.reset(); // ✅ Always clear
+    termsForm.reset(); // Always clear
   };
 
-  // ✅ Delete
+  // Delete
   const deleteTerm = (id: string) => {
     setTermsLogs(termsLogs.filter((log) => log.id !== id));
     toast.success("Terms deleted");
   };
 
-  // ✅ Edit draft
+  // Edit draft
   const handleEditDraft = (log: PolicyLog) => {
     if (log.status === "draft") {
       termsForm.reset({
@@ -108,7 +108,7 @@ const TermsAndConditions = ({ termsLogs, setTermsLogs, onView }: TermsAndConditi
     }
   };
 
-  // ✅ Download PDF
+  // Download PDF
   const handleDownloadPDF = (log: PolicyLog) => {
     try {
       const pdfContent = `
@@ -132,7 +132,7 @@ ${log.content}
     }
   };
 
-  // ✅ Handle toggle
+  // Handle toggle
   const handleToggle = (setting: keyof typeof termsConfig, checked: boolean) => {
     setTermsConfig({
       ...termsConfig,
@@ -154,8 +154,8 @@ ${log.content}
       {/* General Terms */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">General Terms</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-xs">General Terms</CardTitle>
+          <CardDescription className="text-[11px]">
             Overall user agreement and platform terms
           </CardDescription>
         </CardHeader>
@@ -164,6 +164,7 @@ ${log.content}
             className="text-xs min-h-[140px]"
             placeholder="Platform ownership, responsibilities, user obligations..."
             {...termsForm.register("generalTerms")}
+            style={{ fontSize: "11px" }}
           />
           <div className="flex gap-2 mt-2">
             <Button
@@ -196,8 +197,8 @@ ${log.content}
       {/* User Conduct */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">User Conduct</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-xs">User Conduct</CardTitle>
+          <CardDescription className="text-[11px]">
             Acceptable use and behavior policies
           </CardDescription>
         </CardHeader>
@@ -206,6 +207,7 @@ ${log.content}
             className="text-xs min-h-[120px]"
             placeholder="Rules about acceptable use, prohibited actions..."
             {...termsForm.register("userConduct")}
+            style={{ fontSize: "11px" }}
           />
           <div className="flex gap-2 mt-2">
             <Button
@@ -238,8 +240,8 @@ ${log.content}
       {/* Account & Access */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Account & Access</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-xs">Account & Access</CardTitle>
+          <CardDescription className="text-[11px]">
             Account suspension and termination policies
           </CardDescription>
         </CardHeader>
@@ -248,6 +250,7 @@ ${log.content}
             className="text-xs min-h-[100px]"
             placeholder="Conditions for account suspension, banning, or termination..."
             {...termsForm.register("accountAccess")}
+            style={{ fontSize: "11px" }}
           />
           <div className="flex gap-2">
             <Button
@@ -282,6 +285,7 @@ ${log.content}
             min="1"
             placeholder="3"
             {...termsForm.register("autoSuspendViolations")}
+            style={{ fontSize: "11px" }}
           />
           <ConfigToggle
             id="requireAdminReview"
@@ -296,8 +300,8 @@ ${log.content}
       {/* Liability & Disclaimers */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Liability & Disclaimers</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-xs">Liability & Disclaimers</CardTitle>
+          <CardDescription className="text-[11px]">
             Legal protection and liability clauses
           </CardDescription>
         </CardHeader>
@@ -306,6 +310,7 @@ ${log.content}
             className="text-xs min-h-[100px]"
             placeholder="Platform liability limitations, disclaimers for user content..."
             {...termsForm.register("liabilityDisclaimer")}
+            style={{ fontSize: "11px" }}
           />
           <div className="flex gap-2 mt-2">
             <Button
@@ -340,8 +345,8 @@ ${log.content}
       {/* Acceptance Controls */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Acceptance Controls</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-xs">Acceptance Controls</CardTitle>
+          <CardDescription className="text-[11px]">
             Manage how users accept terms and conditions
           </CardDescription>
         </CardHeader>

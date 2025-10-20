@@ -41,8 +41,8 @@ const FinancialSettings = () => {
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Payment Gateways</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-xs">Payment Gateways</CardTitle>
+          <CardDescription className="text-[11px]">
             Configure payment processing services
           </CardDescription>
         </CardHeader>
@@ -59,11 +59,11 @@ const FinancialSettings = () => {
                       name="stripePublicKey"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs">Public Key</FormLabel>
+                          <FormLabel className="text-[11px]">Public Key</FormLabel>
                           <FormControl>
-                            <Input className="text-xs" {...field} type="password" />
+                            <Input className="text-[11px]" {...field} type="password" />
                           </FormControl>
-                          <FormMessage className="text-2xs" />
+                          <FormMessage className="text-[11px]" />
                         </FormItem>
                       )}
                     />
@@ -72,11 +72,11 @@ const FinancialSettings = () => {
                       name="stripeSecretKey"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs">Secret Key</FormLabel>
+                          <FormLabel className="text-[11px]">Secret Key</FormLabel>
                           <FormControl>
-                            <Input className="text-xs" {...field} type="password" />
+                            <Input className="text-[11px]" {...field} type="password" />
                           </FormControl>
-                          <FormMessage className="text-2xs" />
+                          <FormMessage className="text-[11px]" />
                         </FormItem>
                       )}
                     />
@@ -92,11 +92,11 @@ const FinancialSettings = () => {
                       name="paypalClientId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs">Client ID</FormLabel>
+                          <FormLabel className="text-[11px]">Client ID</FormLabel>
                           <FormControl>
-                            <Input className="text-xs" {...field} type="password" />
+                            <Input className="text-[11px]" {...field} type="password" />
                           </FormControl>
-                          <FormMessage className="text-2xs" />
+                          <FormMessage className="text-[11px]" />
                         </FormItem>
                       )}
                     />
@@ -105,11 +105,11 @@ const FinancialSettings = () => {
                       name="paypalClientSecret"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs">Client Secret</FormLabel>
+                          <FormLabel className="text-[11px]">Client Secret</FormLabel>
                           <FormControl>
-                            <Input className="text-xs" {...field} type="password" />
+                            <Input className="text-[11px]" {...field} type="password" />
                           </FormControl>
-                          <FormMessage className="text-2xs" />
+                          <FormMessage className="text-[11px]" />
                         </FormItem>
                       )}
                     />
@@ -117,7 +117,7 @@ const FinancialSettings = () => {
                 </div>
               </div>
 
-              <Button type="submit" size="sm" className="text-xs">
+              <Button type="submit" size="sm" className="text-[11px] rounded-full h-8">
                 Save Payment Settings
               </Button>
             </form>

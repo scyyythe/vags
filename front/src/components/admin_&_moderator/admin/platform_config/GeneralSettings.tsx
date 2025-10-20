@@ -121,6 +121,7 @@ const GeneralSettings = () => {
                         {...field}
                         type="number"
                         min="1"
+                        style={{ fontSize: "11px" }}
                       />
                     </FormControl>
                     <FormDescription className="text-[11px]">
@@ -143,6 +144,7 @@ const GeneralSettings = () => {
                         type="number"
                         min="1"
                         max="100"
+                        style={{ fontSize: "11px" }}
                       />
                     </FormControl>
                     <FormDescription className="text-[11px]">
@@ -165,6 +167,7 @@ const GeneralSettings = () => {
                         type="number"
                         min="0"
                         max="100"
+                        style={{ fontSize: "11px" }}
                       />
                     </FormControl>
                     <FormDescription className="text-[11px]">
