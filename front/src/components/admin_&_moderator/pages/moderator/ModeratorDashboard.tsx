@@ -155,10 +155,10 @@ const ModeratorDashboard = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Recent Alerts</CardTitle>
+              <CardTitle className="text-[13px]">Recent Alerts</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-4 max-h-[40vh] overflow-auto">
                 <div className="flex items-start gap-4 p-2 bg-red-50 rounded-md">
                   <div className="mt-0.5">
                     <Bell className="h-4 w-4 text-red-500" />
@@ -203,10 +203,10 @@ const ModeratorDashboard = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Recently Resolved Issues</CardTitle>
+              <CardTitle className="text-[13px]">Recently Resolved Issues</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
+              <div className="space-y-3 max-h-[40vh] overflow-auto">
                 <div className="flex justify-between items-start border-b pb-2">
                   <div>
                     <p className="text-xs font-medium">Content Removed: Artwork #2356</p>
@@ -261,36 +261,36 @@ const ModeratorDashboard = () => {
         <TabsContent value="content">
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Flagged Content Review</CardTitle>
+              <CardTitle className="text-[13px]">Flagged Content Review</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
+              <div className="space-y-6 max-h-[90vh] overflow-auto">
                 <div className="border rounded-md p-4 space-y-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-sm font-medium">Flagged Artwork: "Dark Nebula"</h3>
-                      <p className="text-xs text-muted-foreground">ID: art12345</p>
+                      <h3 className="text-xs font-medium">Flagged Artwork: "Dark Nebula"</h3>
+                      <p className="text-[11px] text-muted-foreground">ID: art12345</p>
                       <div className="flex items-center mt-1">
-                        <p className="text-3xs bg-red-100 text-red-800 px-2 py-0.5 rounded">
+                        <p className="text-[10px] bg-red-100 text-red-800 px-2 py-0.5 rounded">
                           Flagged: Inappropriate Content
                         </p>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button className="text-2xs px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200">
+                      <button className="text-[10px] px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200">
                         Approve
                       </button>
-                      <button className="text-2xs px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200">
+                      <button className="text-[10px] px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200">
                         Remove
                       </button>
-                      <button className="text-2xs px-2 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200">
+                      <button className="text-[10px] px-2 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200">
                         Escalate
                       </button>
                     </div>
                   </div>
                   <div className="bg-gray-100 p-3 rounded-md">
-                    <p className="text-2xs font-medium">Report Description:</p>
-                    <p className="text-3xs">
+                    <p className="text-[11px] font-medium">Report Description:</p>
+                    <p className="text-[10px]">
                       This artwork contains graphic content that violates community guidelines.
                       The imagery includes explicit violence that should not be allowed.
                     </p>
@@ -300,33 +300,33 @@ const ModeratorDashboard = () => {
                 <div className="border rounded-md p-4 space-y-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-sm font-medium">Flagged Comment</h3>
-                      <p className="text-xs text-muted-foreground">On Artwork: "Sunset Dreams"</p>
+                      <h3 className="text-xs font-medium">Flagged Comment</h3>
+                      <p className="text-[11px] text-muted-foreground">On Artwork: "Sunset Dreams"</p>
                       <div className="flex items-center mt-1">
-                        <p className="text-3xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded">
+                        <p className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded">
                           Flagged: Harassment
                         </p>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button className="text-2xs px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200">
+                      <button className="text-[10px] px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200">
                         Keep
                       </button>
-                      <button className="text-2xs px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200">
+                      <button className="text-[10px] px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200">
                         Remove
                       </button>
-                      <button className="text-2xs px-2 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200">
+                      <button className="text-[10px] px-2 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200">
                         Warn User
                       </button>
                     </div>
                   </div>
                   <div className="bg-gray-100 p-3 rounded-md">
-                    <p className="text-2xs font-medium">Comment Content:</p>
-                    <p className="text-3xs">
+                    <p className="text-[11px] font-medium">Comment Content:</p>
+                    <p className="text-[10px]">
                       "You are such a talentless hack. Your art is worthless garbage 
                       and you should be ashamed to call yourself an artist."
                     </p>
-                    <p className="text-3xs mt-2 text-gray-500">
+                    <p className="text-[10px] mt-2 text-gray-500">
                       - Posted by user456 on June 17, 2023
                     </p>
                   </div>
@@ -335,29 +335,29 @@ const ModeratorDashboard = () => {
                 <div className="border rounded-md p-4 space-y-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-sm font-medium">Flagged User Profile</h3>
-                      <p className="text-xs text-muted-foreground">Username: @artmaster2000</p>
+                      <h3 className="text-xs font-medium">Flagged User Profile</h3>
+                      <p className="text-[11px] text-muted-foreground">Username: @artmaster2000</p>
                       <div className="flex items-center mt-1">
-                        <p className="text-3xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded">
+                        <p className="text-[10px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded">
                           Flagged: Impersonation
                         </p>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button className="text-2xs px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200">
+                      <button className="text-[10px] px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200">
                         Legitimate
                       </button>
-                      <button className="text-2xs px-2 py-1 bg-amber-100 text-amber-800 rounded hover:bg-amber-200">
+                      <button className="text-[10px] px-2 py-1 bg-amber-100 text-amber-800 rounded hover:bg-amber-200">
                         Suspend
                       </button>
-                      <button className="text-2xs px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200">
+                      <button className="text-[10px] px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200">
                         Ban
                       </button>
                     </div>
                   </div>
                   <div className="bg-gray-100 p-3 rounded-md">
-                    <p className="text-2xs font-medium">Report Description:</p>
-                    <p className="text-3xs">
+                    <p className="text-[11px] font-medium">Report Description:</p>
+                    <p className="text-[10px]">
                       This user is impersonating a famous artist and selling counterfeit works.
                       They have copied the bio and artwork style of @realartmaster and are misleading buyers.
                     </p>
