@@ -21,6 +21,13 @@ export function useUserLists(userId: string) {
       return res.data;
     },
     enabled: !!userId,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchInterval: 3000,
+    refetchIntervalInBackground: false,
+    retry: 1,
   });
 
   const {
@@ -34,6 +41,13 @@ export function useUserLists(userId: string) {
       return res.data;
     },
     enabled: !!userId,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchInterval: 3000,
+    refetchIntervalInBackground: false,
+    retry: 1,
   });
 
   const followMutation = useFollowUser();
@@ -44,9 +58,33 @@ export function useUserLists(userId: string) {
     try {
       await followMutation.mutateAsync({ following: targetUserId });
 
-      queryClient.invalidateQueries({ queryKey: ["followers", userId] });
-      queryClient.invalidateQueries({ queryKey: ["following", userId] });
-      queryClient.invalidateQueries({ queryKey: ["followCounts", targetUserId] });
+      // Invalidate all follow-related queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("followStatus") ||
+              queryKey.includes("followCounts") ||
+              queryKey.includes("followers") ||
+              queryKey.includes("following") ||
+              queryKey.includes("notifications") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks") ||
+              queryKey.includes("exhibits") ||
+              queryKey.includes("exhibit-cards") ||
+              queryKey.includes("my-exhibit-cards") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks"))
+          );
+        },
+      });
 
       toast.success("You are now following this user");
     } catch (error) {
@@ -61,9 +99,33 @@ export function useUserLists(userId: string) {
     try {
       await unfollowMutation.mutateAsync({ following: targetUserId });
 
-      queryClient.invalidateQueries({ queryKey: ["followers", userId] });
-      queryClient.invalidateQueries({ queryKey: ["following", userId] });
-      queryClient.invalidateQueries({ queryKey: ["followCounts", targetUserId] });
+      // Invalidate all follow-related queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("followStatus") ||
+              queryKey.includes("followCounts") ||
+              queryKey.includes("followers") ||
+              queryKey.includes("following") ||
+              queryKey.includes("notifications") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks") ||
+              queryKey.includes("exhibits") ||
+              queryKey.includes("exhibit-cards") ||
+              queryKey.includes("my-exhibit-cards") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks"))
+          );
+        },
+      });
 
       toast.success("You have unfollowed this user");
     } catch (error) {
@@ -79,8 +141,35 @@ export function useUserLists(userId: string) {
       await apiClient.delete(`followers/remove/`, {
         data: { follower_id: targetUserId },
       });
-      queryClient.invalidateQueries({ queryKey: ["followCounts", userId] });
-      queryClient.invalidateQueries({ queryKey: ["followers", userId] });
+
+      // Invalidate all follow-related queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("followStatus") ||
+              queryKey.includes("followCounts") ||
+              queryKey.includes("followers") ||
+              queryKey.includes("following") ||
+              queryKey.includes("notifications") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks") ||
+              queryKey.includes("exhibits") ||
+              queryKey.includes("exhibit-cards") ||
+              queryKey.includes("my-exhibit-cards") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks"))
+          );
+        },
+      });
+
       toast.success("Removed follower successfully");
     } catch (error) {
       toast.error("Failed to remove follower");
