@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import apiClient from "@/utils/apiClient";
+import { useQuery } from "@tanstack/react-query";
 
 export interface ArtworkReview {
   id: string;
@@ -57,38 +58,64 @@ export const useArtworkReviews = () => {
   };
 };
 
-// Hook for automatic fetching (used in ViewProduct)
+// Hook for automatic fetching with real-time polling (used in ViewProduct)
 export const useArtworkReviewsAuto = (artworkId?: string) => {
-  const [reviews, setReviews] = useState<ArtworkReview[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: reviews = [],
+    isLoading: loading,
+    error,
+  } = useQuery<ArtworkReview[]>({
+    queryKey: ["artwork-reviews", artworkId],
+    queryFn: async () => {
+      if (!artworkId) throw new Error("No artwork ID provided");
+      const response = await apiClient.get(`/review/all-by-artwork/${artworkId}/`);
+      return response.data || [];
+    },
+    enabled: !!artworkId,
+    staleTime: 0, // Always consider data stale for real-time updates
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnMount: true, // Refetch on component mount
+    refetchOnReconnect: true, // Refetch on network reconnect
+    refetchInterval: 3000, // Poll every 3 seconds for review updates
+    refetchIntervalInBackground: false, // Don't poll when tab is not active
+    retry: 1, // Retry once on failure
+  });
 
-  useEffect(() => {
-    if (!artworkId) {
-      setReviews([]);
-      setError(null);
-      return;
-    }
+  return {
+    reviews,
+    loading,
+    error: error?.message || null,
+  };
+};
 
-    const fetchReviews = async () => {
-      setLoading(true);
-      setError(null);
+// Hook for real-time review fetching with polling (used in OnSaleTab and other components)
+export const useArtworkReviewsRealTime = (artworkId?: string) => {
+  const {
+    data: reviews = [],
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery<ArtworkReview[]>({
+    queryKey: ["artwork-reviews-realtime", artworkId],
+    queryFn: async () => {
+      if (!artworkId) throw new Error("No artwork ID provided");
+      const response = await apiClient.get(`/review/all-by-artwork/${artworkId}/`);
+      return response.data || [];
+    },
+    enabled: !!artworkId,
+    staleTime: 0, // Always consider data stale for real-time updates
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnMount: true, // Refetch on component mount
+    refetchOnReconnect: true, // Refetch on network reconnect
+    refetchInterval: 3000, // Poll every 3 seconds for review updates
+    refetchIntervalInBackground: false, // Don't poll when tab is not active
+    retry: 1, // Retry once on failure
+  });
 
-      try {
-        const response = await apiClient.get(`/review/all-by-artwork/${artworkId}/`);
-        const reviewsData = response.data || [];
-        setReviews(reviewsData);
-      } catch (err: any) {
-        console.error("Error fetching artwork reviews:", err);
-        setError(err.message || "Failed to fetch reviews");
-        setReviews([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchReviews();
-  }, [artworkId]);
-
-  return { reviews, loading, error };
+  return {
+    reviews,
+    loading,
+    error: error?.message || null,
+    refetch,
+  };
 };
