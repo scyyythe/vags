@@ -33,6 +33,12 @@ const PrivacySettings = () => {
   const noBlockedUsersLabel = useAutoTranslation("You haven't blocked anyone yet.", selectedLanguage);
   const loadingLabel = useAutoTranslation("Loading...", selectedLanguage);
   const errorLabel = useAutoTranslation("Error loading blocked users", selectedLanguage);
+  const blockedUsersWillAppearLabel = useAutoTranslation("Blocked users will appear here when you block someone.", selectedLanguage);
+  const recentlyBlockedLabel = useAutoTranslation("Recently blocked", selectedLanguage);
+  const userUnblockedSuccessLabel = useAutoTranslation("User unblocked successfully", selectedLanguage);
+  const userUnblockedDescLabel = useAutoTranslation("has been unblocked.", selectedLanguage);
+  const failedToUnblockLabel = useAutoTranslation("Failed to unblock user", selectedLanguage);
+  const tryAgainLaterLabel = useAutoTranslation("Please try again later.", selectedLanguage);
 
   const handleUnblockClick = (user: BlockedUser) => {
     setSelectedUser(user);
@@ -44,12 +50,9 @@ const PrivacySettings = () => {
       unblockUserMutation.mutate(selectedUser.id, {
         onSuccess: () => {
           toast.success(
-            useAutoTranslation("User unblocked successfully", selectedLanguage),
+            userUnblockedSuccessLabel,
             {
-              description: useAutoTranslation(
-                `${selectedUser.username} has been unblocked.`,
-                selectedLanguage
-              ),
+              description: `${selectedUser.username} ${userUnblockedDescLabel}`,
             }
           );
           setShowUnblockModal(false);
@@ -57,9 +60,9 @@ const PrivacySettings = () => {
         },
         onError: (error) => {
           toast.error(
-            useAutoTranslation("Failed to unblock user", selectedLanguage),
+            failedToUnblockLabel,
             {
-              description: error.message || useAutoTranslation("Please try again later.", selectedLanguage),
+              description: error.message || tryAgainLaterLabel,
             }
           );
         },
@@ -78,7 +81,7 @@ const PrivacySettings = () => {
 
   const formatDate = (dateString: string) => {
     // Since we don't have block date in the current API, we'll show a placeholder
-    return "Recently blocked";
+    return recentlyBlockedLabel;
   };
 
   if (isLoading) {
@@ -117,10 +120,10 @@ const PrivacySettings = () => {
               <div className="p-3 rounded-full bg-gray-100 mb-4">
                 <UserX className="w-6 h-6 text-gray-400" />
               </div>
-              <p className="text-xs text-gray-500 mb-2">{noBlockedUsersLabel}</p>
-              <p className="text-[10px] text-gray-400">
-                Blocked users will appear here when you block someone.
-              </p>
+               <p className="text-xs text-gray-500 mb-2">{noBlockedUsersLabel}</p>
+               <p className="text-[10px] text-gray-400">
+                 {blockedUsersWillAppearLabel}
+               </p>
             </div>
           ) : (
             // Blocked users list
