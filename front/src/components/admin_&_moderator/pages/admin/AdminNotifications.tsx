@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,13 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Search, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type NotifType = "system" | "security" | "user" | "payment";
 
@@ -18,6 +25,7 @@ type AdminNotification = {
   type: NotifType;
   read?: boolean;
   archived?: boolean;
+  relatedId?: string;
 };
 
 const MOCK_NOTIFICATIONS: AdminNotification[] = [
@@ -48,6 +56,8 @@ const AdminNotifications = () => {
   const [mutedTypes, setMutedTypes] = useState<Set<NotifType>>(new Set());
   const [subscribedTypes, setSubscribedTypes] = useState<Set<NotifType>>(new Set());
   const [view, setView] = useState<"inbox" | "archived">("inbox");
+  const [selectedNotification, setSelectedNotification] = useState<AdminNotification | null>(null);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return notifications.filter((n) => {
@@ -64,13 +74,16 @@ const AdminNotifications = () => {
   const hasUnread = useMemo(() => filtered.some((n) => !n.read), [filtered]);
 
   const typeDotClass = (t: NotifType) =>
-    t === "system" ? "bg-blue-500" : t === "security" ? "bg-red-500" : t === "payment" ? "bg-purple-500" : "bg-emerald-500";
+    t === "system" ? "bg-blue-600" : t === "security" ? "bg-red-600" : t === "payment" ? "bg-purple-600" : "bg-emerald-600";
 
-  const typeBadge = (t: NotifType) => (
-    <Badge className="text-3xs" variant="secondary">
-      {t.charAt(0).toUpperCase() + t.slice(1)}
-    </Badge>
-  );
+  const typeBadge = (t: NotifType) => {
+    const badgeColor = t === "system" ? "bg-blue-600" : t === "security" ? "bg-red-600" : t === "payment" ? "bg-purple-600" : "bg-emerald-600";
+    return (
+      <Badge className={`text-[10px] text-white font-normal ${badgeColor}`} variant="default">
+        {t.charAt(0).toUpperCase() + t.slice(1)}
+      </Badge>
+    );
+  };
 
   const handleMarkRead = (id: string) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
@@ -115,11 +128,57 @@ const AdminNotifications = () => {
     toast.info(label, { closeButton: true });
   };
 
+  const handleViewNotification = (notification: AdminNotification) => {
+    const updatedNotifications = notifications.map(n => {
+      if (n.id === notification.id && !n.read) {
+        return { ...n, read: true };
+      }
+      return n;
+    });
+    setNotifications(updatedNotifications);
+    setSelectedNotification(notification);
+    setViewDialogOpen(true);
+  };
+
+  const formatDateTime = (timeString: string) => {
+    // Convert relative time to actual date for display
+    const now = new Date();
+    const timeMap: { [key: string]: number } = {
+      "5m ago": 5 * 60 * 1000,
+      "12m ago": 12 * 60 * 1000,
+      "1h ago": 60 * 60 * 1000,
+      "2h ago": 2 * 60 * 60 * 1000,
+      "3h ago": 3 * 60 * 60 * 1000,
+      "4h ago": 4 * 60 * 60 * 1000,
+      "5h ago": 5 * 60 * 60 * 1000,
+      "6h ago": 6 * 60 * 60 * 1000,
+      "7h ago": 7 * 60 * 60 * 1000,
+      "9h ago": 9 * 60 * 60 * 1000,
+      "12h ago": 12 * 60 * 60 * 1000,
+      "13h ago": 13 * 60 * 60 * 1000,
+      "15h ago": 15 * 60 * 60 * 1000,
+      "18h ago": 18 * 60 * 60 * 1000,
+      "20h ago": 20 * 60 * 60 * 1000,
+      "1d ago": 24 * 60 * 60 * 1000,
+    };
+    
+    const timeAgo = timeMap[timeString] || 0;
+    const date = new Date(now.getTime() - timeAgo);
+    
+    return date.toLocaleString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
   const actionsFor = (n: AdminNotification) => {
     if (n.type === "system") {
       return (
         <>
-          <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Opening system update details")}>View details</DropdownMenuItem>
+          <DropdownMenuItem className="text-[10px]" onClick={() => handleViewNotification(n)}>View details</DropdownMenuItem>
           <DropdownMenuItem className="text-[10px]" onClick={() => handleSubscribeType(n.type)}>Subscribe to updates</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="text-[10px]" onClick={() => handleMuteType(n.type)}>Mute this type</DropdownMenuItem>
@@ -129,7 +188,7 @@ const AdminNotifications = () => {
     if (n.type === "security") {
       return (
         <>
-          <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Opening security logs")}>View security logs</DropdownMenuItem>
+          <DropdownMenuItem className="text-[10px]" onClick={() => handleViewNotification(n)}>View details</DropdownMenuItem>
           <DropdownMenuItem className="text-[10px]" onClick={() => handleResolve(n.id)}>Mark as resolved</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Enforcing password reset for affected users")}>Force password reset</DropdownMenuItem>
@@ -139,7 +198,7 @@ const AdminNotifications = () => {
     if (n.type === "user") {
       return (
         <>
-          <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Opening user profile")}>View user</DropdownMenuItem>
+          <DropdownMenuItem className="text-[10px]" onClick={() => handleViewNotification(n)}>View details</DropdownMenuItem>
           <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Reviewing reported content")}>Review report</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Approving role change request")}>Approve role change</DropdownMenuItem>
@@ -149,7 +208,7 @@ const AdminNotifications = () => {
     // payment
     return (
       <>
-        <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Opening transaction details")}>View transaction</DropdownMenuItem>
+        <DropdownMenuItem className="text-[10px]" onClick={() => handleViewNotification(n)}>View details</DropdownMenuItem>
         <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Resolving dispute")}>Resolve dispute</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-[10px]" onClick={() => handleNavigate("Issuing refund")}>Issue refund</DropdownMenuItem>
@@ -159,101 +218,110 @@ const AdminNotifications = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex justify-between items-center">
         <div>
           <h1 className="text-md font-bold">Notifications</h1>
           <p className="text-[10px] text-muted-foreground">Browse, filter, and search admin alerts</p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant={view === "inbox" ? "default" : "outline"}
-            size="sm"
-            className="h-7 text-[10px]"
-            onClick={() => setView("inbox")}
-          >
-            Inbox
-          </Button>
-          <Button
-            variant={view === "archived" ? "default" : "outline"}
-            size="sm"
-            className="h-7 text-[10px]"
-            onClick={() => setView("archived")}
-          >
-            Archived
-          </Button>
-        </div>
       </div>
 
-      <Card className="p-3 border-none shadow-none">
-        <div className="flex flex-col sm:flex-row gap-3 justify-between">
-          <div className="relative w-full sm:w-1/2">
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search notifications..."
-              className="pl-7 h-8 rounded-full"
-              style={{ fontSize: "10px" }}
-            />
-          </div>
-
-          <div className="flex items-center gap-2 ml-auto">
-            <div className="w-40">
-              <Select value={type} onValueChange={(v) => setType(v as any)}>
-                <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all" className="text-[10px]">All types</SelectItem>
-                  <SelectItem value="system" className="text-[10px]">System</SelectItem>
-                  <SelectItem value="security" className="text-[10px]">Security</SelectItem>
-                  <SelectItem value="user" className="text-[10px]">User</SelectItem>
-                  <SelectItem value="payment" className="text-[10px]">Payment</SelectItem>
-                </SelectContent>
-              </Select>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2 items-center">
+              <Badge className="bg-red-600 text-[10px]">{notifications.filter(n => !n.read && !n.archived).length}</Badge>
+              <span className="text-xs font-medium">Unread Notifications</span>
             </div>
-            {hasUnread ? (
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 text-[10px] rounded-full"
-                onClick={() => {
-                  const ids = filtered.map((n) => n.id)
-                  setNotifications((prev) => prev.map((n) => (ids.includes(n.id) ? { ...n, read: true } : n)))
-                  toast.success("Marked all as read", { closeButton: true })
-                }}
-              >
-                Mark all as read
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 text-[10px] rounded-full"
-                onClick={() => {
-                  const ids = filtered.map((n) => n.id)
-                  setNotifications((prev) => prev.map((n) => (ids.includes(n.id) ? { ...n, read: false } : n)))
-                  toast.success("Marked all as unread", { closeButton: true })
-                }}
-              >
-                Mark all as unread
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              <div className="relative w-64">
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                <Input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search notifications..."
+                  className="pl-8 h-8 rounded-full"
+                  style={{ fontSize: "10px" }}
+                />
+              </div>
+              <div className="w-40">
+                <Select value={type} onValueChange={(v) => setType(v as any)}>
+                  <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all" className="text-[10px]">All types</SelectItem>
+                    <SelectItem value="system" className="text-[10px]">System</SelectItem>
+                    <SelectItem value="security" className="text-[10px]">Security</SelectItem>
+                    <SelectItem value="user" className="text-[10px]">User</SelectItem>
+                    <SelectItem value="payment" className="text-[10px]">Payment</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="w-40">
+                <Select value={view} onValueChange={(v) => setView(v as any)}>
+                  <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="inbox" className="text-[10px]">Inbox</SelectItem>
+                    <SelectItem value="archived" className="text-[10px]">Archived</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
-        </div>
-      </Card>
 
-      <Card className="p-0">
-        <div className="max-h-[68vh] overflow-auto">
+      <Card className="px-8 pb-6">
+        <CardHeader className="px-3 pt-6 pb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-xs">Notification Center</CardTitle>
+              <CardDescription className="text-[11px]">
+                Recent system messages and alerts
+              </CardDescription>
+            </div>
+            <div>
+              {hasUnread ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-[10px] border-none hover:bg-muted/50 rounded-full h-7"
+                  onClick={() => {
+                    const ids = filtered.map((n) => n.id)
+                    setNotifications((prev) => prev.map((n) => (ids.includes(n.id) ? { ...n, read: true } : n)))
+                    toast.success("Marked all as read", { closeButton: true })
+                  }}
+                >
+                  Mark All as Read
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-[10px] border-none hover:bg-muted/50 rounded-full h-7"
+                  onClick={() => {
+                    const ids = filtered.map((n) => n.id)
+                    setNotifications((prev) => prev.map((n) => (ids.includes(n.id) ? { ...n, read: false } : n)))
+                    toast.success("Marked all as unread", { closeButton: true })
+                  }}
+                >
+                  Mark All as Unread
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        <div className="max-h-[60vh] overflow-auto space-y-4">
           {filtered.map((n) => (
-            <div key={n.id} className={`px-4 py-3 border-b last:border-b-0 ${!n.read ? "bg-muted/70" : "bg-transparent"}`}>
+            <div
+              key={n.id}
+              className={`border rounded-md p-3 hover:bg-muted/50 ${!n.read ? "bg-muted/70 border-l-4 border-l-red-600" : "bg-transparent"}`}
+            >
               <div className="flex items-start gap-2">
                 <span className={`mt-[3px] h-2 w-2 rounded-full ${typeDotClass(n.type)}`} />
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <p className="text-xs font-medium truncate">{n.title}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] font-medium truncate">{n.title}</p>
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] text-muted-foreground whitespace-nowrap">{n.time}</span>
+                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">{n.time}</span>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon" className="h-6 w-6" aria-label="Notification actions">
@@ -277,7 +345,7 @@ const AdminNotifications = () => {
                       </DropdownMenu>
                     </div>
                   </div>
-                  <p className={`text-[11px] ${n.read ? "text-muted-foreground" : "text-foreground"}`}>{n.description}</p>
+                  <p className={`text-[10px] ${n.read ? "text-gray-500" : "text-gray-500"}`}>{n.description}</p>
                   <div className="mt-1 text-[11px]">{typeBadge(n.type)}</div>
                 </div>
               </div>
@@ -288,6 +356,67 @@ const AdminNotifications = () => {
           )}
         </div>
       </Card>
+
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="text-sm">
+              {selectedNotification?.title}
+            </DialogTitle>
+            {selectedNotification && (
+              <DialogDescription className="text-[11px] flex justify-between">
+                <span>
+                  {selectedNotification.type.charAt(0).toUpperCase() + selectedNotification.type.slice(1)} Notification
+                </span>
+                <span className="text-[10px]">
+                  {formatDateTime(selectedNotification.time)}
+                </span>
+              </DialogDescription>
+            )}
+          </DialogHeader>
+
+          {selectedNotification && (
+            <div className="space-y-4">
+              <div className="bg-muted/20 p-3 rounded-md">
+                <p className="text-xs">{selectedNotification.description}</p>
+              </div>
+
+              {selectedNotification.relatedId && (
+                <div>
+                  <p className="text-[11px] text-muted-foreground">
+                    Reference ID: {selectedNotification.relatedId}
+                  </p>
+                </div>
+              )}
+
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full h-8"
+                  onClick={() => handleArchive(selectedNotification.id)}
+                  style={{fontSize:"10px"}}
+                >
+                  Archive
+                </Button>
+                {selectedNotification.relatedId && (
+                  <Button
+                    size="sm"
+                    className="rounded-full h-8"
+                    style={{fontSize:"10px"}}
+                    onClick={() => {
+                      toast.success("Opening related content", { closeButton: true });
+                      setViewDialogOpen(false);
+                    }}
+                  >
+                    View Related Content
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
