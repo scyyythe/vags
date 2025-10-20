@@ -259,7 +259,7 @@ const EnvironmentSettings = () => {
       <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
         <DialogContent className="text-xs">
           <DialogHeader>
-            <DialogTitle className="text-[11px]">Upload New Environment</DialogTitle>
+            <DialogTitle className="text-xs">Upload New Environment</DialogTitle>
             <DialogDescription className="text-[10px]">
               Add a new 3D environment for exhibitions
             </DialogDescription>
@@ -314,7 +314,7 @@ const EnvironmentSettings = () => {
             {/* <Button variant="outline" onClick={() => setUploadDialogOpen(false)} className="text-[10px] h-7">
               Cancel
             </Button> */}
-            <Button onClick={handleUpload} className="text-[10px] h-7">
+            <Button onClick={handleUpload} className="text-[10px] rounded-full h-7">
               Upload Environment
             </Button>
           </DialogFooter>

@@ -71,6 +71,7 @@ import AdminConfig from "@/components/admin_&_moderator/pages/admin/AdminConfig"
 import AdminSecurity from "@/components/admin_&_moderator/pages/admin/AdminSecurity";
 import AdminAnalytics from "@/components/admin_&_moderator/pages/admin/AdminAnalytics";
 import AdminNotifications from "@/components/admin_&_moderator/pages/admin/AdminNotifications";
+import AdminProfileSettings from "@/components/admin_&_moderator/pages/admin/AdminProfileSettings";
 
 // Moderator routes
 import ModeratorDashboard from "@/components/admin_&_moderator/pages/moderator/ModeratorDashboard";
@@ -78,6 +79,7 @@ import ModeratorReports from "@/components/admin_&_moderator/pages/moderator/Mod
 import ModeratorContent from "@/components/admin_&_moderator/pages/moderator/ModeratorContent";
 import ModeratorUsers from "@/components/admin_&_moderator/pages/moderator/ModeratorUsers";
 import ModeratorNotifications from "@/components/admin_&_moderator/pages/moderator/ModeratorNotifications";
+import ModeratorProfileSettings from "@/components/admin_&_moderator/pages/moderator/ModeratorProfileSettings";
 
 // Wishlist Context
 import { WishlistProvider } from "@/components/user_dashboard/Marketplace/wishlist/WishlistContext";
@@ -320,6 +322,18 @@ const App = () => {
                                     </ProtectedRoute>
                                   }
                                 />
+                                <Route
+                                  path="/admin/profile"
+                                  element={
+                                    <ProtectedRoute allowedRoles={["admin"]}>
+                                      <AdminTermsWrapper role="admin">
+                                        <AdminLayout role="admin">
+                                          <AdminProfileSettings />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
+                                    </ProtectedRoute>
+                                  }
+                                />
                                 {/* Moderator Routes */}
                                 <Route
                                   path="/moderator"
@@ -380,6 +394,18 @@ const App = () => {
                                       <AdminTermsWrapper role="moderator">
                                         <AdminLayout role="moderator">
                                           <ModeratorNotifications />
+                                        </AdminLayout>
+                                      </AdminTermsWrapper>
+                                    </ProtectedRoute>
+                                  }
+                                />
+                                <Route
+                                  path="/moderator/profile"
+                                  element={
+                                    <ProtectedRoute allowedRoles={["moderator"]}>
+                                      <AdminTermsWrapper role="moderator">
+                                        <AdminLayout role="moderator">
+                                          <ModeratorProfileSettings />
                                         </AdminLayout>
                                       </AdminTermsWrapper>
                                     </ProtectedRoute>

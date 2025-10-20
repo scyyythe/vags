@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MoreHorizontal, Search } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -104,6 +107,8 @@ const mockNotifications: Notification[] = [
 const ModeratorNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
   const [searchQuery, setSearchQuery] = useState("");
+  const [view, setView] = useState<"inbox" | "archived">("inbox");
+  const [type, setType] = useState<"all" | Notification["type"]>("all");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
@@ -178,10 +183,18 @@ const ModeratorNotifications = () => {
     });
   };
 
-  const filteredNotifications = notifications
-    .filter(n => n.status !== "archived" && n.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredNotifications = useMemo(() => {
+    const q = searchQuery.toLowerCase();
+    return notifications.filter((n) => {
+      const matchesView = view === "archived" ? n.status === "archived" : n.status !== "archived";
+      const matchesType = type === "all" || n.type === type;
+      const matchesQuery = !q || n.title.toLowerCase().includes(q) || n.message.toLowerCase().includes(q);
+      return matchesView && matchesType && matchesQuery;
+    });
+  }, [notifications, searchQuery, view, type]);
   
   const unreadCount = notifications.filter(n => n.status === "unread").length;
+  const hasUnreadInFiltered = filteredNotifications.some(n => n.status === "unread");
 
   const getTypeIcon = (type: Notification["type"]) => {
     switch (type) {
@@ -210,15 +223,6 @@ const ModeratorNotifications = () => {
         <div className="flex gap-2">
           <Button
             size="sm"
-            variant="outline"
-            className="text-[10px] rounded-full h-8"
-            disabled={unreadCount === 0}
-            onClick={handleMarkAllAsRead}
-          >
-            Mark All as Read
-          </Button>
-          <Button
-            size="sm"
             className="text-[10px] rounded-full h-8"
             onClick={() => setCreateDialogOpen(true)}
           >
@@ -232,34 +236,94 @@ const ModeratorNotifications = () => {
           <Badge className="bg-red-600 text-[10px]">{unreadCount}</Badge>
           <span className="text-xs font-medium">Unread Notifications</span>
         </div>
-        <div className="relative w-64">
-          <Input
-            placeholder="Search notifications..."
-            className="pl-8 rounded-full h-8"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{fontSize:"10px"}}
-          />
+        <div className="flex items-center gap-2">
+          <div className="relative w-64">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+            <Input
+              placeholder="Search notifications..."
+              className="pl-8 rounded-full h-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{fontSize:"10px"}}
+            />
+          </div>
+          <div className="w-40">
+            <Select value={type} onValueChange={(v) => setType(v as any)}>
+              <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all" className="text-[10px]">All types</SelectItem>
+                <SelectItem value="system" className="text-[10px]">System</SelectItem>
+                <SelectItem value="user" className="text-[10px]">User</SelectItem>
+                <SelectItem value="report" className="text-[10px]">Report</SelectItem>
+                <SelectItem value="alert" className="text-[10px]">Alert</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="w-40">
+            <Select value={view} onValueChange={(v) => setView(v as any)}>
+              <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="inbox" className="text-[10px]">Inbox</SelectItem>
+                <SelectItem value="archived" className="text-[10px]">Archived</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 
       <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-xs">Notification Center</CardTitle>
-          <CardDescription className="text-[11px]">
-            Recent system messages and alerts
-          </CardDescription>
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-xs">Notification Center</CardTitle>
+              <CardDescription className="text-[11px]">
+                Recent system messages and alerts
+              </CardDescription>
+            </div>
+            <div>
+              {hasUnreadInFiltered ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-[10px] border-none hover:bg-muted/50 rounded-full h-7"
+                  onClick={() => {
+                    const ids = filteredNotifications.map(n => n.id);
+                    setNotifications(prev => prev.map(n => ids.includes(n.id) && n.status === "unread" ? { ...n, status: "read" as const } : n));
+                    toast.success("Marked all as read", { closeButton: true });
+                  }}
+                >
+                  Mark All as Read
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-[10px] border-none hover:bg-muted/50 rounded-full h-7"
+                  onClick={() => {
+                    const ids = filteredNotifications.map(n => n.id);
+                    setNotifications(prev => prev.map(n => ids.includes(n.id) && n.status === "read" ? { ...n, status: "unread" as const } : n));
+                    toast.success("Marked all as unread", { closeButton: true });
+                  }}
+                >
+                  Mark All as Unread
+                </Button>
+              )}
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {filteredNotifications.length > 0 ? (
-            <div className="space-y-4">
+            <div className="max-h-[65vh] overflow-auto space-y-4">
               {filteredNotifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`border rounded-md p-3 cursor-pointer hover:bg-muted/50 ${
-                    notification.status === "unread" ? "bg-muted/20 border-l-4 border-l-red-600" : ""
+                  className={`border rounded-md p-3 hover:bg-muted/50 ${
+                    notification.status === "unread" ? "bg-muted/70 border-l-4 border-l-red-600" : "bg-transparent"
                   }`}
-                  onClick={() => handleViewNotification(notification)}
                 >
                   <div className="flex justify-between">
                     <div className="flex items-center gap-2">
@@ -268,9 +332,35 @@ const ModeratorNotifications = () => {
                         {notification.title}
                       </h3>
                     </div>
-                    <span className="text-[10px] text-muted-foreground">
-                      {formatDateTime(notification.createdAt)}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-muted-foreground">
+                        {formatDateTime(notification.createdAt)}
+                      </span>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-6 w-6" aria-label="Notification actions">
+                            <MoreHorizontal className="h-3 w-3" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuItem className="text-[10px]" onClick={() => handleViewNotification(notification)}>View details</DropdownMenuItem>
+                          {! (notification.status === "read") ? (
+                            <DropdownMenuItem className="text-[10px]" onClick={() => setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, status: "read" } as Notification : n))}>Mark as read</DropdownMenuItem>
+                          ) : (
+                            <DropdownMenuItem className="text-[10px]" onClick={() => setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, status: "unread" } as Notification : n))}>Mark as unread</DropdownMenuItem>
+                          )}
+                          {notification.status !== "archived" ? (
+                            <DropdownMenuItem className="text-[10px] text-destructive" onClick={() => handleArchiveNotification(notification.id)}>Archive</DropdownMenuItem>
+                          ) : (
+                            <DropdownMenuItem className="text-[10px]" onClick={() => setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, status: "read" } as Notification : n))}>Unarchive</DropdownMenuItem>
+                          )}
+                          <DropdownMenuSeparator />
+                          {notification.relatedId && (
+                            <DropdownMenuItem className="text-[10px]" onClick={() => toast.success("Opening related content", { closeButton: true })}>View related content</DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
                   <p className="text-[10px] text-muted-foreground mt-1 line-clamp-1">
                     {notification.message}
