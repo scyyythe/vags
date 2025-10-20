@@ -217,18 +217,27 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
 
       {/* Confirm Logout */}
       <Dialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen}>
-        <DialogContent className="text-xs">
+        <DialogContent className="text-xs [&>button]:hidden w-[90%] rounded-lg max-w-[360px] sm:max-w-[360px]">
           <DialogHeader>
-            <DialogTitle className="text-sm">Confirm Logout</DialogTitle>
-            <DialogDescription className="text-[10px]">
+            <DialogTitle className="text-sm text-center">Confirm Logout</DialogTitle>
+            <DialogDescription className="text-[10px] text-center">
               Are you sure you want to log out of the {role === "admin" ? "Admin" : "Moderator"} panel?
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" size="sm" className="h-7 text-[10px]" onClick={() => setIsLogoutOpen(false)}>
+          <DialogFooter className="flex items-center justify-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 text-[10px] rounded-full w-full"
+              onClick={() => setIsLogoutOpen(false)}
+            >
               Cancel
             </Button>
-            <Button variant="destructive" size="sm" className="h-7 text-[10px]" onClick={handleLogout}>
+            <Button
+              size="sm"
+              className="h-7 text-[10px] bg-red-700 hover:bg-red-600 rounded-full w-full"
+              onClick={handleLogout}
+            >
               Log out
             </Button>
           </DialogFooter>
