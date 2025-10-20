@@ -51,13 +51,31 @@ const useSubmitReport = () => {
 
     onSuccess: (_, { art_id }) => {
       toast.success("You this reported successfully!");
-      queryClient.invalidateQueries({ queryKey: ["reportStatus", art_id] });
-      queryClient.invalidateQueries({ queryKey: ["artworkReportStatus", art_id] });
-      queryClient.invalidateQueries({ queryKey: ["artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["my-sold-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
+      // Invalidate all artwork and report-related queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("reportStatus") ||
+              queryKey.includes("artworkReportStatus") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks") ||
+              queryKey.includes("my-sell-art-cards") ||
+              queryKey.includes("marketplace-art-cards") ||
+              queryKey.includes("my-sold-artworks") ||
+              queryKey.includes("user-sell-art-cards") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks"))
+          );
+        },
+      });
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {

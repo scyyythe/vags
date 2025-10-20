@@ -36,6 +36,7 @@ export const usePlaceBid = () => {
       return response.data;
     },
     onSuccess: (data, variables) => {
+      // Update the specific auction data in cache
       queryClient.setQueryData<any>(["biddingArtworks"], (oldData) => {
         if (!oldData) return [];
 
@@ -43,6 +44,7 @@ export const usePlaceBid = () => {
           item.artwork.id === variables.artwork_id
             ? {
                 ...item,
+                highest_bid: { amount: data.amount, bidderFullName: data.bidderFullName },
                 highestBid: data.amount,
                 bidderFullName: data.bidderFullName,
               }
@@ -50,9 +52,30 @@ export const usePlaceBid = () => {
         );
       });
 
-      queryClient.invalidateQueries({ queryKey: ["biddingArtworks", variables.artwork_id] });
-      queryClient.invalidateQueries({ queryKey: ["popular-auctions"] });
-      queryClient.invalidateQueries({ queryKey: ["biddingArtworks"] });
+      // Invalidate all bid-related queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("biddingArtworks") ||
+              queryKey.includes("popular-auctions") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks") ||
+              queryKey.includes("bid") ||
+              queryKey.includes("artworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed"))
+          );
+        },
+      });
+
+      // Show success toast
+      toast.success(`Bid of ₱${data.amount} placed successfully!`, {
+        duration: 3000,
+        description: "Your bid has been recorded",
+      });
     },
     onError: (error) => {
       const errMsg = error.response?.data?.error || "Failed to place bid.";

@@ -24,6 +24,7 @@ const useUpdateArtwork = (currentPage: number, isActive: boolean, category: stri
     onSuccess: (updatedArtwork) => {
       toast.success("Artwork updated successfully!");
 
+      // Update specific artwork in cache
       queryClient.setQueryData<Artwork[]>(
         ["artworks", currentPage, undefined, isActive, category, visibility],
         (oldData) => {
@@ -32,8 +33,28 @@ const useUpdateArtwork = (currentPage: number, isActive: boolean, category: stri
         }
       );
 
+      // Invalidate all artwork-related queries for real-time updates
       queryClient.invalidateQueries({
-        queryKey: ["artworks"],
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks") ||
+              queryKey.includes("my-sell-art-cards") ||
+              queryKey.includes("marketplace-art-cards") ||
+              queryKey.includes("my-sold-artworks") ||
+              queryKey.includes("user-sell-art-cards") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks"))
+          );
+        },
       });
     },
 

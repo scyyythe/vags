@@ -58,6 +58,12 @@ export const useCollaboratorExhibitView = (id: string | undefined) => {
       }
     },
     enabled: !!id,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchInterval: 3000,
+    refetchIntervalInBackground: false,
+    retry: 1,
   });
 };

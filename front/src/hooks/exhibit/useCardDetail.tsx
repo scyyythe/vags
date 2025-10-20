@@ -21,14 +21,16 @@ export const useExhibitCardDetail = (id: string | undefined) => {
       } catch (error: any) {
         toast.error("Failed to load exhibit details.");
         console.error("Error fetching exhibit detail:", error);
-        throw new Error(
-          error?.response?.data?.detail ||
-          error.message ||
-          "Error fetching exhibit details"
-        );
+        throw new Error(error?.response?.data?.detail || error.message || "Error fetching exhibit details");
       }
     },
     enabled: !!id,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchInterval: 3000,
+    refetchIntervalInBackground: false,
+    retry: 1,
   });
 };

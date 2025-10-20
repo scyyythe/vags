@@ -29,6 +29,7 @@ import {
   useArtCategories,
   ART_CATEGORIES,
 } from "@/components/user_dashboard/local_components/categories/ArtCategories";
+import useRealTimeArtworks from "@/hooks/artworks/useRealTimeArtworks";
 
 const Explore = () => {
   const navigate = useNavigate();
@@ -94,6 +95,9 @@ const Explore = () => {
   const [page] = useState(1);
 
   const { data: followedArtworksData } = useFollowedArtworks(page);
+
+  // Real-time artworks hook for live updates
+  const { hasNewArtworks, refreshArtworks } = useRealTimeArtworks();
 
   const translatedCategories = useArtCategories();
 
@@ -227,14 +231,16 @@ const Explore = () => {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <div className="lg:col-span-3">
               <div className="flex items-center justify-between mb-6 lg:w-[133%] pl-2 sm:pl-0">
-                <CategoryFilter
-                  categories={categories}
-                  selectedCategory={selectedFilterCategory}
-                  onSelectCategory={(category) => {
-                    setSelectedFilterCategory(category);
-                    setSelectedCategory(translatedAll);
-                  }}
-                />
+                <div className="flex items-center gap-3">
+                  <CategoryFilter
+                    categories={categories}
+                    selectedCategory={selectedFilterCategory}
+                    onSelectCategory={(category) => {
+                      setSelectedFilterCategory(category);
+                      setSelectedCategory(translatedAll);
+                    }}
+                  />
+                </div>
 
                 <div className="flex space-x-2 text-xs">
                   <div className="relative">
