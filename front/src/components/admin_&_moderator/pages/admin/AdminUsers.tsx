@@ -47,7 +47,7 @@ const AdminUsers = () => {
     defaultValues: {
       name: "",
       email: "",
-      role: "user",
+      role: "admin",
     },
   });
   if (isLoading) return <p>Loading...</p>;
@@ -204,7 +204,7 @@ const AdminUsers = () => {
                     <FormItem>
                       <FormLabel className="text-xs">Role</FormLabel>
                       <FormControl>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <SelectTrigger className="h-8 rounded-full" style={{ fontSize: "10px" }}>
                             <SelectValue placeholder="Select a role" />
                           </SelectTrigger>
@@ -226,15 +226,6 @@ const AdminUsers = () => {
                   )} 
                 />
                 <div className="flex justify-end space-x-2 pt-4">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-[11px] rounded-full h-8"
-                    onClick={() => setOpen(false)}
-                    type="button"
-                  >
-                    Cancel
-                  </Button>
                   <Button size="sm" className="text-[11px] rounded-full h-8" type="submit">
                     Add User
                   </Button>
