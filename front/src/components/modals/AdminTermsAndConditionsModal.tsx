@@ -110,6 +110,16 @@ const AdminTermsAndConditionsModal: React.FC<AdminTermsAndConditionsModalProps> 
   );
   const agreeButtonText = useAutoTranslation("Agree & Continue", language);
 
+  // Additional translations that were being called in JSX
+  const adminTermsIntro = useAutoTranslation("These Administrator and Moderator Terms & Conditions (\"Admin Terms\") outline the roles, duties, and responsibilities of system administrators and moderators who manage and maintain the Virtual Art Gallery System (\"the System\").", language);
+  const adminTermsNote = useAutoTranslation("By accepting an admin or moderator role, you agree to follow these policies in addition to the general User Terms & Conditions.", language);
+  const adminDefLabel = useAutoTranslation("Administrator (Admin):", language);
+  const adminDefText = useAutoTranslation("A user with full control over system functions, including managing user roles, content, and technical settings.", language);
+  const moderatorDefLabel = useAutoTranslation("Moderator:", language);
+  const moderatorDefText = useAutoTranslation("A user responsible for reviewing, approving, and monitoring artworks and user activity to ensure compliance with platform rules.", language);
+  const userDefLabel = useAutoTranslation("User:", language);
+  const userDefText = useAutoTranslation("Any registered artist, viewer, or guest who uses the system.", language);
+
   if (!isOpen) return null;
 
   const handleAgree = () => {
@@ -151,10 +161,10 @@ const AdminTermsAndConditionsModal: React.FC<AdminTermsAndConditionsModalProps> 
                   {systemNameText}
                 </p>
                 <p>
-                  {useAutoTranslation("These Administrator and Moderator Terms & Conditions (\"Admin Terms\") outline the roles, duties, and responsibilities of system administrators and moderators who manage and maintain the Virtual Art Gallery System (\"the System\").", language)}
+                  {adminTermsIntro}
                 </p>
                 <p className="mt-2">
-                  {useAutoTranslation("By accepting an admin or moderator role, you agree to follow these policies in addition to the general User Terms & Conditions.", language)}
+                  {adminTermsNote}
                 </p>
               </section>
 
@@ -175,9 +185,9 @@ const AdminTermsAndConditionsModal: React.FC<AdminTermsAndConditionsModalProps> 
                   {definitionsHeading}
                 </h3>
                 <ul className="list-disc list-inside ml-4 space-y-1">
-                  <li><strong>{useAutoTranslation("Administrator (Admin):", language)}</strong> {useAutoTranslation("A user with full control over system functions, including managing user roles, content, and technical settings.", language)}</li>
-                  <li><strong>{useAutoTranslation("Moderator:", language)}</strong> {useAutoTranslation("A user responsible for reviewing, approving, and monitoring artworks and user activity to ensure compliance with platform rules.", language)}</li>
-                  <li><strong>{useAutoTranslation("User:", language)}</strong> {useAutoTranslation("Any registered artist, viewer, or guest who uses the system.", language)}</li>
+                  <li><strong>{adminDefLabel}</strong> {adminDefText}</li>
+                  <li><strong>{moderatorDefLabel}</strong> {moderatorDefText}</li>
+                  <li><strong>{userDefLabel}</strong> {userDefText}</li>
                 </ul>
               </section>
 
