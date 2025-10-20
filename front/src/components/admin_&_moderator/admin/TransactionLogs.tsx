@@ -163,6 +163,7 @@ export function TransactionLogs({ transactions: initialTransactions }: Transacti
       />
 
       <div className="border rounded-md overflow-hidden">
+        {/* Fixed header (not scrollable) */}
         <Table>
           <TableHeader>
             <TableRow>
@@ -175,44 +176,50 @@ export function TransactionLogs({ transactions: initialTransactions }: Transacti
               <TableHead className="text-xs text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={7} className="p-0">
-                  <TransactionLogsSkeleton />
-                </TableCell>
-              </TableRow>
-            ) : filteredTransactions.length > 0 ? (
-              filteredTransactions.map((transaction) => (
-                <TableRow key={transaction.id}>
-                  <TableCell className="text-[10px]">{transaction.timestamp}</TableCell>
-                  <TableCell className="text-[10px]">{getTypeBadge(transaction.type)}</TableCell>
-                  <TableCell className="text-[10px]">{transaction.from.name}</TableCell>
-                  <TableCell className="text-[10px]">{transaction.to.name}</TableCell>
-                  <TableCell className="text-[10px] font-medium">{formatCurrency(transaction.amount)}</TableCell>
-                  <TableCell className="text-[10px]">{getStatusBadge(transaction.status)}</TableCell>
-                  <TableCell className="text-[10px] text-right">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-6 text-[10px]"
-                      onClick={() => handleViewTransactionDetails(transaction)}
-                    >
-                      <FileText className="h-2 w-2 mr-1" />
-                      View
-                    </Button>
+        </Table>
+
+        {/* Scrollable body only */}
+        <div className="max-h-[350px] overflow-auto">
+          <Table>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="p-0">
+                    <TransactionLogsSkeleton />
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center text-xs">
-                  No transactions found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ) : filteredTransactions.length > 0 ? (
+                filteredTransactions.map((transaction) => (
+                  <TableRow key={transaction.id}>
+                    <TableCell className="text-[10px]">{transaction.timestamp}</TableCell>
+                    <TableCell className="text-[10px]">{getTypeBadge(transaction.type)}</TableCell>
+                    <TableCell className="text-[10px]">{transaction.from.name}</TableCell>
+                    <TableCell className="text-[10px]">{transaction.to.name}</TableCell>
+                    <TableCell className="text-[10px] font-medium">{formatCurrency(transaction.amount)}</TableCell>
+                    <TableCell className="text-[10px]">{getStatusBadge(transaction.status)}</TableCell>
+                    <TableCell className="text-[10px] text-right">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-6 text-[10px]"
+                        onClick={() => handleViewTransactionDetails(transaction)}
+                      >
+                        <FileText className="h-2 w-2 mr-1" />
+                        View
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} className="h-24 text-center text-xs">
+                    No transactions found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       {/* Transaction Details Dialog */}
