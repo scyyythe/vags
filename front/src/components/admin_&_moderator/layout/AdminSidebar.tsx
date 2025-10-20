@@ -69,22 +69,11 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
     >
       <div className="flex justify-center p-4">
         <Logo />
-        {/* <svg 
-          viewBox="0 0 24 24"
-          className={`h-8 w-8 logo-icon ${isCollapsed ? "mx-auto" : ""}`}
-          fill="red"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M22.672 7.991L13 2.28a2.276 2.276 0 0 0-2 0L1.328 7.991A2.275 2.275 0 0 0 0 10v0a2.276 2.276 0 0 0 2.272 2.273h.004L11 13l8.724-.727h.004A2.276 2.276 0 0 0 22 10v0a2.275 2.275 0 0 0-.672-2.009z" />
-          <path d="M2.5 13v3.5a3.5 3.5 0 0 0 7 0v-2.31l-6.004-.501A1.913 1.913 0 0 1 2.5 13z" />
-          <path d="M12 22a1 1 0 0 1-1-1v-6.927l-1.5-.125v5.29a1 1 0 1 1-2 0v-5.415l-1.5-.125v2.302a1.5 1.5 0 0 1-3 0v-2.447a3.93 3.93 0 0 0 3.404-3.86l8.592.735v7.943a3 3 0 0 1-2.996 2.999l-2.79.002A.912.912 0 0 1 12 22z" />
-          <path d="M14.5 13v3.5a3.5 3.5 0 0 0 7 0v-2.31l-6.004-.501A1.913 1.913 0 0 1 14.5 13z" />
-        </svg> */}
       </div>
 
       {!isCollapsed && (
         <div className="text-center mb-6">
-          <p className="text-xs font-semibold">
+          <p className="text-[13px] font-semibold">
             {role === "admin" ? "Admin Panel" : "Moderator Panel"}
           </p>
         </div>
