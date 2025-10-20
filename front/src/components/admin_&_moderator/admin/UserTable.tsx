@@ -176,6 +176,7 @@ export function UserTable({ initialUsers, onPromoteUser, onSuspendUser, onBanUse
       </div>
 
       <div className="border rounded-md">
+        {/* Fixed header (not scrollable) */}
         <Table>
           <TableHeader>
             <TableRow>
@@ -186,7 +187,12 @@ export function UserTable({ initialUsers, onPromoteUser, onSuspendUser, onBanUse
               <TableHead className="text-xs text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+        </Table>
+
+        {/* Scrollable body only */}
+        <div className="max-h-[350px] overflow-auto">
+          <Table>
+            <TableBody>
             {filteredUsers.length > 0 ? (
               filteredUsers.map((user) => (
                 <TableRow key={user.id}>
@@ -269,8 +275,9 @@ export function UserTable({ initialUsers, onPromoteUser, onSuspendUser, onBanUse
                 </TableCell>
               </TableRow>
             )}
-          </TableBody>
-        </Table>
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );
