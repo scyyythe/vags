@@ -11,8 +11,13 @@ const useMultipleFollowStatus = (profileUserIds: string[]) => {
     queries: profileUserIds.map((id) => ({
       queryKey: ["followStatus", id],
       queryFn: () => fetchFollowStatus(id),
-      staleTime: 1000 * 60 * 5,
-      refetchOnWindowFocus: false,
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      refetchInterval: 3000,
+      refetchIntervalInBackground: false,
+      retry: 1,
     })),
   });
 };
