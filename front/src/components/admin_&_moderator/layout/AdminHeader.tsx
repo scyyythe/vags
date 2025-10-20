@@ -204,11 +204,11 @@ export function AdminHeader({ role, user }: AdminHeaderProps) {
                 Profile Settings
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-xs">
+            {/* <DropdownMenuItem className="text-xs">
               <Link to={`/${role}/security`} className="w-full">
                 Security
               </Link>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-xs text-destructive" onClick={() => setIsLogoutOpen(true)}>
               Log out
