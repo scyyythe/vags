@@ -136,7 +136,7 @@ const TermsAndConditionsModal: React.FC<TermsAndConditionsModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 px-4 sm:px-6">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-xl max-h-[90vh] flex flex-col">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="px-6 pt-5 relative">
           <h2 className="text-md font-semibold text-gray-900 mb-2">

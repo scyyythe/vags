@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -8,9 +8,29 @@ import {
 } from "@/components/ui/accordion";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { Link } from "react-router-dom";
+import TermsAndConditionsModal from "@/components/modals/TermsAndConditionsModal";
 
 const HelpCenter = () => {
   const { language: selectedLanguage } = useLanguage();
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
+
+  // Prevent background scrolling when Terms modal is open
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    if (isTermsOpen) {
+      html.classList.add("overflow-hidden");
+      body.classList.add("overflow-hidden");
+    } else {
+      html.classList.remove("overflow-hidden");
+      body.classList.remove("overflow-hidden");
+    }
+    return () => {
+      html.classList.remove("overflow-hidden");
+      body.classList.remove("overflow-hidden");
+    };
+  }, [isTermsOpen]);
 
   // Auto-translated labels
   const helpCenterLabel = useAutoTranslation("Help Center", selectedLanguage);
@@ -82,6 +102,68 @@ const HelpCenter = () => {
           ))}
         </Accordion>
       </div>
+
+      {/* Legal & Policy section */}
+      <div className="mt-8">
+        {/* <div className="border-t border-gray-200 pt-6" /> */}
+
+        <div>
+          <h3 className="text-xs font-medium mb-4">
+            {useAutoTranslation("Legal & Policy", selectedLanguage)}
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Terms & Conditions */}
+            <div className="border border-gray-200 rounded-lg p-4">
+              <h4 className="text-[11px] font-medium mb-1">
+                {useAutoTranslation("Terms & Conditions", selectedLanguage)}
+              </h4>
+              <p className="text-gray-600 text-[11px] mb-3">
+                {useAutoTranslation(
+                  "Read the rules and responsibilities that apply when using our platform.",
+                  selectedLanguage
+                )}
+              </p>
+              <div className="flex justify-left">
+                <button
+                  onClick={() => setIsTermsOpen(true)}
+                  className="bg-red-800 hover:bg-red-700 text-white text-[11px] py-1.5 px-4 rounded-full"
+                >
+                  {useAutoTranslation("View Terms", selectedLanguage)}
+                </button>
+              </div>
+            </div>
+
+            {/* Privacy Policy */}
+            <div className="border border-gray-200 rounded-lg p-4">
+              <h4 className="text-[11px] font-medium mb-1">
+                {useAutoTranslation("Privacy Policy", selectedLanguage)}
+              </h4>
+              <p className="text-gray-600 text-[11px] mb-3">
+                {useAutoTranslation(
+                  "Learn how we collect and protect your personal information.",
+                  selectedLanguage
+                )}
+              </p>
+              <div className="flex justify-left">
+                <Link
+                  to="/privacy"
+                  className="bg-black hover:bg-gray-800 text-white text-[11px] py-1.5 px-4 rounded-full"
+                >
+                  {useAutoTranslation("View Policy", selectedLanguage)}
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Terms modal */}
+      <TermsAndConditionsModal
+        isOpen={isTermsOpen}
+        onAgree={() => setIsTermsOpen(false)}
+        onExit={() => setIsTermsOpen(false)}
+      />
     </div>
   );
 };
