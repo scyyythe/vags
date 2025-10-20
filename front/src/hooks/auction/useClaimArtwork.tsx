@@ -34,12 +34,10 @@ export const useClaimArtwork = () => {
       transaction_id: transactionId,
     };
 
-    console.log("Claim Artwork Payload (snake_case):", payload);
-
     try {
       const response = await apiClient.post("/artwork/claim/", payload);
       setLoading(false);
-      console.log("Claim Artwork Response:", response.data);
+
       return response.data;
     } catch (err: any) {
       setLoading(false);

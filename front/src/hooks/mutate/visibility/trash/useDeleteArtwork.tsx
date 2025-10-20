@@ -16,25 +16,40 @@ const useDeleteArtwork = () => {
     onSuccess: (_, id) => {
       toast.success("You've successfully deleted the artwork");
 
+      // Update specific artwork in cache (remove from created-by-me)
       queryClient.setQueryData<Artwork[]>(["artworks", 1, undefined, "created-by-me"], (oldData) =>
         oldData ? oldData.filter((art) => art.id !== id) : []
       );
 
-      // Invalidate all artwork-related queries to update marketplace
-      queryClient.invalidateQueries({ queryKey: ["artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["popular-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] });
-      queryClient.invalidateQueries({ queryKey: ["top-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["top-sellers"] });
-      queryClient.invalidateQueries({ queryKey: ["explore"] });
-      queryClient.invalidateQueries({ queryKey: ["feed"] });
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
-      queryClient.invalidateQueries({ queryKey: ["user-artworks"] });
+      // Invalidate all artwork and related queries for real-time updates
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            Array.isArray(queryKey) &&
+            (queryKey.includes("artworks") ||
+              queryKey.includes("popularArtworks") ||
+              queryKey.includes("popular-artworks") ||
+              queryKey.includes("popular-artworks-light") ||
+              queryKey.includes("marketplace-art-cards") ||
+              queryKey.includes("trending-artworks") ||
+              queryKey.includes("followedArtworks") ||
+              queryKey.includes("my-sell-art-cards") ||
+              queryKey.includes("top-artworks") ||
+              queryKey.includes("top-sellers") ||
+              queryKey.includes("explore") ||
+              queryKey.includes("feed") ||
+              queryKey.includes("profile") ||
+              queryKey.includes("user-artworks") ||
+              queryKey.includes("auctions") ||
+              queryKey.includes("biddingArtworks") ||
+              queryKey.includes("followedAuctions") ||
+              queryKey.includes("myAuctionArtworks") ||
+              queryKey.includes("exhibits") ||
+              queryKey.includes("reportStatus"))
+          );
+        },
+      });
     },
     onError: () => {
       toast.error("Failed to delete artwork.");
