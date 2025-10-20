@@ -9,8 +9,9 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Camera, Save, Shield, Bell, Globe, Key, User, Mail, Phone } from "lucide-react";
+import { Camera, Save, Shield, Bell, Globe, Key, User, Mail, Phone, Eye, EyeOff } from "lucide-react";
 import useUserQuery from "@/hooks/users/useUserQuery";
 import { getLoggedInUserId } from "@/auth/decode";
 
@@ -22,10 +23,10 @@ const AdminProfileSettings = () => {
     firstName: admin?.first_name || "",
     lastName: admin?.last_name || "",
     email: admin?.email || "",
-    phone: admin?.phone_number || "",
-    bio: admin?.bio || "",
-    timezone: admin?.timezone || "UTC",
-    language: admin?.language || "en",
+    phone: (admin as any)?.phone_number || "",
+    bio: (admin as any)?.bio || "",
+    timezone: (admin as any)?.timezone || "UTC",
+    language: (admin as any)?.language || "en",
   });
 
   const [securitySettings, setSecuritySettings] = useState({
@@ -51,6 +52,27 @@ const AdminProfileSettings = () => {
     autoRefresh: true,
   });
 
+  // Modal states
+  const [changePhotoOpen, setChangePhotoOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [securitySettingsOpen, setSecuritySettingsOpen] = useState(false);
+
+  // Password change form
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [showPasswords, setShowPasswords] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+  });
+
+  // Photo upload
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   const handleSaveProfile = () => {
     toast.success("Profile updated successfully", { closeButton: true });
   };
@@ -65,6 +87,60 @@ const AdminProfileSettings = () => {
 
   const handleSavePreferences = () => {
     toast.success("Preferences updated", { closeButton: true });
+  };
+
+  // Photo upload handlers
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("File size must be less than 2MB", { closeButton: true });
+        return;
+      }
+      if (!file.type.startsWith('image/')) {
+        toast.error("Please select an image file", { closeButton: true });
+        return;
+      }
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handlePhotoUpload = () => {
+    if (selectedFile) {
+      // Simulate upload process
+      toast.success("Profile photo updated successfully", { closeButton: true });
+      setChangePhotoOpen(false);
+      setSelectedFile(null);
+      setPreviewUrl(null);
+    }
+  };
+
+  // Password change handlers
+  const handlePasswordChange = () => {
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      toast.error("New passwords do not match", { closeButton: true });
+      return;
+    }
+    if (passwordForm.newPassword.length < 8) {
+      toast.error("New password must be at least 8 characters", { closeButton: true });
+      return;
+    }
+    // Simulate password change
+    toast.success("Password changed successfully", { closeButton: true });
+    setChangePasswordOpen(false);
+    setPasswordForm({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+  };
+
+  const togglePasswordVisibility = (field: 'current' | 'new' | 'confirm') => {
+    setShowPasswords(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
   };
 
   const initials = admin?.first_name
@@ -113,7 +189,12 @@ const AdminProfileSettings = () => {
                 )}
               </Avatar>
               <div>
-                <Button variant="outline" size="sm" className="text-[10px] rounded-full h-7">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-[10px] rounded-full h-7"
+                  onClick={() => setChangePhotoOpen(true)}
+                >
                   <Camera className="h-3 w-3 mr-1" />
                   Change Photo
                 </Button>
@@ -246,11 +327,21 @@ const AdminProfileSettings = () => {
             </div>
             <Separator />
             <div className="space-y-2">
-              <Button variant="outline" size="sm" className="w-full text-[10px] rounded-full h-7">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full text-[10px] rounded-full h-7"
+                onClick={() => setChangePasswordOpen(true)}
+              >
                 <Key className="h-3 w-3 mr-1" />
                 Change Password
               </Button>
-              <Button variant="outline" size="sm" className="w-full text-[10px] rounded-full h-7">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full text-[10px] rounded-full h-7"
+                onClick={() => setSecuritySettingsOpen(true)}
+              >
                 <Shield className="h-3 w-3 mr-1" />
                 Security Settings
               </Button>
@@ -259,78 +350,6 @@ const AdminProfileSettings = () => {
         </Card>
       </div>
 
-      {/* Security Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xs flex items-center gap-2">
-            <Shield className="h-4 w-4" />
-            Security Settings
-          </CardTitle>
-          <CardDescription className="text-[10px]">
-            Manage your account security and authentication preferences
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[11px] font-medium">Two-Factor Authentication</p>
-                  <p className="text-[10px] text-muted-foreground">Add an extra layer of security</p>
-                </div>
-                <Switch
-                  checked={securitySettings.twoFactorEnabled}
-                  onCheckedChange={(checked) => setSecuritySettings({ ...securitySettings, twoFactorEnabled: checked })}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[11px] font-medium">Login Notifications</p>
-                  <p className="text-[10px] text-muted-foreground">Get notified of new logins</p>
-                </div>
-                <Switch
-                  checked={securitySettings.loginNotifications}
-                  onCheckedChange={(checked) => setSecuritySettings({ ...securitySettings, loginNotifications: checked })}
-                />
-              </div>
-            </div>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label className="text-[11px]">Session Timeout (minutes)</Label>
-                <Select value={securitySettings.sessionTimeout} onValueChange={(value) => setSecuritySettings({ ...securitySettings, sessionTimeout: value })}>
-                  <SelectTrigger className="h-8 text-[10px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="15" className="text-[10px]">15 minutes</SelectItem>
-                    <SelectItem value="30" className="text-[10px]">30 minutes</SelectItem>
-                    <SelectItem value="60" className="text-[10px]">1 hour</SelectItem>
-                    <SelectItem value="120" className="text-[10px]">2 hours</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-[11px]">Password Expiry (days)</Label>
-                <Select value={securitySettings.passwordExpiry} onValueChange={(value) => setSecuritySettings({ ...securitySettings, passwordExpiry: value })}>
-                  <SelectTrigger className="h-8 text-[10px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="30" className="text-[10px]">30 days</SelectItem>
-                    <SelectItem value="60" className="text-[10px]">60 days</SelectItem>
-                    <SelectItem value="90" className="text-[10px]">90 days</SelectItem>
-                    <SelectItem value="never" className="text-[10px]">Never</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-          <Button onClick={handleSaveSecurity} className="text-[10px] rounded-full h-8">
-            <Save className="h-3 w-3 mr-1" />
-            Save Security Settings
-          </Button>
-        </CardContent>
-      </Card>
 
       {/* Notification Settings */}
       <Card>
@@ -418,7 +437,7 @@ const AdminProfileSettings = () => {
       </Card>
 
       {/* Preferences */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle className="text-xs flex items-center gap-2">
             <Globe className="h-4 w-4" />
@@ -490,7 +509,237 @@ const AdminProfileSettings = () => {
             Save Preferences
           </Button>
         </CardContent>
-      </Card>
+      </Card> */}
+
+      {/* Change Photo Modal */}
+      <Dialog open={changePhotoOpen} onOpenChange={setChangePhotoOpen}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle className="text-xs">Change Profile Photo</DialogTitle>
+            <DialogDescription className="text-[10px]">
+              Upload a new profile photo. Maximum file size is 2MB.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex justify-center">
+              <Avatar className="h-24 w-24">
+                {previewUrl ? (
+                  <AvatarImage src={previewUrl} alt="Preview" />
+                ) : admin && admin.profile_picture ? (
+                  <AvatarImage src={admin.profile_picture} alt="Current" />
+                ) : (
+                  <AvatarFallback className="text-lg">{initials}</AvatarFallback>
+                )}
+              </Avatar>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[11px]">Select Image</Label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                className="h-8 text-[10px]"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-[10px] rounded-full h-7"
+              onClick={() => setChangePhotoOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              className="text-[10px] rounded-full h-7"
+              onClick={handlePhotoUpload}
+              disabled={!selectedFile}
+            >
+              Upload Photo
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Change Password Modal */}
+      <Dialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle className="text-xs">Change Password</DialogTitle>
+            <DialogDescription className="text-[10px]">
+              Enter your current password and choose a new one.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-[11px]">Current Password</Label>
+              <div className="relative">
+                <Input
+                  type={showPasswords.current ? "text" : "password"}
+                  value={passwordForm.currentPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                  className="h-8 text-[10px] pr-8"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-8 w-8 p-0"
+                  onClick={() => togglePasswordVisibility('current')}
+                >
+                  {showPasswords.current ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[11px]">New Password</Label>
+              <div className="relative">
+                <Input
+                  type={showPasswords.new ? "text" : "password"}
+                  value={passwordForm.newPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                  className="h-8 text-[10px] pr-8"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-8 w-8 p-0"
+                  onClick={() => togglePasswordVisibility('new')}
+                >
+                  {showPasswords.new ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[11px]">Confirm New Password</Label>
+              <div className="relative">
+                <Input
+                  type={showPasswords.confirm ? "text" : "password"}
+                  value={passwordForm.confirmPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                  className="h-8 text-[10px] pr-8"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-8 w-8 p-0"
+                  onClick={() => togglePasswordVisibility('confirm')}
+                >
+                  {showPasswords.confirm ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                </Button>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-[10px] rounded-full h-7"
+              onClick={() => setChangePasswordOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              className="text-[10px] rounded-full h-7"
+              onClick={handlePasswordChange}
+              disabled={!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
+            >
+              Change Password
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Security Settings Modal */}
+      <Dialog open={securitySettingsOpen} onOpenChange={setSecuritySettingsOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="text-xs">Security Settings</DialogTitle>
+            <DialogDescription className="text-[10px]">
+              Configure your account security preferences.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[11px] font-medium">Two-Factor Authentication</p>
+                <p className="text-[10px] text-muted-foreground">Add an extra layer of security</p>
+              </div>
+              <Switch
+                checked={securitySettings.twoFactorEnabled}
+                onCheckedChange={(checked) => setSecuritySettings({ ...securitySettings, twoFactorEnabled: checked })}
+                className="scale-75"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[11px] font-medium">Login Notifications</p>
+                <p className="text-[10px] text-muted-foreground">Get notified of new logins</p>
+              </div>
+              <Switch
+                checked={securitySettings.loginNotifications}
+                onCheckedChange={(checked) => setSecuritySettings({ ...securitySettings, loginNotifications: checked })}
+                className="scale-75"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-[11px]">Session Timeout (minutes)</Label>
+                <Select value={securitySettings.sessionTimeout} onValueChange={(value) => setSecuritySettings({ ...securitySettings, sessionTimeout: value })}>
+                  <SelectTrigger className="h-8 text-[10px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="15" className="text-[10px]">15 minutes</SelectItem>
+                    <SelectItem value="30" className="text-[10px]">30 minutes</SelectItem>
+                    <SelectItem value="60" className="text-[10px]">1 hour</SelectItem>
+                    <SelectItem value="120" className="text-[10px]">2 hours</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[11px]">Password Expiry (days)</Label>
+                <Select value={securitySettings.passwordExpiry} onValueChange={(value) => setSecuritySettings({ ...securitySettings, passwordExpiry: value })}>
+                  <SelectTrigger className="h-8 text-[10px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="30" className="text-[10px]">30 days</SelectItem>
+                    <SelectItem value="60" className="text-[10px]">60 days</SelectItem>
+                    <SelectItem value="90" className="text-[10px]">90 days</SelectItem>
+                    <SelectItem value="never" className="text-[10px]">Never</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-[10px] rounded-full h-7"
+              onClick={() => setSecuritySettingsOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              className="text-[10px] rounded-full h-7"
+              onClick={() => {
+                handleSaveSecurity();
+                setSecuritySettingsOpen(false);
+              }}
+            >
+              Save Settings
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
