@@ -23,7 +23,7 @@ import {
   Users,
   LayoutDashboard,
 } from "lucide-react";
-import Logo from "@/components/user_dashboard/navbar/Logo";
+import Logo from "@/components/admin_&_moderator/layout/Logo";
 
 type AdminSidebarProps = {
   role: "admin" | "moderator";
