@@ -87,16 +87,16 @@ const PolicySettings = ({ policyLogs, setPolicyLogs, onView }: PolicySettingsPro
         : `${title} saved as draft`
     );
 
-    policyForm.reset(); // ✅ Always clear after saving
+    policyForm.reset(); // Always clear after saving
   };
 
-  // ✅ Delete Policy
+  // Delete Policy
   const deletePolicy = (id: string) => {
     setPolicyLogs(policyLogs.filter((log) => log.id !== id));
     toast.success("Policy deleted");
   };
 
-  // ✅ Edit Draft
+  // Edit Draft
   const handleEditDraft = (log: PolicyLog) => {
     if (log.status === "draft") {
       policyForm.reset({
@@ -110,7 +110,7 @@ const PolicySettings = ({ policyLogs, setPolicyLogs, onView }: PolicySettingsPro
     }
   };
 
-  // ✅ Download PDF (used by icon + modal)
+  // Download PDF (used by icon + modal)
   const handleDownloadPDF = (log: PolicyLog) => {
     try {
       const pdfContent = `
@@ -134,7 +134,7 @@ ${log.content}
     }
   };
 
-  // ✅ Handle Toggle
+  // Handle Toggle
   const handleToggle = (setting: keyof typeof policyConfig, checked: boolean) => {
     setPolicyConfig({
       ...policyConfig,
@@ -156,8 +156,8 @@ ${log.content}
       {/* Privacy Policy */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Privacy Policy</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-xs">Privacy Policy</CardTitle>
+          <CardDescription className="text-[11px]">
             Configure privacy policy and user consent settings
           </CardDescription>
         </CardHeader>
@@ -166,6 +166,7 @@ ${log.content}
             className="text-xs min-h-[120px]"
             placeholder="Enter your privacy policy content..."
             {...policyForm.register("privacyPolicy")}
+            style={{ fontSize: "11px" }}
           />
           <div className="flex gap-2">
             <Button
@@ -214,8 +215,8 @@ ${log.content}
       {/* Content Policy */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Content Policy</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-xs">Content Policy</CardTitle>
+          <CardDescription className="text-[11px]">
             Define rules for user-generated content
           </CardDescription>
         </CardHeader>
@@ -224,6 +225,7 @@ ${log.content}
             className="text-xs min-h-[100px]"
             placeholder="Define rules for artworks, descriptions, and comments..."
             {...policyForm.register("contentPolicy")}
+            style={{ fontSize: "11px" }}
           />
           <div className="flex gap-2">
             <Button
@@ -256,8 +258,8 @@ ${log.content}
       {/* Community Guidelines */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Community Guidelines</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-xs">Community Guidelines</CardTitle>
+          <CardDescription className="text-[11px]">
             Set community behavior and interaction rules
           </CardDescription>
         </CardHeader>
@@ -266,6 +268,7 @@ ${log.content}
             className="text-xs min-h-[120px]"
             placeholder="Define community behavior policies, commenting guidelines..."
             {...policyForm.register("communityGuidelines")}
+            style={{ fontSize: "11px" }}
           />
           <div className="flex gap-2">
             <Button
@@ -300,8 +303,8 @@ ${log.content}
       {/* Data Retention */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Data Retention Policy</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-xs">Data Retention Policy</CardTitle>
+          <CardDescription className="text-[11px]">
             Configure data storage and deletion settings
           </CardDescription>
         </CardHeader>
@@ -312,6 +315,7 @@ ${log.content}
             min="1"
             placeholder="12"
             {...policyForm.register("dataRetentionDuration")}
+            style={{ fontSize: "11px" }}
           />
           <ConfigToggle
             id="allowDataDeletion"

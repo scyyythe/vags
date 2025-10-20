@@ -147,14 +147,14 @@ const EnvironmentSettings = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 className="text-[11px] font-semibold">3D Environment Management</h2>
-            <p className="text-[10px] text-muted-foreground">
+            <h2 className="text-xs font-semibold">3D Environment Management</h2>
+            <p className="text-[11px] text-muted-foreground">
               Manage exhibition environments and their configurations
             </p>
           </div>
           <Button
             onClick={() => setUploadDialogOpen(true)}
-            className="w-full sm:w-auto text-[10px] h-7"
+            className="w-full sm:w-auto text-[10px] rounded-full h-8"
           >
             <Upload className="mr-2 h-3 w-3" />
             Upload New Environment
@@ -168,13 +168,14 @@ const EnvironmentSettings = () => {
             placeholder="Search environments..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 text-[10px] h-7"
-            style={{ fontSize: "10px" }}
+            className="pl-9 text-[10px] h-8 rounded-full"
+            style={{ fontSize: "11px" }}
           />
         </div>
 
-        {/* Environments Table */}
+        {/* Environments Table with fixed header and scrollable body */}
         <div className="rounded-md border">
+          {/* Fixed header */}
           <Table>
             <TableHeader>
               <TableRow className="text-[11px]">
@@ -185,66 +186,72 @@ const EnvironmentSettings = () => {
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {filteredEnvironments.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    className="text-center text-[10px] text-muted-foreground"
-                  >
-                    No environments found
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredEnvironments.map((env) => (
-                  <TableRow key={env.id} className="text-[10px]">
-                    <TableCell>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-md border bg-muted">
-                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-medium">{env.name}</TableCell>
-                    <TableCell>
-                      <span className="text-[10px] text-muted-foreground">
-                        {env.slots} artworks
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Switch
-                          checked={env.isActive}
-                          onCheckedChange={() => handleToggleStatus(env.id)}
-                        />
-                        <span className="text-[10px]">
-                          {env.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleEdit(env)}
-                          className="h-6 w-6"
-                        >
-                          <Pencil className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDelete(env.id)}
-                          className="h-6 w-6"
-                        >
-                          <Trash2 className="h-3 w-3 text-destructive" />
-                        </Button>
-                      </div>
+          </Table>
+
+          {/* Scrollable body only */}
+          <div className="max-h-[350px] overflow-auto">
+            <Table>
+              <TableBody>
+                {filteredEnvironments.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={5}
+                      className="text-center text-[11px] text-muted-foreground"
+                    >
+                      No environments found
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ) : (
+                  filteredEnvironments.map((env) => (
+                    <TableRow key={env.id} className="text-[11px]">
+                      <TableCell>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-md border bg-muted">
+                          <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-medium">{env.name}</TableCell>
+                      <TableCell>
+                        <span className="text-[11px] text-muted-foreground">
+                          {env.slots} artworks
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={env.isActive}
+                            onCheckedChange={() => handleToggleStatus(env.id)}
+                          />
+                          <span className="text-[11px]">
+                            {env.isActive ? "Active" : "Inactive"}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleEdit(env)}
+                            className="h-6 w-6"
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDelete(env.id)}
+                            className="h-6 w-6"
+                          >
+                            <Trash2 className="h-3 w-3 text-destructive" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </div>
 
