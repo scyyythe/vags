@@ -10,10 +10,39 @@ import { useRelistableArtworks } from "@/hooks/artworks/relist/useRelistableArtw
 import { useRelistArtwork } from "@/hooks/artworks/relist/useRelistArtwork";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 const SalesSummary = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const queryClient = useQueryClient();
+  const { language } = useLanguage();
+
+  // Translation hooks for toast messages
+  const artworkRelistedSuccessText = useAutoTranslation("Artwork relisted successfully!", language);
+  const failedToRelistText = useAutoTranslation("Failed to relist artwork. Please try again.", language);
+
+  // Translation hooks for UI labels
+  const latestBuyerActivityText = useAutoTranslation("Latest Buyer Activity", language);
+  const showText = useAutoTranslation("Show:", language);
+  const filterText = useAutoTranslation("Filter", language);
+  const allText = useAutoTranslation("All", language);
+  const availableText = useAutoTranslation("Available", language);
+  const soldText = useAutoTranslation("Sold", language);
+  const cancelledText = useAutoTranslation("Cancelled", language);
+  const relistUnsoldArtworksText = useAutoTranslation("Relist Unsold or Cancelled Artworks", language);
+  const itemsAvailableText = useAutoTranslation("items available", language);
+  const loadingText = useAutoTranslation("Loading...", language);
+  const errorLoadingText = useAutoTranslation("Error loading", language);
+  const loadingRelistableArtworksText = useAutoTranslation("Loading relistable artworks...", language);
+  const errorLoadingRelistableArtworksText = useAutoTranslation("Error loading relistable artworks:", language);
+  const noArtworksForRelistingText = useAutoTranslation("No artworks available for relisting.", language);
+  const relistableStatusesInfoText = useAutoTranslation('Artworks with status "unlisted", "draft", or "inactive" can be relisted.', language);
+  const failedToLoadDataText = useAutoTranslation("Failed to load data.", language);
+  const salesMetricsErrorText = useAutoTranslation("Sales metrics error.", language);
+  const buyerActivityErrorText = useAutoTranslation("Buyer activity error.", language);
+  const relistableArtworksErrorText = useAutoTranslation("Relistable artworks error.", language);
+  const pleaseTryAgainText = useAutoTranslation("Please try again.", language);
 
   // Fetch real sales metrics from backend
   const { data: salesMetricsData, isLoading: isMetricsLoading, error: metricsError } = useSalesMetrics();
@@ -41,7 +70,7 @@ const SalesSummary = () => {
     relistArtwork(artworkId, {
       onSuccess: () => {
         // Show success message
-        toast.success("Artwork relisted successfully!", {
+        toast.success(artworkRelistedSuccessText, {
           closeButton: true,
         });
 
@@ -56,7 +85,7 @@ const SalesSummary = () => {
       },
       onError: (error) => {
         console.error("Failed to relist artwork:", error);
-        const errorMessage = error?.response?.data?.detail || "Failed to relist artwork. Please try again.";
+        const errorMessage = error?.response?.data?.detail || failedToRelistText;
         toast.error(errorMessage);
       },
     });
@@ -129,10 +158,10 @@ const SalesSummary = () => {
       <div className="w-full space-y-6">
         <div className="text-center py-8">
           <p className="text-red-600">
-            Failed to load data. {metricsError ? "Sales metrics error. " : ""}
-            {activityError ? "Buyer activity error. " : ""}
-            {relistableError ? "Relistable artworks error." : ""}
-            Please try again.
+            {failedToLoadDataText} {metricsError ? `${salesMetricsErrorText} ` : ""}
+            {activityError ? `${buyerActivityErrorText} ` : ""}
+            {relistableError ? `${relistableArtworksErrorText}` : ""}
+            {pleaseTryAgainText}
           </p>
         </div>
       </div>
@@ -146,25 +175,25 @@ const SalesSummary = () => {
 
       {/* Status Filter */}
       <div className="flex items-center justify-between">
-        <h3 className="text-[13px] font-semibold text-foreground">Latest Buyer Activity</h3>
+        <h3 className="text-[13px] font-semibold text-foreground">{latestBuyerActivityText}</h3>
         <div className="flex items-center gap-2">
-          <span className="text-[11px] text-muted-foreground">Show:</span>
+          <span className="text-[11px] text-muted-foreground">{showText}</span>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-32 h-8 text-[10px] rounded-full">
-              <SelectValue placeholder="Filter" />
+              <SelectValue placeholder={filterText} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all" className="text-[10px]">
-                All
+                {allText}
               </SelectItem>
               <SelectItem value="available" className="text-[10px]">
-                Available
+                {availableText}
               </SelectItem>
               <SelectItem value="sold" className="text-[10px]">
-                Sold
+                {soldText}
               </SelectItem>
               <SelectItem value="cancelled" className="text-[10px]">
-                Cancelled
+                {cancelledText}
               </SelectItem>
             </SelectContent>
           </Select>
@@ -177,28 +206,28 @@ const SalesSummary = () => {
       {/* Relist Section */}
       <Card className="p-4 overflow-y-auto max-h-[450px]">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xs font-semibold text-foreground">Relist Unsold or Cancelled Artworks</h3>
+          <h3 className="text-xs font-semibold text-foreground">{relistUnsoldArtworksText}</h3>
           <span className="text-[11px] text-muted-foreground">
-            {relistableArtworks.length} items available
-            {isRelistableLoading && " (Loading...)"}
-            {relistableError && " (Error loading)"}
+            {relistableArtworks.length} {itemsAvailableText}
+            {isRelistableLoading && ` (${loadingText})`}
+            {relistableError && ` (${errorLoadingText})`}
           </span>
         </div>
 
         {isRelistableLoading ? (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-            <p className="text-sm text-gray-500 mt-2">Loading relistable artworks...</p>
+            <p className="text-sm text-gray-500 mt-2">{loadingRelistableArtworksText}</p>
           </div>
         ) : relistableError ? (
           <div className="text-center py-8">
-            <p className="text-red-600">Error loading relistable artworks: {relistableError.message}</p>
+            <p className="text-red-600">{errorLoadingRelistableArtworksText} {relistableError.message}</p>
           </div>
         ) : relistableArtworks.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-500">No artworks available for relisting.</p>
+            <p className="text-gray-500">{noArtworksForRelistingText}</p>
             <p className="text-xs text-gray-400 mt-1">
-              Artworks with status "unlisted", "draft", or "inactive" can be relisted.
+              {relistableStatusesInfoText}
             </p>
           </div>
         ) : (

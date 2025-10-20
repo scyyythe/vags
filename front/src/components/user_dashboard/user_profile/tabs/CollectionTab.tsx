@@ -6,6 +6,8 @@ import { getLoggedInUserId } from "@/auth/decode";
 import useSavedArtworks from "@/hooks/artworks/fetch_artworks/useSavedArtworks";
 import useBulkArtworkStatus from "@/hooks/interactions/useArtworkStatus";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 type CollectionTabProps = {
   setSavedArtworksCount?: React.Dispatch<React.SetStateAction<number>>;
@@ -17,6 +19,10 @@ const CollectionTab = ({ setSavedArtworksCount, selectedStatus }: CollectionTabP
   const { id: visitedUserId } = useParams();
   const isOwnProfile = !visitedUserId || visitedUserId === loggedInUserId;
   const targetUserId = isOwnProfile ? undefined : visitedUserId;
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const noSavedArtworksText = useAutoTranslation("No saved artworks found.", language);
 
   const { data: savedArtworks = [], isLoading, isError, refetch } = useSavedArtworks(targetUserId);
 
@@ -60,7 +66,7 @@ const CollectionTab = ({ setSavedArtworksCount, selectedStatus }: CollectionTabP
     return (
       <div className="flex flex-col items-center justify-center col-span-full text-center p-4">
         <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
-        <p className="text-sm text-gray-500">No saved artworks found.</p>
+        <p className="text-sm text-gray-500">{noSavedArtworksText}</p>
       </div>
     );
   }
