@@ -53,8 +53,13 @@ const useFetchArtCards = () => {
   return useQuery<ArtCard[], Error>({
     queryKey: ["marketplace-art-cards"],
     queryFn: fetchArtCards,
-    staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
+    staleTime: 0, // Always consider data stale for real-time updates
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnMount: true, // Refetch on component mount
+    refetchOnReconnect: true, // Refetch on network reconnect
+    refetchInterval: 3000, // Poll every 3 seconds for new marketplace items
+    refetchIntervalInBackground: false, // Don't poll when tab is not active
+    retry: 1, // Retry once on failure
   });
 };
 

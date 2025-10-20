@@ -8,10 +8,14 @@ const useFollowedArtworksOnSale = (page: number, enabled: boolean) => {
       const response = await apiClient.get(`/artworks/onsale/following?page=${page}`);
       return response.data;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0, // Always consider data stale for real-time updates
     enabled,
-    refetchOnMount: true,
-    retry: 1,
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnMount: true, // Refetch on component mount
+    refetchOnReconnect: true, // Refetch on network reconnect
+    refetchInterval: 3000, // Poll every 3 seconds for followed artworks on sale
+    refetchIntervalInBackground: false, // Don't poll when tab is not active
+    retry: 1, // Retry once on failure
   });
 };
 

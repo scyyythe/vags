@@ -73,7 +73,10 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const reviewSubmittedText = useAutoTranslation("Review submitted successfully!", language);
   const failedToSubmitReviewText = useAutoTranslation("Failed to submit review.", language);
   const unableToContactSellerIdText = useAutoTranslation("Unable to contact seller - seller ID not found", language);
-  const unableToContactSellerNameText = useAutoTranslation("Unable to contact seller - seller name not found", language);
+  const unableToContactSellerNameText = useAutoTranslation(
+    "Unable to contact seller - seller name not found",
+    language
+  );
   const openingConversationText = useAutoTranslation("Opening conversation with", language);
   const refundRequestInitiatedText = useAutoTranslation("Refund request initiated...", language);
   const artworkReorderedText = useAutoTranslation("Artwork reordered successfully!", language);
@@ -86,12 +89,18 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const noReviewSelectedUpdateText = useAutoTranslation("No review selected to update.", language);
   const reviewUpdatedText = useAutoTranslation("Review updated successfully!", language);
   const failedToUpdateReviewText = useAutoTranslation("Failed to update review.", language);
-  const artworkAlreadyOnSaleText = useAutoTranslation("This artwork is already on sale and available in your listings.", language);
+  const artworkAlreadyOnSaleText = useAutoTranslation(
+    "This artwork is already on sale and available in your listings.",
+    language
+  );
   const artworkRelistedText = useAutoTranslation("Artwork relisted successfully!", language);
   const failedToRelistText = useAutoTranslation("Failed to relist artwork. Please try again.", language);
   const unableToContactBuyerIdText = useAutoTranslation("Unable to contact buyer - buyer ID not found", language);
   const unableToContactBuyerNameText = useAutoTranslation("Unable to contact buyer - buyer name not found", language);
-  const unableToFindArtworkText = useAutoTranslation("Unable to find artwork information for thank you message.", language);
+  const unableToFindArtworkText = useAutoTranslation(
+    "Unable to find artwork information for thank you message.",
+    language
+  );
 
   // Translation hooks for tab labels
   const myListingsText = useAutoTranslation("MY LISTINGS", language);
@@ -332,8 +341,30 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
       return;
     }
 
-    openChat(String(sellerId), sellerName, undefined, true);
-    toast(`${openingConversationText} ${sellerName}...`, { closeButton: true });
+    try {
+      // Show loading toast
+      const loadingToast = toast.loading(`${openingConversationText} ${sellerName}...`, {
+        closeButton: true,
+        duration: 5000, // Auto-dismiss after 5 seconds
+      });
+
+      // Open direct conversation with seller
+      openChat(String(sellerId), sellerName, undefined, true);
+
+      // Dismiss the loading toast and show success
+      setTimeout(() => {
+        toast.dismiss(loadingToast);
+        toast.success(`Conversation opened with ${sellerName}`, {
+          closeButton: true,
+          duration: 3000,
+        });
+      }, 1000); // Dismiss after 1 second
+    } catch (error) {
+      console.error("Failed to open chat:", error);
+      toast.error("Failed to open conversation. Please try again.", {
+        closeButton: true,
+      });
+    }
   };
 
   const handleTrackOrder = (order) => {
@@ -780,9 +811,30 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
       return;
     }
 
-    // Open direct conversation with buyer
-    openChat(String(buyerId), buyerName, undefined, true);
-    toast(`${openingConversationText} ${buyerName}...`, { closeButton: true });
+    try {
+      // Show loading toast
+      const loadingToast = toast.loading(`${openingConversationText} ${buyerName}...`, {
+        closeButton: true,
+        duration: 5000, // Auto-dismiss after 5 seconds
+      });
+
+      // Open direct conversation with buyer
+      openChat(String(buyerId), buyerName, undefined, true);
+
+      // Dismiss the loading toast and show success
+      setTimeout(() => {
+        toast.dismiss(loadingToast);
+        toast.success(`Conversation opened with ${buyerName}`, {
+          closeButton: true,
+          duration: 3000,
+        });
+      }, 1000); // Dismiss after 1 second
+    } catch (error) {
+      console.error("Failed to open chat:", error);
+      toast.error("Failed to open conversation. Please try again.", {
+        closeButton: true,
+      });
+    }
   };
 
   const handleMarkAsShipped = (artwork) => {

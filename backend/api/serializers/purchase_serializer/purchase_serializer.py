@@ -44,6 +44,11 @@ class PurchaseArtworkSerializer(serializers.Serializer):
 
         total_price = artwork.price * quantity
 
+        # Determine if this is a direct purchase or purchase order
+        is_purchase_order = validated_data.get("is_purchase_order", False)
+        print(f"DEBUG: Serializer - is_purchase_order: {is_purchase_order}")
+        print(f"DEBUG: Serializer - validated_data: {validated_data}")
+        
         # Create purchase record
         purchase = PurchasedArtwork.objects.create(
             buyer=mongo_user,
@@ -53,61 +58,80 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             is_paid=validated_data.get("is_paid", False),
             quantity=quantity,
             total_price=total_price,
-            status="Paid",
+            status="Ordering" if is_purchase_order else "Paid",
         )
 
-        # Update artwork quantity/status
-        if artwork.edition in ["Open Edition", "Limited Edition"] and artwork.quantity is not None:
-            artwork.quantity -= quantity
-            if artwork.quantity == 0:
-                artwork.art_status = "Sold"  
+        # Only update artwork quantity/status for direct purchases, not purchase orders
+        if not is_purchase_order:
+            if artwork.edition in ["Open Edition", "Limited Edition"] and artwork.quantity is not None:
+                artwork.quantity -= quantity
+                if artwork.quantity == 0:
+                    artwork.art_status = "Sold"  
+                else:
+                    artwork.art_status = "onSale" 
             else:
-                artwork.art_status = "onSale" 
-        else:
-            # For non-Open Edition artworks, mark as Sold
-            artwork.art_status = "Sold"
-        artwork.save()
+                # For non-Open Edition artworks, mark as Sold
+                artwork.art_status = "Sold"
+            artwork.save()
 
         now = datetime.now()
 
-        # Create notifications
-        Notification.objects.create(
-            user=artwork.artist,
-            actor=mongo_user,
-            message=f"{mongo_user.first_name} {mongo_user.last_name} ordered your artwork: '{artwork.title}'",
-            name=f"{mongo_user.first_name} {mongo_user.last_name}",
-            action="purchased your artwork",
-            target=artwork.title,
-            icon="purchase",
-            created_at=datetime.now(),
-            link=f"/viewproduct/{artwork.id}"
-        )
+        # Only create notifications and transactions for direct purchases, not purchase orders
+        print(f"DEBUG: About to check is_purchase_order: {is_purchase_order}")
+        if not is_purchase_order:
+            print("DEBUG: Creating transaction for direct purchase")
+            # Create notifications
+            Notification.objects.create(
+                user=artwork.artist,
+                actor=mongo_user,
+                message=f"{mongo_user.first_name} {mongo_user.last_name} ordered your artwork: '{artwork.title}'",
+                name=f"{mongo_user.first_name} {mongo_user.last_name}",
+                action="purchased your artwork",
+                target=artwork.title,
+                icon="purchase",
+                created_at=datetime.now(),
+                link=f"/viewproduct/{artwork.id}"
+            )
 
-        Notification.objects.create(
-            user=mongo_user,
-            actor=mongo_user,
-            message=f"You successfully ordered: '{artwork.title}'",
-            name=f"{mongo_user.first_name} {mongo_user.last_name}",
-            action="purchased an artwork",
-            target=artwork.title,
-            icon="purchase",
-            created_at=datetime.now(),
-            link=f"/viewproduct/{artwork.id}"
-        )
+            Notification.objects.create(
+                user=mongo_user,
+                actor=mongo_user,
+                message=f"You successfully ordered: '{artwork.title}'",
+                name=f"{mongo_user.first_name} {mongo_user.last_name}",
+                action="purchased an artwork",
+                target=artwork.title,
+                icon="purchase",
+                created_at=datetime.now(),
+                link=f"/viewproduct/{artwork.id}"
+            )
 
-        # Insert Transaction record
-        Transaction(
-            sender=mongo_user,
-            receiver=artwork.artist,
-            art=artwork,
-            transaction_type="Purchase",
-            amount=total_price,
-            currency="PHP",
-            payment_method=validated_data["payment_method"],
-            payment_status="Completed" if validated_data.get("is_paid", False) else "Pending",
-            transaction_id=str(ObjectId()),  # generate unique id
-            extra_data={"purchase_id": str(purchase.id)},
-            timestamp=now
-        ).save()
+            # Insert Transaction record only for direct purchases
+            Transaction(
+                sender=mongo_user,
+                receiver=artwork.artist,
+                art=artwork,
+                transaction_type="Purchase",
+                amount=total_price,
+                currency="PHP",
+                payment_method=validated_data["payment_method"],
+                payment_status="Completed" if validated_data.get("is_paid", False) else "Pending",
+                transaction_id=str(ObjectId()),  # generate unique id
+                extra_data={"purchase_id": str(purchase.id)},
+                timestamp=now
+            ).save()
+        else:
+            print("DEBUG: Creating notification for purchase order (no transaction)")
+            # For purchase orders, create a simple notification (no transaction yet)
+            Notification.objects.create(
+                user=artwork.artist,
+                actor=mongo_user,
+                message=f"{mongo_user.first_name} {mongo_user.last_name} created a purchase order for: '{artwork.title}'",
+                name=f"{mongo_user.first_name} {mongo_user.last_name}",
+                action="created a purchase order",
+                target=artwork.title,
+                icon="order",
+                created_at=datetime.now(),
+                link=f"/viewproduct/{artwork.id}"
+            )
 
         return purchase
