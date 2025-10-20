@@ -44,12 +44,23 @@ const ArtworkCard = ({ artwork, index }: { artwork: any; index: number }) => {
             <p className="text-sm font-medium">{translatedTitle}</p>
             <p className="text-xs text-gray-500">{artwork.artist.name}</p>
           </div>
-          <div className="w-6 h-6 rounded-full overflow-hidden">
-            <img
-              src={artwork.artist.profile_picture}
-              alt={artwork.artist.name}
-              className="w-full h-full object-cover rounded-full"
-            />
+          <div className="w-6 h-6 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+            {artwork.artist.profile_picture ? (
+              <img
+                src={artwork.artist.profile_picture}
+                alt={artwork.artist.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-xs font-medium text-gray-600">
+                {artwork.artist.name
+                  .split(' ')
+                  .map(word => word.charAt(0))
+                  .join('')
+                  .toUpperCase()
+                  .slice(0, 2)}
+              </span>
+            )}
           </div>
         </div>
       </div>
