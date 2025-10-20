@@ -83,6 +83,22 @@ class ArtSerializer(serializers.Serializer):
         count = Like.objects.filter(art=obj).count()
         self._likes_cache[obj.id] = count
         return count
+
+    def get_primary_image(self, obj):
+        """Get the primary image URL with better fallback handling"""
+        try:
+            if hasattr(obj, 'image_url') and obj.image_url:
+                if isinstance(obj.image_url, list) and len(obj.image_url) > 0:
+                    # Return the first valid image URL
+                    for img_url in obj.image_url:
+                        if img_url and img_url.strip():
+                            return img_url
+                elif isinstance(obj.image_url, str) and obj.image_url.strip():
+                    return obj.image_url
+            return ""
+        except Exception as e:
+            print(f"DEBUG: Error getting primary image for artwork {obj.id}: {e}")
+            return ""
     
     @classmethod
     def prefetch_likes_data(cls, artworks):
@@ -363,7 +379,7 @@ class ArtSerializer(serializers.Serializer):
             "created_at": instance.created_at,
             "updated_at": instance.updated_at,
             "image_url": instance.image_url,
-            "artworkImage": instance.image_url[0] if instance.image_url and len(instance.image_url) > 0 else "",
+            "artworkImage": self.get_primary_image(instance),
             "likes_count": self.get_likes_count(instance),
             "likesCount": self.get_likes_count(instance),
             "edition": instance.edition,
@@ -460,6 +476,7 @@ class ArtCardSerializer(serializers.Serializer):
     quantity= serializers.SerializerMethodField()
     total_ratings = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
+    artworkImage = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
     visibility=serializers.SerializerMethodField()
     art_status=serializers.SerializerMethodField()
@@ -512,6 +529,21 @@ class ArtCardSerializer(serializers.Serializer):
             print(f"Error in get_image_url for art {obj.id}: {e}")
             return []
 
+    def get_artworkImage(self, obj):
+        """Get the primary image URL with better fallback handling"""
+        try:
+            if hasattr(obj, 'image_url') and obj.image_url:
+                if isinstance(obj.image_url, list) and len(obj.image_url) > 0:
+                    # Return the first valid image URL
+                    for img_url in obj.image_url:
+                        if img_url and img_url.strip():
+                            return img_url
+                elif isinstance(obj.image_url, str) and obj.image_url.strip():
+                    return obj.image_url
+            return ""
+        except Exception as e:
+            print(f"DEBUG: Error getting artworkImage for artwork {obj.id}: {e}")
+            return ""
 
     def get_artist(self, obj):
         if obj.artist:

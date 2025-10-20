@@ -67,13 +67,29 @@ const ArtCard = ({
   const translatedLike = useAutoTranslation("Like", language);
   const translatedUnlike = useAutoTranslation("Unlike", language);
 
-  const { id, artistId, artistName, artistImage, default_paypal_email, artworkImage, title, likesCount = 0 } = artwork;
+  const {
+    id,
+    artistId,
+    artistName,
+    artistImage,
+    default_paypal_email,
+    artworkImage,
+    image_url,
+    title,
+    likesCount = 0,
+  } = artwork;
 
   const translatedArtistName = useAutoTranslation(artistName, language);
   const translatedTitle = useAutoTranslation(title, language);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  // Reset image error when artwork changes
+  useEffect(() => {
+    setImageError(false);
+  }, [artwork.id, artwork.artworkImage]);
 
   const { likedArtworks, likeCounts, setLikedArtworks, toggleLike } = useContext(LikedArtworksContext);
 
@@ -292,18 +308,41 @@ const ArtCard = ({
         className="w-full"
       >
         <div className="aspect-square overflow-hidden py-2 px-1">
-          <img
-            src={artwork.artworkImage}
-            alt={`Artwork by ${translatedArtistName}`}
-            className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
-          />
+          {imageError || (!artwork.artworkImage && !image_url) ? (
+            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex flex-col items-center justify-center text-gray-500">
+              <div className="w-12 h-12 mb-2 bg-gray-300 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <div className="text-xs text-center px-2">
+                <div className="font-medium">Artwork by</div>
+                <div className="text-gray-600">{translatedArtistName}</div>
+              </div>
+            </div>
+          ) : (
+            <img
+              src={artwork.artworkImage || image_url}
+              alt={`Artwork by ${translatedArtistName}`}
+              className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
+              onError={() => setImageError(true)}
+              onLoad={() => setImageError(false)}
+            />
+          )}
         </div>
       </Link>
 
       <div className="px-1 py-1">
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium">
-            {translatedTitle ? translatedTitle.slice(0, 10) + (translatedTitle.length > 10 ? "..." : "") : translatedUntitledArtwork}
+            {translatedTitle
+              ? translatedTitle.slice(0, 10) + (translatedTitle.length > 10 ? "..." : "")
+              : translatedUntitledArtwork}
           </p>
 
           <div className="flex items-center space-x-1">
