@@ -56,7 +56,7 @@ const Index = () => {
   ) : null;
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full overflow-x-hidden">
       <Navbar />
       <Hero />
       <PopularArtists />
