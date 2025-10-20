@@ -5,6 +5,16 @@ import { Maximize2, X } from "lucide-react";
 import { useArtistPaymentAccounts } from "@/hooks/accounts/useArtistPaymentAccounts";
 import { usePayment } from "@/context/PaymentContext";
 import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
+
 interface GCashPaymentProps {
   artistId: string;
   onClosePreviousModal: () => void;
@@ -15,6 +25,15 @@ export const GCashPayment: React.FC<GCashPaymentProps> = ({ artistId, onClosePre
   const [showReceiptPopup, setShowReceiptPopup] = useState(false);
   const { confirmPurchase } = usePayment();
   const { accounts, loading, error } = useArtistPaymentAccounts(artistId);
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const loadingGCashInfoText = useAutoTranslation("Loading GCash info...", language);
+  const noGCashAccountText = useAutoTranslation("No GCash account linked for this artist.", language);
+  const gcashPaymentText = useAutoTranslation("GCash Payment", language);
+  const scanToPayText = useAutoTranslation("Scan to Pay via QR Code", language);
+  const paidText = useAutoTranslation("Paid", language);
+  const unknownText = useAutoTranslation("Unknown", language);
 
   const gcashAccount = accounts.find((acc) => acc?.type?.toLowerCase() === "gcash");
 
@@ -30,7 +49,7 @@ export const GCashPayment: React.FC<GCashPaymentProps> = ({ artistId, onClosePre
     }
   };
 
-  if (loading) return <p className="text-center text-xs text-gray-500">Loading GCash info...</p>;
+  if (loading) return <p className="text-center text-xs text-gray-500">{loadingGCashInfoText}</p>;
 
   if (error) return <p className="text-center text-xs text-red-500">{error}</p>;
 
@@ -38,7 +57,7 @@ export const GCashPayment: React.FC<GCashPaymentProps> = ({ artistId, onClosePre
     return (
       <Card className="border-none shadow-none">
         <CardContent className="p-4 text-center text-gray-500 text-sm">
-          No GCash account linked for this artist.
+          {noGCashAccountText}
         </CardContent>
       </Card>
     );
@@ -46,7 +65,7 @@ export const GCashPayment: React.FC<GCashPaymentProps> = ({ artistId, onClosePre
   const accountInfo = gcashAccount.account_info;
   const accountNumber = typeof accountInfo === "string" ? accountInfo : accountInfo?.accountNumber || "N/A";
 
-  const accountName = gcashAccount.name || "Unknown";
+  const accountName = gcashAccount.name || unknownText;
 
   const qrCodeUrl = gcashAccount.qr_image_url || "/placeholder-qr.png";
 
@@ -54,10 +73,10 @@ export const GCashPayment: React.FC<GCashPaymentProps> = ({ artistId, onClosePre
     <>
       <Card className="border-none shadow-none">
         <CardContent className="p-4 space-y-3 text-center">
-          <div className="text-sm font-semibold text-gray-900">GCash Payment</div>
+          <div className="text-sm font-semibold text-gray-900">{gcashPaymentText}</div>
 
           <div className="pb-2.5">
-            <p className="text-gray-700 text-[11px] mb-2">Scan to Pay via QR Code</p>
+            <p className="text-gray-700 text-[11px] mb-2">{scanToPayText}</p>
 
             <div className="flex justify-center mb-2.5">
               <div className="relative inline-block group">
@@ -82,7 +101,9 @@ export const GCashPayment: React.FC<GCashPaymentProps> = ({ artistId, onClosePre
 
             <div>
               <p className="text-[13px] font-semibold text-black">{accountNumber}</p>
-              <p className="text-gray-700 text-[10px]">{accountName}</p>
+              <p className="text-gray-700 text-[10px]">
+                {gcashAccount.name ? <TranslatedText text={gcashAccount.name} /> : unknownText}
+              </p>
             </div>
           </div>
 
@@ -90,7 +111,7 @@ export const GCashPayment: React.FC<GCashPaymentProps> = ({ artistId, onClosePre
             className="w-full h-9 bg-blue-700 hover:bg-blue-600 rounded-full text-[11px]"
             onClick={handlePaidClick}
           >
-            Paid
+            {paidText}
           </Button>
         </CardContent>
       </Card>
