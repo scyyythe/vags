@@ -3,6 +3,15 @@ import { Star, Calendar, Edit, Trash2, Camera, ChevronLeft, ChevronRight, Messag
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { format } from "date-fns";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
 
 interface ReviewDetailsModalProps {
   isOpen: boolean;
@@ -51,7 +60,27 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
   allReviews = [],
   isLoading = false,
 }) => {
+  const { language } = useLanguage();
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+
+  // Translation hooks
+  const customerReviewsText = useAutoTranslation("Customer Reviews", language);
+  const yourReviewText = useAutoTranslation("Your Review", language);
+  const ofText = useAutoTranslation("of", language);
+  const editText = useAutoTranslation("Edit", language);
+  const removeText = useAutoTranslation("Remove", language);
+  const deleteText = useAutoTranslation("Delete", language);
+  const loadingReviewsText = useAutoTranslation("Loading reviews...", language);
+  const byText = useAutoTranslation("by", language);
+  const reviewedOnText = useAutoTranslation("Reviewed on", language);
+  const customerReviewLabelText = useAutoTranslation("Customer's Review", language);
+  const yourReviewLabelText = useAutoTranslation("Your Review", language);
+  const noReviewProvidedText = useAutoTranslation("No written review provided.", language);
+  const photosText = useAutoTranslation("Photos", language);
+  const reviewPhotoText = useAutoTranslation("Review photo", language);
+  const sellerRestrictionText = useAutoTranslation("As a seller, you can only remove inappropriate reviews. You cannot edit customer reviews.", language);
+  const expiredEditDeleteText = useAutoTranslation("This review can no longer be edited or deleted as the time limit has expired.", language);
+  const expiredDeleteOnlyText = useAutoTranslation("You can still edit this review, but it can no longer be deleted.", language);
 
   // Use allReviews if available (seller view), otherwise use single review (buyer view)
   const reviewsToShow = allReviews.length > 0 ? allReviews : [review];
@@ -65,7 +94,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between text-sm mt-2">
             <div className="flex items-center gap-2">
-              <span>{viewType === "seller" ? "Customer Reviews" : "Your Review"}</span>
+              <span>{viewType === "seller" ? customerReviewsText : yourReviewText}</span>
               {allReviews.length > 1 && (
                 <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                   <button
@@ -76,7 +105,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
                     <ChevronLeft className="w-3 h-3" />
                   </button>
                   <span>
-                    {currentReviewIndex + 1} of {allReviews.length}
+                    {currentReviewIndex + 1} {ofText} {allReviews.length}
                   </span>
                   <button
                     onClick={() => setCurrentReviewIndex(Math.min(allReviews.length - 1, currentReviewIndex + 1))}
@@ -95,7 +124,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
                   className="flex text-[10px] py-1 px-4 border rounded-full hover:bg-gray-100 transition-colors"
                 >
                   <Edit className="w-2.5 h-2.5 mr-1.5 mt-1" />
-                  Edit
+                  {editText}
                 </button>
               )}
               {currentReview.canDelete && (
@@ -104,7 +133,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
                   className="flex text-[10px] text-white py-1 px-4 bg-red-600 rounded-full hover:bg-red-700 transition-colors"
                 >
                   <Trash2 className="w-2.5 h-2.5 mr-1.5 mt-1 text-white" />
-                  {viewType === "seller" ? "Remove" : "Delete"}
+                  {viewType === "seller" ? removeText : deleteText}
                 </button>
               )}
             </div>
@@ -115,7 +144,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
           {isLoading ? (
             /* Loading State */
             <div className="flex items-center justify-center py-8">
-              <div className="text-[10px] text-muted-foreground">Loading reviews...</div>
+              <div className="text-[10px] text-muted-foreground">{loadingReviewsText}</div>
             </div>
           ) : (
             <>
@@ -123,8 +152,12 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
               <div className="flex gap-4 p-4 bg-muted rounded-lg">
                 <img src={artwork.artworkImage} alt={artwork.title} className="w-20 h-20 rounded-md object-cover" />
                 <div className="flex-1">
-                  <h3 className="font-semibold text-[11px]">{artwork.title}</h3>
-                  <p className="text-[10px] text-muted-foreground mb-2">by {artwork.artist}</p>
+                  <h3 className="font-semibold text-[11px]">
+                    <TranslatedText text={artwork.title} />
+                  </h3>
+                  <p className="text-[10px] text-muted-foreground mb-2">
+                    {byText} <TranslatedText text={artwork.artist} />
+                  </p>
                   <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
@@ -144,22 +177,24 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
                 <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                   <Calendar className="w-3 h-3" />
                   <span>
-                    Reviewed on{" "}
+                    {reviewedOnText}{" "}
                     {currentReview.reviewDate && !isNaN(new Date(currentReview.reviewDate).getTime())
                       ? format(new Date(currentReview.reviewDate), "MMMM dd, yyyy")
                       : "Invalid date"}
                     {viewType === "seller" && currentReview.reviewerName && (
-                      <span> by {currentReview.reviewerName}</span>
+                      <span> {byText} <TranslatedText text={currentReview.reviewerName} /></span>
                     )}
                   </span>
                 </div>
 
                 {/* Comment */}
                 <div className="space-y-2">
-                  <h4 className="font-medium text-xs">{viewType === "seller" ? "Customer's Review" : "Your Review"}</h4>
+                  <h4 className="font-medium text-xs">
+                    {viewType === "seller" ? customerReviewLabelText : yourReviewLabelText}
+                  </h4>
                   <div className="p-4 bg-muted rounded-lg">
                     <p className="text-[10px] leading-relaxed">
-                      {currentReview.comment || "No written review provided."}
+                      {currentReview.comment ? <TranslatedText text={currentReview.comment} /> : noReviewProvidedText}
                     </p>
                   </div>
                 </div>
@@ -169,14 +204,14 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
                   <div className="space-y-2">
                     <h4 className="font-medium text-xs flex items-center gap-2">
                       <Camera className="w-3 h-3" />
-                      Photos ({currentReview.photos.length})
+                      {photosText} ({currentReview.photos.length})
                     </h4>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                       {currentReview.photos.map((photo, index) => (
                         <div key={index} className="relative group">
                           <img
                             src={photo}
-                            alt={`Review photo ${index + 1}`}
+                            alt={`${reviewPhotoText} ${index + 1}`}
                             className="w-full h-32 rounded-lg object-cover"
                           />
                         </div>
@@ -189,7 +224,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
                 {viewType === "seller" ? (
                   <div className="p-3 bg-muted rounded-lg">
                     <p className="text-[10px] text-muted-foreground">
-                      As a seller, you can only remove inappropriate reviews. You cannot edit customer reviews.
+                      {sellerRestrictionText}
                     </p>
                   </div>
                 ) : (
@@ -197,14 +232,14 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
                     {!currentReview.canEdit && !currentReview.canDelete && (
                       <div className="p-3 bg-muted rounded-lg">
                         <p className="text-[10px] text-muted-foreground">
-                          This review can no longer be edited or deleted as the time limit has expired.
+                          {expiredEditDeleteText}
                         </p>
                       </div>
                     )}
                     {currentReview.canEdit && !currentReview.canDelete && (
                       <div className="p-3 bg-muted rounded-lg">
                         <p className="text-[10px] text-muted-foreground">
-                          You can still edit this review, but it can no longer be deleted.
+                          {expiredDeleteOnlyText}
                         </p>
                       </div>
                     )}

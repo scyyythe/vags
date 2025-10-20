@@ -2,6 +2,15 @@ import React, { useState } from "react";
 import { Calendar, Package, Star, MessageSquare, RotateCcw, CheckCircle, Bell } from "lucide-react";
 import { differenceInDays } from "date-fns";
 import { useAutomaticMessage } from "../../../../../hooks/messages/useAutomaticMessage";
+import { useLanguage } from "@/context/LanguageContext";
+import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+
+// Helper component for translating dynamic text
+const TranslatedText: React.FC<{ text: string }> = ({ text }) => {
+  const { language } = useLanguage();
+  const translatedText = useAutoTranslation(text, language);
+  return <>{translatedText}</>;
+};
 
 interface PurchasedArtworkCardProps {
   id: string;
@@ -49,6 +58,23 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
   onMarkCompleted,
 }) => {
   const { handleContactWithAutoMessage } = useAutomaticMessage();
+  const { language } = useLanguage();
+
+  // Translation hooks
+  const cancelText = useAutoTranslation("Cancel", language);
+  const payNowText = useAutoTranslation("Pay Now", language);
+  const trackPaymentText = useAutoTranslation("Track Payment", language);
+  const contactSellerText = useAutoTranslation("Contact Seller", language);
+  const retryPaymentText = useAutoTranslation("Retry Payment", language);
+  const supportText = useAutoTranslation("Support", language);
+  const markAsCompletedText = useAutoTranslation("Mark as Completed", language);
+  const reorderText = useAutoTranslation("Reorder", language);
+  const reviewText = useAutoTranslation("Review", language);
+  const daysLeftText = useAutoTranslation("d left", language);
+  const viewReviewText = useAutoTranslation("View Review", language);
+  const byText = useAutoTranslation("by", language);
+  const orderedText = useAutoTranslation("Ordered:", language);
+  const expectedText = useAutoTranslation("Expected:", language);
 
   const canReview = () => {
     if (!completedDate || typeof completedDate !== "string") return false;
@@ -81,13 +107,13 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
         return (
           <>
             <button className="text-[10px] text-gray-500 py-1.5 px-4 rounded-full border" onClick={wrap(onCancelOrder)}>
-              Cancel
+              {cancelText}
             </button>
             <button
               className="text-[10px] text-white py-1.5 px-4 bg-red-700 rounded-full border"
               onClick={wrap(() => {})}
             >
-              Pay Now
+              {payNowText}
             </button>
           </>
         );
@@ -99,7 +125,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
             onClick={wrap(onTrackOrder)}
           >
             <Package className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-            Track Payment
+            {trackPaymentText}
           </button>
         );
 
@@ -111,14 +137,14 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
               onClick={wrap(() => handleContactWithAutoMessage(artistId!, artist, title, id))}
             >
               <MessageSquare className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Contact Seller
+              {contactSellerText}
             </button>
             <button
               className="flex text-[10px] py-1.5 px-4 border border-gray-500 rounded-full"
               onClick={wrap(onTrackOrder)}
             >
               <Package className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Track Payment
+              {trackPaymentText}
             </button>
           </>
         );
@@ -131,10 +157,10 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
               onClick={wrap(onRequestRefund)}
             >
               <RotateCcw className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Retry Payment
+              {retryPaymentText}
             </button>
             <button className="text-[10px] py-1.5 px-4 bg-gray-200 rounded-full" onClick={wrap(onContact)}>
-              Support
+              {supportText}
             </button>
           </>
         );
@@ -147,14 +173,14 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
               onClick={wrap(() => handleContactWithAutoMessage(artistId!, artist, title, id))}
             >
               <MessageSquare className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Contact Seller
+              {contactSellerText}
             </button>
             <button
               className="flex text-[10px] text-white py-1.5 px-4 bg-green-600 rounded-full"
               onClick={wrap(onMarkCompleted)}
             >
               <CheckCircle className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Mark as Completed
+              {markAsCompletedText}
             </button>
           </>
         );
@@ -167,7 +193,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
             onClick={wrap(onReorder)}
           >
             <RotateCcw className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-            Reorder
+            {reorderText}
           </button>
         );
 
@@ -180,7 +206,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
                 onClick={wrap(onReview)}
               >
                 <Star className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-                Review ({daysLeft}d left)
+                {reviewText} ({daysLeft}{daysLeftText})
               </button>
             )}
             <button
@@ -188,7 +214,7 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
               onClick={wrap(onReorder)}
             >
               <RotateCcw className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Reorder
+              {reorderText}
             </button>
           </>
         );
@@ -201,14 +227,14 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
               onClick={wrap(onViewReview)}
             >
               <Star className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              View Review
+              {viewReviewText}
             </button>
             <button
               className="flex text-[10px] py-1.5 px-4 border border-gray-400 rounded-full"
               onClick={wrap(onReorder)}
             >
               <RotateCcw className="w-2.5 h-2.5 mr-1.5 mt-0.5" />
-              Reorder
+              {reorderText}
             </button>
           </>
         );
@@ -240,8 +266,12 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start pt-1.5">
             <div>
-              <h3 className="font-semibold text-[13px] text-foreground truncate pb-0.5">{title}</h3>
-              <p className="text-[10px] text-muted-foreground">by {artist}</p>
+              <h3 className="font-semibold text-[13px] text-foreground truncate pb-0.5">
+                <TranslatedText text={title} />
+              </h3>
+              <p className="text-[10px] text-muted-foreground">
+                {byText} <TranslatedText text={artist} />
+              </p>
             </div>
             <div className="text-right">
               <p className="font-bold text-sm text-foreground">
@@ -261,12 +291,16 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
             <div className="flex gap-4 pt-2">
               <div className="flex items-center gap-1">
                 <Calendar className="w-2.5 h-2.5" />
-                <span>Ordered: {orderDate}</span>
+                <span>
+                  {orderedText} <TranslatedText text={orderDate} />
+                </span>
               </div>
               {expectedDelivery && (
                 <div className="flex items-center gap-1">
                   <Package className="w-2.5 h-2.5" />
-                  <span>Expected: {expectedDelivery}</span>
+                  <span>
+                    {expectedText} <TranslatedText text={expectedDelivery} />
+                  </span>
                 </div>
               )}
             </div>
