@@ -100,7 +100,11 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive(item.url)}
+                    className="data-[active=true]:bg-red-500/10 data-[active=true]:font-medium data-[active=true]:text-black-600"
+                  >
                     <NavLink to={item.url} end className={getNavCls}>
                       <item.icon className="mr-2 h-4 w-4" />
                       {!isCollapsed && <span className="text-xs">{item.title}</span>}
