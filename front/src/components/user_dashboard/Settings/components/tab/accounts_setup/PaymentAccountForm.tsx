@@ -80,7 +80,6 @@ export const PaymentAccountForm: React.FC<PaymentAccountFormProps> = ({
             <SelectItem value="paypal" className="text-[10px]">{paypalText}</SelectItem>
             <SelectItem value="bank" className="text-[10px]">{bankText}</SelectItem>
             <SelectItem value="gcash" className="text-[10px]">{gcashText}</SelectItem>
-            <SelectItem value="payoneer" className="text-[10px]">{payoneerText}</SelectItem>
             <SelectItem value="stripe" className="text-[10px]">{stripeText}</SelectItem>
             <SelectItem value="card" className="text-[10px]">{cardText}</SelectItem>
           </SelectContent>
