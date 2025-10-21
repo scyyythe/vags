@@ -180,11 +180,12 @@ class UpdateArtworkView(APIView):
         if not art.image_url or not isinstance(art.image_url, (list, tuple)):
             art.image_url = []
         
-        # ----- SERIALIZER UPDATE FOR OTHER FIELDS -----
+      
+        
         serializer = ArtSerializer(art, data=request.data, partial=True)
         if serializer.is_valid():
             updated_art = serializer.save()
-            # Clear caches after updating artwork
+       
             clear_artwork_caches()
             return Response(ArtSerializer(updated_art).data, status=status.HTTP_200_OK)
 

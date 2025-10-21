@@ -302,7 +302,7 @@ class ArtSerializer(serializers.Serializer):
 
         for field in [
             "title", "category", "medium", "art_status", "price", "discounted_price",
-            "size", "description", "visibility", "edition", "year_created", "image_url"
+            "size", "description", "visibility", "edition", "year_created", "quantity", "image_url"
         ]:
             if field in validated_data:
                 setattr(instance, field, validated_data[field])

@@ -12,6 +12,7 @@ import { useParams, useLocation } from "react-router-dom";
 import apiClient from "@/utils/apiClient";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 interface ArtworkUpdateState {
   id: string;
   title: string;
@@ -43,27 +44,56 @@ const UpdateArtwork = () => {
   const artworkData = location.state as ArtworkUpdateState;
   const { updateArtwork } = useUpdateArtwork();
 
-  const [artworkTitle, setArtworkTitle] = useState(artworkData?.title || "");
-  const [yearCreated, setYearCreated] = useState(artworkData?.year_created || "");
-  const [artworkStyle, setArtworkStyle] = useState(artworkData?.style || "");
-  const [medium, setMedium] = useState(artworkData?.medium || "");
-  const [description, setDescription] = useState(artworkData?.description || "");
+  // Fetch the latest artwork data from the database
+  const { data: latestArtworkData, isLoading: isArtworkLoading } = useFetchArtworkById(artworkId || "");
+
+  const [artworkTitle, setArtworkTitle] = useState("");
+  const [yearCreated, setYearCreated] = useState("");
+  const [artworkStyle, setArtworkStyle] = useState("");
+  const [medium, setMedium] = useState("");
+  const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(artworkData?.mainImageUrl || null);
-  const [additionalImages, setAdditionalImages] = useState<(File | string | null)[]>(
-    artworkData?.additionalImagesUrls?.length
-      ? [...artworkData.additionalImagesUrls, ...Array(4 - artworkData.additionalImagesUrls.length).fill(null)]
-      : [null, null, null, null]
-  );
-  const [price, setPrice] = useState(artworkData?.price || "");
-  const [edition, setEdition] = useState(artworkData?.edition || "Original (1 of 1)");
-  const [quantity, setQuantity] = useState(artworkData?.quantity || "1");
-  const [height, setHeight] = useState(artworkData?.height || "");
-  const [width, setWidth] = useState(artworkData?.width || "");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [additionalImages, setAdditionalImages] = useState<(File | string | null)[]>([null, null, null, null]);
+  const [price, setPrice] = useState("");
+  const [edition, setEdition] = useState("Original (1 of 1)");
+  const [quantity, setQuantity] = useState("1");
+  const [height, setHeight] = useState("");
+  const [width, setWidth] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
   // Language and translation
   const { language } = useLanguage();
+
+  // Update form fields when latest artwork data is loaded
+  useEffect(() => {
+    if (latestArtworkData) {
+      setArtworkTitle(latestArtworkData.title || "");
+      setYearCreated(latestArtworkData.year_created || "");
+      setArtworkStyle(latestArtworkData.category || "");
+      setMedium(latestArtworkData.medium || "");
+      setDescription(latestArtworkData.description || "");
+      setPrice(String(latestArtworkData.price || 0));
+      setEdition(latestArtworkData.edition || "Original (1 of 1)");
+      setQuantity(String(latestArtworkData.quantity || 1));
+
+      // Handle dimensions
+      if (latestArtworkData.size) {
+        const [heightVal, widthVal] = latestArtworkData.size.split("x");
+        setHeight(heightVal || "");
+        setWidth(widthVal || "");
+      }
+
+      // Handle images
+      if (latestArtworkData.image_url && latestArtworkData.image_url.length > 0) {
+        setPreviewUrl(latestArtworkData.image_url[0]);
+        // Set additional images (skip the first one as it's the main image)
+        const additionalImgs = latestArtworkData.image_url.slice(1);
+        const paddedImages = [...additionalImgs, ...Array(4 - additionalImgs.length).fill(null)];
+        setAdditionalImages(paddedImages);
+      }
+    }
+  }, [latestArtworkData]);
 
   // Translate fetched artwork data (only fields that don't need exact value matching)
   const translatedFetchedTitle = useAutoTranslation(artworkData?.title || "", language);
@@ -271,7 +301,7 @@ const UpdateArtwork = () => {
         description,
         price,
         edition,
-        quantity: String(quantity),
+        quantity: Number(quantity),
         mainImage: selectedFile,
         additionalImages: additionalImages.filter((img): img is File => img instanceof File),
         removeExistingImages: false, // Don't remove existing images, just add new ones
@@ -317,6 +347,29 @@ const UpdateArtwork = () => {
       setAdditionalImages(newImages);
     }
   };
+
+  // Show loading state while fetching artwork data
+  if (isArtworkLoading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="mt-12 mb-6">
+            <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+              <i className="bx bx-chevron-left text-lg mr-2"></i>
+              {updateArtworkText}
+            </button>
+          </div>
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-800 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading artwork data...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
