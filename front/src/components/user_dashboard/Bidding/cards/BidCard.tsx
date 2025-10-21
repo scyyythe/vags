@@ -14,7 +14,7 @@ import { useAuctionActions } from "@/hooks/auction/useAuctionActions";
 import { useToggleHideAuction } from "@/hooks/auction/useToggleHideAuction";
 import { useRestoreAuction } from "@/hooks/auction/useRestoreAuction";
 import { useReopenAuction } from "@/hooks/auction/useReopenAuction";
-import { getArtworkImageUrl } from "@/utils/imageUtils";
+import { getArtworkImageUrl } from "@/utils/image/imageUtils";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import useRealTimeBids from "@/hooks/bid/useRealTimeBids";
