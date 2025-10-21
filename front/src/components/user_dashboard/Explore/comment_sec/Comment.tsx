@@ -366,6 +366,14 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   const [replyContext, setReplyContext] = useState<{ user: string; text: string } | null>(null);
   const [selectedCommentForReport, setSelectedCommentForReport] = useState<string | null>(null);
 
+  // Separate state for modal
+  const [modalComment, setModalComment] = useState("");
+  const [modalShowEmojiPicker, setModalShowEmojiPicker] = useState(false);
+  const [modalReplyingTo, setModalReplyingTo] = useState<string | null>(null);
+  const [modalReplyContext, setModalReplyContext] = useState<{ user: string; text: string } | null>(null);
+  const [modalCommentMenus, setModalCommentMenus] = useState<{ [commentId: string]: boolean }>({});
+  const [modalExpandedReplies, setModalExpandedReplies] = useState<{ [key: string]: boolean }>({});
+
   const queryClient = useQueryClient();
 
   // helper to build nested replies
@@ -489,7 +497,39 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   };
 
   const handleModalReply = (commentId: string, user: string, commentText: string) => {
-    handleReply(commentId, user, commentText);
+    setModalReplyingTo(commentId);
+    setModalComment(`@${user} `);
+    setModalReplyContext({ user, text: commentText });
+  };
+
+  const handleModalCommentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!modalComment.trim()) return;
+
+    addComment.mutate(
+      { text: modalComment, parentId: modalReplyingTo || undefined },
+      {
+        onSuccess: () => {
+          toast.success(tCommentPosted, { closeButton: true });
+          setModalComment("");
+          setModalReplyingTo(null);
+          setModalReplyContext(null);
+          setModalShowEmojiPicker(false);
+        },
+      }
+    );
+  };
+
+  const toggleModalCommentMenu = (commentId: string) => {
+    setModalCommentMenus((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
+  };
+
+  const onModalEmojiClick = (emoji: any) => {
+    setModalComment((prev) => prev + emoji.native);
+    setModalShowEmojiPicker(false);
   };
 
   const toggleReplies = (commentId: string) => {
@@ -510,12 +550,19 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
 
   const [expandedReplies, setExpandedReplies] = useState<{ [key: string]: boolean }>({});
 
-  // Prevent body scrolling when modal is open
+  // Prevent body scrolling when modal is open and reset modal state when closed
   useEffect(() => {
     if (showCommentsModal) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
+      // Reset modal state when modal is closed
+      setModalComment("");
+      setModalReplyingTo(null);
+      setModalReplyContext(null);
+      setModalShowEmojiPicker(false);
+      setModalCommentMenus({});
+      setModalExpandedReplies({});
     }
 
     // Cleanup function to restore scrolling when component unmounts
@@ -655,12 +702,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
           </div>
         </div>
       </form>
-      <ReportOptionsPopup
-        isOpen={showReportOptions}
-        onClose={() => setShowReportOptions(false)}
-        onSubmit={handleReportSubmit}
-      />
-
       {/* Comments Modal */}
       {showCommentsModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -683,8 +724,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                   isMobile={isMobile}
                   handleReply={(commentId, user) => handleModalReply(commentId, user, comment.text)}
                   handleCommentLike={handleCommentLike}
-                  toggleCommentMenu={toggleCommentMenu}
-                  commentMenus={commentMenus}
+                  toggleCommentMenu={toggleModalCommentMenu}
+                  commentMenus={modalCommentMenus}
                   tReply={tReply}
                   tBlockUser={tBlockUser}
                   tUnblockUser={tUnblockUser}
@@ -697,14 +738,106 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                   setSelectedCommentForReport={setSelectedCommentForReport}
                   tViewAllReplies={tViewAllReplies}
                   tHideReplies={tHideReplies}
-                  expandedReplies={expandedReplies}
-                  setExpandedReplies={setExpandedReplies}
+                  expandedReplies={modalExpandedReplies}
+                  setExpandedReplies={setModalExpandedReplies}
                 />
               ))}
             </div>
+
+            {/* Modal Input Field */}
+            <div className="px-4 pb-4">
+              {/* Reply Context Display */}
+              {modalReplyContext && (
+                <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 mb-3 rounded-lg">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <p className="text-[9px] text-gray-600 mb-1">
+                        Replying to <span className="font-semibold">{modalReplyContext.user}</span>
+                      </p>
+                      <p className="text-[9px] text-gray-700 line-clamp-2">{modalReplyContext.text}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setModalReplyContext(null);
+                        setModalReplyingTo(null);
+                        setModalComment("");
+                      }}
+                      className="text-gray-400 hover:text-gray-600 ml-2"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Comment Input Form */}
+              <form onSubmit={handleModalCommentSubmit} className="relative">
+                <input
+                  type="text"
+                  placeholder={tAddComment}
+                  value={modalComment}
+                  onChange={(e) => setModalComment(e.target.value)}
+                  className={`w-full border border-gray-200 rounded-full px-4 py-2 ${
+                    isMobile ? "text-[10px]" : "text-[10px]"
+                  } focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16`}
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
+                  <div className="relative">
+                    <button type="button" className="text-gray-400" onClick={() => setModalShowEmojiPicker(!modalShowEmojiPicker)}>
+                      <i className="bx bx-smile"></i>
+                    </button>
+                    {modalShowEmojiPicker && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.6, y: 10 }}
+                        animate={{ opacity: 1, scale: 0.6, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.5, y: 10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute bottom-10 right-0 z-50 origin-bottom-right rounded-md shadow-lg border border-gray-200 bg-white overflow-hidden"
+                      >
+                        <Picker
+                          data={data}
+                          onEmojiSelect={onModalEmojiClick}
+                          theme="light"
+                          maxFrequentRows={0}
+                          previewPosition="none"
+                          skinTonePosition="none"
+                          searchPosition="none"
+                        />
+                      </motion.div>
+                    )}
+                  </div>
+                  <button
+                    type="submit"
+                    className={`
+                      ${isMobile ? "text-sm" : "text-[10px]"} 
+                      ${modalComment.trim() ? "text-black" : "text-gray-400"}
+                    `}
+                    disabled={!modalComment.trim()}
+                  >
+                    <Send className={`${isMobile ? "w-4 h-4" : "w-4 h-4"}`} />
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Report Options Popup - Overlay on top of modal */}
+            <ReportOptionsPopup
+              isOpen={showReportOptions}
+              onClose={() => setShowReportOptions(false)}
+              onSubmit={handleReportSubmit}
+              zIndex={60}
+            />
           </div>
         </div>
       )}
+
+      {/* Report Options Popup for preview section */}
+      <ReportOptionsPopup
+        isOpen={showReportOptions && !showCommentsModal}
+        onClose={() => setShowReportOptions(false)}
+        onSubmit={handleReportSubmit}
+      />
     </div>
   );
 };
