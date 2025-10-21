@@ -4,6 +4,7 @@ from api.models.artwork_model.artwork import Art
 from api.models.artwork_model.bid import Bid
 from api.models.exhibit_model.exhibit import Exhibit
 from api.models.artwork_model.bid import Auction
+from api.models.interaction_model.comment import Comment
 from mongoengine import (
     Document, StringField, ReferenceField, DateTimeField, ValidationError
 )
@@ -13,6 +14,7 @@ class Report(Document):
     art = ReferenceField(Art, required=False)
     auction = ReferenceField(Auction, required=False)
     exhibit = ReferenceField(Exhibit, required=False)
+    comment = ReferenceField(Comment, required=False)
     reported_user = ReferenceField(User, required=False)
     category = StringField(required=True)
     option = StringField()
@@ -29,7 +31,7 @@ class Report(Document):
     meta = {"collection": "reports"}
 
     def clean(self):
-        if not any([self.art, self.auction, self.reported_user, self.exhibit]):
+        if not any([self.art, self.auction, self.reported_user, self.exhibit, self.comment]):
             raise ValidationError(
-                "At least one of 'art', 'auction', 'reported_user', or 'exhibit' must be provided."
+                "At least one of 'art', 'auction', 'reported_user', 'exhibit', or 'comment' must be provided."
             )

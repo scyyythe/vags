@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from api.models.admin.report import Report
 from api.models.user_model.users import User
 from api.models.interaction_model.notification import Notification
+from api.models.interaction_model.comment import Comment
 from api.serializers.admin.report_serializers import ReportSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
@@ -52,6 +53,7 @@ class ReportCreateView(generics.ListCreateAPIView):
 
         art = serializer.instance.art
         auction = serializer.instance.auction
+        comment = serializer.instance.comment
         reported_user = serializer.instance.reported_user
         
         host = request.get_host()
@@ -101,6 +103,22 @@ class ReportCreateView(generics.ListCreateAPIView):
                 created_at=datetime.now(),
                 link=link,
             )
+
+        if comment:
+            comment_author = comment.user
+            link = f"/artwork/{str(comment.object_id)}" if comment.content_type == "artwork" else f"/bid/{str(comment.object_id)}/" if comment.content_type == "auction" else f"/exhibit/{str(comment.object_id)}"
+            
+            Notification.objects.create(
+                user=comment_author,
+                actor=mongo_user,
+                message=f"A report was submitted on your comment and it's under review.",
+                name=f"{mongo_user.first_name} {mongo_user.last_name}",
+                action="reported your comment",
+                target=comment.text[:50] + "..." if len(comment.text) > 50 else comment.text,
+                icon="alert",
+                created_at=datetime.now(),
+                link=link,
+            )
             
         if reported_user:
             link = f"/userprofile/{str(reported_user.id)}"
@@ -136,7 +154,7 @@ class UndoReportView(APIView):
         report_id = request.data.get("id")
         report_type = request.data.get("type")
 
-        if not report_id or report_type not in ["auction", "exhibit", "artwork"]:
+        if not report_id or report_type not in ["auction", "exhibit", "artwork", "comment"]:
             return Response({"error": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
@@ -150,6 +168,8 @@ class UndoReportView(APIView):
                 filter_kwargs["exhibit"] = ObjectId(report_id)
             elif report_type == "artwork":
                 filter_kwargs["art"] = ObjectId(report_id)
+            elif report_type == "comment":
+                filter_kwargs["comment"] = ObjectId(report_id)
 
             report = Report.objects.get(**filter_kwargs)
             report.delete()
@@ -301,6 +321,40 @@ class ArtworkReportStatus(APIView):
             logger.error(f"Error fetching artwork report status: {e}")
             return Response(
                 {"error": "Failed to fetch report status."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+class CommentReportStatus(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        user_id = request.user.id
+        try:
+            comment_obj_id = ObjectId(pk)
+            user_obj_id = ObjectId(user_id) if isinstance(user_id, str) else user_id
+
+            report = Report.objects.filter(
+                user=user_obj_id,
+                comment=comment_obj_id
+            ).order_by('-created_at').first()
+
+            reported = report is not None
+            status_value = report.status if report else None 
+
+            return Response({
+                "reported": reported,
+                "status": status_value
+            }, status=status.HTTP_200_OK)
+
+        except InvalidId:
+            return Response(
+                {"error": "Invalid comment ID."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as e:
+            logger.error(f"Error fetching comment report status: {e}")
+            return Response(
+                {"error": "Failed to fetch comment report status."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
