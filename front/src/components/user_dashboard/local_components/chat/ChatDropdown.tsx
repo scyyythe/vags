@@ -23,6 +23,7 @@ import { uploadChatImageToCloudinary, uploadChatFileToCloudinary } from "@/utils
 import useAllUsersQuery from "@/hooks/users/useAllUsersQuery";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { getLoggedInUserId } from "@/auth/decode";
 
 // Component for user search items to handle hooks properly
 const UserSearchItem = ({
@@ -84,6 +85,11 @@ interface ChatDropdownProps {
 const ChatDropdown = ({ isOpen, onClose, participantId, participantName, participantAvatar }: ChatDropdownProps) => {
   const { directMessageMode } = useChat();
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
+  const [pendingConversation, setPendingConversation] = useState<{
+    participantId: string;
+    participantName: string;
+    participantAvatar: string | null;
+  } | null>(null);
   const [messageInput, setMessageInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -94,10 +100,10 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const [showReactionPicker, setShowReactionPicker] = useState<string | null>(null);
   const [loadingConversation, setLoadingConversation] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
-  const userId = localStorage.getItem("user_id")!;
-  const userName = localStorage.getItem("username")!;
+  const [userId, setUserId] = useState<string | null>(null);
+  const userName = localStorage.getItem("username") || "";
   const userAvatarLocal = localStorage.getItem("avatar_url") || undefined;
-  const [conversations, setConversations, isLoadingConversations] = useUserConversations(userId);
+  const [conversations, setConversations, isLoadingConversations] = useUserConversations(userId || "");
   const conversationsLoaded = !isLoadingConversations;
   const [headerName, setHeaderName] = useState(participantName || "Unknown");
   const [shareModalOpen, setShareModalOpen] = useState(false);
@@ -109,10 +115,16 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
   const { messages: firebaseMessages, sendMessage: sendFirebaseMessage } = useFirebaseChat(
     selectedConversation || "",
-    userId
+    userId || ""
   );
 
   const { language } = useLanguage();
+
+  // Get user ID after component mounts
+  useEffect(() => {
+    const currentUserId = getLoggedInUserId();
+    setUserId(currentUserId);
+  }, []);
 
   const loadingUsersText = useAutoTranslation("Loading users...", language);
   const searchResultsText = useAutoTranslation("Search results for", language);
@@ -135,18 +147,10 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
   const markAsRead = useCallback(
     async (convId: string, updateTimestamp: boolean = false) => {
-      setConversations((prev) =>
-        prev.map((conv) =>
-          conv.id === convId
-            ? {
-                ...conv,
-                unreadCount: 0,
-                messages: (conv.messages || []).map((msg) => ({ ...msg, isRead: true })),
-                isRevived: false,
-              }
-            : conv
-        )
-      );
+      if (!userId) return;
+
+      // Don't update local state - let useUserConversations handle it
+      // The Firebase update will trigger the real-time listener to update the state
 
       try {
         const convRef = doc(db, "conversations", convId);
@@ -176,6 +180,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     targetName: string,
     targetAvatar: string | null
   ): Promise<Conversation | null> => {
+    if (!userId) return null;
+
     try {
       const existingLocal = conversations.find((c) => c.participantId === targetId);
       if (existingLocal) {
@@ -266,8 +272,20 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     }
   };
 
+  // Clear conversation state immediately when participantId changes (only for direct message mode)
   useEffect(() => {
-    if (!isOpen || !participantId || !conversationsLoaded) {
+    if (participantId && directMessageMode) {
+      setSelectedConversation(null);
+      setPendingConversation(null);
+      setLoadingConversation(true);
+      // Also clear any selected message and reaction picker
+      setSelectedMessage(null);
+      setShowReactionPicker(null);
+    }
+  }, [participantId, directMessageMode]);
+
+  useEffect(() => {
+    if (!isOpen || !participantId || !conversationsLoaded || !userId) {
       return;
     }
 
@@ -277,27 +295,18 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       setSelectedConversation(targetConv.id);
       markAsRead(targetConv.id, false);
       setLoadingConversation(false);
-    } else if (!creatingRef.current && conversationsLoaded) {
-      creatingRef.current = true;
-      setLoadingConversation(true);
-
-      createConv(participantId, participantName || "Unknown", participantAvatar || null)
-        .then((newConv) => {
-          if (newConv) {
-            setSelectedConversation(newConv.id);
-            markAsRead(newConv.id, false);
-            setConversations((prev) => [newConv, ...prev]);
-          }
-          setLoadingConversation(false);
-        })
-        .catch((error) => {
-          setLoadingConversation(false);
-        })
-        .finally(() => {
-          creatingRef.current = false;
-        });
+      setPendingConversation(null); // Clear any pending conversation
+    } else {
+      // Don't create conversation immediately, just set as pending
+      setPendingConversation({
+        participantId,
+        participantName: participantName || "Unknown",
+        participantAvatar: participantAvatar || null,
+      });
+      setSelectedConversation(null);
+      setLoadingConversation(false);
     }
-  }, [isOpen, participantId, conversationsLoaded, markAsRead, participantName, participantAvatar]);
+  }, [isOpen, participantId, conversationsLoaded, markAsRead, participantName, participantAvatar, userId]);
 
   const filteredConversations = useMemo(() => {
     return conversations.filter((conv) => {
@@ -335,6 +344,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   }, [allUsers, searchQuery, userId, isSearchFocused]);
 
   const handleUserSelect = async (selectedUser: any) => {
+    if (!userId) return;
+
     setSearchQuery("");
     setShowUserDropdown(false);
     setIsSearchFocused(false);
@@ -345,20 +356,18 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     if (existingConv) {
       setSelectedConversation(existingConv.id);
       markAsRead(existingConv.id, false);
+      setPendingConversation(null); // Clear any pending conversation
     } else {
-      const newConv = await createConv(
-        selectedUser.id,
-        `${selectedUser.first_name || ""} ${selectedUser.last_name || ""}`.trim() ||
+      // Don't create conversation immediately, just set as pending
+      setPendingConversation({
+        participantId: selectedUser.id,
+        participantName:
+          `${selectedUser.first_name || ""} ${selectedUser.last_name || ""}`.trim() ||
           selectedUser.username ||
           selectedUser.email,
-        selectedUser.profile_picture || null
-      );
-
-      if (newConv) {
-        setSelectedConversation(newConv.id);
-        markAsRead(newConv.id, false);
-        setConversations((prev) => [newConv, ...prev]);
-      }
+        participantAvatar: selectedUser.profile_picture || null,
+      });
+      setSelectedConversation(null);
     }
   };
 
@@ -369,8 +378,10 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   useEffect(() => {
     if (selectedConv) {
       setHeaderName(selectedConv.participantName || participantName || "Unknown");
+    } else if (pendingConversation) {
+      setHeaderName(pendingConversation.participantName);
     }
-  }, [selectedConv, participantName]);
+  }, [selectedConv, participantName, pendingConversation]);
 
   const addMessageToConversation = (convId: string, message: Partial<Message>) => {
     const newMessage: Message = {
@@ -391,18 +402,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       replyTo: message.replyTo || null,
     };
 
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === convId
-          ? {
-              ...conv,
-              messages: [...(conv.messages || []), newMessage],
-              lastMessage: newMessage.content,
-              lastMessageTime: new Date(),
-            }
-          : conv
-      )
-    );
+    // Don't update local state - let Firebase real-time listener handle it
 
     setTimeout(() => {
       const chatContainer = document.getElementById("chat-container");
@@ -411,7 +411,26 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   };
 
   const handleSendMessage = async () => {
-    if (!messageInput.trim() || !selectedConversation) return;
+    if (!messageInput.trim()) return;
+
+    // If no conversation exists but we have a pending conversation, create it now
+    if (!selectedConversation && pendingConversation) {
+      const newConv = await createConv(
+        pendingConversation.participantId,
+        pendingConversation.participantName,
+        pendingConversation.participantAvatar
+      );
+
+      if (newConv) {
+        setSelectedConversation(newConv.id);
+        // Don't update local state - let Firebase real-time listener handle it
+        setPendingConversation(null);
+      } else {
+        return; // Failed to create conversation
+      }
+    }
+
+    if (!selectedConversation) return;
 
     const replyData = replyingTo
       ? {
@@ -436,7 +455,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         type: "text",
         replyTo: replyData,
       },
-      participantId || selectedConv?.participantId,
+      participantId || selectedConv?.participantId || pendingConversation?.participantId,
       userName,
       userAvatarLocal,
       selectedConversation
@@ -543,19 +562,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   };
 
   const markAsUnread = async (convId: string) => {
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === convId
-          ? {
-              ...conv,
-              unreadCount: Math.max(1, conv.unreadCount),
-              messages: (conv.messages || []).map((msg, idx) =>
-                idx === (conv.messages?.length || 0) - 1 ? { ...msg, isRead: false } : msg
-              ),
-            }
-          : conv
-      )
-    );
+    // Don't update local state - let Firebase real-time listener handle it
 
     try {
       const convRef = doc(db, "conversations", convId);
@@ -580,9 +587,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     }
 
     // Update local state
-    setConversations((prev) =>
-      prev.map((c) => (c.id === convId ? { ...c, isPinned: !isCurrentlyPinned, pinnedBy: updatedPinnedBy } : c))
-    );
+    // Don't update local state - let Firebase real-time listener handle it
 
     try {
       await updateDoc(doc(db, "conversations", convId), {
@@ -606,10 +611,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       updatedMutedBy = [...currentMutedBy, userId];
     }
 
-    // Update local state
-    setConversations((prev) =>
-      prev.map((c) => (c.id === convId ? { ...c, isMuted: !isCurrentlyMuted, mutedBy: updatedMutedBy } : c))
-    );
+    // Don't update local state - let Firebase real-time listener handle it
 
     try {
       await updateDoc(doc(db, "conversations", convId), {
@@ -633,10 +635,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       updatedArchivedBy = [...currentArchivedBy, userId];
     }
 
-    // Update local state
-    setConversations((prev) =>
-      prev.map((c) => (c.id === convId ? { ...c, isArchived: !isCurrentlyArchived, archivedBy: updatedArchivedBy } : c))
-    );
+    // Don't update local state - let Firebase real-time listener handle it
 
     try {
       await updateDoc(doc(db, "conversations", convId), {
@@ -663,8 +662,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
           [userId]: serverTimestamp(),
         };
 
-        // Update local state immediately to hide the conversation
-        setConversations((prev) => prev.filter((c) => c.id !== convId));
+        // Don't update local state - let Firebase real-time listener handle it
 
         await updateDoc(doc(db, "conversations", convId), {
           deletedBy: updatedDeletedBy,
@@ -674,10 +672,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     } catch (err) {
       // If there's an error, restore the conversation in local state
       // We need to find the conversation again since conv is out of scope
-      const convToRestore = conversations.find((c) => c.id === convId);
-      if (convToRestore) {
-        setConversations((prev) => [...prev, convToRestore]);
-      }
+      // Don't update local state - let Firebase real-time listener handle it
     }
   };
 
@@ -702,18 +697,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
   const starMessage = (messageId: string) => {
     if (!selectedConversation) return;
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === selectedConversation
-          ? {
-              ...conv,
-              messages: (conv.messages || []).map((msg) =>
-                msg.id === messageId ? { ...msg, isStarred: !msg.isStarred } : msg
-              ),
-            }
-          : conv
-      )
-    );
+    // Don't update local state - let Firebase real-time listener handle it
   };
 
   const addReaction = async (messageId: string, emoji: string) => {
@@ -755,19 +739,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       const messageRef = doc(db, "conversations", selectedConversation, "messages", messageId);
       await updateDoc(messageRef, { reactions: updatedReactions });
 
-      // Update local state optimistically
-      setConversations((prev) =>
-        prev.map((conv) =>
-          conv.id === selectedConversation
-            ? {
-                ...conv,
-                messages: (conv.messages || []).map((msg) =>
-                  msg.id === messageId ? { ...msg, reactions: updatedReactions } : msg
-                ),
-              }
-            : conv
-        )
-      );
+      // Don't update local state - let Firebase real-time listener handle it
     } catch (error) {
       console.error("Failed to add reaction:", error);
     }
@@ -801,19 +773,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         const messageRef = doc(db, "conversations", selectedConversation, "messages", messageId);
         await updateDoc(messageRef, { reactions: updatedReactions });
 
-        // Update local state optimistically
-        setConversations((prev) =>
-          prev.map((conv) =>
-            conv.id === selectedConversation
-              ? {
-                  ...conv,
-                  messages: (conv.messages || []).map((msg) =>
-                    msg.id === messageId ? { ...msg, reactions: updatedReactions } : msg
-                  ),
-                }
-              : conv
-          )
-        );
+        // Don't update local state - let Firebase real-time listener handle it
       }
     } catch (error) {
       console.error("Failed to remove reaction:", error);
@@ -822,13 +782,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
   const deleteMessage = (messageId: string) => {
     if (!selectedConversation) return;
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === selectedConversation
-          ? { ...conv, messages: (conv.messages || []).filter((msg) => msg.id !== messageId) }
-          : conv
-      )
-    );
+    // Don't update local state - let Firebase real-time listener handle it
   };
 
   const replyToMessage = (message: Message) => {
@@ -867,6 +821,11 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     }
   }, [showUserDropdown, isSearchFocused, searchJustFocused]);
 
+  // Don't render if user is not logged in
+  if (!userId) {
+    return null;
+  }
+
   return (
     <div className="absolute right-4 md:right-1.5 bg-white rounded-2xl shadow-xl z-50 w-[360px] md:w-[360px] h-[534px]">
       <div className="flex h-full">
@@ -877,7 +836,16 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
             selectedConv={selectedConv}
             showArchived={showArchived}
             searchQuery={searchQuery}
-            onBack={() => (selectedConversation ? setSelectedConversation(null) : setShowArchived(false))}
+            pendingConversation={pendingConversation}
+            onBack={() => {
+              if (selectedConversation) {
+                setSelectedConversation(null);
+              } else if (pendingConversation) {
+                setPendingConversation(null);
+              } else {
+                setShowArchived(false);
+              }
+            }}
             onClose={onClose}
             onCall={handleCall}
             onTogglePin={togglePin}
@@ -903,7 +871,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
               }, 300);
             }}
           />
-          <ScrollArea className="flex-1">
+          <ScrollArea className="flex-1" id="chat-container">
             {loadingConversation ? (
               <div className="flex flex-col items-center justify-center flex-1 p-4 space-y-4">
                 <div className="flex items-center space-x-3 w-full">
@@ -947,8 +915,35 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                 </div>
                 <div className="text-gray-500 text-xs"></div>
               </div>
+            ) : loadingConversation ? (
+              <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-gray-500 text-xs space-y-3">
+                <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-400"></div>
+                </div>
+                <div className="text-center space-y-1">
+                  <p className="text-sm font-medium">Loading conversation...</p>
+                </div>
+              </div>
+            ) : pendingConversation && !selectedConversation ? (
+              <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-gray-500 text-xs space-y-3">
+                <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                    />
+                  </svg>
+                </div>
+                <div className="text-center space-y-1">
+                  <p className="text-sm font-medium">Start a conversation with {pendingConversation.participantName}</p>
+                  <p className="text-[10px] text-gray-400">Type a message below to begin chatting</p>
+                </div>
+              </div>
             ) : selectedConversation && selectedConv ? (
               <MessagesList
+                key={selectedConversation}
                 conversation={{
                   ...selectedConv,
                   messages: (() => {
@@ -1051,6 +1046,9 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
                       currentUserId={userId}
                       onSelectConversation={(convId) => {
                         setSelectedConversation(convId);
+                        setPendingConversation(null); // Clear any pending conversation
+                        setSelectedMessage(null); // Clear selected message
+                        setShowReactionPicker(null); // Clear reaction picker
                         markAsRead(convId, false);
                       }}
                       onMarkAsRead={markAsRead}
@@ -1097,7 +1095,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
             )}
           </ScrollArea>
 
-          {selectedConversation && (
+          {(selectedConversation || pendingConversation) && (
             <MessageInput
               messageInput={messageInput}
               replyingTo={replyingTo}

@@ -20,6 +20,11 @@ interface ChatHeaderProps {
   participantName?: string;
   showArchived: boolean;
   searchQuery: string;
+  pendingConversation?: {
+    participantId: string;
+    participantName: string;
+    participantAvatar: string | null;
+  } | null;
   onBack: () => void;
   onClose: () => void;
   onCall: () => void;
@@ -38,6 +43,7 @@ export const ChatHeader = ({
   selectedConv,
   showArchived,
   searchQuery,
+  pendingConversation,
   onBack,
   onClose,
   onCall,
@@ -63,18 +69,25 @@ export const ChatHeader = ({
 
   // Translate participant name
   const translatedParticipantName = useAutoTranslation(selectedConv?.participantName || "", language);
+  const translatedPendingName = useAutoTranslation(pendingConversation?.participantName || "", language);
 
   return (
     <div className="p-4 border-b border-gray-200">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
-          {(showArchived || selectedConversation) && (
+          {(showArchived || selectedConversation || pendingConversation) && (
             <Button variant="ghost" size="sm" onClick={onBack}>
               <ArrowLeft size={16} />
             </Button>
           )}
           <h3 className="font-semibold text-gray-900 text-sm">
-            {selectedConversation ? translatedParticipantName : showArchived ? archived : messages}
+            {selectedConversation
+              ? translatedParticipantName
+              : pendingConversation
+              ? translatedPendingName
+              : showArchived
+              ? archived
+              : messages}
           </h3>
         </div>
         <div className="flex items-center space-x-2">
@@ -98,7 +111,7 @@ export const ChatHeader = ({
                     <MoreVertical size={11} />
                   </button>
                 </MenubarTrigger>
-                <MenubarContent className="mr-5" >
+                <MenubarContent className="mr-5">
                   <MenubarItem onClick={onToggleArchived} className="text-[10px]">
                     <Archive className="mr-2 h-3 w-3" />
                     {showArchived ? showActiveText : showArchivedText}
@@ -119,7 +132,7 @@ export const ChatHeader = ({
         </div>
       </div>
 
-      {!selectedConversation && (
+      {!selectedConversation && !pendingConversation && (
         <div className="relative search-container">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={11} />
           <Input
@@ -156,6 +169,30 @@ export const ChatHeader = ({
           <div>
             <p className="font-medium text-gray-900 text-[11px]">{translatedParticipantName}</p>
             <p className="text-[10px] text-gray-500">{selectedConv.isOnline ? online : offline}</p>
+          </div>
+        </div>
+      )}
+
+      {pendingConversation && !selectedConversation && (
+        <div className="flex items-center space-x-3 mt-2">
+          <div className="relative">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={pendingConversation.participantAvatar} />
+              <AvatarFallback className="text-[11px]">
+                {pendingConversation.participantName
+                  ? pendingConversation.participantName
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()
+                  : "?"}
+              </AvatarFallback>
+            </Avatar>
+            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-gray-400 border-2 border-white rounded-full"></div>
+          </div>
+          <div>
+            <p className="font-medium text-gray-900 text-[11px]">{translatedPendingName}</p>
+            <p className="text-[10px] text-gray-500">Start typing to begin chat</p>
           </div>
         </div>
       )}
