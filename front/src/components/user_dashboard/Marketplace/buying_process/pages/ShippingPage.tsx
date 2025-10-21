@@ -16,18 +16,36 @@ const ShippingPage = () => {
   const { language } = useLanguage();
   const failedToLoadAddressesText = useAutoTranslation("Failed to load addresses.", language);
 
-  const { data: addresses = [], isLoading, isError, error } = useAllAddresses({ enabled: !!userId });
+  const { data: addresses = [], isLoading, isError, error, refetch } = useAllAddresses({ enabled: !!userId });
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+
   const handleSelectAddress = (addressId: string) => {
     setSelectedAddressId(addressId);
     makeDefaultAddress(addressId);
   };
+
+  // Update selected address when addresses data changes (including when default changes)
   useEffect(() => {
-    if (addresses.length > 0 && !selectedAddressId) {
+    if (addresses.length > 0) {
       const defaultAddress = addresses.find((a) => a.is_default || a.isDefault);
-      setSelectedAddressId(defaultAddress?.id || addresses[0].id);
+      const newSelectedId = defaultAddress?.id || addresses[0].id;
+
+      // Always update if we have a new default address or if no address is currently selected
+      if (newSelectedId !== selectedAddressId) {
+        setSelectedAddressId(newSelectedId);
+      }
     }
-  }, [addresses]);
+  }, [addresses, selectedAddressId]);
+
+  // Refetch addresses when page becomes visible (user returns from AddAddressPage)
+  useEffect(() => {
+    const handleFocus = () => {
+      refetch();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [refetch]);
 
   if (isLoading) return <ShippingSkeleton />;
   if (isError)
