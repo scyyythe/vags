@@ -4,6 +4,7 @@ import Hero from "@/pages/Hero";
 import PopularArtists from "@/pages/PopularArtists";
 import ExploreArtworks from "@/pages/ExploreArtworks";
 import HowItWorksSection from "@/pages/HowItWorksSection";
+import MarketplaceSection from "@/pages/MarketplaceSection";
 import FeaturesSection from "@/pages/FeaturesSection";
 import AuctionFeature from "@/pages/AuctionFeature";
 import HotBidsCarousel from "@/pages/HotBidsCarousel";
@@ -62,11 +63,10 @@ const Index = () => {
       <Navbar />
       <Hero />
       <PopularArtists />
-      <HowItWorksSection />
       <ExploreArtworks />
-      <FeaturesSection />
       <AuctionFeature />
       <HotBidsCarousel />
+      <HowItWorksSection />
       <Footer />
 
       {/* Combined Modal */}
