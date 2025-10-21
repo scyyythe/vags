@@ -1,12 +1,12 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import useFetchPopularArtworks from "@/hooks/artworks/fetch_artworks/useFetchPopularArtworks";
 import PopularArtworksSkeleton from "@/components/skeletons/artworks/PopularArtworksSkeleton";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLanguage } from "@/context/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const ArtworkCard = ({ artwork, index }: { artwork: any; index: number }) => {
+const ArtworkCard = ({ artwork, index, isSmallScreen }: { artwork: any; index: number; isSmallScreen?: boolean }) => {
   const { language } = useLanguage();
   const translatedTitle = useAutoTranslation(artwork.title, language);
 
@@ -73,8 +73,32 @@ const ArtworkCard = ({ artwork, index }: { artwork: any; index: number }) => {
 const Hero = () => {
   const { data: artworksRaw, isLoading } = useFetchPopularArtworks();
   const artworks = artworksRaw?.slice(0, 3) ?? [];
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   const { language } = useLanguage();
+
+  // Check screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerWidth < 768); // md breakpoint
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  // Auto-rotate cards on small screens
+  useEffect(() => {
+    if (isSmallScreen && artworks.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentCardIndex((prev) => (prev + 1) % artworks.length);
+      }, 3000); // Change card every 3 seconds
+      
+      return () => clearInterval(interval);
+    }
+  }, [isSmallScreen, artworks.length]);
 
   // Top-level translations for static texts
   const discoverTitle = useAutoTranslation("Discover, Collect & Sell", language);
@@ -119,20 +143,48 @@ const Hero = () => {
           <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-gradient-to-br from-red-300 via-red-200 to-red-400 rounded-full opacity-80 blur-2xl w-[63%] h-72"></div>
 
           {/* Black Card Container */}
-          <div className="relative bg-black rounded-3xl p-10 md:p-16 flex flex-col items-center justify-center top-32 md:-ml-[70px] w-full md:w-[115%] h-96">
+          <div className={`relative bg-black rounded-3xl p-10 md:p-16 flex flex-col items-center justify-center ${isSmallScreen ? 'top-32' : 'top-32 md:-ml-[70px]'} w-full ${isSmallScreen ? 'w-full h-60' : 'md:w-[115%] h-96'}`}>
             {/* Artwork Cards */}
             {isLoading ? (
               <PopularArtworksSkeleton />
             ) : (
-              <div className="relative grid grid-cols-1 md:grid-cols-3 md:gap-16 w-[65%] md:w-[80%] top-10 md:-top-40">
-                {artworks.map((artwork, index) => (
-                  <ArtworkCard key={artwork.id} artwork={artwork} index={index} />
-                ))}
+              <div className="relative w-[65%] md:w-[80%] top-10 md:-top-40">
+                {isSmallScreen ? (
+                  // Single card with fade transition for small screens - positioned at transition line
+                  <div className="absolute -top-80 left-1/2 transform -translate-x-1/2 w-full max-w-sm z-10">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={currentCardIndex}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{
+                          duration: 0.5,
+                          ease: "easeInOut"
+                        }}
+                        className="w-full"
+                      >
+                        <ArtworkCard 
+                          artwork={artworks[currentCardIndex]} 
+                          index={currentCardIndex} 
+                          isSmallScreen={true}
+                        />
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                ) : (
+                  // Original grid layout for larger screens - UNCHANGED
+                  <div className="grid grid-cols-3 gap-16">
+                    {artworks.map((artwork, index) => (
+                      <ArtworkCard key={artwork.id} artwork={artwork} index={index} />
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Stats */}
-            <div className="relative bottom-72 md:bottom-14 flex justify-center space-x-12 md:space-x-48">
+            {/* Stats - Responsive positioning */}
+            <div className={`relative flex justify-center ${isSmallScreen ? '-bottom-12 space-x-12' : 'bottom-72 md:bottom-14 space-x-12 md:space-x-48'}`}>
               <div className="text-center">
                 <p className="text-lg md:text-3xl font-semibold text-white">{productsCount}</p>
                 <p className="text-[10px] md:text-xs" style={{ color: "#8E8C8C" }}>
