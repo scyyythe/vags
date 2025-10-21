@@ -654,7 +654,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
           </div>
         )}
 
-        <div className="relative">
+        <div className="relative p-0.5">
           <input
             type="text"
             placeholder={tAddComment}
