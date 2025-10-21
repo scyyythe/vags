@@ -14,6 +14,7 @@ import apiClient from "@/utils/apiClient";
 import { parseISO, formatDistanceToNow } from "date-fns";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { getLoggedInUserId } from "@/auth/decode";
 
 interface Comment {
   id: string;
@@ -26,6 +27,7 @@ interface Comment {
   text: string;
   translatedText: string;
   likes: number;
+  liked_by: string[];
   emoji_reactions: Record<string, number>;
   created_at: string;
   parentId?: string;
@@ -92,6 +94,9 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
     const timeAgoText = getTimeAgoText(comment.created_at, language);
     const translatedTimeText = useAutoTranslation(timeAgoText, language);
 
+    // Get current user ID from JWT token
+    const currentUserId = getLoggedInUserId() || "";
+
     return (
       <div className={`mb-4 relative ${isReply ? "ml-8 border-l-2 border-gray-100 pl-4" : ""}`}>
         <div className="flex items-start justify-between">
@@ -130,8 +135,10 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
                 <button onClick={() => handleCommentLike(comment.id)} className="flex items-center gap-1">
                   <Heart
                     size={isMobile ? 12 : 10}
-                    className={comment.emoji_reactions?.["❤️"] > 0 ? "text-red-500 fill-red-500" : "text-gray-500"}
-                    fill={comment.emoji_reactions?.["❤️"] > 0 ? "currentColor" : "none"}
+                    className={
+                      comment.liked_by?.includes(currentUserId) ? "text-red-500 fill-red-500" : "text-gray-500"
+                    }
+                    fill={comment.liked_by?.includes(currentUserId) ? "currentColor" : "none"}
                   />
                   {comment.emoji_reactions?.["❤️"] || 0}
                 </button>
@@ -232,6 +239,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   // Translated strings
   const tCommentPosted = useAutoTranslation("Comment posted", language);
   const tYouLiked = useAutoTranslation("You liked this comment!", language);
+  const tYouUnliked = useAutoTranslation("You unliked this comment!", language);
   const tBlockedUser = useAutoTranslation("Blocked user", language);
   const tContentReported = useAutoTranslation("Content reported", language);
   const tReply = useAutoTranslation("Reply", language);
@@ -323,8 +331,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   const handleCommentLike = (commentId: string) => {
     apiClient
       .patch(`/comments/${commentId}/react/`, { emoji: "❤️" })
-      .then(() => {
-        toast.success(tYouLiked);
+      .then((response) => {
+        const action = response.data.action_performed;
+        if (action === "like") {
+          toast.success(tYouLiked);
+        } else {
+          toast.success(tYouUnliked);
+        }
         queryClient.invalidateQueries({
           queryKey: ["comments", "artwork", artworkId],
         });

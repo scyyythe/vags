@@ -15,6 +15,7 @@ class CommentListCreateView(APIView):
         data = []
         for c in comments:
             user = c.user
+            
             data.append({
                 "id": str(c.id),
                 "user": {
@@ -25,7 +26,7 @@ class CommentListCreateView(APIView):
                 },
                 "text": c.text,
                 "likes": c.likes,
-                "liked_by": [str(user_id) for user_id in c.liked_by] if c.liked_by else [],
+                "liked_by": [str(user_id.id) if hasattr(user_id, 'id') else str(user_id) for user_id in c.liked_by] if c.liked_by else [],
                 "emoji_reactions": c.emoji_reactions,
                 "created_at": c.created_at.isoformat(),
                 "parent": str(c.parent.id) if c.parent else None,   
@@ -59,7 +60,7 @@ class CommentListCreateView(APIView):
             },
             "text": comment.text,
             "likes": comment.likes,
-            "liked_by": [str(user_id) for user_id in comment.liked_by] if comment.liked_by else [],
+            "liked_by": [str(user_id.id) if hasattr(user_id, 'id') else str(user_id) for user_id in comment.liked_by] if comment.liked_by else [],
             "emoji_reactions": comment.emoji_reactions,
             "created_at": comment.created_at.isoformat()
         }, status=status.HTTP_201_CREATED)
@@ -82,20 +83,30 @@ class CommentReactionView(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         comment = Comment.objects.get(id=kwargs["pk"])
         emoji = request.data.get("emoji")
-        action = request.data.get("action", "like")  # Default to "like" for backward compatibility
+        user = request.user
 
         if not emoji:
             return Response({"error": "Emoji is required"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Check if user has already liked this comment
+        # Convert all liked_by entries to strings for comparison
+        liked_by_strings = [str(uid.id) if hasattr(uid, 'id') else str(uid) for uid in comment.liked_by]
+        user_has_liked = str(user.id) in liked_by_strings
+        
         # Get current reaction count
         current_count = comment.emoji_reactions.get(emoji, 0)
         
-        if action == "unlike":
-            # Decrease reaction count (minimum 0)
+        if user_has_liked:
+            # User has already liked, so unlike
             comment.emoji_reactions[emoji] = max(0, current_count - 1)
-        else:  # action == "like"
-            # Increase reaction count
+            # Remove all instances of this user (in case of duplicates)
+            comment.liked_by = [uid for uid in comment.liked_by if (str(uid.id) if hasattr(uid, 'id') else str(uid)) != str(user.id)]
+            action = "unlike"
+        else:
+            # User hasn't liked, so like
             comment.emoji_reactions[emoji] = current_count + 1
+            comment.liked_by.append(user.id)
+            action = "like"
             
         comment.save()
 
@@ -109,6 +120,7 @@ class CommentReactionView(generics.UpdateAPIView):
         data["emoji_reactions"] = sorted_reactions
         data["action_performed"] = action
         data["current_count"] = comment.emoji_reactions.get(emoji, 0)
+        data["user_has_liked"] = not user_has_liked  # Toggle the state
 
         return Response(data, status=status.HTTP_200_OK)
 class CommentLikeView(generics.UpdateAPIView):
