@@ -6,14 +6,14 @@ from api.models.user_model.users import User
 
 from mongoengine import (
     Document, StringField, DateTimeField, ReferenceField,
-    IntField, ListField,MapField
+    IntField, ListField, MapField
 )
-from datetime import datetime
-from django.utils.timezone import now
+from django.utils import timezone
 class Comment(Document):
     user = ReferenceField(User, required=True)
     text = StringField(required=True, max_length=2000)
     likes = IntField(default=0)
+    liked_by = ListField(ReferenceField(User), default=list)
 
     emoji_reactions = MapField(field=IntField(), default=dict)
     content_type = StringField(choices=["artwork", "auction", "exhibit"], required=True)
@@ -22,6 +22,6 @@ class Comment(Document):
     parent = ReferenceField('self', null=True)  
     replies = ListField(ReferenceField('self'))
 
-    created_at = DateTimeField(default=now)
+    created_at = DateTimeField(default=timezone.now)
 
     meta = {"collection": "comments"}
