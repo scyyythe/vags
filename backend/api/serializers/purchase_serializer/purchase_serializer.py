@@ -123,7 +123,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             ).save()
         else:
             print("DEBUG: Purchase order created - no notification sent to seller during ordering phase")
-            # For purchase orders, do NOT create notifications during ordering phase
-            # Seller will only be notified when payment is completed
+            # For purchase orders, do NOT create notifications or transactions during ordering phase
+            # Seller will only be notified and transaction will only be created when payment is completed
 
         return purchase
