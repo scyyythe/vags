@@ -180,53 +180,55 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
 
           <p className="text-left text-[10px] -mt-3">{setTermsScheduleText}</p>
 
-          <div className="space-y-6 mt-3">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <h3 className="font-medium mb-2 text-[11px]">{setStartingBidText}</h3>
-                <div className="space-y-2">
-                  <div>
-                    <Input
-                      id="starting-bid"
-                      placeholder={enterAmountText}
-                      style={{ fontSize: "10px", marginTop: "6px", width: "107%" }}
-                      value={startingBid}
-                      onChange={(e) => setStartingBid(e.target.value)}
-                    />
+          <div className="mt-3">
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="font-medium mb-2 text-[11px]">{setStartingBidText}</h3>
+                  <div className="space-y-2">
+                    <div>
+                      <Input
+                        id="starting-bid"
+                        placeholder={enterAmountText}
+                        style={{ fontSize: "10px", marginTop: "6px", width: "107%" }}
+                        value={startingBid}
+                        onChange={(e) => setStartingBid(e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div>
-              <h3 className="font-medium mb-3 text-[11px]">{setAuctionScheduleText}</h3>
-              <div className="mb-2">
-                <p className="text-[10px]">{auctionStartsOnText}</p>
-                <DateTimePicker
-                  date={startDate}
-                  hours={startHours}
-                  minutes={startMinutes}
-                  onDateChange={setStartDate}
-                  onHoursChange={setStartHours}
-                  onMinutesChange={setStartMinutes}
-                  minDate={today}
-                />
-              </div>
+              <div>
+                <h3 className="font-medium mb-3 text-[11px]">{setAuctionScheduleText}</h3>
+                <div className="mb-2">
+                  <p className="text-[10px]">{auctionStartsOnText}</p>
+                  <DateTimePicker
+                    date={startDate}
+                    hours={startHours}
+                    minutes={startMinutes}
+                    onDateChange={setStartDate}
+                    onHoursChange={setStartHours}
+                    onMinutesChange={setStartMinutes}
+                    minDate={today}
+                  />
+                </div>
 
-              <div className="mb-8">
-                <p className="text-[10px]">{auctionEndsAfterText}</p>
-                <DateTimePicker
-                  date={endDate}
-                  hours={endHours}
-                  minutes={endMinutes}
-                  onDateChange={setEndDate}
-                  onHoursChange={setEndHours}
-                  onMinutesChange={setEndMinutes}
-                  minDate={startDate || today}
-                  maxDate={maxEndDate}
-                />
+                <div className="mb-8">
+                  <p className="text-[10px]">{auctionEndsAfterText}</p>
+                  <DateTimePicker
+                    date={endDate}
+                    hours={endHours}
+                    minutes={endMinutes}
+                    onDateChange={setEndDate}
+                    onHoursChange={setEndHours}
+                    onMinutesChange={setEndMinutes}
+                    minDate={startDate || today}
+                    maxDate={maxEndDate}
+                  />
+                </div>
+                <p className="text-[10px] text-muted-foreground -mb-3">{durationNoteText}</p>
               </div>
-              <p className="text-[10px] text-muted-foreground -mb-3">{durationNoteText}</p>
             </div>
 
             <div className="flex space-x-2">
@@ -244,7 +246,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
             {/* Payment account warning and setup button */}
             {paymentAccounts.length === 0 && (
               <div className="mt-2 text-center">
-                <p className="text-[9px] text-red-500 mb-2">{needPaymentAccountText}</p>
+                <p className="text-[9px] text-red-500">{needPaymentAccountText}</p>
                 <button onClick={handleSetupAccount} className="text-[9px] text-blue-600 hover:text-blue-800 underline">
                   {setupPaymentAccountLinkText}
                 </button>
