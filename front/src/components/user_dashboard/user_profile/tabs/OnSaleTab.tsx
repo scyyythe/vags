@@ -108,21 +108,21 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const salesSummaryText = useAutoTranslation("SALES SUMMARY", language);
   const listingsText = useAutoTranslation("Listings", language);
   const soldText = useAutoTranslation("Sold", language);
-  const availableText = useAutoTranslation("AVAILABLE", language);
-  const unlistedText = useAutoTranslation("UNLISTED", language);
-  const soldUpperText = useAutoTranslation("SOLD", language);
+  const availableText = useAutoTranslation("Available", language);
+  const unlistedText = useAutoTranslation("Unlisted", language);
+  const soldUpperText = useAutoTranslation("Sold", language);
 
   // Translation hooks for subtab labels
-  const paymentReceivedText = useAutoTranslation("PAYMENT RECEIVED", language);
-  const inProgressText = useAutoTranslation("IN PROGRESS", language);
-  const completedText = useAutoTranslation("COMPLETED", language);
-  const cancelledText = useAutoTranslation("CANCELLED", language);
-  const refundedText = useAutoTranslation("REFUNDED", language);
-  const reviewsText = useAutoTranslation("REVIEWS", language);
-  const paidText = useAutoTranslation("PAID", language);
-  const failedText = useAutoTranslation("FAILED", language);
-  const toReceiveText = useAutoTranslation("TO RECEIVE", language);
-  const reviewedText = useAutoTranslation("REVIEWED", language);
+  const paymentReceivedText = useAutoTranslation("Payment Received", language);
+  const inProgressText = useAutoTranslation("In Progress", language);
+  const completedText = useAutoTranslation("Completed", language);
+  const cancelledText = useAutoTranslation("Cancelled", language);
+  const refundedText = useAutoTranslation("Refunded", language);
+  const reviewsText = useAutoTranslation("Reviews", language);
+  const paidText = useAutoTranslation("Paid", language);
+  const failedText = useAutoTranslation("Failed", language);
+  const toReceiveText = useAutoTranslation("To Receive", language);
+  const reviewedText = useAutoTranslation("Reviewed", language);
 
   // Translation hooks for empty state messages
   const noSoldArtworksForStatusText = useAutoTranslation("No sold artworks found for this status.", language);
