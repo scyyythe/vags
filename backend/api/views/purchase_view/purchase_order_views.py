@@ -64,6 +64,9 @@ def create_purchase_order(request):
         data['artwork_id'] = data['artwork']  # Rename for serializer
         data['is_purchase_order'] = True  # Flag to indicate this is a purchase order
         
+        print(f"DEBUG: create_purchase_order - is_purchase_order: {data['is_purchase_order']}")
+        print(f"DEBUG: create_purchase_order - data: {data}")
+        
         # Use the PurchaseArtworkSerializer to create the purchase order
         serializer = PurchaseArtworkSerializer(data=data, context={"request": request})
         
@@ -169,16 +172,14 @@ def update_purchase_order(request, order_id):
                 postal_code=shipping_data.get('postal_code', ''),
                 phone=shipping_data.get('phone', '')
             )
-            # Update status to "Shipping" when shipping address is provided
-            if purchased_artwork.status == "Ordering":
-                purchased_artwork.status = 'Shipping'
+            # Keep status as "Ordering" when shipping address is provided
+            # Status will only change when payment is completed
         
         # Update payment method if provided
         if 'payment_method' in request.data:
             purchased_artwork.payment_method = request.data['payment_method']
-            # Update status to "Payment" when payment method is provided
-            if purchased_artwork.status in ["Ordering", "Shipping"]:
-                purchased_artwork.status = 'Payment'
+            # Keep status as "Ordering" when payment method is provided
+            # Status will only change when payment is completed
         
         # Update payment status if provided
         if 'is_paid' in request.data:
@@ -189,7 +190,8 @@ def update_purchase_order(request, order_id):
                 # When payment is completed, mark artwork as sold and create transaction
                 artwork = purchased_artwork.artwork
                 
-                # Update artwork quantity/status
+                # IMPORTANT: Only reduce quantity when payment is actually completed
+                # This ensures quantity is not reduced during ordering phase
                 if artwork.edition in ["Open Edition", "Limited Edition"] and artwork.quantity is not None:
                     artwork.quantity -= purchased_artwork.quantity
                     if artwork.quantity == 0:
@@ -216,30 +218,32 @@ def update_purchase_order(request, order_id):
                     timestamp=datetime.now()
                 ).save()
                 
-                # Create notifications for completed payment
-                Notification.objects.create(
-                    user=artwork.artist,
-                    actor=purchased_artwork.buyer,
-                    message=f"{purchased_artwork.buyer.first_name} {purchased_artwork.buyer.last_name} completed payment for: '{artwork.title}'",
-                    name=f"{purchased_artwork.buyer.first_name} {purchased_artwork.buyer.last_name}",
-                    action="completed payment for your artwork",
-                    target=artwork.title,
-                    icon="purchase",
-                    created_at=datetime.now(),
-                    link=f"/viewproduct/{artwork.id}"
-                )
+                # Create notifications ONLY when payment is actually completed
+                # Check if this is a real payment completion (not just order submission)
+                if request.data.get('payment_completed', False):
+                    Notification.objects.create(
+                        user=artwork.artist,
+                        actor=purchased_artwork.buyer,
+                        message=f"{purchased_artwork.buyer.first_name} {purchased_artwork.buyer.last_name} completed payment for: '{artwork.title}'. Please contact them to coordinate the purchase.",
+                        name=f"{purchased_artwork.buyer.first_name} {purchased_artwork.buyer.last_name}",
+                        action="completed payment for your artwork",
+                        target=artwork.title,
+                        icon="purchase",
+                        created_at=datetime.now(),
+                        link=f"/viewproduct/{artwork.id}"
+                    )
 
-                Notification.objects.create(
-                    user=purchased_artwork.buyer,
-                    actor=purchased_artwork.buyer,
-                    message=f"Payment completed for: '{artwork.title}'",
-                    name=f"{purchased_artwork.buyer.first_name} {purchased_artwork.buyer.last_name}",
-                    action="completed payment",
-                    target=artwork.title,
-                    icon="purchase",
-                    created_at=datetime.now(),
-                    link=f"/viewproduct/{artwork.id}"
-                )
+                    Notification.objects.create(
+                        user=purchased_artwork.buyer,
+                        actor=purchased_artwork.buyer,
+                        message=f"Payment completed for: '{artwork.title}'. The seller will be notified and will contact you soon.",
+                        name=f"{purchased_artwork.buyer.first_name} {purchased_artwork.buyer.last_name}",
+                        action="completed payment",
+                        target=artwork.title,
+                        icon="purchase",
+                        created_at=datetime.now(),
+                        link=f"/viewproduct/{artwork.id}"
+                    )
         
         # Update quantity if provided
         if 'quantity' in request.data:

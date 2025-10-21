@@ -279,7 +279,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
     setPaymentValidationError(null);
 
     try {
-      // Update purchase order with shipping and payment details
+      // Update purchase order with shipping and payment details (but don't mark as paid yet)
       await updatePurchaseOrderMutation.mutateAsync({
         orderId: purchaseOrder.id,
         data: {
@@ -293,7 +293,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
             phone: finalAddress.phone || "0000-000-0000",
           },
           payment_method: paymentMethod,
-          is_paid: true,
+          // Don't set is_paid: true here - only set it when payment is actually completed
         },
       });
 
@@ -303,16 +303,33 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
         return;
       }
 
-      // If GCash → show receipt popup
+      // If GCash → show receipt popup and mark payment as completed
       if (paymentMethod === "GCash") {
+        // Mark payment as completed for GCash
+        await updatePurchaseOrderMutation.mutateAsync({
+          orderId: purchaseOrder.id,
+          data: {
+            is_paid: true,
+            payment_completed: true, // This triggers notifications
+          },
+        });
+
         setShowReceiptPopup(true);
         setTimeout(() => {
           setShowReceiptPopup(false);
         }, 10000);
       }
 
-      // For other payment methods, the purchase order is already updated above
-      // No need to create a new purchase since we're using the purchase order system
+      // For other payment methods (Credit Card, Stripe), mark payment as completed
+      if (paymentMethod === "Credit Card" || paymentMethod === "Stripe") {
+        await updatePurchaseOrderMutation.mutateAsync({
+          orderId: purchaseOrder.id,
+          data: {
+            is_paid: true,
+            payment_completed: true, // This triggers notifications
+          },
+        });
+      }
 
       toast.success(purchaseSuccessText);
 
@@ -320,9 +337,10 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       clearArtwork();
       localStorage.removeItem("current_purchase_order_id");
 
-      const userId = localStorage.getItem("user_id");
-      if (userId) {
-        navigate(`/userprofile/${userId}`, {
+      // Use getLoggedInUserId() instead of localStorage.getItem("user_id")
+      const currentUserId = getLoggedInUserId();
+      if (currentUserId) {
+        navigate(`/userprofile/${currentUserId}`, {
           state: {
             mainTab: "myPurchase",
             subTab: "paid",
@@ -330,20 +348,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
           },
         });
       } else {
-        // Redirect to My Purchase tab with Paid filter
-        const currentUserId = getLoggedInUserId();
-        if (currentUserId) {
-          navigate(`/userprofile/${currentUserId}`, {
-            state: {
-              activeTab: "onSale",
-              mainTab: "myPurchase",
-              activeSubGroup: "purchasedArtworks",
-              subTab: "paid",
-            },
-          });
-        } else {
-          navigate("/marketplace");
-        }
+        navigate("/marketplace");
       }
     } catch (error: any) {
       console.error("Purchase Error Full:", error?.response?.data || error);
@@ -429,6 +434,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
             orderId: purchaseOrder.id,
             data: {
               is_paid: true,
+              payment_completed: true, // This triggers notifications
             },
           });
         }
@@ -440,9 +446,9 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
         localStorage.removeItem("current_purchase_order_id");
 
         // Navigate to user profile with MY PURCHASE tab and Paid subtab selected
-        const userId = localStorage.getItem("user_id");
-        if (userId) {
-          navigate(`/userprofile/${userId}`, {
+        const currentUserId = getLoggedInUserId();
+        if (currentUserId) {
+          navigate(`/userprofile/${currentUserId}`, {
             state: {
               mainTab: "myPurchase",
               subTab: "paid",
@@ -450,20 +456,7 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
             },
           });
         } else {
-          // Redirect to My Purchase tab with Paid filter
-          const currentUserId = getLoggedInUserId();
-          if (currentUserId) {
-            navigate(`/userprofile/${currentUserId}`, {
-              state: {
-                activeTab: "onSale",
-                mainTab: "myPurchase",
-                activeSubGroup: "purchasedArtworks",
-                subTab: "paid",
-              },
-            });
-          } else {
-            navigate("/marketplace");
-          }
+          navigate("/marketplace");
         }
       } catch (error) {
         console.error("Failed to update purchase order after PayPal payment:", error);
