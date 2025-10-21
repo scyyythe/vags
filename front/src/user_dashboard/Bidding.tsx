@@ -54,6 +54,8 @@ const Bidding = () => {
   const failedToFetchText = useAutoTranslation("Failed to fetch bidding artworks.", language);
   const noUpcomingAuctionsText = useAutoTranslation("No upcoming auctions found.", language);
   const noUpcomingAuctionsAltText = useAutoTranslation("No Upcoming Auctions", language);
+  const noActiveAuctionsText = useAutoTranslation("No ongoing auctions found for this filter.", language);
+  const noActiveAuctionsAltText = useAutoTranslation("No Ongoing Auctions", language);
 
   const currentPage = 1;
 
@@ -175,7 +177,7 @@ const Bidding = () => {
           <div className="lg:w-[100%] custom-scrollbars pb-4 pl-2 sm:pl-0">
             {isLoading && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {Array.from({ length: 5 }).map((_, index) => (
+                {Array.from({ length: 4 }).map((_, index) => (
                   <BidCardSkeleton key={index} />
                 ))}
               </div>
@@ -185,14 +187,21 @@ const Bidding = () => {
             {/* ACTIVE AUCTIONS */}
             {!showIncoming && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {filteredArtworks.map((artwork) => {
-                  const reportInfo = reportStatusData?.[artwork.id];
-                  return (
-                    <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
-                      <BidCard data={artwork} reportInfo={reportInfo} onPlaceBid={handlePlaceBid} />
-                    </div>
-                  );
-                })}
+                {filteredArtworks.length === 0 ? (
+                  <div className="col-span-full flex flex-col items-center justify-center text-center py-16">
+                    <img src="/pics/empty.png" alt={noActiveAuctionsAltText} className="w-48 h-48 mb-4 opacity-70" />
+                    <p className="text-gray-500 text-sm">{noActiveAuctionsText}</p>
+                  </div>
+                ) : (
+                  filteredArtworks.map((artwork) => {
+                    const reportInfo = reportStatusData?.[artwork.id];
+                    return (
+                      <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
+                        <BidCard data={artwork} reportInfo={reportInfo} onPlaceBid={handlePlaceBid} />
+                      </div>
+                    );
+                  })
+                )}
               </div>
             )}
 
