@@ -15,9 +15,16 @@ const ArtworkCard = ({ artwork, item }: { artwork: any; item: any }) => {
   // Translate artwork title here safely
   const translatedTitle = useAutoTranslation(artwork.title, language);
 
+  const handleCardClick = () => {
+    setShowRegisterModal(true);
+  };
+
   return (
     <motion.div key={artwork.id} variants={item} className="card-hover">
-      <div className="bg-white px-5 py-3 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+      <div 
+        className="bg-white border px-5 py-3 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+        onClick={handleCardClick}
+      >
         <div className="relative group">
           <div className="flex justify-between items-center pt-2 px-2 pb-4">
             <div className="flex items-center space-x-1">
@@ -27,7 +34,12 @@ const ArtworkCard = ({ artwork, item }: { artwork: any; item: any }) => {
               {/* Artist name stays original */}
               <span className="text-[10px] text-gray-700">{artwork.artistName}</span>
             </div>
-            <button className="text-gray-500 hover:text-gray-700">
+            <button 
+              className="text-gray-500 hover:text-gray-700"
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent card click when clicking the button
+              }}
+            >
               <MoreHorizontal className="w-4 h-4" />
             </button>
           </div>
@@ -45,7 +57,10 @@ const ArtworkCard = ({ artwork, item }: { artwork: any; item: any }) => {
 
               <button
                 className="text-gray-500 hover:text-red-500 transition-colors relative top-1"
-                onClick={() => setShowRegisterModal(true)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent card click when clicking the heart button
+                  setShowRegisterModal(true);
+                }}
               >
                 <Heart className="w-4 h-4" />
               </button>
