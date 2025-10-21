@@ -103,23 +103,64 @@ export const MessagesList = ({
   };
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+  const prevMessageCountRef = useRef(conversation.messages.length);
+  const userScrolledUpRef = useRef(false);
+
+  const scrollToBottom = (force = false) => {
+    if (messagesEndRef.current) {
+      // Check if user has scrolled up manually (only for new messages, not initial load)
+      if (!force) {
+        const chatContainer = document.getElementById("chat-container");
+        if (chatContainer) {
+          const isNearBottom = chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 100;
+          if (!isNearBottom) {
+            userScrolledUpRef.current = true;
+            return; // Don't auto-scroll if user has scrolled up
+          }
+        }
+      }
+
+      // Use instant scroll for better performance with many messages
+      messagesEndRef.current.scrollIntoView({ behavior: "auto", block: "end" });
+
+      // Fallback: also try scrolling the parent container instantly
+      const chatContainer = document.getElementById("chat-container");
+      if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      userScrolledUpRef.current = false;
+    }
+  };
   const findRepliedMessage = (replyToId: string): Message | null =>
     conversation.messages.find((msg) => msg.id === replyToId) || null;
+
+  // Scroll to bottom when conversation changes (initial load)
+  useEffect(() => {
+    scrollToBottom(true); // Force scroll on conversation change
+  }, [conversation.id]);
+
+  // Scroll to bottom after messages are translated and rendered
+  useEffect(() => {
+    if (translatedMessages.length > 0) {
+      // Use requestAnimationFrame for better performance
+      requestAnimationFrame(() => {
+        scrollToBottom(true); // Force scroll on initial load
+      });
+    }
+  }, [translatedMessages]);
 
   useEffect(() => {
     const prevCount = prevMessageCountRef.current;
     const currentCount = conversation.messages.length;
 
-    // Only scroll if a new message was added
+    // Only scroll if a new message was added (don't force, respect user scroll)
     if (currentCount > prevCount) {
-      scrollToBottom();
+      scrollToBottom(false); // Don't force scroll for new messages
     }
 
     prevMessageCountRef.current = currentCount;
   }, [conversation.messages]);
-
-  const prevMessageCountRef = useRef(conversation.messages.length);
 
   const renderDeliveryText = (message: Message) => {
     if (message.senderId !== currentUserId) return null;
@@ -149,7 +190,9 @@ export const MessagesList = ({
     <div className="p-4">
       <div className="space-y-6">
         {translatedMessages.map((message) => {
-          const repliedMessage = message.replyTo ? translatedMessages.find((msg) => msg.id === message.replyTo!.messageId) : null;
+          const repliedMessage = message.replyTo
+            ? translatedMessages.find((msg) => msg.id === message.replyTo!.messageId)
+            : null;
 
           return (
             <ContextMenu key={message.id}>
@@ -172,7 +215,9 @@ export const MessagesList = ({
                               .join("")}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-[11px] font-medium text-gray-700">{translatedParticipantName || conversation.participantName}</span>
+                        <span className="text-[11px] font-medium text-gray-700">
+                          {translatedParticipantName || conversation.participantName}
+                        </span>
                       </div>
                     )}
 
@@ -220,7 +265,8 @@ export const MessagesList = ({
                                 {message.replyTo.type === "image" && imageText}
                                 {message.replyTo.type === "file" && message.replyTo.fileName}
                                 {message.replyTo.type === "voice" && voiceMessageText}
-                                {message.replyTo.type === "text" && (message.replyTo.translatedContent || message.replyTo.content)}
+                                {message.replyTo.type === "text" &&
+                                  (message.replyTo.translatedContent || message.replyTo.content)}
                               </div>
                             </div>
                           )}
@@ -252,14 +298,16 @@ export const MessagesList = ({
                               />
                             )
                           ) : (
-                            message.content && <p className="text-[11px]">{message.translatedContent || message.content}</p>
+                            message.content && (
+                              <p className="text-[11px]">{message.translatedContent || message.content}</p>
+                            )
                           )}
                         </div>
 
                         {/* REACTIONS OUTSIDE THE BUBBLE */}
                         {(() => {
                           if (!Array.isArray(message.reactions)) return null;
-                          const userReaction = message.reactions.find(r => r.users.includes(currentUserId));
+                          const userReaction = message.reactions.find((r) => r.users.includes(currentUserId));
                           return userReaction ? (
                             <div
                               className={`absolute mt-1 ${
