@@ -49,6 +49,9 @@ const Exhibits = () => {
   const endedText = useAutoTranslation("Ended", language);
   const filterText = useAutoTranslation("Filter", language);
   const createText = useAutoTranslation("Create", language);
+  const noSoloExhibitsText = useAutoTranslation("No solo exhibits found.", language);
+  const noCollabExhibitsText = useAutoTranslation("No collaborative exhibits found.", language);
+  const createFirstExhibitText = useAutoTranslation("Create Your First Exhibit", language);
 
   const now = new Date();
 
@@ -182,7 +185,8 @@ const Exhibits = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-5 lg:pb-4">
               {isLoading
                 ? Array.from({ length: 8 }).map((_, i) => <ExhibitCardSkeleton key={i} />)
-                : sortedExhibits.map((exhibit) => (
+                : sortedExhibits.length > 0
+                ? sortedExhibits.map((exhibit) => (
                     <ExhibitCard
                       key={exhibit.id}
                       exhibit={{
@@ -192,7 +196,23 @@ const Exhibits = () => {
                       }}
                       onClick={() => navigate(`/view-exhibit/${exhibit.id}`)}
                     />
-                  ))}
+                  ))
+                : (
+                    /* Empty State */
+                    <div className="col-span-full flex flex-col items-center justify-center py-16 px-4">
+                      <div className="text-center max-w-md">
+                        {/* Icon */}
+                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                          <i className="bx bx-palette text-2xl text-gray-400"></i>
+                        </div>
+                        
+                        {/* Message */}
+                        <p className="text-gray-600 text-[13px] mb-6">
+                          {baseType === "solo" ? noSoloExhibitsText : noCollabExhibitsText}
+                        </p>
+                      </div>
+                    </div>
+                  )}
             </div>
           </ActiveAccountOnly>
         </div>
