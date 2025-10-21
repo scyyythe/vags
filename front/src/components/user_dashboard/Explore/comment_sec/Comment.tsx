@@ -57,169 +57,173 @@ interface CommentItemProps {
 }
 
 function getTimeAgoText(createdAt: string, language: string) {
-  const utcDate = parseISO(createdAt);
-  const localDate = toZonedTime(utcDate, "Asia/Manila");
+  // Ensure the timestamp is treated as UTC
+  const commentDate = new Date(createdAt.endsWith("Z") ? createdAt : createdAt + "Z");
 
-  const diffMs = Date.now() - localDate.getTime();
+  const diffMs = Date.now() - commentDate.getTime();
   if (diffMs < 60 * 1000) return "just now";
 
-  const timeText = formatDistanceToNow(localDate, { addSuffix: true });
+  const timeText = formatDistanceToNow(commentDate, { addSuffix: true });
   return timeText;
 }
 
-const CommentItem: React.FC<CommentItemProps> = React.memo(({
-  comment,
-  isReply,
-  isMobile,
-  handleReply,
-  handleCommentLike,
-  toggleCommentMenu,
-  commentMenus,
-  tReply,
-  tBlockUser,
-  tReport,
-  tBlockedUser,
-  tContentReported,
-  setShowReportOptions,
-  tViewAllReplies,
-  tHideReplies,
-  expandedReplies,
-  setExpandedReplies,
-}) => {
-  const { language } = useLanguage();
-  const translatedText = useAutoTranslation(comment.text, language);
-  const timeAgoText = getTimeAgoText(comment.created_at, language);
-  const translatedTimeText = useAutoTranslation(timeAgoText, language);
+const CommentItem: React.FC<CommentItemProps> = React.memo(
+  ({
+    comment,
+    isReply,
+    isMobile,
+    handleReply,
+    handleCommentLike,
+    toggleCommentMenu,
+    commentMenus,
+    tReply,
+    tBlockUser,
+    tReport,
+    tBlockedUser,
+    tContentReported,
+    setShowReportOptions,
+    tViewAllReplies,
+    tHideReplies,
+    expandedReplies,
+    setExpandedReplies,
+  }) => {
+    const { language } = useLanguage();
+    const translatedText = useAutoTranslation(comment.text, language);
+    const timeAgoText = getTimeAgoText(comment.created_at, language);
+    const translatedTimeText = useAutoTranslation(timeAgoText, language);
 
-  return (
-    <div className={`mb-4 relative ${isReply ? "ml-8 border-l-2 border-gray-100 pl-4" : ""}`}>
-      <div className="flex items-start justify-between">
-        <div className="flex items-start">
-          <Avatar className={`${isMobile ? "h-4 w-4 " : "h-3 w-3"} mr-2`}>
-            <AvatarImage src={comment.user.profile_picture} alt={comment.user.first_name} />
-            <AvatarFallback>
-              {`${comment.user?.first_name?.[0] || ""}${comment.user?.last_name?.[0] || ""}`.toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+    return (
+      <div className={`mb-4 relative ${isReply ? "ml-8 border-l-2 border-gray-100 pl-4" : ""}`}>
+        <div className="flex items-start justify-between">
+          <div className="flex items-start">
+            <Avatar className={`${isMobile ? "h-4 w-4 " : "h-3 w-3"} mr-2`}>
+              <AvatarImage src={comment.user.profile_picture} alt={comment.user.first_name} />
+              <AvatarFallback>
+                {`${comment.user?.first_name?.[0] || ""}${comment.user?.last_name?.[0] || ""}`.toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
 
-          <div>
-            <p className={`${isMobile ? "text-[9px]" : "text-[9px]"} font-semibold`}>
-              {comment.user?.first_name || "Unknown"} {comment.user?.last_name || ""}
-            </p>
-            <p
-              className={`${
-                isMobile ? "text-[10px]" : "text-[10px]"
-              } text-gray-700 mt-1 break-words whitespace-pre-wrap`}
-            >
-              {translatedText}
-            </p>
-
-            <div className={`flex items-center gap-2 ${isMobile ? "text-[9px]" : "text-[9px]"} text-gray-500 mt-1`}>
-              <span>{translatedTimeText}</span>
-              <span>·</span>
-              <button
-                onClick={() => handleReply(comment.id, comment.user.first_name)}
-                className="hover:underline text-gray-500 flex items-center gap-1"
+            <div>
+              <p className={`${isMobile ? "text-[9px]" : "text-[9px]"} font-semibold`}>
+                {comment.user?.first_name || "Unknown"} {comment.user?.last_name || ""}
+              </p>
+              <p
+                className={`${
+                  isMobile ? "text-[10px]" : "text-[10px]"
+                } text-gray-700 mt-1 break-words whitespace-pre-wrap`}
               >
-                <Reply size={isMobile ? 12 : 10} />
-                {tReply}
-              </button>
+                {translatedText}
+              </p>
 
-              <span>·</span>
-              <button onClick={() => handleCommentLike(comment.id)} className="flex items-center gap-1">
-                <Heart
-                  size={isMobile ? 12 : 10}
-                  className={comment.emoji_reactions?.["❤️"] > 0 ? "text-red-500 fill-red-500" : "text-gray-500"}
-                  fill={comment.emoji_reactions?.["❤️"] > 0 ? "currentColor" : "none"}
-                />
-                {comment.emoji_reactions?.["❤️"] || 0}
-              </button>
-
-              <div className="relative ml-1">
-                <button onClick={() => toggleCommentMenu(comment.id)} className="p-1 text-gray-500 hover:text-black">
-                  <MoreHorizontal size={isMobile ? 12 : 12} />
+              <div className={`flex items-center gap-2 ${isMobile ? "text-[9px]" : "text-[9px]"} text-gray-500 mt-1`}>
+                <span>{translatedTimeText}</span>
+                <span>·</span>
+                <button
+                  onClick={() => handleReply(comment.id, comment.user.first_name)}
+                  className="hover:underline text-gray-500 flex items-center gap-1"
+                >
+                  <Reply size={isMobile ? 12 : 10} />
+                  {tReply}
                 </button>
 
-                {commentMenus[comment.id] && (
-                  <div className="absolute left-6 -top-3 w-[70px] bg-white rounded-sm shadow-md z-10 overflow-hidden">
-                    <button
-                      className={`w-full text-left px-3 py-1 whitespace-nowrap ${
-                        isMobile ? "text-[8px]" : "text-[8px]"
-                      } hover:bg-gray-100 hover:text-black`}
-                      onClick={() => {
-                        toast.success(`${tBlockedUser} ${comment.user.first_name} ${comment.user.last_name}`, { closeButton: true });
-                        toggleCommentMenu(comment.id);
-                      }}
-                    >
-                      {tBlockUser}
-                    </button>
-                    <button
-                      className={`w-full text-left px-3 py-1 whitespace-nowrap ${
-                        isMobile ? "text-[8px]" : "text-[8px] "
-                      } hover:bg-gray-100 hover:text-black`}
-                      onClick={() => {
-                        setShowReportOptions(true);
-                        toast.success(tContentReported, { closeButton: true });
-                        toggleCommentMenu(comment.id);
-                      }}
-                    >
-                      {tReport}
-                    </button>
-                  </div>
-                )}
+                <span>·</span>
+                <button onClick={() => handleCommentLike(comment.id)} className="flex items-center gap-1">
+                  <Heart
+                    size={isMobile ? 12 : 10}
+                    className={comment.emoji_reactions?.["❤️"] > 0 ? "text-red-500 fill-red-500" : "text-gray-500"}
+                    fill={comment.emoji_reactions?.["❤️"] > 0 ? "currentColor" : "none"}
+                  />
+                  {comment.emoji_reactions?.["❤️"] || 0}
+                </button>
+
+                <div className="relative ml-1">
+                  <button onClick={() => toggleCommentMenu(comment.id)} className="p-1 text-gray-500 hover:text-black">
+                    <MoreHorizontal size={isMobile ? 12 : 12} />
+                  </button>
+
+                  {commentMenus[comment.id] && (
+                    <div className="absolute left-6 -top-3 w-[70px] bg-white rounded-sm shadow-md z-10 overflow-hidden">
+                      <button
+                        className={`w-full text-left px-3 py-1 whitespace-nowrap ${
+                          isMobile ? "text-[8px]" : "text-[8px]"
+                        } hover:bg-gray-100 hover:text-black`}
+                        onClick={() => {
+                          toast.success(`${tBlockedUser} ${comment.user.first_name} ${comment.user.last_name}`, {
+                            closeButton: true,
+                          });
+                          toggleCommentMenu(comment.id);
+                        }}
+                      >
+                        {tBlockUser}
+                      </button>
+                      <button
+                        className={`w-full text-left px-3 py-1 whitespace-nowrap ${
+                          isMobile ? "text-[8px]" : "text-[8px] "
+                        } hover:bg-gray-100 hover:text-black`}
+                        onClick={() => {
+                          setShowReportOptions(true);
+                          toast.success(tContentReported, { closeButton: true });
+                          toggleCommentMenu(comment.id);
+                        }}
+                      >
+                        {tReport}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Replies */}
-      {comment.replies && comment.replies.length > 0 && (
-        <div className="mt-2 ml-8">
-          {!expandedReplies[comment.id] ? (
-            <button
-              onClick={() => setExpandedReplies((prev) => ({ ...prev, [comment.id]: true }))}
-              className="text-gray-500 hover:text-gray-700 text-[10px] flex items-center gap-1"
-            >
-              {tViewAllReplies} ({comment.replies.length})
-            </button>
-          ) : (
-            <>
-              {comment.replies.map((reply) => (
-                <CommentItem
-                  key={reply.id}
-                  comment={reply}
-                  isReply={true}
-                  isMobile={isMobile}
-                  handleReply={handleReply}
-                  handleCommentLike={handleCommentLike}
-                  toggleCommentMenu={toggleCommentMenu}
-                  commentMenus={commentMenus}
-                  tReply={tReply}
-                  tBlockUser={tBlockUser}
-                  tReport={tReport}
-                  tBlockedUser={tBlockedUser}
-                  tContentReported={tContentReported}
-                  setShowReportOptions={setShowReportOptions}
-                  tViewAllReplies={tViewAllReplies}
-                  tHideReplies={tHideReplies}
-                  expandedReplies={expandedReplies}
-                  setExpandedReplies={setExpandedReplies}
-                />
-              ))}
+        {/* Replies */}
+        {comment.replies && comment.replies.length > 0 && (
+          <div className="mt-2 ml-8">
+            {!expandedReplies[comment.id] ? (
               <button
-                onClick={() => setExpandedReplies((prev) => ({ ...prev, [comment.id]: false }))}
-                className="text-gray-500 hover:text-gray-700 text-[10px] mt-1 flex items-center gap-1"
+                onClick={() => setExpandedReplies((prev) => ({ ...prev, [comment.id]: true }))}
+                className="text-gray-500 hover:text-gray-700 text-[10px] flex items-center gap-1"
               >
-                {tHideReplies}
+                {tViewAllReplies} ({comment.replies.length})
               </button>
-            </>
-          )}
-        </div>
-      )}
-    </div>
-  );
-});
+            ) : (
+              <>
+                {comment.replies.map((reply) => (
+                  <CommentItem
+                    key={reply.id}
+                    comment={reply}
+                    isReply={true}
+                    isMobile={isMobile}
+                    handleReply={handleReply}
+                    handleCommentLike={handleCommentLike}
+                    toggleCommentMenu={toggleCommentMenu}
+                    commentMenus={commentMenus}
+                    tReply={tReply}
+                    tBlockUser={tBlockUser}
+                    tReport={tReport}
+                    tBlockedUser={tBlockedUser}
+                    tContentReported={tContentReported}
+                    setShowReportOptions={setShowReportOptions}
+                    tViewAllReplies={tViewAllReplies}
+                    tHideReplies={tHideReplies}
+                    expandedReplies={expandedReplies}
+                    setExpandedReplies={setExpandedReplies}
+                  />
+                ))}
+                <button
+                  onClick={() => setExpandedReplies((prev) => ({ ...prev, [comment.id]: false }))}
+                  className="text-gray-500 hover:text-gray-700 text-[10px] mt-1 flex items-center gap-1"
+                >
+                  {tHideReplies}
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
 
 const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   const isMobile = useIsMobile();
@@ -340,7 +344,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   const handleBlockUser = (commentId: string) => {
     const foundComment = comments.find((c) => c.id === commentId);
     if (foundComment) {
-      toast.success(`${tBlockedUser} ${foundComment.user.first_name} ${foundComment.user.last_name}`, { closeButton: true });
+      toast.success(`${tBlockedUser} ${foundComment.user.first_name} ${foundComment.user.last_name}`, {
+        closeButton: true,
+      });
     }
     toggleCommentMenu(commentId);
   };
@@ -353,7 +359,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   const handleReply = (commentId: string, user: string, commentText?: string) => {
     setReplyingTo(commentId);
     setComment(`@${user} `);
-    
+
     // If replying from modal, close modal and set reply context
     if (showCommentsModal && commentText) {
       setShowCommentsModal(false);
@@ -386,14 +392,14 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   // Prevent body scrolling when modal is open
   useEffect(() => {
     if (showCommentsModal) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
 
     // Cleanup function to restore scrolling when component unmounts
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [showCommentsModal]);
 
@@ -402,10 +408,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
       <div className="flex justify-between items-center mb-2">
         <p className="text-[10px] font-semibold">{tComments}</p>
         {nestedComments.length > 1 && (
-          <button
-            onClick={() => setShowCommentsModal(true)}
-            className="text-gray-500 hover:text-gray-700 text-[9px]"
-          >
+          <button onClick={() => setShowCommentsModal(true)} className="text-gray-500 hover:text-gray-700 text-[9px]">
             {tViewAll + ` ${comments.length - 1} ` + tComment + `${comments.length - 1 > 1 ? "s" : ""}`}
           </button>
         )}
@@ -423,28 +426,30 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
             {nestedComments.length === 0 ? (
               <p className="text-[10px] text-gray-500 italic">{tNoComments}</p>
             ) : (
-              <>{visibleComments.map((comment) => (
-                <CommentItem
-                  key={comment.id}
-                  comment={comment}
-                  isReply={false}
-                  isMobile={isMobile}
-                  handleReply={handleReply}
-                  handleCommentLike={handleCommentLike}
-                  toggleCommentMenu={toggleCommentMenu}
-                  commentMenus={commentMenus}
-                  tReply={tReply}
-                  tBlockUser={tBlockUser}
-                  tReport={tReport}
-                  tBlockedUser={tBlockedUser}
-                  tContentReported={tContentReported}
-                  setShowReportOptions={setShowReportOptions}
-                  tViewAllReplies={tViewAllReplies}
-                  tHideReplies={tHideReplies}
-                  expandedReplies={expandedReplies}
-                  setExpandedReplies={setExpandedReplies}
-                />
-              ))}</>
+              <>
+                {visibleComments.map((comment) => (
+                  <CommentItem
+                    key={comment.id}
+                    comment={comment}
+                    isReply={false}
+                    isMobile={isMobile}
+                    handleReply={handleReply}
+                    handleCommentLike={handleCommentLike}
+                    toggleCommentMenu={toggleCommentMenu}
+                    commentMenus={commentMenus}
+                    tReply={tReply}
+                    tBlockUser={tBlockUser}
+                    tReport={tReport}
+                    tBlockedUser={tBlockedUser}
+                    tContentReported={tContentReported}
+                    setShowReportOptions={setShowReportOptions}
+                    tViewAllReplies={tViewAllReplies}
+                    tHideReplies={tHideReplies}
+                    expandedReplies={expandedReplies}
+                    setExpandedReplies={setExpandedReplies}
+                  />
+                ))}
+              </>
             )}
           </div>
         </div>
@@ -476,7 +481,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
             </div>
           </div>
         )}
-        
+
         <div className="relative">
           <input
             type="text"
@@ -538,14 +543,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
             {/* Modal Header */}
             <div className="flex justify-between items-center px-4 py-3">
               <h3 className="text-sm font-semibold">{tComments}</h3>
-              <button
-                onClick={() => setShowCommentsModal(false)}
-                className="text-gray-500 hover:text-gray-700 p-1"
-              >
+              <button onClick={() => setShowCommentsModal(false)} className="text-gray-500 hover:text-gray-700 p-1">
                 <X size={16} />
               </button>
             </div>
-            
+
             {/* Modal Content */}
             <div className="flex-1 overflow-y-auto px-4 py-2">
               {nestedComments.map((comment) => (
