@@ -19,13 +19,25 @@ import { useUserConversations } from "@/hooks/messages/useUserConversations";
 import { useChat } from "@/context/ChatContext";
 import { addDoc, serverTimestamp, getDocs } from "firebase/firestore";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
-import { uploadChatImageToCloudinary, uploadChatFileToCloudinary } from "@/utils/chatCloudinaryUpload";
+import { uploadChatImageToCloudinary, uploadChatFileToCloudinary } from "@/utils/image/chatCloudinaryUpload";
 import useAllUsersQuery from "@/hooks/users/useAllUsersQuery";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 
 // Component for user search items to handle hooks properly
-const UserSearchItem = ({ user, language, chatText, onUserSelect, conversations }: { user: any; language: string; chatText: string; onUserSelect: (user: any) => void; conversations: any[] }) => {
+const UserSearchItem = ({
+  user,
+  language,
+  chatText,
+  onUserSelect,
+  conversations,
+}: {
+  user: any;
+  language: string;
+  chatText: string;
+  onUserSelect: (user: any) => void;
+  conversations: any[];
+}) => {
   const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim();
   const displayName = fullName || user.username || user.email;
   const translatedDisplayName = useAutoTranslation(displayName, language);
@@ -40,15 +52,9 @@ const UserSearchItem = ({ user, language, chatText, onUserSelect, conversations 
       <div className="relative">
         <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
           {user.profile_picture ? (
-            <img
-              src={user.profile_picture}
-              alt={translatedDisplayName}
-              className="h-full w-full object-cover"
-            />
+            <img src={user.profile_picture} alt={translatedDisplayName} className="h-full w-full object-cover" />
           ) : (
-            <span className="text-xs font-medium text-gray-600">
-              {translatedDisplayName.charAt(0).toUpperCase()}
-            </span>
+            <span className="text-xs font-medium text-gray-600">{translatedDisplayName.charAt(0).toUpperCase()}</span>
           )}
         </div>
         <div className="absolute -bottom-0.5 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>

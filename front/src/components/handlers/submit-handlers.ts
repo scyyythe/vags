@@ -3,7 +3,7 @@ import type { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import type { useCreateExhibit } from "@/hooks/mutate/exhibit/AddExhibit";
 import type { ExhibitPayload } from "@/hooks/mutate/exhibit/exhibit";
-import { sendCollaboratorNotifications, showCollaboratorNotification } from "@/utils/notificationUtils";
+import { sendCollaboratorNotifications, showCollaboratorNotification } from "@/utils/notification/notificationUtils";
 import type { User } from "@/hooks/users/useUserQuery";
 import type { QueryClient } from "@tanstack/react-query";
 
@@ -79,7 +79,7 @@ export const createSubmitHandler = (
 
     // Invalidate notifications query so collaborators see the new notification
     queryClient.invalidateQueries({ queryKey: ["notifications"] });
-    
+
     completeExhibitSubmission();
   };
 

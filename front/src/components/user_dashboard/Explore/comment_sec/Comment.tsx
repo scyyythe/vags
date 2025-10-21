@@ -15,6 +15,12 @@ import { parseISO, formatDistanceToNow } from "date-fns";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { getLoggedInUserId } from "@/auth/decode";
+import useSubmitCommentReport from "@/hooks/mutate/report/useSubmitCommentReport";
+import useUndoCommentReport from "@/hooks/mutate/report/undo/useUndoCommentReport";
+import useCommentReportStatus from "@/hooks/query/report/useCommentReportStatus";
+import useBlockUser from "@/hooks/users/block/useBlockUser";
+import useUnblockUser from "@/hooks/users/block/useUnblockUser";
+import useBlockedUsers from "@/hooks/users/block/useBlockedUsers";
 
 interface Comment {
   id: string;
@@ -48,10 +54,14 @@ interface CommentItemProps {
   commentMenus: { [commentId: string]: boolean };
   tReply: string;
   tBlockUser: string;
+  tUnblockUser: string;
   tReport: string;
   tBlockedUser: string;
   tContentReported: string;
+  tUndoReport: string;
+  tBlocked: string;
   setShowReportOptions: (show: boolean) => void;
+  setSelectedCommentForReport: (commentId: string | null) => void;
   tViewAllReplies: string;
   tHideReplies: string;
   expandedReplies: { [key: string]: boolean };
@@ -80,10 +90,14 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
     commentMenus,
     tReply,
     tBlockUser,
+    tUnblockUser,
     tReport,
     tBlockedUser,
     tContentReported,
+    tUndoReport,
+    tBlocked,
     setShowReportOptions,
+    setSelectedCommentForReport,
     tViewAllReplies,
     tHideReplies,
     expandedReplies,
@@ -97,6 +111,48 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
     // Get current user ID from JWT token
     const currentUserId = getLoggedInUserId() || "";
 
+    // Comment report status
+    const { data: reportStatus } = useCommentReportStatus(comment.id);
+    const submitCommentReport = useSubmitCommentReport();
+    const { handleUndoReport } = useUndoCommentReport();
+
+    // Block user functionality
+    const { data: blockedUsers = [] } = useBlockedUsers();
+    const blockUserMutation = useBlockUser();
+    const unblockUserMutation = useUnblockUser();
+
+    // Check if the comment author is blocked
+    const isUserBlocked = blockedUsers.some((blockedUser) => blockedUser.id === comment.user.id);
+
+    // Check if the current user is trying to block themselves
+    const isOwnComment = currentUserId === comment.user.id;
+
+    // Enhanced validation function for blocking
+    const handleBlockUser = () => {
+      if (isOwnComment) {
+        toast.error("You cannot block yourself");
+        return;
+      }
+      if (!comment.user.id) {
+        toast.error("Invalid user ID");
+        return;
+      }
+      blockUserMutation.mutate(comment.user.id);
+    };
+
+    // Enhanced validation function for unblocking
+    const handleUnblockUser = () => {
+      if (isOwnComment) {
+        toast.error("You cannot unblock yourself");
+        return;
+      }
+      if (!comment.user.id) {
+        toast.error("Invalid user ID");
+        return;
+      }
+      unblockUserMutation.mutate(comment.user.id);
+    };
+
     return (
       <div className={`mb-4 relative ${isReply ? "ml-8 border-l-2 border-gray-100 pl-4" : ""}`}>
         <div className="flex items-start justify-between">
@@ -109,9 +165,16 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
             </Avatar>
 
             <div>
-              <p className={`${isMobile ? "text-[9px]" : "text-[9px]"} font-semibold`}>
-                {comment.user?.first_name || "Unknown"} {comment.user?.last_name || ""}
-              </p>
+              <div className="flex flex-col gap-1">
+                <p className={`${isMobile ? "text-[9px]" : "text-[9px]"} font-semibold`}>
+                  {comment.user?.first_name || "Unknown"} {comment.user?.last_name || ""}
+                </p>
+                <div className="flex items-center gap-2">
+                  {isUserBlocked && (
+                    <span className="text-[8px] text-red-500 bg-red-100 px-1 py-0.5 rounded">{tBlocked}</span>
+                  )}
+                </div>
+              </div>
               <p
                 className={`${
                   isMobile ? "text-[10px]" : "text-[10px]"
@@ -150,31 +213,58 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
 
                   {commentMenus[comment.id] && (
                     <div className="absolute left-6 -top-3 w-[70px] bg-white rounded-sm shadow-md z-10 overflow-hidden">
-                      <button
-                        className={`w-full text-left px-3 py-1 whitespace-nowrap ${
-                          isMobile ? "text-[8px]" : "text-[8px]"
-                        } hover:bg-gray-100 hover:text-black`}
-                        onClick={() => {
-                          toast.success(`${tBlockedUser} ${comment.user.first_name} ${comment.user.last_name}`, {
-                            closeButton: true,
-                          });
-                          toggleCommentMenu(comment.id);
-                        }}
-                      >
-                        {tBlockUser}
-                      </button>
-                      <button
-                        className={`w-full text-left px-3 py-1 whitespace-nowrap ${
-                          isMobile ? "text-[8px]" : "text-[8px] "
-                        } hover:bg-gray-100 hover:text-black`}
-                        onClick={() => {
-                          setShowReportOptions(true);
-                          toast.success(tContentReported, { closeButton: true });
-                          toggleCommentMenu(comment.id);
-                        }}
-                      >
-                        {tReport}
-                      </button>
+                      {!isOwnComment &&
+                        (isUserBlocked ? (
+                          <button
+                            className={`w-full text-left px-3 py-1 whitespace-nowrap ${
+                              isMobile ? "text-[8px]" : "text-[8px]"
+                            } hover:bg-gray-100 hover:text-black`}
+                            onClick={() => {
+                              handleUnblockUser();
+                              toggleCommentMenu(comment.id);
+                            }}
+                          >
+                            {tUnblockUser}
+                          </button>
+                        ) : (
+                          <button
+                            className={`w-full text-left px-3 py-1 whitespace-nowrap ${
+                              isMobile ? "text-[8px]" : "text-[8px]"
+                            } hover:bg-gray-100 hover:text-black`}
+                            onClick={() => {
+                              handleBlockUser();
+                              toggleCommentMenu(comment.id);
+                            }}
+                          >
+                            {tBlockUser}
+                          </button>
+                        ))}
+                      {reportStatus?.reported ? (
+                        <button
+                          className={`w-full text-left px-3 py-1 whitespace-nowrap ${
+                            isMobile ? "text-[8px]" : "text-[8px]"
+                          } hover:bg-gray-100 hover:text-black`}
+                          onClick={(e) => {
+                            handleUndoReport(e, comment.id);
+                            toggleCommentMenu(comment.id);
+                          }}
+                        >
+                          {tUndoReport}
+                        </button>
+                      ) : (
+                        <button
+                          className={`w-full text-left px-3 py-1 whitespace-nowrap ${
+                            isMobile ? "text-[8px]" : "text-[8px] "
+                          } hover:bg-gray-100 hover:text-black`}
+                          onClick={() => {
+                            setSelectedCommentForReport(comment.id);
+                            setShowReportOptions(true);
+                            toggleCommentMenu(comment.id);
+                          }}
+                        >
+                          {tReport}
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
@@ -207,10 +297,14 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
                     commentMenus={commentMenus}
                     tReply={tReply}
                     tBlockUser={tBlockUser}
+                    tUnblockUser={tUnblockUser}
                     tReport={tReport}
                     tBlockedUser={tBlockedUser}
                     tContentReported={tContentReported}
+                    tUndoReport={tUndoReport}
+                    tBlocked={tBlocked}
                     setShowReportOptions={setShowReportOptions}
+                    setSelectedCommentForReport={setSelectedCommentForReport}
                     tViewAllReplies={tViewAllReplies}
                     tHideReplies={tHideReplies}
                     expandedReplies={expandedReplies}
@@ -253,6 +347,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   const tViewAll = useAutoTranslation("View all", language);
   const tComment = useAutoTranslation("comment", language);
   const tAddComment = useAutoTranslation("Add a comment...", language);
+  const tUndoReport = useAutoTranslation("Undo Report", language);
+  const tUnblockUser = useAutoTranslation("Unblock User", language);
+  const tBlocked = useAutoTranslation("Blocked", language);
 
   const [comment, setComment] = useState("");
   // const [comments, setComments] = useState<Comment[]>([]);
@@ -267,6 +364,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [replyContext, setReplyContext] = useState<{ user: string; text: string } | null>(null);
+  const [selectedCommentForReport, setSelectedCommentForReport] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -304,11 +402,21 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
 
   const addComment = useAddComment("artwork", artworkId);
   const addReaction = useAddReaction("artwork", artworkId);
+  const submitCommentReport = useSubmitCommentReport();
 
   const handleReportSubmit = async (category: string, reason?: string) => {
-    console.log("Category:", category);
-    console.log("Reason:", reason);
-    setShowReportOptions(false);
+    // This will be called from the ReportOptionsPopup
+    // We need to pass the comment ID to the parent component
+    // For now, we'll store the selected comment ID in state
+    if (selectedCommentForReport) {
+      submitCommentReport.mutate({
+        comment_id: selectedCommentForReport,
+        category,
+        option: reason,
+      });
+      setShowReportOptions(false);
+      setSelectedCommentForReport(null);
+    }
   };
 
   const handleCommentSubmit = (e: React.FormEvent) => {
@@ -452,10 +560,14 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                     commentMenus={commentMenus}
                     tReply={tReply}
                     tBlockUser={tBlockUser}
+                    tUnblockUser={tUnblockUser}
                     tReport={tReport}
                     tBlockedUser={tBlockedUser}
                     tContentReported={tContentReported}
+                    tUndoReport={tUndoReport}
+                    tBlocked={tBlocked}
                     setShowReportOptions={setShowReportOptions}
+                    setSelectedCommentForReport={setSelectedCommentForReport}
                     tViewAllReplies={tViewAllReplies}
                     tHideReplies={tHideReplies}
                     expandedReplies={expandedReplies}
@@ -575,10 +687,14 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                   commentMenus={commentMenus}
                   tReply={tReply}
                   tBlockUser={tBlockUser}
+                  tUnblockUser={tUnblockUser}
                   tReport={tReport}
                   tBlockedUser={tBlockedUser}
                   tContentReported={tContentReported}
+                  tUndoReport={tUndoReport}
+                  tBlocked={tBlocked}
                   setShowReportOptions={setShowReportOptions}
+                  setSelectedCommentForReport={setSelectedCommentForReport}
                   tViewAllReplies={tViewAllReplies}
                   tHideReplies={tHideReplies}
                   expandedReplies={expandedReplies}

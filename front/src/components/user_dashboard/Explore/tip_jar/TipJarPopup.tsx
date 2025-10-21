@@ -12,6 +12,7 @@ import { useGcashTip } from "@/hooks/tips/gcash/useGCashTip";
 import apiClient from "@/utils/apiClient";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLanguage } from "@/context/LanguageContext";
+import { formatTipCurrency } from "@/utils/numberFormat";
 interface TipJarPopupProps {
   isOpen: boolean;
   onClose: () => void;
@@ -160,8 +161,14 @@ const TipJarPopup = ({
   const handleCustomAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
-      setCustomAmount(value);
-      setSelectedAmount(null);
+      const numValue = parseFloat(value);
+      // Limit to maximum 1 trillion (1e12)
+      if (numValue <= 1e12) {
+        setCustomAmount(value);
+        setSelectedAmount(null);
+      } else {
+        toast.error("Maximum donation amount is ₱1T (1 Trillion)", { closeButton: true });
+      }
     }
   };
 
@@ -173,6 +180,12 @@ const TipJarPopup = ({
     const amount = selectedAmount || customAmount;
     if (!amount) {
       toast.error(pleaseSelectOrEnterAmountText, { closeButton: true });
+      return;
+    }
+
+    const numAmount = parseFloat(amount);
+    if (numAmount > 1e12) {
+      toast.error("Maximum donation amount is ₱1T (1 Trillion)", { closeButton: true });
       return;
     }
 
@@ -198,6 +211,12 @@ const TipJarPopup = ({
     const amount = selectedAmount || customAmount;
     if (!amount) {
       toast.error(invalidAmountText);
+      return;
+    }
+
+    const numAmount = parseFloat(amount);
+    if (numAmount > 1e12) {
+      toast.error("Maximum donation amount is ₱1T (1 Trillion)", { closeButton: true });
       return;
     }
 
@@ -283,7 +302,9 @@ const TipJarPopup = ({
                   {/* Amount */}
                   <div className="flex justify-between items-center">
                     <p className="text-[11px] text-black">{amountText}</p>
-                    <p className="text-lg font-bold text-red-700 text-right">₱{selectedAmount || customAmount}</p>
+                    <p className="text-lg font-bold text-red-700 text-right">
+                      {formatTipCurrency(parseFloat(selectedAmount || customAmount))}
+                    </p>
                   </div>
 
                   <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>

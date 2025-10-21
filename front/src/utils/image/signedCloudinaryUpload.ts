@@ -1,7 +1,7 @@
 /**
  * Signed Cloudinary upload utility with transformations support
  */
-import apiClient from "./apiClient";
+import apiClient from "../apiClient";
 
 export interface SignedUploadParams {
   timestamp: number;
