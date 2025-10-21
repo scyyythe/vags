@@ -22,6 +22,7 @@ class PurchaseArtworkSerializer(serializers.Serializer):
     is_paid = serializers.BooleanField(default=False)
     quantity = serializers.IntegerField(default=1)
     shipping_address = ShippingSnapshotSerializer()
+    is_purchase_order = serializers.BooleanField(default=False)
 
     def create(self, validated_data):
         request = self.context["request"]
@@ -61,7 +62,8 @@ class PurchaseArtworkSerializer(serializers.Serializer):
             status="Ordering" if is_purchase_order else "Paid",
         )
 
-        # Only update artwork quantity/status for direct purchases, not purchase orders
+        # IMPORTANT: Only update artwork quantity/status for direct purchases, not purchase orders
+        # Purchase orders should NOT reduce quantity during creation - only when payment is completed
         if not is_purchase_order:
             if artwork.edition in ["Open Edition", "Limited Edition"] and artwork.quantity is not None:
                 artwork.quantity -= quantity
@@ -120,18 +122,8 @@ class PurchaseArtworkSerializer(serializers.Serializer):
                 timestamp=now
             ).save()
         else:
-            print("DEBUG: Creating notification for purchase order (no transaction)")
-            # For purchase orders, create a simple notification (no transaction yet)
-            Notification.objects.create(
-                user=artwork.artist,
-                actor=mongo_user,
-                message=f"{mongo_user.first_name} {mongo_user.last_name} created a purchase order for: '{artwork.title}'",
-                name=f"{mongo_user.first_name} {mongo_user.last_name}",
-                action="created a purchase order",
-                target=artwork.title,
-                icon="order",
-                created_at=datetime.now(),
-                link=f"/viewproduct/{artwork.id}"
-            )
+            print("DEBUG: Purchase order created - no notification sent to seller during ordering phase")
+            # For purchase orders, do NOT create notifications during ordering phase
+            # Seller will only be notified when payment is completed
 
         return purchase

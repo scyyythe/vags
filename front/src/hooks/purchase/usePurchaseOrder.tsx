@@ -19,6 +19,7 @@ export interface UpdatePurchaseOrderData {
   };
   payment_method?: string;
   is_paid?: boolean;
+  payment_completed?: boolean;
 }
 
 // Convert purchase order to purchase payload for final purchase
