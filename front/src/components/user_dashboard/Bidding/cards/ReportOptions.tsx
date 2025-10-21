@@ -29,6 +29,7 @@ interface ReportOptionsPopupProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (category: string, option?: ReportOption | string) => void;
+  zIndex?: number;
 }
 
 export const normalizeReportType = (optionId: string | undefined, categoryId: string): string => {
@@ -125,7 +126,7 @@ export const reportCategories: ReportCategory[] = [
   },
 ];
 
-const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose, onSubmit }) => {
+const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose, onSubmit, zIndex = 50 }) => {
   const { language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ReportCategory | null>(null);
   const [selectedOption, setSelectedOption] = useState<ReportOption | null>(null);
@@ -310,7 +311,8 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
     <>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        className="fixed inset-0 bg-black/50 flex items-center justify-center"
+        style={{ zIndex }}
       >
         <div className="bg-white rounded-lg w-full max-w-xs mx-4 overflow-hidden">
           <div className="flex items-center justify-between p-4 -mb-4">
