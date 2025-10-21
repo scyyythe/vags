@@ -214,21 +214,21 @@ const HowItWorksSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <div className="bg-red-800 rounded-3xl p-12 text-white">
+          {/* <div className="bg-red-800 rounded-3xl p-12 text-white">
             <h3 className="text-lg font-bold mb-4">
               {useAutoTranslation("Ready to Get Started?", language)}
             </h3>
             <p className="text-xs text-red-100 mb-8 max-w-2xl mx-auto">
               {useAutoTranslation("Join thousands of users who are already buying and selling digital art on our platform.", language)}
-            </p>
+            </p> */}
             <button
               onClick={() => setShowRegisterModal(true)}
-              className="group bg-white text-red-700 px-8 py-4 rounded-full font-semibold text-xs transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex items-center space-x-2 mx-auto"
+              className="group bg-red-700 text-white px-8 py-4 rounded-full font-semibold text-xs transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex items-center space-x-2 mx-auto"
             >
               <span>{getStarted}</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
             </button>
-          </div>
+          {/* </div> */}
         </motion.div>
       </div>
     </section>
