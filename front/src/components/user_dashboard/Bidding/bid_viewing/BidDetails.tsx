@@ -27,7 +27,7 @@ import useBidReportStatus from "@/hooks/mutate/report/useReportBidStatus";
 import { reportCategories } from "@/components/user_dashboard/Bidding/cards/ReportOptions";
 import { useAuctionActions } from "@/hooks/auction/useAuctionActions";
 import { useRestoreAuction } from "@/hooks/auction/useRestoreAuction";
-import { getArtworkImageUrl } from "@/utils/imageUtils";
+import { getArtworkImageUrl } from "@/utils/image/imageUtils";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { autoTranslate } from "@/utils/autoTranslate";

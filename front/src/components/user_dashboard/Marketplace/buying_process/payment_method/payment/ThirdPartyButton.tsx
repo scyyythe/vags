@@ -1,8 +1,8 @@
-import type React from "react"
-import { handleThirdPartyPayment } from "@/utils/paymentUtils"
+import type React from "react";
+import { handleThirdPartyPayment } from "@/utils/purchase/paymentUtils";
 
 interface ThirdPartyButtonProps {
-  method: "paypal" | "gcash" | "stripe"
+  method: "paypal" | "gcash" | "stripe";
 }
 
 const ThirdPartyButton: React.FC<ThirdPartyButtonProps> = ({ method }) => {
@@ -19,9 +19,9 @@ const ThirdPartyButton: React.FC<ThirdPartyButtonProps> = ({ method }) => {
       text: "Continue with Stripe",
       className: "text-red-800 underline",
     },
-  }
+  };
 
-  const config = buttonConfig[method]
+  const config = buttonConfig[method];
 
   return (
     <div className="flex justify-start">
@@ -40,7 +40,7 @@ const ThirdPartyButton: React.FC<ThirdPartyButtonProps> = ({ method }) => {
         </svg>
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default ThirdPartyButton
+export default ThirdPartyButton;

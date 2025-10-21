@@ -10,7 +10,7 @@ import { Artwork } from "@/hooks/artworks/owner/useMyArtworks";
 import { User } from "@/hooks/users/useUserQuery";
 import FeaturedAuctionSkeleton from "@/components/skeletons/bidding/FeaturedAuction";
 import { formatCurrency } from "@/utils/numberFormat";
-import { getArtworkImageUrl } from "@/utils/imageUtils";
+import { getArtworkImageUrl } from "@/utils/image/imageUtils";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 interface ArtSlideshowProps {
@@ -59,22 +59,24 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
 
       for (const auction of auctions) {
         try {
-          const translatedTitle = language.toLowerCase() !== "en" 
-            ? await autoTranslate(auction.artwork.title, language.toLowerCase())
-            : auction.artwork.title;
-          
-          const translatedArtist = language.toLowerCase() !== "en"
-            ? await autoTranslate(auction.artwork.artist, language.toLowerCase())
-            : auction.artwork.artist;
+          const translatedTitle =
+            language.toLowerCase() !== "en"
+              ? await autoTranslate(auction.artwork.title, language.toLowerCase())
+              : auction.artwork.title;
+
+          const translatedArtist =
+            language.toLowerCase() !== "en"
+              ? await autoTranslate(auction.artwork.artist, language.toLowerCase())
+              : auction.artwork.artist;
 
           translated[auction.id] = {
             title: translatedTitle,
-            artist: translatedArtist
+            artist: translatedArtist,
           };
         } catch (error) {
           translated[auction.id] = {
             title: auction.artwork.title,
-            artist: auction.artwork.artist
+            artist: auction.artwork.artist,
           };
         }
       }

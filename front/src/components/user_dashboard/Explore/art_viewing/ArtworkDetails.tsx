@@ -25,7 +25,7 @@ import useUpdateArtworkVisibility from "@/hooks/mutate/visibility/private/useUpd
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
 import OwnerMenu from "@/components/user_dashboard/own_profile/menu/art_card/Menu";
 import { useQueryClient } from "@tanstack/react-query";
-import { getArtworkImageUrl } from "@/utils/imageUtils";
+import { getArtworkImageUrl } from "@/utils/image/imageUtils";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 const ArtworkDetails = () => {
@@ -67,7 +67,10 @@ const ArtworkDetails = () => {
 
   // Translated strings
   const tArtworkNotFound = useAutoTranslation("Artwork Not Found", language);
-  const tArtworkNotFoundDesc = useAutoTranslation("The artwork you're looking for doesn't exist or has been removed.", language);
+  const tArtworkNotFoundDesc = useAutoTranslation(
+    "The artwork you're looking for doesn't exist or has been removed.",
+    language
+  );
   const tReturnToHome = useAutoTranslation("Return to Home", language);
   const tArtworkDetails = useAutoTranslation("Artwork Details", language);
   const tArtworkStyle = useAutoTranslation("Artwork Style", language);
@@ -119,50 +122,50 @@ const ArtworkDetails = () => {
   const artworkSizeTranslation = useAutoTranslation(artwork?.size || "", language);
   const artworkDatePostedTranslation = useAutoTranslation(artwork?.datePosted || "", language);
   const artworkDescriptionTranslation = useAutoTranslation(artwork?.description || "", language);
-  
+
   // Use useMemo to select the correct translation
-  const translatedArtworkTitle = React.useMemo(() => 
-    artwork?.title ? artworkTitleTranslation : tTheDistortedFace, 
+  const translatedArtworkTitle = React.useMemo(
+    () => (artwork?.title ? artworkTitleTranslation : tTheDistortedFace),
     [artwork?.title, artworkTitleTranslation, tTheDistortedFace]
   );
-  
-  const translatedArtistName = React.useMemo(() => 
-    artwork?.artist ? artistNameTranslation : tAngelGanev, 
+
+  const translatedArtistName = React.useMemo(
+    () => (artwork?.artist ? artistNameTranslation : tAngelGanev),
     [artwork?.artist, artistNameTranslation, tAngelGanev]
   );
-  
-  const tipJarTitle = React.useMemo(() => 
-    artwork?.title ? artworkTitleTranslation : tUntitledArtwork, 
+
+  const tipJarTitle = React.useMemo(
+    () => (artwork?.title ? artworkTitleTranslation : tUntitledArtwork),
     [artwork?.title, artworkTitleTranslation, tUntitledArtwork]
   );
-  
-  const tipJarArtistName = React.useMemo(() => 
-    artwork?.artist ? artistNameTranslation : tUnknownArtist, 
+
+  const tipJarArtistName = React.useMemo(
+    () => (artwork?.artist ? artistNameTranslation : tUnknownArtist),
     [artwork?.artist, artistNameTranslation, tUnknownArtist]
   );
-  
-  const translatedArtworkStyle = React.useMemo(() => 
-    artwork?.style ? artworkStyleTranslation : tPainting, 
+
+  const translatedArtworkStyle = React.useMemo(
+    () => (artwork?.style ? artworkStyleTranslation : tPainting),
     [artwork?.style, artworkStyleTranslation, tPainting]
   );
-  
-  const translatedArtworkMedium = React.useMemo(() => 
-    artwork?.medium ? artworkMediumTranslation : tAcrylicPaint, 
+
+  const translatedArtworkMedium = React.useMemo(
+    () => (artwork?.medium ? artworkMediumTranslation : tAcrylicPaint),
     [artwork?.medium, artworkMediumTranslation, tAcrylicPaint]
   );
-  
-  const translatedArtworkSize = React.useMemo(() => 
-    artwork?.size ? artworkSizeTranslation : tDimensionsDefault, 
+
+  const translatedArtworkSize = React.useMemo(
+    () => (artwork?.size ? artworkSizeTranslation : tDimensionsDefault),
     [artwork?.size, artworkSizeTranslation, tDimensionsDefault]
   );
-  
-  const translatedArtworkDatePosted = React.useMemo(() => 
-    artwork?.datePosted ? artworkDatePostedTranslation : tDatePostedDefault, 
+
+  const translatedArtworkDatePosted = React.useMemo(
+    () => (artwork?.datePosted ? artworkDatePostedTranslation : tDatePostedDefault),
     [artwork?.datePosted, artworkDatePostedTranslation, tDatePostedDefault]
   );
-  
-  const translatedArtworkDescription = React.useMemo(() => 
-    artwork?.description ? artworkDescriptionTranslation : tNoDescriptionAvailable, 
+
+  const translatedArtworkDescription = React.useMemo(
+    () => (artwork?.description ? artworkDescriptionTranslation : tNoDescriptionAvailable),
     [artwork?.description, artworkDescriptionTranslation, tNoDescriptionAvailable]
   );
 
@@ -496,9 +499,7 @@ const ArtworkDetails = () => {
                       <div className="px-3 py-6 text-left">
                         <div className="mb-6">
                           <h3 className="text-[9px] font-medium mb-1">{tArtworkStyle}</h3>
-                          <p className="text-[9px] text-gray-700">
-                            {translatedArtworkStyle}
-                          </p>
+                          <p className="text-[9px] text-gray-700">{translatedArtworkStyle}</p>
                         </div>
 
                         <Separator className="my-3" />
@@ -639,9 +640,7 @@ const ArtworkDetails = () => {
                     </div>
                   </div>
 
-                  <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>
-                    {translatedArtworkTitle}
-                  </h1>
+                  <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>{translatedArtworkTitle}</h1>
 
                   <p
                     style={{ cursor: "pointer" }}
