@@ -22,7 +22,7 @@ const ArtworkCard = ({ artwork, item }: { artwork: any; item: any }) => {
   return (
     <motion.div key={artwork.id} variants={item} className="card-hover">
       <div 
-        className="bg-white px-5 py-3 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+        className="bg-white border px-5 py-3 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
         onClick={handleCardClick}
       >
         <div className="relative group">
