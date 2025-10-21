@@ -103,7 +103,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   const [userId, setUserId] = useState<string | null>(null);
   const userName = localStorage.getItem("username") || "";
   const userAvatarLocal = localStorage.getItem("avatar_url") || undefined;
-  const [conversations, setConversations, isLoadingConversations] = useUserConversations(userId);
+  const [conversations, setConversations, isLoadingConversations] = useUserConversations(userId || "");
   const conversationsLoaded = !isLoadingConversations;
   const [headerName, setHeaderName] = useState(participantName || "Unknown");
   const [shareModalOpen, setShareModalOpen] = useState(false);
@@ -149,18 +149,8 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     async (convId: string, updateTimestamp: boolean = false) => {
       if (!userId) return;
 
-      setConversations((prev) =>
-        prev.map((conv) =>
-          conv.id === convId
-            ? {
-                ...conv,
-                unreadCount: 0,
-                messages: (conv.messages || []).map((msg) => ({ ...msg, isRead: true })),
-                isRevived: false,
-              }
-            : conv
-        )
-      );
+      // Don't update local state - let useUserConversations handle it
+      // The Firebase update will trigger the real-time listener to update the state
 
       try {
         const convRef = doc(db, "conversations", convId);
@@ -412,18 +402,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       replyTo: message.replyTo || null,
     };
 
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === convId
-          ? {
-              ...conv,
-              messages: [...(conv.messages || []), newMessage],
-              lastMessage: newMessage.content,
-              lastMessageTime: new Date(),
-            }
-          : conv
-      )
-    );
+    // Don't update local state - let Firebase real-time listener handle it
 
     setTimeout(() => {
       const chatContainer = document.getElementById("chat-container");
@@ -444,7 +423,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
       if (newConv) {
         setSelectedConversation(newConv.id);
-        setConversations((prev) => [newConv, ...prev]);
+        // Don't update local state - let Firebase real-time listener handle it
         setPendingConversation(null);
       } else {
         return; // Failed to create conversation
@@ -583,19 +562,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
   };
 
   const markAsUnread = async (convId: string) => {
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === convId
-          ? {
-              ...conv,
-              unreadCount: Math.max(1, conv.unreadCount),
-              messages: (conv.messages || []).map((msg, idx) =>
-                idx === (conv.messages?.length || 0) - 1 ? { ...msg, isRead: false } : msg
-              ),
-            }
-          : conv
-      )
-    );
+    // Don't update local state - let Firebase real-time listener handle it
 
     try {
       const convRef = doc(db, "conversations", convId);
@@ -620,9 +587,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     }
 
     // Update local state
-    setConversations((prev) =>
-      prev.map((c) => (c.id === convId ? { ...c, isPinned: !isCurrentlyPinned, pinnedBy: updatedPinnedBy } : c))
-    );
+    // Don't update local state - let Firebase real-time listener handle it
 
     try {
       await updateDoc(doc(db, "conversations", convId), {
@@ -646,10 +611,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       updatedMutedBy = [...currentMutedBy, userId];
     }
 
-    // Update local state
-    setConversations((prev) =>
-      prev.map((c) => (c.id === convId ? { ...c, isMuted: !isCurrentlyMuted, mutedBy: updatedMutedBy } : c))
-    );
+    // Don't update local state - let Firebase real-time listener handle it
 
     try {
       await updateDoc(doc(db, "conversations", convId), {
@@ -673,10 +635,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       updatedArchivedBy = [...currentArchivedBy, userId];
     }
 
-    // Update local state
-    setConversations((prev) =>
-      prev.map((c) => (c.id === convId ? { ...c, isArchived: !isCurrentlyArchived, archivedBy: updatedArchivedBy } : c))
-    );
+    // Don't update local state - let Firebase real-time listener handle it
 
     try {
       await updateDoc(doc(db, "conversations", convId), {
@@ -703,8 +662,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
           [userId]: serverTimestamp(),
         };
 
-        // Update local state immediately to hide the conversation
-        setConversations((prev) => prev.filter((c) => c.id !== convId));
+        // Don't update local state - let Firebase real-time listener handle it
 
         await updateDoc(doc(db, "conversations", convId), {
           deletedBy: updatedDeletedBy,
@@ -714,10 +672,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
     } catch (err) {
       // If there's an error, restore the conversation in local state
       // We need to find the conversation again since conv is out of scope
-      const convToRestore = conversations.find((c) => c.id === convId);
-      if (convToRestore) {
-        setConversations((prev) => [...prev, convToRestore]);
-      }
+      // Don't update local state - let Firebase real-time listener handle it
     }
   };
 
@@ -742,18 +697,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
   const starMessage = (messageId: string) => {
     if (!selectedConversation) return;
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === selectedConversation
-          ? {
-              ...conv,
-              messages: (conv.messages || []).map((msg) =>
-                msg.id === messageId ? { ...msg, isStarred: !msg.isStarred } : msg
-              ),
-            }
-          : conv
-      )
-    );
+    // Don't update local state - let Firebase real-time listener handle it
   };
 
   const addReaction = async (messageId: string, emoji: string) => {
@@ -795,19 +739,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
       const messageRef = doc(db, "conversations", selectedConversation, "messages", messageId);
       await updateDoc(messageRef, { reactions: updatedReactions });
 
-      // Update local state optimistically
-      setConversations((prev) =>
-        prev.map((conv) =>
-          conv.id === selectedConversation
-            ? {
-                ...conv,
-                messages: (conv.messages || []).map((msg) =>
-                  msg.id === messageId ? { ...msg, reactions: updatedReactions } : msg
-                ),
-              }
-            : conv
-        )
-      );
+      // Don't update local state - let Firebase real-time listener handle it
     } catch (error) {
       console.error("Failed to add reaction:", error);
     }
@@ -841,19 +773,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
         const messageRef = doc(db, "conversations", selectedConversation, "messages", messageId);
         await updateDoc(messageRef, { reactions: updatedReactions });
 
-        // Update local state optimistically
-        setConversations((prev) =>
-          prev.map((conv) =>
-            conv.id === selectedConversation
-              ? {
-                  ...conv,
-                  messages: (conv.messages || []).map((msg) =>
-                    msg.id === messageId ? { ...msg, reactions: updatedReactions } : msg
-                  ),
-                }
-              : conv
-          )
-        );
+        // Don't update local state - let Firebase real-time listener handle it
       }
     } catch (error) {
       console.error("Failed to remove reaction:", error);
@@ -862,13 +782,7 @@ const ChatDropdown = ({ isOpen, onClose, participantId, participantName, partici
 
   const deleteMessage = (messageId: string) => {
     if (!selectedConversation) return;
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === selectedConversation
-          ? { ...conv, messages: (conv.messages || []).filter((msg) => msg.id !== messageId) }
-          : conv
-      )
-    );
+    // Don't update local state - let Firebase real-time listener handle it
   };
 
   const replyToMessage = (message: Message) => {
