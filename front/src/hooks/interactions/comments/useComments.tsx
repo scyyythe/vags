@@ -9,13 +9,14 @@ export const useComments = (contentType: string, objectId: string) => {
       return res.data;
     },
     enabled: !!contentType && !!objectId,
-    staleTime: 0,
+    staleTime: 1000 * 60 * 2, // Consider data fresh for 2 minutes
     refetchOnWindowFocus: true,
     refetchOnMount: true,
     refetchOnReconnect: true,
-    refetchInterval: 3000,
+    refetchInterval: false, // Disable automatic polling
     refetchIntervalInBackground: false,
-    retry: 1,
+    retry: 3, // Retry up to 3 times on failure
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });
 };
 
