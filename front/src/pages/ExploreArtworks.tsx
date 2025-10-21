@@ -99,7 +99,7 @@ const ExploreArtworks = () => {
   if (isLoading) return <ArtCardSkeleton />;
 
   return (
-    <section className="w-full max-w-7xl mx-auto py-16 px-6 md:px-12 bg-gray-50" id="artworks">
+    <section className="w-full max-w-7xl mx-auto py-16 px-6 md:px-12" id="artworks">
       <div>
         <div className="flex justify-between items-center mb-12">
           <motion.h2
