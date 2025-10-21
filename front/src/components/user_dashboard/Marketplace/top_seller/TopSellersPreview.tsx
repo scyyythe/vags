@@ -30,21 +30,28 @@ const SellerItem = ({
   return (
     <div className="flex-shrink-0" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onNavigate}>
       <div
-        className="bg-white rounded-full px-4 py-2.5 shadow-md min-w-[140px] 
-                  cursor-pointer transform transition-all duration-500 ease-out 
-                  hover:scale-105 hover:shadow-md"
+        className="artist-card group cursor-pointer bg-gray-100 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3 min-w-[180px]"
       >
-        <div className="flex items-center gap-3">
-          <Avatar className="w-7 h-7 shadow-2xl">
-            <AvatarImage src={seller.profile_picture} alt={translatedName} className="object-cover" />
-            <AvatarFallback>{translatedName.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-medium text-[10px] text-gray-900 truncate">{translatedName}</h3>
-            <div className="flex items-center gap-1">
-              <i className="bx bxs-star text-yellow-400 text-xs"></i>
-              <span className="relative top-[1px] text-[10px] text-red-600 font-medium">{seller.rating}</span>
-            </div>
+        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md bg-gray-300 flex items-center justify-center">
+          {seller.profile_picture ? (
+            <img src={seller.profile_picture} alt={translatedName} className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-xs font-bold text-gray-700">
+              {translatedName
+                ?.split(" ")
+                .map((n) => n[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase()}
+            </span>
+          )}
+        </div>
+
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">{translatedName}</span>
+          <div className="flex items-center gap-1">
+            <i className="bx bxs-star text-yellow-400 text-xs"></i>
+            <span className="text-xs text-red-500 font-medium">{seller.rating}</span>
           </div>
         </div>
       </div>

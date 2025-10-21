@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLanguage } from "@/context/LanguageContext";
@@ -38,11 +38,18 @@ const PopularArtists = () => {
   const followersLabel = useAutoTranslation("Followers", language);
 
   const { data: topArtist, isLoading, isError } = usePopularArtists();
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Create scrolling artists array like in TopSellersPreview
+  const scrollingArtists = useMemo(() => {
+    if (isLoading || isError) return [];
+    return Array(4).fill(topArtist || []).flat();
+  }, [topArtist, isLoading, isError]);
 
   return (
-    <section className="py-20 px-6 md:px-12" id="artists">
-      <div className="max-w-screen-xl mx-auto">
-        <motion.h2
+    <section className="" id="artists">
+      <div className="w-full">
+        {/* <motion.h2
           className="text-3xl md:text-4xl font-bold text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -50,73 +57,123 @@ const PopularArtists = () => {
           transition={{ duration: 0.5 }}
         >
           {popularArtistsHeading}
-        </motion.h2>
+        </motion.h2> */}
 
         <motion.div
-          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10"
+          className="relative overflow-hidden pb-4 w-full"
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
         >
           {/* Show skeletons while loading */}
-          {isLoading &&
-            Array.from({ length: 8 }).map((_, idx) => (
-              <motion.div key={idx} variants={item}>
-                <ArtistSkeleton />
-              </motion.div>
-            ))}
+          {isLoading && (
+            <div className="flex gap-4">
+              {Array.from({ length: 8 }).map((_, idx) => (
+                <motion.div key={idx} variants={item} className="flex-shrink-0">
+                  <ArtistSkeleton />
+                </motion.div>
+              ))}
+            </div>
+          )}
 
-          {/* Show API data */}
-          {!isLoading &&
-            !isError &&
-            topArtist?.map((artist) => (
-              <motion.div key={artist.id} variants={item}>
-                <div className="artist-card group cursor-pointer bg-gray-100 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md bg-gray-300 flex items-center justify-center">
-                    {artist.profile_picture ? (
-                      <img src={artist.profile_picture} alt={artist.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-xs font-bold text-gray-700">
-                        {artist.name
-                          ?.split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .slice(0, 2)
-                          .toUpperCase()}
+          {/* Show API data with auto-scrolling */}
+          {!isLoading && !isError && scrollingArtists.length > 0 && (
+            <div
+              className="flex animate-scroll gap-4 whitespace-nowrap w-max"
+              style={{
+                animationPlayState: isPaused ? "paused" : "running",
+                width: "200%",
+              }}
+            >
+              {scrollingArtists.map((artist, index) => (
+                <div
+                  key={`${artist.id}-${index}`}
+                  className="flex-shrink-0"
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
+                >
+                  <div className="artist-card group cursor-pointer bg-gray-100 px-4 py-3 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
+                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md bg-gray-300 flex items-center justify-center">
+                      {artist.profile_picture ? (
+                        <img src={artist.profile_picture} alt={artist.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xs font-bold text-gray-700">
+                          {artist.name
+                            ?.split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .slice(0, 2)
+                            .toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col">
+                      <span className="text-[13px] font-medium">{artist.name}</span>
+                      <span className="text-[11px] text-red-500">
+                        {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
                       </span>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">{artist.name}</span>
-                    <span className="text-xs text-red-500">
-                      {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
-                    </span>
+                    </div>
                   </div>
                 </div>
-              </motion.div>
-            ))}
+              ))}
+            </div>
+          )}
 
-          {/* Fallback if API fails */}
-          {isError &&
-            artists.map((artist) => (
-              <motion.div key={artist.id} variants={item}>
-                <div className="artist-card group cursor-pointer bg-gray-100 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md">
-                    <img src={artist.image} alt={artist.name} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">{artist.name}</span>
-                    <span className="text-xs text-red-500">
-                      {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
-                    </span>
+          {/* Fallback if API fails with auto-scrolling */}
+          {isError && (
+            <div
+              className="flex animate-scroll gap-4 whitespace-nowrap w-max"
+              style={{
+                animationPlayState: isPaused ? "paused" : "running",
+                width: "200%",
+              }}
+            >
+              {Array(4).fill(artists).flat().map((artist, index) => (
+                <div
+                  key={`${artist.id}-${index}`}
+                  className="flex-shrink-0"
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
+                >
+                  <div className="artist-card group cursor-pointer bg-gray-100 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
+                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md">
+                      <img src={artist.image} alt={artist.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">{artist.name}</span>
+                      <span className="text-xs text-red-500">
+                        {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </motion.div>
-            ))}
+              ))}
+            </div>
+          )}
         </motion.div>
       </div>
+
+      <style>{`
+        @keyframes scroll {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-scroll {
+          animation: scroll 40s linear infinite;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        #artists {
+          overflow-x: hidden;
+        }
+      `}</style>
     </section>
   );
 };
