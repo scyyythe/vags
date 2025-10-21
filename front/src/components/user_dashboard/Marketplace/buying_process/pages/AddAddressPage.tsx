@@ -15,6 +15,7 @@ const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
   const { language } = useLanguage();
   const addressUpdatedText = useAutoTranslation("Address updated successfully!", language);
   const addressAddedText = useAutoTranslation("Address added successfully!", language);
+  const addressSetAsDefaultText = useAutoTranslation("Address set as default successfully!", language);
   const failedToSaveAddressText = useAutoTranslation("Failed to save address.", language);
 
   const parseInitialData = () => {
@@ -51,7 +52,12 @@ const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
 
       queryClient.invalidateQueries({ queryKey: ["allAddresses"] });
 
-      toast.success(isEditing ? addressUpdatedText : addressAddedText);
+      // Show appropriate success message
+      if (formData.setAsDefault) {
+        toast.success(addressSetAsDefaultText);
+      } else {
+        toast.success(isEditing ? addressUpdatedText : addressAddedText);
+      }
 
       navigate("/shipping");
     } catch (err) {
