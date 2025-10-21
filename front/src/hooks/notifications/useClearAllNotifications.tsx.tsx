@@ -22,9 +22,21 @@ const useClearAllNotifications = (onLocalClear: () => void) => {
 
       toast.success("All notifications cleared!");
     },
-    onError: (error) => {
-      toast.error("Failed to clear notifications");
-      console.error(error);
+    onError: (error: any) => {
+      let errorMessage = "Failed to clear notifications";
+
+      if (error?.response?.status === 401) {
+        errorMessage = "Authentication required. Please log in again.";
+      } else if (error?.response?.status === 500) {
+        errorMessage = "Server error. Please try again later.";
+      } else if (error?.code === "ECONNABORTED") {
+        errorMessage = "Request timeout. Please check your connection.";
+      } else if (error?.message?.includes("Network Error")) {
+        errorMessage = "Network error. Please check your internet connection.";
+      }
+
+      toast.error(errorMessage);
+      console.error("Clear notifications error:", error);
     },
   });
 };

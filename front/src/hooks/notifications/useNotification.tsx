@@ -51,19 +51,30 @@ interface Notification {
 const fetchNotifications = async (): Promise<Notification[]> => {
   try {
     const response = await apiClient.get("/notifications/");
-
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to fetch notifications", error);
-    console.error("Error details:", {
-      message: error.message,
-      status: error.response?.status,
-      statusText: error.response?.statusText,
-      data: error.response?.data,
-      url: error.config?.url,
-      baseURL: error.config?.baseURL,
-    });
-    toast.error("Failed to fetch notifications");
+
+    // Provide specific error messages based on error type
+    let errorMessage = "Failed to fetch notifications";
+
+    if (error?.response?.status === 401) {
+      errorMessage = "Authentication required. Please log in again.";
+    } else if (error?.response?.status === 500) {
+      errorMessage = "Server error. Please try again later.";
+    } else if (error?.code === "ECONNABORTED") {
+      errorMessage = "Request timeout. Please check your connection.";
+    } else if (error?.message?.includes("Network Error")) {
+      errorMessage = "Network error. Please check your internet connection.";
+    } else if (error?.response?.status === 404) {
+      errorMessage = "Notifications not found.";
+    }
+
+    // Only show toast for non-retryable errors
+    if (error?.response?.status !== 500 && error?.code !== "ECONNABORTED") {
+      toast.error(errorMessage);
+    }
+
     throw error;
   }
 };
@@ -87,25 +98,14 @@ const useNotifications = () => {
     queryKey: ["notifications", userId],
     queryFn: fetchNotifications,
     enabled: !!userId, // Only fetch if user is authenticated
-    staleTime: 0, // Always consider data stale for real-time updates
+    staleTime: 1000 * 60 * 2, // Consider data fresh for 2 minutes
     refetchOnWindowFocus: true, // Refetch when window gains focus
     refetchOnMount: true, // Refetch on component mount
     refetchOnReconnect: true, // Refetch on network reconnect
-    refetchInterval: (data) => {
-      // Only poll if user is active
-      if (!isActive) return false;
-
-      // Ensure data is an array before calling .some()
-      if (!Array.isArray(data)) {
-        return 10000; // Default polling interval if data is not ready
-      }
-
-      // Poll more frequently if there are unread notifications
-      const hasUnread = data.some((n) => !n.is_read);
-      return hasUnread ? 5000 : 10000; // Poll every 5s if unread, 10s if all read
-    },
+    refetchInterval: 30000, // Poll every 30 seconds for real-time updates
     refetchIntervalInBackground: false, // Don't poll when tab is not active
-    retry: 1, // Retry once on failure
+    retry: 3, // Retry up to 3 times on failure
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });
 
   // Filter notifications based on search and date
