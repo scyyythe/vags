@@ -691,12 +691,12 @@ const SellArtwork = () => {
                         </svg>
                       </div>
                       <div className="ml-2">
-                        <h3 className="text-xs font-medium text-yellow-800">{paymentAccountRequiredText}</h3>
-                        <div className="mt-1 text-xs text-yellow-700">
+                        <h3 className="text-[11px] font-medium text-yellow-800">{paymentAccountRequiredText}</h3>
+                        <div className="mt-1 text-[10px] text-yellow-700">
                           <p>{setupPaymentAccountDescText}</p>
                           <button
                             onClick={() => navigate("/settings")}
-                            className="mt-1 text-xs font-medium text-yellow-800 hover:text-yellow-900 underline"
+                            className="mt-2 text-[11px] font-medium text-yellow-800 hover:text-yellow-900 underline"
                           >
                             {setupPaymentAccountButtonText}
                           </button>
