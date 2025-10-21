@@ -105,12 +105,12 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
         if (data.access_token) {
           // Store Google registration data and show success message
-          setRegistrationData({
-            response: { data },
-            formData: {
-              firstName: data.user?.first_name || "",
-              lastName: data.user?.last_name || "",
-              email: data.user?.email || "",
+          setRegistrationData({ 
+            response: { data }, 
+            formData: { 
+              firstName: data.user?.first_name || "", 
+              lastName: data.user?.last_name || "", 
+              email: data.user?.email || "", 
               password: "",
             },
             isGoogleSignUp: true,
@@ -119,7 +119,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
             description: "Please accept the Terms & Conditions to continue.",
             closeButton: true,
           });
-
+          
           // Show Terms & Conditions modal
           setShowTermsModal(true);
         } else {
@@ -267,7 +267,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
         description: "Please accept the Terms & Conditions to continue.",
         closeButton: true,
       });
-
+      
       // Show Terms & Conditions modal
       setShowTermsModal(true);
     } catch (error: unknown) {
@@ -290,7 +290,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
       secureTokenStorage.setAccessToken(registrationData.response.data.access_token);
       secureTokenStorage.setRefreshToken(registrationData.response.data.refresh_token);
     }
-
+    
     // Close terms modal and proceed to login
     setShowTermsModal(false);
     closeRegisterModal();
