@@ -150,15 +150,16 @@ const useArtworks = (
   return useQuery({
     queryKey: ["artworks", currentPage, userId, endpointType, filterVisibility, onlyActivePublic],
     queryFn: () => fetchArtworks(currentPage, userId, endpointType, filterVisibility, onlyActivePublic),
-    staleTime: 0, // Always consider data stale for real-time updates
+    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
     enabled: enabled,
     gcTime: 1000 * 60 * 5,
     refetchOnWindowFocus: true, // Refetch when window gains focus
     refetchOnMount: true, // Refetch on component mount
     refetchOnReconnect: true, // Refetch on network reconnect
-    refetchInterval: 10000, // Poll every 10 seconds for new artworks (lower priority)
+    refetchInterval: false, // Disable automatic polling
     refetchIntervalInBackground: false, // Don't poll when tab is not active
-    retry: 1, // Retry once on failure
+    retry: 3, // Retry up to 3 times on failure
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });
 };
 

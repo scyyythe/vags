@@ -72,13 +72,14 @@ export const useArtworkReviewsAuto = (artworkId?: string) => {
       return response.data || [];
     },
     enabled: !!artworkId,
-    staleTime: 0, // Always consider data stale for real-time updates
+    staleTime: 1000 * 60 * 2, // Consider data fresh for 2 minutes
     refetchOnWindowFocus: true, // Refetch when window gains focus
     refetchOnMount: true, // Refetch on component mount
     refetchOnReconnect: true, // Refetch on network reconnect
-    refetchInterval: 3000, // Poll every 3 seconds for review updates
+    refetchInterval: 60000, // Poll every 1 minute for review updates
     refetchIntervalInBackground: false, // Don't poll when tab is not active
-    retry: 1, // Retry once on failure
+    retry: 3, // Retry up to 3 times on failure
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });
 
   return {
@@ -103,13 +104,14 @@ export const useArtworkReviewsRealTime = (artworkId?: string) => {
       return response.data || [];
     },
     enabled: !!artworkId,
-    staleTime: 0, // Always consider data stale for real-time updates
+    staleTime: 1000 * 60 * 2, // Consider data fresh for 2 minutes
     refetchOnWindowFocus: true, // Refetch when window gains focus
     refetchOnMount: true, // Refetch on component mount
     refetchOnReconnect: true, // Refetch on network reconnect
-    refetchInterval: 3000, // Poll every 3 seconds for review updates
+    refetchInterval: 60000, // Poll every 1 minute for review updates
     refetchIntervalInBackground: false, // Don't poll when tab is not active
-    retry: 1, // Retry once on failure
+    retry: 3, // Retry up to 3 times on failure
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });
 
   return {

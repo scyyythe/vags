@@ -8,6 +8,7 @@ const API_BASE_URL = isLocal ? import.meta.env.VITE_API_LOCAL : import.meta.env.
 const createAPIClient = (baseURL = API_BASE_URL) => {
   const apiClient = axios.create({
     baseURL,
+    timeout: 30000,
     headers: { "Content-Type": "application/json" },
   });
 

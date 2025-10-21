@@ -53,6 +53,22 @@ const Explore = () => {
   const searchQuery = searchParams.get("q") || "";
   const [currentPage] = useState(1);
   const { data: artworks, isLoading, error } = useArtworks(currentPage, undefined, true, "all", "public");
+
+  // Enhanced error handling
+  const getErrorMessage = (error: any) => {
+    if (error?.response?.status === 500) {
+      return "Server error. Please try again later.";
+    } else if (error?.response?.status === 404) {
+      return "Artworks not found.";
+    } else if (error?.code === "ECONNABORTED") {
+      return "Request timeout. Please check your connection.";
+    } else if (error?.message?.includes("Network Error")) {
+      return "Network error. Please check your internet connection.";
+    } else if (error?.response?.status === 401) {
+      return "Authentication required. Please log in again.";
+    }
+    return "Error loading artworks. Please try again.";
+  };
   const { data: popularArtworksRaw } = useFetchPopularArtworks();
   const queryClient = useQueryClient();
 
@@ -271,7 +287,12 @@ const Explore = () => {
                   {isLoading ? (
                     Array.from({ length: 10 }).map((_, index) => <ArtCardSkeleton key={index} />)
                   ) : error ? (
-                    <div className="col-span-full text-center text-sm text-gray-500">{translatedErrorLoading}</div>
+                    <div className="col-span-full text-center text-sm text-gray-500">
+                      <div className="mb-2">
+                        <i className="bx bx-error-circle text-2xl text-red-500"></i>
+                      </div>
+                      <p className="font-medium">{getErrorMessage(error)}</p>
+                    </div>
                   ) : filteredArtworksMemo.length === 0 && selectedCategory ? (
                     <div className="col-span-full flex flex-col items-center justify-center text-center">
                       <img src="/pics/empty.png" alt="No artwork" className="w-48 h-48 mb-4 opacity-80" />
