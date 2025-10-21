@@ -203,24 +203,23 @@ def update_purchase_order(request, order_id):
                     artwork.art_status = "Sold"
                 artwork.save()
                 
-                # Create transaction record for completed payment
-                Transaction(
-                    sender=purchased_artwork.buyer,
-                    receiver=artwork.artist,
-                    art=artwork,
-                    transaction_type="Purchase",
-                    amount=purchased_artwork.total_price,
-                    currency="PHP",
-                    payment_method=purchased_artwork.payment_method,
-                    payment_status="Completed",
-                    transaction_id=str(ObjectId()),
-                    extra_data={"purchase_id": str(purchased_artwork.id)},
-                    timestamp=datetime.now()
-                ).save()
-                
-                # Create notifications ONLY when payment is actually completed
+                # Create transaction record and notifications ONLY when payment is actually completed
                 # Check if this is a real payment completion (not just order submission)
                 if request.data.get('payment_completed', False):
+                    # Create transaction record for completed payment
+                    Transaction(
+                        sender=purchased_artwork.buyer,
+                        receiver=artwork.artist,
+                        art=artwork,
+                        transaction_type="Purchase",
+                        amount=purchased_artwork.total_price,
+                        currency="PHP",
+                        payment_method=purchased_artwork.payment_method,
+                        payment_status="Completed",
+                        transaction_id=str(ObjectId()),
+                        extra_data={"purchase_id": str(purchased_artwork.id)},
+                        timestamp=datetime.now()
+                    ).save()
                     Notification.objects.create(
                         user=artwork.artist,
                         actor=purchased_artwork.buyer,
