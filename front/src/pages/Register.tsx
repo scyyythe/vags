@@ -105,18 +105,21 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
         if (data.access_token) {
           // Store Google registration data and show success message
-          setRegistrationData({ 
-            response: { data }, 
-            formData: { 
-              firstName: data.user?.first_name || "", 
-              lastName: data.user?.last_name || "", 
-              email: data.user?.email || "", 
-              password: "" 
+          setRegistrationData({
+            response: { data },
+            formData: {
+              firstName: data.user?.first_name || "",
+              lastName: data.user?.last_name || "",
+              email: data.user?.email || "",
+              password: "",
             },
-            isGoogleSignUp: true 
+            isGoogleSignUp: true,
           });
-          toast.success(registrationSuccessful, { description: "Please accept the Terms & Conditions to continue.", closeButton: true });
-          
+          toast.success(registrationSuccessful, {
+            description: "Please accept the Terms & Conditions to continue.",
+            closeButton: true,
+          });
+
           // Show Terms & Conditions modal
           setShowTermsModal(true);
         } else {
@@ -151,6 +154,25 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
     // Validate names
     const nameRegex = /^[A-Z][a-zA-Z]*$/;
+
+    // Check for spaces in first name
+    if (firstName.includes(" ")) {
+      toast.error("First name invalid", {
+        description: "First name must not contain spaces",
+        closeButton: true,
+      });
+      return;
+    }
+
+    // Check for spaces in last name
+    if (lastName.includes(" ")) {
+      toast.error("Last name invalid", {
+        description: "Last name must not contain spaces",
+        closeButton: true,
+      });
+      return;
+    }
+
     if (!nameRegex.test(firstName)) {
       toast.error("First name invalid", {
         description: "Must start with a capital letter and contain only letters",
@@ -167,10 +189,35 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
     }
 
     // Validate email
+    // Check for spaces in email
+    if (email.includes(" ")) {
+      toast.error("Email invalid", {
+        description: "Email must not contain spaces",
+        closeButton: true,
+      });
+      return;
+    }
+
     const emailRegex = /^\S+@\S+\.\S+$/;
     if (!emailRegex.test(email)) {
       toast.error("Invalid email format", { closeButton: true });
       return;
+    }
+
+    // Check email uniqueness
+    try {
+      const checkResponse = await apiClient.post("user/check-email/", { email });
+      if (checkResponse.data.exists) {
+        toast.error("Email already exists", {
+          description: "This email address is already registered. Please use a different email.",
+          closeButton: true,
+        });
+        return;
+      }
+    } catch (error) {
+      // If the check-email endpoint doesn't exist or fails, continue with registration
+      // The backend will handle duplicate email validation during registration
+      console.warn("Email uniqueness check failed, proceeding with registration");
     }
 
     // Validate password
@@ -178,6 +225,26 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
       toast.error(passwordTooShort, { description: passwordTooShortDesc, closeButton: true });
       return;
     }
+
+    // Check for at least one uppercase letter
+    if (!/[A-Z]/.test(password)) {
+      toast.error("Password must contain uppercase letter", {
+        description: "Password must contain at least one uppercase letter (A-Z)",
+        closeButton: true,
+      });
+      return;
+    }
+
+    // Check for at least one number
+    if (!/[0-9]/.test(password)) {
+      toast.error("Password must contain number", {
+        description: "Password must contain at least one number (0-9)",
+        closeButton: true,
+      });
+      return;
+    }
+
+    // Check for at least one special character
     if (!/[^A-Za-z0-9]/.test(password)) {
       toast.error(passwordWeak, { description: passwordWeakDesc, closeButton: true });
       return;
@@ -196,8 +263,11 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
 
       // Store registration data and show success message
       setRegistrationData({ response, formData: { firstName, lastName, email, password } });
-      toast.success(registrationSuccessful, { description: "Please accept the Terms & Conditions to continue.", closeButton: true });
-      
+      toast.success(registrationSuccessful, {
+        description: "Please accept the Terms & Conditions to continue.",
+        closeButton: true,
+      });
+
       // Show Terms & Conditions modal
       setShowTermsModal(true);
     } catch (error: unknown) {
@@ -220,7 +290,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
       secureTokenStorage.setAccessToken(registrationData.response.data.access_token);
       secureTokenStorage.setRefreshToken(registrationData.response.data.refresh_token);
     }
-    
+
     // Close terms modal and proceed to login
     setShowTermsModal(false);
     closeRegisterModal();
@@ -347,11 +417,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
       </div>
 
       {/* Terms & Conditions Modal */}
-      <TermsAndConditionsModal
-        isOpen={showTermsModal}
-        onAgree={handleTermsAgree}
-        onExit={handleTermsExit}
-      />
+      <TermsAndConditionsModal isOpen={showTermsModal} onAgree={handleTermsAgree} onExit={handleTermsExit} />
     </div>
   );
 };
