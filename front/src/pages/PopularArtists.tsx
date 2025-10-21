@@ -49,15 +49,6 @@ const PopularArtists = () => {
   return (
     <section className="" id="artists">
       <div className="w-full">
-        {/* <motion.h2
-          className="text-3xl md:text-4xl font-bold text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          {popularArtistsHeading}
-        </motion.h2> */}
 
         <motion.div
           className="relative overflow-hidden pb-4 w-full"
@@ -85,16 +76,16 @@ const PopularArtists = () => {
                 animationPlayState: isPaused ? "paused" : "running",
                 width: "200%",
               }}
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
             >
               {scrollingArtists.map((artist, index) => (
                 <div
                   key={`${artist.id}-${index}`}
                   className="flex-shrink-0"
-                  onMouseEnter={() => setIsPaused(true)}
-                  onMouseLeave={() => setIsPaused(false)}
                 >
-                  <div className="artist-card group cursor-pointer bg-gray-100 px-4 py-3 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
-                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md bg-gray-300 flex items-center justify-center">
+                  <div className="artist-card bg-gray-50 group cursor-pointer px-4 py-3 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
+                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md flex items-center justify-center">
                       {artist.profile_picture ? (
                         <img src={artist.profile_picture} alt={artist.name} className="w-full h-full object-cover" />
                       ) : (
@@ -129,13 +120,13 @@ const PopularArtists = () => {
                 animationPlayState: isPaused ? "paused" : "running",
                 width: "200%",
               }}
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
             >
               {Array(4).fill(artists).flat().map((artist, index) => (
                 <div
                   key={`${artist.id}-${index}`}
                   className="flex-shrink-0"
-                  onMouseEnter={() => setIsPaused(true)}
-                  onMouseLeave={() => setIsPaused(false)}
                 >
                   <div className="artist-card group cursor-pointer bg-gray-100 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
                     <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md">
@@ -162,6 +153,10 @@ const PopularArtists = () => {
         }
         .animate-scroll {
           animation: scroll 40s linear infinite;
+          animation-fill-mode: none;
+        }
+        .animate-scroll:hover {
+          animation-play-state: paused;
         }
         .scrollbar-hide {
           -ms-overflow-style: none;
