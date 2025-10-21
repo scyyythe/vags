@@ -14,7 +14,7 @@ interface UpdateArtworkInput {
   description?: string;
   price?: string;
   edition?: string;
-  quantity?: string;
+  quantity?: number;
   mainImage?: File | null;
   size?: string;
   additionalImages?: (File | null)[];
@@ -33,7 +33,7 @@ const useUpdateArtwork = () => {
     try {
       const formData = new FormData();
 
-      const textFields = ["title", "year_created", "style", "medium", "description", "price", "edition", "quantity"];
+      const textFields = ["title", "year_created", "style", "medium", "description", "price", "edition"];
 
       textFields.forEach((field) => {
         const value = (data as any)[field];
@@ -41,6 +41,11 @@ const useUpdateArtwork = () => {
           formData.append(field, value);
         }
       });
+
+      // Handle quantity separately as it needs to be a number
+      if (data.quantity !== undefined && data.quantity !== null) {
+        formData.append("quantity", String(data.quantity));
+      }
 
       if (data.height && data.width) {
         formData.append("height", data.height);

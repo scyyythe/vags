@@ -18,7 +18,7 @@ export interface Artwork {
   price: number;
   visibility: string;
   created_at: string;
-  image_url: string;
+  image_url: string[];
   likes_count: number;
   artistImage: string;
   style: string;
@@ -27,6 +27,11 @@ export interface Artwork {
   likesCount: number;
   isShared: boolean;
   default_paypal_email?: string;
+  quantity?: number;
+  year_created?: string;
+  edition?: string;
+  discounted_price?: number;
+  updated_at?: string;
 }
 const fetchArtworks = async (
   currentPage: number,
