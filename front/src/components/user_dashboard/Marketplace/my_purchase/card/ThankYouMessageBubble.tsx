@@ -113,12 +113,12 @@ const ThankYouMessageBubble: React.FC<ThankYouMessageBubbleProps> = ({
   // Dynamic color setup - matching AutomaticMessageBubble
   const textMain = isSender ? "text-white" : "text-gray-900";
   const textSecondary = isSender ? "text-white/80" : "text-gray-600";
-  const textHighlight = "text-red-700";
+  const textHighlight = isSender ? "text-yellow-400" : "text-blue-700";
   const borderColor = isSender ? "border-white/20" : "border-gray-300/50";
-  const iconColor = isSender ? "text-white" : "text-red-700";
+  const iconColor = isSender ? "text-yellow-300" : "text-blue-600";
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 max-w-[200px] mx-auto">
       {/* Header */}
       <div className={`flex items-center gap-2 pb-2 border-b ${borderColor}`}>
         <p className="text-xs">
@@ -155,14 +155,14 @@ const ThankYouMessageBubble: React.FC<ThankYouMessageBubbleProps> = ({
         <button
           onClick={handleViewReview}
           className={`flex items-center gap-2 underline font-medium mt-3 transition-colors ${
-            isSender ? "text-white hover:text-pink-400" : "text-pink-600 hover:text-pink-700"
+            isSender ? "text-yellow-300" : "text-blue-600"
           }`}
         >
           <MessageCircle className={`w-4 h-4 ${iconColor}`} />
           {viewReviewDetailsText}
         </button>
 
-        <div
+        {/* <div
           className={`rounded-lg p-3 mt-4 ${
             isSender ? "bg-pink-400/20 border border-pink-300/30" : "bg-pink-100/40 border border-pink-400/50"
           }`}
@@ -170,7 +170,7 @@ const ThankYouMessageBubble: React.FC<ThankYouMessageBubbleProps> = ({
           <p className="text-[9px] text-pink-700">
             <span className="font-semibold">{fromTheArtistText}</span> {artistSupportText}
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
