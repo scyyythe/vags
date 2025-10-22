@@ -13,6 +13,7 @@ import apiClient from "@/utils/apiClient";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
+import { useQueryClient } from "@tanstack/react-query";
 interface ArtworkUpdateState {
   id: string;
   title: string;
@@ -38,6 +39,7 @@ const TranslatedStyleOption: React.FC<{ styleName: string }> = ({ styleName }) =
 
 const UpdateArtwork = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { id: artworkId } = useParams();
   const location = useLocation();
@@ -153,7 +155,6 @@ const UpdateArtwork = () => {
 
   const validateForm = (): boolean => {
     const titleRegex = /^[A-Z][A-Za-z0-9\s.,'-]{2,99}$/; // Proper title
-    const mediumRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/; // Proper medium names
     const currentYear = new Date().getFullYear();
 
     // Title
@@ -175,9 +176,22 @@ const UpdateArtwork = () => {
       return false;
     }
 
-    // Medium
-    if (!medium.trim() || !mediumRegex.test(medium.trim())) {
+    // Medium validation: proper names starting with capital letters
+    if (!medium.trim()) {
       toast.error(mediumValidationText);
+      return false;
+    }
+    
+    // Check if medium starts with capital letter
+    if (!/^[A-Z]/.test(medium.trim())) {
+      toast.error("Medium must start with a capital letter (e.g., Oil on Canvas, Digital Art)");
+      return false;
+    }
+    
+    // Allow letters, spaces, commas, and hyphens for proper names
+    const mediumRegex = /^[A-Za-z\s,.-]+$/;
+    if (!mediumRegex.test(medium)) {
+      toast.error("Medium must be proper name(s), start with a capital letter, letters only. Use commas or spaces to separate multiple mediums (e.g., Wood, Paint or Oil on Canvas)");
       return false;
     }
 
@@ -306,6 +320,16 @@ const UpdateArtwork = () => {
         additionalImages: additionalImages.filter((img): img is File => img instanceof File),
         removeExistingImages: false, // Don't remove existing images, just add new ones
       });
+
+      // Invalidate relevant queries to refresh marketplace data
+      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["artwork", artworkData.id] });
+      queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["myWishlist"] });
+      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
 
       toast.success(artworkUpdatedSuccessText, { id: "upload" });
       navigate("/marketplace");
