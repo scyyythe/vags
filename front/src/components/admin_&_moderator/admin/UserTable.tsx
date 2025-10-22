@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   DropdownMenu,
@@ -38,83 +38,199 @@ export function UserTable({ initialUsers, onPromoteUser, onSuspendUser, onBanUse
   const unbanUserMutation = useUnbanUserMutation();
   const reinstateUserMutation = useReinstateUserMutation();
 
+  // Sync local state with parent data
+  useEffect(() => {
+    setUsers(initialUsers);
+  }, [initialUsers]);
+
   const promoteUser = (userId: string) => {
+    // Optimistic update - immediately update UI
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => {
+        if (user.id === userId) {
+          const newRole = user.role === "moderator" ? "user" : "moderator";
+          return { ...user, role: newRole };
+        }
+        return user;
+      })
+    );
+
     promoteUserMutation.mutate(userId, {
       onSuccess: (updatedUser) => {
+        // Update with actual server response
         setUsers((prevUsers) =>
           prevUsers.map((user) => (user.id === updatedUser.id ? { ...user, role: updatedUser.role } : user))
         );
-
+        // Call parent handler for query invalidation
         onPromoteUser && onPromoteUser(updatedUser.id);
       },
       onError: (error) => {
         console.error("Failed to promote user:", error);
+        // Revert optimistic update on error
+        setUsers((prevUsers) =>
+          prevUsers.map((user) => {
+            if (user.id === userId) {
+              const revertedRole = user.role === "moderator" ? "user" : "moderator";
+              return { ...user, role: revertedRole };
+            }
+            return user;
+          })
+        );
       },
     });
   };
   const demoteUser = (userId: string) => {
+    // Optimistic update - immediately update UI
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => {
+        if (user.id === userId) {
+          const newRole = user.role === "moderator" ? "user" : "moderator";
+          return { ...user, role: newRole };
+        }
+        return user;
+      })
+    );
+
     demoteUserMutation.mutate(userId, {
       onSuccess: (updatedUser) => {
+        // Update with actual server response
         setUsers((prevUsers) =>
           prevUsers.map((user) => (user.id === updatedUser.id ? { ...user, role: updatedUser.role } : user))
         );
+        // Call parent handler for query invalidation
+        onPromoteUser && onPromoteUser(updatedUser.id);
       },
       onError: (error) => {
         console.error("Failed to demote user:", error);
+        // Revert optimistic update on error
+        setUsers((prevUsers) =>
+          prevUsers.map((user) => {
+            if (user.id === userId) {
+              const revertedRole = user.role === "moderator" ? "user" : "moderator";
+              return { ...user, role: revertedRole };
+            }
+            return user;
+          })
+        );
       },
     });
   };
   const suspendUser = (userId: string) => {
+    // Optimistic update - immediately update UI
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => (user.id === userId ? { ...user, user_status: "Suspended" } : user))
+    );
+
     const today = new Date();
     const end = new Date();
-    end.setDate(today.getDate() + 3); // 7-day suspension
+    end.setDate(today.getDate() + 3); // 3-day suspension
 
     suspendUserMutation.mutate({
       userId,
       start_date: today.toISOString(),
       end_date: end.toISOString(),
       reason: "Violation of community guidelines",
+    }, {
+      onSuccess: () => {
+        // Call parent handler for query invalidation
+        onSuspendUser && onSuspendUser(userId);
+      },
+      onError: (error) => {
+        console.error("Failed to suspend user:", error);
+        // Revert optimistic update on error
+        setUsers((prevUsers) =>
+          prevUsers.map((user) => (user.id === userId ? { ...user, user_status: "Active" } : user))
+        );
+      },
     });
   };
   const ReinstateUser = (userId: string) => {
+    // Optimistic update - immediately update UI
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => (user.id === userId ? { ...user, user_status: "Active" } : user))
+    );
+
     reinstateUserMutation.mutate(userId, {
       onSuccess: (updatedUser) => {
+        // Update with actual server response
         setUsers((prevUsers) =>
-          prevUsers.map((user) => (user.id === updatedUser.id ? { ...user, user_status: "Active" } : user))
+          prevUsers.map((user) => (user.id === updatedUser.id ? { ...user, user_status: updatedUser.user_status || "Active" } : user))
         );
+        // Call parent handler for query invalidation
+        onSuspendUser && onSuspendUser(updatedUser.id);
       },
       onError: (error) => {
         console.error("Failed to reinstate user:", error);
+        // Revert optimistic update on error
+        setUsers((prevUsers) =>
+          prevUsers.map((user) => (user.id === userId ? { ...user, user_status: "Suspended" } : user))
+        );
       },
     });
   };
   const banUser = (userId: string) => {
+    // Optimistic update - immediately update UI
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => (user.id === userId ? { ...user, user_status: "Banned" } : user))
+    );
+
     banUserMutation.mutate(
       { userId, reason: "Violation", is_permanent: true },
       {
         onSuccess: (updatedUser) => {
+          // Update with actual server response
           setUsers((prevUsers) =>
             prevUsers.map((user) =>
-              user.id === updatedUser.id ? { ...user, status: updatedUser.user_status || "Banned" } : user
+              user.id === updatedUser.id ? { ...user, user_status: updatedUser.user_status || "Banned" } : user
             )
           );
-
+          // Call parent handler for query invalidation
           onBanUser && onBanUser(updatedUser.id);
+        },
+        onError: (error) => {
+          console.error("Failed to ban user:", error);
+          // Revert optimistic update on error
+          setUsers((prevUsers) =>
+            prevUsers.map((user) => (user.id === userId ? { ...user, user_status: "Active" } : user))
+          );
         },
       }
     );
   };
 
   const unbanUser = (userId: string) => {
+    // Optimistic update - immediately update UI
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => (user.id === userId ? { ...user, user_status: "Active" } : user))
+    );
+
     unbanUserMutation.mutate(userId, {
       onSuccess: (updatedUser) => {
+        // Update with actual server response
         setUsers((prevUsers) =>
           prevUsers.map((user) =>
-            user.id === updatedUser.id ? { ...user, status: updatedUser.user_status || "Active" } : user
+            user.id === updatedUser.id ? { ...user, user_status: updatedUser.user_status || "Active" } : user
           )
+        );
+        // Call parent handler for query invalidation
+        onBanUser && onBanUser(updatedUser.id);
+      },
+      onError: (error) => {
+        console.error("Failed to unban user:", error);
+        // Revert optimistic update on error
+        setUsers((prevUsers) =>
+          prevUsers.map((user) => (user.id === userId ? { ...user, user_status: "Banned" } : user))
         );
       },
     });
+  };
+
+  const deleteUser = (userId: string) => {
+    // Optimistic update - immediately remove from UI
+    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+    
+    // Call parent handler for query invalidation
+    onDeleteUser && onDeleteUser(userId);
   };
 
   const filteredUsers = users.filter((user) => {

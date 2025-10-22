@@ -8,3 +8,12 @@ class IsAdminOrOwner(permissions.BasePermission):
         
         
         return str(obj.id) == str(request.user.id)
+
+class IsAdminUser(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.user and 
+            request.user.is_authenticated and 
+            hasattr(request.user, 'role') and 
+            request.user.role == "Admin"
+        )
