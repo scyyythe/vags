@@ -459,10 +459,10 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   </>
                 ) : (
                   <>
-                    <button className="w-full py-2 rounded-lg text-[11px] text-white font-medium bg-black">
+                    <button className="w-full py-2 rounded-full text-[11px] text-white font-medium bg-black">
                       {contactSellerText}
                     </button>
-                    <button className="w-full py-2 rounded-lg text-[11px] text-black font-medium border">
+                    <button className="w-full py-2 rounded-full text-[11px] text-black font-medium border">
                       {trackPaymentText}
                     </button>
                     {order.status === "Completed" && (
