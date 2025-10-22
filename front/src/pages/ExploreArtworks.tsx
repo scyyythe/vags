@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { MoreHorizontal, Heart } from "lucide-react";
+import { MoreHorizontal, Heart, ArrowRight } from "lucide-react";
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
 import { useModal } from "../context/ModalContext";
@@ -125,13 +125,14 @@ const ExploreArtworks = () => {
 
           <motion.a
             onClick={() => setShowRegisterModal(true)}
-            className="bg-black text-white text-xs font-small rounded-full px-4 py-2 hover:bg-gray-800 transition-colors cursor-pointer"
+            className="text-black text-sm font-medium hover:text-gray-700 transition-colors cursor-pointer flex items-center gap-1"
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
             {seeAll}
+            <ArrowRight className="w-4 h-4" />
           </motion.a>
         </div>
 
