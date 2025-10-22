@@ -1,4 +1,4 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminHeader } from "./AdminHeader";
 
@@ -17,10 +17,10 @@ export function AdminLayout({ children, role }: AdminLayoutProps) {
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
         <AdminSidebar role={role} />
-        <div className="flex-1 flex flex-col">
+        <SidebarInset className="flex-1 flex flex-col">
           <AdminHeader role={role} user={mockUser} />
           <main className="flex-1 overflow-auto p-6">{children}</main>
-        </div>
+        </SidebarInset>
       </div>
     </SidebarProvider>
   );
