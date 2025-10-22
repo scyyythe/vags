@@ -65,6 +65,7 @@ export const MessagesList = ({
 
   // State to hold translated messages
   const [translatedMessages, setTranslatedMessages] = useState(conversation.messages);
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
 
   // Effect to translate messages when language or messages change
   useEffect(() => {
@@ -120,13 +121,16 @@ export const MessagesList = ({
         }
       }
 
-      // Use instant scroll for better performance with many messages
-      messagesEndRef.current.scrollIntoView({ behavior: "auto", block: "end" });
+      // Use smooth scroll for better UX
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
 
-      // Fallback: also try scrolling the parent container instantly
+      // Fallback: also try scrolling the parent container smoothly
       const chatContainer = document.getElementById("chat-container");
       if (chatContainer) {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+        chatContainer.scrollTo({
+          top: chatContainer.scrollHeight,
+          behavior: "smooth",
+        });
       }
 
       userScrolledUpRef.current = false;
@@ -150,13 +154,38 @@ export const MessagesList = ({
     }
   }, [translatedMessages]);
 
+  // Add scroll event listener to track user scroll behavior
+  useEffect(() => {
+    const chatContainer = document.getElementById("chat-container");
+    if (!chatContainer) return;
+
+    const handleScroll = () => {
+      const isAtBottom = chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 50;
+      userScrolledUpRef.current = !isAtBottom;
+      setShowScrollToBottom(!isAtBottom);
+    };
+
+    chatContainer.addEventListener("scroll", handleScroll);
+
+    return () => {
+      chatContainer.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   useEffect(() => {
     const prevCount = prevMessageCountRef.current;
     const currentCount = conversation.messages.length;
 
     // Only scroll if a new message was added (don't force, respect user scroll)
     if (currentCount > prevCount) {
-      scrollToBottom(false); // Don't force scroll for new messages
+      // Check if user is at the bottom before auto-scrolling
+      const chatContainer = document.getElementById("chat-container");
+      if (chatContainer) {
+        const isAtBottom = chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 50;
+        if (isAtBottom || !userScrolledUpRef.current) {
+          scrollToBottom(false); // Don't force scroll for new messages
+        }
+      }
     }
 
     prevMessageCountRef.current = currentCount;
@@ -187,7 +216,18 @@ export const MessagesList = ({
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 relative">
+      {/* Scroll to Bottom Button */}
+      {showScrollToBottom && (
+        <Button
+          onClick={() => scrollToBottom(true)}
+          className="fixed bottom-20 right-6 z-50 h-8 w-8 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg"
+          size="sm"
+        >
+          ↓
+        </Button>
+      )}
+
       <div className="space-y-6">
         {translatedMessages.map((message) => {
           const repliedMessage = message.replyTo
