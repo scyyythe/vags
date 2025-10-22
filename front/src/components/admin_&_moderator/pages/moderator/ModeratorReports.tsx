@@ -163,10 +163,49 @@ const ModeratorReports = () => {
             </CardHeader>
             <CardContent>
               {getCurrentLoading() ? (
-                <div className="flex items-center justify-center p-8">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-                    <p className="text-sm text-gray-500">Loading reports...</p>
+                <div className="space-y-4">
+                  {/* Table Header Skeleton */}
+                  <div className="border rounded-lg">
+                    <div className="bg-gray-50 px-4 py-3 border-b">
+                      <div className="grid grid-cols-6 gap-4">
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-24 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                      </div>
+                    </div>
+                    
+                    {/* Table Rows Skeleton */}
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="px-4 py-4 border-b last:border-b-0">
+                        <div className="grid grid-cols-6 gap-4 items-center">
+                          <div className="flex items-center space-x-2">
+                            <div className="h-3 bg-gray-300 rounded w-12 animate-pulse"></div>
+                          </div>
+                          <div className="h-3 bg-gray-300 rounded w-16 animate-pulse"></div>
+                          <div className="h-3 bg-gray-300 rounded w-20 animate-pulse"></div>
+                          <div className="h-3 bg-gray-300 rounded w-14 animate-pulse"></div>
+                          <div className="h-3 bg-gray-300 rounded w-16 animate-pulse"></div>
+                          <div className="flex space-x-2">
+                            <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                            <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                            <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Pagination Skeleton */}
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <div className="h-4 bg-gray-300 rounded w-32 animate-pulse"></div>
+                    <div className="flex space-x-2">
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                    </div>
                   </div>
                 </div>
               ) : getCurrentError() ? (
@@ -199,10 +238,49 @@ const ModeratorReports = () => {
             </CardHeader>
             <CardContent>
               {getCurrentLoading() ? (
-                <div className="flex items-center justify-center p-8">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-                    <p className="text-sm text-gray-500">Loading reports...</p>
+                <div className="space-y-4">
+                  {/* Table Header Skeleton */}
+                  <div className="border rounded-lg">
+                    <div className="bg-gray-50 px-4 py-3 border-b">
+                      <div className="grid grid-cols-6 gap-4">
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-24 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                      </div>
+                    </div>
+                    
+                    {/* Table Rows Skeleton */}
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="px-4 py-4 border-b last:border-b-0">
+                        <div className="grid grid-cols-6 gap-4 items-center">
+                          <div className="flex items-center space-x-2">
+                            <div className="h-3 bg-gray-300 rounded w-12 animate-pulse"></div>
+                          </div>
+                          <div className="h-3 bg-gray-300 rounded w-16 animate-pulse"></div>
+                          <div className="h-3 bg-gray-300 rounded w-20 animate-pulse"></div>
+                          <div className="h-3 bg-gray-300 rounded w-14 animate-pulse"></div>
+                          <div className="h-3 bg-gray-300 rounded w-16 animate-pulse"></div>
+                          <div className="flex space-x-2">
+                            <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                            <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                            <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Pagination Skeleton */}
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <div className="h-4 bg-gray-300 rounded w-32 animate-pulse"></div>
+                    <div className="flex space-x-2">
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                    </div>
                   </div>
                 </div>
               ) : getCurrentError() ? (
@@ -235,10 +313,49 @@ const ModeratorReports = () => {
             </CardHeader>
             <CardContent>
               {getCurrentLoading() ? (
-                <div className="flex items-center justify-center p-8">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-                    <p className="text-sm text-gray-500">Loading reports...</p>
+                <div className="space-y-4">
+                  {/* Table Header Skeleton */}
+                  <div className="border rounded-lg">
+                    <div className="bg-gray-50 px-4 py-3 border-b">
+                      <div className="grid grid-cols-6 gap-4">
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-24 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                      </div>
+                    </div>
+                    
+                    {/* Table Rows Skeleton */}
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="px-4 py-4 border-b last:border-b-0">
+                        <div className="grid grid-cols-6 gap-4 items-center">
+                          <div className="flex items-center space-x-2">
+                            <div className="h-3 bg-gray-300 rounded w-12 animate-pulse"></div>
+                          </div>
+                          <div className="h-3 bg-gray-300 rounded w-16 animate-pulse"></div>
+                          <div className="h-3 bg-gray-300 rounded w-20 animate-pulse"></div>
+                          <div className="h-3 bg-gray-300 rounded w-14 animate-pulse"></div>
+                          <div className="h-3 bg-gray-300 rounded w-16 animate-pulse"></div>
+                          <div className="flex space-x-2">
+                            <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                            <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                            <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Pagination Skeleton */}
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <div className="h-4 bg-gray-300 rounded w-32 animate-pulse"></div>
+                    <div className="flex space-x-2">
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                    </div>
                   </div>
                 </div>
               ) : getCurrentError() ? (
@@ -271,10 +388,49 @@ const ModeratorReports = () => {
             </CardHeader>
             <CardContent>
               {getCurrentLoading() ? (
-                <div className="flex items-center justify-center p-8">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-                    <p className="text-sm text-gray-500">Loading reports...</p>
+                <div className="space-y-4">
+                  {/* Table Header Skeleton */}
+                  <div className="border rounded-lg">
+                    <div className="bg-gray-50 px-4 py-3 border-b">
+                      <div className="grid grid-cols-6 gap-4">
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-24 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                      </div>
+                    </div>
+                    
+                    {/* Table Rows Skeleton */}
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="px-4 py-4 border-b last:border-b-0">
+                        <div className="grid grid-cols-6 gap-4 items-center">
+                          <div className="flex items-center space-x-2">
+                            <div className="h-3 bg-gray-300 rounded w-12 animate-pulse"></div>
+                          </div>
+                          <div className="h-3 bg-gray-300 rounded w-16 animate-pulse"></div>
+                          <div className="h-3 bg-gray-300 rounded w-20 animate-pulse"></div>
+                          <div className="h-3 bg-gray-300 rounded w-14 animate-pulse"></div>
+                          <div className="h-3 bg-gray-300 rounded w-16 animate-pulse"></div>
+                          <div className="flex space-x-2">
+                            <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                            <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                            <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Pagination Skeleton */}
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <div className="h-4 bg-gray-300 rounded w-32 animate-pulse"></div>
+                    <div className="flex space-x-2">
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                    </div>
                   </div>
                 </div>
               ) : getCurrentError() ? (
