@@ -55,7 +55,7 @@ const HowItWorksSection = () => {
       title: useAutoTranslation("Auction & Bid", language),
       description: useAutoTranslation("Participate in live auctions, place bids, and compete for exclusive artworks.", language),
       details: [
-        useAutoTranslation("Join live auctions", language),
+        useAutoTranslation("View posted auctions", language),
         useAutoTranslation("Place competitive bids", language),
         useAutoTranslation("Win exclusive artworks", language)
       ],
@@ -100,7 +100,7 @@ const HowItWorksSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-2xl sm:text-3xl font-bold text-black mb-6">
+          <p className="text-3xl sm:text-3xl font-bold text-black mb-6">
             {howItWorksTitle}
             <br />
             <span className="text-red-800">{howItWorksSubtitle}</span>
@@ -160,51 +160,6 @@ const HowItWorksSection = () => {
             </motion.div>
           ))}
         </motion.div>
-
-        {/* Features Grid */}
-        {/* <motion.div
-          className="grid md:grid-cols-3 gap-8 mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="text-center bg-white rounded-2xl p-8 shadow-sm">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="w-8 h-8 text-green-600" />
-            </div>
-            <h3 className="text-xl font-bold text-black mb-3">
-              {useAutoTranslation("Secure & Safe", language)}
-            </h3>
-            <p className="text-gray-600">
-              {useAutoTranslation("All transactions are secured with blockchain technology and encrypted payments.", language)}
-            </p>
-          </div>
-
-          <div className="text-center bg-white rounded-2xl p-8 shadow-sm">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-blue-600" />
-            </div>
-            <h3 className="text-xl font-bold text-black mb-3">
-              {useAutoTranslation("Easy Discovery", language)}
-            </h3>
-            <p className="text-gray-600">
-              {useAutoTranslation("Find exactly what you're looking for with our advanced search and filter options.", language)}
-            </p>
-          </div>
-
-          <div className="text-center bg-white rounded-2xl p-8 shadow-sm">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Gavel className="w-8 h-8 text-purple-600" />
-            </div>
-            <h3 className="text-xl font-bold text-black mb-3">
-              {useAutoTranslation("Fair Auctions", language)}
-            </h3>
-            <p className="text-gray-600">
-              {useAutoTranslation("Transparent bidding process ensures fair prices for both artists and collectors.", language)}
-            </p>
-          </div>
-        </motion.div> */}
 
         {/* CTA Section */}
         <motion.div
