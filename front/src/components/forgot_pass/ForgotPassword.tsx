@@ -377,10 +377,14 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
               className="absolute inset-y-0 right-3 flex items-center text-gray-400"
               onClick={() => setShowPassword(!showPassword)}
             >
-              <i className={showPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "15px" }}></i>
+              <img 
+                src={showPassword ? "https://img.icons8.com/fluency-systems-regular/48/visible--v1.png" : "https://img.icons8.com/fluency-systems-regular/48/closed-eye.png"} 
+                alt={showPassword ? "Hide password" : "Show password"}
+                className="w-4 h-4 mb-2"
+              />
             </button>
           </div>
-        </div>
+        </div> 
 
         <div className="mb-6">
           <label htmlFor="confirmPassword" className="block text-xs font-medium mb-2">
@@ -404,7 +408,11 @@ const ForgotPassword = ({ closeForgotPasswordModal }: { closeForgotPasswordModal
               className="absolute inset-y-0 right-3 flex items-center text-gray-400"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
-              <i className={showConfirmPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "15px" }}></i>
+              <img 
+                src={showPassword ? "https://img.icons8.com/fluency-systems-regular/48/visible--v1.png" : "https://img.icons8.com/fluency-systems-regular/48/closed-eye.png"} 
+                alt={showPassword ? "Hide password" : "Show password"}
+                className="w-4 h-4 mb-2"
+              />
             </button>
           </div>
           {error && <p className="text-red-600 text-[10px] mt-1">{error}</p>}
