@@ -9,10 +9,12 @@ export type FlaggedContentItem = {
   flagged_reason: string;
   reported_by: string;
   date_flagged: string;
+  created_at: string;
   status: string;
   report_description: string;
   content_id: string;
   content_data: {
+    id?: string;
     title?: string;
     artist?: string;
     category?: string;

@@ -6,6 +6,7 @@ from api.views.moderator.moderator_overview import ModeratorOverviewView
 from api.views.moderator.flagged_content import FlaggedContentView
 from api.views.moderator.moderator_reports import ModeratorReportsView, ModeratorReportUpdateView
 from api.views.moderator.recently_resolved import RecentlyResolvedView
+from api.views.moderator.content_moderation import ContentModerationActionView
 from api.views.admin.actions import PromoteUserView,DemoteUserView,SuspendUserView,BanUserView,UnbanUserView,ReinstateUserView
 from api.views.admin_views.create_user_view import AdminCreateUserView
 
@@ -40,6 +41,8 @@ admin_urlpatterns = [
     path('moderator/reports/<str:report_id>/update/', ModeratorReportUpdateView.as_view(), name='moderator-report-update'),
     # moderator recently resolved
     path('moderator/recently-resolved/', RecentlyResolvedView.as_view(), name='moderator-recently-resolved'),
+    # moderator content moderation actions
+    path('moderator/content-moderation/', ContentModerationActionView.as_view(), name='moderator-content-moderation'),
     # admin transactions
     path('admin/transactions/', AdminTransactionsView.as_view(), name='admin-transactions'),
 ]
