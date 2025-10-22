@@ -128,14 +128,21 @@ export const useOptimizedSellArtwork = () => {
           throw new Error("You must be logged in to list artwork.");
         }
 
-        // Upload with increased timeout for large files
+        // Upload with optimized timeout
         const response = await apiClient.post("/art/sell/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
-          // Increase timeout for large files
-          timeout: 120000, // 2 minutes
+          // Reduced timeout for faster feedback
+          timeout: 30000, // 30 seconds
+          // Add upload progress tracking
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              console.log(`Upload progress: ${percentCompleted}%`);
+            }
+          },
         });
 
         // Invalidate all marketplace and related queries for real-time updates

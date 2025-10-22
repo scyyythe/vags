@@ -49,30 +49,43 @@ class MarketplacePagination(PageNumberPagination):
     max_page_size = 500
 
 def clear_artwork_caches():
-    """Clear all artwork-related caches"""
-    print("DEBUG: Starting to clear artwork caches...")
-    from api.serializers.artwork_s.artwork_serializers import ArtSerializer
-    ArtSerializer.clear_cache()
-    print("DEBUG: Cleared serializer caches")
-    
-    # Clear view-level caches
-    cache_keys_to_clear = [
-        "popular_artworks_top5",
+    """Clear all artwork-related caches efficiently"""
+    try:
+        print("DEBUG: Starting to clear artwork caches...")
+        
+        # Clear serializer caches
+        from api.serializers.artwork_s.artwork_serializers import ArtSerializer
+        ArtSerializer.clear_cache()
+        print("DEBUG: Cleared serializer caches")
+        
         # Clear marketplace-specific caches
-        "artworks_for_sale_anonymous",
-        # Add more cache keys as needed
-    ]
-    
-    for key in cache_keys_to_clear:
+        marketplace_cache_keys = [
+            "popular_artworks_top5",
+            "artworks_for_sale_anonymous",
+            "marketplace-art-cards",
+            "artworks_for_sale",
+        ]
+        
         from api.utils.cache_utils import delete_cache_data
-        delete_cache_data(key)
-        print(f"DEBUG: Cleared cache key: {key}")
-    
-    # Clear user-specific marketplace caches (for all users)
-    # This is a more aggressive approach to ensure immediate visibility
-    from api.utils.cache_utils import clear_all_artwork_caches
-    clear_all_artwork_caches()
-    print("DEBUG: Cleared all artwork caches")
+        for key in marketplace_cache_keys:
+            try:
+                delete_cache_data(key)
+                print(f"DEBUG: Cleared marketplace cache key: {key}")
+            except Exception as e:
+                print(f"DEBUG: Error clearing cache key {key}: {e}")
+        
+        # Clear user-specific marketplace caches
+        try:
+            from api.utils.cache_utils import clear_all_artwork_caches
+            clear_all_artwork_caches()
+            print("DEBUG: Cleared all user-specific artwork caches")
+        except Exception as e:
+            print(f"DEBUG: Error clearing user-specific caches: {e}")
+        
+        print("DEBUG: Cleared all artwork caches")
+        
+    except Exception as e:
+        print(f"DEBUG: Error in clear_artwork_caches: {e}")
 
 class ArtCreateView(generics.ListCreateAPIView):
     queryset = Art.objects.all()
@@ -94,8 +107,18 @@ class ArtCreateView(generics.ListCreateAPIView):
 
         try:
             art = serializer.save(artist=mongo_user)
-            # Clear caches after creating new artwork
-            clear_artwork_caches()
+            
+            # Handle cache clearing asynchronously (non-blocking)
+            import threading
+            def async_cache_clear():
+                try:
+                    clear_artwork_caches()
+                except Exception as e:
+                    print(f"Error in async cache clearing: {e}")
+            
+            # Start async cache clearing in background
+            threading.Thread(target=async_cache_clear, daemon=True).start()
+            
         except ValidationError as e:
             # Re-raise ValidationError as-is to preserve the error structure
             print("❌ Validation error during serializer.save():", e.detail)
@@ -126,18 +149,41 @@ class SellArtworkView(APIView):
         if serializer.is_valid():
             art = serializer.save(artist=mongo_user)
             
-            # Clear artwork caches to ensure new artwork appears immediately
-            clear_artwork_caches()
+            # Return response immediately for faster upload completion
+            response_data = {
+                "id": str(art.id),
+                "title": art.title,
+                "price": art.price,
+                "art_status": art.art_status,
+                "visibility": art.visibility,
+                "created_at": art.created_at,
+                "message": "Artwork uploaded successfully"
+            }
             
-            # Create notification for successful artwork listing
-            from api.utils.notification_utils import notify_artwork_listed_for_sale
-            notify_artwork_listed_for_sale(
-                artist=mongo_user,
-                artwork=art,
-                price=art.price
-            )
+            # Clear caches immediately for marketplace visibility
+            try:
+                clear_artwork_caches()
+            except Exception as e:
+                print(f"Error clearing caches: {e}")
             
-            return Response(ArtSerializer(art).data, status=status.HTTP_201_CREATED)
+            # Handle notifications asynchronously (non-blocking)
+            import threading
+            def async_notification():
+                try:
+                    # Create notification
+                    from api.utils.notification_utils import notify_artwork_listed_for_sale
+                    notify_artwork_listed_for_sale(
+                        artist=mongo_user,
+                        artwork=art,
+                        price=art.price
+                    )
+                except Exception as e:
+                    print(f"Error in async notification: {e}")
+            
+            # Start async notification in background
+            threading.Thread(target=async_notification, daemon=True).start()
+            
+            return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class UpdateArtworkView(APIView):
     permission_classes = [permissions.IsAuthenticated]

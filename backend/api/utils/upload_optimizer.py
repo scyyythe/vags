@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class UploadOptimizer:
     """Optimized upload handling with parallel processing"""
     
-    def __init__(self, max_workers: int = 3):
+    def __init__(self, max_workers: int = 5):
         self.max_workers = max_workers
         self.executor = ThreadPoolExecutor(max_workers=max_workers)
     
@@ -23,22 +23,19 @@ class UploadOptimizer:
         index, img = image_data
         
         try:
-            # Use signed upload with transformations for better performance
+            # Use optimized upload with minimal transformations for speed
             result = cloudinary.uploader.upload(
                 img,
                 folder="artworks",
-                # Optimize images during upload
+                # Minimal transformation for faster upload
                 transformation=[
                     {"quality": "auto", "fetch_format": "auto"},
                     {"width": 1920, "height": 1920, "crop": "limit"}
                 ],
-                # Add timeout
-                timeout=30,
-                # Additional optimization parameters
-                eager=[
-                    {"width": 800, "height": 800, "crop": "limit", "quality": "auto"},
-                    {"width": 400, "height": 400, "crop": "limit", "quality": "auto"}
-                ]
+                # Reduced timeout for faster failure detection
+                timeout=15,
+                # Remove eager transformations to speed up initial upload
+                # Eager transformations can be generated on-demand
             )
             
             return index, {
@@ -111,4 +108,4 @@ class UploadOptimizer:
 
 
 # Global upload optimizer instance
-upload_optimizer = UploadOptimizer(max_workers=3)
+upload_optimizer = UploadOptimizer(max_workers=5)
