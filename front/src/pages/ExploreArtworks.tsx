@@ -125,7 +125,7 @@ const ExploreArtworks = () => {
 
           <motion.a
             onClick={() => setShowRegisterModal(true)}
-            className="text-black text-sm font-medium hover:text-gray-700 transition-colors cursor-pointer flex items-center gap-1"
+            className="text-black text-sm font-medium hover:text-red-700 transition-colors cursor-pointer flex items-center gap-1"
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
