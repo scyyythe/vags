@@ -50,7 +50,7 @@ const PopularArtists = () => {
   }, [topArtist, isLoading, isError]);
 
   return (
-    <section className="" id="artists">
+    <section className="pb-16" id="artists">
       <div className="w-full">
         <motion.div
           className="relative overflow-hidden p-4 w-full"
@@ -61,7 +61,7 @@ const PopularArtists = () => {
         >
           {/* Title and Subtitle */}
           <div className="text-center mb-12">
-            <h2 className="text-[27px] md:text-2xl font-bold mb-2">{popularArtistsHeading}</h2>
+            <h2 className="text-[27px] md:text-[26px] font-bold mb-2">{popularArtistsHeading}</h2>
             {/* <p className="text-gray-600 text-xs max-w-2xl mx-auto">{popularArtistsSubtitle}</p> */}
           </div>
 
@@ -87,7 +87,7 @@ const PopularArtists = () => {
 
           {/* Show API data with auto-scrolling */}
           {!isLoading && !isError && scrollingArtists.length > 0 && (
-            <div className="space-y-12">
+            <div className="space-y-16">
               {/* First line - slides left to right */}
               <div
                 className="flex animate-scroll-left gap-10 whitespace-nowrap w-max"

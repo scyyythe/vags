@@ -131,7 +131,7 @@ const AuctionFeature = (initialTime) => {
               </div>
             </div>
 
-            <div className="bg-gray-900 rounded-3xl py-7 flex justify-center items-center max-w-md">
+            <div className="bg-gray-900 rounded-3xl py-7 flex justify-center items-center max-w-md sm:max-w-xl">
               <div className="flex">
                 <div className="flex-1 text-center">
                   <p className="text-[11px] text-white mb-3">{tCurrentBid}</p>
@@ -174,7 +174,7 @@ const AuctionFeature = (initialTime) => {
 
             <div className="flex space-x-8">
               <button
-                className="bg-red-700 text-white text-xs flex-1 rounded-full px-4 py-2 hover:bg-red-600"
+                className="bg-red-800 text-white text-xs flex-1 rounded-full px-4 py-2 hover:bg-red-700"
                 onClick={() => setShowRegisterModal(true)}
               >
                 {tPlaceBid}
