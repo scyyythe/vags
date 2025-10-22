@@ -63,10 +63,28 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
       : "hover:bg-muted/50";
 
   return (
-    <Sidebar
-      className={`${isCollapsed ? "w-14" : "w-60"} transition-all duration-300`}
-      collapsible="icon"
-    >
+    <>
+      <style>{`
+        @media (max-width: 768px) {
+          [data-sidebar="sidebar"] {
+            background-color: white !important;
+          }
+          [data-sidebar="sidebar"] [data-sidebar="sidebar-content"] {
+            background-color: white !important;
+          }
+          [data-sidebar="sidebar"] [data-sidebar="sidebar-group"] {
+            background-color: white !important;
+          }
+          [data-sidebar="sidebar"] [data-sidebar="sidebar-menu"] {
+            background-color: white !important;
+          }
+        }
+      `}</style>
+      <Sidebar
+        className={`${isCollapsed ? "w-14" : "w-60"} transition-all duration-300`}
+        collapsible="icon"
+        variant="inset"
+      >
       <div className="flex justify-center p-4">
         <Logo />
       </div>
@@ -106,5 +124,6 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
+    </>
   );
 }
