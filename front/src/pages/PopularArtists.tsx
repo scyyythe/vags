@@ -53,16 +53,16 @@ const PopularArtists = () => {
     <section className="" id="artists">
       <div className="w-full">
         <motion.div
-          className="relative overflow-hidden pb-4 w-full"
+          className="relative overflow-hidden p-4 w-full"
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
         >
           {/* Title and Subtitle */}
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-2xl font-bold mb-2">{popularArtistsHeading}</h2>
-            <p className="text-gray-600 text-xs max-w-2xl mx-auto">{popularArtistsSubtitle}</p>
+          <div className="text-center mb-12">
+            <h2 className="text-[27px] md:text-2xl font-bold mb-2">{popularArtistsHeading}</h2>
+            {/* <p className="text-gray-600 text-xs max-w-2xl mx-auto">{popularArtistsSubtitle}</p> */}
           </div>
 
           {/* Show skeletons while loading */}
@@ -87,12 +87,12 @@ const PopularArtists = () => {
 
           {/* Show API data with auto-scrolling */}
           {!isLoading && !isError && scrollingArtists.length > 0 && (
-            <div className="space-y-4">
+            <div className="space-y-12">
               {/* First line - slides left to right */}
               <div
-                className="flex animate-scroll-left gap-4 whitespace-nowrap w-max"
+                className="flex animate-scroll-left gap-10 whitespace-nowrap w-max"
                 style={{
-                  animationPlayState: isPaused ? "paused" : "running",
+                  animationPlayState: "running",
                   width: "200%",
                 }}
                 onMouseEnter={() => setIsPaused(true)}
@@ -100,7 +100,7 @@ const PopularArtists = () => {
               >
                 {scrollingArtists.map((artist, index) => (
                   <div key={`${artist.id}-${index}`} className="flex-shrink-0">
-                    <div className="artist-card bg-gray-50 group cursor-pointer px-4 py-3 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
+                    <div className="artist-card bg-gray-50 group cursor-pointer px-5 py-[15px] rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
                       <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md flex items-center justify-center">
                         {artist.profile_picture ? (
                           <img src={artist.profile_picture} alt={artist.name} className="w-full h-full object-cover" />
@@ -129,9 +129,9 @@ const PopularArtists = () => {
 
               {/* Second line - slides right to left */}
               <div
-                className="flex animate-scroll-right gap-4 whitespace-nowrap w-max"
+                className="flex animate-scroll-right gap-10 whitespace-nowrap w-max"
                 style={{
-                  animationPlayState: isPaused ? "paused" : "running",
+                  animationPlayState: "running",
                   width: "200%",
                 }}
                 onMouseEnter={() => setIsPaused(true)}
@@ -139,7 +139,7 @@ const PopularArtists = () => {
               >
                 {scrollingArtists.map((artist, index) => (
                   <div key={`second-${artist.id}-${index}`} className="flex-shrink-0">
-                    <div className="artist-card bg-gray-50 group cursor-pointer px-4 py-3 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
+                    <div className="artist-card bg-gray-50 group cursor-pointer px-5 py-[15px] rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
                       <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md flex items-center justify-center">
                         {artist.profile_picture ? (
                           <img src={artist.profile_picture} alt={artist.name} className="w-full h-full object-cover" />
@@ -165,6 +165,46 @@ const PopularArtists = () => {
                   </div>
                 ))}
               </div>
+
+              {/* Third line - slides left to right */}
+              <div
+                className="flex animate-scroll-left gap-10 whitespace-nowrap w-max"
+                style={{
+                  animationPlayState: "running",
+                  width: "200%",
+                }}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+              >
+                {scrollingArtists.map((artist, index) => (
+                  <div key={`${artist.id}-${index}`} className="flex-shrink-0">
+                    <div className="artist-card bg-gray-50 group cursor-pointer px-5 py-[15px] rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md flex items-center justify-center">
+                        {artist.profile_picture ? (
+                          <img src={artist.profile_picture} alt={artist.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-xs font-bold text-gray-700">
+                            {artist.name
+                              ?.split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)
+                              .toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col">
+                        <span className="text-[13px] font-medium">{artist.name}</span>
+                        <span className="text-[11px] text-red-500">
+                          {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
             </div>
           )}
 
