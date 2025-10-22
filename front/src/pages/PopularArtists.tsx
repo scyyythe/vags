@@ -35,6 +35,7 @@ const PopularArtists = () => {
 
   // Translate heading + labels
   const popularArtistsHeading = useAutoTranslation("Popular Artists", language);
+  const popularArtistsSubtitle = useAutoTranslation("Discover the most followed creators in our community", language);
   const followersLabel = useAutoTranslation("Followers", language);
 
   const { data: topArtist, isLoading, isError, refetch } = usePopularArtists();
@@ -58,55 +59,112 @@ const PopularArtists = () => {
           whileInView="show"
           viewport={{ once: true }}
         >
+          {/* Title and Subtitle */}
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-2xl font-bold mb-2">{popularArtistsHeading}</h2>
+            <p className="text-gray-600 text-xs max-w-2xl mx-auto">{popularArtistsSubtitle}</p>
+          </div>
+
           {/* Show skeletons while loading */}
           {isLoading && (
-            <div className="flex gap-4">
-              {Array.from({ length: 8 }).map((_, idx) => (
-                <motion.div key={idx} variants={item} className="flex-shrink-0">
-                  <ArtistSkeleton />
-                </motion.div>
-              ))}
+            <div className="space-y-4">
+              <div className="flex gap-4">
+                {Array.from({ length: 8 }).map((_, idx) => (
+                  <motion.div key={idx} variants={item} className="flex-shrink-0">
+                    <ArtistSkeleton />
+                  </motion.div>
+                ))}
+              </div>
+              <div className="flex gap-4">
+                {Array.from({ length: 8 }).map((_, idx) => (
+                  <motion.div key={`second-${idx}`} variants={item} className="flex-shrink-0">
+                    <ArtistSkeleton />
+                  </motion.div>
+                ))}
+              </div>
             </div>
           )}
 
           {/* Show API data with auto-scrolling */}
           {!isLoading && !isError && scrollingArtists.length > 0 && (
-            <div
-              className="flex animate-scroll gap-4 whitespace-nowrap w-max"
-              style={{
-                animationPlayState: isPaused ? "paused" : "running",
-                width: "200%",
-              }}
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-            >
-              {scrollingArtists.map((artist, index) => (
-                <div key={`${artist.id}-${index}`} className="flex-shrink-0">
-                  <div className="artist-card bg-gray-50 group cursor-pointer px-4 py-3 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
-                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md flex items-center justify-center">
-                      {artist.profile_picture ? (
-                        <img src={artist.profile_picture} alt={artist.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-xs font-bold text-gray-700">
-                          {artist.name
-                            ?.split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .slice(0, 2)
-                            .toUpperCase()}
-                        </span>
-                      )}
-                    </div>
+            <div className="space-y-4">
+              {/* First line - slides left to right */}
+              <div
+                className="flex animate-scroll-left gap-4 whitespace-nowrap w-max"
+                style={{
+                  animationPlayState: isPaused ? "paused" : "running",
+                  width: "200%",
+                }}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+              >
+                {scrollingArtists.map((artist, index) => (
+                  <div key={`${artist.id}-${index}`} className="flex-shrink-0">
+                    <div className="artist-card bg-gray-50 group cursor-pointer px-4 py-3 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md flex items-center justify-center">
+                        {artist.profile_picture ? (
+                          <img src={artist.profile_picture} alt={artist.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-xs font-bold text-gray-700">
+                            {artist.name
+                              ?.split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)
+                              .toUpperCase()}
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="flex flex-col">
-                      <span className="text-[13px] font-medium">{artist.name}</span>
-                      <span className="text-[11px] text-red-500">
-                        {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
-                      </span>
+                      <div className="flex flex-col">
+                        <span className="text-[13px] font-medium">{artist.name}</span>
+                        <span className="text-[11px] text-red-500">
+                          {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+
+              {/* Second line - slides right to left */}
+              <div
+                className="flex animate-scroll-right gap-4 whitespace-nowrap w-max"
+                style={{
+                  animationPlayState: isPaused ? "paused" : "running",
+                  width: "200%",
+                }}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+              >
+                {scrollingArtists.map((artist, index) => (
+                  <div key={`second-${artist.id}-${index}`} className="flex-shrink-0">
+                    <div className="artist-card bg-gray-50 group cursor-pointer px-4 py-3 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md flex items-center justify-center">
+                        {artist.profile_picture ? (
+                          <img src={artist.profile_picture} alt={artist.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-xs font-bold text-gray-700">
+                            {artist.name
+                              ?.split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)
+                              .toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col">
+                        <span className="text-[13px] font-medium">{artist.name}</span>
+                        <span className="text-[11px] text-red-500">
+                          {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -119,48 +177,90 @@ const PopularArtists = () => {
 
           {/* Fallback if API fails with auto-scrolling */}
           {isError && (
-            <div
-              className="flex animate-scroll gap-4 whitespace-nowrap w-max"
-              style={{
-                animationPlayState: isPaused ? "paused" : "running",
-                width: "200%",
-              }}
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-            >
-              {Array(4)
-                .fill(artists)
-                .flat()
-                .map((artist, index) => (
-                  <div key={`${artist.id}-${index}`} className="flex-shrink-0">
-                    <div className="artist-card group cursor-pointer bg-gray-100 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md">
-                        <img src={artist.image} alt={artist.name} className="w-full h-full object-cover" />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium">{artist.name}</span>
-                        <span className="text-xs text-red-500">
-                          {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
-                        </span>
+            <div className="space-y-4">
+              {/* First line - slides left to right */}
+              <div
+                className="flex animate-scroll-left gap-4 whitespace-nowrap w-max"
+                style={{
+                  animationPlayState: isPaused ? "paused" : "running",
+                  width: "200%",
+                }}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+              >
+                {Array(4)
+                  .fill(artists)
+                  .flat()
+                  .map((artist, index) => (
+                    <div key={`${artist.id}-${index}`} className="flex-shrink-0">
+                      <div className="artist-card group cursor-pointer bg-gray-100 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md">
+                          <img src={artist.image} alt={artist.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">{artist.name}</span>
+                          <span className="text-xs text-red-500">
+                            {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+              </div>
+
+              {/* Second line - slides right to left */}
+              <div
+                className="flex animate-scroll-right gap-4 whitespace-nowrap w-max"
+                style={{
+                  animationPlayState: isPaused ? "paused" : "running",
+                  width: "200%",
+                }}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+              >
+                {Array(4)
+                  .fill(artists)
+                  .flat()
+                  .map((artist, index) => (
+                    <div key={`second-${artist.id}-${index}`} className="flex-shrink-0">
+                      <div className="artist-card group cursor-pointer bg-gray-100 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md">
+                          <img src={artist.image} alt={artist.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">{artist.name}</span>
+                          <span className="text-xs text-red-500">
+                            {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
           )}
         </motion.div>
       </div>
 
       <style>{`
-        @keyframes scroll {
+        @keyframes scroll-left {
           0% { transform: translateX(0%); }
           100% { transform: translateX(-50%); }
         }
-        .animate-scroll {
-          animation: scroll 40s linear infinite;
+        @keyframes scroll-right {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0%); }
+        }
+        .animate-scroll-left {
+          animation: scroll-left 40s linear infinite;
           animation-fill-mode: none;
         }
-        .animate-scroll:hover {
+        .animate-scroll-right {
+          animation: scroll-right 40s linear infinite;
+          animation-fill-mode: none;
+        }
+        .animate-scroll-left:hover,
+        .animate-scroll-right:hover {
           animation-play-state: paused;
         }
         .scrollbar-hide {
