@@ -116,10 +116,6 @@ class ModeratorOverviewView(APIView):
                     created_at__gte=now - timedelta(days=30)
                 ).order_by("-created_at")[:3]
                 
-                # Debug: Check if we found any reports
-                print(f"DEBUG: Found {len(recent_reports)} recent reports")
-                for report in recent_reports:
-                    print(f"DEBUG: Report {report.id} - Category: {report.category}, Status: {report.status}")
                 
                 for report in recent_reports:
                     # Determine alert type and color based on category

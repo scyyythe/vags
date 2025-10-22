@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import useModeratorOverview from "@/hooks/moderator/useModeratorOverview";
 import useFlaggedContent from "@/hooks/moderator/useFlaggedContent";
+import useRecentlyResolved from "@/hooks/moderator/useRecentlyResolved";
 import {
   Bell,
   FileCheck,
@@ -71,6 +72,7 @@ const ModeratorDashboard = () => {
   const [reports, setReports] = useState<Report[]>(mockReports);
   const { data: overviewData, isLoading: overviewLoading, error: overviewError } = useModeratorOverview();
   const { data: flaggedContentData, isLoading: flaggedContentLoading, error: flaggedContentError } = useFlaggedContent();
+  const { data: recentlyResolvedData, isLoading: recentlyResolvedLoading, error: recentlyResolvedError } = useRecentlyResolved();
 
   // Handle error state
   if (overviewError) {
@@ -78,6 +80,9 @@ const ModeratorDashboard = () => {
   }
   if (flaggedContentError) {
     console.error("Failed to load flagged content:", flaggedContentError);
+  }
+  if (recentlyResolvedError) {
+    console.error("Failed to load recently resolved issues:", recentlyResolvedError);
   }
 
   const handleInvestigateReport = (id: string) => {
@@ -261,35 +266,47 @@ const ModeratorDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3 max-h-[40vh] overflow-auto">
-                <div className="flex justify-between items-start border-b pb-2">
-                  <div>
-                    <p className="text-xs font-medium">Content Removed: Artwork #2356</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      Removed for terms of service violation
-                    </p>
+                {recentlyResolvedLoading ? (
+                  // Loading state
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="flex justify-between items-start border-b pb-2 animate-pulse">
+                      <div className="flex-1">
+                        <div className="h-3 bg-gray-300 rounded w-3/4 mb-2"></div>
+                        <div className="h-2 bg-gray-300 rounded w-full"></div>
+                      </div>
+                      <div className="h-2 bg-gray-300 rounded w-16 ml-4"></div>
+                    </div>
+                  ))
+                ) : recentlyResolvedData?.recentlyResolved && recentlyResolvedData.recentlyResolved.length > 0 ? (
+                  // Real data from backend
+                  recentlyResolvedData.recentlyResolved.map((item, index) => (
+                    <div key={item.id} className={`flex justify-between items-start ${index < recentlyResolvedData.recentlyResolved.length - 1 ? 'border-b pb-2' : ''}`}>
+                      <div>
+                        <p className="text-xs font-medium">
+                          {item.content_type === 'artwork' && 'Content Removed: '}
+                          {item.content_type === 'user' && 'User Action: '}
+                          {item.content_type === 'comment' && 'Comment Removed: '}
+                          {item.content_type === 'auction' && 'Auction Resolved: '}
+                          {item.content_type === 'exhibit' && 'Exhibit Resolved: '}
+                          {item.content_type === 'Unknown' && 'Issue Resolved: '}
+                          {item.content_title}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {item.action_taken}
+                        </p>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">{item.time_ago}</p>
+                    </div>
+                  ))
+                ) : (
+                  // No recently resolved issues
+                  <div className="flex items-center justify-center p-4 text-gray-500">
+                    <div className="text-center">
+                      <p className="text-sm">No recently resolved issues</p>
+                      <p className="text-xs text-gray-400 mt-1">All caught up!</p>
+                    </div>
                   </div>
-                  <p className="text-[10px] text-muted-foreground">Yesterday</p>
-                </div>
-
-                <div className="flex justify-between items-start border-b pb-2">
-                  <div>
-                    <p className="text-xs font-medium">User Muted: @artlover556</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      24-hour mute for harassment in comments
-                    </p>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground">2 days ago</p>
-                </div>
-
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-xs font-medium">Dispute Resolved: Bid #8972</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      Mediated between buyer and seller
-                    </p>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground">3 days ago</p>
-                </div>
+                )}
               </div>
             </CardContent>
           </Card>
