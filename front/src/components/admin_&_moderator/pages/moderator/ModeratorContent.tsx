@@ -6,112 +6,122 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Eye, Search, Shield, ThumbsDown, ThumbsUp, Download } from "lucide-react";
 import { toast } from "sonner";
+import useFlaggedContent from "@/hooks/moderator/useFlaggedContent";
+import { useContentModeration } from "@/hooks/moderator/useContentModeration";
 
-type ContentType = "artwork" | "comment" | "user" | "bid";
-
-interface FlaggedContent {
-  id: string;
-  contentType: ContentType;
-  title: string;
-  reportReason: string;
-  description: string;
-  creator: string;
-  dateCreated: string;
-  timesReported: number;
-  previewImage?: string;
-}
-
-const mockFlaggedContent: FlaggedContent[] = [
-  {
-    id: "art1234",
-    contentType: "artwork",
-    title: "Dark Nebula",
-    reportReason: "Inappropriate Content",
-    description: "This artwork contains graphic content that violates community guidelines. The imagery includes explicit violence that should not be allowed.",
-    creator: "user789",
-    dateCreated: "2023-06-10",
-    timesReported: 4,
-    previewImage: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5",
-  },
-  {
-    id: "comment456",
-    contentType: "comment",
-    title: "Comment on 'Sunset Dreams'",
-    reportReason: "Harassment",
-    description: "The comment contains offensive language directed at the artist. Multiple users have flagged this as harassment.",
-    creator: "user456",
-    dateCreated: "2023-06-15",
-    timesReported: 3,
-  },
-  {
-    id: "user789",
-    contentType: "user",
-    title: "Profile: @artmaster2000",
-    reportReason: "Impersonation",
-    description: "This user is impersonating a famous artist and selling counterfeit works. They have copied the bio and artwork style of @realartmaster.",
-    creator: "system",
-    dateCreated: "2023-06-02",
-    timesReported: 7,
-  },
-  {
-    id: "bid5678",
-    contentType: "bid",
-    title: "Bid on 'Crystal Waters'",
-    reportReason: "Fraudulent Activity",
-    description: "This bid appears to be fraudulent. The user has made identical bids on multiple artworks in quick succession.",
-    creator: "user123",
-    dateCreated: "2023-06-16",
-    timesReported: 2,
-  },
-  {
-    id: "art5678",
-    contentType: "artwork",
-    title: "Fire and Ice",
-    reportReason: "Copyright Infringement",
-    description: "This artwork appears to be a direct copy of another artist's work without attribution or permission.",
-    creator: "user234",
-    dateCreated: "2023-06-12",
-    timesReported: 5,
-    previewImage: "https://images.unsplash.com/photo-1604871000636-074fa5117945",
-  },
-];
+type ContentType = "artwork" | "comment" | "user" | "auction" | "exhibit" | "unknown";
 
 const ModeratorContent = () => {
-  const [flaggedContent, setFlaggedContent] = useState<FlaggedContent[]>(mockFlaggedContent);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedContentType, setSelectedContentType] = useState<ContentType | "all">("all");
   const [sortBy, setSortBy] = useState<"date" | "reports">("reports");
 
+  // Fetch flagged content from backend
+  const { data: flaggedContentData, isLoading, error } = useFlaggedContent();
+  const moderationMutation = useContentModeration();
+
+  // Handle error state
+  if (error) {
+    console.error("Failed to load flagged content:", error);
+  }
+
+  const flaggedContent = flaggedContentData?.flaggedContent || [];
+
   const filteredContent = flaggedContent.filter(content => {
     const matchesSearch = content.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         content.creator.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         content.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = selectedContentType === "all" || content.contentType === selectedContentType;
+                         content.content_data.artist?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         content.content_data.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         content.content_data.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         content.report_description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = selectedContentType === "all" || content.type === selectedContentType;
     return matchesSearch && matchesType;
   }).sort((a, b) => {
     if (sortBy === "reports") {
-      return b.timesReported - a.timesReported;
+      // Since we don't have timesReported in the backend data, we'll sort by date
+      const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      return dateB - dateA;
     } else {
-      return new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
+      const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      return dateB - dateA;
     }
   });
 
-  const handleApprove = (id: string) => {
-    setFlaggedContent(flaggedContent.filter(content => content.id !== id));
-    toast.success("Content approved and restored", { closeButton: true });
+  const handleApprove = (contentId: string, contentType: string, reportId: string) => {
+    moderationMutation.mutate(
+      {
+        action: "approve",
+        content_id: contentId,
+        content_type: contentType,
+        report_id: reportId,
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(data.message, { closeButton: true });
+        },
+        onError: () => {
+          toast.error("Failed to approve content", { closeButton: true });
+        }
+      }
+    );
   };
 
-  const handleRemove = (id: string) => {
-    setFlaggedContent(flaggedContent.filter(content => content.id !== id));
-    toast.success("Content removed", { closeButton: true });
+  const handleRemove = (contentId: string, contentType: string, reportId: string) => {
+    moderationMutation.mutate(
+      {
+        action: "remove",
+        content_id: contentId,
+        content_type: contentType,
+        report_id: reportId,
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(data.message, { closeButton: true });
+        },
+        onError: () => {
+          toast.error("Failed to remove content", { closeButton: true });
+        }
+      }
+    );
   };
 
-  const handleWarn = (id: string) => {
-    toast.success("Warning sent to user", { closeButton: true });
+  const handleWarn = (contentId: string, contentType: string, reportId: string) => {
+    moderationMutation.mutate(
+      {
+        action: "warn",
+        content_id: contentId,
+        content_type: contentType,
+        report_id: reportId,
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(data.message, { closeButton: true });
+        },
+        onError: () => {
+          toast.error("Failed to send warning", { closeButton: true });
+        }
+      }
+    );
   };
 
-  const handleEscalate = (id: string) => {
-    toast.success("Content escalated to admin for review", { closeButton: true });
+  const handleEscalate = (contentId: string, contentType: string, reportId: string) => {
+    moderationMutation.mutate(
+      {
+        action: "escalate",
+        content_id: contentId,
+        content_type: contentType,
+        report_id: reportId,
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(data.message, { closeButton: true });
+        },
+        onError: () => {
+          toast.error("Failed to escalate content", { closeButton: true });
+        }
+      }
+    );
   };
 
   const handleDownloadReport = () => {
@@ -126,8 +136,12 @@ const ModeratorContent = () => {
         return <ThumbsDown className="h-4 w-4" />;
       case "user":
         return <Shield className="h-4 w-4" />;
-      case "bid":
+      case "auction":
         return <ThumbsUp className="h-4 w-4" />;
+      case "exhibit":
+        return <Eye className="h-4 w-4" />;
+      case "unknown":
+        return <Search className="h-4 w-4" />;
     }
   };
 
@@ -139,8 +153,12 @@ const ModeratorContent = () => {
         return "bg-amber-100 text-amber-800 hover:bg-amber-200";
       case "user":
         return "bg-purple-100 text-purple-800 hover:bg-purple-200";
-      case "bid":
+      case "auction":
         return "bg-green-100 text-green-800 hover:bg-green-200";
+      case "exhibit":
+        return "bg-indigo-100 text-indigo-800 hover:bg-indigo-200";
+      case "unknown":
+        return "bg-gray-100 text-gray-800 hover:bg-gray-200";
     }
   };
 
@@ -179,12 +197,13 @@ const ModeratorContent = () => {
           onValueChange={(value) => setSelectedContentType(value as ContentType | "all")}
           className="sm:w-auto"
         >
-          <TabsList className="grid w-full grid-cols-5 h-9">
+          <TabsList className="grid w-full grid-cols-6 h-9">
             <TabsTrigger value="all" className="text-[10px]">All</TabsTrigger>
             <TabsTrigger value="artwork" className="text-[10px]">Artwork</TabsTrigger>
             <TabsTrigger value="comment" className="text-[10px]">Comments</TabsTrigger>
             <TabsTrigger value="user" className="text-[10px]">Users</TabsTrigger>
-            <TabsTrigger value="bid" className="text-[10px]">Bids</TabsTrigger>
+            <TabsTrigger value="auction" className="text-[10px]">Auctions</TabsTrigger>
+            <TabsTrigger value="exhibit" className="text-[10px]">Exhibits</TabsTrigger>
           </TabsList>
         </Tabs>
         <Tabs 
@@ -200,7 +219,41 @@ const ModeratorContent = () => {
       </div>
 
       <div className="space-y-6">
-        {filteredContent.length > 0 ? (
+        {isLoading ? (
+          // Loading state
+          Array.from({ length: 3 }).map((_, index) => (
+            <Card key={index} className="overflow-hidden animate-pulse">
+              <CardHeader className="pb-2">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                  </div>
+                  <div className="h-6 bg-gray-300 rounded w-16"></div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex gap-4">
+                  <div className="shrink-0 w-24 h-24 md:w-32 md:h-32 bg-gray-300 rounded-md"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                    <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+                    <div className="bg-gray-200 p-2 rounded-md">
+                      <div className="h-2 bg-gray-300 rounded w-full mb-1"></div>
+                      <div className="h-2 bg-gray-300 rounded w-3/4"></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <div className="h-7 bg-gray-300 rounded w-16"></div>
+                  <div className="h-7 bg-gray-300 rounded w-20"></div>
+                  <div className="h-7 bg-gray-300 rounded w-20"></div>
+                  <div className="h-7 bg-gray-300 rounded w-16"></div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : filteredContent.length > 0 ? (
           filteredContent.map((content) => (
             <Card key={content.id} className="overflow-hidden">
               <CardHeader className="pb-2">
@@ -208,23 +261,23 @@ const ModeratorContent = () => {
                   <div>
                     <CardTitle className="text-xs">{content.title}</CardTitle>
                     <CardDescription className="text-[11px]">
-                      Created by {content.creator} on {content.dateCreated}
+                      Created by {content.content_data.artist || content.content_data.author || content.content_data.username || "Unknown"} on {content.created_at ? new Date(content.created_at).toLocaleDateString() : "Unknown date"}
                     </CardDescription>
                   </div>
-                  <Badge className={`text-[11px] ${getContentTypeColor(content.contentType)}`}>
+                  <Badge className={`text-[11px] ${getContentTypeColor(content.type)}`}>
                     <span className="flex items-center gap-1 text-[10px]">
-                      {getContentTypeIcon(content.contentType)}
-                      <span className="capitalize text-[10px]">{content.contentType}</span>
+                      {getContentTypeIcon(content.type)}
+                      <span className="capitalize text-[10px]">{content.type}</span>
                     </span>
                   </Badge>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex gap-4">
-                  {content.previewImage && (
+                  {content.content_data.image_url && (
                     <div className="shrink-0 w-24 h-24 md:w-32 md:h-32 relative rounded-md overflow-hidden border">
                       <img
-                        src={content.previewImage}
+                        src={content.content_data.image_url}
                         alt={content.title}
                         className="object-cover w-full h-full"
                       />
@@ -235,11 +288,17 @@ const ModeratorContent = () => {
                   )}
                   <div className="flex-1 space-y-2">
                     <div>
-                      <h3 className="text-[11px] font-medium">Reported for: {content.reportReason}</h3>
-                      <p className="text-[11px] text-red-600">Reported {content.timesReported} times</p>
+                      <h3 className="text-[11px] font-medium">Reported for: {content.flagged_reason}</h3>
+                      <p className="text-[11px] text-red-600">Status: {content.status}</p>
                     </div>
                     <div className="bg-gray-50 p-2 rounded-md">
-                      <p className="text-[11px]">{content.description}</p>
+                      <p className="text-[11px]">{content.report_description}</p>
+                      {content.content_data.text && (
+                        <div className="mt-2 p-2 bg-white rounded border-l-2 border-gray-300">
+                          <p className="text-[10px] font-medium text-gray-600">Content:</p>
+                          <p className="text-[10px]">"{content.content_data.text}"</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -248,7 +307,8 @@ const ModeratorContent = () => {
                     variant="outline" 
                     size="sm" 
                     className="text-[10px] h-7 px-2 rounded-full"
-                    onClick={() => handleApprove(content.id)}
+                    onClick={() => handleApprove(content.content_data.id || content.content_id, content.type, content.id)}
+                    disabled={moderationMutation.isPending}
                   >
                     Approve
                   </Button>
@@ -256,7 +316,8 @@ const ModeratorContent = () => {
                     variant="outline" 
                     size="sm" 
                     className="text-[10px] h-7 px-2 rounded-full"
-                    onClick={() => handleWarn(content.id)}
+                    onClick={() => handleWarn(content.content_data.id || content.content_id, content.type, content.id)}
+                    disabled={moderationMutation.isPending}
                   >
                     Warn User
                   </Button>
@@ -264,7 +325,8 @@ const ModeratorContent = () => {
                     variant="outline" 
                     size="sm" 
                     className="text-[10px] h-7 px-2 rounded-full"
-                    onClick={() => handleEscalate(content.id)}
+                    onClick={() => handleEscalate(content.content_data.id || content.content_id, content.type, content.id)}
+                    disabled={moderationMutation.isPending}
                   >
                     Escalate
                   </Button>
@@ -272,7 +334,8 @@ const ModeratorContent = () => {
                     variant="destructive" 
                     size="sm" 
                     className="text-[10px] h-7 px-2 rounded-full"
-                    onClick={() => handleRemove(content.id)}
+                    onClick={() => handleRemove(content.content_data.id || content.content_id, content.type, content.id)}
+                    disabled={moderationMutation.isPending}
                   >
                     Remove
                   </Button>
