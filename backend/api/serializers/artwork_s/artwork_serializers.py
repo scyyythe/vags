@@ -316,9 +316,12 @@ class ArtSerializer(serializers.Serializer):
             if field in validated_data:
                 setattr(instance, field, validated_data[field])
 
-        if instance.art_status.lower() == "active":
-            if any(validated_data.get(f) is not None for f in ["price", "quantity", "edition"]):
-                instance.art_status = "onSale"
+        # Only change status to onSale if explicitly requested
+        if "art_status" in validated_data:
+            # If art_status is explicitly provided, use that value
+            instance.art_status = validated_data["art_status"]
+        # Do not automatically change status from Active to onSale
+        # Status changes should be explicit and intentional
  
         elif instance.art_status.lower() == "onsale":
             pass

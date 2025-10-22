@@ -12,9 +12,10 @@ import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 type CreatedTabProps = {
   filteredArtworks: Artwork[];
   isLoading: boolean;
+  selectedStatus?: string;
 };
 
-const CreatedTab = ({ filteredArtworks, isLoading }: CreatedTabProps) => {
+const CreatedTab = ({ filteredArtworks, isLoading, selectedStatus = "Active" }: CreatedTabProps) => {
   const loggedInUserId = getLoggedInUserId();
   const { language } = useLanguage();
   
@@ -76,7 +77,7 @@ const CreatedTab = ({ filteredArtworks, isLoading }: CreatedTabProps) => {
               isExplore={isExplore}
               isDeleted={isDeleted}
               isArchived={isArchived}
-              visibility={art.visibility}
+              visibility={selectedStatus?.toLowerCase() === "hidden" ? "hidden" : art.visibility}
               isLikedFromBulk={status ? status.isLiked : false}
               isSavedFromBulk={status ? status.isSaved : false}
             />

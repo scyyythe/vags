@@ -91,12 +91,7 @@ const Explore = () => {
     runVerify();
   }, []);
 
-  // Refetch report status when component mounts or artworkIds change
-  useEffect(() => {
-    if (artworkIds.length > 0) {
-      queryClient.invalidateQueries({ queryKey: ["bulkReportStatus", artworkIds] });
-    }
-  }, [artworkIds, queryClient]);
+  // Report status is now managed centrally, no need for manual invalidation
   const bulkStatusLookup = React.useMemo(() => {
     if (!bulkStatus) return {};
     return bulkStatus.reduce((acc, item) => {
