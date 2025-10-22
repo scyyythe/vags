@@ -140,25 +140,44 @@ const Header = () => {
             <SearchBar onSearchChange={handleSearchChange} />
           </div>
 
-          {/* Mobile Search Icon */}
+          {/* Mobile Search */}
           <div className="block md:hidden relative top-0.5 right-1">
-            <button
-              className="button-icon hover:scale-110 transition"
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              title={useAutoTranslation("Search", language)}
-            >
-              <Search size={15} />
-            </button>
-
-            <AnimatePresence>
-              {isSearchOpen && (
+            <AnimatePresence mode="wait">
+              {!isSearchOpen ? (
+                <motion.button
+                  key="search-icon"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.2 }}
+                  className="button-icon hover:scale-110 transition"
+                  onClick={() => setIsSearchOpen(true)}
+                  title={useAutoTranslation("Search", language)}
+                >
+                  <Search size={15} />
+                </motion.button>
+              ) : (
                 <motion.div
-                  initial={{ opacity: 0, y: -5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  className="absolute top-10 right-0 z-50 bg-white border border-gray-300 rounded-full shadow-md w-60 px-3"
+                  key="search-field"
+                  initial={{ opacity: 0, x: 100, scale: 0.8 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 100, scale: 0.8 }}
+                  transition={{ 
+                    type: "spring", 
+                    stiffness: 300, 
+                    damping: 30,
+                    duration: 0.3 
+                  }}
+                  className="flex items-center bg-white border border-gray-300 rounded-full shadow-md w-60 px-3 py-0.5"
                 >
                   <SearchBar onSearchChange={handleSearchChange} />
+                  <button
+                    className="ml-2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+                    onClick={() => setIsSearchOpen(false)}
+                    title={useAutoTranslation("Close search", language)}
+                  >
+                    <X size={12} />
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>
