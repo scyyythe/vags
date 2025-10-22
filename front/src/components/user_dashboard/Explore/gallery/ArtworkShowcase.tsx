@@ -52,31 +52,46 @@ const ArtVideoShowcase = ({ artworks, isLoading = false }: ArtVideoShowcaseProps
     navigate(`/artwork/${artworkId}`, { state: { image_url, artistName } });
   };
 
-  // After intro → always go to outro
+  // Handle automatic phase transitions
   useEffect(() => {
+    let timers: NodeJS.Timeout[] = [];
+
     if (phase === "intro") {
       const introTimer = setTimeout(() => {
         setPhase("outro");
       }, 5000);
-      return () => clearTimeout(introTimer);
-    }
-  }, [phase]);
-
-  const handleOutroComplete = () => {
-    if (isMobile) {
-      // mobile: loop intro ↔ outro
-      setPhase("intro");
-    } else {
-      // desktop: go outro → main
-      setPhase("main");
-      setTimeout(() => setSpread(true), 100);
-
-      // after main, go back to intro
-      setTimeout(() => {
+      timers.push(introTimer);
+    } else if (phase === "outro") {
+      // Outro shows each artwork for 3 seconds, so 5 artworks = 15 seconds + 1 second delay
+      const outroDuration = (artworks.length * 3000) + 1000; // 5 artworks × 3s + 1s delay = 16s
+      const outroTimer = setTimeout(() => {
+        if (isMobile) {
+          // mobile: loop intro ↔ outro
+          setPhase("intro");
+        } else {
+          // desktop: go outro → main
+          setPhase("main");
+          setTimeout(() => setSpread(true), 100);
+        }
+      }, outroDuration);
+      timers.push(outroTimer);
+    } else if (phase === "main") {
+      // After main, go back to intro
+      const mainTimer = setTimeout(() => {
         setPhase("intro");
         setSpread(false);
       }, 8000);
+      timers.push(mainTimer);
     }
+
+    return () => {
+      timers.forEach(timer => clearTimeout(timer));
+    };
+  }, [phase, isMobile, artworks.length]);
+
+  const handleOutroComplete = () => {
+    // This is now handled by the useEffect above
+    // Keep this function for any manual triggers if needed
   };
 
   if (isLoading || artworks.length === 0) {
@@ -97,7 +112,7 @@ const ArtVideoShowcase = ({ artworks, isLoading = false }: ArtVideoShowcaseProps
 
       {/* Outro */}
       {phase === "outro" && (
-        <ArtVideoOutro artworks={artworks.slice(0, 5)} onComplete={handleOutroComplete} />
+        <ArtVideoOutro artworks={artworks.slice(0, 5)} />
       )}
 
       {/* Main (desktop only) */}
