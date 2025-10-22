@@ -5,6 +5,7 @@ import { useState, useCallback } from "react";
 import { QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import apiClient from "../../utils/apiClient";
+import { compressImage, needsCompression, formatFileSize } from "../../utils/imageCompression";
 
 export interface OptimizedPostData {
   title: string;
@@ -91,6 +92,27 @@ export const useOptimizedPostSubmission = () => {
     setIsUploading(true);
 
     try {
+      // Compress image if needed for faster upload
+      let fileToUpload = data.selectedFile;
+      if (needsCompression(data.selectedFile)) {
+        toast.loading("Compressing image for faster upload...", { id: "compress" });
+        const compressionResult = await compressImage(data.selectedFile, {
+          maxWidth: 1920,
+          maxHeight: 1920,
+          quality: 0.8,
+          maxSizeKB: 1024, // 1MB target
+        });
+
+        fileToUpload = compressionResult.file;
+
+        toast.success(
+          `Image compressed: ${formatFileSize(compressionResult.originalSize)} → ${formatFileSize(
+            compressionResult.compressedSize
+          )}`,
+          { id: "compress", duration: 2000 }
+        );
+      }
+
       // Prepare form data
       const formData = new FormData();
       formData.append("title", data.title.trim());
@@ -101,21 +123,28 @@ export const useOptimizedPostSubmission = () => {
       formData.append("price", data.price.toString());
       formData.append("description", data.description.trim());
       formData.append("visibility", data.visibility);
-      formData.append("images", data.selectedFile);
+      formData.append("images", fileToUpload);
 
       const token = localStorage.getItem("access_token");
       if (!token) {
         throw new Error("You must be logged in to post artwork.");
       }
 
-      // Upload with increased timeout for large files
+      // Upload with optimized timeout
       const response = await apiClient.post("art/create/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
-        // Increase timeout for large files
-        timeout: 120000, // 2 minutes
+        // Reduced timeout for faster feedback
+        timeout: 30000, // 30 seconds
+        // Add upload progress tracking
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            console.log(`Upload progress: ${percentCompleted}%`);
+          }
+        },
       });
 
       // Invalidate queries

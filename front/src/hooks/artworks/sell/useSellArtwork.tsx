@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import apiClient from "@/utils/apiClient";
+import { compressImage, needsCompression, formatFileSize } from "@/utils/imageCompression";
 
 interface SellArtworkInput {
   title: string;
@@ -76,6 +77,43 @@ const useSellArtwork = () => {
       toast.loading("Listing artwork...", { id: "upload" });
 
       try {
+        // Compress main image if needed
+        let compressedMainImage = mainImage;
+        if (mainImage && needsCompression(mainImage)) {
+          toast.loading("Compressing main image...", { id: "compress-main" });
+          const compressionResult = await compressImage(mainImage, {
+            maxWidth: 1920,
+            maxHeight: 1920,
+            quality: 0.8,
+            maxSizeKB: 1024,
+          });
+          compressedMainImage = compressionResult.file;
+          toast.success(
+            `Main image compressed: ${formatFileSize(compressionResult.originalSize)} → ${formatFileSize(
+              compressionResult.compressedSize
+            )}`,
+            { id: "compress-main", duration: 2000 }
+          );
+        }
+
+        // Compress additional images if needed
+        const compressedAdditionalImages = [];
+        for (const img of additionalImages) {
+          if (img) {
+            if (needsCompression(img)) {
+              const compressionResult = await compressImage(img, {
+                maxWidth: 1920,
+                maxHeight: 1920,
+                quality: 0.8,
+                maxSizeKB: 1024,
+              });
+              compressedAdditionalImages.push(compressionResult.file);
+            } else {
+              compressedAdditionalImages.push(img);
+            }
+          }
+        }
+
         const formData = new FormData();
         formData.append("title", title.trim());
 
@@ -100,11 +138,11 @@ const useSellArtwork = () => {
           formData.append("quantity", "1");
         }
 
-        formData.append("images", mainImage);
+        formData.append("images", compressedMainImage);
         formData.append("visibility", "Public"); // Capitalized to match backend model
         formData.append("art_status", "onSale");
 
-        additionalImages.forEach((img) => {
+        compressedAdditionalImages.forEach((img) => {
           if (img) formData.append("images", img);
         });
 
@@ -113,29 +151,25 @@ const useSellArtwork = () => {
           throw new Error("You must be logged in to list artwork.");
         }
 
-        // Upload with increased timeout for large files
+        // Upload with optimized timeout
         const response = await apiClient.post("/art/sell/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
-          // Increase timeout for large files
-          timeout: 120000, // 2 minutes
+          // Reduced timeout for faster feedback
+          timeout: 30000, // 30 seconds
+          // Add upload progress tracking
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              console.log(`Upload progress: ${percentCompleted}%`);
+            }
+          },
         });
-
-        // Show success toast immediately
-        toast.success("Artwork listed successfully!", {
-          id: "upload",
-          closeButton: true,
-          duration: 3000,
-          description: "Your artwork is now available in the marketplace",
-        });
-
-        // Navigate to marketplace immediately after successful save
-        navigate("/marketplace");
 
         // Invalidate all marketplace and related queries for real-time updates
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           predicate: (query) => {
             const queryKey = query.queryKey;
             return (
@@ -165,6 +199,35 @@ const useSellArtwork = () => {
             );
           },
         });
+
+        // Force refetch of marketplace data to ensure immediate visibility
+        await queryClient.refetchQueries({
+          queryKey: ["marketplace-art-cards"],
+        });
+
+        // Also invalidate and refetch all artwork-related queries
+        await queryClient.invalidateQueries({
+          queryKey: ["artworks"],
+        });
+
+        // Force refetch trending artworks as well
+        await queryClient.refetchQueries({
+          queryKey: ["trending-artworks"],
+        });
+
+        // Reset uploading state before showing success message
+        setIsUploading(false);
+
+        // Show success toast after all operations are complete
+        toast.success("Artwork listed successfully!", {
+          id: "upload",
+          closeButton: true,
+          duration: 3000,
+          description: "Your artwork is now available in the marketplace",
+        });
+
+        // Navigate to marketplace after cache invalidation is complete
+        navigate("/marketplace");
 
         return response.data;
       } catch (error: unknown) {
@@ -247,6 +310,7 @@ const useSellArtwork = () => {
 
         throw error;
       } finally {
+        // Reset uploading state
         setIsUploading(false);
       }
     },
