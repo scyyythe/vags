@@ -161,7 +161,7 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({ isOpen, onClose, 
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between text-sm mt-3">
             <span>{paymentTrackingText}</span>
