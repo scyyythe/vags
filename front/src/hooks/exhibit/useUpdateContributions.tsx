@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 
-export function useSubmitContributions(exhibitId: string) {
+export function useUpdateContributions(exhibitId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (payload: { artwork: string; slot_number: number }[]) => {
-      const response = await apiClient.post(`/exhibits/${exhibitId}/contribute/`, {
+      const response = await apiClient.put(`/exhibits/${exhibitId}/contribute/`, {
         artworks: payload,
       });
       return response.data;

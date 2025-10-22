@@ -10,6 +10,7 @@ import { useCollaboratorExhibitView } from "@/hooks/exhibit/useCollaboratorExhib
 import useArtworks from "@/hooks/artworks/fetch_artworks/useArtworks";
 import { getLoggedInUserId } from "@/auth/decode";
 import { useSubmitContributions } from "@/hooks/exhibit/useSubmitContributions";
+import { useUpdateContributions } from "@/hooks/exhibit/useUpdateContributions";
 import CollaboratorViewSkeleton from "@/components/skeletons/exhibits/CollaboratorViewSkeleton";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
@@ -67,14 +68,18 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const [slotArtworkMap, setSlotArtworkMap] = useState<Record<number, string>>({});
   const [currentCollaborator, setCurrentCollaborator] = useState<Artist | null>(null);
   const [hasUserSubmitted, setHasUserSubmitted] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [clearedSlots, setClearedSlots] = useState<Set<number>>(new Set());
+  const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const { mutate: submitContributions } = useSubmitContributions(exhibitId!);
+  const { mutate: updateContributions } = useUpdateContributions(exhibitId!);
   const { language } = useLanguage();
 
   // Translation hooks for all text content
   const goBackText = useAutoTranslation("Go back", language);
   const exhibitCollaborationText = useAutoTranslation("Exhibit Collaboration", language);
   const alreadySubmittedText = useAutoTranslation("You have already submitted your contributions!", language);
-  const cannotEditAnymoreText = useAutoTranslation("You can no longer edit your artworks since they were already submitted to", language);
+  const canEditContributionsText = useAutoTranslation("You can still edit your artworks for", language);
   const viewOthersContributionsText = useAutoTranslation("You can view what other collaborators have contributed while waiting for the exhibit to be published.", language);
   const invitedToContributeText = useAutoTranslation("You are invited to contribute to", language);
   const selectArtworkText = useAutoTranslation("Please select your artwork for the slots assigned to you below.", language);
@@ -97,8 +102,14 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const noAvailableSlotsDescText = useAutoTranslation("You don't have any available slots for more artwork.", language);
   const selectionsSavedText = useAutoTranslation("Selections Saved", language);
   const selectionsSavedDescText = useAutoTranslation("Your artwork selections have been saved to the exhibit!", language);
+  const contributionsUpdatedText = useAutoTranslation("Contributions Updated", language);
+  const contributionsUpdatedDescText = useAutoTranslation("Your artwork contributions have been updated successfully!", language);
+  const editContributionsText = useAutoTranslation("Edit Contributions", language);
+  const cancelEditText = useAutoTranslation("Cancel Edit", language);
+  const updateSelectionsText = useAutoTranslation("Update Selections", language);
   const errorText = useAutoTranslation("Error", language);
   const failedToSubmitText = useAutoTranslation("Failed to submit contributions.", language);
+  const failedToUpdateText = useAutoTranslation("Failed to update contributions.", language);
   const exhibitNotFoundText = useAutoTranslation("Exhibit not found", language);
   const unknownText = useAutoTranslation("Unknown", language);
 
@@ -109,11 +120,17 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   // Filter artworks to show only Active and Public ones with valid images
   const artworks = (userArtworks || []).filter((artwork) => {
     const isActiveAndPublic = artwork.art_status === "Active" && artwork.visibility === "Public";
-    const hasValidImage =
-      (artwork.artworkImage && artwork.artworkImage !== "" && artwork.artworkImage !== "h") ||
-      (artwork.image_url && artwork.image_url !== "" && artwork.image_url !== "h");
+    
+    const hasValidArtworkImage = artwork.artworkImage && 
+      artwork.artworkImage !== "" && 
+      artwork.artworkImage !== "h";
+    
+    const hasValidImageUrl = artwork.image_url && 
+      (Array.isArray(artwork.image_url) 
+        ? artwork.image_url.length > 0 && artwork.image_url[0] !== "" && artwork.image_url[0] !== "h"
+        : artwork.image_url !== "" && artwork.image_url !== "h");
 
-    return isActiveAndPublic && hasValidImage;
+    return isActiveAndPublic && (hasValidArtworkImage || hasValidImageUrl);
   });
 
   const environments = [
@@ -179,7 +196,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
     ],
   };
   useEffect(() => {
-    if (!data) return;
+    if (!data || isEditing) return;
 
     const { slotOwnerMap, slotArtworkMap, owner, collaborators } = data;
 
@@ -227,11 +244,23 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
         (slot: any) => userSlots.includes(slot.slot_number) && slot.contributor.id === currentUser.id
       );
 
-      setHasUserSubmitted(userSubmittedSlots.length === userSlots.length && userSlots.length > 0);
+      const hasSubmitted = userSubmittedSlots.length === userSlots.length && userSlots.length > 0;
+      setHasUserSubmitted(hasSubmitted);
+      
+      // If user has submitted, populate the slotArtworkMap with their existing contributions
+      if (hasSubmitted) {
+        const existingContributions = {};
+        userSubmittedSlots.forEach((slot: any) => {
+          existingContributions[slot.slot_number] = slot.artwork.id;
+        });
+        setSlotArtworkMap(existingContributions);
+        setSelectedArtworks(Object.values(existingContributions));
+      }
     }
 
     setLoading(false);
   }, [data]);
+
 
   if (loading) {
     return <CollaboratorViewSkeleton />;
@@ -244,18 +273,30 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const currentEnvironment = environments.find((env) => env.id === exhibit.environment);
   const availableSlots = currentEnvironment ? Array.from({ length: currentEnvironment.slots }, (_, i) => i + 1) : [];
 
+  const handleSlotSelect = (slotId: number) => {
+    if (!currentCollaborator || (hasUserSubmitted && !isEditing)) return;
+    if (exhibit.slotOwnerMap[slotId] !== currentCollaborator.id) return;
+    
+    setSelectedSlot(slotId);
+  };
+
   const handleArtworkSelect = (artworkId: string) => {
-    if (!currentCollaborator || hasUserSubmitted) return;
+    if (!currentCollaborator || (hasUserSubmitted && !isEditing)) return;
 
-    const availableUserSlots = Object.entries(exhibit.slotOwnerMap)
-      .filter(
-        ([slotId, ownerId]) => String(ownerId) === String(currentCollaborator.id) && !slotArtworkMap[Number(slotId)]
-      )
-      .map(([slotId]) => Number(slotId));
+    // If no slot is selected, find the first available slot
+    let targetSlot = selectedSlot;
+    
+    if (!targetSlot) {
+      const availableUserSlots = Object.entries(exhibit.slotOwnerMap)
+        .filter(([slotId, ownerId]) => String(ownerId) === String(currentCollaborator.id))
+        .map(([slotId]) => Number(slotId));
 
-    const availableSlot = availableUserSlots[0];
+      targetSlot = availableUserSlots.find(slotId => 
+        !slotArtworkMap[slotId] || isEditing
+      );
+    }
 
-    if (!availableSlot) {
+    if (!targetSlot) {
       toast.error(noAvailableSlotsText, {
         description: noAvailableSlotsDescText,
         closeButton: true,
@@ -263,29 +304,49 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
       return;
     }
 
+    // If replacing an existing artwork, remove it from selectedArtworks first
+    if (isEditing && slotArtworkMap[targetSlot]) {
+      setSelectedArtworks((prev) => prev.filter((id) => id !== slotArtworkMap[targetSlot]));
+    }
+
     setSlotArtworkMap((prev) => ({
       ...prev,
-      [availableSlot]: artworkId,
+      [targetSlot]: artworkId,
     }));
 
     setSelectedArtworks((prev) => [...prev, artworkId]);
+    
+    // Clear selected slot after assignment
+    setSelectedSlot(null);
   };
 
   const handleClearSlot = (slotId: number) => {
-    if (!currentCollaborator || hasUserSubmitted) return;
+    if (!currentCollaborator || (hasUserSubmitted && !isEditing)) return;
 
     if (exhibit.slotOwnerMap[slotId] !== currentCollaborator.id) {
       return;
     }
 
+    // Check if there's an artwork in this slot (either from slotArtworkMap or from contributed slots)
     const artworkId = slotArtworkMap[slotId];
+    const contributedSlot = data?.slots?.find((slot: any) => slot.slot_number === slotId);
+    
     if (artworkId) {
+      // Clear from local state
       setSelectedArtworks((prev) => prev.filter((id) => id !== artworkId));
-
+      const newSlotArtworkMap = { ...slotArtworkMap };
+      delete newSlotArtworkMap[slotId];
+      setSlotArtworkMap(newSlotArtworkMap);
+    } else if (contributedSlot?.artwork) {
+      // Clear contributed artwork from local state
+      setSelectedArtworks((prev) => prev.filter((id) => id !== contributedSlot.artwork.id));
       const newSlotArtworkMap = { ...slotArtworkMap };
       delete newSlotArtworkMap[slotId];
       setSlotArtworkMap(newSlotArtworkMap);
     }
+
+    // Mark this slot as cleared
+    setClearedSlots(prev => new Set([...prev, slotId]));
   };
 
   const handleSaveSelections = () => {
@@ -300,21 +361,43 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
         artwork: artworkId,
       }));
 
-    submitContributions(payload, {
-      onSuccess: () => {
-        toast.success(selectionsSavedText, {
-          description: selectionsSavedDescText,
-          closeButton: true,
-        });
-        navigate("/exhibits");
-      },
-      onError: (err: any) => {
-        toast.error(errorText, {
-          description: err?.response?.data?.detail || failedToSubmitText,
-          closeButton: true,
-        });
-      },
-    });
+    if (isEditing) {
+      // Update existing contributions
+      updateContributions(payload, {
+        onSuccess: () => {
+          toast.success(contributionsUpdatedText, {
+            description: contributionsUpdatedDescText,
+            closeButton: true,
+          });
+          setIsEditing(false);
+          setHasUserSubmitted(true);
+          navigate("/exhibits");
+        },
+        onError: (err: any) => {
+          toast.error(errorText, {
+            description: err?.response?.data?.detail || failedToUpdateText,
+            closeButton: true,
+          });
+        },
+      });
+    } else {
+      // Create new contributions
+      submitContributions(payload, {
+        onSuccess: () => {
+          toast.success(selectionsSavedText, {
+            description: selectionsSavedDescText,
+            closeButton: true,
+          });
+          navigate("/exhibits");
+        },
+        onError: (err: any) => {
+          toast.error(errorText, {
+            description: err?.response?.data?.detail || failedToSubmitText,
+            closeButton: true,
+          });
+        },
+      });
+    }
   };
 
   const getColorSchemeIndex = (userId: string) => {
@@ -383,11 +466,18 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
         {/* Collaborator View Notice */}
         <div className="mb-6">
           <h2 className="text-[13px] font-medium mb-1">{exhibitCollaborationText}</h2>
-          {hasUserSubmitted ? (
+          {hasUserSubmitted && !isEditing ? (
             <div className="space-y-2">
               <p className="text-[11px] text-green-600 font-medium">✓ {alreadySubmittedText}</p>
               <p className="text-[11px]">
-                {cannotEditAnymoreText} "{translatedTitle}". {viewOthersContributionsText}
+                {canEditContributionsText} "{translatedTitle}". {viewOthersContributionsText}
+              </p>
+            </div>
+          ) : isEditing ? (
+            <div className="space-y-2">
+              <p className="text-[11px] text-amber-600 font-medium">✏️ {editContributionsText}</p>
+              <p className="text-[11px]">
+                You can now modify your artwork selections for "{translatedTitle}".
               </p>
             </div>
           ) : (
@@ -463,14 +553,19 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                         ? artworks.find((artwork) => artwork.id === String(assignedArtworkId))
                         : null;
 
+                      // In editing mode, if slot is cleared locally, don't show contributed artwork
+                      const isSlotCleared = isEditing && clearedSlots.has(slotId);
+
                       return (
                         <div
                           key={slotId}
+                          onClick={() => userCanInteract && handleSlotSelect(slotId)}
                           className={`h-[93px] rounded-lg relative overflow-hidden border flex items-center justify-center transition-colors 
                           ${userCanInteract ? "cursor-pointer" : ""}
-                          ${!userCanInteract ? slotColor + " opacity-75" : slotColor}`}
+                          ${!userCanInteract ? slotColor + " opacity-75" : slotColor}
+                          ${selectedSlot === slotId ? "ring-2 ring-blue-500 ring-offset-2" : ""}`}
                         >
-                          {contributedSlot?.artwork ? (
+                          {contributedSlot?.artwork && !isSlotCleared ? (
                             // Show actual contributed artwork from backend (highest priority)
                             <>
                               <img
@@ -522,6 +617,15 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                               <div className="absolute bottom-1 left-1 bg-black/70 text-white text-[7px] px-1 py-0.5 rounded truncate max-w-[80%]">
                                 {contributedSlot.contributor?.name ? <TranslatedText text={contributedSlot.contributor.name} /> : unknownText}
                               </div>
+                              {/* Remove overlay for editing mode */}
+                              {isEditing && userCanInteract && (
+                                <div
+                                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                                  onClick={() => handleClearSlot(slotId)}
+                                >
+                                  <span className="text-white text-[10px] font-medium">{removeText}</span>
+                                </div>
+                              )}
                             </>
                           ) : assignedArtwork ? (
                             // Show user's selected artwork (for slots they can interact with)
@@ -567,13 +671,16 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                                 <div className="flex flex-col items-center justify-center w-full h-full">
                                   <span className="text-xs font-semibold">{slotId}</span>
                                   <span className="text-[10px] text-gray-500"><UserSlotName userId={slotOwner} /></span>
+                                  {selectedSlot === slotId && (
+                                    <span className="text-[8px] text-blue-600 font-medium mt-1">Selected</span>
+                                  )}
                                 </div>
                               </PopoverTrigger>
                               <PopoverContent className="w-auto p-2">
                                 <p className="text-[10px]"><UserSlotName userId={slotOwner} /></p>
                                 {userCanInteract && (
                                   <p className="text-[9px] text-blue-600 mt-1">
-                                    {clickOnArtworkText}
+                                    {selectedSlot === slotId ? "Click on an artwork to assign it to this slot" : "Click to select this slot, then click an artwork"}
                                   </p>
                                 )}
                               </PopoverContent>
@@ -629,24 +736,27 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                   return (
                     <Card
                       key={artwork.id}
-                      onClick={() => !isSelected && !hasUserSubmitted && handleArtworkSelect(String(artwork.id))}
+                      onClick={() => !isSelected && (!hasUserSubmitted || isEditing) && handleArtworkSelect(String(artwork.id))}
                       className={`overflow-hidden ${
-                        hasUserSubmitted
+                        hasUserSubmitted && !isEditing
                           ? "cursor-not-allowed opacity-60"
                           : isSelected
                           ? "opacity-40 cursor-pointer"
+                          : selectedSlot
+                          ? "cursor-pointer ring-2 ring-green-500 ring-offset-2"
                           : "cursor-pointer"
                       }`}
                     >
                       <img
-                        src={artwork.artworkImage || artwork.image_url}
+                        src={artwork.artworkImage || (Array.isArray(artwork.image_url) ? artwork.image_url[0] : artwork.image_url) || ""}
                         alt={`Artwork ${artwork.id}`}
                         className="w-full h-[96px] object-cover"
                         onError={(e) => {
                           // Fallback to image_url if artworkImage fails
                           const target = e.target as HTMLImageElement;
-                          if (target.src !== artwork.image_url) {
-                            target.src = artwork.image_url || "";
+                          const fallbackUrl = Array.isArray(artwork.image_url) ? artwork.image_url[0] : artwork.image_url;
+                          if (fallbackUrl && target.src !== fallbackUrl) {
+                            target.src = fallbackUrl;
                           }
                         }}
                       />
@@ -659,17 +769,48 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
 
           {/* Submit button */}
           <div className="flex justify-end mt-8">
-            {hasUserSubmitted ? (
-              <div className="flex flex-col items-end">
+            {hasUserSubmitted && !isEditing ? (
+              <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setIsEditing(true);
+                  setClearedSlots(new Set()); // Reset cleared slots when starting edit
+                  setSelectedSlot(null); // Reset selected slot
+                }}
+                className="text-gray-600 hover:text-gray-800 text-[10px] px-4 py-1.5 rounded-full border border-gray-300 hover:bg-gray-50"
+              >
+                {editContributionsText}
+              </button>
+                <div className="flex flex-col items-end">
+                  <button
+                    disabled
+                    className="bg-gray-400 text-white text-[10px] px-8 py-1.5 rounded-full cursor-not-allowed"
+                  >
+                    {alreadySubmittedButtonText}
+                  </button>
+                  <p className="text-[9px] text-gray-500 mt-1">
+                    {cannotEditSubmittedText}
+                  </p>
+                </div>
+              </div>
+            ) : isEditing ? (
+              <div className="flex items-center gap-2">
                 <button
-                  disabled
-                  className="bg-gray-400 text-white text-[10px] px-8 py-1.5 rounded-full cursor-not-allowed"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setClearedSlots(new Set()); // Reset cleared slots when canceling edit
+                    setSelectedSlot(null); // Reset selected slot
+                  }}
+                  className="text-gray-600 hover:text-gray-800 text-[10px] px-4 py-1.5 rounded-full border border-gray-300 hover:bg-gray-50"
                 >
-                  {alreadySubmittedButtonText}
+                  {cancelEditText}
                 </button>
-                <p className="text-[9px] text-gray-500 mt-1">
-                  {cannotEditSubmittedText}
-                </p>
+                <button
+                  onClick={handleSaveSelections}
+                  className="bg-amber-600 hover:bg-amber-700 text-white text-[10px] px-8 py-1.5 rounded-full"
+                >
+                  {updateSelectionsText}
+                </button>
               </div>
             ) : (
               <button

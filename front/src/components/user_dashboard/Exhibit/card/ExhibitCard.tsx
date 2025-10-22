@@ -43,7 +43,6 @@ interface ExhibitProps {
 
 const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = false }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
   const { language } = useLanguage();
@@ -261,8 +260,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                   isOpen={menuOpen}
                   onHide={() => {
                     toggleHideExhibit(exhibit.id, {
-                      onSuccess: (data) => {
-                        setIsHidden(data.new_visibility === "Hidden");
+                      onSuccess: () => {
                         setMenuOpen(false);
                       },
                     });
@@ -280,7 +278,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                     setMenuOpen(false);
                   }}
                   isShared={exhibit.isShared}
-                  isHidden={isHidden}
+                  isHidden={false}
                   isReported={isReported}
                   className="-right-1.5 top-5"
                 />

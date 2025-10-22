@@ -39,7 +39,6 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const [publicStatus, setPublicStatus] = useState(isPublic);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showRestorePopup, setShowRestorePopup] = useState(false);
   const [isMoreOptionsOpen, setIsMoreOptionsOpen] = useState(false);
@@ -73,9 +72,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
   if (!isOpen) return null;
 
   const handleToggleVisibility = () => {
-    const newStatus = !publicStatus;
-    setPublicStatus(newStatus);
-    onToggleVisibility(newStatus, artworkId);
+    onToggleVisibility(!isPublic, artworkId);
   };
 
   const handleConfirmDelete = () => {
@@ -130,11 +127,11 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
               onMouseEnter={() => setHoveredItem("visibility")}
               onMouseLeave={() => setHoveredItem(null)}
             >
-              {publicStatus ? <i className="bx bx-show-alt text-[11px]" /> : <i className="bx bxs-hide text-[11px]" />}
+              {isPublic ? <i className="bx bx-show-alt text-[11px]" /> : <i className="bx bxs-hide text-[11px]" />}
             </button>
             {hoveredItem === "visibility" && (
               <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">
-                {publicStatus ? unpublishText : publishText}
+                {isPublic ? unpublishText : publishText}
               </span>
             )}
           </div>
