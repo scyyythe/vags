@@ -4,6 +4,9 @@ import { ReportTable, Report } from "@/components/admin_&_moderator/admin/Report
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import useModeratorOverview from "@/hooks/moderator/useModeratorOverview";
+import useFlaggedContent from "@/hooks/moderator/useFlaggedContent";
+import useRecentlyResolved from "@/hooks/moderator/useRecentlyResolved";
 import {
   Bell,
   FileCheck,
@@ -67,6 +70,20 @@ const mockReports: Report[] = [
 
 const ModeratorDashboard = () => {
   const [reports, setReports] = useState<Report[]>(mockReports);
+  const { data: overviewData, isLoading: overviewLoading, error: overviewError } = useModeratorOverview();
+  const { data: flaggedContentData, isLoading: flaggedContentLoading, error: flaggedContentError } = useFlaggedContent();
+  const { data: recentlyResolvedData, isLoading: recentlyResolvedLoading, error: recentlyResolvedError } = useRecentlyResolved();
+
+  // Handle error state
+  if (overviewError) {
+    console.error("Failed to load moderator overview:", overviewError);
+  }
+  if (flaggedContentError) {
+    console.error("Failed to load flagged content:", flaggedContentError);
+  }
+  if (recentlyResolvedError) {
+    console.error("Failed to load recently resolved issues:", recentlyResolvedError);
+  }
 
   const handleInvestigateReport = (id: string) => {
     const updatedReports = reports.map(report => {
@@ -105,6 +122,31 @@ const ModeratorDashboard = () => {
     toast.success("Report escalated to admin", { closeButton: true });
   };
 
+  // Flagged content action handlers
+  const handleApproveContent = (id: string) => {
+    toast.success("Content approved", { closeButton: true });
+  };
+
+  const handleRemoveContent = (id: string) => {
+    toast.success("Content removed", { closeButton: true });
+  };
+
+  const handleEscalateContent = (id: string) => {
+    toast.success("Content escalated to admin", { closeButton: true });
+  };
+
+  const handleWarnUser = (id: string) => {
+    toast.success("User warned", { closeButton: true });
+  };
+
+  const handleSuspendUser = (id: string) => {
+    toast.success("User suspended", { closeButton: true });
+  };
+
+  const handleBanUser = (id: string) => {
+    toast.success("User banned", { closeButton: true });
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -124,31 +166,43 @@ const ModeratorDashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
               title="Pending Reports"
-              value="24"
+              value={overviewLoading ? "..." : overviewData?.pendingReports.value.toString() || "0"}
               description="Reports awaiting review"
               icon={FileCheck}
-              trend={{ value: 4, positive: false }}
+              trend={overviewData?.pendingReports ? { 
+                value: Math.abs(overviewData.pendingReports.trend), 
+                positive: overviewData.pendingReports.positive 
+              } : { value: 0, positive: true }}
             />
             <StatCard
               title="Reports Resolved (7d)"
-              value="58"
+              value={overviewLoading ? "..." : overviewData?.resolvedReports7d.value.toString() || "0"}
               description="Successfully handled reports"
               icon={Search}
-              trend={{ value: 12, positive: true }}
+              trend={overviewData?.resolvedReports7d ? { 
+                value: Math.abs(overviewData.resolvedReports7d.trend), 
+                positive: overviewData.resolvedReports7d.positive 
+              } : { value: 0, positive: true }}
             />
             <StatCard
               title="Users Warned"
-              value="7"
+              value={overviewLoading ? "..." : overviewData?.usersWarned7d.value.toString() || "0"}
               description="Users issued warnings this week"
               icon={Users}
-              trend={{ value: 2, positive: false }}
+              trend={overviewData?.usersWarned7d ? { 
+                value: Math.abs(overviewData.usersWarned7d.trend), 
+                positive: overviewData.usersWarned7d.positive 
+              } : { value: 0, positive: true }}
             />
             <StatCard
               title="Removed Content"
-              value="15"
+              value={overviewLoading ? "..." : overviewData?.removedContent7d.value.toString() || "0"}
               description="Items removed this week"
               icon={X}
-              trend={{ value: 5, positive: false }}
+              trend={overviewData?.removedContent7d ? { 
+                value: Math.abs(overviewData.removedContent7d.trend), 
+                positive: overviewData.removedContent7d.positive 
+              } : { value: 0, positive: true }}
             />
           </div>
 
@@ -158,44 +212,50 @@ const ModeratorDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4 max-h-[40vh] overflow-auto">
-                <div className="flex items-start gap-4 p-2 bg-red-50 rounded-md">
-                  <div className="mt-0.5">
-                    <Bell className="h-4 w-4 text-red-500" />
+                {overviewLoading ? (
+                  // Loading state
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="flex items-start gap-4 p-2 bg-gray-50 rounded-md animate-pulse">
+                      <div className="mt-0.5">
+                        <div className="h-4 w-4 bg-gray-300 rounded"></div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="h-3 bg-gray-300 rounded w-3/4 mb-2"></div>
+                        <div className="h-2 bg-gray-300 rounded w-full mb-1"></div>
+                        <div className="h-2 bg-gray-300 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                  ))
+                ) : overviewData?.recentAlerts ? (
+                  // Real data from backend
+                  overviewData.recentAlerts.map((alert) => (
+                    <div key={alert.id} className={`flex items-start gap-4 p-2 rounded-md ${
+                      alert.icon === "red" ? "bg-red-50" : 
+                      alert.icon === "amber" ? "bg-amber-50" : 
+                      "bg-blue-50"
+                    }`}>
+                      <div className="mt-0.5">
+                        <Bell className={`h-4 w-4 ${
+                          alert.icon === "red" ? "text-red-500" : 
+                          alert.icon === "amber" ? "text-amber-500" : 
+                          "text-blue-500"
+                        }`} />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-medium">{alert.title}</h4>
+                        <p className="text-[11px] text-muted-foreground">
+                          {alert.description}
+                        </p>
+                        <p className="text-[10px] text-gray-500 mt-1">{alert.time}</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  // Fallback when no data
+                  <div className="flex items-center justify-center p-4 text-gray-500">
+                    <p className="text-sm">No recent alerts available</p>
                   </div>
-                  <div>
-                    <h4 className="text-xs font-medium">High Priority: Copyright Strike</h4>
-                    <p className="text-[11px] text-muted-foreground">
-                      Artwork ID art56789 reported for copyright infringement. Requires immediate review.
-                    </p>
-                    <p className="text-[10px] text-gray-500 mt-1">30 minutes ago</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4 p-2 bg-amber-50 rounded-md">
-                  <div className="mt-0.5">
-                    <Bell className="h-4 w-4 text-amber-500" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-medium">Suspicious User Activity</h4>
-                    <p className="text-[11px] text-muted-foreground">
-                      User ID user456 has received multiple reports in the last 24 hours.
-                    </p>
-                    <p className="text-[10px] text-gray-500 mt-1">2 hours ago</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4 p-2 bg-blue-50 rounded-md">
-                  <div className="mt-0.5">
-                    <Bell className="h-4 w-4 text-blue-500" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-medium">New Escalated Report</h4>
-                    <p className="text-[11px] text-muted-foreground">
-                      Admin has requested review of bid dispute on auction #8745.
-                    </p>
-                    <p className="text-[10px] text-gray-500 mt-1">5 hours ago</p>
-                  </div>
-                </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -206,35 +266,47 @@ const ModeratorDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3 max-h-[40vh] overflow-auto">
-                <div className="flex justify-between items-start border-b pb-2">
-                  <div>
-                    <p className="text-xs font-medium">Content Removed: Artwork #2356</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      Removed for terms of service violation
-                    </p>
+                {recentlyResolvedLoading ? (
+                  // Loading state
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="flex justify-between items-start border-b pb-2 animate-pulse">
+                      <div className="flex-1">
+                        <div className="h-3 bg-gray-300 rounded w-3/4 mb-2"></div>
+                        <div className="h-2 bg-gray-300 rounded w-full"></div>
+                      </div>
+                      <div className="h-2 bg-gray-300 rounded w-16 ml-4"></div>
+                    </div>
+                  ))
+                ) : recentlyResolvedData?.recentlyResolved && recentlyResolvedData.recentlyResolved.length > 0 ? (
+                  // Real data from backend
+                  recentlyResolvedData.recentlyResolved.map((item, index) => (
+                    <div key={item.id} className={`flex justify-between items-start ${index < recentlyResolvedData.recentlyResolved.length - 1 ? 'border-b pb-2' : ''}`}>
+                      <div>
+                        <p className="text-xs font-medium">
+                          {item.content_type === 'artwork' && 'Content Removed: '}
+                          {item.content_type === 'user' && 'User Action: '}
+                          {item.content_type === 'comment' && 'Comment Removed: '}
+                          {item.content_type === 'auction' && 'Auction Resolved: '}
+                          {item.content_type === 'exhibit' && 'Exhibit Resolved: '}
+                          {item.content_type === 'Unknown' && 'Issue Resolved: '}
+                          {item.content_title}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {item.action_taken}
+                        </p>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">{item.time_ago}</p>
+                    </div>
+                  ))
+                ) : (
+                  // No recently resolved issues
+                  <div className="flex items-center justify-center p-4 text-gray-500">
+                    <div className="text-center">
+                      <p className="text-sm">No recently resolved issues</p>
+                      <p className="text-xs text-gray-400 mt-1">All caught up!</p>
+                    </div>
                   </div>
-                  <p className="text-[10px] text-muted-foreground">Yesterday</p>
-                </div>
-
-                <div className="flex justify-between items-start border-b pb-2">
-                  <div>
-                    <p className="text-xs font-medium">User Muted: @artlover556</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      24-hour mute for harassment in comments
-                    </p>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground">2 days ago</p>
-                </div>
-
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-xs font-medium">Dispute Resolved: Bid #8972</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      Mediated between buyer and seller
-                    </p>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground">3 days ago</p>
-                </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -264,104 +336,149 @@ const ModeratorDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-6 max-h-[90vh] overflow-auto">
-                <div className="border rounded-md p-4 space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-                    <div>
-                      <h3 className="text-xs font-medium">Flagged Artwork: "Dark Nebula"</h3>
-                      <p className="text-[11px] text-muted-foreground">ID: art12345</p>
-                      <div className="flex items-center mt-1">
-                        <p className="text-[10px] bg-red-100 text-red-800 px-2 py-0.5 rounded">
-                          Flagged: Inappropriate Content
-                        </p>
+                {flaggedContentLoading ? (
+                  // Loading state
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="border rounded-md p-4 space-y-4 animate-pulse">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+                        <div className="flex-1">
+                          <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                          <div className="h-3 bg-gray-300 rounded w-1/2 mb-2"></div>
+                          <div className="h-5 bg-gray-300 rounded w-1/4"></div>
+                        </div>
+                        <div className="flex gap-2">
+                          <div className="h-6 bg-gray-300 rounded w-16"></div>
+                          <div className="h-6 bg-gray-300 rounded w-16"></div>
+                          <div className="h-6 bg-gray-300 rounded w-16"></div>
+                        </div>
+                      </div>
+                      <div className="bg-gray-100 p-3 rounded-md">
+                        <div className="h-3 bg-gray-300 rounded w-1/4 mb-2"></div>
+                        <div className="h-2 bg-gray-300 rounded w-full"></div>
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      <button className="text-[10px] px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200">
-                        Approve
-                      </button>
-                      <button className="text-[10px] px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200">
-                        Remove
-                      </button>
-                      <button className="text-[10px] px-2 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200">
-                        Escalate
-                      </button>
-                    </div>
-                  </div>
-                  <div className="bg-gray-100 p-3 rounded-md">
-                    <p className="text-[11px] font-medium">Report Description:</p>
-                    <p className="text-[10px]">
-                      This artwork contains graphic content that violates community guidelines.
-                      The imagery includes explicit violence that should not be allowed.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="border rounded-md p-4 space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-                    <div>
-                      <h3 className="text-xs font-medium">Flagged Comment</h3>
-                      <p className="text-[11px] text-muted-foreground">On Artwork: "Sunset Dreams"</p>
-                      <div className="flex items-center mt-1">
-                        <p className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded">
-                          Flagged: Harassment
-                        </p>
+                  ))
+                ) : flaggedContentData?.flaggedContent && flaggedContentData.flaggedContent.length > 0 ? (
+                  // Real data from backend
+                  flaggedContentData.flaggedContent.map((item) => (
+                    <div key={item.id} className="border rounded-md p-4 space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+                        <div>
+                          <h3 className="text-xs font-medium">{item.title}</h3>
+                          <p className="text-[11px] text-muted-foreground">{item.description}</p>
+                          <div className="flex items-center mt-1">
+                            <p className={`text-[10px] px-2 py-0.5 rounded ${
+                              item.flagged_reason.toLowerCase().includes('inappropriate') || 
+                              item.flagged_reason.toLowerCase().includes('copyright') ||
+                              item.flagged_reason.toLowerCase().includes('fraud') 
+                                ? 'bg-red-100 text-red-800'
+                                : item.flagged_reason.toLowerCase().includes('harassment') ||
+                                  item.flagged_reason.toLowerCase().includes('spam')
+                                ? 'bg-amber-100 text-amber-800'
+                                : 'bg-purple-100 text-purple-800'
+                            }`}>
+                              Flagged: {item.flagged_reason}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {item.type === 'artwork' && (
+                            <>
+                              <button 
+                                onClick={() => handleApproveContent(item.id)}
+                                className="text-[10px] px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200"
+                              >
+                                Approve
+                              </button>
+                              <button 
+                                onClick={() => handleRemoveContent(item.id)}
+                                className="text-[10px] px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200"
+                              >
+                                Remove
+                              </button>
+                              <button 
+                                onClick={() => handleEscalateContent(item.id)}
+                                className="text-[10px] px-2 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200"
+                              >
+                                Escalate
+                              </button>
+                            </>
+                          )}
+                          {item.type === 'comment' && (
+                            <>
+                              <button 
+                                onClick={() => handleApproveContent(item.id)}
+                                className="text-[10px] px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200"
+                              >
+                                Keep
+                              </button>
+                              <button 
+                                onClick={() => handleRemoveContent(item.id)}
+                                className="text-[10px] px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200"
+                              >
+                                Remove
+                              </button>
+                              <button 
+                                onClick={() => handleWarnUser(item.id)}
+                                className="text-[10px] px-2 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200"
+                              >
+                                Warn User
+                              </button>
+                            </>
+                          )}
+                          {item.type === 'user' && (
+                            <>
+                              <button 
+                                onClick={() => handleApproveContent(item.id)}
+                                className="text-[10px] px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200"
+                              >
+                                Legitimate
+                              </button>
+                              <button 
+                                onClick={() => handleSuspendUser(item.id)}
+                                className="text-[10px] px-2 py-1 bg-amber-100 text-amber-800 rounded hover:bg-amber-200"
+                              >
+                                Suspend
+                              </button>
+                              <button 
+                                onClick={() => handleBanUser(item.id)}
+                                className="text-[10px] px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200"
+                              >
+                                Ban
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <div className="bg-gray-100 p-3 rounded-md">
+                        <p className="text-[11px] font-medium">Report Description:</p>
+                        <p className="text-[10px]">{item.report_description}</p>
+                        {item.type === 'comment' && item.content_data.text && (
+                          <>
+                            <p className="text-[11px] font-medium mt-2">Comment Content:</p>
+                            <p className="text-[10px]">"{item.content_data.text}"</p>
+                            <p className="text-[10px] mt-2 text-gray-500">
+                              - Posted by {item.content_data.author} on {new Date(item.content_data.created_at || '').toLocaleDateString()}
+                            </p>
+                          </>
+                        )}
+                        {item.type === 'user' && item.content_data.username && (
+                          <p className="text-[10px] mt-2 text-gray-500">
+                            Username: @{item.content_data.username}
+                          </p>
+                        )}
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      <button className="text-[10px] px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200">
-                        Keep
-                      </button>
-                      <button className="text-[10px] px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200">
-                        Remove
-                      </button>
-                      <button className="text-[10px] px-2 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200">
-                        Warn User
-                      </button>
+                  ))
+                ) : (
+                  // No flagged content
+                  <div className="flex items-center justify-center p-8 text-gray-500">
+                    <div className="text-center">
+                      <p className="text-sm">No flagged content available</p>
+                      <p className="text-xs text-gray-400 mt-1">All content is clean and approved</p>
                     </div>
                   </div>
-                  <div className="bg-gray-100 p-3 rounded-md">
-                    <p className="text-[11px] font-medium">Comment Content:</p>
-                    <p className="text-[10px]">
-                      "You are such a talentless hack. Your art is worthless garbage 
-                      and you should be ashamed to call yourself an artist."
-                    </p>
-                    <p className="text-[10px] mt-2 text-gray-500">
-                      - Posted by user456 on June 17, 2023
-                    </p>
-                  </div>
-                </div>
-
-                <div className="border rounded-md p-4 space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-                    <div>
-                      <h3 className="text-xs font-medium">Flagged User Profile</h3>
-                      <p className="text-[11px] text-muted-foreground">Username: @artmaster2000</p>
-                      <div className="flex items-center mt-1">
-                        <p className="text-[10px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded">
-                          Flagged: Impersonation
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <button className="text-[10px] px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200">
-                        Legitimate
-                      </button>
-                      <button className="text-[10px] px-2 py-1 bg-amber-100 text-amber-800 rounded hover:bg-amber-200">
-                        Suspend
-                      </button>
-                      <button className="text-[10px] px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200">
-                        Ban
-                      </button>
-                    </div>
-                  </div>
-                  <div className="bg-gray-100 p-3 rounded-md">
-                    <p className="text-[11px] font-medium">Report Description:</p>
-                    <p className="text-[10px]">
-                      This user is impersonating a famous artist and selling counterfeit works.
-                      They have copied the bio and artwork style of @realartmaster and are misleading buyers.
-                    </p>
-                  </div>
-                </div>
+                )}
               </div>
             </CardContent>
           </Card>
