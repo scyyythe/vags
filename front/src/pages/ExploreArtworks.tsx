@@ -21,20 +21,31 @@ const ArtworkCard = ({ artwork, item }: { artwork: any; item: any }) => {
 
   return (
     <motion.div key={artwork.id} variants={item} className="card-hover">
-      <div 
+      <div
         className="bg-white border px-5 py-3 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
         onClick={handleCardClick}
       >
         <div className="relative group">
           <div className="flex justify-between items-center pt-2 px-2 pb-4">
             <div className="flex items-center space-x-1">
-              <div className="w-5 h-5 rounded-full overflow-hidden mr-2">
-                <img src={artwork.artistImage} alt={artwork.artistName} className="w-full h-full object-cover" />
+              <div className="w-5 h-5 rounded-full overflow-hidden mr-2 flex items-center justify-center bg-gray-200">
+                {artwork.artistImage ? (
+                  <img src={artwork.artistImage} alt={artwork.artistName} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-[8px] font-bold text-gray-700">
+                    {artwork.artistName
+                      ?.split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .slice(0, 2)
+                      .toUpperCase()}
+                  </span>
+                )}
               </div>
               {/* Artist name stays original */}
               <span className="text-[10px] text-gray-700">{artwork.artistName}</span>
             </div>
-            <button 
+            <button
               className="text-gray-500 hover:text-gray-700"
               onClick={(e) => {
                 e.stopPropagation(); // Prevent card click when clicking the button
