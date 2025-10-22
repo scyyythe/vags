@@ -390,7 +390,11 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
               className="absolute right-3 top-3/4 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
               onClick={() => setShowPassword(!showPassword)}
             >
-              <i className={showPassword ? "bx bx-hide" : "bx bx-show"} style={{ fontSize: "15px" }}></i>
+              <img 
+                src={showPassword ? "https://img.icons8.com/fluency-systems-regular/48/closed-eye.png" : "https://img.icons8.com/fluency-systems-regular/48/visible--v1.png"} 
+                alt={showPassword ? "Hide password" : "Show password"}
+                className="w-4 h-4 mb-1"
+              />
             </button>
           </div>
 
