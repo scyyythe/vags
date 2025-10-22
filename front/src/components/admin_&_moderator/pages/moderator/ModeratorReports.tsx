@@ -11,96 +11,39 @@ import {
   DialogHeader,
   DialogTitle, 
 } from "@/components/ui/dialog";
+import useModeratorReports, { useUpdateReportStatus } from "@/hooks/moderator/useModeratorReports";
 
-const mockReports: Report[] = [
-  {
-    id: "1",
-    reportType: "offensive",
-    reportedId: "art12345",
-    reportedType: "artwork",
-    reportedBy: "user789",
-    status: "pending",
-    dateReported: "2023-06-15",
-    description: "This artwork contains inappropriate content",
-  },
-  {
-    id: "2",
-    reportType: "fraud",
-    reportedId: "user456",
-    reportedType: "user",
-    reportedBy: "user789",
-    status: "investigating",
-    dateReported: "2023-06-16",
-    description: "This user is posting fake artwork for sale",
-  },
-  {
-    id: "3",
-    reportType: "spam",
-    reportedId: "comment789",
-    reportedType: "comment",
-    reportedBy: "user123",
-    status: "pending",
-    dateReported: "2023-06-17",
-    description: "This comment is spam and unrelated to the artwork",
-  },
-  {
-    id: "4",
-    reportType: "plagiarism",
-    reportedId: "art56789",
-    reportedType: "artwork",
-    reportedBy: "user456",
-    status: "resolved",
-    dateReported: "2023-06-18",
-    description: "This artwork is copied from another artist",
-  },
-  {
-    id: "5",
-    reportType: "other",
-    reportedId: "bid12345",
-    reportedType: "bid",
-    reportedBy: "user789",
-    status: "dismissed",
-    dateReported: "2023-06-19",
-    description: "Suspicious bidding behavior",
-  },
-  {
-    id: "6",
-    reportType: "offensive",
-    reportedId: "comment567",
-    reportedType: "comment",
-    reportedBy: "user345",
-    status: "pending",
-    dateReported: "2023-06-20",
-    description: "This comment contains hate speech",
-  },
-  {
-    id: "7",
-    reportType: "fraud",
-    reportedId: "bid789",
-    reportedType: "bid",
-    reportedBy: "user123",
-    status: "pending",
-    dateReported: "2023-06-21",
-    description: "This bid appears to be fraudulent",
-  },
-  {
-    id: "8",
-    reportType: "plagiarism",
-    reportedId: "art6789",
-    reportedType: "artwork",
-    reportedBy: "user234",
-    status: "investigating",
-    dateReported: "2023-06-22",
-    description: "This artwork is stolen from DeviantArt",
-  },
-];
 
 const ModeratorReports = () => {
-  const [reports, setReports] = useState<Report[]>(mockReports);
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
+
+  // Fetch reports based on active tab
+  const { data: allReports, isLoading: allLoading, error: allError } = useModeratorReports("all");
+  const { data: pendingReports, isLoading: pendingLoading, error: pendingError } = useModeratorReports("pending");
+  const { data: investigatingReports, isLoading: investigatingLoading, error: investigatingError } = useModeratorReports("investigating");
+  const { data: resolvedReports, isLoading: resolvedLoading, error: resolvedError } = useModeratorReports("resolved");
+
+  // Mutation for updating report status
+  const updateReportMutation = useUpdateReportStatus();
+
+  // Get current reports based on active tab
+  const getCurrentReports = () => {
+    switch (activeTab) {
+      case "pending":
+        return pendingReports?.reports || [];
+      case "investigating":
+        return investigatingReports?.reports || [];
+      case "resolved":
+        return resolvedReports?.reports || [];
+      default:
+        return allReports?.reports || [];
+    }
+  };
 
   const handleInvestigateReport = (id: string) => {
+    const reports = getCurrentReports();
     const report = reports.find(r => r.id === id);
     if (report) {
       setSelectedReport(report);
@@ -109,25 +52,31 @@ const ModeratorReports = () => {
   };
 
   const handleResolveReport = (id: string) => {
-    const updatedReports = reports.map(report => {
-      if (report.id === id) {
-        return { ...report, status: "resolved" as const };
+    updateReportMutation.mutate(
+      { reportId: id, status: "resolved" },
+      {
+        onSuccess: () => {
+          toast.success("Report marked as resolved", { closeButton: true });
+        },
+        onError: () => {
+          toast.error("Failed to update report status", { closeButton: true });
+        }
       }
-      return report;
-    });
-    setReports(updatedReports);
-    toast.success("Report marked as resolved", { closeButton: true });
+    );
   };
 
   const handleDismissReport = (id: string) => {
-    const updatedReports = reports.map(report => {
-      if (report.id === id) {
-        return { ...report, status: "dismissed" as const };
+    updateReportMutation.mutate(
+      { reportId: id, status: "dismissed" },
+      {
+        onSuccess: () => {
+          toast.success("Report marked as dismissed", { closeButton: true });
+        },
+        onError: () => {
+          toast.error("Failed to update report status", { closeButton: true });
+        }
       }
-      return report;
-    });
-    setReports(updatedReports);
-    toast.success("Report marked as dismissed", { closeButton: true });
+    );
   };
 
   const handleEscalateReport = (id: string) => {
@@ -136,20 +85,47 @@ const ModeratorReports = () => {
 
   const confirmInvestigation = () => {
     if (selectedReport) {
-      const updatedReports = reports.map(report => {
-        if (report.id === selectedReport.id) {
-          return { ...report, status: "investigating" as const };
+      updateReportMutation.mutate(
+        { reportId: selectedReport.id, status: "investigating" },
+        {
+          onSuccess: () => {
+            toast.success("Report now under investigation", { closeButton: true });
+            setDialogOpen(false);
+          },
+          onError: () => {
+            toast.error("Failed to update report status", { closeButton: true });
+          }
         }
-        return report;
-      });
-      setReports(updatedReports);
-      toast.success("Report now under investigation", { closeButton: true });
-      setDialogOpen(false);
+      );
     }
   };
 
-  const filterReportsByStatus = (status: Report["status"]) => {
-    return reports.filter(report => report.status === status);
+  // Get loading state based on active tab
+  const getCurrentLoading = () => {
+    switch (activeTab) {
+      case "pending":
+        return pendingLoading;
+      case "investigating":
+        return investigatingLoading;
+      case "resolved":
+        return resolvedLoading;
+      default:
+        return allLoading;
+    }
+  };
+
+  // Get error state based on active tab
+  const getCurrentError = () => {
+    switch (activeTab) {
+      case "pending":
+        return pendingError;
+      case "investigating":
+        return investigatingError;
+      case "resolved":
+        return resolvedError;
+      default:
+        return allError;
+    }
   };
 
   return (
@@ -161,19 +137,19 @@ const ModeratorReports = () => {
         </p>
       </div>
 
-      <Tabs defaultValue="all" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-4 sm:w-auto sm:inline-grid sm:grid-cols-4">
           <TabsTrigger value="all" className="text-[10px]">
-            All Reports
+            All Reports ({allReports?.total || 0})
           </TabsTrigger>
           <TabsTrigger value="pending" className="text-[10px]">
-            Pending
+            Pending ({pendingReports?.total || 0})
           </TabsTrigger>
           <TabsTrigger value="investigating" className="text-[10px]">
-            Investigating
+            Investigating ({investigatingReports?.total || 0})
           </TabsTrigger>
           <TabsTrigger value="resolved" className="text-[10px]">
-            Resolved
+            Resolved ({resolvedReports?.total || 0})
           </TabsTrigger>
         </TabsList>
 
@@ -186,13 +162,29 @@ const ModeratorReports = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ReportTable
-                initialReports={reports}
-                onInvestigateReport={handleInvestigateReport}
-                onResolveReport={handleResolveReport}
-                onDismissReport={handleDismissReport}
-                onEscalateReport={handleEscalateReport}
-              />
+              {getCurrentLoading() ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+                    <p className="text-sm text-gray-500">Loading reports...</p>
+                  </div>
+                </div>
+              ) : getCurrentError() ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="text-center">
+                    <p className="text-sm text-red-500">Failed to load reports</p>
+                    <p className="text-xs text-gray-400 mt-1">Please try again later</p>
+                  </div>
+                </div>
+              ) : (
+                <ReportTable
+                  initialReports={getCurrentReports()}
+                  onInvestigateReport={handleInvestigateReport}
+                  onResolveReport={handleResolveReport}
+                  onDismissReport={handleDismissReport}
+                  onEscalateReport={handleEscalateReport}
+                />
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -206,13 +198,29 @@ const ModeratorReports = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ReportTable
-                initialReports={filterReportsByStatus("pending")}
-                onInvestigateReport={handleInvestigateReport}
-                onResolveReport={handleResolveReport}
-                onDismissReport={handleDismissReport}
-                onEscalateReport={handleEscalateReport}
-              />
+              {getCurrentLoading() ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+                    <p className="text-sm text-gray-500">Loading reports...</p>
+                  </div>
+                </div>
+              ) : getCurrentError() ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="text-center">
+                    <p className="text-sm text-red-500">Failed to load reports</p>
+                    <p className="text-xs text-gray-400 mt-1">Please try again later</p>
+                  </div>
+                </div>
+              ) : (
+                <ReportTable
+                  initialReports={getCurrentReports()}
+                  onInvestigateReport={handleInvestigateReport}
+                  onResolveReport={handleResolveReport}
+                  onDismissReport={handleDismissReport}
+                  onEscalateReport={handleEscalateReport}
+                />
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -226,13 +234,29 @@ const ModeratorReports = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ReportTable
-                initialReports={filterReportsByStatus("investigating")}
-                onInvestigateReport={handleInvestigateReport}
-                onResolveReport={handleResolveReport}
-                onDismissReport={handleDismissReport}
-                onEscalateReport={handleEscalateReport}
-              />
+              {getCurrentLoading() ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+                    <p className="text-sm text-gray-500">Loading reports...</p>
+                  </div>
+                </div>
+              ) : getCurrentError() ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="text-center">
+                    <p className="text-sm text-red-500">Failed to load reports</p>
+                    <p className="text-xs text-gray-400 mt-1">Please try again later</p>
+                  </div>
+                </div>
+              ) : (
+                <ReportTable
+                  initialReports={getCurrentReports()}
+                  onInvestigateReport={handleInvestigateReport}
+                  onResolveReport={handleResolveReport}
+                  onDismissReport={handleDismissReport}
+                  onEscalateReport={handleEscalateReport}
+                />
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -246,16 +270,29 @@ const ModeratorReports = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ReportTable
-                initialReports={[
-                  ...filterReportsByStatus("resolved"),
-                  ...filterReportsByStatus("dismissed"),
-                ]}
-                onInvestigateReport={handleInvestigateReport}
-                onResolveReport={handleResolveReport}
-                onDismissReport={handleDismissReport}
-                onEscalateReport={handleEscalateReport}
-              />
+              {getCurrentLoading() ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+                    <p className="text-sm text-gray-500">Loading reports...</p>
+                  </div>
+                </div>
+              ) : getCurrentError() ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="text-center">
+                    <p className="text-sm text-red-500">Failed to load reports</p>
+                    <p className="text-xs text-gray-400 mt-1">Please try again later</p>
+                  </div>
+                </div>
+              ) : (
+                <ReportTable
+                  initialReports={getCurrentReports()}
+                  onInvestigateReport={handleInvestigateReport}
+                  onResolveReport={handleResolveReport}
+                  onDismissReport={handleDismissReport}
+                  onEscalateReport={handleEscalateReport}
+                />
+              )}
             </CardContent>
           </Card>
         </TabsContent>
