@@ -53,24 +53,22 @@ export const validatePostData = (data: ValidationData): ValidationResult => {
     };
   }
 
-  // Medium validation: more flexible - allows commas, hyphens, and spaces
-  const mediumRegex = /^[A-Za-z\s,.-]+$/;
+  // Medium validation: proper names starting with capital letters
   if (!medium?.trim()) {
     return { isValid: false, errorMessage: "Please enter the medium used (e.g., Oil on Canvas, Digital Art, Watercolor)" };
   }
+  
+  // Check if medium starts with capital letter
+  if (!/^[A-Z]/.test(medium.trim())) {
+    return { isValid: false, errorMessage: "Medium must start with a capital letter (e.g., Oil on Canvas, Digital Art)" };
+  }
+  
+  // Allow letters, spaces, commas, and hyphens for proper names
+  const mediumRegex = /^[A-Za-z\s,.-]+$/;
   if (!mediumRegex.test(medium)) {
-    // Check for specific invalid characters
-    const invalidChars = medium.match(/[^A-Za-z\s,.-]/g);
-    if (invalidChars) {
-      const uniqueInvalidChars = [...new Set(invalidChars)];
-      return {
-        isValid: false,
-        errorMessage: `Medium contains invalid characters: ${uniqueInvalidChars.join(', ')}. Only letters, spaces, commas, periods, and hyphens are allowed`,
-      };
-    }
     return {
       isValid: false,
-      errorMessage: "Medium contains invalid characters. Only letters, spaces, commas, periods, and hyphens are allowed",
+      errorMessage: "Medium must be proper name(s), start with a capital letter, letters only. Use commas or spaces to separate multiple mediums (e.g., Wood, Paint or Oil on Canvas)",
     };
   }
 

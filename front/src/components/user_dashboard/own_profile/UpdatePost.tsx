@@ -12,10 +12,99 @@ import useUpdateArtwork from "@/hooks/mutate/artwork/useArtworkMutate";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { validatePostData } from "@/hooks/artworks/usePostSubmission";
+import { useQueryClient } from "@tanstack/react-query";
+
+// Validation function matching SellArtwork.tsx
+const validateUpdateForm = (
+  title: string,
+  medium: string,
+  height: string,
+  width: string,
+  category: string,
+  description: string,
+  selectedFile: File | null,
+  hasExistingImage: boolean,
+  translatedMessages: {
+    titleRequired: string;
+    titleMinLength: string;
+    titleMaxLength: string;
+    enterMedium: string;
+    mediumMaxLength: string;
+    enterHeight: string;
+    heightValid: string;
+    enterWidth: string;
+    widthValid: string;
+    selectStyle: string;
+    descriptionRequired: string;
+    descriptionMax: string;
+    uploadMainImage: string;
+    mainImageSize: string;
+  }
+): { isValid: boolean; errorMessage?: string } => {
+  // Title validation - More lenient validation
+  if (!title.trim()) {
+    return { isValid: false, errorMessage: translatedMessages.titleRequired };
+  }
+  if (title.trim().length < 2) {
+    return { isValid: false, errorMessage: translatedMessages.titleMinLength };
+  }
+  if (title.trim().length > 100) {
+    return { isValid: false, errorMessage: translatedMessages.titleMaxLength };
+  }
+
+  // Medium validation - Required
+  if (!medium.trim()) {
+    return { isValid: false, errorMessage: translatedMessages.enterMedium };
+  }
+  if (medium.trim().length > 100) {
+    return { isValid: false, errorMessage: translatedMessages.mediumMaxLength };
+  }
+
+  // Dimensions validation - Required
+  if (!height) {
+    return { isValid: false, errorMessage: translatedMessages.enterHeight };
+  }
+  const h = Number(height);
+  if (isNaN(h) || h <= 0 || h > 10000) {
+    return { isValid: false, errorMessage: translatedMessages.heightValid };
+  }
+
+  if (!width) {
+    return { isValid: false, errorMessage: translatedMessages.enterWidth };
+  }
+  const w = Number(width);
+  if (isNaN(w) || w <= 0 || w > 10000) {
+    return { isValid: false, errorMessage: translatedMessages.widthValid };
+  }
+
+  // Style validation - Required
+  if (!category) {
+    return { isValid: false, errorMessage: translatedMessages.selectStyle };
+  }
+
+  // Description validation - Required
+  if (!description.trim()) {
+    return { isValid: false, errorMessage: translatedMessages.descriptionRequired };
+  }
+  if (description.length > 1000) {
+    return { isValid: false, errorMessage: translatedMessages.descriptionMax };
+  }
+
+  // Image validation - For updates: require either a new file OR existing image
+  if (!selectedFile && !hasExistingImage) {
+    return { isValid: false, errorMessage: translatedMessages.uploadMainImage };
+  }
+  if (selectedFile && selectedFile.size > 20 * 1024 * 1024) {
+    return { isValid: false, errorMessage: translatedMessages.mainImageSize };
+  }
+
+  return { isValid: true };
+};
 
 const UpdatePost = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [artworkTitle, setArtworkTitle] = useState("");
   const [artworkStyle, setArtworkStyle] = useState("");
@@ -65,6 +154,22 @@ const UpdatePost = () => {
   const fileSizeErrorText = useAutoTranslation("File size must be less than 20MB", language);
   const artworkUpdatedSuccessText = useAutoTranslation("Artwork updated successfully!", language);
   const updateFailedErrorText = useAutoTranslation("Failed to update artwork.", language);
+  
+  // Additional validation messages matching SellArtwork
+  const titleRequiredText = useAutoTranslation("Please enter an artwork title.", language);
+  const titleMinLengthText = useAutoTranslation("Title should be at least 2 characters long.", language);
+  const titleMaxLengthText = useAutoTranslation("Title should be less than 100 characters.", language);
+  const enterMediumText = useAutoTranslation("Please enter the medium used for this artwork.", language);
+  const mediumMaxLengthText = useAutoTranslation("Medium description should be less than 100 characters.", language);
+  const enterHeightText = useAutoTranslation("Please enter the height of your artwork.", language);
+  const heightValidText = useAutoTranslation("Height must be a positive number between 1-10000 cm.", language);
+  const enterWidthText = useAutoTranslation("Please enter the width of your artwork.", language);
+  const widthValidText = useAutoTranslation("Width must be a positive number between 1-10000 cm.", language);
+  const selectStyleText = useAutoTranslation("Please select an artwork style.", language);
+  const descriptionRequiredText = useAutoTranslation("Please enter a description for your artwork.", language);
+  const descriptionMaxText = useAutoTranslation("Description cannot exceed 1000 characters.", language);
+  const uploadMainImageText = useAutoTranslation("Please upload an artwork image file (JPG, PNG, etc.)", language);
+  const mainImageSizeText = useAutoTranslation("Main image file size must be less than 20MB.", language);
 
   // Translation for fetched data
   const translatedFetchedTitle = useAutoTranslation(artwork?.title || "", language);
@@ -172,16 +277,36 @@ const UpdatePost = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Use centralized validation like CreatePost
-    const validation = validatePostData({
-      title: artworkTitle,
+    // For updates, we should allow submission if there's either a new file OR an existing image
+    const hasExistingImage = previewUrl && !selectedFile; // previewUrl exists but no new file selected
+    
+    // Use the same validation as SellArtwork
+    const validation = validateUpdateForm(
+      artworkTitle,
       medium,
       artworkHeight,
       artworkWidth,
-      category: artworkStyle,
+      artworkStyle,
       description,
       selectedFile,
-    });
+      hasExistingImage,
+      {
+        titleRequired: titleRequiredText,
+        titleMinLength: titleMinLengthText,
+        titleMaxLength: titleMaxLengthText,
+        enterMedium: enterMediumText,
+        mediumMaxLength: mediumMaxLengthText,
+        enterHeight: enterHeightText,
+        heightValid: heightValidText,
+        enterWidth: enterWidthText,
+        widthValid: widthValidText,
+        selectStyle: selectStyleText,
+        descriptionRequired: descriptionRequiredText,
+        descriptionMax: descriptionMaxText,
+        uploadMainImage: uploadMainImageText,
+        mainImageSize: mainImageSizeText,
+      }
+    );
 
     if (!validation.isValid) {
       toast.error(validation.errorMessage!, { closeButton: true });
@@ -202,9 +327,11 @@ const UpdatePost = () => {
       formData.append("size", `${artworkHeight}x${artworkWidth}`);
     }
 
+    // Only append image if there's a new file selected
     if (selectedFile) {
       formData.append("image", selectedFile);
     }
+    // If no new file but existing image, the backend should keep the existing image
 
     setIsUploading(true);
 
@@ -212,6 +339,16 @@ const UpdatePost = () => {
       { id, formData },
       {
         onSuccess: () => {
+          // Invalidate relevant queries to refresh data
+          queryClient.invalidateQueries({ queryKey: ["artwork", id] });
+          queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
+          queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
+          queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+          queryClient.invalidateQueries({ queryKey: ["myWishlist"] });
+          queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+          queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+          queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
+          
           toast.success(artworkUpdatedSuccessText, { closeButton: true });
           navigate("/explore");
         },
