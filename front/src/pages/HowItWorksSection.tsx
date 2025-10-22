@@ -90,7 +90,7 @@ const HowItWorksSection = () => {
   };
 
   return (
-    <section className="py-16 px-6 md:px-12" id="how-it-works">
+    <section className="py-16 px-6 md:px-12 bg-gray-50" id="how-it-works">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
