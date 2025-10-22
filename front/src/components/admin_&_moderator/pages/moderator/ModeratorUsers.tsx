@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import { toast } from "sonner";
+import useUserManagement, { useUserAction, ModUser } from "@/hooks/moderator/useUserManagement";
 import {
   Select,
   SelectContent,
@@ -28,76 +29,24 @@ import {
 } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 
-interface ModUser {
-  id: string;
-  username: string;
-  email: string;
-  dateJoined: string;
-  status: "active" | "warned" | "muted" | "suspended";
-  reportCount: number;
-  lastActive: string;
-  avatar?: string;
-  notes?: string;
-}
-
-const mockUsers: ModUser[] = [
-  {
-    id: "user123",
-    username: "artmaster2000",
-    email: "artmaster@example.com",
-    dateJoined: "2023-01-15",
-    status: "warned",
-    reportCount: 4,
-    lastActive: "2023-06-20",
-    notes: "Has received multiple warnings for inappropriate comments",
-  },
-  {
-    id: "user456",
-    username: "creativemind",
-    email: "creative@example.com",
-    dateJoined: "2023-02-10",
-    status: "muted",
-    reportCount: 7,
-    lastActive: "2023-06-18",
-    notes: "Muted for 48 hours due to harassing behavior in comments",
-  },
-  {
-    id: "user789",
-    username: "digitalartist",
-    email: "digital@example.com",
-    dateJoined: "2023-03-05",
-    status: "active",
-    reportCount: 1,
-    lastActive: "2023-06-22",
-  },
-  {
-    id: "user101",
-    username: "sculpturpro",
-    email: "sculptor@example.com",
-    dateJoined: "2023-04-12",
-    status: "active",
-    reportCount: 0,
-    lastActive: "2023-06-21",
-  },
-  {
-    id: "user202",
-    username: "paintingexpert",
-    email: "painter@example.com",
-    dateJoined: "2023-05-20",
-    status: "suspended",
-    reportCount: 12,
-    lastActive: "2023-06-15",
-    notes: "Suspended for plagiarizing multiple artworks",
-  },
-];
 
 const ModeratorUsers = () => {
-  const [users, setUsers] = useState<ModUser[]>(mockUsers);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState<ModUser | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<ModUser["status"] | "all">("all");
   const [userNotes, setUserNotes] = useState("");
+
+  // Fetch users from backend
+  const { data: usersData, isLoading, error } = useUserManagement();
+  const userActionMutation = useUserAction();
+
+  // Handle error state
+  if (error) {
+    console.error("Failed to load users:", error);
+  }
+
+  const users = usersData?.users || [];
 
   const handleViewUser = (user: ModUser) => {
     setSelectedUser(user);
@@ -106,60 +55,95 @@ const ModeratorUsers = () => {
   };
 
   const handleWarnUser = (id: string) => {
-    const updatedUsers = users.map(user => {
-      if (user.id === id) {
-        return { ...user, status: "warned" as const };
+    userActionMutation.mutate(
+      {
+        action: "warn",
+        user_id: id,
+        notes: userNotes || undefined
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(data.message, { closeButton: true });
+        },
+        onError: () => {
+          toast.error("Failed to warn user", { closeButton: true });
+        }
       }
-      return user;
-    });
-    setUsers(updatedUsers);
-    toast.success("Warning issued to user", { closeButton: true });
+    );
   };
 
   const handleMuteUser = (id: string) => {
-    const updatedUsers = users.map(user => {
-      if (user.id === id) {
-        return { ...user, status: "muted" as const };
+    userActionMutation.mutate(
+      {
+        action: "mute",
+        user_id: id,
+        notes: userNotes || undefined
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(data.message, { closeButton: true });
+        },
+        onError: () => {
+          toast.error("Failed to mute user", { closeButton: true });
+        }
       }
-      return user;
-    });
-    setUsers(updatedUsers);
-    toast.success("User muted for 24 hours", { closeButton: true });
+    );
   };
 
   const handleSuspendUser = (id: string) => {
-    const updatedUsers = users.map(user => {
-      if (user.id === id) {
-        return { ...user, status: "suspended" as const };
+    userActionMutation.mutate(
+      {
+        action: "suspend",
+        user_id: id,
+        notes: userNotes || undefined
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(data.message, { closeButton: true });
+        },
+        onError: () => {
+          toast.error("Failed to suspend user", { closeButton: true });
+        }
       }
-      return user;
-    });
-    setUsers(updatedUsers);
-    toast.success("User suspended", { closeButton: true });
+    );
   };
 
   const handleRestoreUser = (id: string) => {
-    const updatedUsers = users.map(user => {
-      if (user.id === id) {
-        return { ...user, status: "active" as const };
+    userActionMutation.mutate(
+      {
+        action: "restore",
+        user_id: id,
+        notes: userNotes || undefined
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(data.message, { closeButton: true });
+        },
+        onError: () => {
+          toast.error("Failed to restore user", { closeButton: true });
+        }
       }
-      return user;
-    });
-    setUsers(updatedUsers);
-    toast.success("User restored to active status", { closeButton: true });
+    );
   };
 
   const handleSaveNotes = () => {
     if (selectedUser) {
-      const updatedUsers = users.map(user => {
-        if (user.id === selectedUser.id) {
-          return { ...user, notes: userNotes };
+      userActionMutation.mutate(
+        {
+          action: "update_notes",
+          user_id: selectedUser.id,
+          notes: userNotes
+        },
+        {
+          onSuccess: (data) => {
+            toast.success(data.message, { closeButton: true });
+            setDialogOpen(false);
+          },
+          onError: () => {
+            toast.error("Failed to update notes", { closeButton: true });
+          }
         }
-        return user;
-      });
-      setUsers(updatedUsers);
-      toast.success("User notes updated", { closeButton: true });
-      setDialogOpen(false);
+      );
     }
   };
 
@@ -174,13 +158,13 @@ const ModeratorUsers = () => {
   const getStatusBadge = (status: ModUser["status"]) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-200 text-3xs">Active</Badge>;
+        return <Badge className="bg-green-100 text-green-800 hover:bg-green-200 text-[10px] px-1.5 py-0.5">Active</Badge>;
       case "warned":
-        return <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-200 text-3xs">Warned</Badge>;
+        return <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-200 text-[10px] px-1.5 py-0.5">Warned</Badge>;
       case "muted":
-        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 text-3xs">Muted</Badge>;
+        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 text-[10px] px-1.5 py-0.5">Muted</Badge>;
       case "suspended":
-        return <Badge className="bg-red-100 text-red-800 hover:bg-red-200 text-3xs">Suspended</Badge>;
+        return <Badge className="bg-red-100 text-red-800 hover:bg-red-200 text-[10px] px-1.5 py-0.5">Suspended</Badge>;
       default:
         return null;
     }
@@ -232,23 +216,49 @@ const ModeratorUsers = () => {
         </CardHeader>
         <CardContent>
           <div className="border rounded-md overflow-hidden">
-            {/* Fixed header */}
-            <table className="w-full">
-              <thead>
-                <tr className="bg-muted/50">
-                  <th className="text-left p-2 text-xs font-medium">User</th>
-                  <th className="text-left p-2 text-xs font-medium">Status</th>
-                  <th className="text-left p-2 text-xs font-medium">Reports</th>
-                  <th className="text-left p-2 text-xs font-medium">Last Active</th>
-                  <th className="text-right p-2 text-xs font-medium">Actions</th>
-                </tr>
-              </thead>
-            </table>
-            {/* Scrollable body */}
             <div className="max-h-[350px] overflow-auto">
-              <table className="w-full">
+              <table className="w-full table-fixed">
+                <thead className="sticky top-0 bg-muted/50">
+                  <tr>
+                    <th className="w-[40%] text-left p-2 text-xs font-medium">User</th>
+                    <th className="w-[15%] text-center p-2 text-xs font-medium">Status</th>
+                    <th className="w-[10%] text-center p-2 text-xs font-medium">Reports</th>
+                    <th className="w-[20%] text-center p-2 text-xs font-medium">Last Active</th>
+                    <th className="w-[15%] text-right p-2 text-xs font-medium">Actions</th>
+                  </tr>
+                </thead>
                 <tbody>
-                {filteredUsers.length > 0 ? (
+                {isLoading ? (
+                  // Loading state
+                  Array.from({ length: 5 }).map((_, index) => (
+                    <tr key={index} className="border-t animate-pulse">
+                      <td className="p-2">
+                        <div className="flex items-center space-x-2">
+                          <div className="h-5 w-5 bg-gray-300 rounded-full"></div>
+                          <div>
+                            <div className="h-3 bg-gray-300 rounded w-20 mb-1"></div>
+                            <div className="h-2 bg-gray-300 rounded w-32"></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-2 text-center">
+                        <div className="h-5 bg-gray-300 rounded w-16 mx-auto"></div>
+                      </td>
+                      <td className="p-2 text-center">
+                        <div className="h-4 bg-gray-300 rounded w-8 mx-auto"></div>
+                      </td>
+                      <td className="p-2 text-center">
+                        <div className="h-3 bg-gray-300 rounded w-20 mx-auto"></div>
+                      </td>
+                      <td className="p-2 text-right">
+                        <div className="flex gap-1 justify-end">
+                          <div className="h-6 bg-gray-300 rounded w-12"></div>
+                          <div className="h-6 bg-gray-300 rounded w-16"></div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : filteredUsers.length > 0 ? (
                   filteredUsers.map((user) => (
                     <tr key={user.id} className="border-t">
                       <td className="p-2">
@@ -259,14 +269,18 @@ const ModeratorUsers = () => {
                               {user.username.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
-                          <div>
-                            <div className="font-medium text-[11px]">{user.username}</div>
-                            <div className="text-[10px] text-muted-foreground">{user.email}</div>
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium text-[11px] truncate">{user.username}</div>
+                            <div className="text-[10px] text-muted-foreground truncate">{user.email}</div>
                           </div>
                         </div>
                       </td>
-                      <td className="p-2 text-[10px]">{getStatusBadge(user.status)}</td>
-                      <td className="p-2">
+                      <td className="p-2 text-center">
+                        <div className="flex justify-center">
+                          {getStatusBadge(user.status)}
+                        </div>
+                      </td>
+                      <td className="p-2 text-center">
                         <div className="text-xs">
                           {user.reportCount}
                           {user.reportCount > 5 && (
@@ -274,35 +288,39 @@ const ModeratorUsers = () => {
                           )}
                         </div>
                       </td>
-                      <td className="p-2 text-[11px]">{user.lastActive}</td>
+                      <td className="p-2 text-center text-[11px]">{user.lastActive}</td>
                       <td className="p-2 text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 text-[10px]"
-                          onClick={() => handleViewUser(user)}
-                        >
-                          View
-                        </Button>
-                        {user.status === "active" ? (
+                        <div className="flex gap-1 justify-end">
                           <Button
                             variant="ghost"
                             size="sm"
                             className="h-7 text-[10px]"
-                            onClick={() => handleWarnUser(user.id)}
+                            onClick={() => handleViewUser(user)}
                           >
-                            Warn
+                            View
                           </Button>
-                        ) : (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 text-[10px]"
-                            onClick={() => handleRestoreUser(user.id)}
-                          >
-                            Restore
-                          </Button>
-                        )}
+                          {user.status === "active" ? (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 text-[10px]"
+                              onClick={() => handleWarnUser(user.id)}
+                              disabled={userActionMutation.isPending}
+                            >
+                              Warn
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 text-[10px]"
+                              onClick={() => handleRestoreUser(user.id)}
+                              disabled={userActionMutation.isPending}
+                            >
+                              Restore
+                            </Button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -392,7 +410,7 @@ const ModeratorUsers = () => {
                       variant="outline"
                       className="text-xs"
                       onClick={() => handleWarnUser(selectedUser.id)}
-                      disabled={selectedUser.status === "warned"}
+                      disabled={selectedUser.status === "warned" || userActionMutation.isPending}
                     >
                       Issue Warning
                     </Button>
@@ -401,7 +419,7 @@ const ModeratorUsers = () => {
                       variant="outline"
                       className="text-xs"
                       onClick={() => handleMuteUser(selectedUser.id)}
-                      disabled={selectedUser.status === "muted"}
+                      disabled={selectedUser.status === "muted" || userActionMutation.isPending}
                     >
                       Mute (24 Hours)
                     </Button>
@@ -410,7 +428,7 @@ const ModeratorUsers = () => {
                       variant="outline"
                       className="text-xs"
                       onClick={() => handleSuspendUser(selectedUser.id)}
-                      disabled={selectedUser.status === "suspended"}
+                      disabled={selectedUser.status === "suspended" || userActionMutation.isPending}
                     >
                       Suspend Account
                     </Button>
@@ -435,7 +453,7 @@ const ModeratorUsers = () => {
                     variant="outline"
                     className="text-xs"
                     onClick={() => handleRestoreUser(selectedUser.id)}
-                    disabled={selectedUser.status === "active"}
+                    disabled={selectedUser.status === "active" || userActionMutation.isPending}
                   >
                     Restore to Active Status
                   </Button>
@@ -458,6 +476,7 @@ const ModeratorUsers = () => {
                     size="sm"
                     className="text-xs"
                     onClick={handleSaveNotes}
+                    disabled={userActionMutation.isPending}
                   >
                     Save Notes
                   </Button>
@@ -472,3 +491,4 @@ const ModeratorUsers = () => {
 };
 
 export default ModeratorUsers;
+
