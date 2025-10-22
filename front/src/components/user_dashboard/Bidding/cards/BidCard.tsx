@@ -81,6 +81,7 @@ const BidCard: React.FC<BidCardProps> = ({
   const reopenText = useAutoTranslation("Reopen", language);
   const closedText = useAutoTranslation("Closed", language);
   const unknownText = useAutoTranslation("Unknown", language);
+  const cannotBidOwnAuctionText = useAutoTranslation("You cannot bid on your own auction", language);
 
   // Translate artwork title
   useEffect(() => {
@@ -309,6 +310,11 @@ const BidCard: React.FC<BidCardProps> = ({
                   if (hasWon) {
                     navigate(`/bid-winner/${data.id}`);
                   } else if (data.status === "on_going") {
+                    // Check if user is trying to bid on their own auction
+                    if (isOwner) {
+                      toast.error(cannotBidOwnAuctionText, { closeButton: true });
+                      return;
+                    }
                     setShowBidPopup(true);
                   } else if (canReopen) {
                     // Handle reopen functionality - we'll add this to the menu

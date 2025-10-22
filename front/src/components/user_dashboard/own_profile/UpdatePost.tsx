@@ -11,23 +11,27 @@ import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkD
 import useUpdateArtwork from "@/hooks/mutate/artwork/useArtworkMutate";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { validatePostData } from "@/hooks/artworks/usePostSubmission";
 
 const UpdatePost = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const [artworkTitle, setArtworkTitle] = useState("");
-
+  const [artworkStyle, setArtworkStyle] = useState("");
   const [medium, setMedium] = useState("");
   const [description, setDescription] = useState("");
   const [visibility, setVisibility] = useState("Public");
   const [currentPage, setCurrentPage] = useState(1);
   const [isActive, setIsActive] = useState(true);
   const [category, setCategory] = useState("landscape");
+  
+  // Add dimensions for validation
+  const [artworkHeight, setArtworkHeight] = useState("");
+  const [artworkWidth, setArtworkWidth] = useState("");
 
   const { data: artwork } = useFetchArtworkById(id);
   const { mutate: updateArtwork } = useUpdateArtwork(currentPage, isActive, category, visibility);
-  const [artworkStyle, setArtworkStyle] = useState(artwork?.style || "");
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -58,11 +62,6 @@ const UpdatePost = () => {
   const updateArtworkText = useAutoTranslation("Update Artwork", language);
   
   // Validation messages
-  const enterArtworkTitleErrorText = useAutoTranslation("Please enter an artwork title", language);
-  const titleInvalidErrorText = useAutoTranslation("Artwork title invalid. Must start with a capital letter", language);
-  const selectStyleErrorText = useAutoTranslation("Please select an artwork style", language);
-  const enterMediumErrorText = useAutoTranslation("Please enter the medium used", language);
-  const mediumInvalidErrorText = useAutoTranslation("Medium invalid. Must contain letters only", language);
   const fileSizeErrorText = useAutoTranslation("File size must be less than 20MB", language);
   const artworkUpdatedSuccessText = useAutoTranslation("Artwork updated successfully!", language);
   const updateFailedErrorText = useAutoTranslation("Failed to update artwork.", language);
@@ -101,7 +100,24 @@ const UpdatePost = () => {
       setMedium(artwork?.medium || "");
       setDescription(artwork?.description || "");
       setVisibility(artwork?.visibility || "Public");
-      setPreviewUrl(artwork?.image_url || null);
+      // Handle image_url - it could be a string or array
+      const imageUrl = artwork?.image_url;
+      if (Array.isArray(imageUrl) && imageUrl.length > 0) {
+        setPreviewUrl(imageUrl[0]);
+      } else if (typeof imageUrl === 'string') {
+        setPreviewUrl(imageUrl);
+      } else {
+        setPreviewUrl(null);
+      }
+
+      // Parse dimensions from size field if available
+      if (artwork?.size) {
+        const sizeParts = artwork.size.split('x');
+        if (sizeParts.length === 2) {
+          setArtworkHeight(sizeParts[0].trim());
+          setArtworkWidth(sizeParts[1].trim());
+        }
+      }
 
       if (artwork?.visibility === "Hidden") {
         setVisibility("Private");
@@ -156,37 +172,19 @@ const UpdatePost = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Artwork title validation: first letter capital, letters/numbers allowed
-    const titleRegex = /^[A-Z][A-Za-z0-9\s]*$/;
-    if (!artworkTitle.trim()) {
-      toast.error(enterArtworkTitleErrorText, { closeButton: true });
-      return;
-    }
-    if (!titleRegex.test(artworkTitle)) {
-      toast.error(titleInvalidErrorText, { closeButton: true });
-      return;
-    }
+    // Use centralized validation like CreatePost
+    const validation = validatePostData({
+      title: artworkTitle,
+      medium,
+      artworkHeight,
+      artworkWidth,
+      category: artworkStyle,
+      description,
+      selectedFile,
+    });
 
-    // Artwork style validation
-    if (!artworkStyle) {
-      toast.error(selectStyleErrorText, { closeButton: true });
-      return;
-    }
-
-    // Medium validation: letters and spaces only
-    const mediumRegex = /^[A-Za-z\s]+$/;
-    if (!medium.trim()) {
-      toast.error(enterMediumErrorText, { closeButton: true });
-      return;
-    }
-    if (!mediumRegex.test(medium)) {
-      toast.error(mediumInvalidErrorText, { closeButton: true });
-      return;
-    }
-
-    // Optional file validation
-    if (selectedFile && selectedFile.size > 20 * 1024 * 1024) {
-      toast.error(fileSizeErrorText, { closeButton: true });
+    if (!validation.isValid) {
+      toast.error(validation.errorMessage!, { closeButton: true });
       return;
     }
 
@@ -196,6 +194,13 @@ const UpdatePost = () => {
     formData.append("medium", medium.trim());
     formData.append("description", description.trim());
     formData.append("visibility", visibility);
+    
+    // Add dimensions if provided
+    if (artworkHeight && artworkWidth) {
+      formData.append("height", artworkHeight);
+      formData.append("width", artworkWidth);
+      formData.append("size", `${artworkHeight}x${artworkWidth}`);
+    }
 
     if (selectedFile) {
       formData.append("image", selectedFile);
@@ -291,9 +296,9 @@ const UpdatePost = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                   <div>
-                    <label htmlFor="style" className="block mb-2 text-xs font-medium">
+                    <label htmlFor="style" className="block mb-4 text-xs">
                       {artworkStyleLabelText}
                     </label>
                     <Select value={artworkStyle} onValueChange={setArtworkStyle}>
@@ -311,7 +316,7 @@ const UpdatePost = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="medium" className="block mb-2 text-xs font-medium">
+                    <label htmlFor="medium" className="block mb-4 text-xs">
                       {mediumLabelText}
                     </label>
                     <Input
@@ -319,32 +324,63 @@ const UpdatePost = () => {
                       placeholder={enterMediumUsedText}
                       value={medium}
                       onChange={(e) => setMedium(e.target.value)}
-                      className="w-full"
+                      className="w-full -py-2"
                       style={{ fontSize: "12px", height: "35px" }}
                     />
                   </div>
 
-                  <div>
-                    <label htmlFor="visibility" className="block mb-2 text-xs font-medium">
-                      {visibilityLabelText}
+                  <div className="relative">
+                    <label htmlFor="dimensions" className="block mb-4 text-xs">
+                      {useAutoTranslation("Dimensions (cm)", language)}
                     </label>
-                    <Select value={visibility} onValueChange={setVisibility}>
-                      <SelectTrigger className="w-full text-xs h-[35px]">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Public" className="text-xs">
-                          {publicText}
-                        </SelectItem>
-                        <SelectItem value="Private" className="text-xs">
-                          {privateText}
-                        </SelectItem>
-                        <SelectItem value="Unlisted" className="text-xs">
-                          {unlistedText}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div className="grid grid-cols-3">
+                      <div className="flex flex-col">
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          style={{ fontSize: "10px", marginBottom: "5px", height: "80%" }}
+                          min={0}
+                          value={artworkHeight}
+                          onChange={(e) => setArtworkHeight(e.target.value)}
+                        />
+                        <label className="text-[9px] text-center mb-1">{useAutoTranslation("Height", language)}</label>
+                      </div>
+                      <span className="h-5 w-5 font-bold text-sm flex items-center justify-center mx-auto mt-2">x</span>
+                      <div className="flex flex-col">
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          style={{ fontSize: "10px", marginBottom: "5px", height: "80%" }}
+                          min={0}
+                          value={artworkWidth}
+                          onChange={(e) => setArtworkWidth(e.target.value)}
+                        />
+                        <label className="text-[9px] text-center mb-1">{useAutoTranslation("Width", language)}</label>
+                      </div>
+                    </div>
                   </div>
+                </div>
+
+                <div className="mb-6">
+                  <label htmlFor="visibility" className="block mb-4 text-xs">
+                    {visibilityLabelText}
+                  </label>
+                  <Select value={visibility} onValueChange={setVisibility}>
+                    <SelectTrigger className="w-full text-xs h-[35px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Public" className="text-xs">
+                        {publicText}
+                      </SelectItem>
+                      <SelectItem value="Private" className="text-xs">
+                        {privateText}
+                      </SelectItem>
+                      <SelectItem value="Unlisted" className="text-xs">
+                        {unlistedText}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="mb-6">

@@ -21,6 +21,7 @@ interface ArtCardMenuProps {
   onToggleVisibility: (newVisibility: boolean, id: string) => void;
   onArchive: () => void;
   isPublic?: boolean;
+  isHidden?: boolean;
   className?: string;
 }
 
@@ -34,11 +35,21 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   onArchive,
   artworkTitle,
   isPublic = true,
+  isHidden = false,
   className,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [publicStatus, setPublicStatus] = useState(isPublic);
+  
+  // Update publicStatus when isHidden prop changes
+  useEffect(() => {
+    if (isHidden) {
+      setPublicStatus(false); // Hidden artworks are not public
+    } else {
+      setPublicStatus(isPublic);
+    }
+  }, [isHidden, isPublic]);
   const [showAuctionPopup, setShowAuctionPopup] = useState(false);
   const [showSellModal, setShowSellModal] = useState(false);
   const [showSellConfirmation, setShowSellConfirmation] = useState(false);
@@ -82,9 +93,16 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
   if (!isOpen) return null;
 
   const handleToggleVisibility = () => {
-    const newStatus = !publicStatus;
-    setPublicStatus(newStatus);
-    onToggleVisibility(newStatus, artworkId);
+    if (isHidden) {
+      // If artwork is hidden, unhide it (make it public)
+      onToggleVisibility(true, artworkId);
+    } else {
+      // For public/private artworks, toggle between public and private
+      const newStatus = !publicStatus;
+      // Optimistic update - update UI immediately
+      setPublicStatus(newStatus);
+      onToggleVisibility(newStatus, artworkId);
+    }
   };
 
   const handleConfirmDelete = () => {
@@ -128,7 +146,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     try {
       await updateArtwork(artworkId, {
         price: sellArtworkData.price,
-        quantity: sellArtworkData.quantity,
+        quantity: parseInt(sellArtworkData.quantity),
         edition: sellArtworkData.edition,
         additionalImages: sellArtworkData.additionalImages,
         year_created: sellArtworkData.yearCreated,
@@ -196,7 +214,9 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
               onMouseEnter={() => setHoveredItem("visibility")}
               onMouseLeave={() => setHoveredItem(null)}
             >
-              {publicStatus ? (
+              {isHidden ? (
+                <i className="bx bx-show-alt text-[11px]"></i>
+              ) : publicStatus ? (
                 <i className="bx bx-show-alt text-[11px]"></i>
               ) : (
                 <i className="bx bxs-hide text-[11px]"></i>
@@ -204,7 +224,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             </button>
             {hoveredItem === "visibility" && (
               <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">
-                {publicStatus ? publicText : privateText}
+                {isHidden ? "Unhide" : publicStatus ? publicText : privateText}
               </span>
             )}
           </div>

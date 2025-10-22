@@ -155,11 +155,29 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
               <span className={cn("text-gray-600", isMobile ? "text-[11px]" : "text-xs")}>{ownedByText}</span>
               <div className="flex items-center gap-2 whitespace-nowrap">
                 <Link to={`/userprofile/${artwork.artwork.artist_id}`} className="flex items-center gap-2">
-                  <img
-                    src={artwork.artwork.profile_picture}
-                    alt={translatedArtworks[artwork.id]?.artist || artwork.artwork.artist}
-                    className={cn("rounded-full", isMobile ? "w-3.5 h-3.5" : "w-4 h-4")}
-                  />
+                  {artwork.artwork.profile_picture ? (
+                    <img
+                      src={artwork.artwork.profile_picture}
+                      alt={translatedArtworks[artwork.id]?.artist || artwork.artwork.artist}
+                      className={cn("rounded-full object-cover", isMobile ? "w-3.5 h-3.5" : "w-4 h-4")}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const fallback = target.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div
+                    className={cn(
+                      "rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center text-white font-semibold",
+                      isMobile ? "w-3.5 h-3.5 text-[8px]" : "w-4 h-4 text-[10px]",
+                      artwork.artwork.profile_picture ? "hidden" : "flex"
+                    )}
+                    style={{ display: artwork.artwork.profile_picture ? 'none' : 'flex' }}
+                  >
+                    {(translatedArtworks[artwork.id]?.artist || artwork.artwork.artist || 'U').charAt(0).toUpperCase()}
+                  </div>
                   <span className={cn("text-black font-medium", isMobile ? "text-[11px]" : "text-xs")}>
                     {translatedArtworks[artwork.id]?.artist || artwork.artwork.artist}
                   </span>
