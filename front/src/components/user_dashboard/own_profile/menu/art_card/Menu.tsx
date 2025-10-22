@@ -99,6 +99,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     } else {
       // For public/private artworks, toggle between public and private
       const newStatus = !publicStatus;
+      // Optimistic update - update UI immediately
       setPublicStatus(newStatus);
       onToggleVisibility(newStatus, artworkId);
     }
