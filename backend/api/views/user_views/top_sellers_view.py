@@ -232,30 +232,84 @@ class PopularArtistsAPIView(APIView):
     permission_classes = [AllowAny]  
 
     def get(self, request):
-        artists = User.objects(role="User", user_status="Active")
+        try:
+            # Create cache key
+            cache_key = "popular_artists"
+            
+            # Try to get from cache first (10 minute cache)
+            cached_result = cache.get(cache_key)
+            if cached_result is not None:
+                return Response(cached_result, status=status.HTTP_200_OK)
+            
+            # Get active users with error handling
+            try:
+                artists = User.objects(role="User", user_status="Active")
+            except Exception as e:
+                print(f"Error fetching users: {e}")
+                return Response({"error": "Failed to fetch users"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        artist_data = []
-        for artist in artists:
-          
-            followers_count = Follower.objects(following=artist).count()
+            artist_data = []
+            
+            for artist in artists:
+                try:
+                    # Skip artists with invalid data
+                    if not artist or not hasattr(artist, 'id'):
+                        continue
+                    
+                    # Get followers count with error handling
+                    try:
+                        followers_count = Follower.objects(following=artist).count()
+                    except Exception as e:
+                        print(f"Error fetching followers for artist {artist.id}: {e}")
+                        followers_count = 0
 
+                    # Get artworks count with error handling
+                    try:
+                        artworks_count = Art.objects(artist=artist).count()
+                    except Exception as e:
+                        print(f"Error fetching artworks for artist {artist.id}: {e}")
+                        artworks_count = 0
 
-            artworks_count = Art.objects(artist=artist).count()
-            reviews_count = Review.objects(artist=artist).count() if hasattr(Review, "artist") else 0
+                    # Get reviews count with error handling
+                    try:
+                        reviews_count = Review.objects(artist=artist).count() if hasattr(Review, "artist") else 0
+                    except Exception as e:
+                        print(f"Error fetching reviews for artist {artist.id}: {e}")
+                        reviews_count = 0
 
-            artist_data.append({
-                "id": str(artist.id),
-                "name": f"{artist.first_name or ''} {artist.last_name or ''}".strip() or artist.username,
-                "profile_picture": getattr(artist, "profile_picture", ""),
-                "followers": followers_count,
-                "artworks_count": artworks_count,
-                "reviews_count": reviews_count,
-            })
+                    # Only include artists with some activity (followers, artworks, or reviews)
+                    if followers_count > 0 or artworks_count > 0 or reviews_count > 0:
+                        artist_data.append({
+                            "id": str(artist.id),
+                            "name": f"{artist.first_name or ''} {artist.last_name or ''}".strip() or artist.username,
+                            "profile_picture": getattr(artist, "profile_picture", ""),
+                            "followers": followers_count,
+                            "artworks_count": artworks_count,
+                            "reviews_count": reviews_count,
+                        })
+                        
+                except Exception as e:
+                    print(f"Error processing artist {getattr(artist, 'id', 'unknown')}: {e}")
+                    continue
 
-        sorted_artists = sorted(
-            artist_data,
-            key=lambda x: (x["followers"], x["reviews_count"]),
-            reverse=True,
-        )
+            # Sort by followers and reviews count
+            sorted_artists = sorted(
+                artist_data,
+                key=lambda x: (x["followers"], x["reviews_count"], x["artworks_count"]),
+                reverse=True,
+            )
 
-        return Response(sorted_artists[:12], status=status.HTTP_200_OK)
+            # Return top 12 artists
+            result = sorted_artists[:12]
+            
+            # Cache the result for 10 minutes
+            cache.set(cache_key, result, 600)
+            
+            print(f"PopularArtists: Returning {len(result)} artists")
+            return Response(result, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            print(f"Error in PopularArtistsAPIView: {e}")
+            import traceback
+            traceback.print_exc()
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

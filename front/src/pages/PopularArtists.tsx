@@ -37,19 +37,20 @@ const PopularArtists = () => {
   const popularArtistsHeading = useAutoTranslation("Popular Artists", language);
   const followersLabel = useAutoTranslation("Followers", language);
 
-  const { data: topArtist, isLoading, isError } = usePopularArtists();
+  const { data: topArtist, isLoading, isError, refetch } = usePopularArtists();
   const [isPaused, setIsPaused] = useState(false);
 
   // Create scrolling artists array like in TopSellersPreview
   const scrollingArtists = useMemo(() => {
-    if (isLoading || isError) return [];
-    return Array(4).fill(topArtist || []).flat();
+    if (isLoading || isError || !topArtist || topArtist.length === 0) return [];
+    return Array(4)
+      .fill(topArtist || [])
+      .flat();
   }, [topArtist, isLoading, isError]);
 
   return (
     <section className="" id="artists">
       <div className="w-full">
-
         <motion.div
           className="relative overflow-hidden pb-4 w-full"
           variants={container}
@@ -80,10 +81,7 @@ const PopularArtists = () => {
               onMouseLeave={() => setIsPaused(false)}
             >
               {scrollingArtists.map((artist, index) => (
-                <div
-                  key={`${artist.id}-${index}`}
-                  className="flex-shrink-0"
-                >
+                <div key={`${artist.id}-${index}`} className="flex-shrink-0">
                   <div className="artist-card bg-gray-50 group cursor-pointer px-4 py-3 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
                     <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md flex items-center justify-center">
                       {artist.profile_picture ? (
@@ -112,6 +110,13 @@ const PopularArtists = () => {
             </div>
           )}
 
+          {/* Show message if no data and not loading */}
+          {!isLoading && !isError && scrollingArtists.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-8">
+              <p className="text-gray-500">No popular artists found</p>
+            </div>
+          )}
+
           {/* Fallback if API fails with auto-scrolling */}
           {isError && (
             <div
@@ -123,24 +128,24 @@ const PopularArtists = () => {
               onMouseEnter={() => setIsPaused(true)}
               onMouseLeave={() => setIsPaused(false)}
             >
-              {Array(4).fill(artists).flat().map((artist, index) => (
-                <div
-                  key={`${artist.id}-${index}`}
-                  className="flex-shrink-0"
-                >
-                  <div className="artist-card group cursor-pointer bg-gray-100 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
-                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md">
-                      <img src={artist.image} alt={artist.name} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium">{artist.name}</span>
-                      <span className="text-xs text-red-500">
-                        {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
-                      </span>
+              {Array(4)
+                .fill(artists)
+                .flat()
+                .map((artist, index) => (
+                  <div key={`${artist.id}-${index}`} className="flex-shrink-0">
+                    <div className="artist-card group cursor-pointer bg-gray-100 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md">
+                        <img src={artist.image} alt={artist.name} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium">{artist.name}</span>
+                        <span className="text-xs text-red-500">
+                          {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           )}
         </motion.div>
