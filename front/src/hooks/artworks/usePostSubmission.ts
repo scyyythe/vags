@@ -20,6 +20,7 @@ export interface ValidationData {
   artworkHeight?: string;
   artworkWidth?: string;
   category?: string;
+  description?: string;
   selectedFile?: File | null;
 }
 
@@ -29,7 +30,7 @@ export interface ValidationResult {
 }
 
 export const validatePostData = (data: ValidationData): ValidationResult => {
-  const { title, medium, artworkHeight, artworkWidth, category, selectedFile } = data;
+  const { title, medium, artworkHeight, artworkWidth, category, description, selectedFile } = data;
 
   // Artwork title validation: more flexible - allows apostrophes and common punctuation
   const titleRegex = /^[A-Za-z0-9\s'.,!?-]+$/;
@@ -37,43 +38,96 @@ export const validatePostData = (data: ValidationData): ValidationResult => {
     return { isValid: false, errorMessage: "Please enter an artwork title" };
   }
   if (!titleRegex.test(title)) {
+    // Check for specific invalid characters
+    const invalidChars = title.match(/[^A-Za-z0-9\s'.,!?-]/g);
+    if (invalidChars) {
+      const uniqueInvalidChars = [...new Set(invalidChars)];
+      return {
+        isValid: false,
+        errorMessage: `Artwork title contains invalid characters: ${uniqueInvalidChars.join(', ')}. Only letters, numbers, spaces, and common punctuation (.,!?-') are allowed`,
+      };
+    }
     return {
       isValid: false,
-      errorMessage: "Artwork title invalid - please use letters, numbers, spaces, and common punctuation",
+      errorMessage: "Artwork title contains invalid characters. Only letters, numbers, spaces, and common punctuation (.,!?-') are allowed",
     };
   }
 
   // Medium validation: more flexible - allows commas, hyphens, and spaces
   const mediumRegex = /^[A-Za-z\s,.-]+$/;
   if (!medium?.trim()) {
-    return { isValid: false, errorMessage: "Please enter the medium used" };
+    return { isValid: false, errorMessage: "Please enter the medium used (e.g., Oil on Canvas, Digital Art, Watercolor)" };
   }
   if (!mediumRegex.test(medium)) {
+    // Check for specific invalid characters
+    const invalidChars = medium.match(/[^A-Za-z\s,.-]/g);
+    if (invalidChars) {
+      const uniqueInvalidChars = [...new Set(invalidChars)];
+      return {
+        isValid: false,
+        errorMessage: `Medium contains invalid characters: ${uniqueInvalidChars.join(', ')}. Only letters, spaces, commas, periods, and hyphens are allowed`,
+      };
+    }
     return {
       isValid: false,
-      errorMessage: "Medium invalid - please use letters, spaces, commas, periods, and hyphens",
+      errorMessage: "Medium contains invalid characters. Only letters, spaces, commas, periods, and hyphens are allowed",
     };
   }
 
   // Dimensions validation: height & width numbers, reasonable range
   const heightNum = parseFloat(artworkHeight as string);
   const widthNum = parseFloat(artworkWidth as string);
-  if (!artworkHeight || !artworkWidth || isNaN(heightNum) || isNaN(widthNum)) {
-    return { isValid: false, errorMessage: "Please enter valid dimensions" };
+  
+  if (!artworkHeight || !artworkWidth) {
+    return { isValid: false, errorMessage: "Please enter both height and width dimensions" };
   }
-  if (heightNum <= 0 || widthNum <= 0 || heightNum > 1000 || widthNum > 1000) {
-    return {
-      isValid: false,
-      errorMessage: "Dimensions are unrealistic - height and width must be positive numbers below 1000cm",
+  
+  if (isNaN(heightNum) || isNaN(widthNum)) {
+    return { 
+      isValid: false, 
+      errorMessage: `Invalid dimensions: Height "${artworkHeight}" and Width "${artworkWidth}" must be valid numbers` 
+    };
+  }
+  
+  if (heightNum <= 0) {
+    return { 
+      isValid: false, 
+      errorMessage: `Height must be greater than 0. Current value: ${artworkHeight}cm` 
+    };
+  }
+  
+  if (widthNum <= 0) {
+    return { 
+      isValid: false, 
+      errorMessage: `Width must be greater than 0. Current value: ${artworkWidth}cm` 
+    };
+  }
+  
+  if (heightNum > 1000) {
+    return { 
+      isValid: false, 
+      errorMessage: `Height is too large: ${artworkHeight}cm. Maximum allowed: 1000cm` 
+    };
+  }
+  
+  if (widthNum > 1000) {
+    return { 
+      isValid: false, 
+      errorMessage: `Width is too large: ${artworkWidth}cm. Maximum allowed: 1000cm` 
     };
   }
 
   if (!category) {
-    return { isValid: false, errorMessage: "Please select an artwork style" };
+    return { isValid: false, errorMessage: "Please select an artwork style from the dropdown menu" };
+  }
+
+  // Description validation: optional but if provided, should not be empty
+  if (description !== undefined && !description?.trim()) {
+    return { isValid: false, errorMessage: "Description cannot be empty. Please add a description or leave it blank" };
   }
 
   if (!selectedFile) {
-    return { isValid: false, errorMessage: "Please upload at least one artwork image" };
+    return { isValid: false, errorMessage: "Please upload an artwork image file (JPG, PNG, etc.)" };
   }
 
   return { isValid: true };

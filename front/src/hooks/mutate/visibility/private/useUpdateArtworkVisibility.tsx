@@ -21,9 +21,10 @@ const useUpdateArtworkVisibility = () => {
 
   return useMutation({
     mutationFn: (payload: UpdateVisibilityPayload) => updateArtworkVisibility(payload),
-    onSuccess: (data, payload) => {
+    onSuccess: async (data, payload) => {
       toast.success(data.message);
 
+      // Update specific artwork in cache immediately for optimistic UI
       queryClient.setQueryData<Artwork[]>(["artworks", 1, undefined, "all"], (oldData) => {
         if (!oldData) return [];
         return oldData.map((artwork) =>
@@ -31,23 +32,24 @@ const useUpdateArtworkVisibility = () => {
         );
       });
 
-      queryClient.invalidateQueries({ queryKey: ["artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["art", payload.id] });
-
-      // Invalidate marketplace queries to ensure visibility changes appear immediately
-      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
-      queryClient.invalidateQueries({ queryKey: ["popular-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
-      queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] });
-      queryClient.invalidateQueries({ queryKey: ["top-artworks"] });
-      queryClient.invalidateQueries({ queryKey: ["top-sellers"] });
-      queryClient.invalidateQueries({ queryKey: ["explore"] });
-      queryClient.invalidateQueries({ queryKey: ["feed"] });
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
-      queryClient.invalidateQueries({ queryKey: ["user-artworks"] });
+      // Refetch all artwork-related queries for immediate real-time updates
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ["artworks"] }),
+        queryClient.refetchQueries({ queryKey: ["art", payload.id] }),
+        queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] }),
+        queryClient.refetchQueries({ queryKey: ["trending-artworks"] }),
+        queryClient.refetchQueries({ queryKey: ["followedArtworks"] }),
+        queryClient.refetchQueries({ queryKey: ["my-sell-art-cards"] }),
+        queryClient.refetchQueries({ queryKey: ["popular-artworks"] }),
+        queryClient.refetchQueries({ queryKey: ["popularArtworks"] }),
+        queryClient.refetchQueries({ queryKey: ["popular-artworks-light"] }),
+        queryClient.refetchQueries({ queryKey: ["top-artworks"] }),
+        queryClient.refetchQueries({ queryKey: ["top-sellers"] }),
+        queryClient.refetchQueries({ queryKey: ["explore"] }),
+        queryClient.refetchQueries({ queryKey: ["feed"] }),
+        queryClient.refetchQueries({ queryKey: ["profile"] }),
+        queryClient.refetchQueries({ queryKey: ["user-artworks"] }),
+      ]);
     },
     onError: () => {
       toast.error("Failed to update artwork visibility.");

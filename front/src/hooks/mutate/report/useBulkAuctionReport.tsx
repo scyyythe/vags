@@ -23,11 +23,11 @@ const useBulkBidReportStatus = (ids: string[]) => {
     queryKey: ["auctionReportStatusBulk", stableKey],
     queryFn: () => fetchBulkReportStatus(stableIds),
     enabled: stableIds.length > 0,
-    staleTime: 0, // Always consider data stale for real-time updates
-    refetchOnWindowFocus: true, // Refetch when window gains focus
-    refetchOnMount: true, // Refetch on component mount
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    refetchOnWindowFocus: false, // Don't refetch on window focus to reduce calls
+    refetchOnMount: false, // Don't refetch on mount if data is fresh
     refetchOnReconnect: true, // Refetch on network reconnect
-    refetchInterval: 30000, // Poll every 30 seconds for report status updates (lower priority)
+    refetchInterval: 2 * 60 * 1000, // Poll every 2 minutes for report status updates (lower priority)
     refetchIntervalInBackground: false, // Don't poll when tab is not active
     retry: 1, // Retry once on failure
   });
