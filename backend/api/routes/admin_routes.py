@@ -2,6 +2,8 @@ from django.urls import path
 from api.views.admin.admin_report import AdminUpdateReportStatusView, AdminReportsListView
 from api.views.admin.admin_overview import AdminOverviewView
 from api.views.admin.admin_transactions import AdminTransactionsView
+from api.views.moderator.moderator_overview import ModeratorOverviewView
+from api.views.moderator.flagged_content import FlaggedContentView
 from api.views.admin.actions import PromoteUserView,DemoteUserView,SuspendUserView,BanUserView,UnbanUserView,ReinstateUserView
 from api.views.admin_views.create_user_view import AdminCreateUserView
 
@@ -27,6 +29,10 @@ admin_urlpatterns = [
     
     # admin overview metrics
     path('admin/overview/', AdminOverviewView.as_view(), name='admin-overview'),
+    # moderator overview metrics
+    path('moderator/overview/', ModeratorOverviewView.as_view(), name='moderator-overview'),
+    # moderator flagged content
+    path('moderator/flagged-content/', FlaggedContentView.as_view(), name='moderator-flagged-content'),
     # admin transactions
     path('admin/transactions/', AdminTransactionsView.as_view(), name='admin-transactions'),
 ]
