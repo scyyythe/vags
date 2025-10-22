@@ -117,6 +117,7 @@ const CreatePost = () => {
       artworkHeight,
       artworkWidth,
       category: artworkStyle,
+      description,
       selectedFile,
     });
 

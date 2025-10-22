@@ -591,7 +591,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
               </button>
             </div>
           )}
-          <CreatedTab filteredArtworks={filteredArtworksMemo} isLoading={isLoading} />
+          <CreatedTab filteredArtworks={filteredArtworksMemo} isLoading={isLoading} selectedStatus={selectedStatus} />
         </>
       )}
 

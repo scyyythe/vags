@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import useFavorite from "@/hooks/interactions/useFavorite";
 import ArtCardSkeleton from "@/components/skeletons/artworks/ArtCardSkeleton";
 import { Artwork } from "@/hooks/artworks/fetch_artworks/useArtworks";
-import useHideArtwork from "@/hooks/mutate/visibility/private/useHideArtwork";
+import useHideArtwork, { useUnhideArtwork } from "@/hooks/mutate/visibility/private/useHideArtwork";
 import useUnarchiveArtwork from "@/hooks/mutate/visibility/arc/useUnarchiveArtwork";
 import useRestoreArtwork from "@/hooks/mutate/visibility/trash/useRestoreArtwork";
 import useSubmitReport from "@/hooks/mutate/report/useSubmitReport";
@@ -98,6 +98,7 @@ const ArtCard = ({
   const [isDeletedLocally, setIsDeletedLocally] = useState(false);
 
   const { mutate: hideArtwork } = useHideArtwork();
+  const { mutate: unhideArtwork } = useUnhideArtwork();
   const { mutate: unarchiveArtwork } = useUnarchiveArtwork();
   const { mutate: restore } = useRestoreArtwork();
   const { mutate: submitReport } = useSubmitReport();
@@ -122,8 +123,16 @@ const ArtCard = ({
   };
 
   const handleHide = () => {
-    setIsHidden(true);
-    hideArtwork(id);
+    if (visibility?.toLowerCase() === "hidden") {
+      // If viewing hidden tab, unhide the artwork
+      console.log("ArtCardMenu: Calling unhideArtwork for id:", id);
+      unhideArtwork(id);
+    } else {
+      // If viewing other tabs, hide the artwork
+      console.log("ArtCardMenu: Calling hideArtwork for id:", id);
+      setIsHidden(true);
+      hideArtwork(id);
+    }
     // Additional cache invalidation to ensure consistent state across components
     queryClient.invalidateQueries({ queryKey: ["bulkReportStatus"] });
     queryClient.invalidateQueries({ queryKey: ["artworks"] });
@@ -265,11 +274,19 @@ const ArtCard = ({
               onSell={() => console.log("Sell artwork", id)}
               onEdit={() => console.log("Edit artwork", id)}
               onToggleVisibility={(newStatus: boolean) => {
-                updateVisibility({ id, visibility: newStatus ? "Public" : "Private" });
+                // Handle different visibility states
+                if (visibility?.toLowerCase() === "hidden") {
+                  // If artwork is hidden, unhide it (make it public)
+                  unhideArtwork(id);
+                } else {
+                  // For public/private artworks, use the normal visibility toggle
+                  updateVisibility({ id, visibility: newStatus ? "Public" : "Private" });
+                }
                 setMenuOpen(false);
               }}
               onArchive={handleArchive}
               isPublic={artwork.visibility === "Public"}
+              isHidden={visibility?.toLowerCase() === "hidden"}
               className="-left-1 top-7"
             />
           ) : (
@@ -289,6 +306,7 @@ const ArtCard = ({
               isFavorite={localIsFavorite}
               isReported={localIsReported}
               isShared={false}
+              isHidden={visibility?.toLowerCase() === "hidden"}
               artworkId={id}
               className="-right-1 top-7"
             />
@@ -327,7 +345,7 @@ const ArtCard = ({
             </div>
           ) : (
             <img
-              src={artwork.artworkImage || image_url}
+              src={artwork.artworkImage || (Array.isArray(image_url) ? image_url[0] : image_url)}
               alt={`Artwork by ${translatedArtistName}`}
               className="w-full h-full object-cover transition-transform duration-700 rounded-xl"
               onError={() => setImageError(true)}
