@@ -3,11 +3,15 @@ from api.views.admin.admin_report import AdminUpdateReportStatusView, AdminRepor
 from api.views.admin.admin_overview import AdminOverviewView
 from api.views.admin.admin_transactions import AdminTransactionsView
 from api.views.admin.actions import PromoteUserView,DemoteUserView,SuspendUserView,BanUserView,UnbanUserView,ReinstateUserView
+from api.views.admin_views.create_user_view import AdminCreateUserView
 
 admin_urlpatterns = [
 
     path('admin/reports/', AdminReportsListView.as_view(), name='admin_reports_list'),
     path('admin/reports/<str:pk>/update/', AdminUpdateReportStatusView.as_view(), name='admin_update_report_status'),
+    
+    # create user (admin only)
+    path('admin/users/create/', AdminCreateUserView.as_view(), name='admin-create-user'),
     
     # promote and demote user
     path('user/<str:user_id>/promote/', PromoteUserView.as_view(), name='promote-user'),

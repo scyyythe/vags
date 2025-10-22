@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { UserTable } from "@/components/admin_&_moderator/admin/UserTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { User } from "@/hooks/users/useUserQuery";
 import useAllUsersQuery from "@/hooks/users/useAllUsersQuery";
+import usePromoteUserMutation from "@/hooks/admin/actions/promote/usePromoteUserMutation";
+import useSuspendUserMutation from "@/hooks/admin/actions/suspend/useSuspendUserMutation";
+import useBanUserMutation from "@/hooks/admin/actions/ban/useBanUserMutation";
+import useReinstateUserMutation from "@/hooks/admin/actions/suspend/useReinstateUserMutation";
+import useCreateUserMutation from "@/hooks/admin/actions/create/useCreateUserMutation";
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
@@ -33,15 +38,15 @@ const formSchema = z.object({
 
 const AdminUsers = () => {
   const { data: users, isLoading, error } = useAllUsersQuery();
-  const [usersState, setUsersState] = useState<User[]>(users || []);
-
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    if (users) {
-      setUsersState(users);
-    }
-  }, [users]);
+  // Mutation hooks for query invalidation
+  const promoteUserMutation = usePromoteUserMutation();
+  const suspendUserMutation = useSuspendUserMutation();
+  const banUserMutation = useBanUserMutation();
+  const reinstateUserMutation = useReinstateUserMutation();
+  const createUserMutation = useCreateUserMutation();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,6 +55,7 @@ const AdminUsers = () => {
       role: "admin",
     },
   });
+
   if (isLoading) return <p>Loading...</p>;
   if (error || !users) return <p>Error loading user data</p>;
   const handleAddUser = (data: z.infer<typeof formSchema>) => {
@@ -59,83 +65,45 @@ const AdminUsers = () => {
     const first_name = nameParts[0] || "";
     const last_name = nameParts.slice(1).join(" ") || "";
 
-    const newUser: User = {
-      id: (usersState.length + 1).toString(),
+    createUserMutation.mutate({
       first_name,
       last_name,
       email: data.email,
       role: data.role,
-      user_status: "active",
-      created_at: new Date().toISOString(),
-      password: "",
-    };
+    });
 
-    setUsersState([...usersState, newUser]);
-    toast.success("User added successfully", { closeButton: true });
     setOpen(false);
     form.reset();
   };
 
   const handlePromoteUser = (id: string) => {
-    const updatedUsers = usersState.map((user) => {
-      if (user.id === id) {
-        return {
-          ...user,
-          role: user.role === "moderator" ? ("user" as const) : ("moderator" as const),
-        };
-      }
-      return user;
-    });
-    setUsersState(updatedUsers);
-    toast.success("User role updated successfully", { closeButton: true });
+    // The UserTable component handles the actual mutation
+    // This is just for additional query invalidation if needed
+    console.log("User promoted:", id);
   };
 
   const handleSuspendUser = (id: string) => {
-    const updatedUsers = usersState.map((user) => {
-      if (user.id === id) {
-        return {
-          ...user,
-          status: "suspended" as const,
-        };
-      }
-      return user;
-    });
-    setUsersState(updatedUsers);
-    toast.success("User suspended successfully", { closeButton: true });
+    // The UserTable component handles the actual mutation
+    // This is just for additional query invalidation if needed
+    console.log("User suspended:", id);
   };
 
   const handleBanUser = (id: string) => {
-    const updatedUsers = usersState.map((user) => {
-      if (user.id === id) {
-        return {
-          ...user,
-          status: "banned" as const,
-        };
-      }
-      return user;
-    });
-    setUsersState(updatedUsers);
-    toast.success("User banned successfully", { closeButton: true });
+    // The UserTable component handles the actual mutation
+    // This is just for additional query invalidation if needed
+    console.log("User banned:", id);
   };
 
   const handleReinstateUser = (id: string) => {
-    const updatedUsers = users.map((user) => {
-      if (user.id === id) {
-        return {
-          ...user,
-          status: "active" as const,
-        };
-      }
-      return user;
-    });
-    setUsersState(updatedUsers);
-    toast.success("User reinstated successfully", { closeButton: true });
+    // The UserTable component handles the actual mutation
+    // This is just for additional query invalidation if needed
+    console.log("User reinstated:", id);
   };
 
   const handleDeleteUser = (id: string) => {
-    const updatedUsers = users.filter((user) => user.id !== id);
-    setUsersState(updatedUsers);
-    toast.success("User deleted successfully", { closeButton: true });
+    // The UserTable component handles the actual mutation
+    // This is just for additional query invalidation if needed
+    console.log("User deleted:", id);
   };
 
   return (
@@ -215,6 +183,9 @@ const AdminUsers = () => {
                             <SelectItem value="moderator" className="text-[10px]">
                               Moderator
                             </SelectItem>
+                            <SelectItem value="user" className="text-[10px]">
+                              User
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -226,8 +197,13 @@ const AdminUsers = () => {
                   )} 
                 />
                 <div className="flex justify-end space-x-2 pt-4">
-                  <Button size="sm" className="text-[11px] rounded-full h-8" type="submit">
-                    Add User
+                  <Button 
+                    size="sm" 
+                    className="text-[11px] rounded-full h-8" 
+                    type="submit"
+                    disabled={createUserMutation.isPending}
+                  >
+                    {createUserMutation.isPending ? "Creating..." : "Add User"}
                   </Button>
                 </div>
               </form>
