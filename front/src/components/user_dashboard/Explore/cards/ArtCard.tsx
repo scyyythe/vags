@@ -280,6 +280,7 @@ const ArtCard = ({
                   unhideArtwork(id);
                 } else {
                   // For public/private artworks, use the normal visibility toggle
+                  // Optimistic update - the UI will update immediately via the menu component
                   updateVisibility({ id, visibility: newStatus ? "Public" : "Private" });
                 }
                 setMenuOpen(false);
