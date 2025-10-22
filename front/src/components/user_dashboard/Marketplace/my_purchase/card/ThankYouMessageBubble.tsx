@@ -40,7 +40,7 @@ const ThankYouMessageBubble: React.FC<ThankYouMessageBubbleProps> = ({
   const thankYouMessageText = useAutoTranslation("Thank You Message!", language);
   const helloText = useAutoTranslation("Hello", language);
   const thankYouForPurchasingText = useAutoTranslation("Thank you for purchasing", language);
-  const supportMeansText = useAutoTranslation("Your support means the world to me. I hope you love your new piece!✨", language);
+  const supportMeansText = useAutoTranslation("Your support means the world to me. I hope you love your new piece!", language);
   const yourRatingText = useAutoTranslation("Your rating:", language);
   const yourPurchaseHelpsText = useAutoTranslation("Your purchase helps me continue creating art and brings joy to collectors like you. Thank you for choosing my work!", language);
   const fromTheArtistText = useAutoTranslation("From the Artist:", language);
@@ -113,23 +113,21 @@ const ThankYouMessageBubble: React.FC<ThankYouMessageBubbleProps> = ({
   // Dynamic color setup - matching AutomaticMessageBubble
   const textMain = isSender ? "text-white" : "text-gray-900";
   const textSecondary = isSender ? "text-white/80" : "text-gray-600";
-  const textHighlight = "text-pink-500";
+  const textHighlight = "text-red-700";
   const borderColor = isSender ? "border-white/20" : "border-gray-300/50";
-  const iconColor = isSender ? "text-pink-400" : "text-pink-600";
+  const iconColor = isSender ? "text-white" : "text-red-700";
 
   return (
-    <div className="space-y-3 border border-red-200 rounded-lg p-3 bg-red-50/30">
+    <div className="space-y-3">
       {/* Header */}
       <div className={`flex items-center gap-2 pb-2 border-b ${borderColor}`}>
-        <Heart className={`w-4 h-4 ${iconColor}`} />
-        <span className={`font-bold text-xs ${textMain}`}>{thankYouMessageText}</span>
+        <p className="text-xs">
+          {helloText} <span className={`font-semibold ${textMain}`}>{translatedBuyerName}</span>!
+        </p>
       </div>
 
       {/* Body */}
       <div className={`space-y-2.5 text-[11px] leading-relaxed ${textMain}`}>
-        <p>
-          {helloText} <span className={`font-semibold ${textMain}`}>{translatedBuyerName}</span>,
-        </p>
 
         <p>
           {thankYouForPurchasingText} <span className={`font-semibold ${textHighlight}`}>"{translatedArtworkTitle}"</span>! {supportMeansText}
