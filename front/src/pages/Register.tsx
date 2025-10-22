@@ -391,7 +391,7 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
               onClick={() => setShowPassword(!showPassword)}
             >
               <img 
-                src={showPassword ? "https://img.icons8.com/fluency-systems-regular/48/closed-eye.png" : "https://img.icons8.com/fluency-systems-regular/48/visible--v1.png"} 
+                src={showPassword ? "https://img.icons8.com/fluency-systems-regular/48/visible--v1.png" : "https://img.icons8.com/fluency-systems-regular/48/closed-eye.png"} 
                 alt={showPassword ? "Hide password" : "Show password"}
                 className="w-4 h-4 mb-1"
               />
