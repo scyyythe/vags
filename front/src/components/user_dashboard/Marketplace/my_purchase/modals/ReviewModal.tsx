@@ -164,11 +164,8 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, onSubmit, ar
           </div>
 
           {/* Actions */}
-          <div className="flex gap-2 pt-4">
-            <Button variant="outline" onClick={onClose} className="flex-1 text-[10px]">
-              {cancelText}
-            </Button>
-            <Button onClick={handleSubmit} disabled={rating === 0 || isSubmitting} className="flex-1 text-[10px]">
+          <div className="flex gap-2">
+            <Button onClick={handleSubmit} disabled={rating === 0 || isSubmitting} className="flex-1 text-[10px] rounded-full">
               {isSubmitting ? submittingText : submitReviewText}
             </Button>
           </div>
