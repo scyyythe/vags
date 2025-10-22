@@ -92,7 +92,7 @@ class MyPendingExhibitRequestView(APIView):
                     "exhibitType": exhibit.exhibit_type
                 })
             else:
-                # User has submitted, check exhibit status
+                # User has submitted - always show as contributed regardless of exhibit status
                 total_collaborators = len(exhibit.collaborators)
                 submitted_contributors = ExhibitContribution.objects(exhibit=exhibit).distinct('contributor')
                 submitted_count = len(submitted_contributors)
@@ -117,6 +117,26 @@ class MyPendingExhibitRequestView(APIView):
                         "id": str(exhibit.id),
                         "exhibitTitle": exhibit.title,
                         "status": f"You've submitted. Waiting for others ({submitted_count}/{total_collaborators})",
+                        "exhibitId": str(exhibit.id),
+                        "isOwner": False,
+                        "type": "contributed",
+                        "exhibitType": exhibit.exhibit_type,
+                        "collaboratorsSubmitted": submitted_count,
+                        "totalCollaborators": total_collaborators,
+                        "hasUserSubmitted": True
+                    })
+                else:
+                    # User has submitted (all collaborators have submitted or user is only contributor)
+                    # Show as contributed regardless of publication status
+                    if submitted_count == total_collaborators:
+                        status_message = "You've submitted your contributions. Waiting for owner to publish the exhibit."
+                    else:
+                        status_message = "You've submitted your contribution."
+                    
+                    pending_requests.append({
+                        "id": str(exhibit.id),
+                        "exhibitTitle": exhibit.title,
+                        "status": status_message,
                         "exhibitId": str(exhibit.id),
                         "isOwner": False,
                         "type": "contributed",

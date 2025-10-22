@@ -118,7 +118,7 @@ const ExhibitReview = () => {
   };
 
   const handleEdit = () => {
-    navigate(`/addexhibit/${exhibitId}?mode=edit`);
+    navigate(`/edit-exhibit/${exhibitId}?mode=edit`);
   };
 
   const handlePublish = () => {

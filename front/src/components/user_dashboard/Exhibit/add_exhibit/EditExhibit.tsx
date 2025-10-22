@@ -148,7 +148,7 @@ const EditExhibit = () => {
     const primaryImage =
       artwork.artworkImage && artwork.artworkImage.trim() !== "" && artwork.artworkImage !== "h"
         ? artwork.artworkImage
-        : artwork.image_url;
+        : Array.isArray(artwork.image_url) ? artwork.image_url[0] : artwork.image_url;
 
     return (
       artwork.art_status === "Active" &&
@@ -381,7 +381,7 @@ const EditExhibit = () => {
   const artworkFileObjects: Artwork[] = artworkFiles.map((a) => ({
     id: a.id.toString(),
     artworkImage: a.url,
-    image_url: a.url, // alias if ExhibitSlots uses it
+    image_url: [a.url], // Make it an array as expected by Artwork type
     title: "Untitled",
     artistName: currentUser?.first_name + " " + (currentUser?.last_name || ""),
     profile_picture: currentUser?.profile_picture || "",
@@ -708,7 +708,6 @@ const EditExhibit = () => {
 
         <form
           onSubmit={(e) => {
-            console.log("📝 Form onSubmit triggered!");
             submitHandlers.handleSubmit(e);
           }}
           className="space-y-8"
@@ -744,7 +743,7 @@ const EditExhibit = () => {
                   <ExhibitSlots
                     selectedEnvironment={selectedEnvironment}
                     environments={environments}
-                    exhibitArtworks={exhibitData.artworks}
+                    exhibitArtworks={exhibitData?.artworks}
                     slotOwnerMap={slotOwnerMap}
                     slotArtworkMap={slotArtworkMap}
                     artworks={uniqueMergedArtworks}

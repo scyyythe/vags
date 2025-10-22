@@ -552,19 +552,33 @@ const ExhibitsTab: React.FC<ExhibitsTabProps> = ({
                       )}
                     </div>
 
-                    {/* View Others Button */}
-                    <button
-                      onClick={() => navigate(`/exhibitreview?id=${req.exhibitId}`)}
-                      className={`h-6 text-[9px] text-white px-3.5 py-1 rounded-full flex items-center justify-center ${
-                        req.status.toLowerCase().includes("live") || req.status.toLowerCase().includes("published")
-                          ? "bg-green-600 hover:bg-green-700"
-                          : "bg-blue-600 hover:bg-blue-700"
-                      }`}
-                    >
-                      {req.status.toLowerCase().includes("live") || req.status.toLowerCase().includes("published")
-                        ? viewLiveText
-                        : viewOthersText}
-                    </button>
+                    {/* Action Buttons */}
+                    <div className="flex items-center gap-1">
+                      {/* View Others Button */}
+                      <button
+                        onClick={() => navigate(`/exhibitreview?id=${req.exhibitId}`)}
+                        className={`h-6 text-[9px] text-white px-3.5 py-1 rounded-full flex items-center justify-center ${
+                          req.status.toLowerCase().includes("live") || req.status.toLowerCase().includes("published")
+                            ? "bg-green-600 hover:bg-green-700"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        }`}
+                      >
+                        {req.status.toLowerCase().includes("live") || req.status.toLowerCase().includes("published")
+                          ? viewLiveText
+                          : viewOthersText}
+                      </button>
+                      
+                      {/* Edit Button - only show for pending contributions, positioned on the right */}
+                      {!req.status.toLowerCase().includes("live") && !req.status.toLowerCase().includes("published") && (
+                        <button
+                          onClick={() => navigate(`/collaborator/exhibit/${req.exhibitId}`)}
+                          className="h-6 w-6 text-gray-500 hover:text-gray-700 flex items-center justify-center"
+                          title="Edit your contribution"
+                        >
+                          <i className="bx bx-edit text-[10px]"></i>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </li>
               ))}
