@@ -9,12 +9,17 @@ type FetchBiddingParams = {
 };
 
 const fetchBiddingArtworks = async ({
-  status = "on_going",
+  status,
   page = 1,
   limit = 20,
 }: FetchBiddingParams): Promise<ArtworkAuction[]> => {
+  const params: any = { page, limit };
+  if (status) {
+    params.status = status;
+  }
+  
   const response = await apiClient.get("auction/", {
-    params: { status, page, limit },
+    params,
   });
 
   const artworks: ArtworkAuction[] = response.data;
