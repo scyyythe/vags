@@ -1,0 +1,2155 @@
+[
+  {
+    "_id": {
+      "$oid": "6824a97691f73b1a90ce4012"
+    },
+    "artwork": {
+      "$oid": "6817a3acd8089f156f9eaaf5"
+    },
+    "start_bid_amount": 500.0,
+    "start_time": {
+      "$date": "2025-09-19T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-24T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "6825c6fc97fbf7e79572db8d"
+      },
+      {
+        "$oid": "6825d0f7cac8610c99a9bc84"
+      },
+      {
+        "$oid": "6825d238cac8610c99a9bc86"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "6825d238cac8610c99a9bc86"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6825a3febc60b455346e6673"
+    },
+    "artwork": {
+      "$oid": "681376c85a741fd403485cc4"
+    },
+    "start_bid_amount": 500.0,
+    "start_time": {
+      "$date": "2025-09-24T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "6829b95a246bef47d118b569"
+      },
+      {
+        "$oid": "6829c9c68c0aa57bc363f87f"
+      },
+      {
+        "$oid": "6829ca58246bef47d118b56c"
+      },
+      {
+        "$oid": "6829ca63246bef47d118b56d"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "6829ca63246bef47d118b56d"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6825a42dbc60b455346e6674"
+    },
+    "artwork": {
+      "$oid": "6816c0faf05c307f8fdd7cfc"
+    },
+    "start_bid_amount": 1000.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-09-27T05:03:37.227Z"
+    },
+    "status": "closed",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-28T05:03:37.227Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6825a558bc60b455346e6675"
+    },
+    "artwork": {
+      "$oid": "681377765a741fd403485cc7"
+    },
+    "start_bid_amount": 300.0,
+    "start_time": {
+      "$date": "2025-09-17T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-19T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "6825d13ecac8610c99a9bc85"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "6825d13ecac8610c99a9bc85"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6825a783cdeeac20f7683fb8"
+    },
+    "artwork": {
+      "$oid": "68256c569857c0bc470afebd"
+    },
+    "start_bid_amount": 500.0,
+    "start_time": {
+      "$date": "2025-09-23T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-25T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "6825d256cac8610c99a9bc87"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "6825d256cac8610c99a9bc87"
+    },
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682699053e4550957dddf4b0"
+    },
+    "artwork": {
+      "$oid": "682698a83e4550957dddf4ae"
+    },
+    "start_bid_amount": 1000.0,
+    "start_time": {
+      "$date": "2025-09-21T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-22T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "6829b93d246bef47d118b568"
+      },
+      {
+        "$oid": "6829fe54c57ff6d8dbca48fe"
+      },
+      {
+        "$oid": "682a9455eb89d20f6e64ec49"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "682a9455eb89d20f6e64ec49"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68288f2cb196d450cba434ca"
+    },
+    "artwork": {
+      "$oid": "6816c113f05c307f8fdd7cff"
+    },
+    "start_bid_amount": 200.0,
+    "start_time": {
+      "$date": "2025-09-18T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-23T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "6829d0e1246bef47d118b570"
+      },
+      {
+        "$oid": "6829d7af4976f473e01a0ffa"
+      },
+      {
+        "$oid": "6829d8ad4976f473e01a0ffb"
+      },
+      {
+        "$oid": "6829d8b74976f473e01a0ffc"
+      },
+      {
+        "$oid": "6829d9abc50be09e71dc81ec"
+      },
+      {
+        "$oid": "6829d9bec50be09e71dc81ed"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "6829d9bec50be09e71dc81ed"
+    },
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6829ae28b8c550ffd8e6d788"
+    },
+    "artwork": {
+      "$oid": "6829ad56b8c550ffd8e6d786"
+    },
+    "start_bid_amount": 1000.0,
+    "start_time": {
+      "$date": "2025-09-17T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-20T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "6829cb5d246bef47d118b56e"
+      },
+      {
+        "$oid": "6829d069246bef47d118b56f"
+      },
+      {
+        "$oid": "6829d6c84976f473e01a0ff9"
+      },
+      {
+        "$oid": "6829d982c50be09e71dc81eb"
+      },
+      {
+        "$oid": "682a9179b33577ef90a88056"
+      },
+      {
+        "$oid": "682a924fb33577ef90a88057"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "682a924fb33577ef90a88057"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682a9c52eb89d20f6e64ec52"
+    },
+    "artwork": {
+      "$oid": "6816c1e9f05c307f8fdd7d08"
+    },
+    "start_bid_amount": 3000.0,
+    "start_time": {
+      "$date": "2025-09-18T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-20T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "682a9cc8eb89d20f6e64ec53"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "682a9cc8eb89d20f6e64ec53"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682acd28cb61972b32e95ac5"
+    },
+    "artwork": {
+      "$oid": "681379cc5a741fd403485cd0"
+    },
+    "start_bid_amount": 200.0,
+    "start_time": {
+      "$date": "2025-09-24T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "682b1cb1949b3bf96bea811e"
+      },
+      {
+        "$oid": "682ca3345f1a6cfca0311e76"
+      },
+      {
+        "$oid": "682f694a837834844f74cd3a"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "682f694a837834844f74cd3a"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682bfa46bf9a9af96ded356d"
+    },
+    "artwork": {
+      "$oid": "682bf90ebf9a9af96ded356b"
+    },
+    "start_bid_amount": 300.0,
+    "start_time": {
+      "$date": "2025-09-23T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-27T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "682ca6c15f1a6cfca0311e7f"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "682ca6c15f1a6cfca0311e7f"
+    },
+    "viewed_by": [
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682bfa8cbf9a9af96ded356e"
+    },
+    "artwork": {
+      "$oid": "68207fbcf61d2158a129fb1d"
+    },
+    "start_bid_amount": 200.0,
+    "start_time": {
+      "$date": "2025-09-23T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-27T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "682ca3245f1a6cfca0311e75"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "682ca3245f1a6cfca0311e75"
+    },
+    "viewed_by": [
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682bfab6bf9a9af96ded356f"
+    },
+    "artwork": {
+      "$oid": "681381d45a741fd403485cd3"
+    },
+    "start_bid_amount": 100.0,
+    "start_time": {
+      "$date": "2025-09-21T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-23T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68331c400ef107075aa37e0a"
+      },
+      {
+        "$oid": "6833207d0ef107075aa37e0b"
+      },
+      {
+        "$oid": "6836664d3369402e9ca13bf8"
+      },
+      {
+        "$oid": "683668143369402e9ca13bfa"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "683668143369402e9ca13bfa"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682c90abbb7f1e818b03424f"
+    },
+    "artwork": {
+      "$oid": "68161edc70ba1c88d947cd8e"
+    },
+    "start_bid_amount": 1000.0,
+    "start_time": {
+      "$date": "2025-09-16T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-19T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "682c9145c6610299be32f8f6"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "682c9145c6610299be32f8f6"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682ca047f5d4bf967a4cf4e6"
+    },
+    "artwork": {
+      "$oid": "6816c0faf05c307f8fdd7cfc"
+    },
+    "start_bid_amount": 1000.0,
+    "start_time": {
+      "$date": "2025-09-24T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "682ca2fc5f1a6cfca0311e72"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "682ca2fc5f1a6cfca0311e72"
+    },
+    "updated_at": {
+      "$date": "2025-09-28T05:01:02.440Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "682ca28f5f1a6cfca0311e6f"
+    },
+    "artwork": {
+      "$oid": "68179b19d8089f156f9eaaec"
+    },
+    "start_bid_amount": 1200.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:12:02.568Z"
+    },
+    "status": "reauctioned",
+    "bid_history": [],
+    "updated_at": {
+      "$date": "2025-09-26T11:29:36.459Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682cb766b4b30ae4c9359af2"
+    },
+    "artwork": {
+      "$oid": "6829ac11b8c550ffd8e6d782"
+    },
+    "start_bid_amount": 500.0,
+    "start_time": {
+      "$date": "2025-09-18T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-20T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "682cb7afb4b30ae4c9359af6"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "682cb7afb4b30ae4c9359af6"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682e7a4bce37c771c0de3da3"
+    },
+    "artwork": {
+      "$oid": "682cc799f6ce8d9c55cf2e2d"
+    },
+    "start_bid_amount": 3000.0,
+    "start_time": {
+      "$date": "2025-09-15T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-16T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "683129d721c7794c07337a3c"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "683129d721c7794c07337a3c"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682e7a70ce37c771c0de3da4"
+    },
+    "artwork": {
+      "$oid": "682cc613f6ce8d9c55cf2e28"
+    },
+    "start_bid_amount": 1000.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-09-27T05:03:37.227Z"
+    },
+    "status": "closed",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-28T05:03:37.227Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682f6912837834844f74cd39"
+    },
+    "artwork": {
+      "$oid": "68179b19d8089f156f9eaaec"
+    },
+    "start_bid_amount": 5000.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:12:02.568Z"
+    },
+    "status": "reauctioned",
+    "bid_history": [],
+    "viewed_by": [],
+    "updated_at": {
+      "$date": "2025-09-26T11:29:36.459Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682fdd88b45628c76a892957"
+    },
+    "artwork": {
+      "$oid": "682fdbfeb45628c76a89294f"
+    },
+    "start_bid_amount": 2500.0,
+    "start_time": {
+      "$date": "2025-09-22T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-24T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "688f5420c03e5ff54db6d861"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "688f5420c03e5ff54db6d861"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682fdeacb45628c76a89295d"
+    },
+    "artwork": {
+      "$oid": "682fde65b45628c76a892958"
+    },
+    "start_bid_amount": 3000.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-09-27T05:03:37.227Z"
+    },
+    "status": "closed",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-28T05:03:37.227Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6835f6d7d5734958be9b7364"
+    },
+    "artwork": {
+      "$oid": "6831b5097f8a3ef33ce628f4"
+    },
+    "start_bid_amount": 500.0,
+    "start_time": {
+      "$date": "2025-09-19T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-23T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "683664f63369402e9ca13bf7"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "683664f63369402e9ca13bf7"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6835f9dfd5734958be9b7366"
+    },
+    "artwork": {
+      "$oid": "6835f99cd5734958be9b7365"
+    },
+    "start_bid_amount": 800.0,
+    "start_time": {
+      "$date": "2025-09-17T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-22T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68bb93fc089ecc6e15902e6d"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "688f5291c03e5ff54db6d860"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "68bb93fc089ecc6e15902e6d"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6835fd0bd5734958be9b7368"
+    },
+    "artwork": {
+      "$oid": "6835fcb0d5734958be9b7367"
+    },
+    "start_bid_amount": 200.0,
+    "start_time": {
+      "$date": "2025-09-20T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-21T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "6836678f3369402e9ca13bf9"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "6836678f3369402e9ca13bf9"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6836b217bd0a09fa5799bb13"
+    },
+    "artwork": {
+      "$oid": "682fde65b45628c76a892958"
+    },
+    "start_bid_amount": 500.0,
+    "start_time": {
+      "$date": "2025-09-18T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-19T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68380a9dfce943c157239f67"
+      },
+      {
+        "$oid": "68380b54fce943c157239f68"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      },
+      {
+        "$oid": "682016c525d06e84a44191bd"
+      },
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "68380b54fce943c157239f68"
+    },
+    "updated_at": {
+      "$date": "2025-09-28T05:01:02.440Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6836b245bd0a09fa5799bb14"
+    },
+    "artwork": {
+      "$oid": "682cc613f6ce8d9c55cf2e28"
+    },
+    "start_bid_amount": 1200.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:12:02.568Z"
+    },
+    "status": "reauctioned",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      },
+      {
+        "$oid": "682016c525d06e84a44191bd"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:29:36.459Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6837d9eb5bf30a4c0db6a184"
+    },
+    "artwork": {
+      "$oid": "68179b19d8089f156f9eaaec"
+    },
+    "start_bid_amount": 500.0,
+    "start_time": {
+      "$date": "2025-09-22T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-24T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68383f296f4f11f05f2c44f0"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      },
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "6817955cadec126cfbb0d5a1"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "68383f296f4f11f05f2c44f0"
+    },
+    "updated_at": {
+      "$date": "2025-09-28T05:01:02.440Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68383ebb6f4f11f05f2c44ef"
+    },
+    "artwork": {
+      "$oid": "682ff2873d8acce07f6e0eeb"
+    },
+    "start_bid_amount": 700.0,
+    "start_time": {
+      "$date": "2025-09-18T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-23T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "688cb79f9916e540e65f242c"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "688f5291c03e5ff54db6d860"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "688cb79f9916e540e65f242c"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "683af12c2853ab6af197d558"
+    },
+    "artwork": {
+      "$oid": "6829acffb8c550ffd8e6d784"
+    },
+    "start_bid_amount": 1200.0,
+    "start_time": {
+      "$date": "2025-09-23T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-27T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68b408245de3b03dbbed1871"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "6831b546797ef121740fdfb0"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "68b408245de3b03dbbed1871"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "683af16b2853ab6af197d559"
+    },
+    "artwork": {
+      "$oid": "682e7af9ce37c771c0de3da5"
+    },
+    "start_bid_amount": 3000.0,
+    "start_time": {
+      "$date": "2025-09-23T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68c151c81a7cf39a83d2fce3"
+      },
+      {
+        "$oid": "68c51700fd39b8008b098bd7"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      },
+      {
+        "$oid": "6831b546797ef121740fdfb0"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "68c51700fd39b8008b098bd7"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "683f9ca1bf3b616b190543f3"
+    },
+    "artwork": {
+      "$oid": "682fe043b45628c76a89295e"
+    },
+    "start_bid_amount": 1200.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:12:02.568Z"
+    },
+    "status": "reauctioned",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:29:36.459Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "684033bedf84c779f9bf61a1"
+    },
+    "artwork": {
+      "$oid": "6840337fdf84c779f9bf61a0"
+    },
+    "start_bid_amount": 500.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-09-27T05:03:37.227Z"
+    },
+    "status": "closed",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-28T05:03:37.227Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6848ef8cc6724e2c3a543d67"
+    },
+    "artwork": {
+      "$oid": "682fe043b45628c76a89295e"
+    },
+    "start_bid_amount": 1000.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:12:02.568Z"
+    },
+    "status": "reauctioned",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:29:36.459Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6848efefc6724e2c3a543d68"
+    },
+    "artwork": {
+      "$oid": "682cc613f6ce8d9c55cf2e28"
+    },
+    "start_bid_amount": 5000.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:12:02.568Z"
+    },
+    "status": "reauctioned",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:29:36.459Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "684fb83f339a91c459d5d2a1"
+    },
+    "artwork": {
+      "$oid": "682fe043b45628c76a89295e"
+    },
+    "start_bid_amount": 2333.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:12:02.568Z"
+    },
+    "status": "reauctioned",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:29:36.459Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "684fb84c339a91c459d5d2a2"
+    },
+    "artwork": {
+      "$oid": "682cc613f6ce8d9c55cf2e28"
+    },
+    "start_bid_amount": 2333.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:12:02.568Z"
+    },
+    "status": "reauctioned",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:29:36.459Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6857a271038d13b399651117"
+    },
+    "artwork": {
+      "$oid": "682fe043b45628c76a89295e"
+    },
+    "start_bid_amount": 1200.0,
+    "start_time": {
+      "$date": "2025-09-22T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-24T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68c5196cfd39b8008b098bd9"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "68c5196cfd39b8008b098bd9"
+    },
+    "updated_at": {
+      "$date": "2025-09-28T05:01:02.440Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6857a2d8038d13b399651119"
+    },
+    "artwork": {
+      "$oid": "682cc613f6ce8d9c55cf2e28"
+    },
+    "start_bid_amount": 5000.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:12:02.568Z"
+    },
+    "status": "reauctioned",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-26T11:29:36.459Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6857a2e4038d13b39965111a"
+    },
+    "artwork": {
+      "$oid": "6824ccfc6fb4597c28417515"
+    },
+    "start_bid_amount": 200.0,
+    "start_time": {
+      "$date": "2025-09-21T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-25T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68c5180dfd39b8008b098bd8"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "68c5180dfd39b8008b098bd8"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "685e5b16a10f5088ef23f73d"
+    },
+    "artwork": {
+      "$oid": "6817123c1674d689857f8bcd"
+    },
+    "start_bid_amount": 800.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-09-27T05:03:37.227Z"
+    },
+    "status": "closed",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-28T05:03:37.227Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "685e5bafa10f5088ef23f73e"
+    },
+    "artwork": {
+      "$oid": "682ff04e3d8acce07f6e0ee9"
+    },
+    "start_bid_amount": 700.0,
+    "start_time": {
+      "$date": "2025-09-21T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-22T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68b404485de3b03dbbed1870"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "68b404485de3b03dbbed1870"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "685e5ce0a10f5088ef23f740"
+    },
+    "artwork": {
+      "$oid": "681711d81674d689857f8bc8"
+    },
+    "start_bid_amount": 500.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-09-27T05:03:37.227Z"
+    },
+    "status": "closed",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-28T05:03:37.227Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "685e5d0ca10f5088ef23f741"
+    },
+    "artwork": {
+      "$oid": "682fef1c3d8acce07f6e0ee8"
+    },
+    "start_bid_amount": 700.0,
+    "start_time": {
+      "$date": "2025-09-15T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-17T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68baf07c62e02454ec423564"
+      },
+      {
+        "$oid": "68baf23a62e02454ec423565"
+      },
+      {
+        "$oid": "68baf27762e02454ec423566"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "68baf27762e02454ec423566"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688e31d70c4b8af2fb42f728"
+    },
+    "artwork": {
+      "$oid": "688e2c890c4b8af2fb42f726"
+    },
+    "start_bid_amount": 500.0,
+    "start_time": {
+      "$date": "2025-09-16T11:24:37.002Z"
+    },
+    "end_time": {
+      "$date": "2025-09-18T11:24:37.002Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68a19a0c2352ceccfef3aff4"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "highest_bid": {
+      "$oid": "68a19a0c2352ceccfef3aff4"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:24:37.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d51e9dea18427af7ff18d3"
+    },
+    "artwork": {
+      "$oid": "68d51e77ea18427af7ff18d2"
+    },
+    "start_bid_amount": 800.0,
+    "start_time": {
+      "$date": "2025-09-26T11:12:02.568Z"
+    },
+    "end_time": {
+      "$date": "2025-09-27T05:03:37.227Z"
+    },
+    "status": "reauctioned",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-09-28T05:03:37.227Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68dea9edf035ba450bbad7fa"
+    },
+    "artwork": {
+      "$oid": "68d51e77ea18427af7ff18d2"
+    },
+    "start_bid_amount": 800.0,
+    "start_time": {
+      "$date": "2025-10-02T17:35:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-05T16:00:00Z"
+    },
+    "status": "closed",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-02T16:35:57.219Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68df2fc5aa63ff7cbacbe00d"
+    },
+    "artwork": {
+      "$oid": "68d91f53ab3bb58491509f44"
+    },
+    "start_bid_amount": 2500.0,
+    "start_time": {
+      "$date": "2025-10-03T02:06:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-05T02:00:00Z"
+    },
+    "status": "closed",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      },
+      {
+        "$oid": "6864c627ba036839520bb239"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-03T02:07:01.775Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68df3000aa63ff7cbacbe00e"
+    },
+    "artwork": {
+      "$oid": "68ba96b76a1950f6d9fa57f0"
+    },
+    "start_bid_amount": 1600.0,
+    "start_time": {
+      "$date": "2025-10-03T02:07:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-05T04:00:00Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68df3054aa63ff7cbacbe00f"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-03T02:08:00.974Z"
+    },
+    "highest_bid": {
+      "$oid": "68df3054aa63ff7cbacbe00f"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e13ab6f41afa4774cd6c95"
+    },
+    "artwork": {
+      "$oid": "682feb373d8acce07f6e0ee7"
+    },
+    "start_bid_amount": 800.0,
+    "start_time": {
+      "$date": "2025-10-04T15:18:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T16:00:00Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68e3aff85e374d4a493b6717"
+      },
+      {
+        "$oid": "68e3b6dfa7b0a2b15abf5d35"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-04T15:18:14.052Z"
+    },
+    "highest_bid": {
+      "$oid": "68e3b6dfa7b0a2b15abf5d35"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e13c7af41afa4774cd6c97"
+    },
+    "artwork": {
+      "$oid": "68e13c68f41afa4774cd6c96"
+    },
+    "start_bid_amount": 800.0,
+    "start_time": {
+      "$date": "2025-10-04T15:25:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T16:00:00Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68e39b41a7b0a2b15abf5d11"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "68e391f1a7b0a2b15abf5d01"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-04T15:25:46.404Z"
+    },
+    "highest_bid": {
+      "$oid": "68e39b41a7b0a2b15abf5d11"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e3b4ed5e374d4a493b6718"
+    },
+    "artwork": {
+      "$oid": "682ff1f63d8acce07f6e0eea"
+    },
+    "start_bid_amount": 8000.0,
+    "start_time": {
+      "$date": "2025-10-06T12:24:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T16:00:00Z"
+    },
+    "status": "sold",
+    "bid_history": [
+      {
+        "$oid": "68e3b5cc5e374d4a493b6719"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-06T12:24:13.678Z"
+    },
+    "highest_bid": {
+      "$oid": "68e3b5cc5e374d4a493b6719"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e3c71842c702e218f91702"
+    },
+    "artwork": {
+      "$oid": "68e3b661a7b0a2b15abf5d33"
+    },
+    "start_bid_amount": 800.0,
+    "start_time": {
+      "$date": "2025-10-06T13:41:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-08T02:00:00Z"
+    },
+    "status": "closed",
+    "bid_history": [
+      {
+        "$oid": "68e3c7a842c702e218f91703"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-06T13:41:44.394Z"
+    },
+    "highest_bid": {
+      "$oid": "68e3c7a842c702e218f91703"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68eb85d20d8e4071c5682be8"
+    },
+    "artwork": {
+      "$oid": "6816c13cf05c307f8fdd7d02"
+    },
+    "start_bid_amount": 1200.0,
+    "start_time": {
+      "$date": "2025-10-12T10:41:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-14T12:20:00Z"
+    },
+    "status": "closed",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-12T15:53:48.471Z"
+    },
+    "visibility": "Public"
+  },
+  {
+    "_id": {
+      "$oid": "68eb9392f2a7436a107fe8b4"
+    },
+    "artwork": {
+      "$oid": "681377c15a741fd403485cca"
+    },
+    "start_bid_amount": 500.0,
+    "start_time": {
+      "$date": "2025-10-12T11:39:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-14T02:00:00Z"
+    },
+    "status": "closed",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-12T16:16:42.965Z"
+    },
+    "visibility": "Public"
+  },
+  {
+    "_id": {
+      "$oid": "68eb944b996779dec473028c"
+    },
+    "artwork": {
+      "$oid": "681392df1ea6de6aaa308e4a"
+    },
+    "start_bid_amount": 1000.0,
+    "start_time": {
+      "$date": "2025-10-12T11:42:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-12T15:00:00Z"
+    },
+    "status": "closed",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-12T11:43:07.393Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee61d6d2b2031356714ac7"
+    },
+    "artwork": {
+      "$oid": "6888426f363ea16ad5cc41bb"
+    },
+    "start_bid_amount": 1200.0,
+    "start_time": {
+      "$date": "2025-10-14T14:44:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-16T12:00:00Z"
+    },
+    "status": "closed",
+    "visibility": "Public",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68efb4b0d401570b295a715f"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-14T14:44:38.233Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f329f6e26ddd9f02841035"
+    },
+    "artwork": {
+      "$oid": "68f109d917db69637d68291f"
+    },
+    "start_bid_amount": 500.0,
+    "start_time": {
+      "$date": "2025-10-18T05:43:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-20T16:00:00Z"
+    },
+    "status": "sold",
+    "visibility": "Public",
+    "bid_history": [
+      {
+        "$oid": "68f32aefe26ddd9f02841036"
+      },
+      {
+        "$oid": "68f649b997e5ea7179ae992d"
+      },
+      {
+        "$oid": "68f64a7197e5ea7179ae992e"
+      },
+      {
+        "$oid": "68f64a7b97e5ea7179ae992f"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "687f2353fd7b10e499432c4e"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-18T05:47:34.579Z"
+    },
+    "highest_bid": {
+      "$oid": "68f64a7b97e5ea7179ae992f"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f4586d41667cb1c641eae4"
+    },
+    "artwork": {
+      "$oid": "6816c047f05c307f8fdd7cf0"
+    },
+    "start_bid_amount": 800.0,
+    "start_time": {
+      "$date": "2025-10-19T03:17:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-22T02:00:00Z"
+    },
+    "status": "closed",
+    "visibility": "Public",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-19T03:18:05.823Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f6482897e5ea7179ae992c"
+    },
+    "artwork": {
+      "$oid": "68f647cd97e5ea7179ae9925"
+    },
+    "start_bid_amount": 3000.0,
+    "start_time": {
+      "$date": "2025-10-20T14:32:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-23T12:00:00Z"
+    },
+    "status": "sold",
+    "visibility": "Public",
+    "bid_history": [
+      {
+        "$oid": "68f862f9e260f41394524b32"
+      }
+    ],
+    "viewed_by": [
+      {
+        "$oid": "68f7179443e2ad8edb75400c"
+      },
+      {
+        "$oid": "68f853c70458d546690ed4b8"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-20T14:33:12.523Z"
+    },
+    "highest_bid": {
+      "$oid": "68f862f9e260f41394524b32"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f86171e260f41394524b31"
+    },
+    "artwork": {
+      "$oid": "68f85b69e260f41394524b25"
+    },
+    "start_bid_amount": 2000.0,
+    "start_time": {
+      "$date": "2025-10-22T04:44:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-23T16:00:00Z"
+    },
+    "status": "on_going",
+    "visibility": "Public",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "68f853c70458d546690ed4b8"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-22T04:45:37.014Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa27649acbb6d54858ccb6"
+    },
+    "artwork": {
+      "$oid": "68fa251f230954f1a42b67bb"
+    },
+    "start_bid_amount": 2500.0,
+    "start_time": {
+      "$date": "2025-10-23T13:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-26T02:00:00Z"
+    },
+    "status": "on_going",
+    "visibility": "Public",
+    "bid_history": [],
+    "viewed_by": [],
+    "updated_at": {
+      "$date": "2025-10-23T13:02:28.547Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa29929acbb6d54858ccb8"
+    },
+    "artwork": {
+      "$oid": "68fa27bd9acbb6d54858ccb7"
+    },
+    "start_bid_amount": 1300.0,
+    "start_time": {
+      "$date": "2025-10-23T13:10:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-25T15:50:00Z"
+    },
+    "status": "on_going",
+    "visibility": "Public",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-23T13:11:46.797Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa46f1f9083da0c801ba14"
+    },
+    "artwork": {
+      "$oid": "68f9caa9042759364d40965c"
+    },
+    "start_bid_amount": 2500.0,
+    "start_time": {
+      "$date": "2025-10-24T15:16:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-27T02:00:00Z"
+    },
+    "status": "on_going",
+    "visibility": "Public",
+    "bid_history": [],
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "updated_at": {
+      "$date": "2025-10-23T15:17:05.631Z"
+    }
+  }
+]

@@ -1,0 +1,158 @@
+{
+  "timestamp": "20251023_235347",
+  "created_at": "2025-10-23T23:53:47.376285",
+  "backup_type": "python_backup",
+  "database_info": {
+    "database": "virtual_art",
+    "connection_status": "success"
+  },
+  "exported_collections": [
+    {
+      "collection": "followers",
+      "file": "python_backups\\followers_20251023_235347.json",
+      "size": 7153,
+      "document_count": 25
+    },
+    {
+      "collection": "donations",
+      "file": "python_backups\\donations_20251023_235347.json",
+      "size": 13075,
+      "document_count": 30
+    },
+    {
+      "collection": "auction",
+      "file": "python_backups\\auction_20251023_235347.json",
+      "size": 45087,
+      "document_count": 64
+    },
+    {
+      "collection": "ban",
+      "file": "python_backups\\ban_20251023_235347.json",
+      "size": 4311,
+      "document_count": 10
+    },
+    {
+      "collection": "user_sessions",
+      "file": "python_backups\\user_sessions_20251023_235347.json",
+      "size": 12517,
+      "document_count": 24
+    },
+    {
+      "collection": "exhibit_contributions",
+      "file": "python_backups\\exhibit_contributions_20251023_235347.json",
+      "size": 10368,
+      "document_count": 13
+    },
+    {
+      "collection": "transactions",
+      "file": "python_backups\\transactions_20251023_235347.json",
+      "size": 26379,
+      "document_count": 44
+    },
+    {
+      "collection": "comments",
+      "file": "python_backups\\comments_20251023_235347.json",
+      "size": 15692,
+      "document_count": 36
+    },
+    {
+      "collection": "social",
+      "file": "python_backups\\social_20251023_235347.json",
+      "size": 1728,
+      "document_count": 6
+    },
+    {
+      "collection": "exhibits",
+      "file": "python_backups\\exhibits_20251023_235347.json",
+      "size": 39109,
+      "document_count": 29
+    },
+    {
+      "collection": "user",
+      "file": "python_backups\\user_20251023_235347.json",
+      "size": 29272,
+      "document_count": 45
+    },
+    {
+      "collection": "reports",
+      "file": "python_backups\\reports_20251023_235347.json",
+      "size": 12591,
+      "document_count": 29
+    },
+    {
+      "collection": "address",
+      "file": "python_backups\\address_20251023_235347.json",
+      "size": 6533,
+      "document_count": 12
+    },
+    {
+      "collection": "artwork_reviews",
+      "file": "python_backups\\artwork_reviews_20251023_235347.json",
+      "size": 6961,
+      "document_count": 11
+    },
+    {
+      "collection": "likes",
+      "file": "python_backups\\likes_20251023_235347.json",
+      "size": 66674,
+      "document_count": 229
+    },
+    {
+      "collection": "hidden_content",
+      "file": "python_backups\\hidden_content_20251023_235347.json",
+      "size": 1737,
+      "document_count": 6
+    },
+    {
+      "collection": "two_factor_auth",
+      "file": "python_backups\\two_factor_auth_20251023_235347.json",
+      "size": 6123,
+      "document_count": 9
+    },
+    {
+      "collection": "wishlist",
+      "file": "python_backups\\wishlist_20251023_235347.json",
+      "size": 5190,
+      "document_count": 19
+    },
+    {
+      "collection": "purchased_artworks",
+      "file": "python_backups\\purchased_artworks_20251023_235347.json",
+      "size": 31199,
+      "document_count": 40
+    },
+    {
+      "collection": "art",
+      "file": "python_backups\\art_20251023_235347.json",
+      "size": 136728,
+      "document_count": 156
+    },
+    {
+      "collection": "payment_account",
+      "file": "python_backups\\payment_account_20251023_235347.json",
+      "size": 9637,
+      "document_count": 20
+    },
+    {
+      "collection": "saved",
+      "file": "python_backups\\saved_20251023_235347.json",
+      "size": 6249,
+      "document_count": 18
+    },
+    {
+      "collection": "bid",
+      "file": "python_backups\\bid_20251023_235347.json",
+      "size": 23287,
+      "document_count": 69
+    },
+    {
+      "collection": "notifications",
+      "file": "python_backups\\notifications_20251023_235347.json",
+      "size": 184730,
+      "document_count": 295
+    }
+  ],
+  "success": true,
+  "total_collections_exported": 24,
+  "total_documents": 1239
+}

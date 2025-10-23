@@ -1,0 +1,201 @@
+[
+  {
+    "_id": {
+      "$oid": "684029fad3adda8995e790f1"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "banned_by": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "reason": "Violation of rules",
+    "is_permanent": true,
+    "start_date": {
+      "$date": "2025-06-04T11:11:54.772Z"
+    },
+    "created_at": {
+      "$date": "2025-06-04T11:11:54.937Z"
+    },
+    "end_date": {
+      "$date": "2025-10-06T11:25:01.773Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68402a89417289300cf97564"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "banned_by": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "reason": "Violation of rules",
+    "is_permanent": true,
+    "start_date": {
+      "$date": "2025-06-04T11:14:17.562Z"
+    },
+    "created_at": {
+      "$date": "2025-06-04T11:14:17.727Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68402c5d417289300cf97567"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "banned_by": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "reason": "Violation",
+    "is_permanent": true,
+    "start_date": {
+      "$date": "2025-06-04T11:22:05.927Z"
+    },
+    "created_at": {
+      "$date": "2025-06-04T11:22:05.989Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68bba74e089ecc6e15902e71"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "banned_by": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "reason": "Violation",
+    "is_permanent": true,
+    "start_date": {
+      "$date": "2025-09-06T03:15:26.406Z"
+    },
+    "created_at": {
+      "$date": "2025-09-06T03:15:26.929Z"
+    },
+    "end_date": {
+      "$date": "2025-10-22T15:15:06.607Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e3a181a7b0a2b15abf5d26"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "banned_by": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "reason": "Violation",
+    "is_permanent": true,
+    "start_date": {
+      "$date": "2025-10-06T11:01:20.956Z"
+    },
+    "created_at": {
+      "$date": "2025-10-06T11:01:21.162Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f8f18836f8a934a9f3e905"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "banned_by": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "reason": "Violation",
+    "is_permanent": true,
+    "start_date": {
+      "$date": "2025-10-22T15:00:23.859Z"
+    },
+    "created_at": {
+      "$date": "2025-10-22T15:00:24.064Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f8f27b36f8a934a9f3e908"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "banned_by": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "reason": "Violation",
+    "is_permanent": true,
+    "start_date": {
+      "$date": "2025-10-22T15:04:27.197Z"
+    },
+    "created_at": {
+      "$date": "2025-10-22T15:04:27.240Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f8f46b36f8a934a9f3e90b"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "banned_by": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "reason": "Violation",
+    "is_permanent": true,
+    "start_date": {
+      "$date": "2025-10-22T15:12:43.148Z"
+    },
+    "created_at": {
+      "$date": "2025-10-22T15:12:43.198Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f9aae909304ddc64eb3223"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "banned_by": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "reason": "Violation",
+    "is_permanent": true,
+    "start_date": {
+      "$date": "2025-10-23T04:11:21.231Z"
+    },
+    "created_at": {
+      "$date": "2025-10-23T04:11:21.722Z"
+    },
+    "end_date": {
+      "$date": "2025-10-23T04:24:16.013Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f9adde72168c3978575e06"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "banned_by": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "reason": "Violation",
+    "is_permanent": true,
+    "start_date": {
+      "$date": "2025-10-23T04:23:57.111Z"
+    },
+    "created_at": {
+      "$date": "2025-10-23T04:23:58.117Z"
+    }
+  }
+]

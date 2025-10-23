@@ -1,0 +1,12 @@
+{
+  "timestamp": "20251023_235307",
+  "created_at": "2025-10-23T23:53:07.966509",
+  "backup_type": "simple_backup",
+  "database_info": {
+    "uri": "mongodb+srv://canete:Canete062723%21@***",
+    "database": "virtual_art"
+  },
+  "success": true,
+  "exported_collections": [],
+  "total_collections": 0
+}

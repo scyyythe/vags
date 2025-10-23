@@ -1,0 +1,80 @@
+[
+  {
+    "_id": {
+      "$oid": "68f06b887946153df7ec750b"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "content_type": "artwork",
+    "content_id": "68f05f82522032b9a438af20",
+    "hidden_at": {
+      "$date": "2025-10-16T03:50:32.442Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f0f85417db69637d68291b"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "content_type": "artwork",
+    "content_id": "68ef8a773a5025fc3ef714f7",
+    "hidden_at": {
+      "$date": "2025-10-16T13:51:16.981Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f0f89517db69637d68291c"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "content_type": "artwork",
+    "content_id": "68e3b661a7b0a2b15abf5d33",
+    "hidden_at": {
+      "$date": "2025-10-16T13:52:21.066Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f27990669e64a93ee4ebed"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "content_type": "artwork",
+    "content_id": "68f06241cd8f6cf56615a80c",
+    "hidden_at": {
+      "$date": "2025-10-17T17:14:56.972Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f71b0b43e2ad8edb754016"
+    },
+    "user": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "content_type": "artwork",
+    "content_id": "68f457a841667cb1c641eae3",
+    "hidden_at": {
+      "$date": "2025-10-21T05:32:59.037Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f79079badb5c386e8099ab"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "content_type": "artwork",
+    "content_id": "68f71bd643e2ad8edb754017",
+    "hidden_at": {
+      "$date": "2025-10-21T13:54:01.459Z"
+    }
+  }
+]

@@ -1,0 +1,565 @@
+[
+  {
+    "_id": {
+      "$oid": "682be2d909acce357aaa447e"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "7BX26936Y79868132",
+    "timestamp": {
+      "$date": "2025-05-20T02:03:05.552Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682be922456d76e50605390f"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "63S37175B69908812",
+    "timestamp": {
+      "$date": "2025-05-20T02:29:54.589Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682bec4d8b68fcf52ac4e423"
+    },
+    "sender": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "receiver": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "6G539219H6989890B",
+    "timestamp": {
+      "$date": "2025-05-20T02:43:25.398Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682ca6a85f1a6cfca0311e7d"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "7T681569SM590951W",
+    "timestamp": {
+      "$date": "2025-05-20T15:58:32.097Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682cb1acb46e85b205716554"
+    },
+    "sender": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "receiver": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "5GV519594D3370442",
+    "timestamp": {
+      "$date": "2025-05-20T16:45:32.165Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682cb267c5c409e7b2397a62"
+    },
+    "sender": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "receiver": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "7BM94035AU7972441",
+    "timestamp": {
+      "$date": "2025-05-20T16:48:39.762Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682cb2a7c5b58cff2264694e"
+    },
+    "sender": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "receiver": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "3J3931355M115853B",
+    "timestamp": {
+      "$date": "2025-05-20T16:49:43.116Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682e7bddc2ae34667db942c0"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "8J937600EE3672150",
+    "timestamp": {
+      "$date": "2025-05-22T01:20:29.093Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682e7c27c2ae34667db942c2"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "8RM54830JE7887401",
+    "timestamp": {
+      "$date": "2025-05-22T01:21:43.332Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6836e4cd2d5ed2b22c25e7b3"
+    },
+    "sender": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "receiver": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "0DW37353WP545754D",
+    "timestamp": {
+      "$date": "2025-05-28T10:26:21.935Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6836e603be0743b906c6c88f"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "5E726913G75863443",
+    "timestamp": {
+      "$date": "2025-05-28T10:31:31.087Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6836eb048146bc8e0ec2069d"
+    },
+    "sender": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "receiver": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "085274782W339162T",
+    "timestamp": {
+      "$date": "2025-05-28T10:52:52.135Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6836ec9a696cdb02b45b38ad"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "11W2831470438611B",
+    "timestamp": {
+      "$date": "2025-05-28T10:59:38.558Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d7e85535a0faebabd16aaa"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "amount": 250.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "90H68470FP763681D",
+    "timestamp": {
+      "$date": "2025-09-27T13:36:21.356Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d7fd728934079e531f896b"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "amount": 2.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "8NB33404JD953680G",
+    "timestamp": {
+      "$date": "2025-09-27T15:06:26.169Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d8a18c4ae386ed7a0fa637"
+    },
+    "sender": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "receiver": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "amount": 2.0,
+    "currency": "PHP",
+    "payment_method": "PayPal",
+    "payment_status": "Completed",
+    "transaction_id": "3BW95108GV618311X",
+    "timestamp": {
+      "$date": "2025-09-28T02:46:36.219Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68dced67e45e1a446aec1f64"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "amount": 250.0,
+    "currency": "PHP",
+    "payment_method": "Stripe",
+    "payment_status": "Completed",
+    "transaction_id": "cs_test_a1njWuErRzAy8IGV5GO1xnvPZrQJrp6VlFFMWl03n091gRTzXaAndCDBOo",
+    "timestamp": {
+      "$date": "2025-10-01T08:59:18.893Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68dcf4fa8a68aa644a70d0be"
+    },
+    "sender": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "receiver": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "amount": 50.0,
+    "currency": "PHP",
+    "payment_method": "Stripe",
+    "payment_status": "Completed",
+    "transaction_id": "cs_test_a1jzirLZb6B2WC2Ztni2Hycrg3FDHiR2fyOiQr8mCne2PYE4LF3MQ3EmuY",
+    "timestamp": {
+      "$date": "2025-10-01T09:31:38.687Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7bf8cb84f5059ad88f918"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "amount": 250.0,
+    "currency": "PHP",
+    "payment_method": "Stripe",
+    "payment_status": "Completed",
+    "transaction_id": "cs_test_a1tcnlHHMt3DgPCllQPrvWGIiVV5ojsnUCzNEUMmf6M9kl8nb4aIxdH9Z6",
+    "timestamp": {
+      "$date": "2025-10-09T13:58:36.573Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7bfb9b84f5059ad88f91b"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "amount": 3000.0,
+    "currency": "PHP",
+    "payment_method": "Stripe",
+    "payment_status": "Completed",
+    "transaction_id": "cs_test_a1azzI6X8EBkQFxCZtHRLgZQy1F9CM6tO9crOSxbrcghqkxEhNLgBkq6zN",
+    "timestamp": {
+      "$date": "2025-10-09T13:59:21.574Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7c68962cf6b7afaa778ae"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "amount": 2500.0,
+    "currency": "PHP",
+    "payment_method": "GCash",
+    "payment_status": "Completed",
+    "timestamp": {
+      "$date": "2025-10-09T14:28:25.515Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7c6ef62cf6b7afaa778b1"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "amount": 250.0,
+    "currency": "PHP",
+    "payment_method": "GCash",
+    "payment_status": "Completed",
+    "timestamp": {
+      "$date": "2025-10-09T14:30:07.064Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7c89e72282ecfaa8fedbb"
+    },
+    "sender": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "receiver": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "amount": 250.0,
+    "currency": "PHP",
+    "payment_method": "GCash",
+    "payment_status": "Completed",
+    "timestamp": {
+      "$date": "2025-10-09T14:37:18.297Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7c908b39d99cac94c1c06"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "amount": 1500.0,
+    "currency": "PHP",
+    "payment_method": "GCash",
+    "payment_status": "Completed",
+    "timestamp": {
+      "$date": "2025-10-09T14:39:04.549Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7c92bbf8452468721720c"
+    },
+    "sender": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "receiver": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "amount": 1500.0,
+    "currency": "PHP",
+    "payment_method": "GCash",
+    "payment_status": "Completed",
+    "timestamp": {
+      "$date": "2025-10-09T14:39:39.765Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7c9cc51893aacc0516c97"
+    },
+    "sender": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "receiver": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "amount": 250.0,
+    "currency": "PHP",
+    "payment_method": "GCash",
+    "payment_status": "Completed",
+    "timestamp": {
+      "$date": "2025-10-09T14:42:20.638Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7caae70fbe2fa654dad14"
+    },
+    "sender": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "receiver": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "amount": 250.0,
+    "currency": "PHP",
+    "payment_method": "GCash",
+    "payment_status": "Completed",
+    "timestamp": {
+      "$date": "2025-10-09T14:46:06.467Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7cc0f1c7f992f36df8f10"
+    },
+    "sender": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "receiver": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "amount": 250.0,
+    "currency": "PHP",
+    "payment_method": "GCash",
+    "payment_status": "Completed",
+    "transaction_id": "GC-W73B1ZD8",
+    "timestamp": {
+      "$date": "2025-10-09T14:51:59.598Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f85c7fe260f41394524b27"
+    },
+    "sender": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "receiver": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "amount": 250.0,
+    "currency": "PHP",
+    "payment_method": "GCash",
+    "payment_status": "Completed",
+    "transaction_id": "GC-CWHFFBKS",
+    "timestamp": {
+      "$date": "2025-10-22T04:24:31.047Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f85c9be260f41394524b2a"
+    },
+    "sender": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "receiver": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "amount": 500.0,
+    "currency": "PHP",
+    "payment_method": "GCash",
+    "payment_status": "Completed",
+    "transaction_id": "GC-BZDSIS3P",
+    "timestamp": {
+      "$date": "2025-10-22T04:24:59.891Z"
+    }
+  }
+]

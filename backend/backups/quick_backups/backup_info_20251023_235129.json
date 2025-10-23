@@ -1,0 +1,16 @@
+{
+  "timestamp": "20251023_235129",
+  "created_at": "2025-10-23T23:51:29.509085",
+  "backup_type": "quick_backup",
+  "files_backed_up": [
+    "backend/backend/settings.py",
+    "backend/requirements.txt",
+    "docker-compose.yml",
+    "backend/Dockerfile",
+    "front/Dockerfile",
+    "front/package.json",
+    "front/vercel.json"
+  ],
+  "success": true,
+  "total_files": 7
+}

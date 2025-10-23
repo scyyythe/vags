@@ -1,0 +1,362 @@
+[
+  {
+    "_id": {
+      "$oid": "68ec8897f3f83842b5745afb"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": false,
+    "created_at": {
+      "$date": "2025-10-23T13:52:54.306Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ec896bf3f83842b5745afc"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-23T13:52:56.352Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ecdccb7a1e682fdbd4aa4d"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-23T06:52:44.986Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68edc16b8600bdab7f6f0918"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": false,
+    "created_at": {
+      "$date": "2025-10-22T07:07:13.023Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68edd5bb8600bdab7f6f091e"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": false,
+    "created_at": {
+      "$date": "2025-10-21T13:44:42.497Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee1ceef39ca3c140cff29c"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-22T13:30:56.587Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee356670629c7f69310d61"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": false,
+    "created_at": {
+      "$date": "2025-10-21T18:12:41.935Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee3cc570629c7f69310d62"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-22T01:47:45.743Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee3eab70629c7f69310d68"
+    },
+    "user": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-23T06:00:13.507Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee3eab70629c7f69310d69"
+    },
+    "user": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": false,
+    "created_at": {
+      "$date": "2025-10-23T03:41:00.818Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee3f0670629c7f69310d6a"
+    },
+    "user": {
+      "$oid": "682fc7566da7bf8f9dbe473b"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": false,
+    "created_at": {
+      "$date": "2025-10-22T17:10:02.095Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ef877c3a5025fc3ef714f5"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": false,
+    "created_at": {
+      "$date": "2025-10-23T04:25:23.995Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ef8d448391d1519427b236"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-23T06:01:31.891Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68efb4c2d401570b295a7160"
+    },
+    "user": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-15T14:50:42.024Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f5e395c0ad518fdc76cbaf"
+    },
+    "user": {
+      "$oid": "68f5e368c0ad518fdc76cbae"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-20T07:24:05.102Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f5e3e1c0ad518fdc76cbb1"
+    },
+    "user": {
+      "$oid": "68f5e3d1c0ad518fdc76cbb0"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-20T07:25:21.967Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f5f77143206abd03388e90"
+    },
+    "user": {
+      "$oid": "682fc7566da7bf8f9dbe473b"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-23T03:38:44.587Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f717ee43e2ad8edb75400d"
+    },
+    "user": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-21T05:19:42.724Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f78908badb5c386e8099a7"
+    },
+    "user": {
+      "$oid": "68f788fbbadb5c386e8099a6"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": false,
+    "created_at": {
+      "$date": "2025-10-21T13:22:16.694Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f78b37badb5c386e8099a8"
+    },
+    "user": {
+      "$oid": "68f788fbbadb5c386e8099a6"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-21T13:31:35.216Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f854640458d546690ed4b9"
+    },
+    "user": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-22T07:22:25.963Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f85ac1e260f41394524b24"
+    },
+    "user": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": false,
+    "created_at": {
+      "$date": "2025-10-22T04:17:05.124Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa23fb230954f1a42b67b9"
+    },
+    "user": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": false,
+    "created_at": {
+      "$date": "2025-10-23T12:47:55.547Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa23fb230954f1a42b67ba"
+    },
+    "user": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Sa",
+    "ip_address": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "is_current": true,
+    "created_at": {
+      "$date": "2025-10-23T12:47:55.697Z"
+    }
+  }
+]
