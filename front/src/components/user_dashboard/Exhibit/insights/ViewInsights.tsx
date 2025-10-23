@@ -189,7 +189,7 @@ const ViewInsights = () => {
           
           <button
             onClick={() => navigate("/gallery-3d")}
-            className="md:mt-10 py-1 px-5 bg-red-800 text-white hover:bg-red-700 transition-colors rounded-full "
+            className="md:mt-10 py-1 px-5 bg-red-800 dark:bg-red-700 text-white hover:bg-red-700 dark:hover:bg-red-600 transition-colors rounded-full "
           >
             <span className="text-xs">{explore3DGalleryText}</span>
             <i className='bx bx-chevron-right relative top-0.5 left-1'></i>
@@ -231,9 +231,9 @@ const ViewInsights = () => {
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Weekly Activity Chart */}
-          <Card className="col-span-1 bg-white border-gray-200">
+          <Card className="col-span-1 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[13px] text-black">
+              <CardTitle className="flex items-center gap-2 text-[13px] text-black dark:text-white">
                 {weeklyActivityText}
               </CardTitle>
             </CardHeader>
@@ -258,9 +258,9 @@ const ViewInsights = () => {
           </Card>
 
           {/* Traffic Sources Pie Chart */}
-          <Card className="col-span-1 bg-white border-gray-200">
+          <Card className="col-span-1 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[13px] text-black">
+              <CardTitle className="flex items-center gap-2 text-[13px] text-black dark:text-white">
                 {trafficSourcesText}
               </CardTitle>
             </CardHeader>
@@ -292,27 +292,27 @@ const ViewInsights = () => {
         {/* Time Engagement Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Average Time Spent */}
-          <Card className="bg-white border-gray-200">
+          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[13px] text-black">
+              <CardTitle className="flex items-center gap-2 text-[13px] text-black dark:text-white">
                 {averageTimeSpentText}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-red-800 mb-2">
+              <div className="text-3xl font-bold text-red-800 dark:text-red-400 mb-2">
                 {exhibitData.avgTimeSpent}
               </div>
               <TrendIndicator value={exhibitData.timeTrend} />
-              <div className="mt-4 text-xs text-gray-600">
+              <div className="mt-4 text-xs text-gray-600 dark:text-gray-300">
                 {usersSpendAverageText}
               </div>
             </CardContent>
           </Card>
 
           {/* Time Distribution Chart */}
-          <Card className="lg:col-span-2 bg-white border-gray-200">
+          <Card className="lg:col-span-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
             <CardHeader>
-              <CardTitle className="text-[13px] text-black">{engagementByTimeText}</CardTitle>
+              <CardTitle className="text-[13px] text-black dark:text-white">{engagementByTimeText}</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={200}>
@@ -337,9 +337,9 @@ const ViewInsights = () => {
         {/* Traffic Sources Detail & Recent Comments */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Traffic Sources Detail */}
-          <Card className="bg-white border-gray-200">
+          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[13px] text-black">
+              <CardTitle className="flex items-center gap-2 text-[13px] text-black dark:text-white">
                 {trafficSourcesBreakdownText}
               </CardTitle>
             </CardHeader>
@@ -347,20 +347,20 @@ const ViewInsights = () => {
               {trafficSources.map((source, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    {source.name === directVisitText && <UserCheck className="h-4 w-4 text-gray-600" />}
-                    {source.name === socialMediaText && <Share2 className="h-4 w-4 text-gray-600" />}
-                    {source.name === searchText && <Search className="h-4 w-4 text-gray-600" />}
-                    {source.name === sharedLinkText && <ExternalLink className="h-4 w-4 text-gray-600" />}
-                    <span className="text-xs font-medium text-gray-800">{source.name}</span>
+                    {source.name === directVisitText && <UserCheck className="h-4 w-4 text-gray-600 dark:text-gray-400" />}
+                    {source.name === socialMediaText && <Share2 className="h-4 w-4 text-gray-600 dark:text-gray-400" />}
+                    {source.name === searchText && <Search className="h-4 w-4 text-gray-600 dark:text-gray-400" />}
+                    {source.name === sharedLinkText && <ExternalLink className="h-4 w-4 text-gray-600 dark:text-gray-400" />}
+                    <span className="text-xs font-medium text-gray-800 dark:text-gray-200">{source.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-16 bg-gray-200 rounded-full h-2">
+                    <div className="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                       <div 
-                        className="h-2 rounded-full bg-red-800" 
+                        className="h-2 rounded-full bg-red-800 dark:bg-red-600" 
                         style={{ width: `${source.value}%` }}
                       />
                     </div>
-                    <span className="text-xs font-medium text-gray-800">{source.value}%</span>
+                    <span className="text-xs font-medium text-gray-800 dark:text-gray-200">{source.value}%</span>
                   </div>
                 </div>
               ))}
@@ -368,26 +368,26 @@ const ViewInsights = () => {
           </Card>
 
           {/* Recent Comments */}
-          <Card className="bg-white border-gray-200">
+          <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[13px] text-black">
+              <CardTitle className="flex items-center gap-2 text-[13px] text-black dark:text-white">
                 {recentCommentsText}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 max-h-96 overflow-y-auto">
               {recentComments.map((comment, index) => (
-                <div key={index} className="space-y-2 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                <div key={index} className="space-y-2 p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-gray-800">{comment.user}</span>
+                    <span className="text-xs font-medium text-gray-800 dark:text-gray-200">{comment.user}</span>
                     <div className="flex items-center gap-2">
-                      <Heart className="h-3 w-3 text-red-800" />
-                      <span style={{ fontSize: '11px' }} className="text-gray-500">{comment.likes}</span>
+                      <Heart className="h-3 w-3 text-red-800 dark:text-red-400" />
+                      <span style={{ fontSize: '11px' }} className="text-gray-500 dark:text-gray-400">{comment.likes}</span>
                     </div>
                   </div>
-                  <p className="text-[11px] text-gray-600 line-clamp-2">
+                  <p className="text-[11px] text-gray-600 dark:text-gray-300 line-clamp-2">
                     {comment.comment}
                   </p>
-                  <span style={{ fontSize: '10px' }} className="text-gray-500">{comment.time}</span>
+                  <span style={{ fontSize: '10px' }} className="text-gray-500 dark:text-gray-400">{comment.time}</span>
                 </div>
               ))}
             </CardContent>
@@ -395,7 +395,7 @@ const ViewInsights = () => {
         </div>
 
         {/* Quick Stats Summary */}
-        <Card className="bg-red-800 border-red-700">
+        <Card className="bg-red-800 dark:bg-red-900 border-red-700 dark:border-red-800">
           <CardContent className="p-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-white">
               <div className="text-center">

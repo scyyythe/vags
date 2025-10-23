@@ -24,11 +24,11 @@ const CollaboratorNotice: React.FC<CollaboratorNoticeProps> = ({ viewMode, curre
   if (viewMode !== "collaborator") return null;
 
   return (
-    <div className="bg-[#9b87f5]/10 border border-[#9b87f5] rounded-md p-4 mb-6">
-      <h2 className="text-xs font-medium mb-2">
+    <div className="bg-[#9b87f5]/10 dark:bg-[#9b87f5]/20 border border-[#9b87f5] dark:border-[#9b87f5]/60 rounded-md p-4 mb-6">
+      <h2 className="text-xs font-medium mb-2 text-gray-900 dark:text-gray-100">
         {currentCollaborator?.first_name}, {invitedToCollaborateText}
       </h2>
-      <p className="text-[10px]">
+      <p className="text-[10px] text-gray-700 dark:text-gray-300">
         {youAreInvitedText} "{translatedTitle}". {selectArtworkText}
       </p>
     </div>

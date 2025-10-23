@@ -146,7 +146,7 @@ const ExhibitReview = () => {
   }
 
   if (error || !exhibit) {
-    return <div className="p-10 text-sm text-red-600">{failedToLoadText}</div>;
+    return <div className="p-10 text-sm text-red-600 dark:text-red-400 bg-white dark:bg-gray-900 min-h-screen">{failedToLoadText}</div>;
   }
 
   // Use backend-calculated collaborator status if available, otherwise fallback to frontend calculation
@@ -213,13 +213,13 @@ const ExhibitReview = () => {
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <div className="mb-20">
         <Header />
       </div>
       {/* Back button */}
       <div className="ml-8">
-        <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+        <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
           <i className="bx bx-chevron-left text-xl mr-2"></i>
           {goBackText}
         </button>
@@ -228,8 +228,8 @@ const ExhibitReview = () => {
       <div className="mx-auto px-10 py-6">
         {/* Exhibit Review Header */}
         <div className="mb-6">
-          <h1 className="text-[13px] font-semibold mb-1">{exhibitReviewText}</h1>
-          <p className="text-[11px] text-gray-600">{reviewDetailsText}</p>
+          <h1 className="text-[13px] font-semibold mb-1 text-gray-900 dark:text-gray-100">{exhibitReviewText}</h1>
+          <p className="text-[11px] text-gray-600 dark:text-gray-300">{reviewDetailsText}</p>
         </div>
 
         {/* Banner Image */}
@@ -247,37 +247,37 @@ const ExhibitReview = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Exhibit Details */}
           <div>
-            <h3 className="text-xs font-medium mb-4">{exhibitDetailsText}</h3>
-            <Card className="p-5">
+            <h3 className="text-xs font-medium mb-4 text-gray-900 dark:text-gray-100">{exhibitDetailsText}</h3>
+            <Card className="p-5 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
               <div className="space-y-4">
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">{titleText}</p>
-                  <p className="text-[11px]">{translatedTitle}</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-[10px] font-medium mb-1">{titleText}</p>
+                  <p className="text-[11px] text-gray-900 dark:text-gray-100">{translatedTitle}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">{categoryText}</p>
-                  <p className="text-[11px]">
+                  <p className="text-gray-500 dark:text-gray-400 text-[10px] font-medium mb-1">{categoryText}</p>
+                  <p className="text-[11px] text-gray-900 dark:text-gray-100">
                     {translatedCategory.charAt(0).toUpperCase() + translatedCategory.slice(1)}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">{exhibitTypeText}</p>
-                  <p className="text-[11px]">{translatedType}</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-[10px] font-medium mb-1">{exhibitTypeText}</p>
+                  <p className="text-[11px] text-gray-900 dark:text-gray-100">{translatedType}</p>
                 </div>
 
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">{durationText}</p>
-                  <p className="text-[11px]">{formatDateRange(exhibit.startDate, exhibit.endDate)}</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-[10px] font-medium mb-1">{durationText}</p>
+                  <p className="text-[11px] text-gray-900 dark:text-gray-100">{formatDateRange(exhibit.startDate, exhibit.endDate)}</p>
                 </div>
 
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">{descriptionText}</p>
-                  <p className="text-[11px]">{translatedDescription}</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-[10px] font-medium mb-1">{descriptionText}</p>
+                  <p className="text-[11px] text-gray-900 dark:text-gray-100">{translatedDescription}</p>
                 </div>
 
                 <div>
-                  <p className="text-gray-500 text-[10px] font-medium mb-1">{ownerText}</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-[10px] font-medium mb-1">{ownerText}</p>
                   <div className="flex flex-col gap-2 mt-1">
                     <div className="flex items-center gap-2">
                       <Avatar className="w-4 h-4">
@@ -286,14 +286,14 @@ const ExhibitReview = () => {
                           {exhibit.owner?.name?.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="text-[11px]">{exhibit.owner?.name && <TranslatedText text={exhibit.owner.name} />}</span>
+                      <span className="text-[11px] text-gray-900 dark:text-gray-100">{exhibit.owner?.name && <TranslatedText text={exhibit.owner.name} />}</span>
                     </div>
                   </div>
                 </div>
 
                 {exhibit.collaborators && exhibit.collaborators.length > 0 && (
                   <div>
-                    <p className="text-gray-500 text-[10px] font-medium mb-1">{collaboratorsText}</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-[10px] font-medium mb-1">{collaboratorsText}</p>
                     <div className="flex flex-col gap-2 mt-1">
                       {exhibit.collaborators.map((collaborator, index) => (
                         <div key={index} className="flex items-center gap-2">
@@ -303,7 +303,7 @@ const ExhibitReview = () => {
                               {collaborator.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
-                          <span className="text-[11px]"><TranslatedText text={collaborator.name} /></span>
+                          <span className="text-[11px] text-gray-900 dark:text-gray-100"><TranslatedText text={collaborator.name} /></span>
                         </div>
                       ))}
                     </div>
@@ -315,8 +315,8 @@ const ExhibitReview = () => {
 
           {/* Environment & Slots */}
           <div>
-            <h3 className="text-xs font-medium mb-4">{environmentSlotsText}</h3>
-            <Card className="p-5">
+            <h3 className="text-xs font-medium mb-4 text-gray-900 dark:text-gray-100">{environmentSlotsText}</h3>
+            <Card className="p-5 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
               <div className="mb-4">
                 <img src={exhibit.banner} alt="Gallery Space" className="w-full h-32 object-cover rounded-md" />
               </div>
@@ -331,7 +331,7 @@ const ExhibitReview = () => {
                     return (
                       <div key={person.id || index} className="text-center flex">
                         <div className={`h-2.5 w-2.5 ${colors[index] || "bg-gray-400"} rounded-full mr-2`}></div>
-                        <p className="text-[10px] text-gray-600 truncate"><TranslatedText text={person.name} /></p>
+                        <p className="text-[10px] text-gray-600 dark:text-gray-300 truncate"><TranslatedText text={person.name} /></p>
                       </div>
                     );
                   })}
@@ -374,11 +374,11 @@ const ExhibitReview = () => {
                               className="w-full h-16 object-cover rounded-sm mb-1"
                             />
                           ) : (
-                            <div className="w-full h-16 bg-gray-100 border-2 border-dashed border-gray-300 rounded-sm mb-1 flex items-center justify-center">
-                              <p className="text-[8px] text-gray-400">{emptyText}</p>
+                            <div className="w-full h-16 bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-sm mb-1 flex items-center justify-center">
+                              <p className="text-[8px] text-gray-400 dark:text-gray-500">{emptyText}</p>
                             </div>
                           )}
-                          <p className="text-[8px] text-gray-500 truncate w-full">{slotOwner?.name ? <TranslatedText text={slotOwner.name} /> : unknownText}</p>
+                          <p className="text-[8px] text-gray-500 dark:text-gray-400 truncate w-full">{slotOwner?.name ? <TranslatedText text={slotOwner.name} /> : unknownText}</p>
                         </div>
                       );
                     })
@@ -407,7 +407,7 @@ const ExhibitReview = () => {
                               alt={existingSlot.artwork.title || "Artwork"}
                               className="w-full h-16 object-cover rounded-sm mb-1"
                             />
-                            <p className="text-[8px] text-gray-500 truncate w-full">
+                            <p className="text-[8px] text-gray-500 dark:text-gray-400 truncate w-full">
                               {existingSlot.contributor?.name ? <TranslatedText text={existingSlot.contributor.name} /> : unknownText}
                             </p>
                           </div>
@@ -419,8 +419,8 @@ const ExhibitReview = () => {
                             key={slotNumber}
                             className="w-[120px] h-[75px] rounded-md p-2 text-center flex flex-col items-center justify-start"
                           >
-                            <div className="w-full h-16 bg-gray-100 border-2 border-dashed border-gray-300 rounded-sm mb-1 flex items-center justify-center">
-                              <p className="text-[8px] text-gray-400">{emptyText}</p>
+                            <div className="w-full h-16 bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-sm mb-1 flex items-center justify-center">
+                              <p className="text-[8px] text-gray-400 dark:text-gray-500">{emptyText}</p>
                             </div>
                           </div>
                         );
@@ -432,10 +432,10 @@ const ExhibitReview = () => {
 
           {/* Collaborator Status */}
           <div>
-            <h3 className="text-xs font-medium mb-4">{collaboratorStatusText}</h3>
+            <h3 className="text-xs font-medium mb-4 text-gray-900 dark:text-gray-100">{collaboratorStatusText}</h3>
             <div className="space-y-4">
               {collaborators.map((collaborator) => (
-                <Card key={collaborator.id} className="p-4 rounded-xl shadow-sm">
+                <Card key={collaborator.id} className="p-4 rounded-xl shadow-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <Avatar className="w-4 h-4">
@@ -446,14 +446,14 @@ const ExhibitReview = () => {
                       </Avatar>
 
                       <div>
-                        <p className="text-[11px] font-medium"><TranslatedText text={collaborator.name} /></p>
-                        <p className="text-[10px] text-gray-500">
+                        <p className="text-[11px] font-medium text-gray-900 dark:text-gray-100"><TranslatedText text={collaborator.name} /></p>
+                        <p className="text-[10px] text-gray-500 dark:text-gray-400">
                           {collaborator.slotsFilled} {ofText} {collaborator.slotsToFill} {slotsFilledText}
                         </p>
                       </div>
                     </div>
                     {collaborator.inProgress && (
-                      <Badge className="bg-yellow-100 text-yellow-800 text-[10px] font-medium px-2 py-0.5 rounded-full">
+                      <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 text-[10px] font-medium px-2 py-0.5 rounded-full">
                         {inProgressText}
                       </Badge>
                     )}
@@ -468,17 +468,17 @@ const ExhibitReview = () => {
 
             {/* Overall Completion */}
             <div className="mt-10">
-              <h3 className="text-xs font-medium mb-2">{overallCompletionText}</h3>
-              <Card className="p-4 rounded-xl shadow-sm">
+              <h3 className="text-xs font-medium mb-2 text-gray-900 dark:text-gray-100">{overallCompletionText}</h3>
+              <Card className="p-4 rounded-xl shadow-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-[11px] font-medium text-blue-900">
+                  <span className="text-[11px] font-medium text-blue-900 dark:text-blue-300">
                     {completionPercentage}% {completeText}
                   </span>
-                  <span className="text-[10px] text-gray-500">
+                  <span className="text-[10px] text-gray-500 dark:text-gray-400">
                     {filledSlots} {ofText} {totalSlots} {slotsFilledText}
                   </span>
                 </div>
-                <Progress value={completionPercentage} className="h-1.5 bg-gray-200 [&>*]:bg-yellow-500" />
+                <Progress value={completionPercentage} className="h-1.5 bg-gray-200 dark:bg-gray-600 [&>*]:bg-yellow-500" />
               </Card>
             </div>
 
@@ -486,14 +486,14 @@ const ExhibitReview = () => {
             <div className="mt-7">
               <button
                 type="button"
-                className="bg-gray-900 text-white text-[10px] px-5 py-2 rounded-full hover:bg-gray-800"
+                className="bg-gray-900 dark:bg-gray-700 text-white text-[10px] px-5 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-600"
                 onClick={() => {
                   navigate("/gallery3d-preview");
                 }}
               >
                 {preview3DText}
               </button>
-              <p className="text-[10px] text-muted-foreground mt-2">{previewDescriptionText}</p>
+              <p className="text-[10px] text-muted-foreground dark:text-gray-400 mt-2">{previewDescriptionText}</p>
             </div>
           </div>
         </div>
@@ -501,14 +501,14 @@ const ExhibitReview = () => {
         {/* Action Buttons - Only show for owners */}
         {exhibit?.isOwner && (
           <div className="flex justify-end gap-4 mt-8">
-            <button className="text-[11px] px-8 py-1.5 border rounded-full" onClick={handleEdit}>
+            <button className="text-[11px] px-8 py-1.5 border border-gray-300 dark:border-gray-600 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" onClick={handleEdit}>
               {editText}
             </button>
             <button
               onClick={handlePublish}
               disabled={!isReadyToPublish}
               className={`text-white text-[11px] px-6 py-1.5 border rounded-full ${
-                isReadyToPublish ? "bg-red-700 hover:bg-red-600" : "bg-red-300 cursor-not-allowed"
+                isReadyToPublish ? "bg-red-700 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500" : "bg-red-300 dark:bg-red-800 cursor-not-allowed"
               }`}
             >
               {publishExhibitText}

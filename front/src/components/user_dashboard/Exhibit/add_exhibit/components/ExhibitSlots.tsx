@@ -101,7 +101,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
 
   return (
     <div>
-      <h3 className="text-xs font-medium mb-4">{availableSlotsText}</h3>
+      <h3 className="text-xs font-medium mb-4 text-gray-900 dark:text-gray-100">{availableSlotsText}</h3>
 
       {/* Color coding legend - only for collaborative exhibits */}
       {exhibitType === "collab" && (
@@ -109,7 +109,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
           {/* Show color legend for current participants */}
           <div className="flex items-center">
             <div className={`w-3 h-3 mr-1 rounded-full ${getBgColorClass(slotColorSchemes[0])}`}></div>
-            <span className="text-[10px]">{translatedColorNames[0] || yourSlotsText}</span>
+            <span className="text-[10px] text-gray-700 dark:text-gray-300">{translatedColorNames[0] || yourSlotsText}</span>
           </div>
 
           {collaborators.map((collab, index) => {
@@ -120,7 +120,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
             return (
               <div key={collab.id} className="flex items-center">
                 <div className={`w-4 h-4 mr-1 rounded-full ${getBgColorClass(colorScheme)}`}></div>
-                <span className="text-[10px]">{`${collab.first_name} ${collab.last_name || ""}`.trim()}'s {slotsText}</span>
+                <span className="text-[10px] text-gray-700 dark:text-gray-300">{`${collab.first_name} ${collab.last_name || ""}`.trim()}'s {slotsText}</span>
               </div>
             );
           })}
@@ -180,11 +180,11 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
                   <PopoverTrigger asChild>
                     <div className="flex flex-col items-center justify-center w-full h-full">
                       <span className="text-xs font-semibold">{slotId}</span>
-                      <span className="text-[10px] text-gray-500">{getUserName(slotOwner || currentUser.id)}</span>
+                      <span className="text-[10px] text-gray-500 dark:text-gray-400">{getUserName(slotOwner || currentUser.id)}</span>
                     </div>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-2">
-                    <p className="text-xs">{getUserName(slotOwner || currentUser.id)}</p>
+                  <PopoverContent className="w-auto p-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
+                    <p className="text-xs text-gray-900 dark:text-gray-100">{getUserName(slotOwner || currentUser.id)}</p>
                   </PopoverContent>
                 </Popover>
               )}
@@ -192,7 +192,7 @@ const ExhibitSlots: React.FC<ExhibitSlotsProps> = ({
           );
         })}
       </div>
-      <div className="mt-2 text-[10px] text-gray-500">
+      <div className="mt-2 text-[10px] text-gray-500 dark:text-gray-400">
         {exhibitType === "collab"
           ? slotsEvenlyDistributedText
           : selectSlotsText}

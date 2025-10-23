@@ -43,9 +43,9 @@ const AddArtistDialog = ({ open, onOpenChange, onSelect, selectedArtists }: AddA
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm rounded-lg">
+      <DialogContent className="max-w-sm rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
         <DialogHeader>
-          <DialogTitle className="text-center text-xs">{addCollaboratorText}</DialogTitle>
+          <DialogTitle className="text-center text-xs text-gray-900 dark:text-gray-100">{addCollaboratorText}</DialogTitle>
         </DialogHeader>
 
         <div className="w-full max-w-sm space-y-4 py-0.5">
@@ -58,19 +58,19 @@ const AddArtistDialog = ({ open, onOpenChange, onSelect, selectedArtists }: AddA
           />
 
           {isLoading ? (
-            <div className="py-4 text-center text-xs text-gray-500">{loadingArtistsText}</div>
+            <div className="py-4 text-center text-xs text-gray-500 dark:text-gray-400">{loadingArtistsText}</div>
           ) : isError ? (
-            <div className="py-4 text-center text-xs text-red-500">{failedToLoadArtistsText}</div>
+            <div className="py-4 text-center text-xs text-red-500 dark:text-red-400">{failedToLoadArtistsText}</div>
           ) : filteredArtists.length > 0 ? (
             <div className="max-h-[240px] overflow-y-auto">
               {filteredArtists.map((artist) => (
                 <div
                   key={artist.id}
-                  className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md cursor-pointer"
+                  className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md cursor-pointer"
                   onClick={() => handleSelect(artist)}
                 >
                   <div className="flex items-center space-x-3">
-                    <Avatar className="h-5 w-5 text-[10px] font-semibold bg-gray-300 text-white flex items-center justify-center overflow-hidden">
+                    <Avatar className="h-5 w-5 text-[10px] font-semibold bg-gray-300 dark:bg-gray-600 text-white flex items-center justify-center overflow-hidden">
                       {artist.profile_picture ? (
                         <img
                           src={artist.profile_picture}
@@ -83,19 +83,19 @@ const AddArtistDialog = ({ open, onOpenChange, onSelect, selectedArtists }: AddA
                         </span>
                       )}
                     </Avatar>
-                    <span className="text-[10px]">
+                    <span className="text-[10px] text-gray-900 dark:text-gray-100">
                       {artist.first_name || ""} {artist.last_name || artist.username}
                     </span>
                   </div>
 
-                  <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
+                  <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
                     <i className="bx bx-plus text-xs"></i>
                   </Button>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="py-4 text-center text-xs text-gray-500">
+            <div className="py-4 text-center text-xs text-gray-500 dark:text-gray-400">
               {searchQuery ? noArtistsFoundText : noAvailableArtistsText}
             </div>
           )}

@@ -29,7 +29,7 @@ const EnvironmentSelector: React.FC<EnvironmentSelectorProps> = ({
 
   return (
     <div>
-      <h3 className="text-xs font-medium mb-4">{virtualEnvironmentText}</h3>
+      <h3 className="text-xs font-medium mb-4 text-gray-900 dark:text-gray-100">{virtualEnvironmentText}</h3>
       <div className="grid grid-cols-3 gap-2">
         {environments.map((env) => {
           // Get maximum allowed collaborators for this environment
@@ -54,14 +54,14 @@ const EnvironmentSelector: React.FC<EnvironmentSelectorProps> = ({
               }}
               className={`rounded-lg overflow-hidden 
                 ${viewMode === "owner" && !isReadOnly && !isDisabled ? "cursor-pointer" : ""}
-                border-2 ${selectedEnvironment === env.id ? "border-gray-200" : "border-transparent"}
+                border-2 ${selectedEnvironment === env.id ? "border-gray-200 dark:border-gray-600" : "border-transparent"}
                 ${isDisabled ? "opacity-50 pointer-events-none" : ""}
               `}
             >
               <img src={env.image} alt={`Environment ${env.id}`} className="w-full h-24 object-cover" />
-              <div className="p-2 text-[10px] text-center">
+              <div className="p-2 text-[10px] text-center text-gray-900 dark:text-gray-100">
                 {env.slots} {slotsText}
-                {isDisabled && <p className="text-[9px] text-red-500 mt-1">{tooManyCollaboratorsText}</p>}
+                {isDisabled && <p className="text-[9px] text-red-500 dark:text-red-400 mt-1">{tooManyCollaboratorsText}</p>}
               </div>
             </div>
           );
