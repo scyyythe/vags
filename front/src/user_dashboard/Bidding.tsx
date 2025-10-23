@@ -63,7 +63,7 @@ const Bidding = () => {
     setSelectedFilterCategory(category);
   };
 
-  const { data: biddingArtworks = [], isLoading, isError } = useFetchBiddingArtworks();
+  const { data: biddingArtworks = [], isLoading, isError } = useFetchBiddingArtworks({ status: "on_going" });
 
   const [page, setPage] = useState(1);
   const { data: followedAuctions = [] } = useFollowedAuctions(page);
@@ -81,7 +81,9 @@ const Bidding = () => {
     if (selectedFilterCategory === "Following") {
       activeArtworks = followedAuctions || [];
     } else {
-      activeArtworks = biddingArtworks?.filter((a) => new Date(a.start_time) <= now) || [];
+      activeArtworks = biddingArtworks?.filter((a) => 
+        new Date(a.start_time) <= now && a.status === "on_going"
+      ) || [];
 
       if (selectedFilterCategory === "Trending") {
         // Optimize: Use a more efficient sorting approach
@@ -138,7 +140,19 @@ const Bidding = () => {
 
   const upcomingArtworks = useMemo(() => {
     const now = new Date();
-    return biddingArtworks.filter((artwork) => new Date(artwork.start_time) > now);
+    const upcoming = biddingArtworks.filter((artwork) => 
+      new Date(artwork.start_time) > now
+    );
+    
+    // Debug logging
+    console.log("All bidding artworks:", biddingArtworks.length);
+    console.log("Current time:", now.toISOString());
+    console.log("Upcoming artworks:", upcoming.length);
+    upcoming.forEach(artwork => {
+      console.log(`Upcoming auction: ${artwork.id}, start_time: ${artwork.start_time}, status: ${artwork.status}`);
+    });
+    
+    return upcoming;
   }, [biddingArtworks]);
 
   return (
@@ -208,11 +222,20 @@ const Bidding = () => {
             {/* UPCOMING AUCTIONS SECTION */}
             {showIncoming && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {upcomingArtworks.length === 0 && (
+                {upcomingArtworks.length === 0 ? (
                   <div className="col-span-full flex flex-col items-center justify-center text-center py-16">
                     <img src="/pics/empty.png" alt={noUpcomingAuctionsAltText} className="w-48 h-48 mb-4 opacity-70" />
                     <p className="text-gray-500 text-sm">{noUpcomingAuctionsText}</p>
                   </div>
+                ) : (
+                  upcomingArtworks.map((artwork) => {
+                    const reportInfo = reportStatusData?.[artwork.id];
+                    return (
+                      <div key={artwork.id} onClick={() => handleBidClick(artwork)} style={{ cursor: "pointer" }}>
+                        <BidCard data={artwork} reportInfo={reportInfo} onPlaceBid={handlePlaceBid} />
+                      </div>
+                    );
+                  })
                 )}
               </div>
             )}

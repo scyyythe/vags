@@ -58,6 +58,11 @@ const BidCard: React.FC<BidCardProps> = ({
   const isOwner = data?.artwork?.artist_id === loggedInUserId;
   const { closeAuction, deleteAuction } = useAuctionActions();
   const navigate = useNavigate();
+  
+  // Check if auction has started
+  const now = new Date();
+  const auctionStartTime = new Date(data.start_time);
+  const hasAuctionStarted = now >= auctionStartTime;
   const { mutate: submitAuctionReport } = useAuctionSubmitReport();
   const { mutate: hideAuction } = useToggleHideAuction();
   const { mutate: restoreAuction } = useRestoreAuction();
@@ -80,6 +85,7 @@ const BidCard: React.FC<BidCardProps> = ({
   const placeABidText = useAutoTranslation("Place A Bid", language);
   const reopenText = useAutoTranslation("Reopen", language);
   const closedText = useAutoTranslation("Closed", language);
+  const upcomingText = useAutoTranslation("Upcoming", language);
   const unknownText = useAutoTranslation("Unknown", language);
   const cannotBidOwnAuctionText = useAutoTranslation("You cannot bid on your own auction", language);
 
@@ -309,21 +315,33 @@ const BidCard: React.FC<BidCardProps> = ({
                   e.stopPropagation();
                   if (hasWon) {
                     navigate(`/bid-winner/${data.id}`);
-                  } else if (data.status === "on_going") {
+                  } else if (data.status === "on_going" && hasAuctionStarted) {
                     // Check if user is trying to bid on their own auction
                     if (isOwner) {
                       toast.error(cannotBidOwnAuctionText, { closeButton: true });
                       return;
                     }
                     setShowBidPopup(true);
+                  } else if (data.status === "on_going" && !hasAuctionStarted) {
+                    // Auction hasn't started yet
+                    const formattedStart = auctionStartTime.toLocaleString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    });
+                    toast.info(`${auctionWillStartText} ${formattedStart}`, { closeButton: true });
+                    return;
                   } else if (canReopen) {
                     // Handle reopen functionality - we'll add this to the menu
                     toast.info(reopenInfoText);
                   }
                 }}
-                disabled={data.status !== "on_going" && !hasWon && !canReopen}
+                disabled={(data.status !== "on_going" || !hasAuctionStarted) && !hasWon && !canReopen}
                 className={`text-white text-[9px] px-5 py-1.5 rounded-full font-normal transition-colors ${
-                  data.status !== "on_going" && !hasWon && !canReopen
+                  (data.status !== "on_going" || !hasAuctionStarted) && !hasWon && !canReopen
                     ? "bg-gray-400 cursor-not-allowed"
                     : hasWon
                     ? "bg-red-800 hover:bg-red-800"
@@ -332,14 +350,22 @@ const BidCard: React.FC<BidCardProps> = ({
                     : "bg-red-800 hover:bg-red-800"
                 }`}
               >
-                {hasWon ? claimText : data.status === "on_going" ? placeABidText : canReopen ? reopenText : closedText}
+                {hasWon 
+                  ? claimText 
+                  : data.status === "on_going" && hasAuctionStarted 
+                    ? placeABidText 
+                    : data.status === "on_going" && !hasAuctionStarted
+                    ? upcomingText
+                    : canReopen 
+                    ? reopenText 
+                    : closedText}
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {data.status === "on_going" && (
+      {data.status === "on_going" && hasAuctionStarted && (
         <BidPopup
           isOpen={showBidPopup}
           onClose={() => setShowBidPopup(false)}
