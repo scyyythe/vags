@@ -90,7 +90,7 @@ const HowItWorksSection = () => {
   };
 
   return (
-    <section className="py-16 px-6 md:px-12 bg-gray-50" id="how-it-works">
+    <section className="py-16 px-6 md:px-12 bg-gray-50 dark:bg-gray-800" id="how-it-works">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -100,12 +100,12 @@ const HowItWorksSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-3xl sm:text-3xl font-bold text-black mb-6">
+          <p className="text-3xl sm:text-3xl font-bold text-black dark:text-white mb-6">
             {howItWorksTitle}
             <br />
             <span className="text-red-800">{howItWorksSubtitle}</span>
           </p>
-          <p className="text-gray-600 max-w-2xl mx-auto text-sm">
+          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-sm">
             {howItWorksDescription}
           </p>
         </motion.div>
@@ -125,7 +125,7 @@ const HowItWorksSection = () => {
               className="relative"
             >
               {/* Step Card */}
-              <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 h-full">
+              <div className="bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 h-full">
                 {/* Step Number */}
                 <div className="absolute -top-4 -right-4 w-8 h-8 bg-red-800 text-white rounded-full flex items-center justify-center text-sm font-bold">
                   {step.number}
@@ -137,13 +137,13 @@ const HowItWorksSection = () => {
                 </div> */}
 
                 {/* Content */}
-                <h3 className="text-lg font-bold text-black mb-3">{step.title}</h3>
-                <p className="text-gray-600 mb-4 text-[13px]">{step.description}</p>
+                <h3 className="text-lg font-bold text-black dark:text-white mb-3">{step.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 text-[13px]">{step.description}</p>
 
                 {/* Details */}
                 <ul className="space-y-2">
                   {step.details.map((detail, detailIndex) => (
-                    <li key={detailIndex} className="flex items-center text-xs text-gray-600">
+                    <li key={detailIndex} className="flex items-center text-xs text-gray-600 dark:text-gray-300">
                       <div className="w-1.5 h-1.5 bg-red-600 rounded-full mr-3"></div>
                       {detail}
                     </li>

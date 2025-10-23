@@ -8,13 +8,14 @@ import { useModal } from "../context/ModalContext";
 import { useAutoTranslation } from "../hooks/autoTranslate/useAutoTranslation";
 import { languages } from "../components/constants/languages";
 import { useLanguage } from "@/context/LanguageContext";
+import { ThemeToggle } from "@/components/user_dashboard/footer/ThemeToggle";
 
 const LanguageOption = ({ lang, selectedLanguage, onSelect }) => {
   return (
     <li
       key={lang.code}
-      className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
-        selectedLanguage === lang.code ? "bg-gray-50 text-artRed" : ""
+      className={`px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer ${
+        selectedLanguage === lang.code ? "bg-gray-50 dark:bg-gray-700 text-artRed" : "text-gray-900 dark:text-gray-100"
       }`}
       onClick={() => onSelect(lang.code)}
     >
@@ -153,7 +154,7 @@ const Navbar = () => {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 md:px-12 py-4",
-        scrolled ? "bg-white bg-opacity-90 backdrop-blur-md shadow-sm" : "bg-transparent"
+        scrolled ? "bg-white dark:bg-gray-900 bg-opacity-90 dark:bg-opacity-90 backdrop-blur-md shadow-sm" : "bg-transparent"
       )}
     >
       <div className="max-w-screen-xl mx-auto flex items-center justify-between">
@@ -225,7 +226,7 @@ const Navbar = () => {
               onChange={handleSearchChange}
               onKeyPress={handleKeyPress}
               disabled={!isIndexPage}
-              className={`bg-gray-100 text-[10px] rounded-full px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-artRed transition-all w-36 focus:w-48 ${
+              className={`bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-[10px] rounded-full px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-artRed transition-all w-36 focus:w-48 ${
                 !isIndexPage ? "opacity-50 cursor-not-allowed" : ""
               }`}
             />
@@ -264,7 +265,7 @@ const Navbar = () => {
                   onChange={handleSearchChange}
                   onKeyPress={handleKeyPress}
                   disabled={!isIndexPage}
-                  className={`bg-gray-100 text-[11px] rounded-full px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-artRed transition-all w-full ${
+                  className={`bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-[11px] rounded-full px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-artRed transition-all w-full ${
                     !isIndexPage ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 />
@@ -284,6 +285,9 @@ const Navbar = () => {
               </form>
             </div>
 
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
             {/* Language Dropdown */}
             <div className="relative language-dropdown">
               <button
@@ -294,7 +298,7 @@ const Navbar = () => {
                 <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${showLanguages ? "rotate-180" : ""}`} />
               </button>
               {showLanguages && (
-                <ul className="absolute bg-white shadow-md text-[11px] rounded-md py-2 w-28 top-5 left-[-35px] z-10 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300">
+                <ul className="absolute bg-white dark:bg-gray-800 shadow-md text-[11px] rounded-md py-2 w-28 top-5 left-[-35px] z-10 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300">
                   {languages.map((lang) => (
                     <LanguageOption
                       key={lang.code}
@@ -311,7 +315,7 @@ const Navbar = () => {
           {/* Sign Up Button */}
           <button
             onClick={() => setShowRegisterModal(true)}
-            className="animate-pulse bg-black text-white text-[11px] font-medium rounded-full px-5 py-2 transition-all hover:bg-gray-800 whitespace-nowrap"
+            className="animate-pulse bg-black dark:bg-white text-white dark:text-black text-[11px] font-medium rounded-full px-5 py-2 transition-all hover:bg-gray-800 dark:hover:bg-gray-200 whitespace-nowrap"
           >
             {signUp}
           </button>
@@ -324,7 +328,7 @@ const Navbar = () => {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="md:hidden bg-white backdrop-blur-md shadow-sm px-4 py-4 space-y-3 absolute top-full left-0 right-0 z-10"
+              className="md:hidden bg-white dark:bg-gray-900 backdrop-blur-md shadow-sm px-4 py-4 space-y-3 absolute top-full left-0 right-0 z-10"
             >
               <ScrollLink
                 to="discover"
@@ -332,7 +336,7 @@ const Navbar = () => {
                 smooth
                 offset={-70}
                 duration={100}
-                className="block text-center text-xs py-2 rounded cursor-pointer hover:text-primary transition-colors"
+                className="block text-center text-xs py-2 rounded cursor-pointer hover:text-primary transition-colors text-gray-900 dark:text-gray-100"
                 onClick={() => setShowMenu(false)}
               >
                 {discover}
@@ -343,7 +347,7 @@ const Navbar = () => {
                 smooth
                 offset={-70}
                 duration={100}
-                className="block text-center text-xs py-2 rounded cursor-pointer hover:text-primary transition-colors"
+                className="block text-center text-xs py-2 rounded cursor-pointer hover:text-primary transition-colors text-gray-900 dark:text-gray-100"
                 onClick={() => setShowMenu(false)}
               >
                 {artists}
@@ -354,7 +358,7 @@ const Navbar = () => {
                 smooth
                 offset={-70}
                 duration={100}
-                className="block text-center text-xs py-2 rounded cursor-pointer hover:text-primary transition-colors"
+                className="block text-center text-xs py-2 rounded cursor-pointer hover:text-primary transition-colors text-gray-900 dark:text-gray-100"
                 onClick={() => setShowMenu(false)}
               >
                 {artworks}
@@ -365,7 +369,7 @@ const Navbar = () => {
                 smooth
                 offset={-70}
                 duration={100}
-                className="block text-center text-xs py-2 rounded cursor-pointer hover:text-primary transition-colors"
+                className="block text-center text-xs py-2 rounded cursor-pointer hover:text-primary transition-colors text-gray-900 dark:text-gray-100"
                 onClick={() => setShowMenu(false)}
               >
                 {auctions}
@@ -376,7 +380,7 @@ const Navbar = () => {
                 smooth
                 offset={-70}
                 duration={100}
-                className="block text-center text-xs py-2 rounded cursor-pointer hover:text-primary transition-colors"
+                className="block text-center text-xs py-2 rounded cursor-pointer hover:text-primary transition-colors text-gray-900 dark:text-gray-100"
                 onClick={() => setShowMenu(false)}
               >
                 {hotBids}

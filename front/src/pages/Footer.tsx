@@ -34,7 +34,7 @@ const Footer = () => {
   );
 
   return (
-    <footer className="w-full max-w-7xl mx-auto bg-black text-white py-10 px-4 md:px-10">
+    <footer className="w-full max-w-7xl mx-auto bg-black dark:bg-gray-900 text-white py-10 px-4 md:px-10">
       <div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
           {/* Logo + description */}

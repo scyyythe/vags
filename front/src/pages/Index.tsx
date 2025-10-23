@@ -72,9 +72,9 @@ const Index = () => {
       {/* Combined Modal */}
       {(showRegisterModal || showLoginModal || showForgotPasswordModal) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-2xl shadow-lg w-full max-w-sm relative">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg w-full max-w-sm relative">
             <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               onClick={() => {
                 setShowRegisterModal(false);
                 setShowLoginModal(false);
