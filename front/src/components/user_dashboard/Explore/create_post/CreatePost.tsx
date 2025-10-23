@@ -12,6 +12,7 @@ import { validatePostData, submitPost, PostSubmissionData } from "@/hooks/artwor
 import { useOptimizedPostSubmission } from "@/hooks/artworks/useOptimizedPostSubmission";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { Upload } from "lucide-react";
 const CreatePost = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
@@ -207,12 +208,7 @@ const CreatePost = () => {
               <div className="text-center">
                 <div className="mb-4">
                   <div className="bg-white dark:bg-gray-700 p-4 rounded-full inline-block">
-                    <img
-                      width="50"
-                      height="50"
-                      src="./pics/icons8-cloud-upload.gif"
-                      alt="external-upload-network-and-cloud-computing-flatart-icons-solid-flatarticons"
-                    />
+                    <Upload size={50} className="text-gray-600 dark:text-gray-300" />
                   </div>
                 </div>
                 <p className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">{chooseAFileOrDragAndDropItHereText}</p>
@@ -252,7 +248,7 @@ const CreatePost = () => {
                         setArtworkTitle(value);
                       }
                     }}
-                    className="w-full"
+                    className="w-full dark:border-gray-600 dark:bg-gray-800"
                     style={{ fontSize: "12px", height: "35px" }}
                   />
                 </div>
@@ -263,7 +259,7 @@ const CreatePost = () => {
                       {artworkStyleText}
                     </label>
                     <Select value={artworkStyle} onValueChange={setArtworkStyle}>
-                      <SelectTrigger className="w-full text-xs h-[35px]">
+                      <SelectTrigger className="w-full text-xs h-[35px] dark:border-gray-600 dark:bg-gray-800">
                         <SelectValue placeholder={selectArtworkStyleText} />
                       </SelectTrigger>
                       <SelectContent className="max-h-64 overflow-y-auto">
@@ -285,7 +281,7 @@ const CreatePost = () => {
                       placeholder={enterMediumUsedText}
                       value={medium}
                       onChange={(e) => setMedium(e.target.value)}
-                      className="w-full -py-2"
+                      className="w-full -py-2 dark:border-gray-600 dark:bg-gray-800"
                       style={{ fontSize: "12px", height: "35px" }}
                     />
                   </div>
@@ -303,6 +299,7 @@ const CreatePost = () => {
                           min={0}
                           value={artworkHeight}
                           onChange={(e) => setArtworkHeight(e.target.value)}
+                          className="dark:border-gray-600 dark:bg-gray-800"
                         />
                         <label className="text-[9px] text-center mb-1 text-gray-900 dark:text-gray-100">{heightText}</label>
                       </div>
@@ -315,6 +312,7 @@ const CreatePost = () => {
                           min={0}
                           value={artworkWidth}
                           onChange={(e) => setArtworkWidth(e.target.value)}
+                          className="dark:border-gray-600 dark:bg-gray-800"
                         />
                         <label className="text-[9px] text-center mb-1 text-gray-900 dark:text-gray-100">{widthText}</label>
                       </div>
@@ -331,7 +329,7 @@ const CreatePost = () => {
                     placeholder={addADescriptionText}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full min-h-[120px] p-1 text-xs"
+                    className="w-full min-h-[120px] p-1 text-xs dark:border-gray-600 dark:bg-gray-800"
                   />
                 </div>
 

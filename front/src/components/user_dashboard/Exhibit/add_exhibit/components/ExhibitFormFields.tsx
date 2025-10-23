@@ -130,7 +130,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
           placeholder={enterTitleText}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full focus:outline-none focus:ring-0 h-8"
+          className="w-full focus:outline-none focus:ring-0 h-8 dark:border-gray-600 dark:bg-gray-800"
           readOnly={viewMode === "collaborator" || isReadOnly}
           style={{ fontSize: "10px" }}
           maxLength={100}
@@ -164,14 +164,14 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
           >
             <ToggleGroupItem
               value="solo"
-              className="w-full text-[10px] border rounded-md h-8"
+              className="w-full text-[10px] border rounded-md h-8 dark:data-[state=on]:bg-black dark:data-[state=on]:text-white dark:data-[state=on]:border-black"
               disabled={isEditMode && !isSoloOriginal}
             >
               {soloText}
             </ToggleGroupItem>
             <ToggleGroupItem
               value="collab"
-              className="w-full text-[10px] border rounded-md h-8"
+              className="w-full text-[10px] border rounded-md h-8 dark:data-[state=on]:bg-black dark:data-[state=on]:text-white dark:data-[state=on]:border-black"
               disabled={isEditMode && isSoloOriginal}
             >
               {collaborativeText}
@@ -204,7 +204,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
             {artworkStyleText}
           </label>
           <Select value={artworkStyle} onValueChange={setArtworkStyle} disabled={viewMode === "collaborator" || isReadOnly}>
-            <SelectTrigger className="w-full text-[10px] h-8">
+            <SelectTrigger className="w-full text-[10px] h-8 dark:border-gray-600 dark:bg-gray-800">
               <SelectValue placeholder={selectArtworkStyleText} />
             </SelectTrigger>
             <SelectContent className="max-h-64 overflow-y-auto">
@@ -227,7 +227,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full h-8 date-input-rtl"
+              className="w-full h-8 date-input-rtl dark:border-gray-600 dark:bg-gray-800"
               readOnly={viewMode === "collaborator" || isReadOnly}
               style={{ fontSize: "10px", direction: "ltr" }}
               min={new Date().toISOString().split("T")[0]}
@@ -242,7 +242,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full h-8 date-input-rtl"
+              className="w-full h-8 date-input-rtl dark:border-gray-600 dark:bg-gray-800"
               readOnly={viewMode === "collaborator" || isReadOnly}
               style={{ fontSize: "10px", direction: "ltr" }}
               min={startDate || new Date().toISOString().split("T")[0]}
@@ -260,7 +260,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
           placeholder={addDescriptionText}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full h-20"
+          className="w-full h-20 dark:border-gray-600 dark:bg-gray-800"
           readOnly={viewMode === "collaborator" || isReadOnly}
           style={{ fontSize: "10px" }}
           maxLength={1000}
