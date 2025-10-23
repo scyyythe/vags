@@ -2,6 +2,7 @@ import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "@/components/user_dashboard/footer/ThemeProvider";
 
 import Index from "./pages/Index";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -162,12 +163,13 @@ const AppContent = () => {
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <WishlistProvider>
-          <LikedArtworksProvider>
-            <TooltipProvider>
-              <DonationProvider>
-                <DonationWrapper>
+      <ThemeProvider defaultTheme="system" storageKey="vags-ui-theme">
+        <LanguageProvider>
+          <WishlistProvider>
+            <LikedArtworksProvider>
+              <TooltipProvider>
+                <DonationProvider>
+                  <DonationWrapper>
                   <Toaster
                     position="bottom-right"
                     richColors
@@ -429,6 +431,7 @@ const App = () => {
           </LikedArtworksProvider>
         </WishlistProvider>
       </LanguageProvider>
+      </ThemeProvider>
       {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );

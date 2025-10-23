@@ -34,7 +34,7 @@ const ArtworkCard = ({ artwork, index, isSmallScreen }: { artwork: any; index: n
         ease: "easeInOut",
       }}
     >
-      <div className="relative w-full bg-white p-3 rounded-2xl overflow-hidden shadow-lg">
+      <div className="relative w-full bg-white dark:bg-gray-800 p-3 rounded-2xl overflow-hidden shadow-lg">
         <img
           src={Array.isArray(artwork.image_url) ? artwork.image_url[0] : artwork.image_url}
           alt={artwork.title}
@@ -42,10 +42,10 @@ const ArtworkCard = ({ artwork, index, isSmallScreen }: { artwork: any; index: n
         />
         <div className="p-2 flex justify-between items-center">
           <div>
-            <p className="text-sm font-medium">{translatedTitle}</p>
-            <p className="text-xs text-gray-500">{artwork.artist.name}</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{translatedTitle}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{artwork.artist.name}</p>
           </div>
-          <div className="w-6 h-6 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+          <div className="w-6 h-6 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
             {artwork.artist.profile_picture ? (
               <img
                 src={artwork.artist.profile_picture}
@@ -54,7 +54,7 @@ const ArtworkCard = ({ artwork, index, isSmallScreen }: { artwork: any; index: n
                 style={{ objectFit: 'contain' }}
               />
             ) : (
-              <span className="text-xs font-medium text-gray-600">
+              <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
                 {artwork.artist.name
                   .split(' ')
                   .map(word => word.charAt(0))
@@ -130,7 +130,7 @@ const Hero = () => {
             <br />
             {artworksTitle}
           </h1>
-          <p className="text-black max-w-2xl mx-auto">{subtitle}</p>
+          <p className="text-black dark:text-white max-w-2xl mx-auto">{subtitle}</p>
         </motion.div>
 
         {/* Background Gradient */}

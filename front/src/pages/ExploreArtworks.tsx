@@ -22,17 +22,17 @@ const ArtworkCard = ({ artwork, item }: { artwork: any; item: any }) => {
   return (
     <motion.div key={artwork.id} variants={item} className="card-hover">
       <div
-        className="bg-white px-5 py-2 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+        className="bg-white dark:bg-gray-800 px-5 py-2 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
         onClick={handleCardClick}
       >
         <div className="relative group">
           <div className="flex justify-between items-center pt-2 px-2 pb-4">
             <div className="flex items-center space-x-1">
-              <div className="w-5 h-5 rounded-full overflow-hidden mr-2 flex items-center justify-center bg-gray-200">
+              <div className="w-5 h-5 rounded-full overflow-hidden mr-2 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
                 {artwork.artistImage ? (
                   <img src={artwork.artistImage} alt={artwork.artistName} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-[8px] font-bold text-gray-700">
+                  <span className="text-[8px] font-bold text-gray-700 dark:text-gray-300">
                     {artwork.artistName
                       ?.split(" ")
                       .map((n) => n[0])
@@ -43,7 +43,7 @@ const ArtworkCard = ({ artwork, item }: { artwork: any; item: any }) => {
                 )}
               </div>
               {/* Artist name stays original */}
-              <span className="text-[10px] text-gray-700">{artwork.artistName}</span>
+              <span className="text-[10px] text-gray-700 dark:text-gray-300">{artwork.artistName}</span>
             </div>
             <button
               className="text-gray-500 hover:text-gray-700"
@@ -64,7 +64,7 @@ const ArtworkCard = ({ artwork, item }: { artwork: any; item: any }) => {
           <div className="pt-4 px-2 pb-2">
             <div className="flex justify-between items-center mb-1">
               {/* Translated title */}
-              <h3 className="text-sm font-medium relative top-1 truncate max-w-[120px]">{translatedTitle}</h3>
+              <h3 className="text-sm font-medium relative top-1 truncate max-w-[120px] text-gray-900 dark:text-gray-100">{translatedTitle}</h3>
 
               <button
                 className="text-gray-500 hover:text-red-500 transition-colors relative top-1"
@@ -110,11 +110,11 @@ const ExploreArtworks = () => {
   if (isLoading) return <ArtCardSkeleton />;
 
   return (
-    <section className="w-full max-w-7xl mx-auto py-16 px-6 md:px-12 bg-gray-50" id="artworks">
+    <section className="w-full max-w-7xl mx-auto py-16 px-6 md:px-12 bg-gray-50 dark:bg-gray-900" id="artworks">
       <div>
         <div className="flex justify-between items-center mb-12">
           <motion.h2
-            className="text-2xl md:text-2xl font-bold"
+            className="text-2xl md:text-2xl font-bold text-gray-900 dark:text-white"
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -125,7 +125,7 @@ const ExploreArtworks = () => {
 
           <motion.a
             onClick={() => setShowRegisterModal(true)}
-            className="text-black text-sm font-medium hover:text-red-700 transition-colors cursor-pointer flex items-center gap-1"
+            className="text-black dark:text-white text-sm font-medium hover:text-red-700 transition-colors cursor-pointer flex items-center gap-1"
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}

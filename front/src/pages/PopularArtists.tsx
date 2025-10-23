@@ -61,7 +61,7 @@ const PopularArtists = () => {
         >
           {/* Title and Subtitle */}
           <div className="text-center mb-12">
-            <h2 className="text-[27px] md:text-[26px] font-bold mb-2">{popularArtistsHeading}</h2>
+            <h2 className="text-[27px] md:text-[26px] font-bold mb-2 text-gray-900 dark:text-white">{popularArtistsHeading}</h2>
             {/* <p className="text-gray-600 text-xs max-w-2xl mx-auto">{popularArtistsSubtitle}</p> */}
           </div>
 
@@ -100,12 +100,12 @@ const PopularArtists = () => {
               >
                 {scrollingArtists.map((artist, index) => (
                   <div key={`${artist.id}-${index}`} className="flex-shrink-0">
-                    <div className="artist-card bg-gray-50 group cursor-pointer px-5 py-[15px] rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
+                    <div className="artist-card bg-gray-50 dark:bg-gray-800 group cursor-pointer px-5 py-[15px] rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
                       <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md flex items-center justify-center">
                         {artist.profile_picture ? (
                           <img src={artist.profile_picture} alt={artist.name} className="w-full h-full object-cover" />
                         ) : (
-                          <span className="text-xs font-bold text-gray-700">
+                          <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
                             {artist.name
                               ?.split(" ")
                               .map((n) => n[0])
@@ -117,7 +117,7 @@ const PopularArtists = () => {
                       </div>
 
                       <div className="flex flex-col">
-                        <span className="text-[13px] font-medium">{artist.name}</span>
+                        <span className="text-[13px] font-medium text-gray-900 dark:text-gray-100">{artist.name}</span>
                         <span className="text-[11px] text-red-500">
                           {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
                         </span>
@@ -139,12 +139,12 @@ const PopularArtists = () => {
               >
                 {scrollingArtists.map((artist, index) => (
                   <div key={`second-${artist.id}-${index}`} className="flex-shrink-0">
-                    <div className="artist-card bg-gray-50 group cursor-pointer px-5 py-[15px] rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
+                    <div className="artist-card bg-gray-50 dark:bg-gray-800 group cursor-pointer px-5 py-[15px] rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
                       <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md flex items-center justify-center">
                         {artist.profile_picture ? (
                           <img src={artist.profile_picture} alt={artist.name} className="w-full h-full object-cover" />
                         ) : (
-                          <span className="text-xs font-bold text-gray-700">
+                          <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
                             {artist.name
                               ?.split(" ")
                               .map((n) => n[0])
@@ -156,7 +156,7 @@ const PopularArtists = () => {
                       </div>
 
                       <div className="flex flex-col">
-                        <span className="text-[13px] font-medium">{artist.name}</span>
+                        <span className="text-[13px] font-medium text-gray-900 dark:text-gray-100">{artist.name}</span>
                         <span className="text-[11px] text-red-500">
                           {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
                         </span>
@@ -178,12 +178,12 @@ const PopularArtists = () => {
               >
                 {scrollingArtists.map((artist, index) => (
                   <div key={`${artist.id}-${index}`} className="flex-shrink-0">
-                    <div className="artist-card bg-gray-50 group cursor-pointer px-5 py-[15px] rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
+                    <div className="artist-card bg-gray-50 dark:bg-gray-800 group cursor-pointer px-5 py-[15px] rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center space-x-3">
                       <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md flex items-center justify-center">
                         {artist.profile_picture ? (
                           <img src={artist.profile_picture} alt={artist.name} className="w-full h-full object-cover" />
                         ) : (
-                          <span className="text-xs font-bold text-gray-700">
+                          <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
                             {artist.name
                               ?.split(" ")
                               .map((n) => n[0])
@@ -195,7 +195,7 @@ const PopularArtists = () => {
                       </div>
 
                       <div className="flex flex-col">
-                        <span className="text-[13px] font-medium">{artist.name}</span>
+                        <span className="text-[13px] font-medium text-gray-900 dark:text-gray-100">{artist.name}</span>
                         <span className="text-[11px] text-red-500">
                           {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
                         </span>
@@ -211,7 +211,7 @@ const PopularArtists = () => {
           {/* Show message if no data and not loading */}
           {!isLoading && !isError && scrollingArtists.length === 0 && (
             <div className="flex flex-col items-center justify-center py-8">
-              <p className="text-gray-500">No popular artists found</p>
+              <p className="text-gray-500 dark:text-gray-400">No popular artists found</p>
             </div>
           )}
 
@@ -233,12 +233,12 @@ const PopularArtists = () => {
                   .flat()
                   .map((artist, index) => (
                     <div key={`${artist.id}-${index}`} className="flex-shrink-0">
-                      <div className="artist-card group cursor-pointer bg-gray-100 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
+                      <div className="artist-card group cursor-pointer bg-gray-100 dark:bg-gray-800 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
                         <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md">
                           <img src={artist.image} alt={artist.name} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium">{artist.name}</span>
+                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{artist.name}</span>
                           <span className="text-xs text-red-500">
                             {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
                           </span>
@@ -263,12 +263,12 @@ const PopularArtists = () => {
                   .flat()
                   .map((artist, index) => (
                     <div key={`second-${artist.id}-${index}`} className="flex-shrink-0">
-                      <div className="artist-card group cursor-pointer bg-gray-100 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
+                      <div className="artist-card group cursor-pointer bg-gray-100 dark:bg-gray-800 p-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-3">
                         <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 shadow-md">
                           <img src={artist.image} alt={artist.name} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium">{artist.name}</span>
+                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{artist.name}</span>
                           <span className="text-xs text-red-500">
                             {Number(artist.followers ?? 0).toLocaleString()} {followersLabel}
                           </span>
