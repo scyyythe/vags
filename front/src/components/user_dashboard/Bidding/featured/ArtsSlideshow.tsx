@@ -125,7 +125,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
           aria-hidden={index !== currentIndex}
         >
           {/* Left - Artwork Image */}
-          <div className={cn("overflow-hidden pt-1", isMobile ? "pt-4" : "pl-28")}>
+          <div className={cn("overflow-hidden pt-1", isMobile ? "pt-4" : "pl-24")}>
             <img
               src={getArtworkImageUrl(artwork.artwork.image_url)}
               alt={artwork.artwork.title}
@@ -204,7 +204,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
               </div>
             </div>
 
-            <div className={cn("flex items-center mt-4", isMobile ? "gap-6 -mr-[110px]" : "gap-8")}>
+            <div className={cn("max-w-[480px] flex items-center mt-4", isMobile ? "gap-4 -mr-[110px]" : "gap-4")}>
               <button
                 onClick={() => {
                   setBidArtworkIndex(index);
@@ -212,7 +212,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
                 }}
                 className={cn(
                   "bg-red-800 text-white rounded-full font-medium ",
-                  isMobile ? "w-60 px-3 py-2 text-[11px] " : "w-[38%] px-8 py-2 text-sm"
+                  isMobile ? "w-60 px-3 py-2 text-[11px] " : "w-full px-8 py-2 text-sm"
                 )}
               >
                 {bidNowText}
@@ -221,7 +221,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
                 onClick={() => navigate(`/bid/${artwork.id}/`)}
                 className={cn(
                   "border border-gray-400 text-gray-500 rounded-full font-medium transition ",
-                  isMobile ? "w-60 px-3 py-2 text-[11px]" : "w-[38%] px-8 py-2 text-sm"
+                  isMobile ? "w-60 px-3 py-2 text-[11px]" : "w-full px-8 py-2 text-sm"
                 )}
               >
                 {viewItemText}
