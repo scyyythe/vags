@@ -165,10 +165,22 @@ export const useOptimizedPostSubmission = () => {
                 queryKey.includes("explore") ||
                 queryKey.includes("feed") ||
                 queryKey.includes("profile") ||
-                queryKey.includes("user-artworks"))
+                queryKey.includes("user-artworks") ||
+                queryKey.includes("popularArtworks") ||
+                queryKey.includes("popular-artworks") ||
+                queryKey.includes("popular-artworks-light") ||
+                queryKey.includes("followedArtworks") ||
+                queryKey.includes("followed-artworks") ||
+                queryKey.includes("trending-artworks") ||
+                queryKey.includes("top-artworks"))
             );
           },
         });
+        
+        // Force refetch of critical queries
+        await queryClient.refetchQueries({ queryKey: ["artworks"] });
+        await queryClient.refetchQueries({ queryKey: ["popularArtworks"] });
+        await queryClient.refetchQueries({ queryKey: ["followedArtworks"] });
       }
 
       // Show success toast
