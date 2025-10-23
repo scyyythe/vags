@@ -539,7 +539,7 @@ const SellArtwork = () => {
                       placeholder={enterArtworkTitleText}
                       value={artworkTitle}
                       onChange={(e) => setArtworkTitle(e.target.value)}
-                      className="h-9"
+                      className="h-9 dark:border-gray-600 dark:bg-gray-800"
                       style={{ fontSize: "10px" }}
                     />
                   </div>
@@ -549,7 +549,7 @@ const SellArtwork = () => {
                       placeholder={enterYearText}
                       value={yearCreated}
                       onChange={(e) => setYearCreated(e.target.value)}
-                      className="h-9"
+                      className="h-9 dark:border-gray-600 dark:bg-gray-800"
                       style={{ fontSize: "10px" }}
                     />
                   </div>
@@ -562,7 +562,7 @@ const SellArtwork = () => {
                       {artworkStyleLabelText}
                     </label>
                     <Select value={artworkStyle} onValueChange={setArtworkStyle}>
-                      <SelectTrigger className="w-full text-[10px] h-9">
+                      <SelectTrigger className="w-full text-[10px] h-9 dark:border-gray-600 dark:bg-gray-800">
                         <SelectValue placeholder={selectArtworkStyleText} />
                       </SelectTrigger>
                       <SelectContent className="max-h-64 overflow-y-auto">
@@ -581,7 +581,7 @@ const SellArtwork = () => {
                       placeholder={enterMediumUsedText}
                       value={medium}
                       onChange={(e) => setMedium(e.target.value)}
-                      className="h-9"
+                      className="h-9 dark:border-gray-600 dark:bg-gray-800"
                       style={{ fontSize: "10px" }}
                     />
                   </div>
@@ -593,7 +593,7 @@ const SellArtwork = () => {
                         placeholder="0"
                         value={height}
                         onChange={(e) => setHeight(e.target.value)}
-                        className="h-9"
+                        className="h-9 dark:border-gray-600 dark:bg-gray-800"
                         style={{ fontSize: "10px" }}
                       />
                       <span className="text-sm font-medium text-gray-900 dark:text-gray-100">×</span>
@@ -602,7 +602,7 @@ const SellArtwork = () => {
                         placeholder="0"
                         value={width}
                         onChange={(e) => setWidth(e.target.value)}
-                        className="h-9"
+                        className="h-9 dark:border-gray-600 dark:bg-gray-800"
                         style={{ fontSize: "10px" }}
                       />
                     </div>
@@ -622,14 +622,14 @@ const SellArtwork = () => {
                       placeholder={enterPriceText}
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
-                      className="h-9"
+                      className="h-9 dark:border-gray-600 dark:bg-gray-800"
                       style={{ fontSize: "10px" }}
                     />
                   </div>
                   <div>
                     <label className="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mb-2">{editionLabelText}</label>
                     <Select value={edition} onValueChange={handleEditionChange}>
-                      <SelectTrigger className="w-full text-[10px] h-9">
+                      <SelectTrigger className="w-full text-[10px] h-9 dark:border-gray-600 dark:bg-gray-800">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -652,7 +652,7 @@ const SellArtwork = () => {
                         type="number"
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
-                        className="h-9"
+                        className="h-9 dark:border-gray-600 dark:bg-gray-800"
                         style={{ fontSize: "10px" }}
                         min="1"
                       />
@@ -667,7 +667,7 @@ const SellArtwork = () => {
                     placeholder={addDescriptionText}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="min-h-[120px] h-9"
+                    className="min-h-[120px] h-9 dark:border-gray-600 dark:bg-gray-800"
                     style={{ fontSize: "10px" }}
                   />
                 </div>

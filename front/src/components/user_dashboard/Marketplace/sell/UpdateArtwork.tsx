@@ -509,7 +509,7 @@ const UpdateArtwork = () => {
                     <Input
                       value={artworkTitle}
                       onChange={(e) => setArtworkTitle(e.target.value)}
-                      className="h-9"
+                      className="h-9 dark:border-gray-600 dark:bg-gray-800"
                       style={{ fontSize: "10px" }}
                     />
                   </div>
@@ -518,7 +518,7 @@ const UpdateArtwork = () => {
                     <Input
                       value={yearCreated}
                       onChange={(e) => setYearCreated(e.target.value)}
-                      className="h-9"
+                      className="h-9 dark:border-gray-600 dark:bg-gray-800"
                       style={{ fontSize: "10px" }}
                     />
                   </div>
@@ -528,7 +528,7 @@ const UpdateArtwork = () => {
                   <div>
                     <label className="block text-[11px] font-medium text-gray-700 mb-2">{styleText}</label>
                     <Select value={artworkStyle} onValueChange={setArtworkStyle}>
-                      <SelectTrigger className="w-full text-[10px] h-9">
+                      <SelectTrigger className="w-full text-[10px] h-9 dark:border-gray-600 dark:bg-gray-800">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -545,7 +545,7 @@ const UpdateArtwork = () => {
                     <Input
                       value={medium}
                       onChange={(e) => setMedium(e.target.value)}
-                      className="h-9"
+                      className="h-9 dark:border-gray-600 dark:bg-gray-800"
                       style={{ fontSize: "10px" }}
                     />
                   </div>
@@ -555,14 +555,14 @@ const UpdateArtwork = () => {
                       <Input
                         value={height}
                         onChange={(e) => setHeight(e.target.value)}
-                        className="h-9"
+                        className="h-9 dark:border-gray-600 dark:bg-gray-800"
                         style={{ fontSize: "10px" }}
                       />
                       <span className="text-sm font-medium">×</span>
                       <Input
                         value={width}
                         onChange={(e) => setWidth(e.target.value)}
-                        className="h-9"
+                        className="h-9 dark:border-gray-600 dark:bg-gray-800"
                         style={{ fontSize: "10px" }}
                       />
                     </div>
@@ -575,14 +575,14 @@ const UpdateArtwork = () => {
                     <Input
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
-                      className="h-9"
+                      className="h-9 dark:border-gray-600 dark:bg-gray-800"
                       style={{ fontSize: "10px" }}
                     />
                   </div>
                   <div>
                     <label className="block text-[11px] font-medium text-gray-700 mb-2">{editionText}</label>
                     <Select value={edition} onValueChange={handleEditionChange}>
-                      <SelectTrigger className="w-full h-9 text-[10px]">
+                      <SelectTrigger className="w-full h-9 text-[10px] dark:border-gray-600 dark:bg-gray-800">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -604,7 +604,7 @@ const UpdateArtwork = () => {
                       <Input
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
-                        className="h-9"
+                        className="h-9 dark:border-gray-600 dark:bg-gray-800"
                         style={{ fontSize: "10px" }}
                         min={1}
                       />
@@ -617,7 +617,7 @@ const UpdateArtwork = () => {
                   <Textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="min-h-[120px] text-[10px]"
+                    className="min-h-[120px] text-[10px] dark:border-gray-600 dark:bg-gray-800"
                   />
                 </div>
 
