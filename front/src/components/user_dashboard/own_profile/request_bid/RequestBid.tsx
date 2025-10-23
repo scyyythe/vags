@@ -234,7 +234,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
                   />
                 </div>
 
-                <div className="mb-8">
+                <div className="mb-6">
                   <p className="text-[10px]">{auctionEndsAfterText}</p>
                   <DateTimePicker
                     date={endDate}
@@ -247,7 +247,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
                     maxDate={maxEndDate}
                   />
                 </div>
-                <p className="text-[10px] text-muted-foreground -mb-3">{durationNoteText}</p>
+                <p className="text-[10px] text-muted-foreground mb-3">{durationNoteText}</p>
               </div>
             </div>
 
