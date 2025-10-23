@@ -246,8 +246,8 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
 
   return (
     <div
-      className={`bg-card border rounded-lg py-4 px-6 group transition-all duration-300 cursor-pointer hover:shadow-lg ${
-        isHighlighted ? "border border-red-300 shadow-[0_0_6px_rgba(239,68,68,0.7)]" : "border-border"
+      className={`bg-card dark:bg-gray-800 border rounded-lg py-4 px-6 group transition-all duration-300 cursor-pointer hover:shadow-lg ${
+        isHighlighted ? "border border-red-300 dark:border-red-600 shadow-[0_0_6px_rgba(239,68,68,0.7)]" : "border-border dark:border-gray-600"
       }`}
       onClick={onViewDetails}
     >
@@ -266,15 +266,15 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start pt-1.5">
             <div>
-              <h3 className="font-semibold text-[13px] text-foreground truncate pb-0.5">
+              <h3 className="font-semibold text-[13px] text-foreground dark:text-gray-100 truncate pb-0.5">
                 <TranslatedText text={title} />
               </h3>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-[10px] text-muted-foreground dark:text-gray-400">
                 {byText} <TranslatedText text={artist} />
               </p>
             </div>
             <div className="text-right">
-              <p className="font-bold text-sm text-foreground">
+              <p className="font-bold text-sm text-foreground dark:text-gray-100">
                 ₱
                 {typeof price === "number"
                   ? price >= 1000
@@ -289,14 +289,14 @@ const PurchasedArtworkCard: React.FC<PurchasedArtworkCardProps> = ({
           <div className="flex justify-between items-center text-[11px] flex-wrap gap-2 mt-2">
             {/* Order Dates */}
             <div className="flex gap-4 pt-2">
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
                 <Calendar className="w-2.5 h-2.5" />
                 <span>
                   {orderedText} <TranslatedText text={orderDate} />
                 </span>
               </div>
               {expectedDelivery && (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
                   <Package className="w-2.5 h-2.5" />
                   <span>
                     {expectedText} <TranslatedText text={expectedDelivery} />

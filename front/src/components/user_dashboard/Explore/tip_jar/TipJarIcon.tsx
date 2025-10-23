@@ -13,7 +13,7 @@ const TipJarIcon = ({ onClick, className }: TipJarIconProps) => {
         onClick();
       }}
       className={cn(
-        "p-1 rounded-full transition-colors", 
+        "p-1 rounded-full transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200", 
         className
       )}
       aria-label="Tip jar"

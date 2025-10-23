@@ -152,17 +152,17 @@ const ViewInsights = () => {
     subtitle?: string;
     className?: string;
   }) => (
-    <Card className={`hover:shadow-lg transition-all duration-300 bg-white border-gray-200 ${className}`}>
+    <Card className={`hover:shadow-lg transition-all duration-300 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 ${className}`}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-xs font-medium text-black">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-gray-500" />
+        <CardTitle className="text-xs font-medium text-black dark:text-white">{title}</CardTitle>
+        <Icon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-red-800">
+        <div className="text-2xl font-bold text-red-800 dark:text-red-400">
           {value.toLocaleString()}
         </div>
         <div className="flex items-center justify-between mt-2">
-          {subtitle && <p className="text-[11px] text-gray-500">{subtitle}</p>}
+          {subtitle && <p className="text-[11px] text-gray-500 dark:text-gray-400">{subtitle}</p>}
           <TrendIndicator value={trend} />
         </div>
       </CardContent>
@@ -170,18 +170,18 @@ const ViewInsights = () => {
   );
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
       
       <div className="container mx-auto px-6 py-8 space-y-8">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="mt-12">
-            <h1 className="text-lg font-bold text-black mb-2">
-              <i onClick={() => navigate(-1)} className="bx bx-chevron-left text-xl mr-2 text-black relative top-0.5 cursor-pointer"></i>
+            <h1 className="text-lg font-bold text-black dark:text-white mb-2">
+              <i onClick={() => navigate(-1)} className="bx bx-chevron-left text-xl mr-2 text-black dark:text-white relative top-0.5 cursor-pointer"></i>
               {viewInsightsText}
             </h1>
-            <p className="text-xs text-gray-600 pl-8">
+            <p className="text-xs text-gray-600 dark:text-gray-300 pl-8">
               {detailedAnalyticsText} "{translatedExhibitTitle}"
             </p>
 

@@ -139,7 +139,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
 
   return (
     <div
-      className={`relative w-full rounded-xl bg-white border transition-all duration-300 ${
+      className={`relative w-full rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 transition-all duration-300 ${
         isNotStartedYet() ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:shadow-lg"
       }`}
       onClick={() => {
@@ -149,7 +149,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
       onMouseLeave={() => setShowTooltip(false)}
     >
       {showTooltip && (
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 bg-gray-800 text-white text-[10px] px-2 py-1 rounded-md shadow-md whitespace-nowrap">
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 bg-gray-800 dark:bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow-md whitespace-nowrap">
           {exhibitNotAvailableText}
         </div>
       )}
@@ -157,8 +157,8 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
       <div className="relative">
         <img src={exhibit.image} alt={exhibit.title} className="w-full h-40 object-cover rounded-lg" />
 
-        <div className="absolute top-3 right-3 bg-white bg-opacity-90 rounded-full px-2 pb-0.5">
-          <span className="text-[10px] font-medium">{translatedCategory}</span>
+        <div className="absolute top-3 right-3 bg-white dark:bg-gray-800 bg-opacity-90 dark:bg-opacity-90 rounded-full px-2 pb-0.5">
+          <span className="text-[10px] font-medium text-gray-900 dark:text-gray-100">{translatedCategory}</span>
         </div>
 
         {!exhibit.isSolo && (
@@ -172,18 +172,18 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
           </div>
         )}
 
-        <div className="absolute bottom-3 left-3 bg-white bg-opacity-90 rounded-full px-2 py-1 flex items-center gap-1">
-          <span className="text-[9px] font-semibold text-red-600">{getDurationLabel()}</span>
+        <div className="absolute bottom-3 left-3 bg-white dark:bg-gray-800 bg-opacity-90 dark:bg-opacity-90 rounded-full px-2 py-1 flex items-center gap-1">
+          <span className="text-[9px] font-semibold text-red-600 dark:text-red-400">{getDurationLabel()}</span>
         </div>
 
         <div className="absolute bottom-3 right-3 flex gap-2">
-          <div className="flex items-center bg-white bg-opacity-90 rounded-full px-2 py-1">
-            <Eye size={11} className="text-gray-700 mr-1" />
-            <span className="text-[9px] font-medium">{formatNumber(exhibit.views)}</span>
+          <div className="flex items-center bg-white dark:bg-gray-800 bg-opacity-90 dark:bg-opacity-90 rounded-full px-2 py-1">
+            <Eye size={11} className="text-gray-700 dark:text-gray-300 mr-1" />
+            <span className="text-[9px] font-medium text-gray-900 dark:text-gray-100">{formatNumber(exhibit.views)}</span>
           </div>
-          <div className="flex items-center bg-white bg-opacity-90 rounded-full px-2 py-1">
-            <Heart size={10} className="text-gray-700 mr-1" />
-            <span className="text-[9px] font-medium">{formatNumber(exhibit.likes)}</span>
+          <div className="flex items-center bg-white dark:bg-gray-800 bg-opacity-90 dark:bg-opacity-90 rounded-full px-2 py-1">
+            <Heart size={10} className="text-gray-700 dark:text-gray-300 mr-1" />
+            <span className="text-[9px] font-medium text-gray-900 dark:text-gray-100">{formatNumber(exhibit.likes)}</span>
           </div>
         </div>
       </div>
@@ -191,14 +191,14 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
       <div className="px-5 py-4 rounded-b-lg">
         <div className="flex justify-between items-start relative">
           <div className="flex flex-col">
-            <h2 className="font-semibold text-xs">"{translatedTitle}"</h2>
+            <h2 className="font-semibold text-xs text-gray-900 dark:text-gray-100">"{translatedTitle}"</h2>
             {exhibit.isShared &&
               ((isOwnProfile && exhibit.userRole === "collaborator") || (!isOwnProfile && exhibit.targetUserRole)) && (
                 <span
                   className={`text-[8px] px-1.5 py-0.5 rounded-full mt-1 inline-block w-fit ${
                     (isOwnProfile ? exhibit.userRole : exhibit.targetUserRole) === "owner"
-                      ? "bg-blue-100 text-blue-700"
-                      : "bg-purple-100 text-purple-700"
+                      ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
+                      : "bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300"
                   }`}
                 >
                   {(isOwnProfile ? exhibit.userRole : exhibit.targetUserRole) === "owner" ? ownerText : collaboratorText}
@@ -212,9 +212,9 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
                 e.stopPropagation();
                 setMenuOpen((prev) => !prev);
               }}
-              className="p-1 hover:bg-gray-100 rounded-full"
+              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
             >
-              <MoreHorizontal size={13} className="text-gray-600 hover:text-black" />
+              <MoreHorizontal size={13} className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white" />
             </button>
 
             {menuOpen &&
@@ -286,7 +286,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
           </div>
         </div>
 
-        <p className="text-[9px] text-gray-600 line-clamp-2">{translatedDescription}</p>
+        <p className="text-[9px] text-gray-600 dark:text-gray-300 line-clamp-2">{translatedDescription}</p>
       </div>
     </div>
   );

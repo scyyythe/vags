@@ -96,15 +96,15 @@ const ArtVideoShowcase = ({ artworks, isLoading = false }: ArtVideoShowcaseProps
 
   if (isLoading || artworks.length === 0) {
     return (
-      <div className="relative w-full max-w-7xl mx-auto rounded-lg overflow-hidden border bg-white h-[400px] flex flex-col items-center justify-center">
+      <div className="relative w-full max-w-7xl mx-auto rounded-lg overflow-hidden border bg-white dark:bg-gray-800 h-[400px] flex flex-col items-center justify-center">
         <ParticleBackground />
-        <h2 className="text-md font-bold pb-2">{loadingText}</h2>
+        <h2 className="text-md font-bold pb-2 text-gray-900 dark:text-gray-100">{loadingText}</h2>
       </div>
     );
   }
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto rounded-lg overflow-hidden border bg-white h-[400px]">
+    <div className="relative w-full max-w-7xl mx-auto rounded-lg overflow-hidden border bg-white dark:bg-gray-800 h-[400px]">
       <ParticleBackground />
 
       {/* Intro */}
@@ -118,11 +118,11 @@ const ArtVideoShowcase = ({ artworks, isLoading = false }: ArtVideoShowcaseProps
       {/* Main (desktop only) */}
       {!isMobile && phase === "main" && (
         <div className="relative text-center h-full flex flex-col">
-          <h2 className="text-md font-bold pb-2 text-gray-900 mt-6">
+          <h2 className="text-md font-bold pb-2 text-gray-900 dark:text-gray-100 mt-6">
             {popularThisWeek}
           </h2>
           <div className="w-96 mx-auto">
-            <p className="text-[10px] text-gray-700 mt-2">
+            <p className="text-[10px] text-gray-700 dark:text-gray-300 mt-2">
               {description}
             </p>
           </div>
@@ -180,7 +180,7 @@ const ArtVideoShowcase = ({ artworks, isLoading = false }: ArtVideoShowcaseProps
                     }}
                   >
                     <div
-                      className="relative rounded-lg overflow-hidden shadow-lg transition-transform duration-500 ease-in-out hover:scale-105 bg-white"
+                      className="relative rounded-lg overflow-hidden shadow-lg transition-transform duration-500 ease-in-out hover:scale-105 bg-white dark:bg-gray-700"
                       style={{
                         width: "200px",
                         height: "200px",
@@ -193,17 +193,17 @@ const ArtVideoShowcase = ({ artworks, isLoading = false }: ArtVideoShowcaseProps
                         alt={art.title}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute left-1/2 bottom-2 transform -translate-x-1/2 bg-white/80 rounded-md px-3 py-2 w-[90%] shadow-md backdrop-blur-sm">
-                        <div className="font-semibold text-[11px] leading-tight text-left text-black -mb-0.5 truncate overflow-hidden whitespace-nowrap max-w-28">
+                      <div className="absolute left-1/2 bottom-2 transform -translate-x-1/2 bg-white/80 dark:bg-gray-800/80 rounded-md px-3 py-2 w-[90%] shadow-md backdrop-blur-sm">
+                        <div className="font-semibold text-[11px] leading-tight text-left text-black dark:text-gray-100 -mb-0.5 truncate overflow-hidden whitespace-nowrap max-w-28">
                           {translatedTitles[index] || art.title}
                         </div>
                         <div className="flex items-center justify-between">
-                          <div className="text-[8px] text-gray-700 truncate overflow-hidden whitespace-nowrap max-w-[60%]">
+                          <div className="text-[8px] text-gray-700 dark:text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-[60%]">
                             by {translatedArtists[index] || art.artist.name}
                           </div>
                           <div className="flex items-center gap-1">
                             <Heart size={10} className="text-red-700 fill-red-700" />
-                            <span className="text-[10px] font-medium text-black">
+                            <span className="text-[10px] font-medium text-black dark:text-gray-100">
                               {art.likes_count}
                             </span>
                           </div>

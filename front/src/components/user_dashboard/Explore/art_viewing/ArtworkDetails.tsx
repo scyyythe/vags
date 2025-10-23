@@ -366,11 +366,11 @@ const ArtworkDetails = () => {
 
   if (!id) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900">
         <Header />
         <div className="container mx-auto pt-24 px-4 text-center">
-          <h2 className="text-sm font-bold mb-4">{tArtworkNotFound}</h2>
-          <p className="mb-8 text-xs">{tArtworkNotFoundDesc}</p>
+          <h2 className="text-sm font-bold mb-4 text-gray-900 dark:text-gray-100">{tArtworkNotFound}</h2>
+          <p className="mb-8 text-xs text-gray-600 dark:text-gray-300">{tArtworkNotFoundDesc}</p>
           <Link to="/explore" className="text-red-600 text-xs hover:underline">
             {tReturnToHome}
           </Link>
@@ -380,7 +380,7 @@ const ArtworkDetails = () => {
   }
 
   const renderComment = (commentItem: any, isReply = false) => (
-    <div key={commentItem.id} className={`mb-6 relative ${isReply ? "ml-8 pl-4 border-l border-gray-200" : ""}`}>
+    <div key={commentItem.id} className={`mb-6 relative ${isReply ? "ml-8 pl-4 border-l border-gray-200 dark:border-gray-700" : ""}`}>
       <div className="flex items-start justify-between">
         <div className="flex items-start">
           <Avatar className={`${isMobile ? "h-6 w-6" : "h-3 w-3"} mr-2`}>
@@ -389,15 +389,15 @@ const ArtworkDetails = () => {
           </Avatar>
 
           <div>
-            <p className={`${isMobile ? "text-xs" : "text-[9px]"} font-semibold`}>{commentItem.user}</p>
-            <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-700 mt-1`}>{commentItem.text}</p>
+            <p className={`${isMobile ? "text-xs" : "text-[9px]"} font-semibold text-gray-900 dark:text-gray-100`}>{commentItem.user}</p>
+            <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-700 dark:text-gray-300 mt-1`}>{commentItem.text}</p>
 
-            <div className={`flex items-center gap-2 ${isMobile ? "text-xs" : "text-[9px]"} text-gray-500 mt-1`}>
+            <div className={`flex items-center gap-2 ${isMobile ? "text-xs" : "text-[9px]"} text-gray-500 dark:text-gray-400 mt-1`}>
               <span>{formatDistanceToNow(new Date(commentItem.timestamp), { addSuffix: true })}</span>
               <span>·</span>
               <button
                 onClick={() => handleReply(commentItem.id)}
-                className="hover:underline text-gray-500 flex items-center gap-1"
+                className="hover:underline text-gray-500 dark:text-gray-400 flex items-center gap-1"
               >
                 <Reply size={isMobile ? 12 : 10} />
                 {tReply}
@@ -415,15 +415,15 @@ const ArtworkDetails = () => {
               <div className="relative ml-1">
                 <button
                   onClick={() => toggleCommentMenu(commentItem.id)}
-                  className="p-1 text-gray-500 hover:text-black"
+                  className="p-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
                 >
                   <MoreHorizontal size={isMobile ? 14 : 12} />
                 </button>
 
                 {commentMenus[commentItem.id] && (
-                  <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg z-10">
+                  <div className="absolute right-0 mt-1 w-32 bg-white dark:bg-gray-800 rounded-md shadow-lg z-10">
                     <button
-                      className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[8px]"} hover:bg-gray-100`}
+                      className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[8px]"} hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100`}
                       onClick={() => {
                         toast.success(`${tBlockedUser} ${commentItem.user}`, { closeButton: true });
                         toggleCommentMenu(commentItem.id);
@@ -432,7 +432,7 @@ const ArtworkDetails = () => {
                       {tBlockUser}
                     </button>
                     <button
-                      className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[9px]"} hover:bg-gray-100`}
+                      className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[9px]"} hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100`}
                       onClick={() => {
                         toast.success(tContentReported, { closeButton: true });
                         toggleCommentMenu(commentItem.id);
@@ -452,7 +452,7 @@ const ArtworkDetails = () => {
         <div className="mt-2 ml-8">
           <button
             onClick={() => toggleReplies(commentItem.id)}
-            className="text-blue-500 hover:text-blue-600 text-[10px] flex items-center gap-1"
+            className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 text-[10px] flex items-center gap-1"
           >
             {expandedComments[commentItem.id] ? tHide : tView} {commentItem.replies.length}{" "}
             {commentItem.replies.length === 1 ? tReplyText : tRepliesText}
@@ -482,8 +482,8 @@ const ArtworkDetails = () => {
         <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
           {/* Back button */}
           <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
-            <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
-              <i className="bx bx-chevron-left text-lg mr-2"></i>
+            <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
+              <i className="bx bx-chevron-left text-lg mr-2 text-gray-900 dark:text-gray-100"></i>
               {tArtworkDetails}
             </button>
           </div>
@@ -498,22 +498,22 @@ const ArtworkDetails = () => {
                     <aside className="absolute top-3 z-20 left-[-250px] hidden lg:block" style={{ width: "150px" }}>
                       <div className="px-3 py-6 text-left">
                         <div className="mb-6">
-                          <h3 className="text-[9px] font-medium mb-1">{tArtworkStyle}</h3>
-                          <p className="text-[9px] text-gray-700">{translatedArtworkStyle}</p>
+                          <h3 className="text-[9px] font-medium mb-1 text-gray-900 dark:text-gray-100">{tArtworkStyle}</h3>
+                          <p className="text-[9px] text-gray-700 dark:text-gray-300">{translatedArtworkStyle}</p>
                         </div>
 
                         <Separator className="my-3" />
 
                         <div className="mb-6">
-                          <h3 className="text-[9px] font-medium mb-1">{tMedium}</h3>
-                          <p className="text-[9px] text-gray-700">{translatedArtworkMedium}</p>
+                          <h3 className="text-[9px] font-medium mb-1 text-gray-900 dark:text-gray-100">{tMedium}</h3>
+                          <p className="text-[9px] text-gray-700 dark:text-gray-300">{translatedArtworkMedium}</p>
                         </div>
 
                         <Separator className="my-3" />
 
                         <div className="mb-6">
-                          <h3 className="text-[9px] font-medium mb-1">{tDimensions}</h3>
-                          <p className="text-[9px] text-gray-700">
+                          <h3 className="text-[9px] font-medium mb-1 text-gray-900 dark:text-gray-100">{tDimensions}</h3>
+                          <p className="text-[9px] text-gray-700 dark:text-gray-300">
                             {translatedArtworkSize} {tCm}
                           </p>
                         </div>
@@ -521,8 +521,8 @@ const ArtworkDetails = () => {
                         <Separator className="my-3" />
 
                         <div className="mb-1">
-                          <h3 className="text-[9px] font-medium mb-1">{tDatePosted}</h3>
-                          <p className="text-[9px] text-gray-700">{translatedArtworkDatePosted}</p>
+                          <h3 className="text-[9px] font-medium mb-1 text-gray-900 dark:text-gray-100">{tDatePosted}</h3>
+                          <p className="text-[9px] text-gray-700 dark:text-gray-300">{translatedArtworkDatePosted}</p>
                         </div>
                       </div>
                     </aside>
@@ -583,11 +583,11 @@ const ArtworkDetails = () => {
                     <div className="flex items-center space-x-4">
                       <button
                         onClick={handleLike}
-                        className="flex items-center space-x-1 text-gray-800 rounded-3xl py-2 px-3 border border-gray-200"
+                        className="flex items-center space-x-1 text-gray-800 dark:text-gray-200 rounded-3xl py-2 px-3 border border-gray-200 dark:border-gray-600"
                       >
                         <Heart
                           size={isMobile ? 14 : 14}
-                          className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
+                          className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800 dark:text-gray-200"}
                           fill={isLiked ? "currentColor" : "none"}
                         />
                         {(likeCounts[id || ""] ?? artwork?.likes_count ?? 0) > 0 && (
@@ -599,10 +599,10 @@ const ArtworkDetails = () => {
                     </div>
 
                     <div>
-                      <button className="py-3 mr-4 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
+                      <button className="py-3 mr-4 text-gray-500 dark:text-gray-400" onClick={() => setMenuOpen(!menuOpen)}>
                         <MoreHorizontal
                           size={isMobile ? 14 : 14}
-                          className={`${localIsReported ? "text-red-600" : "text-gray-500"} hover:text-black`}
+                          className={`${localIsReported ? "text-red-600" : "text-gray-500 dark:text-gray-400"} hover:text-black dark:hover:text-white`}
                         />
                       </button>
 
@@ -640,12 +640,12 @@ const ArtworkDetails = () => {
                     </div>
                   </div>
 
-                  <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2`}>{translatedArtworkTitle}</h1>
+                  <h1 className={`${isMobile ? "text-lg" : "text-md"} font-bold mb-2 text-gray-900 dark:text-gray-100`}>{translatedArtworkTitle}</h1>
 
                   <p
                     style={{ cursor: "pointer" }}
                     onClick={() => navigate(`/userprofile/${artwork.artist_id}`)}
-                    className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 mb-4`}
+                    className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-600 dark:text-gray-400 mb-4`}
                   >
                     by {translatedArtistName}
                   </p>
@@ -653,7 +653,7 @@ const ArtworkDetails = () => {
                   <div className="relative mt-4">
                     <div
                       ref={descriptionRef}
-                      className="text-[10px] text-gray-700 transition-all duration-300 ease-in-out h-[120px] overflow-y-auto"
+                      className="text-[10px] text-gray-700 dark:text-gray-300 transition-all duration-300 ease-in-out h-[120px] overflow-y-auto"
                       style={{ lineHeight: "1.1rem" }}
                     >
                       {translatedArtworkDescription}
@@ -673,20 +673,20 @@ const ArtworkDetails = () => {
                   {isMobile && (
                     <div className="w-full py-3 mb-4 grid grid-cols-4 text-center gap-4">
                       <div>
-                        <h4 className="text-[10px] font-medium mb-1">{tArtworkStyle}</h4>
-                        <p className="text-[10px] text-gray-700">{translatedArtworkStyle}</p>
+                        <h4 className="text-[10px] font-medium mb-1 text-gray-900 dark:text-gray-100">{tArtworkStyle}</h4>
+                        <p className="text-[10px] text-gray-700 dark:text-gray-300">{translatedArtworkStyle}</p>
                       </div>
                       <div>
-                        <h4 className="text-[10px] font-medium mb-1">{tMedium}</h4>
-                        <p className="text-[10px] text-gray-700">{translatedArtworkMedium}</p>
+                        <h4 className="text-[10px] font-medium mb-1 text-gray-900 dark:text-gray-100">{tMedium}</h4>
+                        <p className="text-[10px] text-gray-700 dark:text-gray-300">{translatedArtworkMedium}</p>
                       </div>
                       <div>
-                        <h4 className="text-[10px] font-medium mb-1">{tDatePosted}</h4>
-                        <p className="text-[10px] text-gray-700">{translatedArtworkDatePosted}</p>
+                        <h4 className="text-[10px] font-medium mb-1 text-gray-900 dark:text-gray-100">{tDatePosted}</h4>
+                        <p className="text-[10px] text-gray-700 dark:text-gray-300">{translatedArtworkDatePosted}</p>
                       </div>
                       <div>
-                        <h4 className="text-[10px] font-medium mb-1">{tDimensions}</h4>
-                        <p className="text-[9px] text-gray-700">
+                        <h4 className="text-[10px] font-medium mb-1 text-gray-900 dark:text-gray-100">{tDimensions}</h4>
+                        <p className="text-[9px] text-gray-700 dark:text-gray-300">
                           {artwork?.size
                             ? translatedArtworkSize
                                 .split(" x ")
@@ -718,7 +718,7 @@ const ArtworkDetails = () => {
             related &&
             related.length > 0 && (
               <div className="container md:px-6 mb-4">
-                <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"}`}>
+                <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"} text-gray-900 dark:text-gray-100`}>
                   {tRelatedArtworks}
                 </h2>
                 {filteredRelated && filteredRelated.length > 0 ? (
@@ -740,7 +740,7 @@ const ArtworkDetails = () => {
                   </div>
                 ) : (
                   <div className="flex flex-col justify-center items-center h-32 w-full">
-                    <p className="text-gray-500 text-xs mb-2">{tNoRelatedArtworksFound}</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-xs mb-2">{tNoRelatedArtworksFound}</p>
                   </div>
                 )}
               </div>
@@ -753,9 +753,9 @@ const ArtworkDetails = () => {
           <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
             <button
               onClick={closeExpandedView}
-              className="absolute top-4 right-6 z-[60] bg-white rounded-full px-1 shadow-md transition-colors duration-200"
+              className="absolute top-4 right-6 z-[60] bg-white dark:bg-gray-800 rounded-full px-1 shadow-md transition-colors duration-200"
             >
-              <i className="bx bx-x text-xl text-black"></i>
+              <i className="bx bx-x text-xl text-black dark:text-gray-100"></i>
             </button>
 
             <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">

@@ -251,8 +251,8 @@ const Marketplace = () => {
   }, [selectedCategoryFilter, refetchFollowed]);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex flex-col flex-1 bg-background">
+    <div className="flex flex-col min-h-screen bg-background dark:bg-gray-900">
+      <div className="flex flex-col flex-1 bg-background dark:bg-gray-900">
         <Header />
         <div className="flex-1 container mx-auto px-4 sm:px-6 pt-20">
           <ActiveAccountOnly>
@@ -262,18 +262,18 @@ const Marketplace = () => {
             <div className="mb-6">
               {/* Title + Wishlist + Mobile Sell */}
               <div className="flex items-center justify-between mb-3">
-                <h1 className="text-md font-bold text-gray-900">{marketplaceText}</h1>
+                <h1 className="text-md font-bold text-gray-900 dark:text-white">{marketplaceText}</h1>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleWishlistClick}
-                    className="text-[10px] text-gray-600 hover:text-gray-900 font-medium"
+                    className="text-[10px] text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium"
                   >
                     {wishlistText}
                   </button>
                   <div
                     onClick={handleWishlistClick}
-                    className="relative w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center cursor-pointer"
+                    className="relative w-6 h-6 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center cursor-pointer"
                   >
                     <img
                       src="https://img.icons8.com/puffy-filled/32/BF0101/like.png"

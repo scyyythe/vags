@@ -35,7 +35,7 @@ const SearchBar = ({ onSearchChange }: { onSearchChange: (value: string) => void
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
-      <Search size={11} className="relative right-auto top-6.5 w-3 h-3 text-gray-500" />
+      <Search size={11} className="relative right-auto top-6.5 w-3 h-3 text-gray-500 dark:text-gray-400" />
     </div>
   );
 };

@@ -96,7 +96,7 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
             <motion.h1
               className="text-base sm:text-lg lg:text-2xl font-bold leading-tight
                         bg-gradient-to-r from-red-500 via-red-400 to-red-300
-                        bg-clip-text text-black"
+                        bg-clip-text text-black dark:text-gray-100"
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
@@ -105,7 +105,7 @@ const ArtVideoIntro = ({ artworks }: ArtVideoIntroProps) => {
             </motion.h1>
 
             <motion.p
-              className="text-xs sm:text-xs text-gray-700 leading-relaxed max-w-full sm:max-w-[430px] mx-auto lg:mx-0"
+              className="text-xs sm:text-xs text-gray-700 dark:text-gray-300 leading-relaxed max-w-full sm:max-w-[430px] mx-auto lg:mx-0"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.7 }}

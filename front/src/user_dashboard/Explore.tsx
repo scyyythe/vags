@@ -229,7 +229,7 @@ const Explore = () => {
   }, [translatedAll]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background dark:bg-gray-900">
       <Header />
       <div className="container mx-auto px-4 sm:px-6 pt-20">
         <ActiveAccountOnly>
