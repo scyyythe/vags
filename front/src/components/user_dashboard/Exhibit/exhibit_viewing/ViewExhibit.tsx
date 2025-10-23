@@ -346,8 +346,8 @@ const ExhibitViewing = () => {
                           className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[120px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
                           onClick={() => setIsExpanded(true)}
                         >
-                          <i className="bx bx-cube-alt text-[13px] mr-[6px]"></i>
-                          <span className="mr-2 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
+                          <i className="bx bx-cube-alt text-[13px] mr-[6px] dark:text-black"></i>
+                          <span className="mr-2 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700 dark:text-black">
                             {exploreGalleryText}
                           </span>
                         </div>
