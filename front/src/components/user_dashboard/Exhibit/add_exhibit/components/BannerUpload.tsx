@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
-import { Upload } from "lucide-react";
+import { CloudUpload } from "lucide-react";
 
 interface BannerUploadProps {
   bannerImage: string | null;
@@ -86,7 +86,7 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
       {!bannerImage ? (
         <>
           <div className="bg-white dark:bg-gray-700 p-2 rounded-full inline-block mb-2">
-            <Upload size={20} className="text-gray-600 dark:text-gray-300" />
+            <CloudUpload size={20} className="text-gray-600 dark:text-gray-300 animate-pulse" />
           </div>
           <p className="text-xs text-gray-600 dark:text-gray-300">{addBannerText}</p>
         </>
