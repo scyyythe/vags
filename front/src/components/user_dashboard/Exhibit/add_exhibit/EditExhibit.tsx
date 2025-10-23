@@ -450,6 +450,44 @@ const EditExhibit = () => {
     bannerImage // Pass existing banner image for edit mode
   );
 
+  // Enhanced submit handler with immediate cache invalidation
+  const handleSubmitWithCacheInvalidation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      // Call the original submit handler
+      await submitHandlers.handleSubmit(e);
+      
+      // Immediately invalidate and refetch exhibit-related queries
+      queryClient.invalidateQueries({ queryKey: ["exhibit-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["my-exhibit-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["exhibits"] });
+      queryClient.invalidateQueries({ queryKey: ["exhibit-detail", exhibitId] });
+      
+      // Force immediate refetch of exhibit cards
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ["exhibit-cards"], type: "active" }),
+        queryClient.refetchQueries({ queryKey: ["my-exhibit-cards"], type: "active" }),
+        queryClient.refetchQueries({ queryKey: ["exhibits"], type: "active" })
+      ]);
+
+      // Dispatch custom event to notify Exhibits component
+      const exhibitUpdatedEvent = new CustomEvent('exhibit-updated', {
+        detail: { 
+          exhibitId,
+          title,
+          category,
+          exhibitType
+        }
+      });
+      window.dispatchEvent(exhibitUpdatedEvent);
+      
+    } catch (error) {
+      console.error("Error updating exhibit:", error);
+      throw error;
+    }
+  };
+
   // Handle adding a collaborator - ENHANCED LOGIC FOR EDIT MODE
   const handleAddCollaborator = (artist: User) => {
     // Check global maximum first (2 collaborators max)
@@ -707,9 +745,7 @@ const EditExhibit = () => {
         <CollaboratorNotice viewMode={viewMode} currentCollaborator={currentCollaborator} title={title} />
 
         <form
-          onSubmit={(e) => {
-            submitHandlers.handleSubmit(e);
-          }}
+          onSubmit={handleSubmitWithCacheInvalidation}
           className="space-y-8"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
