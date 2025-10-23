@@ -1,5 +1,4 @@
 import { createContext, useState, ReactNode } from "react";
-import { toast } from "sonner";
 import apiClient from "@/utils/apiClient";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -59,15 +58,9 @@ export const LikedArtworksProvider = ({ children }: { children: ReactNode }) => 
       if (is_liked) {
         queryClient.invalidateQueries({ queryKey: ["notifications"] });
       }
-      
-      toast(detail || (is_liked ? "You liked this artwork." : "You unliked this artwork."), {
-        closeButton: true,
-      });
+
     } catch (error) {
       console.error("Like operation failed:", error);
-      toast("Failed to update like status", {
-        closeButton: true,
-      });
     }
   };
 
