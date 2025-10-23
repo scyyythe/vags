@@ -35,6 +35,7 @@ export interface ArtCardProps {
   isSavedFromBulk?: boolean;
   isReportedFromBulk?: boolean;
   reportStatusFromBulk?: "Pending" | "In Progress" | "Resolved" | null;
+  isOnAuction?: boolean; // New prop to indicate if artwork is on auction
 
   status?: {
     isLiked?: boolean;
@@ -57,6 +58,7 @@ const ArtCard = ({
   isSavedFromBulk,
   isReportedFromBulk,
   reportStatusFromBulk,
+  isOnAuction = false,
   status = { isLiked: false, isSaved: false },
   report,
 }: ArtCardProps) => {
@@ -243,7 +245,8 @@ const ArtCard = ({
     });
   };
 
-  if (isHidden || isDeletedLocally) return null;
+  // Hide artwork if it's on auction, hidden, or deleted
+  if (isHidden || isDeletedLocally || isOnAuction) return null;
 
   return (
     <div className="art-card h-full text-xs group animate-fadeIn rounded-xl bg-white dark:bg-gray-800 hover:shadow-lg transition-all duration-300 border 1px border-gray-200 dark:border-gray-600 px-4 py-3">
