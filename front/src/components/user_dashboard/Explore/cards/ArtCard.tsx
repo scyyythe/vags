@@ -246,7 +246,7 @@ const ArtCard = ({
   if (isHidden || isDeletedLocally) return null;
 
   return (
-    <div className="art-card h-full text-xs group animate-fadeIn rounded-xl bg-white hover:shadow-lg transition-all duration-300 border 1px border-gray-200 px-4 py-3">
+    <div className="art-card h-full text-xs group animate-fadeIn rounded-xl bg-white dark:bg-gray-800 hover:shadow-lg transition-all duration-300 border 1px border-gray-200 dark:border-gray-600 px-4 py-3">
       <div className="py-1 px-1 flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <Link to={`/userprofile/${artistId}`}>
@@ -255,13 +255,13 @@ const ArtCard = ({
               <AvatarFallback>{(translatedArtistName || "?").charAt(0)}</AvatarFallback>
             </Avatar>
           </Link>
-          <span className="text-[9px] font-medium">{translatedArtistName}</span>
+          <span className="text-[9px] font-medium text-gray-900 dark:text-gray-100">{translatedArtistName}</span>
         </div>
 
-        <div className="relative text-gray-500" style={{ height: "24px" }}>
+        <div className="relative text-gray-500 dark:text-gray-400" style={{ height: "24px" }}>
           <button
             onClick={() => setMenuOpen((prev) => !prev)}
-            className={`p-1 rounded-full ${menuOpen ? "border border-gray-300 text-black" : ""} ${
+            className={`p-1 rounded-full ${menuOpen ? "border border-gray-300 dark:border-gray-600 text-black dark:text-white" : ""} ${
               localIsReported ? "text-red-600" : ""
             }`}
           >
@@ -355,9 +355,9 @@ const ArtCard = ({
       >
         <div className="aspect-square overflow-hidden py-2 px-1">
           {imageError || (!artwork.artworkImage && !image_url) ? (
-            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex flex-col items-center justify-center text-gray-500">
-              <div className="w-12 h-12 mb-2 bg-gray-300 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-full h-full bg-gradient-to-br from-gray-100 dark:from-gray-700 to-gray-200 dark:to-gray-600 rounded-xl flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
+              <div className="w-12 h-12 mb-2 bg-gray-300 dark:bg-gray-600 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -367,8 +367,8 @@ const ArtCard = ({
                 </svg>
               </div>
               <div className="text-xs text-center px-2">
-                <div className="font-medium">Artwork by</div>
-                <div className="text-gray-600">{translatedArtistName}</div>
+                <div className="font-medium text-gray-900 dark:text-gray-100">Artwork by</div>
+                <div className="text-gray-600 dark:text-gray-300">{translatedArtistName}</div>
               </div>
             </div>
           ) : (
@@ -385,7 +385,7 @@ const ArtCard = ({
 
       <div className="px-1 py-1">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-medium">
+          <p className="text-xs font-medium text-gray-900 dark:text-gray-100">
             {translatedTitle
               ? translatedTitle.slice(0, 10) + (translatedTitle.length > 10 ? "..." : "")
               : translatedUntitledArtwork}
@@ -395,18 +395,18 @@ const ArtCard = ({
             <button
               onClick={handleLike}
               className={`p-1 rounded-full transition-colors ${
-                localIsLiked ? "text-red-600" : "text-gray-400 hover:text-red-600"
+                localIsLiked ? "text-red-600" : "text-gray-400 dark:text-gray-500 hover:text-red-600"
               }`}
               aria-label={localIsLiked ? translatedUnlike : translatedLike}
             >
               <Heart
                 size={15}
-                className={localIsLiked ? "text-red-600 fill-red-600" : "text-gray-800"}
+                className={localIsLiked ? "text-red-600 fill-red-600" : "text-gray-800 dark:text-gray-200"}
                 fill={localIsLiked ? "currentColor" : "none"}
               />
             </button>
 
-            <span className="text-[9px] text-gray-500">{likeCounts[id] ?? likesCount ?? 0}</span>
+            <span className="text-[9px] text-gray-500 dark:text-gray-400">{likeCounts[id] ?? likesCount ?? 0}</span>
 
             <div
               onClick={(e) => {
@@ -423,28 +423,28 @@ const ArtCard = ({
       {/* Owner Restriction Popup */}
       {showOwnerRestrictionPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-xs w-full p-6 text-center relative">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-xs w-full p-6 text-center relative">
             <div className="mb-4">
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-10 h-10 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-2">
+                <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
-              <h3 className="text-xs font-semibold text-gray-900 mb-2">
+              <h3 className="text-xs font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 {translatedCannotDonate}
               </h3>
-              <p className="text-[11px] text-gray-600 mb-2">
+              <p className="text-[11px] text-gray-600 dark:text-gray-300 mb-2">
                 {translatedCannotDonateToOwnArtwork}
               </p>
-              {/* <p className="text-[10px] text-gray-500">
+              {/* <p className="text-[10px] text-gray-500 dark:text-gray-400">
                 {translatedOwnerRestrictionMessage}
               </p> */}
             </div>
             <button
               onClick={() => setShowOwnerRestrictionPopup(false)}
-              className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
-              <X size={16} className="text-gray-500" />
+              <X size={16} className="text-gray-500 dark:text-gray-400" />
             </button>
           </div>
         </div>

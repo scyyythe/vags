@@ -70,7 +70,7 @@ const ArtVideoOutro = ({ artworks, onComplete }: ArtVideoOutroProps) => {
   if (!artworks[currentArtworkIndex]) return null;
 
   return (
-    <div className="relative w-full h-full mx-auto rounded-lg overflow-hidden border bg-white">
+    <div className="relative w-full h-full mx-auto rounded-lg overflow-hidden border bg-white dark:bg-gray-800">
       <ParticleBackground />
 
       {/* Fade transition wrapper */}

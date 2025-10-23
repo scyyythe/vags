@@ -174,19 +174,19 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background dark:bg-gray-900">
       <Header />
       <div className="container mx-auto px-4 pt-20 max-w-6xl">
         <div className="mb-8">
-          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
-            <i className="bx bx-chevron-left text-lg mr-2"></i>
+          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
+            <i className="bx bx-chevron-left text-lg mr-2 text-gray-900 dark:text-gray-100"></i>
             {createPostText}
           </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div
-            className="bg-gray-100 rounded-lg flex flex-col items-center justify-center p-8 h-[450px]"
+            className="bg-gray-100 dark:bg-gray-800 rounded-lg flex flex-col items-center justify-center p-8 h-[450px]"
             onDragOver={handleDragOver}
             onDrop={handleDrop}
           >
@@ -198,7 +198,7 @@ const CreatePost = () => {
                     setSelectedFile(null);
                     setPreviewUrl(null);
                   }}
-                  className="absolute top-2 right-2 bg-white rounded-full px-2"
+                  className="absolute top-2 right-2 bg-white dark:bg-gray-700 rounded-full px-2 text-gray-900 dark:text-gray-100"
                 >
                   ×
                 </button>
@@ -206,7 +206,7 @@ const CreatePost = () => {
             ) : (
               <div className="text-center">
                 <div className="mb-4">
-                  <div className="bg-white p-4 rounded-full inline-block">
+                  <div className="bg-white dark:bg-gray-700 p-4 rounded-full inline-block">
                     <img
                       width="50"
                       height="50"
@@ -215,15 +215,15 @@ const CreatePost = () => {
                     />
                   </div>
                 </div>
-                <p className="mb-2 text-sm font-medium">{chooseAFileOrDragAndDropItHereText}</p>
+                <p className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">{chooseAFileOrDragAndDropItHereText}</p>
                 <label
                   htmlFor="fileInput"
-                  className="cursor-pointer hover:bg-white inline-block mb-6 border border-gray-300 rounded-[6px] p-2 text-xs"
+                  className="cursor-pointer hover:bg-white dark:hover:bg-gray-600 inline-block mb-6 border border-gray-300 dark:border-gray-600 rounded-[6px] p-2 text-xs text-gray-900 dark:text-gray-100"
                 >
                   {chooseFileText}
                   <input type="file" id="fileInput" className="hidden" accept="image/*" onChange={handleFileChange} />
                 </label>
-                <p className="relative top-16 text-xs text-gray-500">
+                <p className="relative top-16 text-xs text-gray-500 dark:text-gray-400">
                   {weRecommendUsingHighQualityJpgFilesLessThan20MBText}
                 </p>
               </div>
@@ -233,10 +233,10 @@ const CreatePost = () => {
           <div>
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
-                <h2 className="text-sm font-medium mb-8">{provideArtworkDetailsText}</h2>
+                <h2 className="text-sm font-medium mb-8 text-gray-900 dark:text-gray-100">{provideArtworkDetailsText}</h2>
 
                 <div className="mb-6">
-                  <label htmlFor="title" className="block mb-4 text-xs">
+                  <label htmlFor="title" className="block mb-4 text-xs text-gray-900 dark:text-gray-100">
                     {artworkTitleText}
                   </label>
                   <Input
@@ -259,7 +259,7 @@ const CreatePost = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                   <div>
-                    <label htmlFor="style" className="block mb-4 text-xs">
+                    <label htmlFor="style" className="block mb-4 text-xs text-gray-900 dark:text-gray-100">
                       {artworkStyleText}
                     </label>
                     <Select value={artworkStyle} onValueChange={setArtworkStyle}>
@@ -277,7 +277,7 @@ const CreatePost = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="medium" className="block mb-4 text-xs">
+                    <label htmlFor="medium" className="block mb-4 text-xs text-gray-900 dark:text-gray-100">
                       {mediumText}
                     </label>
                     <Input
@@ -291,7 +291,7 @@ const CreatePost = () => {
                   </div>
 
                   <div className="relative">
-                    <label htmlFor="medium" className="block mb-4 text-xs">
+                    <label htmlFor="medium" className="block mb-4 text-xs text-gray-900 dark:text-gray-100">
                       {dimensionsText}
                     </label>
                     <div className="grid grid-cols-3">
@@ -304,9 +304,9 @@ const CreatePost = () => {
                           value={artworkHeight}
                           onChange={(e) => setArtworkHeight(e.target.value)}
                         />
-                        <label className="text-[9px] text-center mb-1">{heightText}</label>
+                        <label className="text-[9px] text-center mb-1 text-gray-900 dark:text-gray-100">{heightText}</label>
                       </div>
-                      <span className="h-5 w-5 font-bold text-sm flex items-center justify-center mx-auto mt-2">x</span>
+                      <span className="h-5 w-5 font-bold text-sm flex items-center justify-center mx-auto mt-2 text-gray-900 dark:text-gray-100">x</span>
                       <div className="flex flex-col">
                         <Input
                           type="number"
@@ -316,14 +316,14 @@ const CreatePost = () => {
                           value={artworkWidth}
                           onChange={(e) => setArtworkWidth(e.target.value)}
                         />
-                        <label className="text-[9px] text-center mb-1">{widthText}</label>
+                        <label className="text-[9px] text-center mb-1 text-gray-900 dark:text-gray-100">{widthText}</label>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="mb-6">
-                  <label htmlFor="description" className="block mb-4 text-xs">
+                  <label htmlFor="description" className="block mb-4 text-xs text-gray-900 dark:text-gray-100">
                     {aboutThisArtworkText}
                   </label>
                   <Textarea

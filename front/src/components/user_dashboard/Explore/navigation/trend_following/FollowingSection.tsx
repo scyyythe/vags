@@ -34,7 +34,7 @@ const FollowingSection = ({ onTip }: Props) => {
   const reportStatusLookup = reportStatus || {};
 
   if (error) {
-    return <p>Error loading followed artworks.</p>;
+    return <p className="text-gray-900 dark:text-gray-100">Error loading followed artworks.</p>;
   }
 
   return (
@@ -44,7 +44,7 @@ const FollowingSection = ({ onTip }: Props) => {
           {isLoading ? (
             Array.from({ length: 10 }).map((_, index) => <ArtCardSkeleton key={index} />)
           ) : !followedArtworks || followedArtworks.length === 0 ? (
-            <div className="text-sm text-gray-500 col-span-full">No artworks from followed artists.</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 col-span-full">No artworks from followed artists.</div>
           ) : (
             followedArtworks.map((art) => {
               const status = bulkStatusLookup[String(art.id)];

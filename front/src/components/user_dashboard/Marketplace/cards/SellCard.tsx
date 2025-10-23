@@ -207,7 +207,7 @@ const SellCard = ({
   return (
     <div
       onClick={onCardClick}
-      className={`sell-card h-full text-xs group rounded-xl bg-white hover:shadow-lg border border-gray-200 px-3 py-3 relative cursor-pointer z-0
+      className={`sell-card h-full text-xs group rounded-xl bg-white dark:bg-gray-800 hover:shadow-lg border border-gray-200 dark:border-gray-600 px-3 py-3 relative cursor-pointer z-0
         transition-all duration-300 ease-in-out transform 
         ${isFading ? "opacity-0 scale-95" : "opacity-100 scale-100"}
       `}
@@ -218,7 +218,7 @@ const SellCard = ({
         {/* SOLD OUT Overlay (only for non-owner users) */}
         {!isOwner && status === "sold" && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="bg-black/60 rounded-full px-6 py-6 flex items-center justify-center">
+            <div className="bg-black/60 dark:bg-gray-900/80 rounded-full px-6 py-6 flex items-center justify-center">
               <span className="text-white text-[12px] font-medium">{soldOutText}</span>
             </div>
           </div>
@@ -230,7 +230,7 @@ const SellCard = ({
             {/* Message Icon */}
             <button
               onClick={handleContact}
-              className="absolute top-2 right-9 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm"
+              className="absolute top-2 right-9 w-6 h-6 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-sm"
             >
               <img
                 src="https://img.icons8.com/?size=100&id=8h51YOzhBJmT&format=png&color=000000"
@@ -242,7 +242,7 @@ const SellCard = ({
             {/* Wishlist Icon */}
             <button
               onClick={toggleLike}
-              className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm"
+              className="absolute top-2 right-2 w-6 h-6 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-sm"
             >
               <img
                 src={
@@ -257,12 +257,12 @@ const SellCard = ({
           </>
         ) : (status === "active" || status === "onsale") && isOwner && isProfileView ? (
           // Show status badge for owner's own artworks in profile view
-          <div className="absolute top-2 right-2 bg-gray-100 border border-gray-300 text-[10px] text-gray-600 font-medium px-2 py-0.5 rounded-full">
+          <div className="absolute top-2 right-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-[10px] text-gray-600 dark:text-gray-300 font-medium px-2 py-0.5 rounded-full">
             {onSaleText}
           </div>
         ) : (
           // Show status badge for other statuses
-          <div className="absolute top-2 right-2 bg-gray-100 border border-gray-300 text-[10px] text-gray-600 font-medium px-2 py-0.5 rounded-full">
+          <div className="absolute top-2 right-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-[10px] text-gray-600 dark:text-gray-300 font-medium px-2 py-0.5 rounded-full">
             {status === "cancelled"
               ? cancelledText
               : status === "expired"
@@ -274,25 +274,25 @@ const SellCard = ({
         )}
 
         {edition !== "Original (1 of 1)" && rating !== undefined && (
-          <div className="absolute bottom-2 right-2 bg-white font-medium px-2 py-0.5 rounded-full flex items-center gap-1 shadow">
+          <div className="absolute bottom-2 right-2 bg-white dark:bg-gray-800 font-medium px-2 py-0.5 rounded-full flex items-center gap-1 shadow">
             <i className="bx bxs-star text-[10px] text-yellow-500"></i>
-            <span className="text-red-800 text-[9px]">{rating.toFixed(1)}</span>
+            <span className="text-red-800 dark:text-red-400 text-[9px]">{rating.toFixed(1)}</span>
           </div>
         )}
       </div>
 
       <div className="flex justify-between mt-3 items-center">
         <div className="flex items-center gap-2">
-          {price > 0 && <p className="text-sm font-bold text-gray-900">{formatPrice(price)}</p>}
+          {price > 0 && <p className="text-sm font-bold text-gray-900 dark:text-gray-100">{formatPrice(price)}</p>}
           {originalPrice > 0 && originalPrice !== price && (
-            <p className="text-xs line-through text-gray-400">{formatPrice(originalPrice)}</p>
+            <p className="text-xs line-through text-gray-400 dark:text-gray-500">{formatPrice(originalPrice)}</p>
           )}
         </div>
 
-        <div className="relative text-gray-500" style={{ height: "24px" }} onClick={(e) => e.stopPropagation()}>
+        <div className="relative text-gray-500 dark:text-gray-400" style={{ height: "24px" }} onClick={(e) => e.stopPropagation()}>
           <button
             onClick={handleMenuClick}
-            className={`p-1 rounded-full ${localIsReported ? "text-red-600" : menuOpen ? "text-black" : ""}`}
+            className={`p-1 rounded-full ${localIsReported ? "text-red-600" : menuOpen ? "text-black dark:text-white" : ""}`}
           >
             <MoreHorizontal size={14} />
           </button>
@@ -355,8 +355,8 @@ const SellCard = ({
 
       <div className="flex justify-between mt-1.5 items-center">
         <div className="flex flex-col">
-          <p className="text-[11px] font-medium mt-0.5 truncate max-w-[110px]">{translatedTitle}</p>
-          {status !== "active" && reason && <p className="text-[10px] text-red-600 mt-1">{reason}</p>}
+          <p className="text-[11px] font-medium mt-0.5 truncate max-w-[110px] text-gray-900 dark:text-gray-100">{translatedTitle}</p>
+          {status !== "active" && reason && <p className="text-[10px] text-red-600 dark:text-red-400 mt-1">{reason}</p>}
         </div>
 
         {status === "active" || status === "onsale" ? (

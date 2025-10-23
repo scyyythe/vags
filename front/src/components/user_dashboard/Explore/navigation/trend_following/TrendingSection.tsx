@@ -37,7 +37,7 @@ const TrendingFollowingSection = ({ onTip }: Props) => {
   const reportStatusLookup = reportStatus || {};
 
   if (trendingError) {
-    return <p>Error loading trending artworks.</p>;
+    return <p className="text-gray-900 dark:text-gray-100">Error loading trending artworks.</p>;
   }
   return (
     <div className="flex flex-col gap-12">
@@ -47,7 +47,7 @@ const TrendingFollowingSection = ({ onTip }: Props) => {
           {isTrendingLoading ? (
             Array.from({ length: 10 }).map((_, index) => <ArtCardSkeleton key={index} />)
           ) : !trendingArtworks || trendingArtworks.length === 0 ? (
-            <div className="text-sm text-gray-500 col-span-full">No trending artworks found.</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 col-span-full">No trending artworks found.</div>
           ) : (
             trendingArtworks.map((artwork) => {
               const status = bulkStatusLookup[String(artwork.id)];

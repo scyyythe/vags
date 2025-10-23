@@ -95,7 +95,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     <>
       <div
         ref={menuRef}
-        className={`absolute z-10 bg-gray-100 rounded-full py-1 px-1 shadow-md ${className || "-right-1 top-8"}`}
+        className={`absolute z-10 bg-gray-100 dark:bg-gray-800 rounded-full py-1 px-1 shadow-md ${className || "-right-1 top-8"}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start">
@@ -104,7 +104,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={onFavorite}
-              className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-2 rounded-full text-black dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               aria-label={favoriteText}
               onMouseEnter={() => setHoveredItem("favorite")}
               onMouseLeave={() => setHoveredItem(null)}
@@ -116,7 +116,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
               />
             </button>
             {hoveredItem === "favorite" && (
-              <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-10 text-[9px] text-center bg-black dark:bg-gray-900 text-white px-2 py-1 rounded whitespace-nowrap">
                 {favoriteText}
               </span>
             )}
@@ -126,7 +126,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={() => setShowShareModal(true)}
-              className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-2 rounded-full text-black dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               aria-label={shareText}
               onMouseEnter={() => setHoveredItem("share")}
               onMouseLeave={() => setHoveredItem(null)}
@@ -134,7 +134,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
               <Share2 size={10} fill={isShared ? "#ea384c" : "none"} stroke={isShared ? "#ea384c" : "currentColor"} />
             </button>
             {hoveredItem === "share" && (
-              <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-10 text-[9px] text-center bg-black dark:bg-gray-900 text-white px-2 py-1 rounded whitespace-nowrap">
                 {shareText}
               </span>
             )}
@@ -147,7 +147,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={onHide}
-              className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-2 rounded-full text-black dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               aria-label={isHidden ? unhideText : hideText}
               onMouseEnter={() => setHoveredItem("hide")}
               onMouseLeave={() => setHoveredItem(null)}
@@ -159,7 +159,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
               )}
             </button>
             {hoveredItem === "hide" && (
-              <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-10 text-[9px] text-center bg-black dark:bg-gray-900 text-white px-2 py-1 rounded whitespace-nowrap">
                 {isHidden ? unhideText : hideText}
               </span>
             )}
@@ -169,7 +169,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={() => setShowReportOptions(true)}
-              className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-2 rounded-full text-black dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               aria-label={reportText}
               onMouseEnter={() => setHoveredItem("report")}
               onMouseLeave={() => setHoveredItem(null)}
@@ -178,7 +178,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
             </button>
 
             {hoveredItem === "report" && (
-              <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-10 text-[9px] text-center bg-black dark:bg-gray-900 text-white px-2 py-1 rounded whitespace-nowrap">
                 {reportText}
               </span>
             )}
@@ -191,7 +191,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
                 onClick={(e) => {
                   undoArtworkReport(e, artworkId, onUndoReport, onUndoReportRevert);
                 }}
-                className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-full text-black dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 aria-label={undoReportText}
                 onMouseEnter={() => setHoveredItem("undoReport")}
                 onMouseLeave={() => setHoveredItem(null)}
@@ -199,7 +199,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
                 <Undo2 size={10} stroke="currentColor" />
               </button>
               {hoveredItem === "undoReport" && (
-                <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+                <span className="absolute left-10 text-[9px] text-center bg-black dark:bg-gray-900 text-white px-2 py-1 rounded whitespace-nowrap">
                   {undoReportText}
                 </span>
               )}

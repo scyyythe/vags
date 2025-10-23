@@ -19,8 +19,8 @@ const RelatedArtwork = ({ id, title, image, artist }: RelatedArtworkProps) => {
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300"></div>
       </div>
       <div className="mt-2">
-        <h3 className="text-sm font-medium truncate">{title}</h3>
-        <p className="text-xs text-gray-500 truncate">{artist}</p>
+        <h3 className="text-sm font-medium truncate text-gray-900 dark:text-gray-100">{title}</h3>
+        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{artist}</p>
       </div>
     </Link>
   );

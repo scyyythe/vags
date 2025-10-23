@@ -154,7 +154,7 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
     };
 
     return (
-      <div className={`mb-4 relative ${isReply ? "ml-8 border-l-2 border-gray-100 pl-4" : ""}`}>
+      <div className={`mb-4 relative ${isReply ? "ml-8 border-l-2 border-gray-100 dark:border-gray-700 pl-4" : ""}`}>
         <div className="flex items-start justify-between">
           <div className="flex items-start">
             <Avatar className={`${isMobile ? "h-4 w-4 " : "h-3 w-3"} mr-2`}>
@@ -166,29 +166,29 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
 
             <div>
               <div className="flex flex-col gap-1">
-                <p className={`${isMobile ? "text-[9px]" : "text-[9px]"} font-semibold`}>
+                <p className={`${isMobile ? "text-[9px]" : "text-[9px]"} font-semibold text-gray-900 dark:text-gray-100`}>
                   {comment.user?.first_name || "Unknown"} {comment.user?.last_name || ""}
                 </p>
                 <div className="flex items-center gap-2">
                   {isUserBlocked && (
-                    <span className="text-[8px] text-red-500 bg-red-100 px-1 py-0.5 rounded">{tBlocked}</span>
+                    <span className="text-[8px] text-red-500 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-1 py-0.5 rounded">{tBlocked}</span>
                   )}
                 </div>
               </div>
               <p
                 className={`${
                   isMobile ? "text-[10px]" : "text-[10px]"
-                } text-gray-700 mt-1 break-words whitespace-pre-wrap`}
+                } text-gray-700 dark:text-gray-300 mt-1 break-words whitespace-pre-wrap`}
               >
                 {translatedText}
               </p>
 
-              <div className={`flex items-center gap-2 ${isMobile ? "text-[9px]" : "text-[9px]"} text-gray-500 mt-1`}>
+              <div className={`flex items-center gap-2 ${isMobile ? "text-[9px]" : "text-[9px]"} text-gray-500 dark:text-gray-400 mt-1`}>
                 <span>{translatedTimeText}</span>
                 <span>·</span>
                 <button
                   onClick={() => handleReply(comment.id, comment.user.first_name)}
-                  className="hover:underline text-gray-500 flex items-center gap-1"
+                  className="hover:underline text-gray-500 dark:text-gray-400 flex items-center gap-1"
                 >
                   <Reply size={isMobile ? 12 : 10} />
                   {tReply}
@@ -207,18 +207,18 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
                 </button>
 
                 <div className="relative ml-1">
-                  <button onClick={() => toggleCommentMenu(comment.id)} className="p-1 text-gray-500 hover:text-black">
+                  <button onClick={() => toggleCommentMenu(comment.id)} className="p-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white">
                     <MoreHorizontal size={isMobile ? 12 : 12} />
                   </button>
 
                   {commentMenus[comment.id] && (
-                    <div className="absolute left-6 -top-3 w-[70px] bg-white rounded-sm shadow-md z-10 overflow-hidden">
+                    <div className="absolute left-6 -top-3 w-[70px] bg-white dark:bg-gray-800 rounded-sm shadow-md z-10 overflow-hidden">
                       {!isOwnComment &&
                         (isUserBlocked ? (
                           <button
                             className={`w-full text-left px-3 py-1 whitespace-nowrap ${
                               isMobile ? "text-[8px]" : "text-[8px]"
-                            } hover:bg-gray-100 hover:text-black`}
+                            } hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-black dark:hover:text-white text-gray-900 dark:text-gray-100`}
                             onClick={() => {
                               handleUnblockUser();
                               toggleCommentMenu(comment.id);
@@ -230,7 +230,7 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
                           <button
                             className={`w-full text-left px-3 py-1 whitespace-nowrap ${
                               isMobile ? "text-[8px]" : "text-[8px]"
-                            } hover:bg-gray-100 hover:text-black`}
+                            } hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-black dark:hover:text-white text-gray-900 dark:text-gray-100`}
                             onClick={() => {
                               handleBlockUser();
                               toggleCommentMenu(comment.id);
@@ -279,7 +279,7 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
             {!expandedReplies[comment.id] ? (
               <button
                 onClick={() => setExpandedReplies((prev) => ({ ...prev, [comment.id]: true }))}
-                className="text-gray-500 hover:text-gray-700 text-[10px] flex items-center gap-1"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-[10px] flex items-center gap-1"
               >
                 {tViewAllReplies} ({comment.replies.length})
               </button>
@@ -313,7 +313,7 @@ const CommentItem: React.FC<CommentItemProps> = React.memo(
                 ))}
                 <button
                   onClick={() => setExpandedReplies((prev) => ({ ...prev, [comment.id]: false }))}
-                  className="text-gray-500 hover:text-gray-700 text-[10px] mt-1 flex items-center gap-1"
+                  className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-[10px] mt-1 flex items-center gap-1"
                 >
                   {tHideReplies}
                 </button>
@@ -660,13 +660,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
             placeholder={tAddComment}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className={`w-full border border-gray-200 rounded-full px-4 py-2 ${
+            className={`w-full border border-gray-200 dark:border-gray-700 rounded-full px-4 py-2 ${
               isMobile ? "text-[10px]" : "text-[10px]"
-            } focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16`}
+            } focus:outline-none focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-600 pr-16 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
             <div className="relative">
-              <button type="button" className="text-gray-400" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+              <button type="button" className="text-gray-400 dark:text-gray-500" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
                 <i className="bx bx-smile"></i>
               </button>
               {showEmojiPicker && (
@@ -675,7 +675,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                   animate={{ opacity: 1, scale: 0.6, y: 0 }}
                   exit={{ opacity: 0, scale: 0.5, y: 10 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute bottom-10 right-0 z-50 origin-bottom-right rounded-md shadow-lg border border-gray-200 bg-white overflow-hidden"
+                  className="absolute bottom-10 right-0 z-50 origin-bottom-right rounded-md shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden"
                 >
                   <Picker
                     data={data}
@@ -693,7 +693,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
               type="submit"
               className={`
                 ${isMobile ? "text-sm" : "text-[10px]"} 
-                ${comment.trim() ? "text-black" : "text-gray-400"}
+                ${comment.trim() ? "text-black dark:text-gray-100" : "text-gray-400 dark:text-gray-500"}
               `}
               disabled={!comment.trim()}
             >
@@ -705,11 +705,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
       {/* Comments Modal */}
       {showCommentsModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg w-[90%] max-w-2xl max-h-[80vh] flex flex-col">
+          <div className="bg-white dark:bg-gray-800 rounded-lg w-[90%] max-w-2xl max-h-[80vh] flex flex-col">
             {/* Modal Header */}
             <div className="flex justify-between items-center px-4 py-3">
-              <h3 className="text-sm font-semibold">{tComments}</h3>
-              <button onClick={() => setShowCommentsModal(false)} className="text-gray-500 hover:text-gray-700 p-1">
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{tComments}</h3>
+              <button onClick={() => setShowCommentsModal(false)} className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 p-1">
                 <X size={16} />
               </button>
             </div>
@@ -748,13 +748,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
             <div className="px-4 pb-4">
               {/* Reply Context Display */}
               {modalReplyContext && (
-                <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 mb-3 rounded-lg">
+                <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 mb-3 rounded-lg">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <p className="text-[9px] text-gray-600 mb-1">
+                      <p className="text-[9px] text-gray-600 dark:text-gray-300 mb-1">
                         Replying to <span className="font-semibold">{modalReplyContext.user}</span>
                       </p>
-                      <p className="text-[9px] text-gray-700 line-clamp-2">{modalReplyContext.text}</p>
+                      <p className="text-[9px] text-gray-700 dark:text-gray-300 line-clamp-2">{modalReplyContext.text}</p>
                     </div>
                     <button
                       type="button"
@@ -763,7 +763,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                         setModalReplyingTo(null);
                         setModalComment("");
                       }}
-                      className="text-gray-400 hover:text-gray-600 ml-2"
+                      className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 ml-2"
                     >
                       <X size={14} />
                     </button>
@@ -778,13 +778,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                   placeholder={tAddComment}
                   value={modalComment}
                   onChange={(e) => setModalComment(e.target.value)}
-                  className={`w-full border border-gray-200 rounded-full px-4 py-2 ${
+                  className={`w-full border border-gray-200 dark:border-gray-700 rounded-full px-4 py-2 ${
                     isMobile ? "text-[10px]" : "text-[10px]"
-                  } focus:outline-none focus:ring-1 focus:ring-gray-300 pr-16`}
+                  } focus:outline-none focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-600 pr-16 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
                   <div className="relative">
-                    <button type="button" className="text-gray-400" onClick={() => setModalShowEmojiPicker(!modalShowEmojiPicker)}>
+                    <button type="button" className="text-gray-400 dark:text-gray-500" onClick={() => setModalShowEmojiPicker(!modalShowEmojiPicker)}>
                       <i className="bx bx-smile"></i>
                     </button>
                     {modalShowEmojiPicker && (
@@ -793,7 +793,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                         animate={{ opacity: 1, scale: 0.6, y: 0 }}
                         exit={{ opacity: 0, scale: 0.5, y: 10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute bottom-10 right-0 z-50 origin-bottom-right rounded-md shadow-lg border border-gray-200 bg-white overflow-hidden"
+                        className="absolute bottom-10 right-0 z-50 origin-bottom-right rounded-md shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden"
                       >
                         <Picker
                           data={data}
@@ -811,7 +811,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                     type="submit"
                     className={`
                       ${isMobile ? "text-sm" : "text-[10px]"} 
-                      ${modalComment.trim() ? "text-black" : "text-gray-400"}
+                      ${modalComment.trim() ? "text-black dark:text-gray-100" : "text-gray-400 dark:text-gray-500"}
                     `}
                     disabled={!modalComment.trim()}
                   >

@@ -108,7 +108,7 @@ const Header = () => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border/50">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-border/50 dark:border-gray-700/50">
       <div className="container mx-auto px-2 sm:px-4 flex items-center h-16 gap-2 sm:gap-4">
         {/* Left Section: Logo + Hamburger + Nav */}
         <div className="flex items-center gap-2 flex-grow md:flex-grow-0">
@@ -126,7 +126,7 @@ const Header = () => {
           {/* Nav Links (desktop only) */}
           <nav className="hidden md:flex items-center space-x-16 text-xs ml-16">
             {navLinks.map(({ route, label }) => (
-              <NavLink key={route} to={route} className={({ isActive }) => `${isActive ? "font-semibold" : ""}`}>
+              <NavLink key={route} to={route} className={({ isActive }) => `${isActive ? "font-semibold text-gray-900 dark:text-white" : "text-gray-700 dark:text-gray-300"}`}>
                 {label}
               </NavLink>
             ))}
@@ -136,7 +136,7 @@ const Header = () => {
         {/* Right Section: Search + Chat + Notifications + Profile */}
         <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
           {/* Desktop SearchBar */}
-          <div className="hidden md:block w-[250px] border border-gray-400 rounded-full px-3">
+          <div className="hidden md:block w-[250px] border border-gray-400 dark:border-gray-600 rounded-full px-3 bg-white dark:bg-gray-800">
             <SearchBar onSearchChange={handleSearchChange} />
           </div>
 
@@ -168,11 +168,11 @@ const Header = () => {
                     damping: 30,
                     duration: 0.3 
                   }}
-                  className="flex items-center bg-white border border-gray-300 rounded-full shadow-md w-60 px-3 py-0.5"
+                  className="flex items-center bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full shadow-md w-60 px-3 py-0.5"
                 >
                   <SearchBar onSearchChange={handleSearchChange} />
                   <button
-                    className="ml-2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+                    className="ml-2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                     onClick={() => setIsSearchOpen(false)}
                     title={useAutoTranslation("Close search", language)}
                   >
@@ -262,11 +262,11 @@ const Header = () => {
           {/* Profile Avatar + Dropdown */}
           <div className="relative flex items-center" ref={avatarRef}>
             <Link to={`/userprofile/${userId}`}>
-              <div className="h-7 w-7 rounded-full overflow-hidden border cursor-pointer flex items-center justify-center bg-gray-300">
+              <div className="h-7 w-7 rounded-full overflow-hidden border cursor-pointer flex items-center justify-center bg-gray-300 dark:bg-gray-600">
                 {profilePicture ? (
                   <img src={profilePicture} alt="Avatar" className="h-full w-full object-cover" />
                 ) : (
-                  <span className="text-black">{firstName?.charAt(0).toUpperCase()}</span>
+                  <span className="text-black dark:text-white">{firstName?.charAt(0).toUpperCase()}</span>
                 )}
               </div>
             </Link>
@@ -312,7 +312,7 @@ const Header = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden bg-white shadow px-4 py-4 space-y-3"
+            className="md:hidden bg-white dark:bg-gray-900 shadow px-4 py-4 space-y-3"
           >
             {navLinks.map(({ route, label }) => (
               <NavLink
@@ -320,7 +320,7 @@ const Header = () => {
                 to={route}
                 onClick={() => setIsMenuOpen(false)}
                 className={({ isActive }) =>
-                  `block text-center text-xs py-2 rounded ${isActive ? "font-semibold text-black" : "text-gray-700"}`
+                  `block text-center text-xs py-2 rounded ${isActive ? "font-semibold text-black dark:text-white" : "text-gray-700 dark:text-gray-300"}`
                 }
               >
                 {label}

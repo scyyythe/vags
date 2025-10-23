@@ -260,14 +260,14 @@ const TipJarPopup = ({
       <div
         ref={popupRef}
         className={cn(
-          "bg-white rounded-lg w-full shadow-xl overflow-hidden animate-fadeIn relative",
+          "bg-white dark:bg-gray-800 rounded-lg w-full shadow-xl overflow-hidden animate-fadeIn relative",
           step === "confirm" ? "max-w-[350px]" : "max-w-sm"
         )}
       >
         {step === "amount" && (
           <button
             onClick={handleCancel}
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10"
+            className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 z-10"
             aria-label={closeText}
           >
             <X size={18} />
@@ -279,7 +279,7 @@ const TipJarPopup = ({
             {/* Close Button */}
             <button
               onClick={handleCancel}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               aria-label={closeText}
             >
               <X size={14} />
@@ -288,43 +288,43 @@ const TipJarPopup = ({
             {/* If NO PayPal account */}
             {paymentMethod === "PayPal" && !default_paypal_email ? (
               <div>
-                <p className="text-md font-semibold text-red-700 mb-3">{unavailableText}</p>
-                <p className="text-xs font-medium text-gray-800">{ownerNoPayPalText}</p>
-                <p className="text-[10px] text-gray-500 mt-2">{tryDifferentMethodText}</p>
+                <p className="text-md font-semibold text-red-700 dark:text-red-400 mb-3">{unavailableText}</p>
+                <p className="text-xs font-medium text-gray-800 dark:text-gray-200">{ownerNoPayPalText}</p>
+                <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-2">{tryDifferentMethodText}</p>
               </div>
             ) : (
               <>
                 {/* If account EXISTS */}
-                <h2 className="text-md font-bold mb-6">{confirmDonationText}</h2>
+                <h2 className="text-md font-bold mb-6 text-gray-900 dark:text-gray-100">{confirmDonationText}</h2>
 
                 <div className="p-4 rounded-md mb-2 space-y-4">
                   {/* Artist */}
                   <div className="flex justify-between items-center">
-                    <p className="text-[11px] text-black">{toText}</p>
-                    <p className="text-[12px] font-medium text-right">{translatedArtistName}</p>
+                    <p className="text-[11px] text-black dark:text-gray-100">{toText}</p>
+                    <p className="text-[12px] font-medium text-right text-gray-900 dark:text-gray-100">{translatedArtistName}</p>
                   </div>
 
-                  <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+                  <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-600 to-transparent"></div>
 
                   {/* Amount */}
                   <div className="flex justify-between items-center">
-                    <p className="text-[11px] text-black">{amountText}</p>
-                    <p className="text-lg font-bold text-red-700 text-right">
+                    <p className="text-[11px] text-black dark:text-gray-100">{amountText}</p>
+                    <p className="text-lg font-bold text-red-700 dark:text-red-400 text-right">
                       {formatTipCurrency(parseFloat(selectedAmount || customAmount))}
                     </p>
                   </div>
 
-                  <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+                  <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-600 to-transparent"></div>
 
                   {/* Payment Method + Detail */}
                   <div className="flex justify-between items-start">
-                    <p className="text-[11px] text-black mt-1">{paymentMethodText}</p>
+                    <p className="text-[11px] text-black dark:text-gray-100 mt-1">{paymentMethodText}</p>
                     <div className="flex flex-col items-end">
                       <div className="flex items-center gap-2">
                         {paymentMethod === "PayPal" && <img src={paypalLogo} className="w-4 h-4" />}
                         {paymentMethod === "GCash" && <img src={gcashLogo} className="w-4 h-4" />}
                         {paymentMethod === "Stripe" && <img src={stripeLogo} className="w-4 h-4" />}
-                        <span className="text-xs font-medium">
+                        <span className="text-xs font-medium text-gray-900 dark:text-gray-100">
                           {paymentMethod === "PayPal" ? paypalText : paymentMethod === "GCash" ? gcashText : stripeText}
                         </span>
                       </div>
@@ -335,14 +335,14 @@ const TipJarPopup = ({
                   {paymentMethod === "GCash" ? (
                     gcashAccount ? (
                       <div className="flex flex-col items-center justify-center mt-4 w-full">
-                        <p className="text-[11px] text-gray-700 mt-1">{scanQrText}</p>
+                        <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1">{scanQrText}</p>
 
                         {/* QR container with hover expand button */}
                         <div className="relative group mt-2">
                           <img
                             src={qrCodeUrl}
                             alt="GCash QR Code"
-                            className="w-48 h-48 text-xs rounded-md border border-gray-200 object-cover"
+                            className="w-48 h-48 text-xs rounded-md border border-gray-200 dark:border-gray-600 object-cover"
                           />
 
                           {/* Hidden by default, appears on hover */}
@@ -359,21 +359,21 @@ const TipJarPopup = ({
                           </button>
                         </div>
 
-                        <p className="text-xs text-black text-center font-medium mt-2">
+                        <p className="text-xs text-black dark:text-gray-100 text-center font-medium mt-2">
                           {" "}
                           {gcashAccount?.account_info || "09XX-XXX-XXXX"}
                         </p>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center justify-center mt-6 text-center text-gray-600">
-                        <p className="text-md font-semibold text-red-700 mb-2">{unavailableText}</p>
-                        <p className="text-xs font-medium">{noGcashDetailsText}</p>
-                        <p className="text-[10px] text-gray-500 mt-1">{tryPayPalStripeText}</p>
+                      <div className="flex flex-col items-center justify-center mt-6 text-center text-gray-600 dark:text-gray-400">
+                        <p className="text-md font-semibold text-red-700 dark:text-red-400 mb-2">{unavailableText}</p>
+                        <p className="text-xs font-medium text-gray-800 dark:text-gray-200">{noGcashDetailsText}</p>
+                        <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">{tryPayPalStripeText}</p>
                       </div>
                     )
                   ) : (
                     <div className="flex items-end justify-end">
-                      <p className="text-[11px] text-gray-700">
+                      <p className="text-[11px] text-gray-700 dark:text-gray-300">
                         {paymentMethod === "PayPal" && default_paypal_email}
                         {paymentMethod === "Stripe" && stripePlaceholderText}
                       </p>
@@ -404,21 +404,21 @@ const TipJarPopup = ({
         ) : (
           <div className="py-6 px-16">
             <div className="text-center mb-4">
-              <h2 className="text-xl font-bold">{translatedArtworkTitle}</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{translatedArtworkTitle}</h2>
 
               <div className="flex justify-center my-4">
-                <div className="w-16 h-16 rounded-sm overflow-hidden border border-gray-200 shadow-lg">
+                <div className="w-16 h-16 rounded-sm overflow-hidden border border-gray-200 dark:border-gray-600 shadow-lg">
                   {artworkImage ? (
                     <img src={artworkImage} alt={artworkTitle} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
+                    <div className="w-full h-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-400 dark:text-gray-500">
                       {noImageText}
                     </div>
                   )}
                 </div>
               </div>
 
-              <p className="text-gray-600 text-xs mb-6">{howMuchDonateText}</p>
+              <p className="text-gray-600 dark:text-gray-300 text-xs mb-6">{howMuchDonateText}</p>
 
               <div className="grid grid-cols-3 gap-2 mb-4">
                 {predefinedAmounts.slice(0, 3).map((amount) => (
@@ -429,10 +429,10 @@ const TipJarPopup = ({
                     className={cn(
                       "py-2 px-4 rounded-sm text-[10px] font-medium transition-colors",
                       isOwner 
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
                         : selectedAmount === amount.value
                         ? "bg-[#B5191D] text-white"
-                        : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                        : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200"
                     )}
                   >
                     {amount.label}
@@ -449,10 +449,10 @@ const TipJarPopup = ({
                     className={cn(
                       "py-2 px-4 rounded-sm text-[10px] font-medium transition-colors",
                       isOwner 
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
                         : selectedAmount === amount.value
                         ? "bg-[#B5191D] text-white"
-                        : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                        : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200"
                     )}
                   >
                     {amount.label}
@@ -462,9 +462,9 @@ const TipJarPopup = ({
 
               {/* Divider */}
               <div className="relative flex items-center justify-center mb-5">
-                <div className="flex-grow border-t border-gray-400"></div>
-                <span className="flex-shrink mx-4 text-gray-500 text-xs">{orText}</span>
-                <div className="flex-grow border-t border-gray-400"></div>
+                <div className="flex-grow border-t border-gray-400 dark:border-gray-600"></div>
+                <span className="flex-shrink mx-4 text-gray-500 dark:text-gray-400 text-xs">{orText}</span>
+                <div className="flex-grow border-t border-gray-400 dark:border-gray-600"></div>
               </div>
 
               <input
@@ -474,20 +474,20 @@ const TipJarPopup = ({
                 placeholder={enterAmountManuallyText}
                 disabled={isOwner}
                 className={cn(
-                  "w-full p-2 text-[10px] border rounded-sm text-center mb-6",
+                  "w-full p-2 text-[10px] border rounded-sm text-center mb-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100",
                   isOwner 
-                    ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed" 
-                    : "border-gray-300"
+                    ? "border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed" 
+                    : "border-gray-300 dark:border-gray-600"
                 )}
               />
 
               <div className="mb-6">
-                <p className="text-left text-xs font-medium mb-4">{paymentMethodLabelText}</p>
+                <p className="text-left text-xs font-medium mb-4 text-gray-900 dark:text-gray-100">{paymentMethodLabelText}</p>
                 <div className="flex flex-col gap-1">
                   <label className={cn("flex items-center justify-between", isOwner && "opacity-50 cursor-not-allowed")}>
                     <div className="flex gap-4">
                       <img src={paypalLogo} className="w-6 h-6" />
-                      <span className="text-[10px] mt-1">{paypalText}</span>
+                      <span className="text-[10px] mt-1 text-gray-900 dark:text-gray-100">{paypalText}</span>
                     </div>
                     <input
                       type="radio"
@@ -500,7 +500,7 @@ const TipJarPopup = ({
                   <label className={cn("flex items-center justify-between", isOwner && "opacity-50 cursor-not-allowed")}>
                     <div className="flex gap-4">
                       <img src={gcashLogo} className="w-6 h-6" />
-                      <span className="text-[10px] mt-1">{gcashText}</span>
+                      <span className="text-[10px] mt-1 text-gray-900 dark:text-gray-100">{gcashText}</span>
                     </div>
                     <input
                       type="radio"
@@ -513,7 +513,7 @@ const TipJarPopup = ({
                   <label className={cn("flex items-center justify-between", isOwner && "opacity-50 cursor-not-allowed")}>
                     <div className="flex gap-4">
                       <img src={stripeLogo} className="w-6 h-6" />
-                      <span className="text-[10px] mt-1">{stripeText}</span>
+                      <span className="text-[10px] mt-1 text-gray-900 dark:text-gray-100">{stripeText}</span>
                     </div>
                     <input
                       type="radio"
@@ -528,9 +528,9 @@ const TipJarPopup = ({
 
               {isOwner ? (
                 <div className="text-center">
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-                    <p className="text-red-700 text-sm font-medium mb-2">{cannotDonateToOwnArtworkText}</p>
-                    <p className="text-red-600 text-xs">{ownerRestrictionText}</p>
+                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+                    <p className="text-red-700 dark:text-red-400 text-sm font-medium mb-2">{cannotDonateToOwnArtworkText}</p>
+                    <p className="text-red-600 dark:text-red-400 text-xs">{ownerRestrictionText}</p>
                   </div>
                   <Button
                     disabled
@@ -555,10 +555,10 @@ const TipJarPopup = ({
       {/* PayPal payment step */}
       {step === "paypal" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
-            <h2 className="text-xs font-small mb-4">Pay with PayPal</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6 text-center">
+            <h2 className="text-xs font-small mb-4 text-gray-900 dark:text-gray-100">Pay with PayPal</h2>
             <div ref={paypalRef} className="mx-auto" />
-            <button onClick={() => setStep("amount")} className="mt-4 text-xs text-gray-500 underline">
+            <button onClick={() => setStep("amount")} className="mt-4 text-xs text-gray-500 dark:text-gray-400 underline">
               Cancel and go back
             </button>
           </div>
@@ -569,10 +569,10 @@ const TipJarPopup = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center overflow-hidden">
           <button
             onClick={() => setIsQrExpanded(false)}
-            className="absolute top-4 right-6 z-[60] bg-white rounded-full p-1.5 shadow-md transition-colors duration-200"
+            className="absolute top-4 right-6 z-[60] bg-white dark:bg-gray-800 rounded-full p-1.5 shadow-md transition-colors duration-200"
             aria-label="Close expanded QR"
           >
-            <X className="w-4 h-4 text-gray-900" />
+            <X className="w-4 h-4 text-gray-900 dark:text-gray-100" />
           </button>
 
           <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">

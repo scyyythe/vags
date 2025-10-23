@@ -98,13 +98,13 @@ const Exhibits = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background dark:bg-gray-900">
         <Header />
 
         <div className="container mx-auto px-6">
           <ActiveAccountOnly>
             <div className="mb-8 mt-20">
-              <span className="font-bold">{exhibitsText}</span>
+              <span className="font-bold text-gray-900 dark:text-white">{exhibitsText}</span>
 
               <div className="flex flex-wrap items-center justify-between gap-4 my-4">
                 {/* SOLO / COLLAB TOGGLE */}
@@ -113,8 +113,8 @@ const Exhibits = () => {
                     onClick={() => setBaseType("solo")}
                     className={`py-[5px] px-4 rounded-full text-[10px] font-small transition-colors ${
                       baseType === "solo"
-                        ? "border border-gray-300 font-medium shadow-md"
-                        : "bg-white border border-gray-200 hover:bg-gray-100"
+                        ? "border border-gray-300 dark:border-gray-600 font-medium shadow-md bg-gray-100 dark:bg-gray-700"
+                        : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
                     }`}
                   >
                     {soloText}
@@ -123,8 +123,8 @@ const Exhibits = () => {
                     onClick={() => setBaseType("collab")}
                     className={`py-[5px] px-4 rounded-full text-[10px] font-small transition-colors ${
                       baseType === "collab"
-                        ? "border border-gray-300 font-medium shadow-md"
-                        : "bg-white border border-gray-200 hover:bg-gray-100"
+                        ? "border border-gray-300 dark:border-gray-600 font-medium shadow-md bg-gray-100 dark:bg-gray-700"
+                        : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
                     }`}
                   >
                     {collabText}
@@ -139,7 +139,7 @@ const Exhibits = () => {
                   {/* Filter Dropdown */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="py-1 px-4 rounded-full text-[10px] border border-gray-300">
+                      <button className="py-1 px-4 rounded-full text-[10px] border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                         <i className="bx bx-sort text-xs mr-1.5"></i>
                         {{
                           trending: trendingText,

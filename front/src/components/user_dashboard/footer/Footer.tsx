@@ -17,9 +17,9 @@ export function Footer() {
     languages.find((lang) => lang.code === selectedLanguage)?.name || "English";
 
   return (
-    <div className="w-[100%] bg-gray-100 py-2">
+    <div className="w-[100%] bg-gray-100 dark:bg-gray-800 py-2">
       <div className="container flex items-center justify-between px-4 md:px-6">
-        <div className="flex gap-4 text-[10px] text-muted-foreground">
+        <div className="flex gap-4 text-[10px] text-muted-foreground dark:text-gray-400">
             <a href="/privacy" className="hover:text-foreground transition-colors">
                 {privacyPolicyLabel}
             </a>
@@ -28,13 +28,13 @@ export function Footer() {
             </a>
         </div>
         
-        <div className="text-[10px] text-muted-foreground">
+        <div className="text-[10px] text-muted-foreground dark:text-gray-400">
             &copy;{currentYear} {allRightsReservedLabel}
         </div>
 
         <div className="flex items-center gap-4">
           <div className="flex items-center">
-            <span className="text-[10px] text-muted-foreground mr-2">{currentLanguageName}</span>
+            <span className="text-[10px] text-muted-foreground dark:text-gray-400 mr-2">{currentLanguageName}</span>
             <i className='bx bx-world text-gray-400' ></i>
           </div>
           <ThemeToggle />

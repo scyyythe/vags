@@ -142,7 +142,7 @@ const Bidding = () => {
   }, [biddingArtworks]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background dark:bg-gray-900">
       <Header />
       <div className="container mx-auto px-4 sm:px-6 pt-20">
         <ActiveAccountOnly>
@@ -158,8 +158,8 @@ const Bidding = () => {
                 {/* Incoming Auctions */}
                 <button
                   onClick={() => setShowIncoming((prev) => !prev)}
-                  className={`px-3 rounded-full border border-gray-300 transition-all text-[10px] 
-                    ${showIncoming ? "shadow-md font-medium" : "bg-white"}`}
+                  className={`px-3 rounded-full border border-gray-300 dark:border-gray-600 transition-all text-[10px] 
+                    ${showIncoming ? "shadow-md font-medium bg-gray-100 dark:bg-gray-700" : "bg-white dark:bg-gray-800"}`}
                 >
                   {upcomingText}
                 </button>

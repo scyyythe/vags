@@ -109,12 +109,12 @@ const BidCard: React.FC<BidCardProps> = ({
 
   if (isLoading) {
     return (
-      <div className="w-full rounded-2xl overflow-hidden shadow-lg bg-white animate-pulse p-4">
-        <div className="w-full h-36 bg-gray-300 rounded-xl mb-4"></div>
-        <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
+      <div className="w-full rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-gray-800 animate-pulse p-4">
+        <div className="w-full h-36 bg-gray-300 dark:bg-gray-600 rounded-xl mb-4"></div>
+        <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2 mb-2"></div>
         <div className="flex items-center justify-between mt-4">
-          <div className="h-4 bg-gray-300 rounded w-1/3"></div>
-          <div className="h-8 bg-gray-300 rounded-full w-24"></div>
+          <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/3"></div>
+          <div className="h-8 bg-gray-300 dark:bg-gray-600 rounded-full w-24"></div>
         </div>
       </div>
     );
@@ -178,7 +178,7 @@ const BidCard: React.FC<BidCardProps> = ({
     <>
       <div
         onClick={onClick}
-        className="w-full rounded-xl bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
+        className="w-full rounded-xl bg-white dark:bg-gray-800 hover:shadow-lg transition-all duration-300 cursor-pointer"
       >
         <div className="relative">
           <img
@@ -192,9 +192,9 @@ const BidCard: React.FC<BidCardProps> = ({
             {new Date() < new Date(data.start_time) ? (
               <div className="absolute top-3.5 left-0 whitespace-nowrap">
                 {/* Incoming auction timer only */}
-                <div className="text-gray-600 text-left bg-white bg-opacity-60 text-[9px] px-3 py-1 rounded-[5px]">
+                <div className="text-gray-600 dark:text-gray-300 text-left bg-white dark:bg-gray-800 bg-opacity-60 dark:bg-opacity-80 text-[9px] px-3 py-1 rounded-[5px]">
                   <p className="text-[9px]">{auctionWillStartText}</p>
-                  <p className="text-[10px] font-semibold text-black mt-0.5">
+                  <p className="text-[10px] font-semibold text-black dark:text-white mt-0.5">
                     {new Date(data.start_time).toLocaleString("en-PH", {
                       year: "numeric",
                       month: "long",
@@ -225,7 +225,7 @@ const BidCard: React.FC<BidCardProps> = ({
                 e.stopPropagation();
                 setMenuOpen((prev) => !prev);
               }}
-              className="relative top-1.5 right-1 p-1 rounded-full text-black bg-white bg-opacity-60 hover:bg-opacity-40"
+              className="relative top-1.5 right-1 p-1 rounded-full text-black dark:text-white bg-white dark:bg-gray-800 bg-opacity-60 dark:bg-opacity-80 hover:bg-opacity-40 dark:hover:bg-opacity-60"
             >
               <MoreHorizontal size={13} />
             </button>
@@ -282,19 +282,19 @@ const BidCard: React.FC<BidCardProps> = ({
 
           {/* Bottom overlay with title, current bid and button */}
           <div className="absolute bottom-3 left-3 right-3">
-            <div className="bg-white bg-opacity-60 backdrop-blur-[3px] h-[69px] px-6 flex items-center justify-between rounded-lg">
+            <div className="bg-white dark:bg-gray-800 bg-opacity-60 dark:bg-opacity-80 backdrop-blur-[3px] h-[69px] px-6 flex items-center justify-between rounded-lg">
               <div className="flex flex-col justify-center">
                 <h2
-                  className="text-xs font-semibold truncate max-w-[100px]"
+                  className="text-xs font-semibold truncate max-w-[100px] text-gray-900 dark:text-gray-100"
                   title={translatedTitle || data.artwork.title}
                 >
                   {translatedTitle || data.artwork.title}
                 </h2>
 
-                <div className="text-gray-700 text-[9px] flex items-center gap-2">
+                <div className="text-gray-700 dark:text-gray-300 text-[9px] flex items-center gap-2">
                   <span>
                     {hasWon ? yourBidText : currentBidText}{" "}
-                    <span className="text-black text-sm font-bold ml-2">
+                    <span className="text-black dark:text-white text-sm font-bold ml-2">
                       {data.highest_bid?.amount ? formatNumber(data.highest_bid.amount) : "0"}
                     </span>
                   </span>
