@@ -223,11 +223,11 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
       }}
     >
       <DialogContent
-        className="max-w-4xl max-h-[90vh] overflow-y-auto order-details-scrollbar-hidden"
+        className="max-w-4xl max-h-[90vh] overflow-y-auto order-details-scrollbar-hidden bg-white dark:bg-gray-800"
         onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between text-sm mt-3">
+          <DialogTitle className="flex items-center justify-between text-sm mt-3 text-gray-900 dark:text-gray-100">
             <span>{viewType === "seller" ? saleDetailsText : orderDetailsText}</span>
             <div className="flex items-center gap-2">
               <Badge className={`${getStatusColor(order.status || "unknown")} text-white text-[10px]`}>
@@ -241,8 +241,8 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Artwork Section */}
-            <div className="border border-border rounded-lg p-4">
-              <h3 className="font-semibold text-sm mb-4 flex items-center gap-2">
+            <div className="border border-border dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-700">
+              <h3 className="font-semibold text-sm mb-4 flex items-center gap-2 text-gray-900 dark:text-gray-100">
                 <Palette className="w-2.5 h-2.5" />
                 {artworkDetailsText}
               </h3>
@@ -253,10 +253,10 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   className="w-24 h-24 rounded-md object-cover"
                 />
                 <div className="flex-1">
-                  <h4 className="font-semibold text-xs text-foreground mb-0.5">
+                  <h4 className="font-semibold text-xs text-foreground dark:text-gray-100 mb-0.5">
                     {order.title ? <TranslatedText text={order.title} /> : untitledText}
                   </h4>
-                  <p className="text-[10px] text-black mb-2">
+                  <p className="text-[10px] text-black dark:text-gray-300 mb-2">
                     {viewType === "seller" ? (
                       <>
                         {soldToText} {order.buyer ? <TranslatedText text={order.buyer} /> : unknownText}

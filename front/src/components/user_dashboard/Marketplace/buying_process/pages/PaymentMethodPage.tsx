@@ -38,15 +38,17 @@ const PaymentMethodPage = () => {
   }, []); // Remove fetchAccounts from dependency array to prevent infinite calls
 
   return (
-    <PaymentMethod
-      accounts={accounts}
-      loading={loading}
-      onBack={() => navigate("/shipping")}
-      onContinue={(formData) => {
-        console.log(paymentFormSubmittedText, formData);
-        
-      }}
-    />
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      <PaymentMethod
+        accounts={accounts}
+        loading={loading}
+        onBack={() => navigate("/shipping")}
+        onContinue={(formData) => {
+          console.log(paymentFormSubmittedText, formData);
+          
+        }}
+      />
+    </div>
   );
 };
 

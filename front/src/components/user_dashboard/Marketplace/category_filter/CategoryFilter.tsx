@@ -43,8 +43,8 @@ const CategoryFilter = ({ categories, onSelectCategory }: CategoryFilterProps) =
           key={category}
           className={`py-1 px-4 rounded-full text-[10px] font-small transition-colors ${
             selectedCategory === category
-              ? "border border-gray-300 font-medium shadow-md"
-              : "bg-white border border-gray-200 hover:bg-gray-100"
+              ? "border border-gray-300 dark:border-gray-600 font-medium shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 dark:shadow-white/20"
+              : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
           }`}
           onClick={() => handleCategoryClick(category)}
         >

@@ -192,9 +192,9 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-2xl bg-white dark:bg-gray-800" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between text-sm">
+          <DialogTitle className="flex items-center justify-between text-sm text-gray-900 dark:text-gray-100">
             <span>{paymentDetailsText}</span>
           </DialogTitle>
         </DialogHeader>
@@ -203,16 +203,16 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <div className="flex items-center gap-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
-                <span className="text-sm text-gray-600">{loadingPaymentDetailsText}</span>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 dark:border-gray-100"></div>
+                <span className="text-sm text-gray-600 dark:text-gray-300">{loadingPaymentDetailsText}</span>
               </div>
             </div>
           ) : (
             <>
               {/* Artwork Information */}
               {normalizedPayment.artwork && (
-                <div className="border border-border rounded-lg p-4">
-                  <h3 className="font-semibold text-xs mb-3">{artworkPurchasedText}</h3>
+                <div className="border border-border dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-700">
+                  <h3 className="font-semibold text-xs mb-3 text-gray-900 dark:text-gray-100">{artworkPurchasedText}</h3>
                   <div className="flex items-center gap-3">
                     {normalizedPayment.artwork.image && (
                       <img
@@ -222,7 +222,7 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
                       />
                     )}
                     <div>
-                      <p className="text-xs font-medium">
+                      <p className="text-xs font-medium text-gray-900 dark:text-gray-100">
                         <TranslatedText text={normalizedPayment.artwork.title} />
                       </p>
                     </div>
@@ -231,19 +231,19 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
               )}
 
               {/* Payment Summary */}
-              <div className="border border-border rounded-lg p-4">
-                <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
+              <div className="border border-border dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-700">
+                <h3 className="font-semibold text-xs mb-4 flex items-center gap-2 text-gray-900 dark:text-gray-100">
                   <DollarSign className="w-2.5 h-2.5" />
                   {paymentSummaryText}
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">{transactionIdText}</span>
-                    <span className="text-xs font-mono">{normalizedPayment.transactionId}</span>
+                    <span className="text-xs text-muted-foreground dark:text-gray-400">{transactionIdText}</span>
+                    <span className="text-xs font-mono text-gray-900 dark:text-gray-100">{normalizedPayment.transactionId}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">{amountPaidText}</span>
-                    <span className="text-xs font-semibold">
+                    <span className="text-xs text-muted-foreground dark:text-gray-400">{amountPaidText}</span>
+                    <span className="text-xs font-semibold text-gray-900 dark:text-gray-100">
                       ₱
                       {normalizedPayment.amount >= 1000
                         ? `${(normalizedPayment.amount / 1000).toFixed(1)}k`
@@ -251,18 +251,18 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">{processingFeeText}</span>
-                    <span className="text-xs">
+                    <span className="text-xs text-muted-foreground dark:text-gray-400">{processingFeeText}</span>
+                    <span className="text-xs text-gray-900 dark:text-gray-100">
                       -₱
                       {normalizedPayment.processingFee >= 1000
                         ? `${(normalizedPayment.processingFee / 1000).toFixed(1)}k`
                         : normalizedPayment.processingFee.toLocaleString()}
                     </span>
                   </div>
-                  <div className="border-t pt-2">
+                  <div className="border-t dark:border-gray-600 pt-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-xs font-semibold">{netAmountText}</span>
-                      <span className="text-sm font-bold text-green-600">
+                      <span className="text-xs font-semibold text-gray-900 dark:text-gray-100">{netAmountText}</span>
+                      <span className="text-sm font-bold text-green-600 dark:text-green-400">
                         ₱
                         {normalizedPayment.netAmount >= 1000
                           ? `${(normalizedPayment.netAmount / 1000).toFixed(1)}k`
@@ -276,8 +276,8 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
               {/* Payment Method + Buyer Info side-by-side with scroll */}
               <div className="flex flex-col md:flex-row gap-4 max-h-[260px] overflow-x-auto">
                 {/* Payment Method */}
-                <div className="border border-border rounded-lg p-4 min-w-[300px] overflow-auto">
-                  <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
+                <div className="border border-border dark:border-gray-600 rounded-lg p-4 min-w-[300px] overflow-auto bg-white dark:bg-gray-700">
+                  <h3 className="font-semibold text-xs mb-4 flex items-center gap-2 text-gray-900 dark:text-gray-100">
                     <CreditCard className="w-2.5 h-2.5" />
                     {paymentMethodText}
                   </h3>
@@ -286,10 +286,10 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
                       <CreditCard className="w-2.5 h-2.5 text-primary-foreground" />
                     </div>
                     <div>
-                      <p className="text-xs font-medium">
+                      <p className="text-xs font-medium text-gray-900 dark:text-gray-100">
                         <TranslatedText text={normalizedPayment.paymentMethod} />
                       </p>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[11px] text-muted-foreground dark:text-gray-400">
                         {format(new Date(normalizedPayment.paymentDate), `MMM dd, yyyy '${atText}' h:mm a`)}
                       </p>
                     </div>
@@ -297,30 +297,30 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({
                 </div>
 
                 {/* Buyer Information */}
-                <div className="border border-border rounded-lg p-4 min-w-[300px] overflow-auto">
-                  <h3 className="font-semibold text-xs mb-4 flex items-center gap-2">
+                <div className="border border-border dark:border-gray-600 rounded-lg p-4 min-w-[300px] overflow-auto bg-white dark:bg-gray-700">
+                  <h3 className="font-semibold text-xs mb-4 flex items-center gap-2 text-gray-900 dark:text-gray-100">
                     <User className="w-2.5 h-2.5" />
                     {buyerInformationText}
                   </h3>
                   <div className="space-y-2">
                     <div>
-                      <p className="text-xs font-medium">
+                      <p className="text-xs font-medium text-gray-900 dark:text-gray-100">
                         <TranslatedText text={normalizedPayment.buyer.name} />
                       </p>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[11px] text-muted-foreground dark:text-gray-400">
                         <TranslatedText text={normalizedPayment.buyer.email} />
                       </p>
                     </div>
                     {normalizedPayment.billing && (
-                      <div className="pt-2 border-t">
-                        <p className="text-[11px] text-muted-foreground">{billingAddressText}</p>
-                        <p className="text-xs">
+                      <div className="pt-2 border-t dark:border-gray-600">
+                        <p className="text-[11px] text-muted-foreground dark:text-gray-400">{billingAddressText}</p>
+                        <p className="text-xs text-gray-900 dark:text-gray-100">
                           <TranslatedText text={normalizedPayment.billing.address} />
                         </p>
-                        <p className="text-xs">
+                        <p className="text-xs text-gray-900 dark:text-gray-100">
                           <TranslatedText text={normalizedPayment.billing.city} />, <TranslatedText text={normalizedPayment.billing.postalCode} />
                         </p>
-                        <p className="text-xs">
+                        <p className="text-xs text-gray-900 dark:text-gray-100">
                           <TranslatedText text={normalizedPayment.billing.country} />
                         </p>
                       </div>

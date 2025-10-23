@@ -309,29 +309,29 @@ const Marketplace = () => {
                   {/* Sort Dropdown */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="flex py-1 px-2.5 rounded-full border border-gray-300 gap-2">
-                        <i className="bx bx-sort text-xs"></i>
-                        <span className="text-[10px]">
+                      <button className="flex py-1 px-2.5 rounded-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 gap-2">
+                        <i className="bx bx-sort text-xs dark:text-gray-300"></i>
+                        <span className="text-[10px] dark:text-gray-100">
                           {sortOptions.find((opt) => opt.value === selectedSort)?.label || selectedSort}
                         </span>
-                        <ChevronDown className="w-3 h-3 relative top-0.5" />
+                        <ChevronDown className="w-3 h-3 relative top-0.5 dark:text-gray-300" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-white z-0">
+                    <DropdownMenuContent className="bg-white dark:bg-gray-800 dark:border-gray-600 z-0">
                       {sortOptions.map((option) => (
                         <DropdownMenuItem
                           key={option.value}
-                          className="text-[10px]"
+                          className="text-[10px] dark:text-gray-100 dark:hover:bg-gray-700"
                           onClick={() => handleSortChange(option.value)}
                         >
                           {option.label}
                         </DropdownMenuItem>
                       ))}
-                      <DropdownMenuSeparator />
+                      <DropdownMenuSeparator className="dark:bg-gray-600" />
                       {editionOptions.map((option) => (
                         <DropdownMenuItem
                           key={option.value}
-                          className="text-[10px]"
+                          className="text-[10px] dark:text-gray-100 dark:hover:bg-gray-700"
                           onClick={() => setSelectedEdition(option.value)}
                         >
                           {option.label}

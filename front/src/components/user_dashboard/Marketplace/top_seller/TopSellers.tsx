@@ -137,10 +137,10 @@ export default function TopSellingArtworks() {
     return filtered;
   }, [rawSellers, selectedCategory, selectedMedium]);
   return (
-    <div className="p-4 md:p-10 max-w-7xl mx-auto">
+    <div className="min-h-screen p-4 md:p-10 max-w-7xl mx-auto bg-white dark:bg-gray-900">
       <Header />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 mt-16 md:mt-[2.5rem]">
-        <h1 className="text-lg font-bold">{topSellersText}</h1>
+        <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">{topSellersText}</h1>
         <div className="flex items-center gap-2 text-xs">
           <div className="relative">
             <ArtCategorySelect selectedCategory={selectedCategory} onChange={(value) => setSelectedCategory(value)} />
@@ -150,7 +150,7 @@ export default function TopSellingArtworks() {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center border border-gray-300 px-2.5 py-[5px] gap-3 text-[10px] rounded-full">
+              <button className="flex items-center border border-gray-300 dark:border-gray-600 px-2.5 py-[5px] gap-3 text-[10px] rounded-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                 <Calendar size={12} />{" "}
                 {timeRange === "Last 7 days"
                   ? last7DaysText
@@ -159,14 +159,14 @@ export default function TopSellingArtworks() {
                   : allTimeText}
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem className="text-[10px]" onClick={() => setTimeRange("Last 7 days")}>
+            <DropdownMenuContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
+              <DropdownMenuItem className="text-[10px] text-gray-900 dark:text-gray-100" onClick={() => setTimeRange("Last 7 days")}>
                 {last7DaysText}
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-[10px]" onClick={() => setTimeRange("Last 30 days")}>
+              <DropdownMenuItem className="text-[10px] text-gray-900 dark:text-gray-100" onClick={() => setTimeRange("Last 30 days")}>
                 {last30DaysText}
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-[10px]" onClick={() => setTimeRange("All time")}>
+              <DropdownMenuItem className="text-[10px] text-gray-900 dark:text-gray-100" onClick={() => setTimeRange("All time")}>
                 {allTimeText}
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -176,16 +176,16 @@ export default function TopSellingArtworks() {
 
       <div className="overflow-x-auto max-h-[70vh] overflow-y-auto text-sm">
         <Table>
-          <TableHeader className="sticky top-0 bg-white z-10">
+          <TableHeader className="sticky top-0 bg-white dark:bg-gray-900 z-10">
             <TableRow className="border-none">
-              <TableHead className="text-xs text-black w-8 text-center"> </TableHead>
-              <TableHead className="text-xs text-black">{artworkTitleText}</TableHead>
-              <TableHead className="text-xs text-black">{totalSalesText}</TableHead>
-              <TableHead className="text-xs text-black">{trend24hText}</TableHead>
-              <TableHead className="text-xs text-black">{trend7DayText}</TableHead>
-              <TableHead className="text-xs text-black">{startingPriceText}</TableHead>
-              <TableHead className="text-xs text-black">{buyersText}</TableHead>
-              <TableHead className="text-xs text-black">{editionsText}</TableHead>
+              <TableHead className="text-xs text-black dark:text-white w-8 text-center"> </TableHead>
+              <TableHead className="text-xs text-black dark:text-white">{artworkTitleText}</TableHead>
+              <TableHead className="text-xs text-black dark:text-white">{totalSalesText}</TableHead>
+              <TableHead className="text-xs text-black dark:text-white">{trend24hText}</TableHead>
+              <TableHead className="text-xs text-black dark:text-white">{trend7DayText}</TableHead>
+              <TableHead className="text-xs text-black dark:text-white">{startingPriceText}</TableHead>
+              <TableHead className="text-xs text-black dark:text-white">{buyersText}</TableHead>
+              <TableHead className="text-xs text-black dark:text-white">{editionsText}</TableHead>
             </TableRow>
           </TableHeader>
 

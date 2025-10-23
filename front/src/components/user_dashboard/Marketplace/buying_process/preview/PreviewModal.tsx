@@ -167,11 +167,11 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
         }}
       >
         <div
-          className="bg-white rounded-2xl w-[300px] md:w-[330px] py-6 px-8 relative animate-fadeIn"
+          className="bg-white dark:bg-gray-800 rounded-2xl w-[300px] md:w-[330px] py-6 px-8 relative animate-fadeIn"
           onClick={(e) => e.stopPropagation()}
         >
           {/* X button */}
-          <button onClick={onClose} className="absolute right-6 top-5 text-xl font-bold text-gray-800">
+          <button onClick={onClose} className="absolute right-6 top-5 text-xl font-bold text-gray-800 dark:text-gray-200">
             <i className="bx bx-x"></i>
           </button>
 
@@ -191,28 +191,28 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
           </div>
 
           {/* Title & Artist */}
-          <h2 className="text-[14px] font-semibold text-center mt-4">{translatedTitle || untitledText}</h2>
-          <p className="text-[10px] text-center text-gray-500 mt-1">
+          <h2 className="text-[14px] font-semibold text-center mt-4 text-gray-900 dark:text-gray-100">{translatedTitle || untitledText}</h2>
+          <p className="text-[10px] text-center text-gray-500 dark:text-gray-400 mt-1">
             {byText} {translatedArtist || unknownArtistText}
           </p>
 
           {/* Grid Details */}
           <div className="my-4">
-            <div className="border-t border-gray-100 w-[87%] mx-auto" />
+            <div className="border-t border-gray-100 dark:border-gray-600 w-[87%] mx-auto" />
             <div className="grid grid-cols-2 text-[10px] text-center py-5">
               <div>
-                <h4 className="text-gray-500">{sizeText}</h4>
-                <p className="font-medium">{artwork.size || unknownText}</p>
+                <h4 className="text-gray-500 dark:text-gray-400">{sizeText}</h4>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{artwork.size || unknownText}</p>
               </div>
               <div>
-                <h4 className="text-gray-500">{styleText}</h4>
-                <p className="font-medium">
+                <h4 className="text-gray-500 dark:text-gray-400">{styleText}</h4>
+                <p className="font-medium text-gray-900 dark:text-gray-100">
                   {translatedStyle ? translatedStyle.charAt(0).toUpperCase() + translatedStyle.slice(1) : unknownText}
                 </p>
               </div>
               <div className="pt-2 col-span-1">
-                <h4 className="text-gray-500">{mediumText}</h4>
-                <p className="font-medium">
+                <h4 className="text-gray-500 dark:text-gray-400">{mediumText}</h4>
+                <p className="font-medium text-gray-900 dark:text-gray-100">
                   {translatedMedium
                     ? translatedMedium.charAt(0).toUpperCase() + translatedMedium.slice(1)
                     : unknownText}
@@ -220,21 +220,21 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
               </div>
 
               <div className="pt-2 col-span-1">
-                <h4 className="text-gray-500">{editionText}</h4>
-                <p className="font-medium">{translatedEdition || unknownText}</p>
+                <h4 className="text-gray-500 dark:text-gray-400">{editionText}</h4>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{translatedEdition || unknownText}</p>
               </div>
               <div className="pt-2 col-span-2">
-                <h4 className="text-gray-500">{yearCreatedText}</h4>
-                <p className="font-medium">{artwork.yearCreated || unknownText}</p>
+                <h4 className="text-gray-500 dark:text-gray-400">{yearCreatedText}</h4>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{artwork.yearCreated || unknownText}</p>
               </div>
             </div>
-            <div className="border-b border-gray-100 w-[87%] mx-auto" />
+            <div className="border-b border-gray-100 dark:border-gray-600 w-[87%] mx-auto" />
           </div>
 
           {/* Price & Button */}
           <div className="text-center">
             <div className="flex justify-between my-4">
-              <p className="text-[15px] font-semibold relative top-1.5">
+              <p className="text-[15px] font-semibold relative top-1.5 text-gray-900 dark:text-gray-100">
                 {artwork.edition === "Open Edition" && artwork.quantity && artwork.quantity > 1
                   ? totalPriceText
                   : priceText}
@@ -242,18 +242,18 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
               <div className="text-right">
                 {artwork.edition === "Open Edition" && artwork.quantity && artwork.quantity > 1 ? (
                   <>
-                    <p className="text-xl font-bold text-red-800">
+                    <p className="text-xl font-bold text-red-800 dark:text-red-400">
                       ₱
                       {artwork.price * artwork.quantity >= 1000
                         ? `${(artwork.price * artwork.quantity) / 1000}k`
                         : artwork.price * artwork.quantity}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       ({artwork.quantity} × ₱{artwork.price >= 1000 ? `${artwork.price / 1000}k` : artwork.price})
                     </p>
                   </>
                 ) : (
-                  <p className="text-xl font-bold text-red-800">
+                  <p className="text-xl font-bold text-red-800 dark:text-red-400">
                     ₱{artwork.price && artwork.price >= 1000 ? `${artwork.price / 1000}k` : artwork.price || 0}
                   </p>
                 )}
@@ -267,7 +267,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
               {isLoading ? loadingText : proceedToCheckoutText}
             </button>
 
-            <p className="text-[9px] text-gray-400 mt-2 italic">{shippingHandledText}</p>
+            <p className="text-[9px] text-gray-400 dark:text-gray-500 mt-2 italic">{shippingHandledText}</p>
           </div>
         </div>
       </div>
@@ -275,13 +275,13 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, artwork, o
   } catch (error) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div className="bg-white rounded-2xl w-[300px] md:w-[330px] py-6 px-8 relative">
-          <button onClick={onClose} className="absolute right-6 top-5 text-xl font-bold text-gray-800">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl w-[300px] md:w-[330px] py-6 px-8 relative">
+          <button onClick={onClose} className="absolute right-6 top-5 text-xl font-bold text-gray-800 dark:text-gray-200">
             <i className="bx bx-x"></i>
           </button>
           <div className="text-center">
-            <h2 className="text-lg font-semibold text-red-600 mb-2">{errorText}</h2>
-            <p className="text-sm text-gray-600 mb-4">{somethingWentWrongText}</p>
+            <h2 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-2">{errorText}</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{somethingWentWrongText}</p>
             <button
               onClick={onClose}
               className="bg-red-800 text-white rounded-full py-2 px-4 text-sm font-medium hover:bg-red-700"

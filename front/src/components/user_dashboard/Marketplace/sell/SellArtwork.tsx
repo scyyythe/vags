@@ -415,14 +415,14 @@ const SellArtwork = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Header */}
       <Header />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Back button and title */}
         <div className="mt-12 mb-6">
-          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
             {sellAnArtworkText}
           </button>
@@ -433,7 +433,7 @@ const SellArtwork = () => {
           <div className="space-y-6">
             {/* Main image upload */}
             <div
-              className="bg-gray-100 rounded-lg flex flex-col items-center justify-center p-8 h-[313px]"
+              className="bg-gray-100 dark:bg-gray-800 rounded-lg flex flex-col items-center justify-center p-8 h-[313px]"
               onDragOver={handleDragOver}
               onDrop={handleDrop}
             >
@@ -445,7 +445,7 @@ const SellArtwork = () => {
                       setSelectedFile(null);
                       setPreviewUrl(null);
                     }}
-                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md hover:bg-gray-100"
+                    className="absolute top-2 right-2 bg-white dark:bg-gray-700 rounded-full p-1 shadow-md hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     ×
                   </button>
@@ -457,27 +457,27 @@ const SellArtwork = () => {
                       <CloudUpload size={30} className="text-gray-600 animate-pulse" />
                     </div>
                   </div>
-                  <p className="mb-2 text-xs font-medium">{chooseFileText}</p>
+                  <p className="mb-2 text-xs font-medium text-gray-900 dark:text-gray-100">{chooseFileText}</p>
                   <label
                     htmlFor="fileInput"
-                    className="cursor-pointer hover:bg-white inline-block mb-6 border border-gray-300 rounded-[6px] px-2 py-1 text-[11px]"
+                    className="cursor-pointer hover:bg-white dark:hover:bg-gray-700 inline-block mb-6 border border-gray-300 dark:border-gray-600 rounded-[6px] px-2 py-1 text-[11px] text-gray-900 dark:text-gray-100"
                   >
                     {chooseFileButtonText}
                     <input type="file" id="fileInput" className="hidden" accept="image/*" onChange={handleFileChange} />
                   </label>
-                  <p className="relative top-10 text-[11px] text-gray-500">{recommendFilesText}</p>
+                  <p className="relative top-10 text-[11px] text-gray-500 dark:text-gray-400">{recommendFilesText}</p>
                 </div>
               )}
             </div>
 
             {/* Additional images */}
             <div>
-              <h3 className="text-[11px] font-medium text-gray-900 mb-3">{addMorePicturesText}</h3>
+              <h3 className="text-[11px] font-medium text-gray-900 dark:text-gray-100 mb-3">{addMorePicturesText}</h3>
               <div className="grid grid-cols-4 gap-4">
                 {additionalImages.map((image, index) => (
                   <div
                     key={index}
-                    className="relative w-full h-24 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200 cursor-pointer overflow-hidden group"
+                    className="relative w-full h-24 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 cursor-pointer overflow-hidden group"
                     onDragOver={handleAdditionalImageDragOver}
                     onDrop={(e) => handleAdditionalImageDrop(index, e)}
                     onClick={() => document.getElementById(`additionalFileInput-${index}`)?.click()}
@@ -500,7 +500,7 @@ const SellArtwork = () => {
                         </div>
                       </>
                     ) : (
-                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-6 h-6 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -529,12 +529,12 @@ const SellArtwork = () => {
           <div>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <h2 className="text-xs text-gray-600 mb-6">{provideDetailsText}</h2>
+                <h2 className="text-xs text-gray-600 dark:text-gray-300 mb-6">{provideDetailsText}</h2>
 
                 {/* Title and Year */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">{artworkTitleLabelText}</label>
+                    <label className="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mb-2">{artworkTitleLabelText}</label>
                     <Input
                       placeholder={enterArtworkTitleText}
                       value={artworkTitle}
@@ -544,7 +544,7 @@ const SellArtwork = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">{yearCreatedLabelText}</label>
+                    <label className="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mb-2">{yearCreatedLabelText}</label>
                     <Input
                       placeholder={enterYearText}
                       value={yearCreated}
@@ -558,7 +558,7 @@ const SellArtwork = () => {
                 {/* Style, Medium, Size */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <div>
-                    <label htmlFor="style" className="block mb-2 text-[11px]">
+                    <label htmlFor="style" className="block mb-2 text-[11px] text-gray-700 dark:text-gray-300">
                       {artworkStyleLabelText}
                     </label>
                     <Select value={artworkStyle} onValueChange={setArtworkStyle}>
@@ -576,7 +576,7 @@ const SellArtwork = () => {
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">{mediumLabelText}</label>
+                    <label className="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mb-2">{mediumLabelText}</label>
                     <Input
                       placeholder={enterMediumUsedText}
                       value={medium}
@@ -586,7 +586,7 @@ const SellArtwork = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">{dimensionsLabelText}</label>
+                    <label className="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mb-2">{dimensionsLabelText}</label>
                     <div className="flex items-center space-x-2">
                       <Input
                         type="number"
@@ -596,7 +596,7 @@ const SellArtwork = () => {
                         className="h-9"
                         style={{ fontSize: "10px" }}
                       />
-                      <span className="text-sm font-medium">×</span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">×</span>
                       <Input
                         type="number"
                         placeholder="0"
@@ -607,8 +607,8 @@ const SellArtwork = () => {
                       />
                     </div>
                     <div className="flex justify-between px-6 pt-2">
-                      <span className="text-[10px] text-gray-500">{heightLabelText}</span>
-                      <span className="text-[10px] text-gray-500">{widthLabelText}</span>
+                      <span className="text-[10px] text-gray-500 dark:text-gray-400">{heightLabelText}</span>
+                      <span className="text-[10px] text-gray-500 dark:text-gray-400">{widthLabelText}</span>
                     </div>
                   </div>
                 </div>
@@ -616,7 +616,7 @@ const SellArtwork = () => {
                 {/* Price, Edition, Quantity */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">{priceLabelText}</label>
+                    <label className="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mb-2">{priceLabelText}</label>
                     <Input
                       type="number"
                       placeholder={enterPriceText}
@@ -627,7 +627,7 @@ const SellArtwork = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-gray-700 mb-2">{editionLabelText}</label>
+                    <label className="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mb-2">{editionLabelText}</label>
                     <Select value={edition} onValueChange={handleEditionChange}>
                       <SelectTrigger className="w-full text-[10px] h-9">
                         <SelectValue />
@@ -647,7 +647,7 @@ const SellArtwork = () => {
                   </div>
                   {isQuantityVisible && (
                     <div>
-                      <label className="block text-[11px] font-medium text-gray-700 mb-2">{quantityLabelText}</label>
+                      <label className="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mb-2">{quantityLabelText}</label>
                       <Input
                         type="number"
                         value={quantity}
@@ -662,7 +662,7 @@ const SellArtwork = () => {
 
                 {/* Description */}
                 <div className="mb-8">
-                  <label className="block text-[11px] font-medium text-gray-700 mb-2">{aboutArtworkText}</label>
+                  <label className="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mb-2">{aboutArtworkText}</label>
                   <Textarea
                     placeholder={addDescriptionText}
                     value={description}
@@ -674,7 +674,7 @@ const SellArtwork = () => {
 
                 {/* Payment Account Warning */}
                 {(!accounts || accounts.length === 0) && (
-                  <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
                     <div className="flex items-start">
                       <div className="flex-shrink-0">
                         <svg className="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
@@ -686,12 +686,12 @@ const SellArtwork = () => {
                         </svg>
                       </div>
                       <div className="ml-2">
-                        <h3 className="text-[11px] font-medium text-yellow-800">{paymentAccountRequiredText}</h3>
-                        <div className="mt-1 text-[10px] text-yellow-700">
+                        <h3 className="text-[11px] font-medium text-yellow-800 dark:text-yellow-200">{paymentAccountRequiredText}</h3>
+                        <div className="mt-1 text-[10px] text-yellow-700 dark:text-yellow-300">
                           <p>{setupPaymentAccountDescText}</p>
                           <button
                             onClick={() => navigate("/settings")}
-                            className="mt-2 text-[11px] font-medium text-yellow-800 hover:text-yellow-900 underline"
+                            className="mt-2 text-[11px] font-medium text-yellow-800 dark:text-yellow-200 hover:text-yellow-900 dark:hover:text-yellow-100 underline"
                           >
                             {setupPaymentAccountButtonText}
                           </button>

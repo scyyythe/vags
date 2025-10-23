@@ -235,7 +235,7 @@ const SellCard = ({
               <img
                 src="https://img.icons8.com/?size=100&id=8h51YOzhBJmT&format=png&color=000000"
                 alt="Message"
-                className="w-3 h-3"
+                className="w-3 h-3 dark:brightness-0 dark:invert"
               />
             </button>
 
@@ -251,7 +251,7 @@ const SellCard = ({
                     : "https://img.icons8.com/puffy/32/like.png"
                 }
                 alt="Heart"
-                className="w-3 h-3"
+                className="w-3 h-3 dark:brightness-0 dark:invert"
               />
             </button>
           </>

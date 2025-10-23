@@ -124,11 +124,11 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
           
           return (
           <div key={account.id}>
-            <div className="bg-card border border-border rounded-lg px-10 py-8 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-border">
+            <div className="bg-card dark:bg-gray-800 border border-border dark:border-gray-600 rounded-lg px-10 py-8 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border dark:border-gray-600">
                 <div className="flex items-center gap-3">
                   {cardIcons[cardType]}
-                  <h3 className="text-sm font-semibold text-foreground capitalize">{getTranslatedCardType(cardType)} {cardText}</h3>
+                  <h3 className="text-sm font-semibold text-foreground dark:text-gray-100 capitalize">{getTranslatedCardType(cardType)} {cardText}</h3>
                 </div>
                 {account.isDefault && (
                   <span className="inline-flex items-center px-2.5 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-medium">
@@ -140,46 +140,46 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                    <label className="text-[10px] font-medium text-muted-foreground dark:text-gray-400 uppercase tracking-wide">
                       {cardNumberText}
                     </label>
-                    <p className="text-xs text-foreground font-mono font-medium mt-1">{account.maskedInfo}</p>
+                    <p className="text-xs text-foreground dark:text-gray-100 font-mono font-medium mt-1">{account.maskedInfo}</p>
                   </div>
                   <div>
-                    <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                    <label className="text-[10px] font-medium text-muted-foreground dark:text-gray-400 uppercase tracking-wide">
                       {expiresText}
                     </label>
-                    <p className="text-xs text-foreground font-mono font-medium mt-1">03 / 23 / 26</p>
+                    <p className="text-xs text-foreground dark:text-gray-100 font-mono font-medium mt-1">03 / 23 / 26</p>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                  <label className="text-[10px] font-medium text-muted-foreground dark:text-gray-400 uppercase tracking-wide">
                     {cardholderNameText}
                   </label>
-                  <p className="text-xs text-foreground font-medium mt-1">{translatedCardholderName}</p>
+                  <p className="text-xs text-foreground dark:text-gray-100 font-medium mt-1">{translatedCardholderName}</p>
                 </div>
 
-                <div className="pt-2 border-t border-border">
-                  <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-2 block">
+                <div className="pt-2 border-t border-border dark:border-gray-600">
+                  <label className="text-[10px] font-medium text-muted-foreground dark:text-gray-400 uppercase tracking-wide mb-2 block">
                     {billingAddressText}
                   </label>
-                  <div className="text-xs text-foreground space-y-0.5">
+                  <div className="text-xs text-foreground dark:text-gray-100 space-y-0.5">
                     <p>{translatedAddressLine1}</p>
                     <p>{translatedCityState}</p>
                     <p>{translatedCountry}</p>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-border text-end">
+                <div className="pt-4 border-t border-border dark:border-gray-600 text-end">
                   <button
                     type="button"
                     onClick={() => onEditAccount?.(account)}
-                    className="inline-flex items-center gap-2 px-4 py-1.5  text-black rounded-full text-[11px] font-medium 
+                    className="inline-flex items-center gap-2 px-4 py-1.5 text-black dark:text-gray-100 rounded-full text-[11px] font-medium 
                             active:scale-[0.98] transition-all duration-200 ease-in-out"
                   >
                     <i className="bx bx-edit text-[13px]"></i>
-                    <p className=" hover:underline">{updateAccountText}</p>
+                    <p className="hover:underline">{updateAccountText}</p>
                   </button>
                 </div>
               </div>
@@ -197,9 +197,9 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
   if (!cardNumber) {
     return (
       <div className="space-y-4">
-        <div className="bg-card border border-border rounded-lg p-8 text-center space-y-4">
+        <div className="bg-card dark:bg-gray-800 border border-border dark:border-gray-600 rounded-lg p-8 text-center space-y-4">
           <div className="flex justify-center">
-            <svg className="w-16 h-16 text-muted-foreground/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-16 h-16 text-muted-foreground/40 dark:text-gray-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -209,8 +209,8 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
             </svg>
           </div>
           <div>
-            <h3 className="text-[15px] font-semibold text-foreground mb-2">{noCreditCardText}</h3>
-            <p className="text-xs text-muted-foreground">{addCreditCardDescText}</p>
+            <h3 className="text-[15px] font-semibold text-foreground dark:text-gray-100 mb-2">{noCreditCardText}</h3>
+            <p className="text-xs text-muted-foreground dark:text-gray-300">{addCreditCardDescText}</p>
           </div>
           <button
             type="button"

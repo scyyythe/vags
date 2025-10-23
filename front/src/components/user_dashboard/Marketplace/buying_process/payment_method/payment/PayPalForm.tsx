@@ -50,9 +50,9 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
     return (
       <div className="space-y-4">
         {accounts.map((account) => (
-          <div key={account.id} className="bg-card border border-border rounded-lg px-10 py-8 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-border">
-              <h3 className="text-sm font-semibold text-blue-700">{paypalAccountText}</h3>
+          <div key={account.id} className="bg-card dark:bg-gray-800 border border-border dark:border-gray-600 rounded-lg px-10 py-8 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-border dark:border-gray-600">
+              <h3 className="text-sm font-semibold text-blue-700 dark:text-blue-400">{paypalAccountText}</h3>
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-[10px] font-medium">
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -74,17 +74,17 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
 
             <div className="space-y-3">
               <div>
-                <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                <label className="text-[10px] font-medium text-muted-foreground dark:text-gray-400 uppercase tracking-wide">
                   {emailAddressText}
                 </label>
-                <p className="text-xs text-foreground font-medium mt-1">{account.accountInfo}</p>
+                <p className="text-xs text-foreground dark:text-gray-100 font-medium mt-1">{account.accountInfo}</p>
               </div>
 
               <div>
-                <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                <label className="text-[10px] font-medium text-muted-foreground dark:text-gray-400 uppercase tracking-wide">
                   {connectedSinceText}
                 </label>
-                <p className="text-xs text-foreground font-medium mt-1">
+                <p className="text-xs text-foreground dark:text-gray-100 font-medium mt-1">
                   {new Date(account.dateAdded).toLocaleDateString(language === "EN" ? "en-US" : language.toLowerCase(), {
                     year: "numeric",
                     month: "long",
@@ -93,11 +93,11 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-border text-end">
+              <div className="pt-4 border-t border-border dark:border-gray-600 text-end">
                 <button
                   type="button"
                   onClick={() => onEditAccount?.(account)}
-                  className="inline-flex items-center gap-2 px-4 py-1.5 text-blue-700 rounded-full text-[11px] font-medium 
+                  className="inline-flex items-center gap-2 px-4 py-1.5 text-blue-700 dark:text-blue-400 rounded-full text-[11px] font-medium 
                           active:scale-[0.98] transition-all duration-200 ease-in-out"
                 >
                   <i className="bx bx-edit text-[13px]"></i>
@@ -116,15 +116,15 @@ const PayPalForm: React.FC<PayPalFormProps> = ({
   if (accounts.length === 0 && !email) {
     return (
       <div className="space-y-4">
-        <div className="bg-card border border-border rounded-lg p-8 text-center space-y-4">
+        <div className="bg-card dark:bg-gray-800 border border-border dark:border-gray-600 rounded-lg p-8 text-center space-y-4">
           <div className="flex justify-center">
-            <svg className="w-16 h-16 text-muted-foreground/40" viewBox="0 0 24 24" fill="currentColor">
+            <svg className="w-16 h-16 text-muted-foreground/40 dark:text-gray-500/40" viewBox="0 0 24 24" fill="currentColor">
               <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.77.77 0 0 1 .76-.653h8.58c2.834 0 4.79.828 5.644 2.395.77 1.413.688 3.177-.23 4.97-.988 1.93-2.73 3.348-4.917 4.004-1.316.395-2.853.592-4.574.592H8.38a.77.77 0 0 0-.76.653l-.542 3.426a.641.641 0 0 1-.633.74h-.37z" />
             </svg>
           </div>
           <div>
-            <h3 className="text-[15px] font-semibold text-foreground mb-2">{noPaypalAccountText}</h3>
-            <p className="text-xs text-muted-foreground">
+            <h3 className="text-[15px] font-semibold text-foreground dark:text-gray-100 mb-2">{noPaypalAccountText}</h3>
+            <p className="text-xs text-muted-foreground dark:text-gray-300">
               {connectPaypalDescText}
             </p>
           </div>

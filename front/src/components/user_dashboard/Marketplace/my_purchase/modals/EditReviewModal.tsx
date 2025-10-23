@@ -78,22 +78,22 @@ const EditReviewModal: React.FC<EditReviewModalProps> = ({ isOpen, onClose, onSu
   return (
     <Dialog open={isOpen} onOpenChange={handleCancel}>
       <DialogContent
-        className="max-w-lg text-xs edit-review-scroll-hidden max-h-[90vh]"
+        className="max-w-lg text-xs edit-review-scroll-hidden max-h-[90vh] bg-white dark:bg-gray-800"
         onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle className="text-sm">{editYourReviewText}</DialogTitle>
+          <DialogTitle className="text-sm text-gray-900 dark:text-gray-100">{editYourReviewText}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Artwork Info */}
-          <div className="flex gap-4 p-4 bg-muted rounded-lg">
+          <div className="flex gap-4 p-4 bg-muted dark:bg-gray-700 rounded-lg">
             <img src={artwork.artworkImage} alt={artwork.title} className="w-16 h-16 rounded-md object-cover" />
             <div>
-              <h3 className="font-semibold text-[11px]">
+              <h3 className="font-semibold text-[11px] text-gray-900 dark:text-gray-100">
                 <TranslatedText text={artwork.title} />
               </h3>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-[10px] text-muted-foreground dark:text-gray-400">
                 {byText} <TranslatedText text={artwork.artist} />
               </p>
             </div>
@@ -101,7 +101,7 @@ const EditReviewModal: React.FC<EditReviewModalProps> = ({ isOpen, onClose, onSu
 
           {/* Rating */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium">{ratingText}</Label>
+            <Label className="text-sm font-medium text-gray-900 dark:text-gray-100">{ratingText}</Label>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -114,7 +114,7 @@ const EditReviewModal: React.FC<EditReviewModalProps> = ({ isOpen, onClose, onSu
                 >
                   <Star
                     className={`w-5 h-5 ${
-                      star <= (hoveredRating || rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                      star <= (hoveredRating || rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300 dark:text-gray-600"
                     }`}
                   />
                 </button>
@@ -124,18 +124,18 @@ const EditReviewModal: React.FC<EditReviewModalProps> = ({ isOpen, onClose, onSu
 
           {/* Comment */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium">{yourReviewText}</Label>
+            <Label className="text-sm font-medium text-gray-900 dark:text-gray-100">{yourReviewText}</Label>
             <Textarea
               placeholder={shareExperienceText}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="min-h-[100px] resize-none text-[10px]"
+              className="min-h-[100px] resize-none text-[10px] dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
           {/* Photo Upload */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium">{photosText}</Label>
+            <Label className="text-sm font-medium text-gray-900 dark:text-gray-100">{photosText}</Label>
             <div className="flex flex-wrap gap-2">
               {photos.map((photo, index) => (
                 <div key={index} className="relative">
@@ -150,13 +150,13 @@ const EditReviewModal: React.FC<EditReviewModalProps> = ({ isOpen, onClose, onSu
               ))}
 
               {photos.length < 5 && (
-                <label className="w-16 h-16 border-2 border-dashed border-border rounded-md flex items-center justify-center cursor-pointer hover:border-primary transition-colors">
-                  <Camera className="w-4 h-4 text-muted-foreground" />
+                <label className="w-16 h-16 border-2 border-dashed border-border dark:border-gray-600 rounded-md flex items-center justify-center cursor-pointer hover:border-primary transition-colors">
+                  <Camera className="w-4 h-4 text-muted-foreground dark:text-gray-400" />
                   <input type="file" accept="image/*" multiple onChange={handlePhotoUpload} className="hidden" />
                 </label>
               )}
             </div>
-            <p className="text-[10px] text-muted-foreground">{addPhotosHelpText}</p>
+            <p className="text-[10px] text-muted-foreground dark:text-gray-400">{addPhotosHelpText}</p>
           </div>
 
           {/* Actions */}

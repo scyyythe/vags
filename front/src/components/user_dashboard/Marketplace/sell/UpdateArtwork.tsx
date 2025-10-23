@@ -376,11 +376,11 @@ const UpdateArtwork = () => {
   // Show loading state while fetching artwork data
   if (isArtworkLoading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900">
         <Header />
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="mt-12 mb-6">
-            <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+            <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
               <i className="bx bx-chevron-left text-lg mr-2"></i>
               {updateArtworkText}
             </button>
@@ -388,7 +388,7 @@ const UpdateArtwork = () => {
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-800 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading artwork data...</p>
+              <p className="text-gray-600 dark:text-gray-300">Loading artwork data...</p>
             </div>
           </div>
         </div>
@@ -397,11 +397,11 @@ const UpdateArtwork = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="mt-12 mb-6">
-          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
             {updateArtworkText}
           </button>
@@ -410,7 +410,7 @@ const UpdateArtwork = () => {
           {/* Left side - Images */}
           <div className="space-y-6">
             {/* Main Image */}
-            <div className="bg-gray-100 rounded-lg flex flex-col items-center justify-center p-4 h-[320px] relative">
+            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg flex flex-col items-center justify-center p-4 h-[320px] relative">
               {previewUrl ? (
                 <img src={previewUrl} alt="Main artwork" className="w-full h-full object-contain rounded-lg" />
               ) : (
@@ -418,7 +418,7 @@ const UpdateArtwork = () => {
                   <div className="bg-white p-4 rounded-full inline-block mb-2">
                     <CloudUpload size={30} className="text-gray-600 animate-pulse" />
                   </div>
-                  <div className="text-[11px] text-gray-500">{uploadMainImageText}</div>
+                  <div className="text-[11px] text-gray-500 dark:text-gray-400">{uploadMainImageText}</div>
                 </div>
               )}
               <input
@@ -434,7 +434,7 @@ const UpdateArtwork = () => {
                     setSelectedFile(null);
                     setPreviewUrl(null);
                   }}
-                  className="absolute top-2 right-2 bg-white rounded-full px-1 shadow-md hover:bg-gray-100"
+                  className="absolute top-2 right-2 bg-white dark:bg-gray-700 rounded-full px-1 shadow-md hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
                   ×
                 </button>
@@ -444,12 +444,12 @@ const UpdateArtwork = () => {
             {/* Additional Images */}
 
             <div>
-              <h3 className="text-[11px] font-medium text-gray-900 mb-3">{addMorePicturesText}</h3>
+              <h3 className="text-[11px] font-medium text-gray-900 dark:text-gray-100 mb-3">{addMorePicturesText}</h3>
               <div className="grid grid-cols-4 gap-4">
                 {additionalImages.map((img, idx) => (
                   <div
                     key={idx}
-                    className="relative w-full h-24 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200 cursor-pointer overflow-hidden group"
+                    className="relative w-full h-24 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 cursor-pointer overflow-hidden group"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={(e) => {
                       e.preventDefault();

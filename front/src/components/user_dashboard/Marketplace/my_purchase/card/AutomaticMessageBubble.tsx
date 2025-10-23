@@ -107,11 +107,11 @@ const AutomaticMessageBubble: React.FC<AutomaticMessageBubbleProps> = ({
   }, [onViewOrder, currentUserId, isSender, navigate, orderId, language]);
 
   // Dynamic color setup
-  const textMain = isSender ? "text-white" : "text-gray-900";
-  const textSecondary = isSender ? "text-white/80" : "text-gray-600";
+  const textMain = isSender ? "text-white" : "text-gray-900 dark:text-gray-100";
+  const textSecondary = isSender ? "text-white/80" : "text-gray-600 dark:text-gray-400";
   const textHighlight = "text-yellow-500";
-  const borderColor = isSender ? "border-white/20" : "border-gray-300/50";
-  const iconColor = isSender ? "text-yellow-400" : "text-blue-600";
+  const borderColor = isSender ? "border-white/20" : "border-gray-300/50 dark:border-gray-600/50";
+  const iconColor = isSender ? "text-yellow-400" : "text-blue-600 dark:text-blue-400";
 
   return (
     <div className="space-y-3">

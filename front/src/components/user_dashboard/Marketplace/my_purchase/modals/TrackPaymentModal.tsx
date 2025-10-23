@@ -161,9 +161,9 @@ const TrackPaymentModal: React.FC<TrackPaymentModalProps> = ({ isOpen, onClose, 
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide bg-white dark:bg-gray-800" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between text-sm mt-3">
+          <DialogTitle className="flex items-center justify-between text-sm mt-3 text-gray-900 dark:text-gray-100">
             <span>{paymentTrackingText}</span>
             <Badge className={`${getStatusColor(order.status)} text-white text-[10px]`}>
               {getTranslatedStatus(order.status)}

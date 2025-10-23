@@ -497,13 +497,13 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   // Loading state
   if (isOrderLoading || isArtworkLoading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900">
         <Header />
         <div className="container mx-auto px-4 pt-20 max-w-6xl">
           <div className="mb-8">
-            <div className="flex items-center text-sm font-semibold">
-              <div className="w-4 h-4 bg-gray-300 rounded mr-2 animate-pulse"></div>
-              <div className="h-4 w-32 bg-gray-300 rounded animate-pulse"></div>
+            <div className="flex items-center text-sm font-semibold dark:text-gray-100">
+              <div className="w-4 h-4 bg-gray-300 dark:bg-gray-600 rounded mr-2 animate-pulse"></div>
+              <div className="h-4 w-32 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
             </div>
           </div>
 
@@ -511,58 +511,58 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
             {/* Left Column Skeleton */}
             <div className="lg:col-span-2 space-y-6">
               {/* Address Section Skeleton */}
-              <div className="border border-gray-200 rounded-lg p-6">
+              <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="space-y-2">
-                    <div className="h-3 w-24 bg-gray-300 rounded animate-pulse"></div>
-                    <div className="h-3 w-48 bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-3 w-24 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                    <div className="h-3 w-48 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
                   </div>
-                  <div className="h-3 w-12 bg-gray-300 rounded animate-pulse"></div>
+                  <div className="h-3 w-12 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
                 </div>
-                <div className="h-3 w-full bg-gray-300 rounded animate-pulse"></div>
+                <div className="h-3 w-full bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
               </div>
 
               {/* Payment Method Section Skeleton */}
-              <div className="border border-gray-200 rounded-lg p-6">
+              <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="h-3 w-24 bg-gray-300 rounded animate-pulse"></div>
-                  <div className="h-3 w-12 bg-gray-300 rounded animate-pulse"></div>
+                  <div className="h-3 w-24 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                  <div className="h-3 w-12 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
                 </div>
                 <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-8 h-8 bg-gray-300 rounded animate-pulse"></div>
-                  <div className="h-3 w-16 bg-gray-300 rounded animate-pulse"></div>
+                  <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                  <div className="h-3 w-16 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
                 </div>
-                <div className="h-3 w-40 bg-gray-300 rounded animate-pulse"></div>
+                <div className="h-3 w-40 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
               </div>
 
               {/* Buyer Protection Skeleton */}
               <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-gray-300 rounded animate-pulse"></div>
-                <div className="h-3 w-32 bg-gray-300 rounded animate-pulse"></div>
-                <div className="h-3 w-24 bg-gray-300 rounded animate-pulse"></div>
+                <div className="w-4 h-4 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                <div className="h-3 w-32 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                <div className="h-3 w-24 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
               </div>
             </div>
 
             {/* Right Column Skeleton - Artwork Details */}
             <div className="lg:col-span-1">
-              <div className="border border-gray-200 rounded-lg py-8 px-10 space-y-4">
+              <div className="border border-gray-200 dark:border-gray-600 rounded-lg py-8 px-10 space-y-4">
                 {/* Artwork Image Skeleton */}
                 <div className="flex justify-center">
-                  <div className="w-32 h-32 bg-gray-300 rounded-lg animate-pulse"></div>
+                  <div className="w-32 h-32 bg-gray-300 dark:bg-gray-600 rounded-lg animate-pulse"></div>
                 </div>
 
                 {/* Artwork Title and Artist Skeleton */}
                 <div className="text-center mb-4 space-y-2">
-                  <div className="h-4 w-32 bg-gray-300 rounded mx-auto animate-pulse"></div>
-                  <div className="h-3 w-24 bg-gray-300 rounded mx-auto animate-pulse"></div>
+                  <div className="h-4 w-32 bg-gray-300 dark:bg-gray-600 rounded mx-auto animate-pulse"></div>
+                  <div className="h-3 w-24 bg-gray-300 dark:bg-gray-600 rounded mx-auto animate-pulse"></div>
                 </div>
 
                 {/* Artwork Details Skeleton */}
                 <div className="space-y-2 text-xs pt-6">
                   {[...Array(5)].map((_, i) => (
                     <div key={i} className="flex justify-between">
-                      <div className="h-3 w-16 bg-gray-300 rounded animate-pulse"></div>
-                      <div className="h-3 w-20 bg-gray-300 rounded animate-pulse"></div>
+                      <div className="h-3 w-16 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                      <div className="h-3 w-20 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
                     </div>
                   ))}
                 </div>
@@ -570,8 +570,8 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
                 {/* Price Skeleton */}
                 <div className="pt-6">
                   <div className="flex justify-between items-center">
-                    <div className="h-4 w-16 bg-gray-300 rounded animate-pulse"></div>
-                    <div className="h-6 w-20 bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-4 w-16 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                    <div className="h-6 w-20 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
                   </div>
                 </div>
               </div>
@@ -582,10 +582,10 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
           <div className="px-6 py-8">
             <div className="flex flex-col items-start space-y-4">
               <div className="flex space-x-4">
-                <div className="h-8 w-24 bg-gray-300 rounded-full animate-pulse"></div>
-                <div className="h-8 w-32 bg-gray-300 rounded-full animate-pulse"></div>
+                <div className="h-8 w-24 bg-gray-300 dark:bg-gray-600 rounded-full animate-pulse"></div>
+                <div className="h-8 w-32 bg-gray-300 dark:bg-gray-600 rounded-full animate-pulse"></div>
               </div>
-              <div className="h-3 w-64 bg-gray-300 rounded animate-pulse"></div>
+              <div className="h-3 w-64 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
             </div>
           </div>
         </div>
@@ -596,16 +596,16 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   // Error state
   if (orderError || !purchaseOrder) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900">
         <Header />
         <div className="container mx-auto px-4 pt-20 max-w-6xl">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
-              <h2 className="text-xl font-semibold text-red-600 mb-2">Order Not Found</h2>
-              <p className="text-gray-600 mb-4">The purchase order could not be found or has expired.</p>
+              <h2 className="text-xl font-semibold text-red-600 dark:text-red-400 mb-2">Order Not Found</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">The purchase order could not be found or has expired.</p>
               <button
                 onClick={() => navigate("/marketplace")}
-                className="bg-red-800 text-white px-6 py-2 rounded-full hover:bg-red-700"
+                className="bg-red-800 dark:bg-red-700 text-white px-6 py-2 rounded-full hover:bg-red-700 dark:hover:bg-red-600"
               >
                 Back to Marketplace
               </button>
@@ -617,11 +617,11 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
       <div className="container mx-auto px-4 pt-20 max-w-6xl">
         <div className="mb-8">
-          <button onClick={() => navigate("/payment-method")} className="flex items-center text-sm font-semibold">
+          <button onClick={() => navigate("/payment-method")} className="flex items-center text-sm font-semibold dark:text-gray-100">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
             {reviewPurchaseText}
           </button>
@@ -631,39 +631,39 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
           {/* Left Column - Address and Payment */}
           <div className="lg:col-span-2 space-y-6">
             {/* Address Section */}
-            <div className="border border-gray-200 rounded-lg p-6">
+            <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center mb-4 gap-6">
                   {isAddressLoading ? (
-                    <p className="text-[11px] text-gray-400">{loadingAddressText}</p>
+                    <p className="text-[11px] text-gray-400 dark:text-gray-500">{loadingAddressText}</p>
                   ) : defaultAddress ? (
                     <>
-                      <h3 className="text-xs font-semibold text-gray-900">
+                      <h3 className="text-xs font-semibold text-gray-900 dark:text-gray-100">
                         {addressText} [{translatedAddressCity}]
                       </h3>
-                      <p className="text-[11px] text-gray-600">{translatedAddressLine}</p>
+                      <p className="text-[11px] text-gray-600 dark:text-gray-400">{translatedAddressLine}</p>
                     </>
                   ) : (
-                    <p className="text-[11px] text-red-600">{noDefaultAddressText}</p>
+                    <p className="text-[11px] text-red-600 dark:text-red-400">{noDefaultAddressText}</p>
                   )}
                 </div>
                 <button
                   onClick={handleAddressChange}
-                  className="text-xs font-medium text-gray-900 underline hover:text-gray-700"
+                  className="text-xs font-medium text-gray-900 dark:text-gray-100 underline hover:text-gray-700 dark:hover:text-gray-300"
                 >
                   {changeText}
                 </button>
               </div>
-              <p className="text-[11px] text-gray-600">{orderConfirmedText}</p>
+              <p className="text-[11px] text-gray-600 dark:text-gray-400">{orderConfirmedText}</p>
             </div>
 
             {/* Payment Method Section */}
-            <div className="border border-gray-200 rounded-lg p-6">
+            <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-semibold text-gray-900">{paymentMethodText}</h3>
+                <h3 className="text-xs font-semibold text-gray-900 dark:text-gray-100">{paymentMethodText}</h3>
                 <button
                   onClick={handlePaymentMethodChange}
-                  className="text-xs font-medium text-gray-900 underline hover:text-gray-700"
+                  className="text-xs font-medium text-gray-900 dark:text-gray-100 underline hover:text-gray-700 dark:hover:text-gray-300"
                 >
                   {changeText}
                 </button>
@@ -692,21 +692,21 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
                     </svg>
                   </div>
                 )}
-                <span className="text-xs font-medium">{defaultPaymentMethod.type}</span>
+                <span className="text-xs font-medium dark:text-gray-100">{defaultPaymentMethod.type}</span>
               </div>
 
-              <p className="text-[11px] text-gray-600">
+              <p className="text-[11px] text-gray-600 dark:text-gray-400">
                 {artistAccountsLoading ? loadingPaymentDetailsText : `${sendMoneyToText} ${translatedPaymentDetails}`}
               </p>
 
               {/* Payment validation error */}
               {paymentValidationError && (
-                <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-[10px] text-red-600">
+                <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-[10px] text-red-600 dark:text-red-400">
                   <p className="font-medium">{paymentMethodErrorText}</p>
                   <p>{paymentValidationError}</p>
                   <button
                     onClick={handlePaymentMethodChange}
-                    className="mt-1 text-red-700 underline hover:text-red-800"
+                    className="mt-1 text-red-700 dark:text-red-300 underline hover:text-red-800 dark:hover:text-red-200"
                   >
                     {changePaymentMethodText}
                   </button>
@@ -715,16 +715,16 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
             </div>
 
             {/* Buyer Protection */}
-            <div className="flex items-center space-x-2 text-[11px] text-gray-600">
-              <i className="bx bxs-check-circle text-black text-sm"></i>
+            <div className="flex items-center space-x-2 text-[11px] text-gray-600 dark:text-gray-400">
+              <i className="bx bxs-check-circle text-black dark:text-green-400 text-sm"></i>
               <span>{purchaseProtectedText}</span>
-              <button className="text-blue-600 underline hover:text-blue-700">{learnMoreText}</button>
+              <button className="text-blue-600 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300">{learnMoreText}</button>
             </div>
           </div>
 
           {/* Right Column - Artwork Details */}
           <div className="lg:col-span-1">
-            <div className="border border-gray-200 rounded-lg py-8 px-10 space-y-4">
+            <div className="border border-gray-200 dark:border-gray-600 rounded-lg py-8 px-10 space-y-4">
               {/* Artwork Image */}
               <div className="flex justify-center">
                 <div className="w-32 h-32 bg-black rounded-lg overflow-hidden">
@@ -738,8 +738,8 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
 
               {/* Artwork Title and Artist */}
               <div className="text-center mb-4">
-                <h3 className="text-md font-semibold text-gray-900">{translatedArtworkTitle}</h3>
-                <p className="text-xs text-gray-600">
+                <h3 className="text-md font-semibold text-gray-900 dark:text-gray-100">{translatedArtworkTitle}</h3>
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   {byText} {translatedArtist}
                 </p>
               </div>
@@ -747,29 +747,29 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
               {/* Artwork Details */}
               <div className="space-y-2 text-xs pt-6">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">{sizeText}</span>
-                  <span className="font-medium">{translatedSize}</span>
+                  <span className="text-gray-600 dark:text-gray-400">{sizeText}</span>
+                  <span className="font-medium dark:text-gray-100">{translatedSize}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">{styleText}</span>
-                  <span className="font-medium">{translatedStyle}</span>
+                  <span className="text-gray-600 dark:text-gray-400">{styleText}</span>
+                  <span className="font-medium dark:text-gray-100">{translatedStyle}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">{mediumText}</span>
-                  <span className="font-medium">{translatedMedium}</span>
+                  <span className="text-gray-600 dark:text-gray-400">{mediumText}</span>
+                  <span className="font-medium dark:text-gray-100">{translatedMedium}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">{editionText}</span>
-                  <span className="font-medium">{translatedEdition}</span>
+                  <span className="text-gray-600 dark:text-gray-400">{editionText}</span>
+                  <span className="font-medium dark:text-gray-100">{translatedEdition}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">{yearCreatedText}</span>
-                  <span className="font-medium">{defaultArtwork.yearCreated}</span>
+                  <span className="text-gray-600 dark:text-gray-400">{yearCreatedText}</span>
+                  <span className="font-medium dark:text-gray-100">{defaultArtwork.yearCreated}</span>
                 </div>
                 {defaultArtwork.quantity && defaultArtwork.quantity > 1 && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600">{quantityText}</span>
-                    <span className="font-medium">{defaultArtwork.quantity}</span>
+                    <span className="text-gray-600 dark:text-gray-400">{quantityText}</span>
+                    <span className="font-medium dark:text-gray-100">{defaultArtwork.quantity}</span>
                   </div>
                 )}
               </div>
@@ -779,14 +779,14 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
                 {defaultArtwork.quantity && defaultArtwork.quantity > 1 ? (
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-semibold">{totalPriceText}</span>
-                      <span className="text-xl font-bold text-red-800">
+                      <span className="text-lg font-semibold dark:text-gray-100">{totalPriceText}</span>
+                      <span className="text-xl font-bold text-red-800 dark:text-red-400">
                         ₱{defaultArtwork.price >= 1000 ? `${defaultArtwork.price / 1000}k` : defaultArtwork.price}
                       </span>
                     </div>
                     {defaultArtwork.originalPrice && (
                       <div className="flex justify-between items-center text-xs">
-                        <span className="text-gray-500">
+                        <span className="text-gray-500 dark:text-gray-400">
                           ({defaultArtwork.quantity} × ₱
                           {defaultArtwork.originalPrice >= 1000
                             ? `${defaultArtwork.originalPrice / 1000}k`
@@ -798,8 +798,8 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
                   </div>
                 ) : (
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold">{priceText}</span>
-                    <span className="text-xl font-bold text-red-800">
+                    <span className="text-lg font-semibold dark:text-gray-100">{priceText}</span>
+                    <span className="text-xl font-bold text-red-800 dark:text-red-400">
                       ₱{defaultArtwork.price >= 1000 ? `${defaultArtwork.price / 1000}k` : defaultArtwork.price}
                     </span>
                   </div>
@@ -826,20 +826,20 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
                     }
                   }
                 }}
-                className="bg-gray-500 text-white text-[11px] px-8 py-2.5 rounded-full font-medium hover:bg-gray-600 transition-colors"
+                className="bg-gray-500 dark:bg-gray-600 text-white text-[11px] px-8 py-2.5 rounded-full font-medium hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
               >
                 Cancel Order
               </button>
               <button
                 onClick={handleSubmit}
-                className="bg-red-800 text-white text-[11px] px-16 py-2.5 rounded-full font-medium hover:bg-red-700 transition-colors"
+                className="bg-red-800 dark:bg-red-700 text-white text-[11px] px-16 py-2.5 rounded-full font-medium hover:bg-red-700 dark:hover:bg-red-600 transition-colors"
               >
                 {submitText}
               </button>
             </div>
-            <p className="text-[11px] text-gray-500 text-center max-w-md whitespace-nowrap">
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 text-center max-w-md whitespace-nowrap">
               {agreeTermsText}{" "}
-              <button className="text-blue-600 underline hover:text-blue-700">{termsConditionsText}</button>
+              <button className="text-blue-600 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300">{termsConditionsText}</button>
             </p>
           </div>
         </div>
@@ -848,19 +848,19 @@ const ReviewPurchase: React.FC<ReviewPurchaseProps> = ({
       {/* Receipt Popup */}
       {showReceiptPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 animate-fadeIn">
-          <div className="bg-white rounded-lg shadow-xl p-6 text-center max-w-xs mx-auto">
-            <h2 className="text-sm font-semibold text-red-700 mb-2">{paymentCompleteText}</h2>
-            <p className="text-xs text-black">{sendReceiptText}</p>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 text-center max-w-xs mx-auto">
+            <h2 className="text-sm font-semibold text-red-700 dark:text-red-400 mb-2">{paymentCompleteText}</h2>
+            <p className="text-xs text-black dark:text-gray-100">{sendReceiptText}</p>
           </div>
         </div>
       )}
 
       {step === "paypal" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
-            <h2 className="text-xs font-small mb-4">{payWithPayPalText}</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6 text-center">
+            <h2 className="text-xs font-small mb-4 dark:text-gray-100">{payWithPayPalText}</h2>
             <div ref={paypalRef} className="mx-auto" />
-            <button onClick={() => setStep("review")} className="mt-4 text-xs text-gray-500 underline">
+            <button onClick={() => setStep("review")} className="mt-4 text-xs text-gray-500 dark:text-gray-400 underline">
               {cancelGoBackText}
             </button>
           </div>

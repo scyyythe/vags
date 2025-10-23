@@ -23,7 +23,7 @@ const ArtMediumSelect = ({ selectedMedium, onChange }: Props) => {
     <Select value={selectedMedium} onValueChange={onChange}>
       <SelectTrigger
         className={cn(
-          "bg-transparent h-[26px] w-35 px-3 focus:ring-0 focus:ring-offset-0 rounded-full border border-gray-300",
+          "bg-transparent h-[26px] w-35 px-3 focus:ring-0 focus:ring-offset-0 rounded-full border border-gray-300 dark:border-gray-600",
           isMobile ? "text-[10px]" : "text-[10px]"
         )}
       >

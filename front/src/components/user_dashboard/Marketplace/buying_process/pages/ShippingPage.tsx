@@ -49,22 +49,24 @@ const ShippingPage = () => {
 
   if (isLoading) return <ShippingSkeleton />;
   if (isError)
-    return <p className="text-center mt-10 text-sm text-red-600">{error?.message || failedToLoadAddressesText}</p>;
+    return <div className="min-h-screen bg-white dark:bg-gray-900"><p className="text-center mt-10 text-sm text-red-600 dark:text-red-400">{error?.message || failedToLoadAddressesText}</p></div>;
 
   return (
-    <ShippingDetails
-      addresses={addresses}
-      selectedAddressId={selectedAddressId}
-      onSelectAddress={handleSelectAddress}
-      onAddNewAddress={() => navigate("/add-address")}
-      onEditAddress={(id) => navigate(`/edit-address/${id}`)}
-      onBack={() => navigate("/")}
-      onContinue={() => {
-        if (selectedAddressId) {
-          navigate("/payment-method");
-        }
-      }}
-    />
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      <ShippingDetails
+        addresses={addresses}
+        selectedAddressId={selectedAddressId}
+        onSelectAddress={handleSelectAddress}
+        onAddNewAddress={() => navigate("/add-address")}
+        onEditAddress={(id) => navigate(`/edit-address/${id}`)}
+        onBack={() => navigate("/")}
+        onContinue={() => {
+          if (selectedAddressId) {
+            navigate("/payment-method");
+          }
+        }}
+      />
+    </div>
   );
 };
 

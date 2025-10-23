@@ -97,7 +97,7 @@ const SellCardMenu: React.FC<SellCardMenuProps> = ({
         ReactDOM.createPortal(
           <div
             ref={menuRef}
-            className="absolute bg-gray-100 rounded-full py-1 px-1.5 shadow-md z-[60]"
+            className="absolute bg-gray-100 dark:bg-gray-800 rounded-full py-1 px-1.5 shadow-md z-[60]"
             style={{
               top: position.top,
               left: position.left,
@@ -194,7 +194,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, label, onClick, onHover, hove
   <div className="flex items-center relative">
     <button
       onClick={(e) => onClick(e)}
-      className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+      className="p-2 rounded-full text-black dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
       aria-label={label}
       onMouseEnter={() => onHover(itemId)}
       onMouseLeave={() => onHover(null)}

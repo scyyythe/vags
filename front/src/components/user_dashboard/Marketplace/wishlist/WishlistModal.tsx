@@ -59,18 +59,18 @@ const WishlistModal = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogOverlay className="bg-black bg-opacity-0 fixed inset-0 z-50" />
       <DialogContent
-        className="max-w-md md:max-w-5xl max-h-[80vh] rounded-md overflow-y-auto wishlist-scrollbar"
+        className="max-w-md md:max-w-5xl max-h-[80vh] rounded-md overflow-y-auto wishlist-scrollbar bg-white dark:bg-gray-800"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle className="text-sm font-bold">{myWishlistText}</DialogTitle>
+          <DialogTitle className="text-sm font-bold text-gray-900 dark:text-gray-100">{myWishlistText}</DialogTitle>
         </DialogHeader>
 
         {wishlistItems.length === 0 ? (
           <div className="text-center py-8">
-            <Heart className="w-7 h-7 mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500 text-[10px]">{wishlistEmptyText}</p>
+            <Heart className="w-7 h-7 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
+            <p className="text-gray-500 dark:text-gray-400 text-[10px]">{wishlistEmptyText}</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4">
