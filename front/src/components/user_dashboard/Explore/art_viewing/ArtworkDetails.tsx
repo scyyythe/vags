@@ -550,8 +550,8 @@ const ArtworkDetails = () => {
                           className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
                           onClick={() => setIsExpanded(true)}
                         >
-                          <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
-                          <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
+                          <i className="bx bx-expand-alt text-[12px] mr-[6px] text-black dark:text-black"></i>
+                          <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700 text-black dark:text-black">
                             {tExpand}
                           </span>
                         </div>
@@ -561,8 +561,8 @@ const ArtworkDetails = () => {
                           className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer animate-tipjar"
                           onClick={handleTipJar}
                         >
-                          <i className="bx bx-box text-[12px] mr-[6px]"></i>
-                          <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700 animate-donate">
+                          <i className="bx bx-box text-[12px] mr-[6px] text-black dark:text-black"></i>
+                          <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700 animate-donate text-black dark:text-black">
                             {tDonate}
                           </span>
                         </div>
