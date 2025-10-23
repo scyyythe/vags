@@ -1,0 +1,352 @@
+[
+  {
+    "_id": {
+      "$oid": "680e3dd83d3ef687681fd62f"
+    },
+    "follower": {
+      "$oid": "6801b8e70d1a5290e8476a93"
+    },
+    "following": {
+      "$oid": "680dc6aa546a200183155ac6"
+    },
+    "followed_at": {
+      "$date": "2025-04-27T14:23:20.442Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "680e3edd2f61dd499ee7cbf1"
+    },
+    "follower": {
+      "$oid": "680dc72b570f20615ecf9f42"
+    },
+    "following": {
+      "$oid": "6801b8e70d1a5290e8476a93"
+    },
+    "followed_at": {
+      "$date": "2025-04-27T14:27:41.188Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "680e4073c665838faffaa09e"
+    },
+    "follower": {
+      "$oid": "680dc72b570f20615ecf9f42"
+    },
+    "following": {
+      "$oid": "680dc6aa546a200183155ac6"
+    },
+    "followed_at": {
+      "$date": "2025-04-27T14:34:27.426Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682202217d2b25342742efc5"
+    },
+    "follower": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "following": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "followed_at": {
+      "$date": "2025-05-12T14:13:53.080Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682218cc02457a19ac764db5"
+    },
+    "follower": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "following": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "followed_at": {
+      "$date": "2025-05-12T15:50:36.345Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6825e9dbc5a09fc23f10ccb4"
+    },
+    "follower": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "following": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "followed_at": {
+      "$date": "2025-05-15T13:19:23.633Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6825e9e3c5a09fc23f10ccb6"
+    },
+    "follower": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "following": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "followed_at": {
+      "$date": "2025-05-15T13:19:31.363Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6825fa56eee7658621ae38f4"
+    },
+    "follower": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "following": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "followed_at": {
+      "$date": "2025-05-15T14:29:42.648Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6829fdb1c57ff6d8dbca48fa"
+    },
+    "follower": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "following": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "followed_at": {
+      "$date": "2025-05-18T15:33:05.494Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682fdd58b45628c76a892953"
+    },
+    "follower": {
+      "$oid": "68200dd570db54e30025a74e"
+    },
+    "following": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "followed_at": {
+      "$date": "2025-05-23T02:28:40.057Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "682fdd5db45628c76a892955"
+    },
+    "follower": {
+      "$oid": "68200dd570db54e30025a74e"
+    },
+    "following": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "followed_at": {
+      "$date": "2025-05-23T02:28:45.018Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "683a813953b39302d5e24096"
+    },
+    "follower": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "following": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "followed_at": {
+      "$date": "2025-05-31T04:10:33.069Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "683a8c2c924b88b2e140a4d3"
+    },
+    "follower": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "following": {
+      "$oid": "68200dd570db54e30025a74e"
+    },
+    "followed_at": {
+      "$date": "2025-05-31T04:57:16.321Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "683ae7a72853ab6af197d556"
+    },
+    "follower": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "following": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "followed_at": {
+      "$date": "2025-05-31T11:27:35.646Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6844685c13532a13def705cd"
+    },
+    "follower": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "following": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "followed_at": {
+      "$date": "2025-06-07T16:27:08.689Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6864cc67a937600241089d19"
+    },
+    "follower": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "following": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "followed_at": {
+      "$date": "2025-07-02T06:06:31.992Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "686524fd8ec760fcd0b36be4"
+    },
+    "follower": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "following": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "followed_at": {
+      "$date": "2025-07-02T12:24:29.982Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68668bfc1ba312fc5e941156"
+    },
+    "follower": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "following": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "followed_at": {
+      "$date": "2025-07-03T13:56:12.383Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d9019f4aa820f1fabfd224"
+    },
+    "follower": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "following": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "followed_at": {
+      "$date": "2025-09-28T09:36:31.923Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d901ab4aa820f1fabfd226"
+    },
+    "follower": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "following": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "followed_at": {
+      "$date": "2025-09-28T09:36:43.673Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d91fa1ab3bb58491509f47"
+    },
+    "follower": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "following": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "followed_at": {
+      "$date": "2025-09-28T11:44:33.875Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e39818a7b0a2b15abf5d07"
+    },
+    "follower": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "following": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "followed_at": {
+      "$date": "2025-10-06T10:21:12.646Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e39862a7b0a2b15abf5d09"
+    },
+    "follower": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "following": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "followed_at": {
+      "$date": "2025-10-06T10:22:26.086Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68eb1e4e17a2b414571c6624"
+    },
+    "follower": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "following": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "followed_at": {
+      "$date": "2025-10-12T03:19:42.416Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f7310e43e2ad8edb754024"
+    },
+    "follower": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "following": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "followed_at": {
+      "$date": "2025-10-21T07:06:54.900Z"
+    }
+  }
+]

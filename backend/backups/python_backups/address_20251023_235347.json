@@ -1,0 +1,266 @@
+[
+  {
+    "_id": {
+      "$oid": "6875dde712f13be10985ac84"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "name": "Angel I. Canete",
+    "address": "Estaca Tunghaan Minglanilla, Cebu, Waiting Shed",
+    "city": "Cebu",
+    "state": "Region 7",
+    "country": "Philippines",
+    "postal_code": "6046",
+    "phone": "950913018",
+    "is_default": true,
+    "created_at": {
+      "$date": "2025-07-15T04:49:43.885Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T12:14:38.874Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68760474364e64dfea95d4e8"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "name": "Tenetur facilis et l",
+    "address": "Assumenda eaque modi, Facilis dolor mollit",
+    "city": "Mollit tempore dolo",
+    "state": "Nihil laboris dolore",
+    "country": "Philippines",
+    "postal_code": "Alias eiusmod autem",
+    "phone": "+1 (262) 589-9256",
+    "is_default": true,
+    "created_at": {
+      "$date": "2025-07-15T07:34:12.235Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-15T07:34:12.235Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6876052c364e64dfea95d4e9"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "name": "Minim officiis volup",
+    "address": "Fugiat voluptatem su, Officia deleniti con",
+    "city": "Quaerat aut quas par",
+    "state": "Pariatur Hic labori",
+    "country": "Philippines",
+    "postal_code": "Nemo delectus expli",
+    "phone": "+1 (904) 967-2053",
+    "is_default": false,
+    "created_at": {
+      "$date": "2025-07-15T07:37:16.771Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-15T07:37:16.771Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688f5547c03e5ff54db6d862"
+    },
+    "user": {
+      "$oid": "688f5291c03e5ff54db6d860"
+    },
+    "name": "Sit voluptatem velit",
+    "address": "Cumque facilis quas , Omnis magna rerum su",
+    "city": "Ipsum odit eum sed d",
+    "state": "Adipisicing lorem cu",
+    "country": "Philippines",
+    "postal_code": "Eos ea ut velit numq",
+    "phone": "+1 (175) 658-2271",
+    "is_default": true,
+    "created_at": {
+      "$date": "2025-08-03T12:25:43.910Z"
+    },
+    "updated_at": {
+      "$date": "2025-08-03T12:25:43.910Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68da4c5010482fb716dd9809"
+    },
+    "user": {
+      "$oid": "68d9fd9e9d75d9a1a64a50ca"
+    },
+    "name": "Loren Canete",
+    "address": "Estaca Tunghaan Minglanilla, Cebu,, Floor 5",
+    "city": "Cebu",
+    "state": "Region 7",
+    "country": "Philippines",
+    "postal_code": "6046",
+    "phone": "09950913018",
+    "is_default": true,
+    "created_at": {
+      "$date": "2025-09-29T09:07:28.322Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-29T09:13:54.816Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e39cd4a7b0a2b15abf5d14"
+    },
+    "user": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "name": "James Arpilang",
+    "address": "Bacay Tulay, Officiis molestiae q",
+    "city": "Cebu City",
+    "state": "Adipisci aut sint a",
+    "country": "Philippines",
+    "postal_code": "6046",
+    "phone": "09104467640",
+    "is_default": true,
+    "created_at": {
+      "$date": "2025-10-06T10:41:24.179Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-06T10:41:24.180Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68efa1b7d401570b295a7155"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "name": "Jil Ibalaroosa",
+    "address": "Estaca Tunghaan Minglanilla, Cebu",
+    "city": "Cebu",
+    "state": "Region 7",
+    "country": "Philippines",
+    "postal_code": "6046",
+    "phone": "950913018",
+    "is_default": true,
+    "created_at": {
+      "$date": "2025-10-15T13:29:27.792Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T13:29:27.792Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f4a3cac08fbe1febfcde55"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "name": "Jamaica Anoba",
+    "address": "215, Sitio Cabutoy Pooc, Talisay, none",
+    "city": "Talisay",
+    "state": "Cebu, City",
+    "country": "Philippines",
+    "postal_code": "6045",
+    "phone": "09686155443",
+    "is_default": true,
+    "created_at": {
+      "$date": "2025-10-19T08:39:38.673Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T09:29:43.382Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f4b08dc08fbe1febfcde56"
+    },
+    "user": {
+      "$oid": "687f2353fd7b10e499432c4e"
+    },
+    "name": "Jaira Candia",
+    "address": "Sitio Dapdap, none",
+    "city": "Talisay",
+    "state": "Cebu",
+    "country": "Philippines",
+    "postal_code": "6045",
+    "phone": "09686155446",
+    "is_default": true,
+    "created_at": {
+      "$date": "2025-10-19T09:34:05.843Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T09:34:05.843Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f656d397e5ea7179ae9937"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "name": "Janah Ubas",
+    "address": "Tungkop Minglanilla, Cebu, Purok Dolphin",
+    "city": "Cebu",
+    "state": "Region 7",
+    "country": "Philippines",
+    "postal_code": "6046",
+    "phone": "0995091318",
+    "is_default": true,
+    "created_at": {
+      "$date": "2025-10-20T15:35:47.804Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T15:35:47.804Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f7cdbd117e4c4d6ff64c81"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "name": "Janah Ubas",
+    "address": "Tungkop Minglanilla, Cebu",
+    "city": "Cebu",
+    "state": "Region 7",
+    "country": "Philippines",
+    "postal_code": "6046",
+    "phone": "950913018",
+    "is_default": false,
+    "created_at": {
+      "$date": "2025-10-21T18:15:25.906Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T18:20:57.696Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f7ce94117e4c4d6ff64c82"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "name": "Thera Arensvelt",
+    "address": "Estaca Tunghaan Minglanilla, Cebu",
+    "city": "Cebu",
+    "state": "Region 7",
+    "country": "Philippines",
+    "postal_code": "6046",
+    "phone": "950913018",
+    "is_default": true,
+    "created_at": {
+      "$date": "2025-10-21T18:19:00.267Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T18:19:00.267Z"
+    }
+  }
+]
