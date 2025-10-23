@@ -39,7 +39,8 @@ const ArtCategorySelect = ({ selectedCategory, onChange }: Props) => {
           isMobile ? "text-[10px]" : "text-[10px]"
         )}
       >
-        <img src="/pics/b_logo.png" className="w-3 h-3 mr-2" />
+        <img src="/pics/2.png" className="w-4 h-4 mr-1 dark:hidden" />
+        <img src="/pics/1.png" className="w-4 h-4 mr-1 hidden dark:block" />
         <SelectValue placeholder={selectCategoryText} />
       </SelectTrigger>
       <SelectContent style={{ maxHeight: "50vh" }} className="relative right-14">
