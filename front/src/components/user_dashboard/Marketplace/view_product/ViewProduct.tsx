@@ -294,7 +294,7 @@ const ProductViewingContent = () => {
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
 
-      <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
+      <div className="min-h-screen container mx-auto px-4 md:px-6 py-4 md:py-8">
         {/* Back button */}
         <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
           <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
@@ -683,41 +683,41 @@ const ProductViewingContent = () => {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Related Artworks Section */}
-      <div className="container md:px-6 mb-4">
-        <h2 className={`font-medium dark:text-gray-100 ${isMobile ? "text-sm -ml-6 mb-4 mt-4" : "text-xs mb-4 -mt-2"}`}>
-          {relatedArtworksText}
-        </h2>
-        {isLoading ? (
-          <p className="text-sm text-gray-400 dark:text-gray-500">{loadingText}</p>
-        ) : relatedArtworks.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {relatedArtworks.slice(0, 8).map((art) => (
-              <SellCard
-                key={art.id}
-                id={art.id}
-                artworkImage={art.image_url?.[0]}
-                title={art.title}
-                artist={art.artist}
-                artistId={art.artist_id}
-                price={art.price}
-                edition={art.edition}
-                size={art.size}
-                yearCreated={art.year_created}
-                medium={art.medium}
-                category={art.category}
-                onCardClick={() => navigate(`/viewproduct/${art.id}`)}
-                isMarketplace={true}
-                isProfileView={false}
-                status={art.art_status || "active"}
-              />
-            ))}
-          </div>
-        ) : (
-          <p className="text-xs text-gray-400 dark:text-gray-500 text-center">{noOtherArtworksText}</p>
-        )}
+        {/* Related Artworks Section */}
+        <div className="container px-1 md:px-1 mt-4">
+          <h2 className={`font-medium dark:text-gray-100 ${isMobile ? "text-xs mb-4 mt-8" : "text-xs mb-4 -mt-2"}`}>
+            {relatedArtworksText}
+          </h2>
+          {isLoading ? (
+            <p className="text-sm text-gray-400 dark:text-gray-500">{loadingText}</p>
+          ) : relatedArtworks.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {relatedArtworks.slice(0, 8).map((art) => (
+                <SellCard
+                  key={art.id}
+                  id={art.id}
+                  artworkImage={art.image_url?.[0]}
+                  title={art.title}
+                  artist={art.artist}
+                  artistId={art.artist_id}
+                  price={art.price}
+                  edition={art.edition}
+                  size={art.size}
+                  yearCreated={art.year_created}
+                  medium={art.medium}
+                  category={art.category}
+                  onCardClick={() => navigate(`/viewproduct/${art.id}`)}
+                  isMarketplace={true}
+                  isProfileView={false}
+                  status={art.art_status || "active"}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-gray-400 dark:text-gray-500 text-center">{noOtherArtworksText}</p>
+          )}
+        </div>
       </div>
 
       {/* Expanded artwork view */}
