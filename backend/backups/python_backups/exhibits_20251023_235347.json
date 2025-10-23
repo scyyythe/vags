@@ -1,0 +1,1557 @@
+[
+  {
+    "_id": {
+      "$oid": "6848f273c6724e2c3a543d6b"
+    },
+    "title": "Emotions",
+    "description": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1749611120/jhd3puxzc52z5nl3rqdc.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "681378205a741fd403485ccd"
+      },
+      {
+        "$oid": "681f80271faacfcea4e9487d"
+      },
+      {
+        "$oid": "6816c05bf05c307f8fdd7cf3"
+      },
+      {
+        "$oid": "6816c0a8f05c307f8fdd7cf6"
+      },
+      {
+        "$oid": "68ba967b6a1950f6d9fa57ef"
+      },
+      {
+        "$oid": "68b6311caf786d05fdb72664"
+      }
+    ],
+    "category": "drawing",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-10-13T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-17T00:00:00Z"
+    },
+    "chosen_env": 2,
+    "created_at": {
+      "$date": "2025-06-11T03:05:23.345Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-13T11:42:05.500Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "6864c627ba036839520bb239"
+      },
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      },
+      {
+        "$oid": "68efb4b0d401570b295a715f"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68519c2b75632ee7bb778fba"
+    },
+    "title": "Aperiam esse nobis",
+    "description": "Laboriosam modi nih",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1750178857/spv4a0jkcz9qygwuxdjb.jpg",
+    "owner": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [],
+    "category": "fashion design",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": null,
+    "created_at": {
+      "$date": "2025-06-17T16:47:39.674Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "6864c627ba036839520bb239"
+      },
+      {
+        "$oid": "6831b546797ef121740fdfb0"
+      },
+      {
+        "$oid": "68d9fd9e9d75d9a1a64a50ca"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68519d9a75632ee7bb778fbb"
+    },
+    "title": "Saepe voluptas possi",
+    "description": "Omnis voluptatem Qu",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1750179226/nt6cureahbeghdypfw5l.jpg",
+    "owner": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [],
+    "category": "architecture",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": null,
+    "created_at": {
+      "$date": "2025-06-17T16:53:46.817Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "6864c627ba036839520bb239"
+      },
+      {
+        "$oid": "688f5291c03e5ff54db6d860"
+      },
+      {
+        "$oid": "68d9fd9e9d75d9a1a64a50ca"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6852d88cbdc7b45ca9480f37"
+    },
+    "title": "Qui eius quia unde r",
+    "description": "Anim qui omnis cillu",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1750259851/kmthcouqi8vn6aiwxucm.jpg",
+    "owner": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "6835f99cd5734958be9b7365"
+      },
+      {
+        "$oid": "6817123c1674d689857f8bcd"
+      },
+      {
+        "$oid": "681711d81674d689857f8bc8"
+      }
+    ],
+    "category": "poetry",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": 3,
+    "created_at": {
+      "$date": "2025-06-18T15:17:32.746Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6852df44bdc7b45ca9480f38"
+    },
+    "title": "Eveniet ipsa excep",
+    "description": "Quidem quas vel fuga",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1750261571/kcwlgmzg4hffgupulb77.jpg",
+    "owner": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "6835f99cd5734958be9b7365"
+      },
+      {
+        "$oid": "6817123c1674d689857f8bcd"
+      },
+      {
+        "$oid": "681711d81674d689857f8bc8"
+      }
+    ],
+    "category": "poetry",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": 3,
+    "created_at": {
+      "$date": "2025-06-18T15:46:12.565Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6852e188bdc7b45ca9480f39"
+    },
+    "title": "Doloribus facere rec",
+    "description": "Non illo id duis ali",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1750262151/bhiljh6mhnqreovtllkh.jpg",
+    "owner": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "6835f99cd5734958be9b7365"
+      },
+      {
+        "$oid": "6817123c1674d689857f8bcd"
+      },
+      {
+        "$oid": "681711d81674d689857f8bc8"
+      }
+    ],
+    "category": "poetry",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": 3,
+    "created_at": {
+      "$date": "2025-06-18T15:55:52.437Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68636c4c6f5fda109ddb2aad"
+    },
+    "title": "Assumenda et rerum u",
+    "description": "Deserunt tempora del",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1751346249/plhbl8ntgpiynrrdgskj.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Collaborative",
+    "collaborators": [
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      },
+      {
+        "$oid": "6825e93dc5a09fc23f10ccab"
+      }
+    ],
+    "artworks": [
+      {
+        "$oid": "682cc6b6f6ce8d9c55cf2e29"
+      },
+      {
+        "$oid": "682cc737f6ce8d9c55cf2e2a"
+      },
+      {
+        "$oid": "6840337fdf84c779f9bf61a0"
+      },
+      {
+        "$oid": "682e7af9ce37c771c0de3da5"
+      },
+      {
+        "$oid": "68b6311caf786d05fdb72664"
+      },
+      {
+        "$oid": "68ba967b6a1950f6d9fa57ef"
+      }
+    ],
+    "category": "photography",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T00:00:00Z"
+    },
+    "chosen_env": 2,
+    "created_at": {
+      "$date": "2025-07-01T05:04:12.248Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-02T08:15:44.713Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "6864c627ba036839520bb239"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68640b14755d3038f33ab61c"
+    },
+    "title": "Non cupiditate et la",
+    "description": "Ab enim nihil adipis",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1751386899/tenwphbcriry22pxmtvq.jpg",
+    "owner": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "6817123c1674d689857f8bcd"
+      },
+      {
+        "$oid": "681711d81674d689857f8bc8"
+      },
+      {
+        "$oid": "6835f99cd5734958be9b7365"
+      }
+    ],
+    "category": "ceramics",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": 2,
+    "created_at": {
+      "$date": "2025-07-01T16:21:40.505Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "6864c627ba036839520bb239"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6875d3e1b2b824374cc072f4"
+    },
+    "title": "Ut fuga Laborum obc",
+    "description": "Tempore occaecat do",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1752552416/zuhbxnnq3kzestu7avpl.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Collaborative",
+    "collaborators": [
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      },
+      {
+        "$oid": "6864c627ba036839520bb239"
+      }
+    ],
+    "artworks": [
+      {
+        "$oid": "683bd3064a8cc9543c5499ad"
+      },
+      {
+        "$oid": "682fe043b45628c76a89295e"
+      },
+      {
+        "$oid": "682cc613f6ce8d9c55cf2e28"
+      },
+      {
+        "$oid": "6824ccfc6fb4597c28417515"
+      }
+    ],
+    "category": "jewelry design",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": 3,
+    "created_at": {
+      "$date": "2025-07-15T04:06:57.784Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "6864c627ba036839520bb239"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "687b7ff6f006f51ede46b8c0"
+    },
+    "title": "Ipsa consequat Mag",
+    "description": "Consequuntur vitae a",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1752924150/csbuzbnjxlkeeqelqvy0.jpg",
+    "owner": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "6835f99cd5734958be9b7365"
+      },
+      {
+        "$oid": "6817123c1674d689857f8bcd"
+      },
+      {
+        "$oid": "681711d81674d689857f8bc8"
+      }
+    ],
+    "category": "landscape design",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": 1,
+    "created_at": {
+      "$date": "2025-07-19T11:22:30.363Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "688e2b570c4b8af2fb42f71f"
+    },
+    "title": "Blanditiis proident",
+    "description": "Nulla numquam quidem",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1754147669/ttx2gtusxs6eavev4snt.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Collaborative",
+    "collaborators": [
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "artworks": [],
+    "category": "crafts",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": 3,
+    "created_at": {
+      "$date": "2025-08-02T15:14:31.296Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "688e2bd70c4b8af2fb42f722"
+    },
+    "title": "Et accusamus reicien",
+    "description": "Occaecat rem perfere",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1754147797/lz8gotwdstq72urnccqi.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Collaborative",
+    "collaborators": [
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      },
+      {
+        "$oid": "6864c627ba036839520bb239"
+      }
+    ],
+    "artworks": [
+      {
+        "$oid": "683bd3064a8cc9543c5499ad"
+      },
+      {
+        "$oid": "682fe043b45628c76a89295e"
+      },
+      {
+        "$oid": "682cc613f6ce8d9c55cf2e28"
+      }
+    ],
+    "category": "woodwork",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": 2,
+    "created_at": {
+      "$date": "2025-08-02T15:16:39.520Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-12T14:39:19.677Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68bad8532a0470723efab045"
+    },
+    "title": "Hybrid",
+    "description": "A combination of artist showcasing their breathtaking pieces.",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1757075537/zukm969l94gxzc6rga2p.jpg",
+    "owner": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "exhibit_type": "Collaborative",
+    "collaborators": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "681dd76ee5d67ac254562d68"
+      }
+    ],
+    "artworks": [],
+    "category": "painting",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": 3,
+    "created_at": {
+      "$date": "2025-09-05T12:32:19.058Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68d9fd9e9d75d9a1a64a50ca"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68bae26e62e02454ec42355d"
+    },
+    "title": "Corrupti laudantium",
+    "description": "Quae dolore tempor n",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1757078122/otnknemjclaxrcqoeikw.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "68ba967b6a1950f6d9fa57ef"
+      },
+      {
+        "$oid": "68b6311caf786d05fdb72664"
+      },
+      {
+        "$oid": "682fe043b45628c76a89295e"
+      },
+      {
+        "$oid": "682cc613f6ce8d9c55cf2e28"
+      }
+    ],
+    "category": "ceramics",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": 1,
+    "created_at": {
+      "$date": "2025-09-05T13:15:26.018Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68bae3c362e02454ec42355e"
+    },
+    "title": "Jainess",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1757078464/tjyfzto4b8fhwhynfagn.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Collaborative",
+    "collaborators": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      }
+    ],
+    "artworks": [
+      {
+        "$oid": "68ba967b6a1950f6d9fa57ef"
+      },
+      {
+        "$oid": "68b6311caf786d05fdb72664"
+      },
+      {
+        "$oid": "682fe043b45628c76a89295e"
+      },
+      {
+        "$oid": "6835f99cd5734958be9b7365"
+      },
+      {
+        "$oid": "6817123c1674d689857f8bcd"
+      },
+      {
+        "$oid": "681711d81674d689857f8bc8"
+      },
+      {
+        "$oid": "68da43e010482fb716dd9804"
+      }
+    ],
+    "category": "painting",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-10-15T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-18T00:00:00Z"
+    },
+    "chosen_env": 3,
+    "created_at": {
+      "$date": "2025-09-05T13:21:07.527Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T12:28:46.245Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68baeea562e02454ec423563"
+    },
+    "title": "First Exhibit",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1757081250/gpffeiq4sqbbujwgpfwb.jpg",
+    "owner": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "68ba96b76a1950f6d9fa57f0"
+      },
+      {
+        "$oid": "682cc737f6ce8d9c55cf2e2a"
+      },
+      {
+        "$oid": "682cc6b6f6ce8d9c55cf2e29"
+      },
+      {
+        "$oid": "682006def5539999cc15e7ae"
+      },
+      {
+        "$oid": "6816ff4e694d124bbdcbff6b"
+      },
+      {
+        "$oid": "681392df1ea6de6aaa308e4a"
+      }
+    ],
+    "category": "graphic design",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": 2,
+    "created_at": {
+      "$date": "2025-09-05T14:07:33.047Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "68d9fd9e9d75d9a1a64a50ca"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68be2b22bc25097eac0d61cc"
+    },
+    "title": "Nihil voluptas rem l",
+    "description": "Officiis praesentium",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1757293344/e9wqosqsksdbsukjvxo0.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "68ba967b6a1950f6d9fa57ef"
+      },
+      {
+        "$oid": "682fe043b45628c76a89295e"
+      },
+      {
+        "$oid": "682cc613f6ce8d9c55cf2e28"
+      },
+      {
+        "$oid": "68b6311caf786d05fdb72664"
+      }
+    ],
+    "category": "sound art",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "end_time": {
+      "$date": "2025-10-06T11:08:48.419Z"
+    },
+    "chosen_env": 1,
+    "created_at": {
+      "$date": "2025-09-08T01:02:26.495Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-26T11:08:48.419Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68de10dacdd3af917608f889"
+    },
+    "title": "Collections",
+    "description": "Sample Exhibit",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1759383770/xgvfrhl4xtzgudh8kurx.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "68b6311caf786d05fdb72664"
+      },
+      {
+        "$oid": "68ba967b6a1950f6d9fa57ef"
+      },
+      {
+        "$oid": "682fe043b45628c76a89295e"
+      },
+      {
+        "$oid": "682cc613f6ce8d9c55cf2e28"
+      },
+      {
+        "$oid": "68f9caa9042759364d40965c"
+      },
+      {
+        "$oid": "68df2ebeaa63ff7cbacbe008"
+      }
+    ],
+    "category": "ceramics",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-10-23T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-28T00:00:00Z"
+    },
+    "chosen_env": 2,
+    "created_at": {
+      "$date": "2025-10-02T05:42:50.866Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T14:00:51.921Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68e399d5a7b0a2b15abf5d10"
+    },
+    "title": "Quo sint rem in ull",
+    "description": "Reprehenderit maior",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1759746515/dtwe1cpblokkdcocvkii.jpg",
+    "owner": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "68e392fda7b0a2b15abf5d04"
+      }
+    ],
+    "category": "digital art",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-10-06T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-11T00:00:00Z"
+    },
+    "chosen_env": 1,
+    "created_at": {
+      "$date": "2025-10-06T10:28:37.526Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-06T10:30:56.017Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "68e391f1a7b0a2b15abf5d01"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68e3a668a7b0a2b15abf5d2d"
+    },
+    "title": "Cat",
+    "description": "The composition aims to evoke a sense of unease and a visceral understanding of the internal turmoil associated with madness.",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1759749735/xyvd81dskydgk9zaqlgq.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "68df2ebeaa63ff7cbacbe008"
+      },
+      {
+        "$oid": "682fe043b45628c76a89295e"
+      },
+      {
+        "$oid": "68b6311caf786d05fdb72664"
+      },
+      {
+        "$oid": "68f9caa9042759364d40965c"
+      }
+    ],
+    "category": "motion graphics",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-10-23T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-26T00:00:00Z"
+    },
+    "chosen_env": 1,
+    "created_at": {
+      "$date": "2025-10-06T11:22:16.721Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T13:54:06.121Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68f7179443e2ad8edb75400c"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68eb3dd204e443a5ad958919"
+    },
+    "title": "Test",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760247247/u4fxm1q6be5mkytberfj.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Collaborative",
+    "collaborators": [
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      },
+      {
+        "$oid": "6864c627ba036839520bb239"
+      }
+    ],
+    "artworks": [
+      {
+        "$oid": "68e3b661a7b0a2b15abf5d33"
+      },
+      {
+        "$oid": "68df2ebeaa63ff7cbacbe008"
+      },
+      {
+        "$oid": "68b6311caf786d05fdb72664"
+      },
+      {
+        "$oid": "682cc613f6ce8d9c55cf2e28"
+      }
+    ],
+    "category": "painting",
+    "visibility": "Pending",
+    "start_time": {
+      "$date": "2025-10-12T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-17T00:00:00Z"
+    },
+    "chosen_env": 3,
+    "created_at": {
+      "$date": "2025-10-12T05:34:10.336Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-12T05:34:10.336Z"
+    },
+    "viewed_by": [],
+    "slot_owner_map": {},
+    "slot_artwork_map": {}
+  },
+  {
+    "_id": {
+      "$oid": "68eb3f4a04e443a5ad95891c"
+    },
+    "title": "Paintings",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1761143963/ojmzahtnkifbaypv3p09.jpg",
+    "owner": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "exhibit_type": "Collaborative",
+    "collaborators": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "artworks": [
+      {
+        "$oid": "68e3a19fa7b0a2b15abf5d28"
+      },
+      {
+        "$oid": "68df2f47aa63ff7cbacbe00b"
+      },
+      {
+        "$oid": "682cc737f6ce8d9c55cf2e2a"
+      },
+      {
+        "$oid": "682cc6b6f6ce8d9c55cf2e29"
+      },
+      {
+        "$oid": "68e3b661a7b0a2b15abf5d33"
+      },
+      {
+        "$oid": "68df2ebeaa63ff7cbacbe008"
+      },
+      {
+        "$oid": "682cc613f6ce8d9c55cf2e28"
+      },
+      {
+        "$oid": "6835f99cd5734958be9b7365"
+      },
+      {
+        "$oid": "681711d81674d689857f8bc8"
+      },
+      {
+        "$oid": "68d51e77ea18427af7ff18d2"
+      }
+    ],
+    "category": "painting",
+    "visibility": "Private",
+    "start_time": {
+      "$date": "2025-10-22T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-25T00:00:00Z"
+    },
+    "chosen_env": 3,
+    "created_at": {
+      "$date": "2025-10-12T05:40:26.608Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T14:49:51.171Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "68f7179443e2ad8edb75400c"
+      },
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      }
+    ],
+    "slot_owner_map": {},
+    "slot_artwork_map": {}
+  },
+  {
+    "_id": {
+      "$oid": "68eb41bd4f20872ef2e3c28c"
+    },
+    "title": "Sample",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760248251/i4guumfgzcvsvtdykjbm.jpg",
+    "owner": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "exhibit_type": "Collaborative",
+    "collaborators": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      }
+    ],
+    "artworks": [
+      {
+        "$oid": "68e3a19fa7b0a2b15abf5d28"
+      },
+      {
+        "$oid": "68df2f47aa63ff7cbacbe00b"
+      }
+    ],
+    "category": "drawing",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-10-12T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-17T00:00:00Z"
+    },
+    "chosen_env": 1,
+    "created_at": {
+      "$date": "2025-10-12T05:50:53.534Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T03:40:44.303Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "68f853c70458d546690ed4b8"
+      }
+    ],
+    "slot_owner_map": {},
+    "slot_artwork_map": {}
+  },
+  {
+    "_id": {
+      "$oid": "68ee426634ad2f5531f8b7e4"
+    },
+    "title": "Painings",
+    "description": "This is a smaple of my desicription should be deltaed later",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760445028/asxadjan0r3dkjx6qy8i.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "68ede1a3038d36d785671c21"
+      },
+      {
+        "$oid": "682cc613f6ce8d9c55cf2e28"
+      },
+      {
+        "$oid": "68e3b661a7b0a2b15abf5d33"
+      },
+      {
+        "$oid": "68df2ebeaa63ff7cbacbe008"
+      },
+      {
+        "$oid": "68da43e010482fb716dd9804"
+      },
+      {
+        "$oid": "68ba967b6a1950f6d9fa57ef"
+      }
+    ],
+    "category": "ceramics",
+    "visibility": "Deleted",
+    "start_time": {
+      "$date": "2025-10-14T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-15T00:00:00Z"
+    },
+    "chosen_env": 2,
+    "created_at": {
+      "$date": "2025-10-14T12:30:30.574Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T12:30:30.574Z"
+    },
+    "viewed_by": [],
+    "slot_owner_map": {},
+    "slot_artwork_map": {}
+  },
+  {
+    "_id": {
+      "$oid": "68f302f0e26ddd9f02841032"
+    },
+    "title": "Flowers",
+    "description": "Field of creative artworks.",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760756463/iii2tsqsjeazyakxz7ts.jpg",
+    "owner": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "68d51e77ea18427af7ff18d2"
+      },
+      {
+        "$oid": "68f109d917db69637d68291f"
+      },
+      {
+        "$oid": "6835f99cd5734958be9b7365"
+      },
+      {
+        "$oid": "6817123c1674d689857f8bcd"
+      }
+    ],
+    "category": "illustration",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-10-18T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-20T00:00:00Z"
+    },
+    "chosen_env": 1,
+    "created_at": {
+      "$date": "2025-10-18T03:01:04.991Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-18T05:18:52.388Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "68f853c70458d546690ed4b8"
+      }
+    ],
+    "slot_owner_map": {},
+    "slot_artwork_map": {}
+  },
+  {
+    "_id": {
+      "$oid": "68f309cfadc33b713eafa940"
+    },
+    "title": "Test",
+    "description": "This is fpr testng only thanks",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760758225/i1e1qwep7w5ep4kkeu4q.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Collaborative",
+    "collaborators": [
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "artworks": [
+      {
+        "$oid": "68ba967b6a1950f6d9fa57ef"
+      },
+      {
+        "$oid": "68da43e010482fb716dd9804"
+      },
+      {
+        "$oid": "68df2ebeaa63ff7cbacbe008"
+      },
+      {
+        "$oid": "68e3b661a7b0a2b15abf5d33"
+      },
+      {
+        "$oid": "68ede1a3038d36d785671c21"
+      }
+    ],
+    "category": "painting",
+    "visibility": "Pending",
+    "start_time": {
+      "$date": "2025-10-18T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-25T00:00:00Z"
+    },
+    "chosen_env": 3,
+    "created_at": {
+      "$date": "2025-10-18T03:30:23.239Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-18T03:30:23.239Z"
+    },
+    "viewed_by": [],
+    "slot_owner_map": {},
+    "slot_artwork_map": {}
+  },
+  {
+    "_id": {
+      "$oid": "68f30f05e26ddd9f02841033"
+    },
+    "title": "Sunsets",
+    "description": "Sunset display of artworks.",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760759557/dexvmcgmxyuegoktfpjg.jpg",
+    "owner": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "exhibit_type": "Collaborative",
+    "collaborators": [
+      {
+        "$oid": "6817955cadec126cfbb0d5a1"
+      }
+    ],
+    "artworks": [
+      {
+        "$oid": "68d51e77ea18427af7ff18d2"
+      },
+      {
+        "$oid": "681711d81674d689857f8bc8"
+      }
+    ],
+    "category": "painting",
+    "visibility": "Pending",
+    "start_time": {
+      "$date": "2025-10-20T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-22T00:00:00Z"
+    },
+    "chosen_env": 1,
+    "created_at": {
+      "$date": "2025-10-18T03:52:37.292Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-18T03:52:37.292Z"
+    },
+    "viewed_by": [],
+    "slot_owner_map": {},
+    "slot_artwork_map": {}
+  },
+  {
+    "_id": {
+      "$oid": "68f8dc80a3c8e6e255e2f15c"
+    },
+    "title": "Sceneries",
+    "description": "A wide vista unfolds, often depicting rolling hills and a winding river bathed in the soft glow of either dawn or twilight. Vibrant greens and deep blues dominate the canvas, meticulously detailed to capture the texture of the foliage and the reflections on the water's surface. The overall effect is a serene and idealized glimpse of nature, designed to evoke a sense of calm and escape.",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1761139838/oglsggx9qxsklras9rzu.jpg",
+    "owner": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit_type": "Collaborative",
+    "collaborators": [
+      {
+        "$oid": "681329e86a6e11e292cf0cd1"
+      }
+    ],
+    "artworks": [
+      {
+        "$oid": "68df2ebeaa63ff7cbacbe008"
+      },
+      {
+        "$oid": "68da43e010482fb716dd9804"
+      },
+      {
+        "$oid": "68f05b7095e6517e0bea8127"
+      },
+      {
+        "$oid": "6816ff4e694d124bbdcbff6b"
+      }
+    ],
+    "category": "impressionism",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-10-22T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-31T00:00:00Z"
+    },
+    "chosen_env": 1,
+    "created_at": {
+      "$date": "2025-10-22T13:30:40.081Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T14:43:25.790Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "681242fb256a592811e35ca5"
+      },
+      {
+        "$oid": "6831b546797ef121740fdfb0"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      }
+    ],
+    "slot_owner_map": {},
+    "slot_artwork_map": {}
+  },
+  {
+    "_id": {
+      "$oid": "68f9aa07271bb8dda966df48"
+    },
+    "title": "testing new designs",
+    "description": "testing designs for exhibit",
+    "tags": [],
+    "banner": "https://res.cloudinary.com/du5bwye4h/image/upload/v1761192455/crvuabrqsxxs3jbz2svf.png",
+    "owner": {
+      "$oid": "6831b546797ef121740fdfb0"
+    },
+    "exhibit_type": "Solo",
+    "collaborators": [],
+    "artworks": [
+      {
+        "$oid": "68f9a9b0271bb8dda966df47"
+      },
+      {
+        "$oid": "68f9a988271bb8dda966df46"
+      },
+      {
+        "$oid": "68f9a95e271bb8dda966df45"
+      },
+      {
+        "$oid": "68c4b784befa3d96ceb9b6b7"
+      }
+    ],
+    "category": "modern",
+    "visibility": "Public",
+    "start_time": {
+      "$date": "2025-10-23T00:00:00Z"
+    },
+    "end_time": {
+      "$date": "2025-10-24T00:00:00Z"
+    },
+    "chosen_env": 1,
+    "created_at": {
+      "$date": "2025-10-23T04:07:35.473Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T04:07:35.473Z"
+    },
+    "viewed_by": [
+      {
+        "$oid": "6831b546797ef121740fdfb0"
+      },
+      {
+        "$oid": "68134f86bd731ceac6a3eef6"
+      },
+      {
+        "$oid": "6856d22011c2b781cc24256e"
+      },
+      {
+        "$oid": "6816fdc1694d124bbdcbff1b"
+      }
+    ],
+    "slot_owner_map": {},
+    "slot_artwork_map": {}
+  }
+]

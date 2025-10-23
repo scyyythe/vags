@@ -1,0 +1,1242 @@
+[
+  {
+    "_id": {
+      "$oid": "68883f88363ea16ad5cc41b7"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "687e3f2648317894845ace59"
+    },
+    "shipping_address": {
+      "name": "Accusantium lorem in",
+      "address": "Soluta ut saepe dolo, Id unde tempora aut",
+      "city": "Exercitation dolore",
+      "state": "Excepteur aut ut vol",
+      "country": "Philippines",
+      "postal_code": "Est porro vel qui a",
+      "phone": "+1 (191) 364-9279"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 21.0,
+    "status": "Reviewed",
+    "created_at": {
+      "$date": "2025-07-29T03:27:04.318Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-29T03:30:48.041Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6889a498537dc5ebfe67c0af"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "6889a102f9204779f3584e4c"
+    },
+    "shipping_address": {
+      "name": "Accusantium lorem in",
+      "address": "Soluta ut saepe dolo, Id unde tempora aut",
+      "city": "Exercitation dolore",
+      "state": "Excepteur aut ut vol",
+      "country": "Philippines",
+      "postal_code": "Est porro vel qui a",
+      "phone": "+1 (191) 364-9279"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 1299.0,
+    "status": "Reviewed",
+    "created_at": {
+      "$date": "2025-07-30T04:50:32.167Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-30T14:19:58.775Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6889e1f47fa774d63a119997"
+    },
+    "buyer": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artwork": {
+      "$oid": "68862812f7aa0183bf6bcde2"
+    },
+    "shipping_address": {
+      "name": "Nam quia magni minus",
+      "address": "Repudiandae non dolo, Consequat Quibusdam",
+      "city": "Cum nihil voluptatem",
+      "state": "Magni id do dolorem",
+      "country": "Philippines",
+      "postal_code": "Nisi mollit voluptat",
+      "phone": "+1 (545) 786-3726"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 1500.0,
+    "status": "Completed",
+    "created_at": {
+      "$date": "2025-07-30T09:12:20.619Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-30T09:30:15.020Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688a3d20a18910a3032b2c2b"
+    },
+    "buyer": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "artwork": {
+      "$oid": "6889a102f9204779f3584e4c"
+    },
+    "shipping_address": {
+      "name": "Ut dicta facilis et",
+      "address": "Voluptate est volup, Omnis maxime placeat",
+      "city": "Sunt consectetur d",
+      "state": "Amet ipsum amet no",
+      "country": "Philippines",
+      "postal_code": "Quia duis a earum ve",
+      "phone": "+1 (481) 261-1921"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 1299.0,
+    "status": "Reviewed",
+    "created_at": {
+      "$date": "2025-07-30T15:41:20.095Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T02:15:01.836Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688e292f0c4b8af2fb42f719"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "688e28140c4b8af2fb42f717"
+    },
+    "shipping_address": {
+      "name": "Accusantium lorem in",
+      "address": "Soluta ut saepe dolo, Id unde tempora aut",
+      "city": "Exercitation dolore",
+      "state": "Excepteur aut ut vol",
+      "country": "Philippines",
+      "postal_code": "Est porro vel qui a",
+      "phone": "+1 (191) 364-9279"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 2500.0,
+    "status": "Completed",
+    "created_at": {
+      "$date": "2025-08-02T15:05:19.698Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-03T14:47:18.816Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688e2a010c4b8af2fb42f71c"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "688e26e60c4b8af2fb42f715"
+    },
+    "shipping_address": {
+      "name": "Accusantium lorem in",
+      "address": "Soluta ut saepe dolo, Id unde tempora aut",
+      "city": "Exercitation dolore",
+      "state": "Excepteur aut ut vol",
+      "country": "Philippines",
+      "postal_code": "Est porro vel qui a",
+      "phone": "+1 (191) 364-9279"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 2300.0,
+    "status": "Reviewed",
+    "created_at": {
+      "$date": "2025-08-02T15:08:49.628Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T16:14:48.630Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688f558ec03e5ff54db6d863"
+    },
+    "buyer": {
+      "$oid": "688f5291c03e5ff54db6d860"
+    },
+    "artwork": {
+      "$oid": "688e26e60c4b8af2fb42f715"
+    },
+    "shipping_address": {
+      "name": "Sit voluptatem velit",
+      "address": "Cumque facilis quas , Omnis magna rerum su",
+      "city": "Ipsum odit eum sed d",
+      "state": "Adipisicing lorem cu",
+      "country": "Philippines",
+      "postal_code": "Eos ea ut velit numq",
+      "phone": "+1 (175) 658-2271"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 2300.0,
+    "status": "To Receive",
+    "created_at": {
+      "$date": "2025-08-03T12:26:54.050Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-04T13:37:55.358Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688f5590c03e5ff54db6d866"
+    },
+    "buyer": {
+      "$oid": "688f5291c03e5ff54db6d860"
+    },
+    "artwork": {
+      "$oid": "688e26e60c4b8af2fb42f715"
+    },
+    "shipping_address": {
+      "name": "Sit voluptatem velit",
+      "address": "Cumque facilis quas , Omnis magna rerum su",
+      "city": "Ipsum odit eum sed d",
+      "state": "Adipisicing lorem cu",
+      "country": "Philippines",
+      "postal_code": "Eos ea ut velit numq",
+      "phone": "+1 (175) 658-2271"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 2300.0,
+    "status": "To Receive",
+    "created_at": {
+      "$date": "2025-08-03T12:26:56.434Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-04T13:37:53.774Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68b50e7aa617ad1ea6ed7916"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "68668a741ba312fc5e941154"
+    },
+    "shipping_address": {
+      "name": "Accusantium lorem in",
+      "address": "Soluta ut saepe dolo, Id unde tempora aut",
+      "city": "Exercitation dolore",
+      "state": "Excepteur aut ut vol",
+      "country": "Philippines",
+      "postal_code": "Est porro vel qui a",
+      "phone": "+1 (191) 364-9279"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 300.0,
+    "status": "To Receive",
+    "created_at": {
+      "$date": "2025-09-01T03:09:46.202Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T12:01:22.191Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68b995956cfbd9798e21482f"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "688e269c0c4b8af2fb42f713"
+    },
+    "shipping_address": {
+      "name": "Deserunt eius aliqui",
+      "address": "Eligendi sit vero ab, Voluptatem cum illu",
+      "city": "Nihil excepturi non",
+      "state": "Ex iusto iure sint",
+      "country": "Philippines",
+      "postal_code": "Et voluptas ipsa ve",
+      "phone": "+1 (103) 631-1083"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 3500.0,
+    "status": "Reviewed",
+    "created_at": {
+      "$date": "2025-09-04T13:35:17.007Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-04T14:20:58.408Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ba45d4ae798be1fd771764"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "688e28f40c4b8af2fb42f718"
+    },
+    "shipping_address": {
+      "name": "Deserunt eius aliqui",
+      "address": "Eligendi sit vero ab, Voluptatem cum illu",
+      "city": "Nihil excepturi non",
+      "state": "Ex iusto iure sint",
+      "country": "Philippines",
+      "postal_code": "Et voluptas ipsa ve",
+      "phone": "+1 (103) 631-1083"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 1250.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-09-05T02:07:16.797Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-05T02:07:16.797Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68bba54e089ecc6e15902e6e"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "68ba98366a1950f6d9fa57f1"
+    },
+    "shipping_address": {
+      "name": "Totam voluptatibus u",
+      "address": "Minus tempora dolore, Officia voluptate ad",
+      "city": "Mollitia pariatur S",
+      "state": "Aut ut itaque labore",
+      "country": "Philippines",
+      "postal_code": "Autem fuga Vitae al",
+      "phone": "+1 (494) 862-5834"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 2500.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-09-06T03:06:54.170Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-06T03:06:54.171Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68c77b28bfa40f2f58c363c9"
+    },
+    "buyer": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artwork": {
+      "$oid": "68c14661730555fc6170cf0c"
+    },
+    "shipping_address": {
+      "name": "Nam quia magni minus",
+      "address": "Repudiandae non dolo, Consequat Quibusdam",
+      "city": "Cum nihil voluptatem",
+      "state": "Magni id do dolorem",
+      "country": "Philippines",
+      "postal_code": "Nisi mollit voluptat",
+      "phone": "+1 (545) 786-3726"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 100.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-09-15T02:34:16.728Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-15T02:34:16.728Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68dd03228a68aa644a70d0c4"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "68d91f8fab3bb58491509f46"
+    },
+    "shipping_address": {
+      "name": "Angel I. Canete",
+      "address": "Estaca Tunghaan Minglanilla, Cebu, Cebu",
+      "city": "Cebu",
+      "state": "Cebu",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "950913018"
+    },
+    "payment_method": "Stripe",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 1200.0,
+    "status": "To Receive",
+    "created_at": {
+      "$date": "2025-10-01T10:32:02.225Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T02:09:28.369Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68de7058e6afb8a0053471fd"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "68de701fe6afb8a0053471fb"
+    },
+    "shipping_address": {
+      "name": "Angel I. Canete",
+      "address": "Estaca Tunghaan Minglanilla, Cebu, Cebu",
+      "city": "Cebu",
+      "state": "Cebu",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "950913018"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 200.0,
+    "status": "Reviewed",
+    "created_at": {
+      "$date": "2025-10-02T12:30:16.180Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T04:58:50.105Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e39cf6a7b0a2b15abf5d15"
+    },
+    "buyer": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "artwork": {
+      "$oid": "68baf2f862e02454ec423567"
+    },
+    "shipping_address": {
+      "name": "James Arpilang",
+      "address": "Bacay Tulay, Officiis molestiae q",
+      "city": "Cebu City",
+      "state": "Adipisci aut sint a",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "09104467640"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 3000.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-10-06T10:41:58.433Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-06T10:41:58.434Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e64c8428dcf36f85dd0dee"
+    },
+    "buyer": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artwork": {
+      "$oid": "68ba95e76a1950f6d9fa57ee"
+    },
+    "shipping_address": {
+      "name": "Unde voluptas est no",
+      "address": "Non quo quis ipsam a, Quia provident dese",
+      "city": "Cillum porro quam en",
+      "state": "Natus quaerat id dol",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "+1 (671) 411-3767"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 500.0,
+    "status": "To Receive",
+    "created_at": {
+      "$date": "2025-10-08T11:35:32.288Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T02:13:19.473Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e64ccb28dcf36f85dd0df3"
+    },
+    "buyer": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artwork": {
+      "$oid": "68da508a10482fb716dd980a"
+    },
+    "shipping_address": {
+      "name": "Unde voluptas est no",
+      "address": "Non quo quis ipsam a, Quia provident dese",
+      "city": "Cillum porro quam en",
+      "state": "Natus quaerat id dol",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "+1 (671) 411-3767"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 100000000.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-10-08T11:36:43.542Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-08T11:36:43.543Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e64cee28dcf36f85dd0df8"
+    },
+    "buyer": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artwork": {
+      "$oid": "68b632b6af786d05fdb7266b"
+    },
+    "shipping_address": {
+      "name": "Unde voluptas est no",
+      "address": "Non quo quis ipsam a, Quia provident dese",
+      "city": "Cillum porro quam en",
+      "state": "Natus quaerat id dol",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "+1 (671) 411-3767"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 93.0,
+    "status": "To Receive",
+    "created_at": {
+      "$date": "2025-10-08T11:37:18.754Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T02:13:23.169Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e64d1528dcf36f85dd0dfd"
+    },
+    "buyer": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artwork": {
+      "$oid": "6865d5ab5e7aaebae8865576"
+    },
+    "shipping_address": {
+      "name": "Unde voluptas est no",
+      "address": "Non quo quis ipsam a, Quia provident dese",
+      "city": "Cillum porro quam en",
+      "state": "Natus quaerat id dol",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "+1 (671) 411-3767"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 200.0,
+    "status": "Completed",
+    "created_at": {
+      "$date": "2025-10-08T11:37:57.887Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T17:46:48.300Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e64d5628dcf36f85dd0e02"
+    },
+    "buyer": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artwork": {
+      "$oid": "686635d4c6ce6aeb89d43eb8"
+    },
+    "shipping_address": {
+      "name": "Unde voluptas est no",
+      "address": "Non quo quis ipsam a, Quia provident dese",
+      "city": "Cillum porro quam en",
+      "state": "Natus quaerat id dol",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "+1 (671) 411-3767"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 6000.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-10-08T11:39:02.883Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-08T11:39:02.883Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ebc22f541fea652573236d"
+    },
+    "buyer": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artwork": {
+      "$oid": "68ba95246a1950f6d9fa57ec"
+    },
+    "shipping_address": {
+      "name": "Unde voluptas est no",
+      "address": "Non quo quis ipsam a, Quia provident dese",
+      "city": "Cillum porro quam en",
+      "state": "Natus quaerat id dol",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "+1 (671) 411-3767"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 1200.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-10-12T14:58:55.540Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-12T14:58:55.540Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68edd2508600bdab7f6f0919"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "68b43880d18b678642011ce5"
+    },
+    "shipping_address": {
+      "name": "Angel I. Canete",
+      "address": "Estaca Tunghaan Minglanilla, Cebu, Cebu",
+      "city": "Cebu",
+      "state": "Cebu",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "950913018"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 96.0,
+    "status": "Reviewed",
+    "created_at": {
+      "$date": "2025-10-14T04:32:16.346Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T04:58:22.071Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee1fc2671dec794de4a1a4"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "68ee1d88f39ca3c140cff29d"
+    },
+    "shipping_address": {
+      "name": "Angel I. Canete",
+      "address": "Estaca Tunghaan Minglanilla, Cebu, Cebu",
+      "city": "Cebu",
+      "state": "Cebu",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "950913018"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 2300.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-10-14T10:02:42.832Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T10:02:42.832Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee2428e450d5072ebdee90"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "68ee1d88f39ca3c140cff29d"
+    },
+    "shipping_address": {
+      "name": "Angel I. Canete",
+      "address": "Estaca Tunghaan Minglanilla, Cebu, Cebu",
+      "city": "Cebu",
+      "state": "Cebu",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "950913018"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 2300.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-10-14T10:21:28.170Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T10:21:28.170Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee28dd965a54762c43c03e"
+    },
+    "buyer": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artwork": {
+      "$oid": "688e28140c4b8af2fb42f717"
+    },
+    "shipping_address": {
+      "name": "Unde voluptas est no",
+      "address": "Non quo quis ipsam a, Quia provident dese",
+      "city": "Cillum porro quam en",
+      "state": "Natus quaerat id dol",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "+1 (671) 411-3767"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 2500.0,
+    "status": "Completed",
+    "created_at": {
+      "$date": "2025-10-14T10:41:33.451Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T04:51:16.694Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee3cd770629c7f69310d63"
+    },
+    "buyer": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "artwork": {
+      "$oid": "68ee1d88f39ca3c140cff29d"
+    },
+    "shipping_address": {
+      "name": "Ut dicta facilis et",
+      "address": "Voluptate est volup, Omnis maxime placeat",
+      "city": "Sunt consectetur d",
+      "state": "Amet ipsum amet no",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "+1 (481) 261-1921"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 2,
+    "total_price": 4600.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-10-14T12:06:47.046Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T12:06:47.046Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68efb2b9d401570b295a715a"
+    },
+    "buyer": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "artwork": {
+      "$oid": "68ee1d88f39ca3c140cff29d"
+    },
+    "shipping_address": {
+      "name": "Jil Ibalaroosa",
+      "address": "Estaca Tunghaan Minglanilla, Cebu",
+      "city": "Cebu",
+      "state": "Region 7",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "950913018"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 2300.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-10-15T14:42:01.324Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T14:42:01.360Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f4cb5697b3c54234a08e0f"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "68f48622c08fbe1febfcde52"
+    },
+    "shipping_address": {
+      "name": "Angel I. Canete",
+      "address": "Estaca Tunghaan Minglanilla, Cebu, Waiting Shed",
+      "city": "Cebu",
+      "state": "Region 7",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "950913018"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 3000.0,
+    "status": "Completed",
+    "created_at": {
+      "$date": "2025-10-19T11:28:22.863Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T11:35:54.538Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f4cd1a97b3c54234a08e10"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "68f48622c08fbe1febfcde52"
+    },
+    "shipping_address": {
+      "name": "Angel I. Canete",
+      "address": "Estaca Tunghaan Minglanilla, Cebu, Waiting Shed",
+      "city": "Cebu",
+      "state": "Region 7",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "950913018"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 3000.0,
+    "status": "To Receive",
+    "created_at": {
+      "$date": "2025-10-19T11:35:54.807Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T10:54:00.345Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f4cfa787457f3d1494ca7f"
+    },
+    "buyer": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "artwork": {
+      "$oid": "68f067e4cd8f6cf56615a80f"
+    },
+    "shipping_address": {
+      "name": "Tenetur facilis et l",
+      "address": "Assumenda eaque modi, Facilis dolor mollit",
+      "city": "Mollit tempore dolo",
+      "state": "Nihil laboris dolore",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "+1 (262) 589-9256"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 3500.0,
+    "status": "Completed",
+    "created_at": {
+      "$date": "2025-10-19T11:46:47.990Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T11:47:06.191Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f4d10087457f3d1494ca80"
+    },
+    "buyer": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "artwork": {
+      "$oid": "68f07c960b5ad49a890ee017"
+    },
+    "shipping_address": {
+      "name": "Temporary",
+      "address": "Temporary",
+      "city": "Temporary",
+      "state": "Temporary",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "0000-000-0000"
+    },
+    "payment_method": "PayPal",
+    "is_paid": false,
+    "quantity": 1,
+    "total_price": 6500.0,
+    "status": "Cancelled",
+    "created_at": {
+      "$date": "2025-10-19T11:52:32.659Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T11:52:38.034Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f656af97e5ea7179ae9936"
+    },
+    "buyer": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "artwork": {
+      "$oid": "68f6569797e5ea7179ae9934"
+    },
+    "shipping_address": {
+      "name": "Janah Ubas",
+      "address": "Tungkop Minglanilla, Cebu, Purok Dolphin",
+      "city": "Cebu",
+      "state": "Region 7",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "0995091318"
+    },
+    "payment_method": "PayPal",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 2500.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-10-20T15:35:11.452Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T15:36:36.751Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f65b5718e02c3ef4392e0c"
+    },
+    "buyer": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "artwork": {
+      "$oid": "68f6569797e5ea7179ae9934"
+    },
+    "shipping_address": {
+      "name": "Tenetur facilis et l",
+      "address": "Assumenda eaque modi, Facilis dolor mollit",
+      "city": "Mollit tempore dolo",
+      "state": "Nihil laboris dolore",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "+1 (262) 589-9256"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 2500.0,
+    "status": "Completed",
+    "created_at": {
+      "$date": "2025-10-20T15:55:03.271Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T15:56:38.253Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f65d5e45ee2c9a31c3f29d"
+    },
+    "buyer": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artwork": {
+      "$oid": "68f4d3cfdfead81e37d93d8f"
+    },
+    "shipping_address": {
+      "name": "Angel I. Canete",
+      "address": "Estaca Tunghaan Minglanilla, Cebu, Waiting Shed",
+      "city": "Cebu",
+      "state": "Region 7",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "950913018"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 6800.0,
+    "status": "Reviewed",
+    "created_at": {
+      "$date": "2025-10-20T16:03:42.211Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T16:34:51.544Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f7c21606edb5ae577ec2a2"
+    },
+    "buyer": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "artwork": {
+      "$oid": "68f6569797e5ea7179ae9934"
+    },
+    "shipping_address": {
+      "name": "Temporary",
+      "address": "Temporary",
+      "city": "Temporary",
+      "state": "Temporary",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "0000-000-0000"
+    },
+    "payment_method": "PayPal",
+    "is_paid": false,
+    "quantity": 1,
+    "total_price": 2500.0,
+    "status": "Ordering",
+    "created_at": {
+      "$date": "2025-10-21T17:25:42.262Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T17:25:42.313Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f7c29306edb5ae577ec2a3"
+    },
+    "buyer": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "artwork": {
+      "$oid": "68f6569797e5ea7179ae9934"
+    },
+    "shipping_address": {
+      "name": "Tenetur facilis et l",
+      "address": "Assumenda eaque modi, Facilis dolor mollit",
+      "city": "Mollit tempore dolo",
+      "state": "Nihil laboris dolore",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "+1 (262) 589-9256"
+    },
+    "payment_method": "GCash",
+    "is_paid": true,
+    "quantity": 1,
+    "total_price": 2500.0,
+    "status": "Paid",
+    "created_at": {
+      "$date": "2025-10-21T17:27:47.112Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T17:31:23.916Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa4272595d6ac4ef384eb1"
+    },
+    "buyer": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artwork": {
+      "$oid": "68fa2e880127973089325509"
+    },
+    "shipping_address": {
+      "name": "Temporary",
+      "address": "Temporary",
+      "city": "Temporary",
+      "state": "Temporary",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "0000-000-0000"
+    },
+    "payment_method": "PayPal",
+    "is_paid": false,
+    "quantity": 1,
+    "total_price": 1500.0,
+    "status": "Ordering",
+    "created_at": {
+      "$date": "2025-10-23T14:57:54.147Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T14:57:54.228Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa4c0b595d6ac4ef384eb2"
+    },
+    "buyer": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artwork": {
+      "$oid": "68fa3250b00d62e515da5771"
+    },
+    "shipping_address": {
+      "name": "Temporary",
+      "address": "Temporary",
+      "city": "Temporary",
+      "state": "Temporary",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "0000-000-0000"
+    },
+    "payment_method": "PayPal",
+    "is_paid": false,
+    "quantity": 1,
+    "total_price": 2500.0,
+    "status": "Ordering",
+    "created_at": {
+      "$date": "2025-10-23T15:38:51.156Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T15:38:51.261Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa4d08595d6ac4ef384eb4"
+    },
+    "buyer": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artwork": {
+      "$oid": "68fa2caa0127973089325507"
+    },
+    "shipping_address": {
+      "name": "Temporary",
+      "address": "Temporary",
+      "city": "Temporary",
+      "state": "Temporary",
+      "country": "Philippines",
+      "postal_code": "0000",
+      "phone": "0000-000-0000"
+    },
+    "payment_method": "PayPal",
+    "is_paid": false,
+    "quantity": 1,
+    "total_price": 3500.0,
+    "status": "Cancelled",
+    "created_at": {
+      "$date": "2025-10-23T15:43:04.334Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T15:43:32.886Z"
+    }
+  }
+]

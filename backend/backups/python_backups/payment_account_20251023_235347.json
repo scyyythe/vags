@@ -1,0 +1,413 @@
+[
+  {
+    "_id": {
+      "$oid": "68d53d51836649ab97eab93c"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "type": "paypal",
+    "name": "Angel Canete",
+    "account_info": "caneteangel187@gmail.com",
+    "is_default": false,
+    "details": {
+      "bankName": "",
+      "accountNumber": "",
+      "routingNumber": "",
+      "swiftCode": ""
+    },
+    "created_at": {
+      "$date": "2025-09-25T13:02:09.126Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-25T13:02:09.126Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d54214d73d98a354e1386e"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "type": "bank",
+    "name": "Angel Canete",
+    "account_info": "123456789",
+    "is_default": false,
+    "details": {
+      "bankName": "123456789",
+      "accountNumber": "123456789",
+      "routingNumber": "",
+      "swiftCode": ""
+    },
+    "created_at": {
+      "$date": "2025-09-25T13:22:28.325Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-25T13:22:28.325Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d54257d73d98a354e1386f"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "type": "payoneer",
+    "name": "Angel Canete",
+    "account_info": "caneteangel187@gmail.com",
+    "is_default": false,
+    "details": {
+      "bankName": "",
+      "accountNumber": "",
+      "routingNumber": "",
+      "swiftCode": ""
+    },
+    "created_at": {
+      "$date": "2025-09-25T13:23:35.334Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-25T13:23:35.334Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d88f7acb53906c4aedb6c2"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "type": "paypal",
+    "name": "Janah Ubas",
+    "account_info": "janahubas@gmail.com",
+    "is_default": false,
+    "details": {
+      "bankName": "",
+      "accountNumber": "",
+      "routingNumber": "",
+      "swiftCode": ""
+    },
+    "created_at": {
+      "$date": "2025-09-28T01:29:30.199Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-28T01:29:30.199Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d894becb37112b0ddbc16d"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "type": "paypal",
+    "name": "Jeralyn Peritos",
+    "account_info": "jeralynperitos@gmail.com",
+    "is_default": true,
+    "details": {
+      "bankName": "",
+      "accountNumber": "",
+      "routingNumber": "",
+      "swiftCode": ""
+    },
+    "created_at": {
+      "$date": "2025-09-28T01:51:58.933Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-28T01:51:58.933Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7b71fb454153ee145e21b"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "type": "gcash",
+    "name": "Angel Canete",
+    "account_info": "09950913018",
+    "is_default": false,
+    "details": {},
+    "qr_image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760018448/x0ynsxiyoit21p4ivlqo.jpg",
+    "created_at": {
+      "$date": "2025-10-09T13:22:36.703Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-09T14:00:48.762Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7bcfeb84f5059ad88f916"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "type": "stripe",
+    "name": "Angel Canete",
+    "account_info": "",
+    "is_default": false,
+    "details": {},
+    "created_at": {
+      "$date": "2025-10-09T13:47:42.343Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-09T13:47:42.343Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e7c89572282ecfaa8fedba"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "type": "gcash",
+    "name": "Jeralyn Peritos",
+    "account_info": "09104467640",
+    "is_default": false,
+    "details": {},
+    "qr_image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760020628/uxjpa0ifxxl4pfivo14j.jpg",
+    "created_at": {
+      "$date": "2025-10-09T14:37:07.013Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-09T14:37:09.463Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ef8afa3a5025fc3ef714f8"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "type": "gcash",
+    "name": "Jil Ibalarrosa",
+    "account_info": "09950913018",
+    "is_default": false,
+    "details": {},
+    "qr_image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760529146/e2qzm4mpzbxn1uzv9agf.png",
+    "created_at": {
+      "$date": "2025-10-15T11:52:26.238Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T11:52:26.915Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ef9ad5d401570b295a7154"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "type": "card",
+    "name": "Angel I. Canete",
+    "account_info": "123456789",
+    "is_default": false,
+    "details": {},
+    "created_at": {
+      "$date": "2025-10-15T13:00:05.946Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T13:00:05.946Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68efa5c1d401570b295a7157"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "type": "stripe",
+    "name": "Jil Ibalarrosa",
+    "account_info": "",
+    "is_default": false,
+    "details": {},
+    "created_at": {
+      "$date": "2025-10-15T13:46:41.605Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T13:46:41.605Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68efb17fd401570b295a7159"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "type": "paypal",
+    "name": "Jil Ibalarrosa",
+    "account_info": "caneteangel327@gmail.com",
+    "is_default": false,
+    "details": {},
+    "created_at": {
+      "$date": "2025-10-15T14:36:47.587Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T14:36:47.587Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68efb61dd401570b295a717c"
+    },
+    "user": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "type": "paypal",
+    "name": "Kylie Canete",
+    "account_info": "kylecanete@gmail.com",
+    "is_default": true,
+    "details": {},
+    "created_at": {
+      "$date": "2025-10-15T14:56:29.206Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T14:56:29.271Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f4b0c9c08fbe1febfcde57"
+    },
+    "user": {
+      "$oid": "687f2353fd7b10e499432c4e"
+    },
+    "type": "paypal",
+    "name": "Jaira Candia",
+    "account_info": "jaira345@gmail.com",
+    "is_default": false,
+    "details": {},
+    "created_at": {
+      "$date": "2025-10-19T09:35:05.407Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T09:35:05.407Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f6561e97e5ea7179ae9932"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "type": "paypal",
+    "name": "Cythera Arenstvelt",
+    "account_info": "cythera@gmail.com",
+    "is_default": true,
+    "details": {},
+    "created_at": {
+      "$date": "2025-10-20T15:32:46.228Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T15:32:52.093Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f6572697e5ea7179ae9938"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "type": "gcash",
+    "name": "Janah Ubas",
+    "account_info": "09950913018",
+    "is_default": true,
+    "details": {},
+    "qr_image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760974626/x9aop0wuvue48pftqyqx.png",
+    "created_at": {
+      "$date": "2025-10-20T15:37:06.806Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T15:37:10.994Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f6575c97e5ea7179ae993a"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "type": "gcash",
+    "name": "Thera Arensvelt",
+    "account_info": "09104467640",
+    "is_default": false,
+    "details": {},
+    "qr_image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760974679/ujf9dncwnut3vqskfcel.png",
+    "created_at": {
+      "$date": "2025-10-20T15:38:00.091Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T15:38:04.800Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f85c30e260f41394524b26"
+    },
+    "user": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "type": "gcash",
+    "name": "gen",
+    "account_info": "09876543210",
+    "is_default": false,
+    "details": {},
+    "created_at": {
+      "$date": "2025-10-22T04:23:12.754Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T04:23:12.755Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa27009acbb6d54858ccb5"
+    },
+    "user": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "type": "gcash",
+    "name": "Christopher Rentucan",
+    "account_info": "09106677985",
+    "is_default": true,
+    "details": {},
+    "qr_image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1761224448/hkvqbnrolg6sfbkvexaz.png",
+    "created_at": {
+      "$date": "2025-10-23T13:00:46.571Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T13:00:48.685Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa4c38595d6ac4ef384eb3"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "type": "paypal",
+    "name": "Jam Anuba",
+    "account_info": "jamaicaanuba5@gmail.com",
+    "is_default": false,
+    "details": {},
+    "created_at": {
+      "$date": "2025-10-23T15:39:36.036Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T15:39:36.036Z"
+    }
+  }
+]

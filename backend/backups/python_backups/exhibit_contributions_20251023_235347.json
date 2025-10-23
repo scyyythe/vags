@@ -1,0 +1,477 @@
+[
+  {
+    "_id": {
+      "$oid": "686f4ad3317c8a8f17c7945d"
+    },
+    "exhibit": {
+      "$oid": "68636c4c6f5fda109ddb2aad"
+    },
+    "contributor": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "6840337fdf84c779f9bf61a0"
+        },
+        "slot_number": 5,
+        "contributed_at": {
+          "$date": "2025-07-10T05:08:35.649Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "682e7af9ce37c771c0de3da5"
+        },
+        "slot_number": 6,
+        "contributed_at": {
+          "$date": "2025-07-10T05:08:35.706Z"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6875c9079cf37f2a0ec18d6f"
+    },
+    "exhibit": {
+      "$oid": "68636c4c6f5fda109ddb2aad"
+    },
+    "contributor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "682cc6b6f6ce8d9c55cf2e29"
+        },
+        "slot_number": 3,
+        "contributed_at": {
+          "$date": "2025-07-15T03:20:39.859Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "682cc737f6ce8d9c55cf2e2a"
+        },
+        "slot_number": 4,
+        "contributed_at": {
+          "$date": "2025-07-15T03:20:39.917Z"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6875d468aa06949ff67085b7"
+    },
+    "exhibit": {
+      "$oid": "6875d3e1b2b824374cc072f4"
+    },
+    "contributor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "682cc737f6ce8d9c55cf2e2a"
+        },
+        "slot_number": 5,
+        "contributed_at": {
+          "$date": "2025-07-15T04:09:12.480Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "682cc6b6f6ce8d9c55cf2e29"
+        },
+        "slot_number": 6,
+        "contributed_at": {
+          "$date": "2025-07-15T04:09:12.519Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "681392df1ea6de6aaa308e4a"
+        },
+        "slot_number": 7,
+        "contributed_at": {
+          "$date": "2025-07-15T04:09:12.557Z"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "688e2c9b0c4b8af2fb42f727"
+    },
+    "exhibit": {
+      "$oid": "6875d3e1b2b824374cc072f4"
+    },
+    "contributor": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "688e2c890c4b8af2fb42f726"
+        },
+        "slot_number": 8,
+        "contributed_at": {
+          "$date": "2025-08-02T15:19:55.199Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "688e2c6f0c4b8af2fb42f725"
+        },
+        "slot_number": 9,
+        "contributed_at": {
+          "$date": "2025-08-02T15:19:55.264Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "6864cf25c32cd3f407db96a1"
+        },
+        "slot_number": 10,
+        "contributed_at": {
+          "$date": "2025-08-02T15:19:55.305Z"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68bade5051080894ed1bc781"
+    },
+    "exhibit": {
+      "$oid": "68bad8532a0470723efab045"
+    },
+    "contributor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "68ba967b6a1950f6d9fa57ef"
+        },
+        "slot_number": 5,
+        "contributed_at": {
+          "$date": "2025-09-05T12:57:52.135Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "68b6311caf786d05fdb72664"
+        },
+        "slot_number": 6,
+        "contributed_at": {
+          "$date": "2025-09-05T12:57:52.185Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "681742b43b30f440f729870b"
+        },
+        "slot_number": 7,
+        "contributed_at": {
+          "$date": "2025-09-05T12:57:52.233Z"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68bae4562a0470723efab048"
+    },
+    "exhibit": {
+      "$oid": "68bae3c362e02454ec42355e"
+    },
+    "contributor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "6835f99cd5734958be9b7365"
+        },
+        "slot_number": 4,
+        "contributed_at": {
+          "$date": "2025-09-05T13:23:34.075Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "6817123c1674d689857f8bcd"
+        },
+        "slot_number": 5,
+        "contributed_at": {
+          "$date": "2025-09-05T13:23:34.161Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "681711d81674d689857f8bc8"
+        },
+        "slot_number": 6,
+        "contributed_at": {
+          "$date": "2025-09-05T13:23:34.250Z"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68eb25416957768835dd0840"
+    },
+    "exhibit": {
+      "$oid": "688e2bd70c4b8af2fb42f722"
+    },
+    "contributor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "68e3a19fa7b0a2b15abf5d28"
+        },
+        "slot_number": 3,
+        "contributed_at": {
+          "$date": "2025-10-12T03:49:21.123Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "682cc737f6ce8d9c55cf2e2a"
+        },
+        "slot_number": 4,
+        "contributed_at": {
+          "$date": "2025-10-12T03:49:21.164Z"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68eb3fb404e443a5ad95891f"
+    },
+    "exhibit": {
+      "$oid": "68eb3f4a04e443a5ad95891c"
+    },
+    "contributor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "68e3b661a7b0a2b15abf5d33"
+        },
+        "slot_number": 5,
+        "contributed_at": {
+          "$date": "2025-10-12T05:42:12.357Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "68df2ebeaa63ff7cbacbe008"
+        },
+        "slot_number": 6,
+        "contributed_at": {
+          "$date": "2025-10-12T05:42:12.401Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "682cc613f6ce8d9c55cf2e28"
+        },
+        "slot_number": 7,
+        "contributed_at": {
+          "$date": "2025-10-12T05:42:12.444Z"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68eb47617eba9053fd0fb956"
+    },
+    "exhibit": {
+      "$oid": "68eb3dd204e443a5ad958919"
+    },
+    "contributor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "68e3a19fa7b0a2b15abf5d28"
+        },
+        "slot_number": 5,
+        "contributed_at": {
+          "$date": "2025-10-22T14:17:05.006Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "682cc6b6f6ce8d9c55cf2e29"
+        },
+        "slot_number": 6,
+        "contributed_at": {
+          "$date": "2025-10-22T14:17:05.006Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "682cc737f6ce8d9c55cf2e2a"
+        },
+        "slot_number": 7,
+        "contributed_at": {
+          "$date": "2025-10-22T14:17:05.006Z"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68eba4b0a3184bad78d95af4"
+    },
+    "exhibit": {
+      "$oid": "68eb3f4a04e443a5ad95891c"
+    },
+    "contributor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "6835f99cd5734958be9b7365"
+        },
+        "slot_number": 8,
+        "contributed_at": {
+          "$date": "2025-10-12T12:53:04.638Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "681711d81674d689857f8bc8"
+        },
+        "slot_number": 9,
+        "contributed_at": {
+          "$date": "2025-10-12T12:53:04.731Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "68d51e77ea18427af7ff18d2"
+        },
+        "slot_number": 10,
+        "contributed_at": {
+          "$date": "2025-10-12T12:53:04.827Z"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68ed0049811992ce50d2dbb9"
+    },
+    "exhibit": {
+      "$oid": "68bae3c362e02454ec42355e"
+    },
+    "contributor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "681392df1ea6de6aaa308e4a"
+        },
+        "slot_number": 8,
+        "contributed_at": {
+          "$date": "2025-10-13T13:36:09.079Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "6816ff4e694d124bbdcbff6b"
+        },
+        "slot_number": 9,
+        "contributed_at": {
+          "$date": "2025-10-13T13:36:09.120Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "682006def5539999cc15e7ae"
+        },
+        "slot_number": 10,
+        "contributed_at": {
+          "$date": "2025-10-13T13:36:09.160Z"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68f4592a2cc600e0552667d7"
+    },
+    "exhibit": {
+      "$oid": "68eb41bd4f20872ef2e3c28c"
+    },
+    "contributor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "68ede1a3038d36d785671c21"
+        },
+        "slot_number": 3,
+        "contributed_at": {
+          "$date": "2025-10-19T03:21:14.601Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "68e3b661a7b0a2b15abf5d33"
+        },
+        "slot_number": 4,
+        "contributed_at": {
+          "$date": "2025-10-19T03:21:14.601Z"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68f8dd60a3c8e6e255e2f15e"
+    },
+    "exhibit": {
+      "$oid": "68f8dc80a3c8e6e255e2f15c"
+    },
+    "contributor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "artworks": [
+      {
+        "artwork": {
+          "$oid": "68f05b7095e6517e0bea8127"
+        },
+        "slot_number": 3,
+        "contributed_at": {
+          "$date": "2025-10-22T14:16:05.795Z"
+        }
+      },
+      {
+        "artwork": {
+          "$oid": "6816ff4e694d124bbdcbff6b"
+        },
+        "slot_number": 4,
+        "contributed_at": {
+          "$date": "2025-10-22T14:16:05.796Z"
+        }
+      }
+    ]
+  }
+]

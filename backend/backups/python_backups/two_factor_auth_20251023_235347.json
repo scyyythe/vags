@@ -1,0 +1,257 @@
+[
+  {
+    "_id": {
+      "$oid": "68eca0daeb61ba60c8d660b8"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "is_enabled": false,
+    "primary_method": "totp",
+    "setup_completed": false,
+    "totp_verified": false,
+    "phone_verified": false,
+    "backup_email_verified": false,
+    "trusted_devices": [],
+    "max_trusted_devices": 5,
+    "failed_attempts": 0,
+    "created_at": {
+      "$date": "2025-10-13T06:48:58.730Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-13T11:06:02.334Z"
+    },
+    "enabled_at": {
+      "$date": "2025-10-13T10:54:49.703Z"
+    },
+    "backup_codes_generated_at": {
+      "$date": "2025-10-13T10:54:49.751Z"
+    },
+    "last_used": {
+      "$date": "2025-10-13T11:05:52.520Z"
+    },
+    "disabled_at": {
+      "$date": "2025-10-13T11:06:02.334Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee5d73354f610e16277039"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "is_enabled": true,
+    "enabled_methods": [
+      "email"
+    ],
+    "primary_method": "email",
+    "setup_completed": true,
+    "totp_verified": false,
+    "backup_codes": [
+      "SNP18SHR",
+      "DNZ2P5WJ",
+      "3TUGI6I1",
+      "KC9KD1MI",
+      "W8W9O02Z",
+      "A4HSSM8V",
+      "VESZ8ZWQ",
+      "1N6UVMZT",
+      "FM1RPLNJ",
+      "RHPS1PZ5"
+    ],
+    "phone_verified": false,
+    "backup_email_verified": true,
+    "trusted_devices": [],
+    "max_trusted_devices": 5,
+    "failed_attempts": 0,
+    "created_at": {
+      "$date": "2025-10-14T14:25:55.171Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T15:08:46.136Z"
+    },
+    "backup_email": "kaeanver@gmail.com",
+    "enabled_at": {
+      "$date": "2025-10-14T15:08:46.084Z"
+    },
+    "backup_codes_generated_at": {
+      "$date": "2025-10-14T15:08:46.136Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68efa7a9d401570b295a7158"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "is_enabled": false,
+    "enabled_methods": [],
+    "primary_method": "totp",
+    "setup_completed": false,
+    "totp_verified": false,
+    "backup_codes": [],
+    "phone_verified": false,
+    "backup_email_verified": false,
+    "trusted_devices": [],
+    "max_trusted_devices": 5,
+    "failed_attempts": 0,
+    "created_at": {
+      "$date": "2025-10-15T13:54:49.950Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T13:54:49.975Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68efb55ad401570b295a7161"
+    },
+    "user": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "is_enabled": false,
+    "enabled_methods": [],
+    "primary_method": "totp",
+    "setup_completed": false,
+    "totp_verified": false,
+    "backup_codes": [],
+    "phone_verified": false,
+    "backup_email_verified": false,
+    "trusted_devices": [],
+    "max_trusted_devices": 5,
+    "failed_attempts": 0,
+    "created_at": {
+      "$date": "2025-10-15T14:53:14.134Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T14:53:14.134Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f65c5718e02c3ef4392e13"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "is_enabled": false,
+    "enabled_methods": [],
+    "primary_method": "totp",
+    "setup_completed": false,
+    "totp_verified": false,
+    "backup_codes": [],
+    "phone_verified": false,
+    "backup_email_verified": false,
+    "trusted_devices": [],
+    "max_trusted_devices": 5,
+    "failed_attempts": 0,
+    "created_at": {
+      "$date": "2025-10-20T15:59:19.431Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T15:59:19.431Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f7197a43e2ad8edb75400f"
+    },
+    "user": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "is_enabled": false,
+    "enabled_methods": [],
+    "primary_method": "totp",
+    "setup_completed": false,
+    "totp_verified": false,
+    "backup_codes": [],
+    "phone_verified": false,
+    "backup_email_verified": false,
+    "trusted_devices": [],
+    "max_trusted_devices": 5,
+    "failed_attempts": 0,
+    "created_at": {
+      "$date": "2025-10-21T05:26:18.645Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T05:26:18.645Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f7911cf5dc537feee0de49"
+    },
+    "user": {
+      "$oid": "6831b546797ef121740fdfb0"
+    },
+    "is_enabled": false,
+    "enabled_methods": [],
+    "primary_method": "totp",
+    "setup_completed": false,
+    "totp_verified": false,
+    "backup_codes": [],
+    "phone_verified": false,
+    "backup_email_verified": false,
+    "trusted_devices": [],
+    "max_trusted_devices": 5,
+    "failed_attempts": 0,
+    "created_at": {
+      "$date": "2025-10-21T13:56:44.927Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T13:56:44.927Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f7c44c56a38e2625982fba"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "is_enabled": false,
+    "enabled_methods": [],
+    "primary_method": "totp",
+    "setup_completed": false,
+    "totp_verified": false,
+    "backup_codes": [],
+    "phone_verified": false,
+    "backup_email_verified": false,
+    "trusted_devices": [],
+    "max_trusted_devices": 5,
+    "failed_attempts": 0,
+    "created_at": {
+      "$date": "2025-10-21T17:35:08.496Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T17:35:08.496Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f8a9a438ec71f2de1b7d4d"
+    },
+    "user": {
+      "$oid": "68f8a84c38ec71f2de1b7d4c"
+    },
+    "is_enabled": false,
+    "enabled_methods": [],
+    "primary_method": "totp",
+    "setup_completed": false,
+    "totp_verified": false,
+    "backup_codes": [],
+    "phone_verified": false,
+    "backup_email_verified": false,
+    "trusted_devices": [],
+    "max_trusted_devices": 5,
+    "failed_attempts": 0,
+    "created_at": {
+      "$date": "2025-10-22T09:53:40.401Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T09:53:40.401Z"
+    }
+  }
+]

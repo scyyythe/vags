@@ -1,0 +1,553 @@
+[
+  {
+    "_id": {
+      "$oid": "68397a8dea3fd4e5b6d48514"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "6829acffb8c550ffd8e6d784"
+    },
+    "category": "Other",
+    "option": "sdsd",
+    "description": "Something Else",
+    "additional_info": "sdsd",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-05-30T09:29:49.739Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68397d8cea3fd4e5b6d48516"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "681742b43b30f440f729870b"
+    },
+    "category": "Fraud",
+    "option": "Fake",
+    "description": "Scam or Fraud",
+    "additional_info": "Fake",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-05-30T09:42:36.561Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68398edd1a9b399580f26935"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "auction": {
+      "$oid": "6836b217bd0a09fa5799bb13"
+    },
+    "category": "Fraud",
+    "option": "Fake",
+    "description": "Scam or Fraud",
+    "additional_info": "Fake",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-05-30T10:56:29.695Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "683af1822853ab6af197d55a"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "auction": {
+      "$oid": "683af16b2853ab6af197d559"
+    },
+    "category": "Fraud",
+    "option": "Scam",
+    "description": "Scam or Fraud",
+    "additional_info": "Scam",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-05-31T12:09:38.950Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "683af1902853ab6af197d55d"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "auction": {
+      "$oid": "683af12c2853ab6af197d558"
+    },
+    "category": "Fraud",
+    "option": "Scam",
+    "description": "Scam or Fraud",
+    "additional_info": "Scam",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-05-31T12:09:52.115Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "683b077b8d01a72d3ad47d94"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "reported_user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "Fraud",
+    "option": "",
+    "description": "This user tried to scam me with a fake payment.",
+    "additional_info": "",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-05-31T13:43:23.469Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "684033dddf84c779f9bf61a2"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "auction": {
+      "$oid": "684033bedf84c779f9bf61a1"
+    },
+    "category": "Spam",
+    "option": "SpamContent",
+    "description": "Spam",
+    "additional_info": "SpamContent",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-06-04T11:54:05.963Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "684033f0df84c779f9bf61a5"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "auction": {
+      "$oid": "683f9c46bf3b616b190543f2"
+    },
+    "category": "Fraud",
+    "option": "Scam",
+    "description": "Scam or Fraud",
+    "additional_info": "Scam",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-06-04T11:54:24.680Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "686f4de2317c8a8f17c7945e"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "art": {
+      "$oid": "686383c2c3cb09c1a35b201d"
+    },
+    "category": "Inappropriate",
+    "option": "Nudity",
+    "description": "Inappropriate Content",
+    "additional_info": "Nudity",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-07-10T05:21:38.347Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "686f4efd317c8a8f17c79460"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "art": {
+      "$oid": "6865d5ab5e7aaebae8865576"
+    },
+    "category": "Fraud",
+    "option": "Scam",
+    "description": "Scam or Fraud",
+    "additional_info": "Scam",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-07-10T05:26:21.660Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "687ceb6b4ac6ccad62be8514"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "686636f7c6ce6aeb89d43eb9"
+    },
+    "category": "Spam",
+    "option": "SpamContent",
+    "description": "Spam",
+    "additional_info": "SpamContent",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-07-20T13:13:15.210Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "687f2f1f859cc3f88c4a242e"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "6864cf25c32cd3f407db96a1"
+    },
+    "category": "Spam",
+    "option": "SpamContent",
+    "description": "Spam",
+    "additional_info": "SpamContent",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-07-22T06:26:39.442Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "687fabcfdd7040820bdd47f7"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "681392df1ea6de6aaa308e4a"
+    },
+    "category": "Fraud",
+    "option": "Fake",
+    "description": "Scam or Fraud",
+    "additional_info": "Fake",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-07-22T15:18:39.157Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "687fb0134abb524f863a33dd"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "exhibit": {
+      "$oid": "687b7ff6f006f51ede46b8c0"
+    },
+    "category": "Inappropriate Content",
+    "option": "",
+    "description": "The exhibit contains prohibited content",
+    "additional_info": "",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-07-22T15:36:51.001Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "687fb1524abb524f863a33de"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "68668a741ba312fc5e941154"
+    },
+    "category": "Fraud",
+    "option": "Fake",
+    "description": "Scam or Fraud",
+    "additional_info": "Fake",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-07-22T15:42:10.979Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68b70cb4f0a5cf1e7e62178f"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "6840337fdf84c779f9bf61a0"
+    },
+    "category": "Fraud",
+    "option": "Scam",
+    "description": "Scam or Fraud",
+    "additional_info": "Scam",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-09-02T15:26:44.306Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d8c003c97fdea40af0305c"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "auction": {
+      "$oid": "68236db1122cb3dcb416d41e"
+    },
+    "category": "Intellectual",
+    "option": "Trademark",
+    "description": "Intellectual Property Violation",
+    "additional_info": "Trademark",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-09-28T04:56:35.089Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d9fecc9d75d9a1a64a50d0"
+    },
+    "user": {
+      "$oid": "68d9fd9e9d75d9a1a64a50ca"
+    },
+    "art": {
+      "$oid": "68d91f8fab3bb58491509f46"
+    },
+    "category": "Inappropriate",
+    "option": "Violence",
+    "description": "Inappropriate Content",
+    "additional_info": "Violence",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-09-29T03:36:44.600Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68dcf82d8a68aa644a70d0c2"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "68da508a10482fb716dd980a"
+    },
+    "category": "Spam",
+    "option": "SpamContent",
+    "description": "Spam",
+    "additional_info": "SpamContent",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-10-01T09:45:17.756Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68dd0bd78a68aa644a70d0ca"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "688a2acf119ad1dc6043361c"
+    },
+    "category": "Fraud",
+    "option": "Fake",
+    "description": "Scam or Fraud",
+    "additional_info": "Fake",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-10-01T11:09:11.022Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68dd0cc18a68aa644a70d0cc"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "686635d4c6ce6aeb89d43eb8"
+    },
+    "category": "Intellectual",
+    "option": "Copyright",
+    "description": "Intellectual Property Violation",
+    "additional_info": "Copyright",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-10-01T11:13:05.100Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68eb8909f2a7436a107fe8ab"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "68ba95246a1950f6d9fa57ec"
+    },
+    "category": "Spam",
+    "option": "SpamContent",
+    "description": "Spam",
+    "additional_info": "SpamContent",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-10-12T10:55:05.481Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68eb9333f2a7436a107fe8b1"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "exhibit": {
+      "$oid": "6848f273c6724e2c3a543d6b"
+    },
+    "category": "Inappropriate Content",
+    "option": "",
+    "description": "The exhibit contains prohibited content",
+    "additional_info": "",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-10-12T11:38:27.012Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68eb9340f2a7436a107fe8b2"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "art": {
+      "$oid": "68b43880d18b678642011ce5"
+    },
+    "category": "Intellectual",
+    "option": "Copyright",
+    "description": "Intellectual Property Violation",
+    "additional_info": "Copyright",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-10-12T11:38:40.735Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68eb953d67a9a795df96906b"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "68e392fda7b0a2b15abf5d04"
+    },
+    "category": "Intellectual",
+    "option": "Copyright",
+    "description": "Intellectual Property Violation",
+    "additional_info": "Copyright",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-10-12T11:47:09.896Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ed086681b689302a39dd15"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "art": {
+      "$oid": "68df2eaeaa63ff7cbacbe007"
+    },
+    "category": "Intellectual",
+    "option": "Copyright",
+    "description": "Intellectual Property Violation",
+    "additional_info": "Copyright",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-10-13T14:10:46.288Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f0f99417db69637d68291d"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "art": {
+      "$oid": "6824ccfc6fb4597c28417515"
+    },
+    "category": "Inappropriate",
+    "option": "Nudity",
+    "description": "Inappropriate Content",
+    "additional_info": "Nudity",
+    "status": "In Progress",
+    "created_at": {
+      "$date": "2025-10-16T13:56:36.252Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f4bae0263df9db1a8c97b9"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "reported_user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "Fraud",
+    "option": "",
+    "description": "This user tried to scam me with a fake payment.",
+    "additional_info": "",
+    "status": "Pending",
+    "created_at": {
+      "$date": "2025-10-19T10:18:08.382Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f85ecde260f41394524b2f"
+    },
+    "user": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "art": {
+      "$oid": "68f71bd643e2ad8edb754017"
+    },
+    "category": "Fraud",
+    "option": "Fake",
+    "description": "Scam or Fraud",
+    "additional_info": "Fake",
+    "status": "Resolved",
+    "created_at": {
+      "$date": "2025-10-22T04:34:21.443Z"
+    }
+  }
+]

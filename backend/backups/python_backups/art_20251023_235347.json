@@ -1,0 +1,4154 @@
+[
+  {
+    "_id": {
+      "$oid": "681376c85a741fd403485cc4"
+    },
+    "title": "Dreamscape",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "textiles",
+    "medium": "Minim consequatur ip",
+    "art_status": "Claimed",
+    "price": 0,
+    "description": "Voluptas fugiat non",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-01T13:27:36.734Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-01T13:27:36.734Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1746106057/snkmud8ncghslaasvnws.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "681377765a741fd403485cc7"
+    },
+    "title": "Bloom",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "ceramics",
+    "medium": "Soluta tenetur dolor",
+    "art_status": "Claimed",
+    "price": 0,
+    "description": "Consequatur est off",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-01T13:30:30.697Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-01T13:30:30.697Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1746106231/z0vo7naeknzzwloipjpb.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "681377c15a741fd403485cca"
+    },
+    "title": "Vero deserunt earum",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "multimedia installations",
+    "medium": "Est minima enim adip",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Et sit nobis repreh",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-01T13:31:45.710Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-30T11:59:45.185Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1746106305/xot0mq4q4owocbgglw0h.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "681378205a741fd403485ccd"
+    },
+    "title": "Shade",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "dance",
+    "medium": "Dolores iure harum n",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Sint sed dignissimos",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-01T13:33:20.439Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-30T12:01:13.995Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746106400/iqabll0d54r4lwug4kae.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "681379cc5a741fd403485cd0"
+    },
+    "title": "Skull",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "3d modeling and animation",
+    "medium": "ai",
+    "art_status": "Claimed",
+    "price": 0,
+    "description": "\"There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain...\"",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-01T13:40:28.429Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-01T13:40:28.429Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1746106829/nf076hxtxv0s1uermvqe.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "681381d45a741fd403485cd3"
+    },
+    "title": "Still, I Rise",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "architecture",
+    "medium": "Ut accusantium quia",
+    "art_status": "Sold",
+    "price": 0,
+    "description": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-01T14:14:44.001Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-01T14:14:44.001Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746108884/fhzlehynbcznrobn8zob.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "681392df1ea6de6aaa308e4a"
+    },
+    "title": "Anguish",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "textiles",
+    "medium": "Vel libero tempore",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Fugiat neque totam d",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-01T15:27:27.574Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-01T15:27:27.574Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746113247/x7xl60lta3qpen4skkdh.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "68161edc70ba1c88d947cd8e"
+    },
+    "title": "Poison Dew",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "digital art",
+    "medium": "Aut esse iusto quas",
+    "art_status": "Sold",
+    "price": 0,
+    "description": "Нимфы. Часть 1 Style: “Poison Dew” by @doopiidoo@krea_ai",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-03T13:49:16.024Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-03T13:49:16.024Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746280156/cxksenzmmjvpjbuxngez.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6816c047f05c307f8fdd7cf0"
+    },
+    "title": "Drift",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "film and cinema",
+    "medium": "Voluptates sapiente",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Quis minim qui volup",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T01:17:59.681Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T03:18:05.965Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1746321485/hbdtrl3ddbit1qklidj1.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6816c05bf05c307f8fdd7cf3"
+    },
+    "title": "Bloom",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "opera",
+    "medium": "Qui debitis providen",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Vero neque autem qui",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T01:18:19.044Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-04T01:18:19.044Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746321503/fqtinzkialtkqot8bcb6.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6816c0a8f05c307f8fdd7cf6"
+    },
+    "title": "Flux",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "motion graphics",
+    "medium": "Blanditiis repudiand",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Repudiandae nisi non",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T01:19:36.398Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-04T01:19:36.398Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746321581/psrteujngo1cvcnb92gl.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6816c0caf05c307f8fdd7cf9"
+    },
+    "title": "Neon Drift",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "interior design",
+    "medium": "Amet cupidatat in m",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Asperiores excepteur",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T01:20:10.943Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-21T17:05:07.772Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746321616/btmpckislou10fbk2rot.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6816c0faf05c307f8fdd7cfc"
+    },
+    "title": "Code and Canvas",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "sound art",
+    "medium": "Voluptatibus id null",
+    "art_status": "Claimed",
+    "price": 0,
+    "description": "Officia quis volupta",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T01:20:58.252Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-04T01:20:58.252Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1746321663/igpaehkcip0dlikimymp.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6816c113f05c307f8fdd7cff"
+    },
+    "title": "Void",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "multimedia installations",
+    "medium": "Hic quo voluptatibus",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Laborum fugiat dolo",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T01:21:23.528Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-21T17:07:21.113Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747233087/ijalqkmmnkbieq59tr8a.png"
+  },
+  {
+    "_id": {
+      "$oid": "6816c13cf05c307f8fdd7d02"
+    },
+    "title": "Sync",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "circus arts",
+    "medium": "Ad cupiditate volupt",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Fugit dignissimos c",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T01:22:04.107Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-21T17:07:43.206Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1746321729/qtbdoqpnz9sei2uufovr.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6816c1e9f05c307f8fdd7d08"
+    },
+    "title": "Human Metaloid",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "body art",
+    "medium": "Fugiat nostrud nece",
+    "art_status": "Sold",
+    "price": 0,
+    "description": "Beatae quo nihil eli",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T01:24:57.408Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-11T13:41:11.630Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746321902/nxtfl55g5sl8pzsh5z70.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6816fe33694d124bbdcbff2c"
+    },
+    "title": "Weight of Words",
+    "artist": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "category": "photography",
+    "medium": "Harum quia id volup",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Sint omnis deserunt",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T05:42:11.671Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-04T05:42:11.671Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746337337/kcf1rp4cuvuugl0vemq0.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6816ff4e694d124bbdcbff6b"
+    },
+    "title": "Alladin",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "drawing",
+    "medium": "Ipsum maxime in comm",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. ",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T05:46:54.764Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-04T05:46:54.764Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746337620/faif5ycln3ed2mnyvbxc.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "681711d81674d689857f8bc8"
+    },
+    "title": "Sunset",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "painting",
+    "medium": "Paint",
+    "art_status": "Active",
+    "price": 0,
+    "description": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T07:06:00.437Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-04T07:06:00.437Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746342361/nhgrteitzjlhwbpsuxpd.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6817123c1674d689857f8bcd"
+    },
+    "title": "Leftover",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "photography",
+    "medium": "Camera",
+    "art_status": "Active",
+    "price": 0,
+    "description": "\"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?\"",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T07:07:40.273Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-13T03:26:03.800Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746342460/fbif6slmbnp9h8ix4gwv.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "681742b43b30f440f729870b"
+    },
+    "title": "Child of Despair",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "digital art",
+    "medium": "Aut esse iusto quas",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T10:34:28.435Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-30T11:54:02.962Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746354874/da0sekfxdiygksrlzaqs.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "681795baadec126cfbb0d5a2"
+    },
+    "title": "jellyfish",
+    "artist": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "category": "digital art",
+    "medium": "idk",
+    "art_status": "Active",
+    "price": 0,
+    "description": "\"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.“",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T16:28:42.309Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-13T02:41:58.471Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746376121/f33t8vritza6odafynjn.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "68179b19d8089f156f9eaaec"
+    },
+    "title": "Savour",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "digital art",
+    "medium": "Mollitia",
+    "art_status": "Sold",
+    "price": 0,
+    "description": "Como estas?",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T16:51:37.872Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-30T11:53:32.562Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747049324/i1a6sqeyhv2jeab6ah8v.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "68179f1aadec126cfbb0d5ad"
+    },
+    "title": "Shook",
+    "artist": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "category": "digital art",
+    "medium": "idk",
+    "art_status": "Active",
+    "price": 0,
+    "description": "Imo mama Imo mama Imo mama Imo mama Imo mama",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T17:08:42.509Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-11T13:40:59.780Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746378522/anwecfboi1c9kuxywyq8.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6817a3acd8089f156f9eaaf5"
+    },
+    "title": "Arte",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "videography",
+    "medium": "Qui id aspernatur ex",
+    "art_status": "onBid",
+    "price": 0,
+    "description": "Dolor est aut quas d",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-04T17:28:12.828Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-13T03:07:20.134Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746379698/rojicmztg13x2sntou7t.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "681f80271faacfcea4e9487d"
+    },
+    "title": "Quos",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "interior design",
+    "medium": "Aut esse repellendu",
+    "art_status": "Active",
+    "price": 0,
+    "size": "70 x 49",
+    "description": "Optio incidunt odi",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-10T16:34:47.124Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T08:12:12.017Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1746894896/bl9kinlei3zpfhti8glg.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "682006def5539999cc15e7ae"
+    },
+    "title": "Bakugo",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "drawing",
+    "medium": "Graphite Pencils",
+    "art_status": "Active",
+    "price": 0,
+    "size": "6 x 6",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-11T02:09:34.892Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-11T13:50:08.082Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746929383/zijk0ivkxu5j2rxpskj5.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6820148525d06e84a44191b7"
+    },
+    "title": "Collide",
+    "artist": {
+      "$oid": "68200dd570db54e30025a74e"
+    },
+    "category": "painting",
+    "medium": "Acrylic",
+    "art_status": "Active",
+    "price": 0,
+    "size": "16 x 12",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-11T03:07:48.992Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-11T13:40:50.951Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746932877/m18malubrjcj3c6cqbax.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "68207fbcf61d2158a129fb1d"
+    },
+    "title": "Ut qui nemo rem volu",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "industrial design",
+    "medium": "Commodo fuga Facere",
+    "art_status": "Sold",
+    "price": 0,
+    "size": "16 x 74",
+    "description": "Ut deserunt aut nost Ut deserunt aut nost Ut deserunt aut nost Ut deserunt aut nost",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-11T10:45:16.451Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-15T04:51:56.326Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746960316/ljorhgfqa7zsxzifberi.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6824ccfc6fb4597c28417515"
+    },
+    "title": "Dolorem velit eum qu",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "sound art",
+    "medium": "Dolorem consequatur",
+    "art_status": "Active",
+    "price": 0,
+    "size": "45 x 10",
+    "description": "Corrupti aliqua Es",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-14T17:03:56.144Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T12:41:18.249Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1747242248/tnukqre4rtt2adbpequ8.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "68256c569857c0bc470afebd"
+    },
+    "title": "nft",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "prose",
+    "medium": "Dolorem eveniet est",
+    "art_status": "Claimed",
+    "price": 0,
+    "size": "22 x 7",
+    "description": "Sint dolor qui exce Iusto odio nobis eiu",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-15T04:23:50.480Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-15T04:23:50.480Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1747283030/he3hyqcl4frtojboxosv.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6825e9c4c5a09fc23f10ccb2"
+    },
+    "title": "Maldita",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "drawing",
+    "medium": "Charcoal Pencil",
+    "art_status": "Active",
+    "price": 0,
+    "size": "3 x 4",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-15T13:19:00.815Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-31T12:19:13.470Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747315155/pvh7hxvf1genopxeyojx.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682698a83e4550957dddf4ae"
+    },
+    "title": "Norma",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "painting",
+    "medium": "Acrylic Paint",
+    "art_status": "Claimed",
+    "price": 0,
+    "size": "15 x 14",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed urna sed lorem viverra egestas. Aliquam erat volutpat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec non porta nibh. Phasellus eu ultrices purus. Morbi pharetra ex dui, eu imperdiet erat ullamcorper sit amet",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-16T01:45:12.141Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-16T01:45:12.141Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1747359928/y8uaudcapptb7czzv00h.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6829ac11b8c550ffd8e6d782"
+    },
+    "title": "Half Dead",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "drawing",
+    "medium": "Pencil",
+    "art_status": "Sold",
+    "price": 0,
+    "size": "10 x 8",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-18T09:44:49.028Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-18T09:44:49.028Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747561505/qn5bjxoxqqn07q75zfmj.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6829acffb8c550ffd8e6d784"
+    },
+    "title": "Smoke",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "digital art",
+    "medium": "Digital Pen",
+    "art_status": "Active",
+    "price": 0,
+    "size": "15 x 13",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. D",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-18T09:48:47.502Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-31T12:19:16.724Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747561744/rfr2eidnsth5nv3j7xly.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6829ad56b8c550ffd8e6d786"
+    },
+    "title": "Daisies",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "painting",
+    "medium": "Acrylic",
+    "art_status": "Sold",
+    "price": 0,
+    "size": "20 x 18",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. D",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-18T09:50:14.011Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-18T09:50:14.011Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747561830/bspml9gkowhilcjltqnz.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682bf90ebf9a9af96ded356b"
+    },
+    "title": "Bubbles",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "3d modeling and animation",
+    "medium": "Ut id consectetur et",
+    "art_status": "Sold",
+    "price": 0,
+    "size": "12 x 25",
+    "description": "Lorem Lorem Lorem LoremLorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-20T03:37:50.947Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-20T03:37:50.947Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747712270/ljddt2lzktchiif0kaxt.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682cc613f6ce8d9c55cf2e28"
+    },
+    "title": "Spring  Summer",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "painting",
+    "medium": "Acrylic Paint",
+    "art_status": "Active",
+    "price": 0,
+    "size": "24 x 24",
+    "description": "Allie Dattilio | fine artist. | Shifting gears to commission mode for the Spring + Summer — still dreaming about this recent custom piece. 24 karat gold leaf and oil paint... | Instagram",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-20T18:12:35.395Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-12T14:08:51.109Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1747764774/bkbufjsrqbv6v4wcsplt.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "682cc6b6f6ce8d9c55cf2e29"
+    },
+    "title": "Eunwo",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "painting",
+    "medium": "Acrylic Paint",
+    "art_status": "Active",
+    "price": 0,
+    "size": "10 x 8",
+    "description": "Helpful tutorial? Artist @jsweeneydesigns 🌸 Stsy inspired on @watercolor_daily ✔️",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-20T18:15:18.460Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-20T18:15:18.460Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747764938/emh0chjuafal7ng9qm0i.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682cc737f6ce8d9c55cf2e2a"
+    },
+    "title": "Nature Scenery",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "painting",
+    "medium": "Vel libero tempore",
+    "art_status": "Active",
+    "price": 0,
+    "size": "02 x 3",
+    "description": "Step into a world of sophistication with our Abstract Landscape Art Print, showcasing a serene nature scene with a touch of elegance. Perfect for modern home decor, this piece brings a contemporary and colorful spin to any room.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-20T18:17:27.373Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-20T18:17:27.373Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747765066/iajzvvuyyoc0uncsejqe.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682cc799f6ce8d9c55cf2e2d"
+    },
+    "title": "Canvas",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "Sold",
+    "price": 0,
+    "size": "24 x 18",
+    "description": "Ref lect Your Creativity: Modern Wall Reflect Your Creativity: Modern Wall #canvaspainting🎨Decorations 💫 #canvaspainting #wallhanging #largewallart #modernwallart #wallhangingdecor #canvastable #homewalldecor #homedecorideas",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-20T18:19:05.779Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-21T17:07:10.042Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747765165/iyyzownlufvndhvzhjw5.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682e7af9ce37c771c0de3da5"
+    },
+    "title": "The Sea",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "painting",
+    "medium": "Acrylic Paint",
+    "art_status": "Active",
+    "price": 0,
+    "size": "50 x 48",
+    "description": "Extra Large Original Boat Painting An Abstract Painting Canoe On Beach Rowing Boat Wall Art Beach Canvas Home Decor Ocean Wave Art Gift Idea",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-22T01:16:41.826Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-31T12:09:15.921Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747876600/tc2cq68jymhudn06cyx3.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682fda86b45628c76a89294e"
+    },
+    "title": "Sea Now",
+    "artist": {
+      "$oid": "68200dd570db54e30025a74e"
+    },
+    "category": "painting",
+    "medium": "Acrylic Paint",
+    "art_status": "Active",
+    "price": 0,
+    "size": "15 x 13",
+    "description": "A swirling, vibrant night sky filled with stars above a quiet village. This iconic painting captures van Gogh's emotional intensity and innovative brushwork, expressing a turbulent yet beautiful vision of the night.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-23T02:16:38.804Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-23T02:16:38.804Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747966621/hopxou7k2vil8orgcj70.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682fdbfeb45628c76a89294f"
+    },
+    "title": "The Persistence of Memory",
+    "artist": {
+      "$oid": "68200dd570db54e30025a74e"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "Active",
+    "price": 0,
+    "size": "14 x 12",
+    "description": "Famous for its melting clocks, this surreal landscape explores the fluidity of time and reality, blending dream imagery with precise detail.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-23T02:22:54.988Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-23T02:22:54.988Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747966997/mukjvscqewqbvfpmgcuv.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682fdd11b45628c76a892950"
+    },
+    "title": "David",
+    "artist": {
+      "$oid": "68200dd570db54e30025a74e"
+    },
+    "category": "digital art",
+    "medium": "Graphics tablets and Stylus pens",
+    "art_status": "Active",
+    "price": 0,
+    "size": "15 x 20",
+    "description": "A monumental marble statue representing the Biblical hero David, known for its exquisite anatomy, expression of human strength, and detailed realism.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-23T02:27:29.107Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-23T02:27:29.107Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747967272/ou8n9hsbhy8fs5sjxqb5.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682fde65b45628c76a892958"
+    },
+    "title": "Balloon",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "digital art",
+    "medium": "Graphics tablets and Stylus pens",
+    "art_status": "Claimed",
+    "price": 0,
+    "size": "15 x 13",
+    "description": "Famous for its melting clocks, this surreal landscape explores the fluidity of time and reality, blending dream imagery with precise detail.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-23T02:33:09.555Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-23T02:33:09.555Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1747967613/msuebaieja876pwwsefw.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "682fe043b45628c76a89295e"
+    },
+    "title": "Fear",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "Active",
+    "price": 0,
+    "size": "15 x 15",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-23T02:41:07.218Z"
+    },
+    "updated_at": {
+      "$date": "2025-06-16T06:22:56.091Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1747968089/gdqd36wb8a75hjdslgxh.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "682feb373d8acce07f6e0ee7"
+    },
+    "title": "Odd",
+    "artist": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "category": "digital art",
+    "medium": "comp",
+    "art_status": "Active",
+    "price": 0,
+    "size": "15 x 20",
+    "description": "\"Odd\" is a visual exploration of the beauty found in eccentricity and the unorthodox. With a deliberate dissonance in form, color, or composition, the artwork invites viewers to question conventional aesthetics and embrace the unexpected. Elements seem misplaced or mismatched at first glance—distorted figures, asymmetrical patterns, or jarring color contrasts—but upon deeper inspection, they reveal a subtle harmony that challenges the definition of normalcy. The piece captures the raw, authentic energy of individuality, celebrating the things that make us unique, strange, or misunderstood. In \"Odd,\" imperfection becomes a statement, and irregularity becomes a new kind of balance.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-23T03:27:51.592Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-23T03:27:51.592Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747970869/wiufd2cgllejxa8lbktx.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682fef1c3d8acce07f6e0ee8"
+    },
+    "title": "Liquors",
+    "artist": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "category": "painting",
+    "medium": "Oil in Canvas",
+    "art_status": "Active",
+    "price": 0,
+    "size": "23 x 13",
+    "description": "\"Liquor\" captures the seductive duality of indulgence and escape. Through a rich interplay of shadow and light, the artwork distills the essence of intoxication—not merely as a substance, but as a state of mind. The composition is laced with blurred edges, fluid forms, and a moody palette that hints at both euphoria and melancholy. Whether it’s the glint of a bottle in twilight or the abstract silhouette of a glass mid-pour, every element is deliberately ambiguous, inviting the viewer to project their own experience onto the canvas.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-23T03:44:28.367Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-23T03:44:28.367Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747971865/kobcmq3ac3fvdtypzn1j.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682ff04e3d8acce07f6e0ee9"
+    },
+    "title": "Clown",
+    "artist": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "category": "painting",
+    "medium": "Canvas",
+    "art_status": "Active",
+    "price": 0,
+    "size": "53 x 20",
+    "description": "Explores the unsettling intersection between whimsy and fear. With exaggerated features, smeared makeup, and an unnerving grin, the clown figure evokes a sense of dread that contrasts with its traditionally cheerful role. Set against a dim, chaotic background, the artwork plays with shadow and light to emphasize the eerie atmosphere. The clown's hollow eyes seem to follow the viewer, hinting at hidden malice or untold stories behind the mask.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-23T03:49:34.121Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-23T03:49:34.121Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747972171/jjsnerprqr5mwfolvs8n.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682ff1f63d8acce07f6e0eea"
+    },
+    "title": "Strawberry",
+    "artist": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "category": "photography",
+    "medium": "camera",
+    "art_status": "Active",
+    "price": 0,
+    "size": "26 x 14",
+    "description": "Captures the delicate essence of a single fruit imbued with layers of symbolism and sensory richness. Centered within the composition, the strawberry appears both hyper-real and subtly stylized — its surface glistening with dew-like highlights, each seed a tiny punctuation in nature’s design. The vivid red hue draws the viewer into an almost tactile experience, evoking sweetness, summer, and fleeting perfection.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-23T03:56:38.733Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-23T03:56:38.733Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747972596/ezbvofqldg5imsdpclvq.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "682ff2873d8acce07f6e0eeb"
+    },
+    "title": "E-AT",
+    "artist": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "category": "3d modeling and animation",
+    "medium": "mixed media",
+    "art_status": "Active",
+    "price": 0,
+    "size": "24 x 19",
+    "description": "In a whimsical blend of satire and surrealism, it reimagines the iconic balloon dog trope with an irreverent twist. This vibrant, glossy 3D artwork captures a balloon dog mid-defecation, playfully juxtaposing childhood nostalgia with the crude realities of nature. The exaggerated proportions, high-chrome finish, and absurd pose invite both laughter and reflection, poking fun at the seriousness often associated with high art. The piece challenges viewers to confront the intersection of kitsch, humor, and bodily function, suggesting that even inflated perfection must eventually deflate into the mundane. Bold, bizarre, and unexpectedly honest, this work is both a parody and celebration of modern pop art.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-23T03:59:03.198Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-23T03:59:03.198Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747972739/o7ikluj1fx8mkerlmapv.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6831b5097f8a3ef33ce628f4"
+    },
+    "title": "Medicine",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "mixed media",
+    "medium": "Commodo fuga Facere",
+    "art_status": "Sold",
+    "price": 0,
+    "size": "20 x 15",
+    "description": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-24T12:01:13.900Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-24T12:01:13.900Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1748088070/fclr43fotxmtzak19xwt.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6835f99cd5734958be9b7365"
+    },
+    "title": "NFT Eye",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "mixed media",
+    "medium": "Commodo",
+    "art_status": "Active",
+    "price": 0,
+    "size": "36 x 15",
+    "description": "A striking digital sculpture that captures the essence of surveillance, self-awareness, and the ever-evolving gaze of the blockchain era. Framed by dark, sculptural hands, a hyperreal eye stares with uncanny clarity—symbolizing the transparent yet watchful nature of decentralized ownership.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-27T17:42:52.011Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-27T17:42:52.011Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1748367770/ysqan0gv7kdq3sfcbb85.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6835fcb0d5734958be9b7367"
+    },
+    "title": "Cutie Skeleton",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "digital art",
+    "medium": "Dolorem",
+    "art_status": "Claimed",
+    "price": 0,
+    "size": "25 x 10",
+    "description": "Brings charm to the macabre—a playful blend of spooky and sweet. With wide eyes, quirky bones, and a grin that’s more adorable than eerie, this skeleton is here to remind us that even the afterlife has personality.",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-05-27T17:56:00.591Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-27T17:56:00.591Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1748368560/ccoekg8k1d5lasfi1kta.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6840337fdf84c779f9bf61a0"
+    },
+    "title": "Laudantium quas cum",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "architecture",
+    "medium": "Laborum itaque modi",
+    "art_status": "Active",
+    "price": 0,
+    "size": "24 x 37",
+    "description": "Facilis iure aut est",
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-06-04T11:52:31.424Z"
+    },
+    "updated_at": {
+      "$date": "2025-06-04T11:53:34.840Z"
+    },
+    "image_url": "https://res.cloudinary.com/du5bwye4h/image/upload/v1749037980/glojdamq8ped14buobrd.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "685e5c25a10f5088ef23f73f"
+    },
+    "title": "Bodoo",
+    "artist": {
+      "$oid": "6854d1402d6b39ae866956a3"
+    },
+    "category": "3d modeling and animation",
+    "medium": "comp",
+    "art_status": "Active",
+    "price": 0,
+    "size": "56 x 34",
+    "description": "boddo bidaa artwork inspired by poop",
+    "image_url": [],
+    "visibility": "Deleted",
+    "created_at": {
+      "$date": "2025-06-27T08:53:57.330Z"
+    },
+    "updated_at": {
+      "$date": "2025-06-27T08:54:37.040Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "686383c2c3cb09c1a35b201d"
+    },
+    "title": "Et fugit sed est iu",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "film and cinema",
+    "medium": "Aperiam beatae volup",
+    "art_status": "Sold",
+    "price": 18,
+    "edition": "Open Edition",
+    "year_created": "Autem quia",
+    "size": "27x25",
+    "description": "Consequatur porro u",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751352248/b0wsv8kzvkub1qr1ebld.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751352251/wjvbki0wm98p0maqgdyp.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751352253/vg0v5j0krswqlqwy8xql.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751352255/wleauplksijkxdvt5vbv.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751352257/qg3njbrss3mtrdiuppzx.jpg"
+    ],
+    "visibility": "Public",
+    "created_at": {
+      "$date": "2025-07-01T06:44:18.825Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-27T02:52:31.720Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6864cf25c32cd3f407db96a1"
+    },
+    "title": "Elit provident non",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "painting",
+    "medium": "Quia magnam nobis do",
+    "art_status": "Active",
+    "price": 0,
+    "size": "22 x 77",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751437090/artworks/atd5qa5qr1uqwbix9uam.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-02T06:18:13.064Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T18:22:28.112Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6865d5ab5e7aaebae8865576"
+    },
+    "title": "Architecto iusto qui",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "onSale",
+    "price": 200,
+    "edition": "Original (1 of 1)",
+    "year_created": "2025",
+    "size": "12x12",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-03T00:58:19.335Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T08:32:26.060Z"
+    },
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1756905584/mztrreoaenm0ucni02gu.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1756905585/q9p9bnppjsqipkcbceoh.jpg"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "686635d4c6ce6aeb89d43eb8"
+    },
+    "title": "Heart",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "sculpture",
+    "medium": "Clay and Stone",
+    "art_status": "onSale",
+    "price": 6000,
+    "edition": "Original (1 of 1)",
+    "year_created": "2020",
+    "size": "12x12",
+    "description": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751528909/artworks/ogafpcfyswxzkksdjqpa.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751528913/artworks/g1itjonad9fnxiwh81je.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-03T07:48:36.594Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T08:24:15.946Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "686636f7c6ce6aeb89d43eb9"
+    },
+    "title": "Hands",
+    "artist": {
+      "$oid": "68200dd570db54e30025a74e"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "onSale",
+    "price": 1000,
+    "edition": "Original (1 of 1)",
+    "year_created": "2023",
+    "size": "24x20",
+    "description": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751529199/artworks/ajesqgp8e1oqhotouobn.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751529201/artworks/grqs9b9bbqw4j7ycwolq.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751529204/artworks/mffhqp2zbcnbblgejs39.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-03T07:53:27.264Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-03T07:53:27.264Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68668a741ba312fc5e941154"
+    },
+    "title": "Sunset Paintings",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "painting",
+    "medium": "Oil Pastel",
+    "art_status": "Sold",
+    "price": 300,
+    "edition": "Limited Edition",
+    "year_created": "2023",
+    "size": "8x6",
+    "description": "Immerse yourself in the tranquil beauty of nature’s most fleeting moment. Crimson Serenity captures the magical glow of a sunset, where the sky melts into hues of deep orange, warm gold, and soft lavender. Each brushstroke reflects the quiet stillness and peace that comes just before nightfall.\r\n\r\nThis piece evokes feelings of calm, reflection, and wonder — perfect for collectors seeking emotional connection through color and atmosphere. Whether displayed in a living room, office, or gallery, it brings warmth and serenity to any space.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751550580/artworks/u2stuesy4romv5rtexur.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751550583/artworks/bws1b78skdphbkebpmnb.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751550586/artworks/fcctrfo14q41v8cpkacf.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751550588/artworks/e1mchbffmmcowprds9g6.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1751550591/artworks/act5pjsjwrruanje7zph.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-03T13:49:40.902Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-01T03:09:46.662Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "687e3f2648317894845ace59"
+    },
+    "title": "Sit aut explicabo D",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "photography",
+    "medium": "Minima qui ex dolore",
+    "art_status": "onSale",
+    "price": 21,
+    "edition": "Limited Edition",
+    "year_created": "Dolor qui",
+    "size": "96x95",
+    "description": "Cupidatat magnam nul",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1753104164/artworks/affuxoahjigp8jofkhky.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-21T13:22:46.661Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-29T03:27:04.702Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6885dd503084123b79302087"
+    },
+    "title": "Esse possimus lauda",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "drawing",
+    "medium": "Excepturi itaque vol",
+    "art_status": "onSale",
+    "price": 2000,
+    "edition": "Original (1 of 1)",
+    "year_created": "Et volupta",
+    "size": "94x96",
+    "description": "Ad sapiente facere c",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1753603406/artworks/a1oyzbdqva2l9p0r4rfl.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-27T08:03:28.859Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-27T08:03:28.859Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68862721f7aa0183bf6bcde1"
+    },
+    "title": "Reprehenderit est d",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "prose",
+    "medium": "Nobis dolorem ea nos",
+    "art_status": "onSale",
+    "price": 1200,
+    "edition": "Original (1 of 1)",
+    "year_created": "Fugit non",
+    "size": "85x24",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1753622303/artworks/snpfvzpgqbztopj9dakq.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-27T13:18:25.903Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-27T13:18:25.903Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68862812f7aa0183bf6bcde2"
+    },
+    "title": "Consequat Voluptas",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "industrial design",
+    "medium": "Repudiandae facere c",
+    "art_status": "onSale",
+    "price": 1500,
+    "edition": "Original (1 of 1)",
+    "year_created": "Provident",
+    "size": "85x49",
+    "description": "Rerum adipisicing ir",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1753622538/artworks/vbsgup4k3c1z0vwep4cp.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1753622544/artworks/b4xdrwjsr60gebuzk29u.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-27T13:22:26.462Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T05:01:03.255Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6888426f363ea16ad5cc41bb"
+    },
+    "title": "Opposite",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "painting",
+    "medium": "Oil Pastel",
+    "art_status": "Active",
+    "price": 800,
+    "edition": "Original (1 of 1)",
+    "year_created": "2025",
+    "size": "12x12",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1753760363/artworks/ugrcipp5ejtqvmb5axnf.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1753760367/artworks/hdryxg4bhrwqdmfi0rj0.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-29T03:39:27.984Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T14:44:38.405Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6889a102f9204779f3584e4c"
+    },
+    "title": "Est labore lorem ex",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "sound art",
+    "medium": "At est laboriosam a",
+    "art_status": "onSale",
+    "price": 1299,
+    "edition": "Open Edition",
+    "year_created": "Deserunt l",
+    "size": "7x5",
+    "description": "Labore nesciunt cup",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1753850112/artworks/rthfdoqms2gtdyirezoa.jpg"
+    ],
+    "quantity": 5,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-30T04:35:14.979Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T11:42:42.420Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6889f1477fa774d63a11999a"
+    },
+    "title": "Sed pariatur Autem",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "film and cinema",
+    "medium": "Aliquid voluptatem l",
+    "art_status": "Sold",
+    "price": 79,
+    "edition": "Original (1 of 1)",
+    "year_created": "Explicabo",
+    "size": "16x38",
+    "description": "Illo enim eligendi a",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1753870661/artworks/nh2emy31vdc5mdfr16uq.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-30T10:17:43.652Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-30T14:19:16.014Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688a2aa3119ad1dc6043361b"
+    },
+    "title": "Aliqua Recusandae",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "photography",
+    "medium": "Deserunt libero aut",
+    "art_status": "onSale",
+    "price": 1500,
+    "edition": "Open Edition",
+    "year_created": "Ut vel eum",
+    "size": "62x67",
+    "description": "Itaque vitae aut sin",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1753885344/artworks/ipeazv9yvbiqjttcmcdq.jpg"
+    ],
+    "quantity": 10,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-30T14:22:27.181Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-30T14:22:27.182Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688a2acf119ad1dc6043361c"
+    },
+    "title": "Officiis quidem non",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "sculpture",
+    "medium": "Quas eos qui libero",
+    "art_status": "onSale",
+    "price": 2000,
+    "edition": "Open Edition",
+    "year_created": "Et esse su",
+    "size": "39x60",
+    "description": "Explicabo Et quis a",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1753885388/artworks/j9puvkinn8sjmjientgr.jpg"
+    ],
+    "quantity": 5,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-07-30T14:23:11.543Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-30T14:23:11.543Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688e269c0c4b8af2fb42f713"
+    },
+    "title": "Nobis est non alias",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "photography",
+    "medium": "Quis saepe quia et a",
+    "art_status": "onSale",
+    "price": 3500,
+    "edition": "Original (1 of 1)",
+    "year_created": "2024",
+    "size": "82x23",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1754146456/artworks/iexvndx8ztb4rb1mhorh.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-08-02T14:54:20.526Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T08:38:28.116Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688e26c00c4b8af2fb42f714"
+    },
+    "title": "Dolorem maxime nulla",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "circus arts",
+    "medium": "Excepturi modi dolor",
+    "art_status": "onSale",
+    "price": 2500,
+    "edition": "Open Edition",
+    "year_created": "2025",
+    "size": "20x67",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1754146493/artworks/vxe8l1wnuxgqghi18qck.jpg"
+    ],
+    "quantity": 5,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-08-02T14:54:56.055Z"
+    },
+    "updated_at": {
+      "$date": "2025-08-02T14:54:56.055Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688e26e60c4b8af2fb42f715"
+    },
+    "title": "Rerum elit exercita",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "painting",
+    "medium": "Non esse in et ullam",
+    "art_status": "onSale",
+    "price": 2300,
+    "edition": "Open Edition",
+    "year_created": "2024",
+    "size": "26x3",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1754146530/artworks/bmqwanc2ng3zdjckub5c.jpg"
+    ],
+    "quantity": 0,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-08-02T14:55:34.764Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T08:38:06.644Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688e27ef0c4b8af2fb42f716"
+    },
+    "title": "Cupidatat occaecat v",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "painting",
+    "medium": "Libero at nesciunt",
+    "art_status": "onSale",
+    "price": 2800,
+    "edition": "Original (1 of 1)",
+    "year_created": "2022",
+    "size": "87x79",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1754146789/artworks/zkcpfxzeyrdbkoyx7m41.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1754146796/artworks/letqwtqfz49w47omcoku.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-08-02T14:59:59.539Z"
+    },
+    "updated_at": {
+      "$date": "2025-08-02T14:59:59.539Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688e28140c4b8af2fb42f717"
+    },
+    "title": "Spiral",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "painting",
+    "medium": "Acrilyc Paint",
+    "art_status": "onSale",
+    "price": 2500,
+    "edition": "Limited Edition",
+    "year_created": "2023",
+    "size": "47x78",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1754146833/artworks/u165dsjtmbwwe1lnahn7.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-08-02T15:00:36.396Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T13:25:57.646Z"
+    },
+    "quantity": 5
+  },
+  {
+    "_id": {
+      "$oid": "688e28f40c4b8af2fb42f718"
+    },
+    "title": "Fairy",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "ceramics",
+    "medium": "Oil Painting",
+    "art_status": "onSale",
+    "price": 1250,
+    "edition": "Original (1 of 1)",
+    "year_created": "2024",
+    "size": "78x60",
+    "description": "painting",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1754147057/artworks/um5uytjtrf9iqrklt5gr.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-08-02T15:04:20.946Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T13:05:01.220Z"
+    },
+    "quantity": 1
+  },
+  {
+    "_id": {
+      "$oid": "688e2c6f0c4b8af2fb42f725"
+    },
+    "title": "Est dolores amet po",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "3d modeling and animation",
+    "medium": "Maiores quibusdam ei",
+    "art_status": "Active",
+    "price": 0,
+    "size": "93 x 63",
+    "description": "Duis vel atque velit",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1754147948/artworks/rvabmapuczre2ecuhg8p.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-08-02T15:19:11.826Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-03T13:11:50.034Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "688e2c890c4b8af2fb42f726"
+    },
+    "title": "In ad est anim tenet",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "ceramics",
+    "medium": "Tenetur quaerat haru",
+    "art_status": "Claimed",
+    "price": 0,
+    "size": "67 x 4",
+    "description": "Sint earum quia earu",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1754147974/artworks/ku9qcfbwgndy6qa51rnw.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-08-02T15:19:37.213Z"
+    },
+    "updated_at": {
+      "$date": "2025-08-02T15:42:16.012Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68b43880d18b678642011ce5"
+    },
+    "title": "In magna at quis bla",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "landscape design",
+    "medium": "Est nulla quas in r",
+    "art_status": "onSale",
+    "price": 96,
+    "edition": "Original (1 of 1)",
+    "year_created": "Inventore",
+    "size": "62x75",
+    "description": "Consequatur In aute",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1756641406/artworks/zhcjweuj8xlzcgkcb7ja.png"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-08-31T11:56:48.524Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T06:55:59.050Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68b6311caf786d05fdb72664"
+    },
+    "title": "Et velit eos mollit",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "graphic design",
+    "medium": "Et quae quo et dolor",
+    "art_status": "Active",
+    "price": 1200,
+    "size": "5 x 80",
+    "description": "Mollit vero quas vol",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1756770583/artworks/l0aqe0f7gxzmudx5fcvh.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-01T23:49:48.020Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-12T14:08:42.043Z"
+    },
+    "edition": "Open Edition"
+  },
+  {
+    "_id": {
+      "$oid": "68b632b6af786d05fdb7266b"
+    },
+    "title": "Two Faced",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "film and cinema",
+    "medium": "Oil Painting",
+    "art_status": "onSale",
+    "price": 800,
+    "edition": "Limited Edition",
+    "year_created": "2023",
+    "size": "88x48",
+    "description": "Ab aliquam nesciunt",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1756770991/artworks/jmisuse9tovoxrs22fx9.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1756770995/artworks/pdrwzyr4ifmsts3xdsd8.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-01T23:56:38.337Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T13:04:16.387Z"
+    },
+    "quantity": 10
+  },
+  {
+    "_id": {
+      "$oid": "68ba94dc6a1950f6d9fa57eb"
+    },
+    "title": "Masked",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "fashion design",
+    "medium": "Wood, paint",
+    "art_status": "onSale",
+    "price": 500,
+    "edition": "Open Edition",
+    "year_created": "2023",
+    "size": "45x48",
+    "description": "Sed earum sunt cupid",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1757058266/artworks/tyl304exbzymk6c8ipnl.jpg"
+    ],
+    "quantity": 10,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-05T07:44:28.653Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T13:21:55.126Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ba95246a1950f6d9fa57ec"
+    },
+    "title": "Accusamus amet et p",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "sound art",
+    "medium": "Et at ducimus qui s",
+    "art_status": "onSale",
+    "price": 1200,
+    "edition": "Open Edition",
+    "year_created": "2024",
+    "size": "90x73",
+    "description": "Perspiciatis dolore",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1757058338/artworks/n63v67hpbspuc73ail8v.jpg"
+    ],
+    "quantity": 9,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-05T07:45:40.869Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T11:42:42.420Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ba955e6a1950f6d9fa57ed"
+    },
+    "title": "In eiusmod nesciunt",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "photography",
+    "medium": "Ratione adipisci vol",
+    "art_status": "onSale",
+    "price": 3000,
+    "edition": "Limited Edition",
+    "year_created": "2023",
+    "size": "85x3",
+    "description": "Earum asperiores sed",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1757058396/artworks/n690d5p3fvnhjtmj034m.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-05T07:46:38.093Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-05T07:46:48.941Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ba95e76a1950f6d9fa57ee"
+    },
+    "title": "Suscipit ab debitis",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "jewelry design",
+    "medium": "Quia dolor provident",
+    "art_status": "Unlisted",
+    "price": 500,
+    "edition": "Open Edition",
+    "year_created": "2025",
+    "size": "6x60",
+    "description": "Veniam non illum c",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1757058534/artworks/vax6ybrstsnglrkr1pta.jpg"
+    ],
+    "quantity": 0,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-05T07:48:55.675Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T08:12:07.422Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ba967b6a1950f6d9fa57ef"
+    },
+    "title": "Non fugiat reprehend",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "drawing",
+    "medium": "Excepteur id aut sed",
+    "art_status": "Active",
+    "price": 0,
+    "size": "58 x 7",
+    "description": "Sit enim sapiente q",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1757058681/artworks/cfxe2frgme6wcnwlv6yi.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-05T07:51:23.333Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-12T14:08:41.951Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ba96b76a1950f6d9fa57f0"
+    },
+    "title": "Odit neque sint tem",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "painting",
+    "medium": "Reprehenderit sed ve",
+    "art_status": "Sold",
+    "price": 0,
+    "size": "23 x 97",
+    "description": "Odio voluptas est vo",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1757058741/artworks/dys1nn4jf9jmugi3oyzo.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-05T07:52:23.399Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-03T02:08:01.105Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ba98366a1950f6d9fa57f1"
+    },
+    "title": "Nihil in perspiciati",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "interior design",
+    "medium": "Excepteur Nam minus",
+    "art_status": "onSale",
+    "price": 2500,
+    "edition": "Original (1 of 1)",
+    "year_created": "2334",
+    "size": "70x77",
+    "description": "Inventore exercitati",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1757059123/artworks/takrtqbm9yyt0pxmrobl.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-05T07:58:46.128Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T08:24:13.397Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68baf2f862e02454ec423567"
+    },
+    "title": "Eu esse ut laudanti",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "theater",
+    "medium": "Oil Paintnig",
+    "art_status": "onSale",
+    "price": 3000,
+    "edition": "Open Edition",
+    "year_created": "2023",
+    "size": "31x20",
+    "description": "Ut sed placeat dolo",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1757082356/artworks/jbtgyf9hbmwzb5a2dneo.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760443035/jtt43wkcobrljz1p77yp.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760443036/pnxru3pgnj5jzo9tmlpf.jpg"
+    ],
+    "quantity": 9,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-05T14:26:00.791Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T11:57:18.211Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68c14661730555fc6170cf0c"
+    },
+    "title": "gen_sample_sell_art",
+    "artist": {
+      "$oid": "6831b546797ef121740fdfb0"
+    },
+    "category": "digital art",
+    "medium": "none",
+    "art_status": "Sold",
+    "price": 100,
+    "edition": "Original (1 of 1)",
+    "year_created": "2025",
+    "size": "100x100",
+    "description": "sample ra ni...",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1757496925/artworks/onlp6iniwohuvh7ngukp.png"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-10T09:35:29.440Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-15T02:34:17.264Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68c4b784befa3d96ceb9b6b7"
+    },
+    "title": "sample_post",
+    "artist": {
+      "$oid": "6831b546797ef121740fdfb0"
+    },
+    "category": "digital art",
+    "medium": "kawat",
+    "art_status": "Active",
+    "price": 0,
+    "size": "1 x 1",
+    "description": "sample ra ni",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1757722499/artworks/dayeavayg6c9yhcjvspp.png"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-13T00:15:00.366Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-13T00:15:00.366Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d51e77ea18427af7ff18d2"
+    },
+    "title": "Rem vero ut et magni",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "textiles",
+    "medium": "Et aute velit mollit",
+    "art_status": "Active",
+    "price": 0,
+    "size": "60 x 87",
+    "description": "Qui aut dolores maio",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1758797428/artworks/hmdvaluhvni1krh7gvwd.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-25T10:50:31.268Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-02T16:35:57.402Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d900964aa820f1fabfd222"
+    },
+    "title": "Ut provident sint",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "digital art",
+    "medium": "Tablet",
+    "art_status": "Active",
+    "price": 0,
+    "size": "12 x 12",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759051923/artworks/zkjcg023zamfswtvx0wp.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-28T09:32:06.456Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-28T09:32:06.456Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d901314aa820f1fabfd223"
+    },
+    "title": "Suzy Sora",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "drawing",
+    "medium": "Charcoal Pencil and Color Pens",
+    "art_status": "Active",
+    "price": 0,
+    "size": "12 x 12",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759052079/artworks/jiozf12flgge0nlwqnex.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-28T09:34:41.687Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-29T03:40:36.765Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d91f53ab3bb58491509f44"
+    },
+    "title": "Red Moon",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "painting",
+    "medium": "Acrylic Paint",
+    "art_status": "Active",
+    "price": 0,
+    "size": "27 x 24",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759059793/artworks/s70xudu0o9mbdyahudtz.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-28T11:43:15.649Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-03T02:07:01.922Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68d91f8fab3bb58491509f46"
+    },
+    "title": "Girl",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "Sold",
+    "size": "28 x 25",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759059853/artworks/wijmkylp9wpfanjr6s8e.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759145224/u5e7etsagv3jyvvwpujw.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759145226/qtyz4iqckbsmxpomhx04.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-28T11:44:15.631Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-01T10:32:02.579Z"
+    },
+    "edition": "Limited Edition",
+    "price": 1200,
+    "year_created": "2023"
+  },
+  {
+    "_id": {
+      "$oid": "68da43e010482fb716dd9804"
+    },
+    "title": "Testing Update",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "architecture",
+    "medium": "Oil Painting",
+    "art_status": "Active",
+    "price": 0,
+    "size": "12 x 12",
+    "description": "this is a test\r\nwill be dleted later",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759134688/artworks/poqohhg7b5riejf80tpi.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-29T08:31:28.918Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T08:12:02.968Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68da508a10482fb716dd980a"
+    },
+    "title": "Sample edit",
+    "artist": {
+      "$oid": "68d9fd9e9d75d9a1a64a50ca"
+    },
+    "category": "opera",
+    "medium": "Oil Painting",
+    "art_status": "Sold",
+    "price": 100000000,
+    "edition": "Original (1 of 1)",
+    "year_created": "2023",
+    "size": "23x23",
+    "description": "Exercitationem ut qu",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759137928/artworks/gqhd5nsbvunzriyr98yg.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-09-29T09:25:30.031Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-08T11:36:45.027Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68de701fe6afb8a0053471fb"
+    },
+    "title": "Dark",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "drawing",
+    "medium": "Charcoal Pencil",
+    "art_status": "onSale",
+    "price": 200,
+    "edition": "Original (1 of 1)",
+    "year_created": "2025",
+    "size": "12x12",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759408157/artworks/bc1hwjycem9k5gsuqoec.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-02T12:29:19.724Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T05:00:33.501Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68df2eaeaa63ff7cbacbe007"
+    },
+    "title": "Random",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "drawing",
+    "medium": "Color Pencil",
+    "art_status": "Active",
+    "price": 0,
+    "size": "14 x 12",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759456938/artworks/kwxdtd7m9a1woltnadlx.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-03T02:02:22.553Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-03T02:02:22.553Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68df2ebeaa63ff7cbacbe008"
+    },
+    "title": "Mollit cupiditate qu",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "drawing",
+    "medium": "Labore consectetur",
+    "art_status": "Active",
+    "price": 0,
+    "size": "27 x 44",
+    "description": "Do omnis doloremque",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759456956/artworks/m7iug3xz11uofva58zyq.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-03T02:02:38.410Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-12T14:08:41.830Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68df2efdaa63ff7cbacbe009"
+    },
+    "title": "Anna",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "painting",
+    "medium": "Acrilyc Paints",
+    "art_status": "Active",
+    "price": 0,
+    "size": "805 x 100",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759457019/artworks/afgedgfxsfmyyz6gw2up.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-03T02:03:41.583Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-03T02:03:41.583Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68df2f47aa63ff7cbacbe00b"
+    },
+    "title": "Jennie",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "drawing",
+    "medium": "Pen",
+    "art_status": "Active",
+    "price": 0,
+    "size": "35 x 46",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759457093/artworks/is9xbijkzefxo88hudwo.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-03T02:04:55.072Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-03T02:04:55.072Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68df2fa5aa63ff7cbacbe00c"
+    },
+    "title": "F Designs",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "fashion design",
+    "medium": "Water Color Paint",
+    "art_status": "Active",
+    "price": 0,
+    "size": "27 x 88",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759457187/artworks/kwx0zcpp7aswg6zxeqxe.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-03T02:06:29.722Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-03T02:06:29.722Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e13c68f41afa4774cd6c96"
+    },
+    "title": "Sunset",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "painting",
+    "medium": "Canvas",
+    "art_status": "Sold",
+    "price": 0,
+    "size": "78 x 56",
+    "description": "This artwork beautifully captures a serene lakeside scene at sunset. A small house stands on a grassy cliff, overlooking calm waters as the sky burns with vivid shades of red, orange, and purple. The thick, textured brushstrokes give the painting a rich, expressive feel, blending warmth and solitude in a breathtaking display of light and color.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759591527/artworks/yyg0h1ldd70elbwp4s3x.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-04T15:25:28.437Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-04T15:25:46.672Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e392fda7b0a2b15abf5d04"
+    },
+    "title": "Watchogonado",
+    "artist": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "category": "fashion design",
+    "medium": "Oil Painting",
+    "art_status": "Active",
+    "price": 0,
+    "size": "8 x 10",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759744759/artworks/dxhcrhiodijhnem1nbrj.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-06T09:59:25.757Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-06T10:29:02.469Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e3a19fa7b0a2b15abf5d28"
+    },
+    "title": "Perferendis pariatur",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "poetry",
+    "medium": "Est ratione similiqu",
+    "art_status": "Active",
+    "price": 0,
+    "size": "12 x 12",
+    "description": "Autem consequat Est",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759748508/artworks/wkduaqsi2hupya6q7lzg.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-06T11:01:51.517Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-06T11:01:51.517Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68e3b661a7b0a2b15abf5d33"
+    },
+    "title": "Body",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "Active",
+    "price": 0,
+    "size": "150x180",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1759753822/artworks/ftrkohpvih4xha6gzzqw.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-06T12:30:25.878Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T13:01:49.307Z"
+    },
+    "quantity": 1
+  },
+  {
+    "_id": {
+      "$oid": "68ede1a3038d36d785671c21"
+    },
+    "title": "Freedom",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "Active",
+    "price": 0,
+    "size": "12 x 12",
+    "description": "The artokw freedom represents the boundless, transformative energy of unrestricted creativity, where every stroke is an act of liberation. It captures the moment of release from constraint, utilizing vibrant colors and dynamic forms to express pure, unbridled self-expression. Ultimately, this piece invites the viewer to experience the exhilarating and powerful joy found in absolute artistic autonomy.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760420254/artworks/qegdw9vhrxouv0nlseqo.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-14T05:37:39.306Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T05:37:39.306Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ee1d88f39ca3c140cff29d"
+    },
+    "title": "Testing",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "drawing",
+    "medium": "Oil Painting",
+    "art_status": "onSale",
+    "price": 2300,
+    "edition": "Open Edition",
+    "year_created": "2023",
+    "size": "12x12",
+    "description": "Testing only",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760435577/artworks/z1ing0soyeg5pmesxzxl.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760435580/artworks/vdubybzajwyvrwd9whur.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760435583/artworks/vchswbifhibiayqdhglu.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760435585/artworks/tfjnrjextuvo7phq2ipx.jpg"
+    ],
+    "quantity": 5,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-14T09:53:12.328Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-14T11:56:19.859Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ef8a3a3a5025fc3ef714f6"
+    },
+    "title": "Triptych",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "Active",
+    "price": 0,
+    "size": "12 x 12",
+    "description": "This immense, harrowing oil-on-canvas triptych  features three distorted, solitary nude male figures writhing or sitting on sterile platforms against an intense orange background. Bacon's technique, which involved blurring and smearing the paint, conveys a deep sense of psychological terror, physical violation, and emotional exposure. The body here is a site of psychological pain and anxiety, rendered with visceral intensity.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760528950/artworks/iqifmzsxpwsjjdfiwfoz.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-15T11:49:14.976Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T11:49:14.976Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ef8a773a5025fc3ef714f7"
+    },
+    "title": "Les Demoiselles dAvignon",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "Active",
+    "price": 0,
+    "size": "23 x 25",
+    "description": "A groundbreaking and controversial oil paintingo considered a pivotal work in the transition to Cubism. It depicts five nude female figures whose bodies are sharply fragmented into angular, non-naturalistic planes, while the faces of the two figures on the right are explicitly influenced by African masks. The radical geometric distortion broke completely with Western artistic tradition, forever changing the course of modern art.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760529011/artworks/axnhys5eitfszputph9n.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-15T11:50:15.978Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T11:50:15.978Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ef8b4b3a5025fc3ef714f9"
+    },
+    "title": "Broadway Boogie Woogie",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "sculpture",
+    "medium": "Sculpting",
+    "art_status": "onSale",
+    "price": 800,
+    "edition": "Open Edition",
+    "year_created": "2023",
+    "size": "23x25",
+    "description": "The composition retains his characteristic grid structure, but replaces the solid black lines with small, colorful squares that pulsate with rhythm and energy. The title reflects the artist's impressions of the geometric energy of New York City and the syncopated rhythm of jazz music.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760529224/artworks/tg7mk4htz3nqvmp2wt8p.jpg"
+    ],
+    "quantity": 20,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-15T11:53:47.668Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T11:53:47.668Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68ef8cc48391d1519427b233"
+    },
+    "title": "Christinas World",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "painting",
+    "medium": "Acrilyc",
+    "art_status": "onSale",
+    "price": 8500,
+    "edition": "Limited Edition",
+    "year_created": "2024",
+    "size": "350x450",
+    "description": "This melancholy and evocative Realist painting depicts a young woman lying in a vast, desolate, dry field, gazing toward a distant farmhouse. The figure, a real neighbor of Wyeth named Christina, suffered from a degenerative muscle disorder that prevented her from walking, but the artist chose to depict her with fierce determination. The intense detail and stark, muted landscape convey a mood of loneliness, resilience, and quiet yearning.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760529594/artworks/cuy5ucpeiomo6wzzdyvq.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-15T12:00:04.050Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T12:00:04.050Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68efb8e8d401570b295a717d"
+    },
+    "title": "Evelyn",
+    "artist": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "Active",
+    "price": 0,
+    "size": "85 x 60",
+    "description": "More than a form, this piece becomes a vessel for narrative. It captures the eternal symbolism of the breast—an icon of fertility, sustenance, and the feminine—reimagined in solid material. The delicate contours suggest not only the body's grace but also its enduring power, connecting the human form to the elemental forces of nature and life itself.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760540899/artworks/erpybzkmotssqfbcjofe.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-15T15:08:23.953Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T15:08:23.953Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f05b7095e6517e0bea8127"
+    },
+    "title": "Random Sketches",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "drawing",
+    "medium": "Pen, pencil",
+    "art_status": "Active",
+    "price": 0,
+    "size": "23 x 32",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760582507/artworks/lwhzhpwjdsyoabqsdzkv.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-16T02:41:52.760Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T02:41:52.760Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f05e5cc57f98245cebcc8d"
+    },
+    "title": "Marcus",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "drawing",
+    "medium": "Pencil and pen",
+    "art_status": "Active",
+    "price": 0,
+    "size": "23 x 25",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760583253/artworks/nu58xjgzstowlj60gbbz.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-16T02:54:20.273Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T02:54:20.273Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f05f82522032b9a438af20"
+    },
+    "title": "Gods",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "drawing",
+    "medium": "Pencil and Pen",
+    "art_status": "Active",
+    "price": 0,
+    "size": "23 x 25",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760583550/artworks/ygzwwrrbiuwqteh5jmqa.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-16T02:59:14.738Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T02:59:14.738Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f06241cd8f6cf56615a80c"
+    },
+    "title": "Smoke",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "painting",
+    "medium": "Acrylic Paint",
+    "art_status": "Active",
+    "price": 0,
+    "size": "80 x 75",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760584251/artworks/fbuvyglxbvpqb81avbrw.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-16T03:10:57.183Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T14:54:23.561Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f0632ecd8f6cf56615a80d"
+    },
+    "title": "Silver",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "digital art",
+    "medium": "Random",
+    "art_status": "Active",
+    "price": 0,
+    "size": "25 x 24",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760584488/artworks/wm7t2yd5ifx0pns1wdip.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-16T03:14:54.226Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T03:14:54.226Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f06377cd8f6cf56615a80e"
+    },
+    "title": "Pink Beach",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "Active",
+    "price": 0,
+    "size": "56 x 50",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760584562/artworks/ogsunvt6vb9eoitb4mce.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-16T03:16:07.900Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T03:16:07.900Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f067e4cd8f6cf56615a80f"
+    },
+    "title": "Paintings",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "painting",
+    "medium": "Oil Paint And Acrilyc",
+    "art_status": "onSale",
+    "price": 3500,
+    "edition": "Open Edition",
+    "year_created": "2024",
+    "size": "58x55",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.\r\n\r\nPM for more details on each price of the artwoks",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760585693/artworks/ejieae4itqo4koyjzlbq.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760585693/artworks/gapwtaalzwxzrdzd1vno.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760585693/artworks/fcxi31okmjj8fglgzmii.jpg"
+    ],
+    "quantity": 5,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-16T03:35:00.697Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T03:35:00.697Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f06a4487ec8088d1c0b68b"
+    },
+    "title": "Something Pink",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "painting",
+    "medium": "Acrilyc Paint",
+    "art_status": "onSale",
+    "price": 800,
+    "edition": "Open Edition",
+    "year_created": "2025",
+    "size": "50x45",
+    "description": "I can customize your preferences in color. Send me a private message if you have some questions!",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760586300/artworks/nrnwdjotl7yjgmuqglyp.jpg"
+    ],
+    "quantity": 9,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-16T03:45:08.581Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T03:45:08.581Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f06a867946153df7ec7509"
+    },
+    "title": "Something Pink",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "painting",
+    "medium": "Acrilyc Paint",
+    "art_status": "Unlisted",
+    "price": 800,
+    "edition": "Open Edition",
+    "year_created": "2025",
+    "size": "50x45",
+    "description": "I can customize your preferences in color. Send me a private message if you have some questions!",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760586367/artworks/hbdsnrc9z83wyaw8gpj1.jpg"
+    ],
+    "quantity": 10,
+    "visibility": "Private",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-16T03:46:14.703Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T03:46:29.163Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f07a3e0b5ad49a890ee015"
+    },
+    "title": "Distinctio Distinct",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "sculpture",
+    "medium": "Eclay Stone Steel",
+    "art_status": "onSale",
+    "price": 10500,
+    "edition": "Original (1 of 1)",
+    "year_created": "2022",
+    "size": "80x58",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760590392/artworks/ldt9v1uqaxjzedus0tjd.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-16T04:53:18.416Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T04:53:18.416Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f07c960b5ad49a890ee017"
+    },
+    "title": "Smoke",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "digital art",
+    "medium": "Oil Panting, something tesint",
+    "art_status": "Sold",
+    "price": 6500,
+    "edition": "Original (1 of 1)",
+    "year_created": "2023",
+    "size": "60x56",
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque faucibus ex sapien vitae pellentesque.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760590991/artworks/vf2qwiomlg3laavkbybb.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-16T05:03:18.175Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-16T05:03:18.175Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f109d917db69637d68291f"
+    },
+    "title": "City",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "digital art",
+    "medium": "Digital Cam",
+    "art_status": "Sold",
+    "price": 0,
+    "size": "53 x 93",
+    "description": "Mesmerizing view as a sea.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760627157/artworks/drcjdj90yyq9p8x17wkj.jpg"
+    ],
+    "visibility": "Private",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-16T15:06:01.296Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T11:27:59.666Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f457a841667cb1c641eae3"
+    },
+    "title": "Sip",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "painting",
+    "medium": "Acrylic Paint",
+    "art_status": "Active",
+    "price": 0,
+    "size": "55 x 68",
+    "description": "Good morning, everyone! Hope y'all have a great day!",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760843680/artworks/kadqqxodhnokfapbad1p.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-19T03:14:48.269Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T03:14:48.269Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "title": "Sunset lilies",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "abstract",
+    "medium": "Canvas",
+    "art_status": "Active",
+    "price": 1600,
+    "edition": "Limited Edition",
+    "year_created": "2022",
+    "size": "80x50",
+    "description": "A serene abstract landscape bathed in golden and purple hues, depicting tall grass swaying under a dramatic sunset sky.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760855101/artworks/ftzhaymnrtzphu4f9i0x.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760855100/artworks/z1bgcukvf4u5so9mbtga.jpg"
+    ],
+    "visibility": "Archived",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-19T06:25:02.958Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T02:09:36.571Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f48622c08fbe1febfcde52"
+    },
+    "title": "Sunny Lilies",
+    "artist": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "category": "painting",
+    "medium": "Canvas",
+    "art_status": "Sold",
+    "price": 3000,
+    "edition": "Limited Edition",
+    "year_created": "2022",
+    "size": "80x56",
+    "description": "A serene abstract landscape bathed in golden and purple hues, depicting tall grass swaying under a dramatic sunset sky.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760855581/artworks/b50k3l23wt55gn4gs5nm.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760855583/artworks/agr379pceelsbo4lzei6.jpg"
+    ],
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-19T06:33:06.028Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T08:16:48.406Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f4d3cfdfead81e37d93d8f"
+    },
+    "title": "Chromatic Embrace",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "modern",
+    "medium": "Oil Painting",
+    "art_status": "onSale",
+    "price": 6800,
+    "edition": "Limited Edition",
+    "year_created": "2023",
+    "size": "80x90",
+    "description": "The nude body is depicted in a relaxed, almost dreamlike pose, suggesting vulnerability and a sense of introspective calm. The composition is dynamic, with the figure positioned centrally yet softened by a surrounding halo of intense, non-traditional color.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760875468/artworks/hvwyfref7b2ux1sacvnc.jpg"
+    ],
+    "quantity": 15,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-19T12:04:31.793Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T17:46:45.777Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f6461a97e5ea7179ae9924"
+    },
+    "title": "Melt",
+    "artist": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "category": "painting",
+    "medium": "Acrylic Paint",
+    "art_status": "Active",
+    "price": 0,
+    "size": "58 x 55",
+    "description": "I am slowly drowning in this world of mine.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760970242/artworks/auivyqhmbeahjomlhusv.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-20T14:24:26.691Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T16:47:48.605Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f647cd97e5ea7179ae9925"
+    },
+    "title": "Observer",
+    "artist": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "Sold",
+    "price": 0,
+    "size": "80 x 90",
+    "description": "A thought-provoking artwork that explores the boundary between watching and being watched. The piece symbolizes silent awareness — a presence that sees everything yet remains unseen. Through its intense visual focus, it invites viewers to question perception, privacy, and the unseen stories behind every gaze.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760970684/artworks/cyqnzan5dc1qouuigobu.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-20T14:31:41.063Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T14:33:12.727Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f6569797e5ea7179ae9934"
+    },
+    "title": "Drowned in the Seaa",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "painting",
+    "medium": "Acrilyc Painting",
+    "art_status": "onSale",
+    "price": 2500,
+    "edition": "Limited Edition",
+    "year_created": "2025",
+    "size": "80x90",
+    "description": "The haunting stillness of a young girl submerged beneath the waves, surrounded by the cold embrace of the ocean. The piece captures the delicate line between beauty and tragedy, evoking feelings of loss and serenity. Through deep blues and soft textures, it reflects the silence and depth of emotions hidden beneath the surface.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1760974463/artworks/sc5fenjiw44c6vf6khoc.jpg"
+    ],
+    "quantity": 6,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-20T15:34:47.301Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T17:18:08.155Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f71bd643e2ad8edb754017"
+    },
+    "title": "Schedule",
+    "artist": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "category": "realism",
+    "medium": "Digital Cam",
+    "art_status": "Active",
+    "price": 0,
+    "size": "5 x 10",
+    "description": "Schedule for Final Defense",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761024980/artworks/lwpken9xmzfl8lnforgh.png"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-21T05:36:22.743Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T07:01:52.687Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f83949ce4bbd7781ae8375"
+    },
+    "title": "Unveiled Strength",
+    "artist": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "category": "drawing",
+    "medium": "Ballpoint",
+    "art_status": "Active",
+    "price": 0,
+    "size": "80 x 90",
+    "description": "This artwork captures a moment of raw honesty and emotional depth. The subject stands in quiet defiance, confronting the viewer with vulnerability and courage. It reflects the strength found in embracing one’s true self, beyond fear or judgment.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761098057/artworks/faqzmw5zuntnarmju0th.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-22T01:54:17.524Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T01:54:17.524Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f839e0aef2299483f42965"
+    },
+    "title": "Its Sabby Day",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "drawing",
+    "medium": "Pencil and color pens",
+    "art_status": "Active",
+    "price": 0,
+    "size": "50 x 60",
+    "description": "A portrait that captures Sabrina’s quiet confidence and mysterious grace. The artwork reflects the balance between softness and strength that defines her presence.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761098208/artworks/za22mq2gmjnddphbyx0k.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-22T01:56:48.957Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T04:14:47.655Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f83b4bf7acf3f3186e1c2f"
+    },
+    "title": "Red Thoughts",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "painting",
+    "medium": "Acrylic Paint",
+    "art_status": "Active",
+    "price": 0,
+    "size": "45 x 50",
+    "description": "This artwork portrays a vivid cloud of red enveloping the mind, symbolizing intense emotions and restless energy. The swirling hues reflect passion, confusion, and creativity colliding within one’s thoughts. It invites viewers to explore the chaos and beauty that arise from the depths of a turbulent mind.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761098571/artworks/jv9sjywhe7lmregknzd9.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-22T02:02:51.440Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T02:02:51.440Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f83bd1f7acf3f3186e1c30"
+    },
+    "title": "Hidden Glance",
+    "artist": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "category": "painting",
+    "medium": "Paints",
+    "art_status": "onSale",
+    "price": 2500,
+    "edition": "Open Edition",
+    "year_created": "2024",
+    "size": "60x70",
+    "description": "The artwork depicts a girl with her face covered in streaks of vivid paint, gazing softly to the side. Her white sando contrasts the burst of colors, symbolizing purity amid self-expression. It reflects the idea of hiding emotions behind art and finding identity through color.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761098704/artworks/x4scroannqrr3arhvchf.jpg"
+    ],
+    "quantity": 5,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-22T02:05:05.565Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T02:05:05.565Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f83da4d28e6ac898dd3770"
+    },
+    "title": "Under Watchful Eyes",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "realism",
+    "medium": "Oil Painiting",
+    "art_status": "onSale",
+    "price": 1200,
+    "edition": "Limited Edition",
+    "year_created": "2025",
+    "size": "30x25",
+    "description": "Filled with countless eyes symbolizes judgment, pressure, and the weight of being observed. It captures the struggle of expressing oneself while feeling constantly watched and misunderstood.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761099172/artworks/gsqv80gtwyr80gtz37x5.jpg"
+    ],
+    "quantity": 5,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-22T02:12:52.700Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T02:12:52.700Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f856320458d546690ed4ba"
+    },
+    "title": "Gen Post",
+    "artist": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "category": "photography",
+    "medium": "camera",
+    "art_status": "Active",
+    "price": 0,
+    "size": "8 x 4",
+    "description": "sample post",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761105459/artworks/v0y9vlwaf025zcioqtas.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-22T03:57:38.674Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T04:02:12.990Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f857e80458d546690ed4bb"
+    },
+    "title": "Post",
+    "artist": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "category": "realism",
+    "medium": "matcha as paint",
+    "art_status": "Active",
+    "price": 0,
+    "size": "7 x 3",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761105897/artworks/tt1wkbmvgxmx20em3zim.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-22T04:04:56.395Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T04:06:01.637Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f85b69e260f41394524b25"
+    },
+    "title": "ggg",
+    "artist": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "category": "expressionism",
+    "medium": "plastics",
+    "art_status": "onBid",
+    "price": 0,
+    "size": "7 x 3",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761106794/artworks/swkxhfmj1es4lkekysiq.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-22T04:19:53.627Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T04:45:37.242Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f9a95e271bb8dda966df45"
+    },
+    "title": "test for exhibit",
+    "artist": {
+      "$oid": "6831b546797ef121740fdfb0"
+    },
+    "category": "modern",
+    "medium": "qwerty",
+    "art_status": "Active",
+    "price": 0,
+    "size": "1 x 1",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761192283/artworks/ojxmchmkmegdbkq4etae.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-23T04:04:46.330Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T04:04:46.330Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f9a988271bb8dda966df46"
+    },
+    "title": "test exhibit 1",
+    "artist": {
+      "$oid": "6831b546797ef121740fdfb0"
+    },
+    "category": "modern",
+    "medium": "qwer",
+    "art_status": "Active",
+    "price": 0,
+    "size": "1 x 1",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761192325/artworks/nh8eyj2gazqt5g5lpemj.png"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-23T04:05:28.556Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T04:05:28.556Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f9a9b0271bb8dda966df47"
+    },
+    "title": "testing exhibit",
+    "artist": {
+      "$oid": "6831b546797ef121740fdfb0"
+    },
+    "category": "modern",
+    "medium": "qwe",
+    "art_status": "Active",
+    "price": 0,
+    "size": "2 x 1",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761192365/artworks/vbnrnqe3glbg2b1gnor2.png"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-23T04:06:08.273Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T04:06:08.273Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68f9caa9042759364d40965c"
+    },
+    "title": "Test",
+    "artist": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "onBid",
+    "price": 0,
+    "size": "32x30",
+    "description": "The beauty of sunset.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761200809/artworks/nb6xg8a7juneo299wab4.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-23T06:26:49.619Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T15:17:05.782Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa251f230954f1a42b67bb"
+    },
+    "title": "The split self",
+    "artist": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "category": "digital art",
+    "medium": "Pen, tablet",
+    "art_status": "onBid",
+    "price": 0,
+    "size": "30 x 33",
+    "description": "The piece presents a half-face, suggesting a moment of fracture or an incomplete self. Two hands forcefully emerge from within, prying open the divided head to expose an unseen interior. This visceral action symbolizes a painful yet necessary act of self-discovery or liberation, revealing the inner workings of the mind and spirit.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761223968/artworks/n06c8givz5l0pvcolzgk.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-23T12:52:47.854Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T13:02:29.453Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa26479acbb6d54858ccb4"
+    },
+    "title": "Superposition",
+    "artist": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "category": "expressionism",
+    "medium": "Oil Painting",
+    "art_status": "Active",
+    "price": 0,
+    "size": "60 x 65",
+    "description": "This piece explores the complex relationship between two individuals or two aspects of a single personality through their physical layering. The head positioned above suggests dominance, elevation, or perhaps a higher state of consciousness influencing the one below.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761224263/artworks/nspierz4bnrkfrpmugra.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-23T12:57:43.515Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T12:57:43.515Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa27bd9acbb6d54858ccb7"
+    },
+    "title": "Sunset",
+    "artist": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "category": "painting",
+    "medium": "Oil Painting",
+    "art_status": "onBid",
+    "price": 0,
+    "size": "20 x 21",
+    "description": "The artwork captures the intense, ephemeral beauty of the day's end, with the sky ablaze in a dramatic and vibrant gradient of warm hues. This fiery display, often reflecting off a tranquil landscape or body of water, evokes powerful feelings of peace, reflection, and the quiet finality of a moment passing.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761224629/artworks/s5zqufxum0thvy8adavr.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-23T13:03:57.067Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T13:11:47.277Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa2a4a9acbb6d54858ccb9"
+    },
+    "title": "Rosalind's Reverie",
+    "artist": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "category": "painting",
+    "medium": "Acrilyc",
+    "art_status": "onSale",
+    "price": 3500,
+    "edition": "Limited Edition",
+    "year_created": "2022",
+    "size": "45x48",
+    "description": "This piece features a whimsical portrayal of a girl rendered in various shades of pink, from delicate pastels to vibrant fuchsias. Her form suggests a dreamy, almost ethereal presence, perhaps lost in thought or embodying a childlike sense of wonder and softness.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761225290/artworks/jqylvgytgxvfbzaoekjg.jpg"
+    ],
+    "quantity": 3,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-23T13:14:50.006Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T13:14:50.006Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa2caa0127973089325507"
+    },
+    "title": "Goodbyes",
+    "artist": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "category": "painting",
+    "medium": "Oil Pastel",
+    "art_status": "onSale",
+    "price": 3500,
+    "edition": "Open Edition",
+    "year_created": "2024",
+    "size": "23x25",
+    "description": "The artwork captures the intense, ephemeral beauty of the day's end, with the sky ablaze in a dramatic and vibrant gradient of warm hues. This fiery display, often reflecting off a tranquil landscape or body of water, evokes powerful feelings of peace, reflection, and the quiet finality of a moment passing.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761225896/artworks/juknztneex4pv6e6sagn.jpg",
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761225895/artworks/dklworywuj2hmnt3tw1q.jpg"
+    ],
+    "quantity": 5,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-23T13:24:58.004Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T13:24:58.004Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa2e880127973089325509"
+    },
+    "title": "Madness",
+    "artist": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "category": "expressionism",
+    "medium": "Charcoal Pencil",
+    "art_status": "onSale",
+    "price": 1500,
+    "edition": "Limited Edition",
+    "year_created": "2025",
+    "size": "30x35",
+    "description": "This artwork delves into the chaotic and unsettling landscapes of the mind when it teeters on the brink of unreason. It employs distorted forms, clashing colors, and fractured perspectives to visually represent the disorienting and often terrifying experience of losing grip on reality.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761226376/artworks/njddycp12rucwijyqus5.jpg"
+    ],
+    "quantity": 3,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-23T13:32:56.085Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T13:32:56.085Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68fa3250b00d62e515da5771"
+    },
+    "title": "Confused",
+    "artist": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "category": "modern",
+    "medium": "Color Pendil",
+    "art_status": "onSale",
+    "price": 2500,
+    "edition": "Original (1 of 1)",
+    "year_created": "2024",
+    "size": "30x35",
+    "description": "he composition aims to evoke a sense of unease and a visceral understanding of the internal turmoil associated with madness.",
+    "image_url": [
+      "https://res.cloudinary.com/du5bwye4h/image/upload/v1761227332/artworks/qd4ef37jeipw8vyvxhsd.jpg"
+    ],
+    "quantity": 1,
+    "visibility": "Public",
+    "average_rating": 0.0,
+    "total_ratings": 0,
+    "created_at": {
+      "$date": "2025-10-23T13:49:04.309Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T13:49:04.309Z"
+    }
+  }
+]
