@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Upload } from "lucide-react";
+import { ArrowLeft, CloudUpload } from "lucide-react";
 import Header from "@/components/user_dashboard/navbar/Header";
 import useSellArtwork from "@/hooks/artworks/sell/useSellArtwork";
 import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
@@ -454,12 +454,7 @@ const SellArtwork = () => {
                 <div className="text-center">
                   <div>
                     <div className="bg-white p-4 rounded-full inline-block">
-                      <img
-                        width="30"
-                        height="30"
-                        src="./pics/icons8-cloud-upload.gif"
-                        alt="external-upload-network-and-cloud-computing-flatart-icons-solid-flatarticons"
-                      />
+                      <CloudUpload size={30} className="text-gray-600 animate-pulse" />
                     </div>
                   </div>
                   <p className="mb-2 text-xs font-medium">{chooseFileText}</p>

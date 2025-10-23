@@ -14,6 +14,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useFetchArtworkById } from "@/hooks/artworks/fetch_artworks/useArtworkDetails";
 import { useQueryClient } from "@tanstack/react-query";
+import { CloudUpload } from "lucide-react";
 interface ArtworkUpdateState {
   id: string;
   title: string;
@@ -413,7 +414,12 @@ const UpdateArtwork = () => {
               {previewUrl ? (
                 <img src={previewUrl} alt="Main artwork" className="w-full h-full object-contain rounded-lg" />
               ) : (
-                <div className="text-center text-[11px] text-gray-500">{uploadMainImageText}</div>
+                <div className="text-center">
+                  <div className="bg-white p-4 rounded-full inline-block mb-2">
+                    <CloudUpload size={30} className="text-gray-600 animate-pulse" />
+                  </div>
+                  <div className="text-[11px] text-gray-500">{uploadMainImageText}</div>
+                </div>
               )}
               <input
                 type="file"

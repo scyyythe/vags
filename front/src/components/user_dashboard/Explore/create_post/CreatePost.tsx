@@ -12,7 +12,7 @@ import { validatePostData, submitPost, PostSubmissionData } from "@/hooks/artwor
 import { useOptimizedPostSubmission } from "@/hooks/artworks/useOptimizedPostSubmission";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
-import { Upload } from "lucide-react";
+import { CloudUpload } from "lucide-react";
 const CreatePost = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
@@ -208,7 +208,7 @@ const CreatePost = () => {
               <div className="text-center">
                 <div className="mb-4">
                   <div className="bg-white dark:bg-gray-700 p-4 rounded-full inline-block">
-                    <Upload size={50} className="text-gray-600 dark:text-gray-300" />
+                    <CloudUpload size={50} className="text-gray-600 dark:text-gray-300 animate-pulse" />
                   </div>
                 </div>
                 <p className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">{chooseAFileOrDragAndDropItHereText}</p>
