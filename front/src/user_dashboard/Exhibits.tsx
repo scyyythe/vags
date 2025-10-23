@@ -16,6 +16,7 @@ import ActiveAccountOnly from "@/components/auth/ActiveAccountOnly";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useSearchParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 type SortOption = "popularity" | "newest" | "oldest";
 type FilterOption = "none" | "trending" | "most-viewed" | "upcoming" | "ongoing" | "ended";
@@ -23,6 +24,7 @@ type FilterOption = "none" | "trending" | "most-viewed" | "upcoming" | "ongoing"
 const Exhibits = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const queryClient = useQueryClient();
   const [baseType, setBaseType] = useState<"solo" | "collab">("solo");
   const [filter, setFilter] = useState<FilterOption>("ongoing");
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
@@ -46,6 +48,38 @@ const Exhibits = () => {
   useEffect(() => {
     setSelectedCategory("All");
   }, [baseType]);
+
+  // Listen for exhibit update events and immediately refetch exhibit data
+  useEffect(() => {
+    const handleExhibitUpdated = async () => {
+      // Immediately invalidate and refetch exhibit queries
+      queryClient.invalidateQueries({ queryKey: ["exhibit-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["my-exhibit-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["exhibits"] });
+      
+      // Force immediate refetch of all active exhibit queries
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ["exhibit-cards"], type: "active" }),
+        queryClient.refetchQueries({ queryKey: ["my-exhibit-cards"], type: "active" }),
+        queryClient.refetchQueries({ queryKey: ["exhibits"], type: "active" })
+      ]);
+    };
+
+    window.addEventListener('exhibit-updated', handleExhibitUpdated);
+    return () => {
+      window.removeEventListener('exhibit-updated', handleExhibitUpdated);
+    };
+  }, [queryClient]);
+
+  // Also refetch when component mounts to ensure fresh data
+  useEffect(() => {
+    // Small delay to allow backend cache clearing to complete
+    const timer = setTimeout(() => {
+      queryClient.refetchQueries({ queryKey: ["exhibit-cards"] });
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, [queryClient]);
 
   // Translation hooks for all text content
   const exhibitsText = useAutoTranslation("Exhibits", language);
