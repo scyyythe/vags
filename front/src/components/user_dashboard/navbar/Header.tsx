@@ -136,7 +136,7 @@ const Header = () => {
         {/* Right Section: Search + Chat + Notifications + Profile */}
         <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
           {/* Desktop SearchBar */}
-          <div className="hidden md:block w-[250px] border border-gray-400 dark:border-gray-600 rounded-full px-3 bg-white dark:bg-gray-800">
+          <div className="hidden md:block w-[250px] border rounded-full px-3 dark:border-gray-600 dark:bg-gray-800">
             <SearchBar onSearchChange={handleSearchChange} />
           </div>
 
@@ -168,7 +168,7 @@ const Header = () => {
                     damping: 30,
                     duration: 0.3 
                   }}
-                  className="flex items-center bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full shadow-md w-60 px-3 py-0.5"
+                  className="flex items-center border rounded-full shadow-md w-60 px-3 py-0.5 dark:bg-gray-800 dark:border-gray-600"
                 >
                   <SearchBar onSearchChange={handleSearchChange} />
                   <button
