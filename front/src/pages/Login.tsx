@@ -13,6 +13,7 @@ import useDeactivateAccount from "@/hooks/mutate/users/useDeactivateAccount";
 import useSoftDeleteAccount from "@/hooks/mutate/users/useSoftDeleteAccount";
 import ReactivationConfirmationPopup from "@/components/auth/ReactivationConfirmationPopup";
 import ScheduledDeletionPopup from "@/components/auth/ScheduledDeletionPopup";
+import BanNotificationPopup from "@/components/auth/BanNotificationPopup";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTwoFactorVerify } from "@/hooks/mutate/users/useTwoFactorMutate";
 import TwoFactorVerification from "@/components/auth/TwoFactorVerification";
@@ -35,7 +36,9 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
   const [message, setMessage] = useState<{ type: "info" | "success" | "error"; text: string } | null>(null);
   const [showReactivationPopup, setShowReactivationPopup] = useState(false);
   const [showScheduledDeletionPopup, setShowScheduledDeletionPopup] = useState(false);
+  const [showBanPopup, setShowBanPopup] = useState(false);
   const [pendingUserData, setPendingUserData] = useState<any>(null);
+  const [banData, setBanData] = useState<any>(null);
 
   // 2FA state
   const [show2FA, setShow2FA] = useState(false);
@@ -233,6 +236,21 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
       }
     } catch (err: any) {
       console.error("Login failed:", err);
+
+      // Handle account ban
+      if (err.response?.status === 403) {
+        const errorData = err.response.data;
+        if (errorData.error === "Account permanently banned" || errorData.error === "Account temporarily banned") {
+          setBanData({
+            ban_reason: errorData.ban_reason,
+            banned_until: errorData.banned_until,
+            is_permanent: errorData.is_permanent,
+            days_remaining: errorData.days_remaining,
+          });
+          setShowBanPopup(true);
+          return;
+        }
+      }
 
       // Handle account lockout
       if (err.response?.status === 423) {
@@ -635,6 +653,13 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     setFormData({ email: "", password: "" });
   };
 
+  const handleBanPopupClose = () => {
+    setShowBanPopup(false);
+    setBanData(null);
+    // Clear form
+    setFormData({ email: "", password: "" });
+  };
+
   // Render 2FA verification screen
   if (show2FA) {
     return (
@@ -774,6 +799,13 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         onCancel={handleScheduledDeletionCancel}
         userEmail={pendingUserData?.email}
         scheduledForDeletion={pendingUserData?.scheduled_for_deletion}
+      />
+
+      {/* Ban Notification Popup */}
+      <BanNotificationPopup
+        isOpen={showBanPopup}
+        onClose={handleBanPopupClose}
+        banData={banData}
       />
     </div>
   );
