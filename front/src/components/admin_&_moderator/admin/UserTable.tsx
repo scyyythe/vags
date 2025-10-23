@@ -298,7 +298,7 @@ export function UserTable({ initialUsers, onPromoteUser, onSuspendUser, onBanUse
             <TableRow>
               <TableHead className="text-[11px]">User</TableHead>
               <TableHead className="text-[11px]">Role</TableHead>
-              <TableHead className="text-[11px]">Status</TableHead>
+              <TableHead className="text-[11px] text-center">Status</TableHead>
               <TableHead className="text-[11px]">Joined</TableHead>
               <TableHead className="text-[11px] text-right">Actions</TableHead>
             </TableRow>
@@ -328,7 +328,7 @@ export function UserTable({ initialUsers, onPromoteUser, onSuspendUser, onBanUse
                     </div>
                   </TableCell>
                   <TableCell className="text-[10px]">{getRoleBadge(user.role)}</TableCell>
-                  <TableCell className="text-[10px]">{getStatusBadge(user.user_status)}</TableCell>
+                  <TableCell className="text-[10px] text-center">{getStatusBadge(user.user_status)}</TableCell>
                   <TableCell className="text-[10px]">{formatDate(user.created_at)}</TableCell>
                   <TableCell className="text-[10px] text-right">
                     <DropdownMenu>

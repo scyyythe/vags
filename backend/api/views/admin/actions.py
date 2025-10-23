@@ -36,17 +36,19 @@ class PromoteUserView(APIView):
         user.role = new_role
         user.save()
     
-        # Notification.objects.create(
-        #     user=user,
-        #     actor=request.user,
-        #     message=f"Congratulations! You have been promoted from {old_role} to {new_role}.",
-        #     name=f"{request.user.first_name} {request.user.last_name}",
-        #     action="promoted you",
-        #     target=new_role,
-        #     icon="promotion",  
-        #     created_at=datetime.utcnow(),
-        #     link=f"/userprofile/{str(user.id)}" 
-        # )
+        admin_user = User.objects.get(id=ObjectId(request.user.id))
+        
+        Notification.objects.create(
+            user=user,
+            actor=admin_user,
+            message=f"Congratulations! You have been promoted from {old_role} to {new_role}.",
+            name=f"{admin_user.first_name} {admin_user.last_name}",
+            action="promoted you",
+            target=new_role,
+            icon="promotion",  
+            created_at=datetime.now(),
+            link=f"/userprofile/{str(user.id)}" 
+        )
 
         serializer = UserSerializer(user, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -75,6 +77,20 @@ class DemoteUserView(APIView):
         new_role = role_hierarchy[current_index - 1]
         user.role = new_role
         user.save()
+
+        admin_user = User.objects.get(id=ObjectId(request.user.id))
+        
+        Notification.objects.create(
+            user=user,
+            actor=admin_user,
+            message=f"Your role has been changed from {old_role} to {new_role}.",
+            name=f"{admin_user.first_name} {admin_user.last_name}",
+            action="changed your role",
+            target=new_role,
+            icon="user-minus",  
+            created_at=datetime.now(),
+            link=f"/userprofile/{str(user.id)}" 
+        )
 
         serializer = UserSerializer(user, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -254,7 +270,7 @@ class BanUserView(APIView):
             action="banned your account",
             target=f"Ban: {reason}" if reason else "Ban issued",
             icon="ban",
-            created_at=datetime.utcnow(),
+            created_at=datetime.now(),
             link=link,
         )
 

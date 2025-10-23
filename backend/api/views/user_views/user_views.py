@@ -194,6 +194,42 @@ class CustomTokenObtainPairView(APIView):
         if not user:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
         
+        # Check if account is banned
+        if user.user_status == "Banned":
+            from api.models.admin.ban.ban_model import Ban
+            
+            # Get the most recent active ban
+            now = datetime.utcnow()
+            active_ban = Ban.objects(
+                user=user,
+                start_date__lte=now,
+                __raw__={"$or": [
+                    {"is_permanent": True},
+                    {"end_date": {"$gte": now}}
+                ]}
+            ).order_by("-start_date").first()
+            
+            if active_ban:
+                if active_ban.is_permanent:
+                    return Response({
+                        "error": "Account permanently banned",
+                        "ban_reason": active_ban.reason or "No reason provided",
+                        "banned_until": None,
+                        "is_permanent": True,
+                        "message": "Your account has been permanently banned"
+                    }, status=status.HTTP_403_FORBIDDEN)
+                else:
+                    # Calculate days remaining for temporary ban
+                    days_remaining = (active_ban.end_date - now).days
+                    return Response({
+                        "error": "Account temporarily banned",
+                        "ban_reason": active_ban.reason or "No reason provided",
+                        "banned_until": active_ban.end_date.isoformat(),
+                        "is_permanent": False,
+                        "days_remaining": days_remaining,
+                        "message": f"Your account is banned for {days_remaining} more days"
+                    }, status=status.HTTP_403_FORBIDDEN)
+        
         # Check if account is locked
         if user.is_locked():
             time_remaining = user.locked_until - datetime.utcnow()
@@ -276,7 +312,6 @@ class CustomTokenObtainPairView(APIView):
             device_truncated = device[:100]
 
             # Cleanup old sessions (older than 30 days)
-            from datetime import timedelta
             cutoff_date = datetime.utcnow() - timedelta(days=30)
             UserSession.objects(user=user, created_at__lt=cutoff_date).delete()
 
