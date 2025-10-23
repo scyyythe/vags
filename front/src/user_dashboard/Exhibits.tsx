@@ -31,7 +31,16 @@ const Exhibits = () => {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
 
-  const { data: exhibits = [], isLoading } = useExhibitCards();
+  const { data: exhibitsData = [], isLoading } = useExhibitCards();
+  
+  // Ensure exhibits is always an array
+  const exhibits = Array.isArray(exhibitsData) ? exhibitsData : [];
+  
+  // Debug logging
+  console.log("🔍 Exhibits data:", exhibitsData);
+  console.log("🔍 Exhibits type:", typeof exhibitsData);
+  console.log("🔍 Is array:", Array.isArray(exhibitsData));
+  console.log("🔍 Final exhibits:", exhibits);
 
   // Reset category to "All" when switching between Solo and Collab tabs
   useEffect(() => {
