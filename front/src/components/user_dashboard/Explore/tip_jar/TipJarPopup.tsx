@@ -13,6 +13,7 @@ import apiClient from "@/utils/apiClient";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useLanguage } from "@/context/LanguageContext";
 import { formatTipCurrency } from "@/utils/numberFormat";
+import { getLoggedInUserId } from "@/auth/decode";
 interface TipJarPopupProps {
   isOpen: boolean;
   onClose: () => void;
@@ -76,6 +77,8 @@ const TipJarPopup = ({
   const translatedArtworkTitle = useAutoTranslation(artworkTitle, language);
   const translatedArtistName = useAutoTranslation(artistName, language);
   const stripePlaceholderText = useAutoTranslation("********@gmail.com", language);
+  const cannotDonateToOwnArtworkText = useAutoTranslation("You cannot donate to your own artwork", language);
+  const ownerRestrictionText = useAutoTranslation("As the owner of this artwork, you cannot donate to yourself.", language);
   const [step, setStep] = useState<"amount" | "confirm" | "paypal">("amount");
   const [selectedAmount, setSelectedAmount] = useState<string | null>(null);
   const [customAmount, setCustomAmount] = useState<string>("");
@@ -89,6 +92,10 @@ const TipJarPopup = ({
   const qrCodeUrl = gcashAccount?.qr_image_url || "/pics/qr.png";
   const [refreshKey, setRefreshKey] = useState(0);
   const { sendGcashTip } = useGcashTip();
+  
+  // Check if current user is the owner
+  const loggedInUserId = getLoggedInUserId();
+  const isOwner = String(loggedInUserId) === String(artistId);
 
   const predefinedAmounts = [
     { value: "250", label: "₱250" },
@@ -417,10 +424,13 @@ const TipJarPopup = ({
                 {predefinedAmounts.slice(0, 3).map((amount) => (
                   <button
                     key={amount.value}
-                    onClick={() => handleAmountSelect(amount.value)}
+                    onClick={() => !isOwner && handleAmountSelect(amount.value)}
+                    disabled={isOwner}
                     className={cn(
                       "py-2 px-4 rounded-sm text-[10px] font-medium transition-colors",
-                      selectedAmount === amount.value
+                      isOwner 
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : selectedAmount === amount.value
                         ? "bg-[#B5191D] text-white"
                         : "bg-gray-100 hover:bg-gray-200 text-gray-800"
                     )}
@@ -434,10 +444,13 @@ const TipJarPopup = ({
                 {predefinedAmounts.slice(3).map((amount) => (
                   <button
                     key={amount.value}
-                    onClick={() => handleAmountSelect(amount.value)}
+                    onClick={() => !isOwner && handleAmountSelect(amount.value)}
+                    disabled={isOwner}
                     className={cn(
                       "py-2 px-4 rounded-sm text-[10px] font-medium transition-colors",
-                      selectedAmount === amount.value
+                      isOwner 
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : selectedAmount === amount.value
                         ? "bg-[#B5191D] text-white"
                         : "bg-gray-100 hover:bg-gray-200 text-gray-800"
                     )}
@@ -459,13 +472,19 @@ const TipJarPopup = ({
                 value={customAmount}
                 onChange={handleCustomAmountChange}
                 placeholder={enterAmountManuallyText}
-                className="w-full p-2 text-[10px] border border-gray-300 rounded-sm text-center mb-6"
+                disabled={isOwner}
+                className={cn(
+                  "w-full p-2 text-[10px] border rounded-sm text-center mb-6",
+                  isOwner 
+                    ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed" 
+                    : "border-gray-300"
+                )}
               />
 
               <div className="mb-6">
                 <p className="text-left text-xs font-medium mb-4">{paymentMethodLabelText}</p>
                 <div className="flex flex-col gap-1">
-                  <label className="flex items-center justify-between">
+                  <label className={cn("flex items-center justify-between", isOwner && "opacity-50 cursor-not-allowed")}>
                     <div className="flex gap-4">
                       <img src={paypalLogo} className="w-6 h-6" />
                       <span className="text-[10px] mt-1">{paypalText}</span>
@@ -473,11 +492,12 @@ const TipJarPopup = ({
                     <input
                       type="radio"
                       checked={paymentMethod === "PayPal"}
-                      onChange={() => handlePaymentMethodSelect("PayPal")}
-                      className="form-radio accent-red-900 h-3 w-3 cursor-pointer"
+                      onChange={() => !isOwner && handlePaymentMethodSelect("PayPal")}
+                      disabled={isOwner}
+                      className="form-radio accent-red-900 h-3 w-3 cursor-pointer disabled:cursor-not-allowed"
                     />
                   </label>
-                  <label className="flex items-center justify-between">
+                  <label className={cn("flex items-center justify-between", isOwner && "opacity-50 cursor-not-allowed")}>
                     <div className="flex gap-4">
                       <img src={gcashLogo} className="w-6 h-6" />
                       <span className="text-[10px] mt-1">{gcashText}</span>
@@ -485,11 +505,12 @@ const TipJarPopup = ({
                     <input
                       type="radio"
                       checked={paymentMethod === "GCash"}
-                      onChange={() => handlePaymentMethodSelect("GCash")}
-                      className="form-radio accent-red-900 h-3 w-3 cursor-pointer"
+                      onChange={() => !isOwner && handlePaymentMethodSelect("GCash")}
+                      disabled={isOwner}
+                      className="form-radio accent-red-900 h-3 w-3 cursor-pointer disabled:cursor-not-allowed"
                     />
                   </label>
-                  <label className="flex items-center justify-between">
+                  <label className={cn("flex items-center justify-between", isOwner && "opacity-50 cursor-not-allowed")}>
                     <div className="flex gap-4">
                       <img src={stripeLogo} className="w-6 h-6" />
                       <span className="text-[10px] mt-1">{stripeText}</span>
@@ -497,19 +518,35 @@ const TipJarPopup = ({
                     <input
                       type="radio"
                       checked={paymentMethod === "Stripe"}
-                      onChange={() => handlePaymentMethodSelect("Stripe")}
-                      className="form-radio accent-red-900 h-3 w-3 cursor-pointer"
+                      onChange={() => !isOwner && handlePaymentMethodSelect("Stripe")}
+                      disabled={isOwner}
+                      className="form-radio accent-red-900 h-3 w-3 cursor-pointer disabled:cursor-not-allowed"
                     />
                   </label>
                 </div>
               </div>
 
-              <Button
-                onClick={handleProceedToDonate}
-                className="w-full bg-red-800 hover:bg-red-700 text-white text-xs font-medium py-3 rounded-full"
-              >
-                {donateNowText}
-              </Button>
+              {isOwner ? (
+                <div className="text-center">
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                    <p className="text-red-700 text-sm font-medium mb-2">{cannotDonateToOwnArtworkText}</p>
+                    <p className="text-red-600 text-xs">{ownerRestrictionText}</p>
+                  </div>
+                  <Button
+                    disabled
+                    className="w-full bg-gray-400 cursor-not-allowed text-white text-xs font-medium py-3 rounded-full"
+                  >
+                    {donateNowText}
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={handleProceedToDonate}
+                  className="w-full bg-red-800 hover:bg-red-700 text-white text-xs font-medium py-3 rounded-full"
+                >
+                  {donateNowText}
+                </Button>
+              )}
             </div>
           </div>
         )}

@@ -81,10 +81,17 @@ const ArtCard = ({
 
   const translatedArtistName = useAutoTranslation(artistName, language);
   const translatedTitle = useAutoTranslation(title, language);
+  
+  // Translation strings for owner restriction popup
+  const translatedCannotDonate = useAutoTranslation("Cannot Donate", language);
+  const translatedCannotDonateToOwnArtwork = useAutoTranslation("You cannot donate to your own artwork", language);
+  const translatedOwnerRestrictionMessage = useAutoTranslation("As the owner of this artwork, you cannot donate to yourself.", language);
+  const translatedClose = useAutoTranslation("Close", language);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [showOwnerRestrictionPopup, setShowOwnerRestrictionPopup] = useState(false);
 
   // Reset image error when artwork changes
   useEffect(() => {
@@ -202,7 +209,16 @@ const ArtCard = ({
     setLocalIsReported(true);
   };
 
+  const loggedInUserId = getLoggedInUserId();
+  const isOwner = String(loggedInUserId) === String(artistId);
+
   const handleTipJar = () => {
+    if (isOwner) {
+      // Show popup for owners instead of toast
+      setShowOwnerRestrictionPopup(true);
+      return;
+    }
+    
     openPopup({
       id,
       title: title || translatedUntitledArtwork,
@@ -212,9 +228,6 @@ const ArtCard = ({
       default_paypal_email,
     });
   };
-
-  const loggedInUserId = getLoggedInUserId();
-  const isOwner = String(loggedInUserId) === String(artistId);
 
   if (isHidden || isDeletedLocally) return null;
 
@@ -392,6 +405,36 @@ const ArtCard = ({
           </div>
         </div>
       </div>
+
+      {/* Owner Restriction Popup */}
+      {showOwnerRestrictionPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 text-center">
+            <div className="mb-4">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                {translatedCannotDonate}
+              </h3>
+              <p className="text-xs text-gray-600 mb-4">
+                {translatedCannotDonateToOwnArtwork}
+              </p>
+              <p className="text-xs text-gray-500">
+                {translatedOwnerRestrictionMessage}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowOwnerRestrictionPopup(false)}
+              className="w-full bg-red-700 hover:bg-red-800 text-white text-xs font-medium py-2 px-4 rounded-lg transition-colors"
+            >
+              {translatedClose}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
