@@ -170,6 +170,8 @@ const UpdatePost = () => {
   const descriptionMaxText = useAutoTranslation("Description cannot exceed 1000 characters.", language);
   const uploadMainImageText = useAutoTranslation("Please upload an artwork image file (JPG, PNG, etc.)", language);
   const mainImageSizeText = useAutoTranslation("Main image file size must be less than 20MB.", language);
+  const titleCapitalizationErrorText = useAutoTranslation("Title must start with capital letter", language);
+  const titleCapitalizationErrorDesc = useAutoTranslation("Artwork title must begin with a capital letter", language);
 
   // Translation for fetched data
   const translatedFetchedTitle = useAutoTranslation(artwork?.title || "", language);
@@ -178,6 +180,12 @@ const UpdatePost = () => {
   
   // Translated artwork styles for dropdown
   const translatedArtStyles = ART_STYLES.map(style => useAutoTranslation(style, language));
+
+  // Function to capitalize the first letter of a string
+  const capitalizeFirstLetter = (str: string): string => {
+    if (!str) return str;
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
 
   // Update form fields with translated fetched data
   useEffect(() => {
@@ -277,6 +285,16 @@ const UpdatePost = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Check if title starts with capital letter before processing
+    const trimmedTitle = artworkTitle.trim();
+    if (trimmedTitle && !/^[A-Z]/.test(trimmedTitle)) {
+      toast.error(titleCapitalizationErrorText, {
+        description: titleCapitalizationErrorDesc,
+        closeButton: true,
+      });
+      return;
+    }
+
     // For updates, we should allow submission if there's either a new file OR an existing image
     const hasExistingImage = previewUrl && !selectedFile; // previewUrl exists but no new file selected
     
@@ -314,7 +332,7 @@ const UpdatePost = () => {
     }
 
     const formData = new FormData();
-    formData.append("title", artworkTitle.trim());
+    formData.append("title", capitalizeFirstLetter(trimmedTitle));
     formData.append("category", artworkStyle);
     formData.append("medium", medium.trim());
     formData.append("description", description.trim());
@@ -339,15 +357,27 @@ const UpdatePost = () => {
       { id, formData },
       {
         onSuccess: () => {
-          // Invalidate relevant queries to refresh data
+          // Comprehensive cache invalidation to ensure immediate updates across all components
           queryClient.invalidateQueries({ queryKey: ["artwork", id] });
+          queryClient.invalidateQueries({ queryKey: ["artworks"] });
           queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
           queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
           queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+          queryClient.invalidateQueries({ queryKey: ["followed-artworks"] });
+          queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+          queryClient.invalidateQueries({ queryKey: ["popular-artworks"] });
+          queryClient.invalidateQueries({ queryKey: ["popular-artworks-light"] });
           queryClient.invalidateQueries({ queryKey: ["myWishlist"] });
           queryClient.invalidateQueries({ queryKey: ["wishlist"] });
           queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
           queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
+          queryClient.invalidateQueries({ queryKey: ["user-artworks"] });
+          queryClient.invalidateQueries({ queryKey: ["top-artworks"] });
+          
+          // Force refetch of specific queries that might be cached
+          queryClient.refetchQueries({ queryKey: ["artworks"] });
+          queryClient.refetchQueries({ queryKey: ["popularArtworks"] });
+          queryClient.refetchQueries({ queryKey: ["followedArtworks"] });
           
           toast.success(artworkUpdatedSuccessText, { closeButton: true });
           navigate("/explore");
@@ -427,7 +457,15 @@ const UpdatePost = () => {
                     id="title"
                     placeholder={enterArtworkTitleText}
                     value={artworkTitle}
-                    onChange={(e) => setArtworkTitle(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Only capitalize if the user is typing at the beginning or if it's a new word after a space
+                      if (value.length === 1 || (value.length > 1 && value[value.length - 2] === ' ')) {
+                        setArtworkTitle(capitalizeFirstLetter(value));
+                      } else {
+                        setArtworkTitle(value);
+                      }
+                    }}
                     className="w-full"
                     style={{ fontSize: "12px", height: "35px" }}
                   />

@@ -68,6 +68,8 @@ const CreatePost = () => {
   // Validation messages
   const fileSizeErrorText = useAutoTranslation("File size must be less than 20MB", language);
   const uploadFailedText = useAutoTranslation("Upload failed:", language);
+  const titleCapitalizationErrorText = useAutoTranslation("Title must start with capital letter", language);
+  const titleCapitalizationErrorDesc = useAutoTranslation("Artwork title must begin with a capital letter", language);
 
   // Translated artwork styles
   const translatedArtStyles = ART_STYLES.map(style => useAutoTranslation(style, language));
@@ -116,8 +118,18 @@ const CreatePost = () => {
 
     const size = `${artworkHeight} x ${artworkWidth}`;
     
+    // Check if title starts with capital letter before processing
+    const trimmedTitle = artworkTitle.trim();
+    if (trimmedTitle && !/^[A-Z]/.test(trimmedTitle)) {
+      toast.error(titleCapitalizationErrorText, {
+        description: titleCapitalizationErrorDesc,
+        closeButton: true,
+      });
+      return;
+    }
+    
     // Capitalize the artwork title
-    const capitalizedTitle = capitalizeFirstLetter(artworkTitle.trim());
+    const capitalizedTitle = capitalizeFirstLetter(trimmedTitle);
 
     // Validate form data using the separated validation logic
     const validation = validatePostData({

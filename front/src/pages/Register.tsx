@@ -80,6 +80,8 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
   const unexpectedError = useAutoTranslation("An unexpected error occurred. Please try again later.", language);
   const googleSignupFailed = useAutoTranslation("Google sign-up failed", language);
   const googleLoginFailed = useAutoTranslation("Google login failed", language);
+  const gmailRequired = useAutoTranslation("Gmail required", language);
+  const gmailRequiredDesc = useAutoTranslation("Please use a Gmail address (@gmail.com) to register", language);
 
   interface GoogleSignUpResponse {
     message: string;
@@ -201,6 +203,15 @@ const Register = ({ closeRegisterModal }: { closeRegisterModal: () => void }) =>
     const emailRegex = /^\S+@\S+\.\S+$/;
     if (!emailRegex.test(email)) {
       toast.error("Invalid email format", { closeButton: true });
+      return;
+    }
+
+    // Check if email is from Gmail domain
+    if (!email.toLowerCase().endsWith("@gmail.com")) {
+      toast.error(gmailRequired, {
+        description: gmailRequiredDesc,
+        closeButton: true,
+      });
       return;
     }
 
