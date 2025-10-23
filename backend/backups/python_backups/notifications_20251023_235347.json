@@ -1,0 +1,7402 @@
+[
+  {
+    "_id": {
+      "$oid": "6844685c13532a13def705ce"
+    },
+    "user": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "Jai is now following you.",
+    "created_at": {
+      "$date": "2025-06-08T00:27:08.875Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "followed you",
+    "icon": "👥",
+    "link": "/userprofile/68134f86bd731ceac6a3eef6",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "6848ef5bc6724e2c3a543d65"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Laudantium quas cum'",
+    "art": {
+      "$oid": "6840337fdf84c779f9bf61a0"
+    },
+    "created_at": {
+      "$date": "2025-06-11T10:52:11.927Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your artwork",
+    "target": "Laudantium quas cum",
+    "icon": "like",
+    "link": "/artwork/6840337fdf84c779f9bf61a0",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "684b9a092bec02fbaf736429"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Laudantium quas cum'",
+    "art": {
+      "$oid": "6840337fdf84c779f9bf61a0"
+    },
+    "created_at": {
+      "$date": "2025-06-13T11:24:57.393Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your artwork",
+    "target": "Laudantium quas cum",
+    "icon": "like",
+    "link": "/artwork/6840337fdf84c779f9bf61a0",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "6855134cc365c96125b5203a"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'NFT Eye'",
+    "art": {
+      "$oid": "6835f99cd5734958be9b7365"
+    },
+    "created_at": {
+      "$date": "2025-06-20T15:52:44.430Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your artwork",
+    "target": "NFT Eye",
+    "icon": "like",
+    "link": "/artwork/6835f99cd5734958be9b7365",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "6855145ec365c96125b5203c"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Laudantium quas cum'",
+    "art": {
+      "$oid": "6840337fdf84c779f9bf61a0"
+    },
+    "created_at": {
+      "$date": "2025-06-20T15:57:18.046Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your artwork",
+    "target": "Laudantium quas cum",
+    "icon": "like",
+    "link": "/artwork/6840337fdf84c779f9bf61a0",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68551463c365c96125b5203e"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'NFT Eye'",
+    "art": {
+      "$oid": "6835f99cd5734958be9b7365"
+    },
+    "created_at": {
+      "$date": "2025-06-20T15:57:23.145Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your artwork",
+    "target": "NFT Eye",
+    "icon": "like",
+    "link": "/artwork/6835f99cd5734958be9b7365",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "685514b1c365c96125b52042"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Laudantium quas cum'",
+    "art": {
+      "$oid": "6840337fdf84c779f9bf61a0"
+    },
+    "created_at": {
+      "$date": "2025-06-20T15:58:41.071Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your artwork",
+    "target": "Laudantium quas cum",
+    "icon": "like",
+    "link": "/artwork/6840337fdf84c779f9bf61a0",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "685515dcc365c96125b52045"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'NFT Eye'",
+    "art": {
+      "$oid": "6835f99cd5734958be9b7365"
+    },
+    "created_at": {
+      "$date": "2025-06-20T16:03:40Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your artwork",
+    "target": "NFT Eye",
+    "icon": "like",
+    "link": "/artwork/6835f99cd5734958be9b7365",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68551734c365c96125b5204b"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Laudantium quas cum'",
+    "art": {
+      "$oid": "6840337fdf84c779f9bf61a0"
+    },
+    "created_at": {
+      "$date": "2025-06-20T16:09:24.356Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your artwork",
+    "target": "Laudantium quas cum",
+    "icon": "like",
+    "link": "/artwork/6840337fdf84c779f9bf61a0",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "6857a202038d13b399651116"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your exhibit 'Aperiam esse nobis'",
+    "exhibit": {
+      "$oid": "68519c2b75632ee7bb778fba"
+    },
+    "created_at": {
+      "$date": "2025-06-22T14:26:10.134Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your exhibit",
+    "target": "Aperiam esse nobis",
+    "icon": "like",
+    "link": "/exhibit/68519c2b75632ee7bb778fba/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68635f98a7de76b257c9fc58"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your exhibit 'Saepe voluptas possi'",
+    "exhibit": {
+      "$oid": "68519d9a75632ee7bb778fbb"
+    },
+    "created_at": {
+      "$date": "2025-07-01T12:10:00.189Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your exhibit",
+    "target": "Saepe voluptas possi",
+    "icon": "like",
+    "link": "/exhibit/68519d9a75632ee7bb778fbb/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "686524fe8ec760fcd0b36be5"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil is now following you.",
+    "created_at": {
+      "$date": "2025-07-02T20:24:30.019Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "followed you",
+    "icon": "👥",
+    "link": "/userprofile/681242fb256a592811e35ca5",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68669437a964ea7d77c054f6"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'NFT Eye'",
+    "art": {
+      "$oid": "6835f99cd5734958be9b7365"
+    },
+    "created_at": {
+      "$date": "2025-07-03T22:31:19.651Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your artwork",
+    "target": "NFT Eye",
+    "icon": "like",
+    "link": "/artwork/6835f99cd5734958be9b7365",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "686f4efd317c8a8f17c79461"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "message": "A report was submitted on your artwork 'Architecto iusto qui'",
+    "art": {
+      "$oid": "6865d5ab5e7aaebae8865576"
+    },
+    "created_at": {
+      "$date": "2025-07-10T13:26:21.843Z"
+    },
+    "is_read": true,
+    "name": "Janah Ubas",
+    "action": "reported your artwork",
+    "target": "Architecto iusto qui",
+    "icon": "report",
+    "link": "/artwork/6865d5ab5e7aaebae8865576",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "6875d3e1b2b824374cc072f5"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Ut fuga Laborum obc'",
+    "exhibit": {
+      "$oid": "6875d3e1b2b824374cc072f4"
+    },
+    "created_at": {
+      "$date": "2025-07-15T12:06:57.830Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "invited you to collaborate",
+    "target": "Ut fuga Laborum obc",
+    "icon": "invite",
+    "link": "/exhibitreview",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "6875d3e1b2b824374cc072f6"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Ut fuga Laborum obc'",
+    "exhibit": {
+      "$oid": "6875d3e1b2b824374cc072f4"
+    },
+    "created_at": {
+      "$date": "2025-07-15T12:06:57.877Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "invited you to collaborate",
+    "target": "Ut fuga Laborum obc",
+    "icon": "invite",
+    "link": "/exhibitreview",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "687c60287ff9129ff3808c5a"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your exhibit 'Ipsa consequat Mag'",
+    "exhibit": {
+      "$oid": "687b7ff6f006f51ede46b8c0"
+    },
+    "created_at": {
+      "$date": "2025-07-20T11:19:04.312Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your exhibit",
+    "target": "Ipsa consequat Mag",
+    "icon": "like",
+    "link": "/exhibit/687b7ff6f006f51ede46b8c0/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "687ceb6b4ac6ccad62be8515"
+    },
+    "user": {
+      "$oid": "68200dd570db54e30025a74e"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Hands'",
+    "art": {
+      "$oid": "686636f7c6ce6aeb89d43eb9"
+    },
+    "created_at": {
+      "$date": "2025-07-20T21:13:15.351Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "reported your artwork",
+    "target": "Hands",
+    "icon": "report",
+    "link": "/artwork/686636f7c6ce6aeb89d43eb9",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "687f2f1f859cc3f88c4a242f"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Elit provident non'",
+    "art": {
+      "$oid": "6864cf25c32cd3f407db96a1"
+    },
+    "created_at": {
+      "$date": "2025-07-22T14:26:39.656Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "reported your artwork",
+    "target": "Elit provident non",
+    "icon": "report",
+    "link": "/artwork/6864cf25c32cd3f407db96a1",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "687fabcfdd7040820bdd47f8"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Anguish'",
+    "art": {
+      "$oid": "681392df1ea6de6aaa308e4a"
+    },
+    "created_at": {
+      "$date": "2025-07-22T23:18:39.339Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "reported your artwork",
+    "target": "Anguish",
+    "icon": "report",
+    "link": "/artwork/681392df1ea6de6aaa308e4a",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "687fb1534abb524f863a33df"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Sunset Paintings'",
+    "art": {
+      "$oid": "68668a741ba312fc5e941154"
+    },
+    "created_at": {
+      "$date": "2025-07-22T23:42:11.119Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "reported your artwork",
+    "target": "Sunset Paintings",
+    "icon": "report",
+    "link": "/artwork/68668a741ba312fc5e941154",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68810fb72660eb28bc907171"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafra ordered your artwork: 'Sunset Paintings'",
+    "created_at": {
+      "$date": "2025-07-24T00:37:11.946Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "purchased your artwork",
+    "target": "Sunset Paintings",
+    "icon": "purchase",
+    "link": "/artwork/68668a741ba312fc5e941154/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688110c22660eb28bc907174"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafra ordered your artwork: 'Sit aut explicabo D'",
+    "created_at": {
+      "$date": "2025-07-24T00:41:38.858Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "purchased your artwork",
+    "target": "Sit aut explicabo D",
+    "icon": "purchase",
+    "link": "/artwork/687e3f2648317894845ace59/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68883f88363ea16ad5cc41b8"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafra ordered your artwork: 'Sit aut explicabo D'",
+    "created_at": {
+      "$date": "2025-07-29T11:27:04.450Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "purchased your artwork",
+    "target": "Sit aut explicabo D",
+    "icon": "purchase",
+    "link": "/artwork/687e3f2648317894845ace59/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "6888f81f335feb98df94c24a"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You successfully ordered: 'Opposite'",
+    "created_at": {
+      "$date": "2025-07-30T00:34:39.964Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased an artwork",
+    "target": "Opposite",
+    "icon": "purchase",
+    "link": "/orders/6888f81f335feb98df94c248/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "6888f820335feb98df94c24d"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You successfully ordered: 'Opposite'",
+    "created_at": {
+      "$date": "2025-07-30T00:34:40.805Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased an artwork",
+    "target": "Opposite",
+    "icon": "purchase",
+    "link": "/orders/6888f820335feb98df94c24b/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "6889e1f47fa774d63a119998"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "Jai Anoba ordered your artwork: 'Consequat Voluptas'",
+    "created_at": {
+      "$date": "2025-07-30T17:12:20.898Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased your artwork",
+    "target": "Consequat Voluptas",
+    "icon": "purchase",
+    "link": "/artwork/68862812f7aa0183bf6bcde2/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "6889e1f47fa774d63a119999"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You successfully ordered: 'Consequat Voluptas'",
+    "created_at": {
+      "$date": "2025-07-30T17:12:20.996Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased an artwork",
+    "target": "Consequat Voluptas",
+    "icon": "purchase",
+    "link": "/viewproduct/6889e1f47fa774d63a119997/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688a24b244e6d108f4636d95"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "message": "You successfully ordered: 'Est labore lorem ex'",
+    "created_at": {
+      "$date": "2025-07-30T21:57:06.496Z"
+    },
+    "is_read": true,
+    "name": "Thera Arensvelt",
+    "action": "purchased an artwork",
+    "target": "Est labore lorem ex",
+    "icon": "purchase",
+    "link": "/viewproduct/688a24b244e6d108f4636d93/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688a29e3119ad1dc60433618"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafra ordered your artwork: 'Sed pariatur Autem'",
+    "created_at": {
+      "$date": "2025-07-30T22:19:15.731Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "purchased your artwork",
+    "target": "Sed pariatur Autem",
+    "icon": "purchase",
+    "link": "/artwork/6889f1477fa774d63a11999a/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688a2fdf053d1ead7b7045b4"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "message": "You successfully ordered: 'Est labore lorem ex'",
+    "created_at": {
+      "$date": "2025-07-30T22:44:47.577Z"
+    },
+    "is_read": true,
+    "name": "Thera Arensvelt",
+    "action": "purchased an artwork",
+    "target": "Est labore lorem ex",
+    "icon": "purchase",
+    "link": "/viewproduct/688a2fdf053d1ead7b7045b2/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688a3686b2061d22100804e9"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "message": "You successfully ordered: 'Est labore lorem ex'",
+    "created_at": {
+      "$date": "2025-07-30T23:13:10.063Z"
+    },
+    "is_read": true,
+    "name": "Thera Arensvelt",
+    "action": "purchased an artwork",
+    "target": "Est labore lorem ex",
+    "icon": "purchase",
+    "link": "/viewproduct/688a3685b2061d22100804e7/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688a3d20a18910a3032b2c2d"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "message": "You successfully ordered: 'Est labore lorem ex'",
+    "created_at": {
+      "$date": "2025-07-30T23:41:20.270Z"
+    },
+    "is_read": true,
+    "name": "Thera Arensvelt",
+    "action": "purchased an artwork",
+    "target": "Est labore lorem ex",
+    "icon": "purchase",
+    "link": "/viewproduct/688a3d20a18910a3032b2c2b/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688e2a010c4b8af2fb42f71d"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafra ordered your artwork: 'Rerum elit exercita'",
+    "created_at": {
+      "$date": "2025-08-02T23:08:49.764Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "purchased your artwork",
+    "target": "Rerum elit exercita",
+    "icon": "purchase",
+    "link": "/artwork/688e26e60c4b8af2fb42f715/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688e2b570c4b8af2fb42f720"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Blanditiis proident'",
+    "exhibit": {
+      "$oid": "688e2b570c4b8af2fb42f71f"
+    },
+    "created_at": {
+      "$date": "2025-08-02T23:14:31.377Z"
+    },
+    "is_read": true,
+    "action": "invited you to collaborate",
+    "target": "Blanditiis proident",
+    "icon": "invite",
+    "link": "/exhibitreview",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688e2b570c4b8af2fb42f721"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Blanditiis proident'",
+    "exhibit": {
+      "$oid": "688e2b570c4b8af2fb42f71f"
+    },
+    "created_at": {
+      "$date": "2025-08-02T23:14:31.451Z"
+    },
+    "is_read": true,
+    "action": "invited you to collaborate",
+    "target": "Blanditiis proident",
+    "icon": "invite",
+    "link": "/exhibitreview",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688e2bd70c4b8af2fb42f723"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Et accusamus reicien'",
+    "exhibit": {
+      "$oid": "688e2bd70c4b8af2fb42f722"
+    },
+    "created_at": {
+      "$date": "2025-08-02T23:16:39.566Z"
+    },
+    "is_read": true,
+    "action": "invited you to collaborate",
+    "target": "Et accusamus reicien",
+    "icon": "invite",
+    "link": "/exhibitreview",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688e2bd70c4b8af2fb42f724"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Et accusamus reicien'",
+    "exhibit": {
+      "$oid": "688e2bd70c4b8af2fb42f722"
+    },
+    "created_at": {
+      "$date": "2025-08-02T23:16:39.615Z"
+    },
+    "is_read": true,
+    "action": "invited you to collaborate",
+    "target": "Et accusamus reicien",
+    "icon": "invite",
+    "link": "/exhibitreview",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688f558ec03e5ff54db6d864"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "688f5291c03e5ff54db6d860"
+    },
+    "message": "Rolyn Crisostomo ordered your artwork: 'Rerum elit exercita'",
+    "created_at": {
+      "$date": "2025-08-03T16:26:54.653Z"
+    },
+    "is_read": true,
+    "name": "Rolyn Crisostomo",
+    "action": "purchased your artwork",
+    "target": "Rerum elit exercita",
+    "icon": "purchase",
+    "link": "/artwork/688e26e60c4b8af2fb42f715/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688f558ec03e5ff54db6d865"
+    },
+    "user": {
+      "$oid": "688f5291c03e5ff54db6d860"
+    },
+    "actor": {
+      "$oid": "688f5291c03e5ff54db6d860"
+    },
+    "message": "You successfully ordered: 'Rerum elit exercita'",
+    "created_at": {
+      "$date": "2025-08-03T16:26:54.739Z"
+    },
+    "is_read": true,
+    "name": "Rolyn Crisostomo",
+    "action": "purchased an artwork",
+    "target": "Rerum elit exercita",
+    "icon": "purchase",
+    "link": "/viewproduct/688f558ec03e5ff54db6d863/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688f5591c03e5ff54db6d867"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "688f5291c03e5ff54db6d860"
+    },
+    "message": "Rolyn Crisostomo ordered your artwork: 'Rerum elit exercita'",
+    "created_at": {
+      "$date": "2025-08-03T16:26:57.147Z"
+    },
+    "is_read": true,
+    "name": "Rolyn Crisostomo",
+    "action": "purchased your artwork",
+    "target": "Rerum elit exercita",
+    "icon": "purchase",
+    "link": "/artwork/688e26e60c4b8af2fb42f715/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "688f5591c03e5ff54db6d868"
+    },
+    "user": {
+      "$oid": "688f5291c03e5ff54db6d860"
+    },
+    "actor": {
+      "$oid": "688f5291c03e5ff54db6d860"
+    },
+    "message": "You successfully ordered: 'Rerum elit exercita'",
+    "created_at": {
+      "$date": "2025-08-03T16:26:57.198Z"
+    },
+    "is_read": true,
+    "name": "Rolyn Crisostomo",
+    "action": "purchased an artwork",
+    "target": "Rerum elit exercita",
+    "icon": "purchase",
+    "link": "/viewproduct/688f5590c03e5ff54db6d866/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68b417a65de3b03dbbed1873"
+    },
+    "user": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": " liked your auction 'Liquors'",
+    "auction": {
+      "$oid": "685e5d0ca10f5088ef23f741"
+    },
+    "created_at": {
+      "$date": "2025-08-31T17:36:38.026Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "liked your auction",
+    "target": "Liquors",
+    "icon": "like",
+    "link": "/bid/685e5d0ca10f5088ef23f741/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68b50e7aa617ad1ea6ed7917"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafra ordered your artwork: 'Sunset Paintings'",
+    "created_at": {
+      "$date": "2025-09-01T11:09:46.400Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "purchased your artwork",
+    "target": "Sunset Paintings",
+    "icon": "purchase",
+    "link": "/artwork/68668a741ba312fc5e941154/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68b523dac89cfc5838ea9f8b"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "Jai is now following you.",
+    "created_at": {
+      "$date": "2025-09-01T12:40:58.662Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "followed you",
+    "icon": "👥",
+    "link": "/userprofile/68134f86bd731ceac6a3eef6",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68b631c8af786d05fdb72668"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your exhibit 'Aperiam esse nobis'",
+    "exhibit": {
+      "$oid": "68519c2b75632ee7bb778fba"
+    },
+    "created_at": {
+      "$date": "2025-09-02T07:52:40.628Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "liked your exhibit",
+    "target": "Aperiam esse nobis",
+    "icon": "like",
+    "link": "/exhibit/68519c2b75632ee7bb778fba/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68b70cb4f0a5cf1e7e621790"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Laudantium quas cum'",
+    "art": {
+      "$oid": "6840337fdf84c779f9bf61a0"
+    },
+    "created_at": {
+      "$date": "2025-09-02T23:26:44.450Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "reported your artwork",
+    "target": "Laudantium quas cum",
+    "icon": "report",
+    "link": "/artwork/6840337fdf84c779f9bf61a0",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68b995956cfbd9798e214830"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafra ordered your artwork: 'Nobis est non alias'",
+    "created_at": {
+      "$date": "2025-09-04T21:35:17.144Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "purchased your artwork",
+    "target": "Nobis est non alias",
+    "icon": "purchase",
+    "link": "/artwork/688e269c0c4b8af2fb42f713/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68bad8532a0470723efab047"
+    },
+    "user": {
+      "$oid": "681dd76ee5d67ac254562d68"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Hybrid'",
+    "exhibit": {
+      "$oid": "68bad8532a0470723efab045"
+    },
+    "created_at": {
+      "$date": "2025-09-05T20:32:19.205Z"
+    },
+    "is_read": true,
+    "action": "invited you to collaborate",
+    "target": "Hybrid",
+    "icon": "invite",
+    "link": "/exhibitreview",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68badc96337688ffb17a3833"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Sample Exhibit'",
+    "exhibit": {
+      "$oid": "68badc96337688ffb17a3832"
+    },
+    "created_at": {
+      "$date": "2025-09-05T20:50:30.342Z"
+    },
+    "is_read": true,
+    "action": "invited you to collaborate",
+    "target": "Sample Exhibit",
+    "icon": "invite",
+    "link": "/exhibitreview",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68bae3c362e02454ec42355f"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Jainess'",
+    "exhibit": {
+      "$oid": "68bae3c362e02454ec42355e"
+    },
+    "created_at": {
+      "$date": "2025-09-05T21:21:07.572Z"
+    },
+    "is_read": true,
+    "action": "invited you to collaborate",
+    "target": "Jainess",
+    "icon": "invite",
+    "link": "/exhibitreview",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68bba54e089ecc6e15902e6f"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafra ordered your artwork: 'Nihil in perspiciati'",
+    "created_at": {
+      "$date": "2025-09-06T11:06:54.435Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "purchased your artwork",
+    "target": "Nihil in perspiciati",
+    "icon": "purchase",
+    "link": "/artwork/68ba98366a1950f6d9fa57f1/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68c77b28bfa40f2f58c363ca"
+    },
+    "user": {
+      "$oid": "6831b546797ef121740fdfb0"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "Jai Anoba ordered your artwork: 'gen_sample_sell_art'",
+    "created_at": {
+      "$date": "2025-09-15T10:34:16.959Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased your artwork",
+    "target": "gen_sample_sell_art",
+    "icon": "purchase",
+    "link": "/artwork/68c14661730555fc6170cf0c/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68c77b29bfa40f2f58c363cb"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You successfully ordered: 'gen_sample_sell_art'",
+    "created_at": {
+      "$date": "2025-09-15T10:34:17.043Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased an artwork",
+    "target": "gen_sample_sell_art",
+    "icon": "purchase",
+    "link": "/viewproduct/68c77b28bfa40f2f58c363c9/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68c838fd4d4afebe9c398b57"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted for your auction 'Sunset', and it's under review.",
+    "auction": {
+      "$oid": "685e5ce0a10f5088ef23f740"
+    },
+    "created_at": {
+      "$date": "2025-09-16T00:04:13.098Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafra",
+    "action": "reported your auction",
+    "target": "Sunset",
+    "icon": "alert",
+    "link": "/bid/685e5ce0a10f5088ef23f740/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68d7e85535a0faebabd16aac"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " tipped you ₱250.0 for your artwork 'Rem vero ut et magni'",
+    "art": {
+      "$oid": "68d51e77ea18427af7ff18d2"
+    },
+    "created_at": {
+      "$date": "2025-09-27T13:36:21.472Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "tipped you",
+    "target": "Rem vero ut et magni",
+    "icon": "💰",
+    "amount": "250.0",
+    "link": "/artwork/68d51e77ea18427af7ff18d2",
+    "donation": "Tip",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68d7fd728934079e531f896d"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " tipped you ₱2.0 for your artwork 'Laudantium quas cum'",
+    "art": {
+      "$oid": "6840337fdf84c779f9bf61a0"
+    },
+    "created_at": {
+      "$date": "2025-09-27T15:06:26.265Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "tipped you",
+    "target": "Laudantium quas cum",
+    "icon": "💰",
+    "amount": "2.0",
+    "link": "/artwork/6840337fdf84c779f9bf61a0",
+    "donation": "Tip",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68d9019f4aa820f1fabfd225"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": "Jil is now following you.",
+    "created_at": {
+      "$date": "2025-09-28T17:36:31.972Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "followed you",
+    "icon": "👥",
+    "link": "/userprofile/6856d22011c2b781cc24256e",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68d901ab4aa820f1fabfd227"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": "Jil is now following you.",
+    "created_at": {
+      "$date": "2025-09-28T17:36:43.717Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "followed you",
+    "icon": "👥",
+    "link": "/userprofile/6856d22011c2b781cc24256e",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68d91fa1ab3bb58491509f48"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil is now following you.",
+    "created_at": {
+      "$date": "2025-09-28T19:44:33.922Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "followed you",
+    "icon": "👥",
+    "link": "/userprofile/681242fb256a592811e35ca5",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68dced67e45e1a446aec1f66"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " tipped you ₱250.0 for your artwork 'Red Moon'",
+    "art": {
+      "$oid": "68d91f53ab3bb58491509f44"
+    },
+    "created_at": {
+      "$date": "2025-10-01T08:59:19.262Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "tipped you",
+    "target": "Red Moon",
+    "icon": "💰",
+    "amount": "250.0",
+    "link": "/artwork/68d91f53ab3bb58491509f44",
+    "donation": "Tip",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68dcf82d8a68aa644a70d0c3"
+    },
+    "user": {
+      "$oid": "68d9fd9e9d75d9a1a64a50ca"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Sample edit'",
+    "art": {
+      "$oid": "68da508a10482fb716dd980a"
+    },
+    "created_at": {
+      "$date": "2025-10-01T17:45:17.901Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Sample edit",
+    "icon": "report",
+    "link": "/artwork/68da508a10482fb716dd980a",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68dd0b828a68aa644a70d0c9"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Eu esse ut laudanti'",
+    "art": {
+      "$oid": "68baf2f862e02454ec423567"
+    },
+    "created_at": {
+      "$date": "2025-10-01T19:07:46.267Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Eu esse ut laudanti",
+    "icon": "report",
+    "link": "/artwork/68baf2f862e02454ec423567",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68dd0bd78a68aa644a70d0cb"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Officiis quidem non'",
+    "art": {
+      "$oid": "688a2acf119ad1dc6043361c"
+    },
+    "created_at": {
+      "$date": "2025-10-01T19:09:11.150Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Officiis quidem non",
+    "icon": "report",
+    "link": "/artwork/688a2acf119ad1dc6043361c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68dd0cc18a68aa644a70d0cd"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Heart'",
+    "art": {
+      "$oid": "686635d4c6ce6aeb89d43eb8"
+    },
+    "created_at": {
+      "$date": "2025-10-01T19:13:05.249Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Heart",
+    "icon": "report",
+    "link": "/artwork/686635d4c6ce6aeb89d43eb8",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68dd0cfb8a68aa644a70d0cf"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Red Moon'",
+    "art": {
+      "$oid": "68d91f53ab3bb58491509f44"
+    },
+    "created_at": {
+      "$date": "2025-10-01T19:14:03.646Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Red Moon",
+    "icon": "like",
+    "link": "/artwork/68d91f53ab3bb58491509f44",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68dd0dde8a68aa644a70d0d2"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Ut provident sint'",
+    "art": {
+      "$oid": "68d900964aa820f1fabfd222"
+    },
+    "created_at": {
+      "$date": "2025-10-01T19:17:50.066Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Ut provident sint",
+    "icon": "like",
+    "link": "/artwork/68d900964aa820f1fabfd222",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68dd0e668a68aa644a70d0d4"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Ut provident sint'",
+    "art": {
+      "$oid": "68d900964aa820f1fabfd222"
+    },
+    "created_at": {
+      "$date": "2025-10-01T19:20:06.032Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Ut provident sint",
+    "icon": "like",
+    "link": "/artwork/68d900964aa820f1fabfd222",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68dd0eee8a68aa644a70d0d6"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Rem vero ut et magni'",
+    "art": {
+      "$oid": "68d51e77ea18427af7ff18d2"
+    },
+    "created_at": {
+      "$date": "2025-10-01T19:22:22.283Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Rem vero ut et magni",
+    "icon": "like",
+    "link": "/artwork/68d51e77ea18427af7ff18d2",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68dd0f428a68aa644a70d0d8"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Rem vero ut et magni'",
+    "art": {
+      "$oid": "68d51e77ea18427af7ff18d2"
+    },
+    "created_at": {
+      "$date": "2025-10-01T19:23:46.918Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Rem vero ut et magni",
+    "icon": "like",
+    "link": "/artwork/68d51e77ea18427af7ff18d2",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68dd0f478a68aa644a70d0da"
+    },
+    "user": {
+      "$oid": "6831b546797ef121740fdfb0"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'sample_post'",
+    "art": {
+      "$oid": "68c4b784befa3d96ceb9b6b7"
+    },
+    "created_at": {
+      "$date": "2025-10-01T19:23:51.649Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "sample_post",
+    "icon": "like",
+    "link": "/artwork/68c4b784befa3d96ceb9b6b7",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68dd0f4a8a68aa644a70d0dc"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Est dolores amet po'",
+    "art": {
+      "$oid": "688e2c6f0c4b8af2fb42f725"
+    },
+    "created_at": {
+      "$date": "2025-10-01T19:23:54.824Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Est dolores amet po",
+    "icon": "like",
+    "link": "/artwork/688e2c6f0c4b8af2fb42f725",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68de572f894ed98f15312f3a"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You received ₱1000.0 because 'Bloom' was claimed",
+    "art": {
+      "$oid": "681377765a741fd403485cc7"
+    },
+    "created_at": {
+      "$date": "2025-10-02T10:42:55.528Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "auction payment received",
+    "target": "Bloom",
+    "icon": "🏆",
+    "amount": "1000.0",
+    "link": "/artwork/681377765a741fd403485cc7",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68de5ec99c1a280c7e6dc57e"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You successfully claimed 'Norma' and paid ₱3500.0",
+    "art": {
+      "$oid": "682698a83e4550957dddf4ae"
+    },
+    "created_at": {
+      "$date": "2025-10-02T11:15:21.135Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "auction claimed",
+    "target": "Norma",
+    "icon": "🎉",
+    "amount": "3500.0",
+    "link": "/artwork/682698a83e4550957dddf4ae",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68de60c78d03bdcfe09eefea"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You received ₱10000.0 because 'Skull' was claimed",
+    "art": {
+      "$oid": "681379cc5a741fd403485cd0"
+    },
+    "created_at": {
+      "$date": "2025-10-02T11:23:51.410Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "auction payment received",
+    "target": "Skull",
+    "icon": "🏆",
+    "amount": "10000.0",
+    "link": "/artwork/681379cc5a741fd403485cd0",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68de6183ad1994b58aa1f4a2"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You received ₱300.0 because 'Cutie Skeleton' was claimed",
+    "art": {
+      "$oid": "6835fcb0d5734958be9b7367"
+    },
+    "created_at": {
+      "$date": "2025-10-02T11:26:59.302Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "auction payment received",
+    "target": "Cutie Skeleton",
+    "icon": "🏆",
+    "amount": "300.0",
+    "link": "/artwork/6835fcb0d5734958be9b7367",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68de645df05be591da308744"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You received ₱600.0 from Gil because 'In ad est anim tenet' was claimed",
+    "art": {
+      "$oid": "688e2c890c4b8af2fb42f726"
+    },
+    "created_at": {
+      "$date": "2025-10-02T11:39:09.863Z"
+    },
+    "is_read": true,
+    "name": "Thera Arensvelt",
+    "action": "auction payment received",
+    "target": "In ad est anim tenet",
+    "icon": "🏆",
+    "amount": "600.0",
+    "link": "/artwork/688e2c890c4b8af2fb42f726",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68de7058e6afb8a0053471fe"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafraa ordered your artwork: 'Dark'",
+    "created_at": {
+      "$date": "2025-10-02T20:30:16.313Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "purchased your artwork",
+    "target": "Dark",
+    "icon": "purchase",
+    "link": "/artwork/68de701fe6afb8a0053471fb/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e080ce9ff0fe67310e1e72"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'F Designs'",
+    "art": {
+      "$oid": "68df2fa5aa63ff7cbacbe00c"
+    },
+    "created_at": {
+      "$date": "2025-10-04T10:05:02.661Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "F Designs",
+    "icon": "like",
+    "link": "/artwork/68df2fa5aa63ff7cbacbe00c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e080d89ff0fe67310e1e74"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Anna'",
+    "art": {
+      "$oid": "68df2efdaa63ff7cbacbe009"
+    },
+    "created_at": {
+      "$date": "2025-10-04T10:05:12.679Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Anna",
+    "icon": "like",
+    "link": "/artwork/68df2efdaa63ff7cbacbe009",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e080d99ff0fe67310e1e76"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Jennie'",
+    "art": {
+      "$oid": "68df2f47aa63ff7cbacbe00b"
+    },
+    "created_at": {
+      "$date": "2025-10-04T10:05:13.852Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Jennie",
+    "icon": "like",
+    "link": "/artwork/68df2f47aa63ff7cbacbe00b",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e397fca7b0a2b15abf5d06"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "message": "James is now following you.",
+    "created_at": {
+      "$date": "2025-10-06T18:20:44.508Z"
+    },
+    "is_read": true,
+    "name": "James Arpilang",
+    "action": "followed you",
+    "icon": "👥",
+    "link": "/userprofile/68e391f1a7b0a2b15abf5d01",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e39818a7b0a2b15abf5d08"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "message": "James is now following you.",
+    "created_at": {
+      "$date": "2025-10-06T18:21:12.701Z"
+    },
+    "is_read": true,
+    "name": "James Arpilang",
+    "action": "followed you",
+    "icon": "👥",
+    "link": "/userprofile/68e391f1a7b0a2b15abf5d01",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e398bea7b0a2b15abf5d0f"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "message": " liked your artwork 'F Designs'",
+    "art": {
+      "$oid": "68df2fa5aa63ff7cbacbe00c"
+    },
+    "created_at": {
+      "$date": "2025-10-06T18:23:58.995Z"
+    },
+    "is_read": true,
+    "name": "James Arpilang",
+    "action": "liked your artwork",
+    "target": "F Designs",
+    "icon": "like",
+    "link": "/artwork/68df2fa5aa63ff7cbacbe00c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e39cf6a7b0a2b15abf5d16"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "message": "James Arpilang ordered your artwork: 'Eu esse ut laudanti'",
+    "created_at": {
+      "$date": "2025-10-06T18:41:58.534Z"
+    },
+    "is_read": true,
+    "name": "James Arpilang",
+    "action": "purchased your artwork",
+    "target": "Eu esse ut laudanti",
+    "icon": "purchase",
+    "link": "/artwork/68baf2f862e02454ec423567/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e39cf6a7b0a2b15abf5d17"
+    },
+    "user": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "actor": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "message": "You successfully ordered: 'Eu esse ut laudanti'",
+    "created_at": {
+      "$date": "2025-10-06T18:41:58.534Z"
+    },
+    "is_read": true,
+    "name": "James Arpilang",
+    "action": "purchased an artwork",
+    "target": "Eu esse ut laudanti",
+    "icon": "purchase",
+    "link": "/viewproduct/68e39cf6a7b0a2b15abf5d15/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e39f92a7b0a2b15abf5d1d"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "You received ₱600.0 from Jerald because 'nft' was claimed",
+    "art": {
+      "$oid": "68256c569857c0bc470afebd"
+    },
+    "created_at": {
+      "$date": "2025-10-06T10:53:06.090Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "auction payment received",
+    "target": "nft",
+    "icon": "🏆",
+    "amount": "600.0",
+    "link": "/artwork/68256c569857c0bc470afebd",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e39f92a7b0a2b15abf5d1e"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You successfully claimed 'nft' and paid ₱600.0",
+    "art": {
+      "$oid": "68256c569857c0bc470afebd"
+    },
+    "created_at": {
+      "$date": "2025-10-06T10:53:06.090Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "auction claimed",
+    "target": "nft",
+    "icon": "🎉",
+    "amount": "600.0",
+    "link": "/artwork/68256c569857c0bc470afebd",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e3a026a7b0a2b15abf5d21"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You successfully claimed 'Balloon' and paid ₱10500.0",
+    "art": {
+      "$oid": "682fde65b45628c76a892958"
+    },
+    "created_at": {
+      "$date": "2025-10-06T10:55:34.828Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "auction claimed",
+    "target": "Balloon",
+    "icon": "🎉",
+    "amount": "10500.0",
+    "link": "/artwork/682fde65b45628c76a892958",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e3a181a7b0a2b15abf5d27"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "message": "Your account has been banned permanently. Reason: Violation",
+    "created_at": {
+      "$date": "2025-10-06T11:01:21.270Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "banned your account",
+    "target": "Ban: Violation",
+    "icon": "ban",
+    "link": "/userprofile/681329e86a6e11e292cf0cd1",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e3a1c4a7b0a2b15abf5d2b"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": " liked your artwork 'Perferendis pariatur'",
+    "art": {
+      "$oid": "68e3a19fa7b0a2b15abf5d28"
+    },
+    "created_at": {
+      "$date": "2025-10-06T19:02:28.373Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "liked your artwork",
+    "target": "Perferendis pariatur",
+    "icon": "like",
+    "link": "/artwork/68e3a19fa7b0a2b15abf5d28",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e3a6e3a7b0a2b15abf5d2f"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Perferendis pariatur'",
+    "art": {
+      "$oid": "68e3a19fa7b0a2b15abf5d28"
+    },
+    "created_at": {
+      "$date": "2025-10-06T19:24:19.699Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Perferendis pariatur",
+    "icon": "like",
+    "link": "/artwork/68e3a19fa7b0a2b15abf5d28",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e3a70ea7b0a2b15abf5d31"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "message": "Your account has been unbanned and reinstated.",
+    "created_at": {
+      "$date": "2025-10-06T11:25:02.773Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "unbanned your account",
+    "target": "Unban issued",
+    "icon": "check_circle",
+    "link": "/userprofile/681329e86a6e11e292cf0cd1",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e3c3f2f4310a28c278db8f"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Congratulations! You won the auction for 'Art' with a bid of $1950000000000.00.",
+    "art": {
+      "$oid": "68e3b661a7b0a2b15abf5d33"
+    },
+    "created_at": {
+      "$date": "2025-10-06T13:28:18.540Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "won the auction",
+    "target": "Art",
+    "icon": "🏆",
+    "amount": "1950000000000.0",
+    "link": "/bid/68e3b67ba7b0a2b15abf5d34/",
+    "donation": "Auction",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e3c95e42c702e218f91705"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "The auction for 'Art' has been manually closed by the artist.",
+    "art": {
+      "$oid": "68e3b661a7b0a2b15abf5d33"
+    },
+    "created_at": {
+      "$date": "2025-10-06T13:51:26.785Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "closed the auction",
+    "target": "Art",
+    "icon": "🔔",
+    "link": "/auction/68e3c71842c702e218f91702/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e3cc0ff8d3140c489e32a5"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "The auction for 'Art' has been manually closed by the artist.",
+    "art": {
+      "$oid": "68e3b661a7b0a2b15abf5d33"
+    },
+    "created_at": {
+      "$date": "2025-10-06T22:02:55.073Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "closed the auction",
+    "target": "Art",
+    "icon": "🔔",
+    "link": "/auction/68e3c71842c702e218f91702/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e64c8428dcf36f85dd0df0"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You successfully ordered: 'Suscipit ab debitis'",
+    "created_at": {
+      "$date": "2025-10-08T19:35:32.487Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased an artwork",
+    "target": "Suscipit ab debitis",
+    "icon": "purchase",
+    "link": "/viewproduct/68e64c8428dcf36f85dd0dee/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e64ccb28dcf36f85dd0df4"
+    },
+    "user": {
+      "$oid": "68d9fd9e9d75d9a1a64a50ca"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "Jai Anoba ordered your artwork: 'Sample edit'",
+    "created_at": {
+      "$date": "2025-10-08T19:36:43.757Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased your artwork",
+    "target": "Sample edit",
+    "icon": "purchase",
+    "link": "/artwork/68da508a10482fb716dd980a/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e64ccb28dcf36f85dd0df5"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You successfully ordered: 'Sample edit'",
+    "created_at": {
+      "$date": "2025-10-08T19:36:43.830Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased an artwork",
+    "target": "Sample edit",
+    "icon": "purchase",
+    "link": "/viewproduct/68e64ccb28dcf36f85dd0df3/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e64cef28dcf36f85dd0dfa"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You successfully ordered: 'Et est harum tempori'",
+    "created_at": {
+      "$date": "2025-10-08T19:37:19.068Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased an artwork",
+    "target": "Et est harum tempori",
+    "icon": "purchase",
+    "link": "/viewproduct/68e64cee28dcf36f85dd0df8/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e64d1628dcf36f85dd0dfe"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "Jai Anoba ordered your artwork: 'Architecto iusto qui'",
+    "created_at": {
+      "$date": "2025-10-08T19:37:58.444Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased your artwork",
+    "target": "Architecto iusto qui",
+    "icon": "purchase",
+    "link": "/artwork/6865d5ab5e7aaebae8865576/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e64d1628dcf36f85dd0dff"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You successfully ordered: 'Architecto iusto qui'",
+    "created_at": {
+      "$date": "2025-10-08T19:37:58.541Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased an artwork",
+    "target": "Architecto iusto qui",
+    "icon": "purchase",
+    "link": "/viewproduct/68e64d1528dcf36f85dd0dfd/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e64d5728dcf36f85dd0e03"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "Jai Anoba ordered your artwork: 'Heart'",
+    "created_at": {
+      "$date": "2025-10-08T19:39:03.021Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased your artwork",
+    "target": "Heart",
+    "icon": "purchase",
+    "link": "/artwork/686635d4c6ce6aeb89d43eb8/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e64d5728dcf36f85dd0e04"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You successfully ordered: 'Heart'",
+    "created_at": {
+      "$date": "2025-10-08T19:39:03.069Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased an artwork",
+    "target": "Heart",
+    "icon": "purchase",
+    "link": "/viewproduct/68e64d5628dcf36f85dd0e02/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e7bf8cb84f5059ad88f91a"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " tipped you ₱250.0 for your artwork 'Perferendis pariatur'",
+    "art": {
+      "$oid": "68e3a19fa7b0a2b15abf5d28"
+    },
+    "created_at": {
+      "$date": "2025-10-09T13:58:36.792Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "tipped you",
+    "target": "Perferendis pariatur",
+    "icon": "💰",
+    "amount": "250.0",
+    "link": "/artwork/68e3a19fa7b0a2b15abf5d28",
+    "donation": "Tip",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e7bfb9b84f5059ad88f91d"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " tipped you ₱3000.0 for your artwork 'Rem vero ut et magni'",
+    "art": {
+      "$oid": "68d51e77ea18427af7ff18d2"
+    },
+    "created_at": {
+      "$date": "2025-10-09T13:59:21.654Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "tipped you",
+    "target": "Rem vero ut et magni",
+    "icon": "💰",
+    "amount": "3000.0",
+    "link": "/artwork/68d51e77ea18427af7ff18d2",
+    "donation": "Tip",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e7c68962cf6b7afaa778b0"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "tipped you ₱2500.0",
+    "created_at": {
+      "$date": "2025-10-09T22:28:25.610Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "tipped you",
+    "target": "",
+    "icon": "💰",
+    "amount": "2500.0",
+    "link": "/notifications",
+    "donation": "Tip",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e7c6ef62cf6b7afaa778b3"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "tipped you ₱250.0",
+    "created_at": {
+      "$date": "2025-10-09T22:30:07.152Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "tipped you",
+    "target": "",
+    "icon": "💰",
+    "amount": "250.0",
+    "link": "/notifications",
+    "donation": "Tip",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e7c92bbf8452468721720e"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " tipped you ₱1500.0 for your artwork 'None'",
+    "created_at": {
+      "$date": "2025-10-09T22:39:39.859Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "tipped you",
+    "target": "",
+    "icon": "💰",
+    "amount": "1500.0",
+    "link": "/notifications",
+    "donation": "Tip",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68e7d8f7c8d9261368770a8a"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You received ₱3000.0 from Gil because 'Dreamscape' was claimed",
+    "art": {
+      "$oid": "681376c85a741fd403485cc4"
+    },
+    "created_at": {
+      "$date": "2025-10-09T23:47:03.904Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "auction payment received",
+    "target": "Dreamscape",
+    "icon": "🏆",
+    "amount": "3000.0",
+    "link": "/artwork/681376c85a741fd403485cc4",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb1e4e17a2b414571c6625"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil is now following you.",
+    "created_at": {
+      "$date": "2025-10-12T11:19:42.464Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "followed you",
+    "icon": "👥",
+    "link": "/userprofile/681242fb256a592811e35ca5",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb3dd204e443a5ad95891a"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Test'",
+    "exhibit": {
+      "$oid": "68eb3dd204e443a5ad958919"
+    },
+    "created_at": {
+      "$date": "2025-10-12T13:34:10.401Z"
+    },
+    "is_read": true,
+    "action": "invited you to collaborate",
+    "target": "Test",
+    "icon": "invite",
+    "link": "exhibitreview?id=68eb3dd204e443a5ad958919",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb3dd204e443a5ad95891b"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Test'",
+    "exhibit": {
+      "$oid": "68eb3dd204e443a5ad958919"
+    },
+    "created_at": {
+      "$date": "2025-10-12T13:34:10.461Z"
+    },
+    "is_read": true,
+    "action": "invited you to collaborate",
+    "target": "Test",
+    "icon": "invite",
+    "link": "exhibitreview?id=68eb3dd204e443a5ad958919",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb3f4a04e443a5ad95891e"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Paintinghs'",
+    "exhibit": {
+      "$oid": "68eb3f4a04e443a5ad95891c"
+    },
+    "created_at": {
+      "$date": "2025-10-12T13:40:26.709Z"
+    },
+    "is_read": true,
+    "action": "invited you to collaborate",
+    "target": "Paintinghs",
+    "icon": "invite",
+    "link": "exhibitreview?id=68eb3f4a04e443a5ad95891c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb7ac9d32271b7af757696"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'F Designs'",
+    "art": {
+      "$oid": "68df2fa5aa63ff7cbacbe00c"
+    },
+    "created_at": {
+      "$date": "2025-10-12T17:54:17.388Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "F Designs",
+    "icon": "report",
+    "link": "/artwork/68df2fa5aa63ff7cbacbe00c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb7b4fd32271b7af757698"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Jennie'",
+    "art": {
+      "$oid": "68df2f47aa63ff7cbacbe00b"
+    },
+    "created_at": {
+      "$date": "2025-10-12T17:56:31.408Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Jennie",
+    "icon": "report",
+    "link": "/artwork/68df2f47aa63ff7cbacbe00b",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb7f52e216b99b6442dc53"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Jennie'",
+    "art": {
+      "$oid": "68df2f47aa63ff7cbacbe00b"
+    },
+    "created_at": {
+      "$date": "2025-10-12T18:13:38.015Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Jennie",
+    "icon": "report",
+    "link": "/artwork/68df2f47aa63ff7cbacbe00b",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb7f9fe216b99b6442dc55"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Jennie'",
+    "art": {
+      "$oid": "68df2f47aa63ff7cbacbe00b"
+    },
+    "created_at": {
+      "$date": "2025-10-12T18:14:55.860Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Jennie",
+    "icon": "report",
+    "link": "/artwork/68df2f47aa63ff7cbacbe00b",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb8675c1ebfa054f73cfa8"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "Submitted a report for the auction 'Sync'.",
+    "auction": {
+      "$oid": "68eb85d20d8e4071c5682be8"
+    },
+    "created_at": {
+      "$date": "2025-10-12T18:44:05.294Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "submitted a report",
+    "target": "Sync",
+    "icon": "report",
+    "link": "/bid/68eb85d20d8e4071c5682be8/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb873ce819258dec8f8cb4"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'In eiusmod nesciunt'",
+    "art": {
+      "$oid": "68ba955e6a1950f6d9fa57ed"
+    },
+    "created_at": {
+      "$date": "2025-10-12T18:47:24.804Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "In eiusmod nesciunt",
+    "icon": "report",
+    "link": "/artwork/68ba955e6a1950f6d9fa57ed",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb8909f2a7436a107fe8ac"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Accusamus amet et p'",
+    "art": {
+      "$oid": "68ba95246a1950f6d9fa57ec"
+    },
+    "created_at": {
+      "$date": "2025-10-12T18:55:05.606Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Accusamus amet et p",
+    "icon": "report",
+    "link": "/artwork/68ba95246a1950f6d9fa57ec",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb9340f2a7436a107fe8b3"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "A report was submitted on your artwork 'In magna at quis bla'",
+    "art": {
+      "$oid": "68b43880d18b678642011ce5"
+    },
+    "created_at": {
+      "$date": "2025-10-12T19:38:40.890Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "reported your artwork",
+    "target": "In magna at quis bla",
+    "icon": "report",
+    "link": "/artwork/68b43880d18b678642011ce5",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb94db67a9a795df969067"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted for your auction 'Anguish', and it's under review.",
+    "auction": {
+      "$oid": "68eb944b996779dec473028c"
+    },
+    "created_at": {
+      "$date": "2025-10-12T19:45:31.759Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your auction",
+    "target": "Anguish",
+    "icon": "alert",
+    "link": "/bid/68eb944b996779dec473028c/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb94e467a9a795df96906a"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted for your auction 'Anguish', and it's under review.",
+    "auction": {
+      "$oid": "68eb944b996779dec473028c"
+    },
+    "created_at": {
+      "$date": "2025-10-12T19:45:40.467Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your auction",
+    "target": "Anguish",
+    "icon": "alert",
+    "link": "/bid/68eb944b996779dec473028c/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68eb953e67a9a795df96906c"
+    },
+    "user": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Watchogonado'",
+    "art": {
+      "$oid": "68e392fda7b0a2b15abf5d04"
+    },
+    "created_at": {
+      "$date": "2025-10-12T19:47:10.051Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Watchogonado",
+    "icon": "report",
+    "link": "/artwork/68e392fda7b0a2b15abf5d04",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ebc22f541fea652573236e"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "Jai Anoba ordered your artwork: 'Accusamus amet et p'",
+    "created_at": {
+      "$date": "2025-10-12T22:58:55.781Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased your artwork",
+    "target": "Accusamus amet et p",
+    "icon": "purchase",
+    "link": "/artwork/68ba95246a1950f6d9fa57ec/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ebc22f541fea652573236f"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You successfully ordered: 'Accusamus amet et p'",
+    "created_at": {
+      "$date": "2025-10-12T22:58:55.859Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased an artwork",
+    "target": "Accusamus amet et p",
+    "icon": "purchase",
+    "link": "/viewproduct/68ebc22f541fea652573236d/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ecf2489bbb1468cdae07c6"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "The exhibit 'Jainess' has been updated. Please check your assigned slots.",
+    "exhibit": {
+      "$oid": "68bae3c362e02454ec42355e"
+    },
+    "created_at": {
+      "$date": "2025-10-13T20:36:24.411Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "exhibit updated",
+    "target": "Jainess",
+    "icon": "update",
+    "link": "/collaborator/exhibit/68bae3c362e02454ec42355e",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ecf24a9bbb1468cdae07c7"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You were invited to collaborate on the exhibit 'Jainess'",
+    "exhibit": {
+      "$oid": "68bae3c362e02454ec42355e"
+    },
+    "created_at": {
+      "$date": "2025-10-13T20:36:26.869Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "invited you to collaborate",
+    "target": "Jainess",
+    "icon": "invite",
+    "link": "/collaborator/exhibit/68bae3c362e02454ec42355e",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ecf24c9bbb1468cdae07c8"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "The exhibit 'Jainess' environment has been changed. Please check your assigned slots.",
+    "exhibit": {
+      "$oid": "68bae3c362e02454ec42355e"
+    },
+    "created_at": {
+      "$date": "2025-10-13T20:36:28.043Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "exhibit environment updated",
+    "target": "Jainess",
+    "icon": "update",
+    "link": "/collaborator/exhibit/68bae3c362e02454ec42355e",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ecf24c9bbb1468cdae07c9"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "The exhibit 'Jainess' environment has been changed. Please check your assigned slots.",
+    "exhibit": {
+      "$oid": "68bae3c362e02454ec42355e"
+    },
+    "created_at": {
+      "$date": "2025-10-13T20:36:28.104Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "exhibit environment updated",
+    "target": "Jainess",
+    "icon": "update",
+    "link": "/collaborator/exhibit/68bae3c362e02454ec42355e",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ed06b681b689302a39dd10"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Random'",
+    "art": {
+      "$oid": "68df2eaeaa63ff7cbacbe007"
+    },
+    "created_at": {
+      "$date": "2025-10-13T22:03:34.082Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Random",
+    "icon": "report",
+    "link": "/artwork/68df2eaeaa63ff7cbacbe007",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ed077581b689302a39dd12"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Random'",
+    "art": {
+      "$oid": "68df2eaeaa63ff7cbacbe007"
+    },
+    "created_at": {
+      "$date": "2025-10-13T22:06:45.692Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Random",
+    "icon": "report",
+    "link": "/artwork/68df2eaeaa63ff7cbacbe007",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ed078481b689302a39dd14"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Random'",
+    "art": {
+      "$oid": "68df2eaeaa63ff7cbacbe007"
+    },
+    "created_at": {
+      "$date": "2025-10-13T22:07:00.276Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Random",
+    "icon": "report",
+    "link": "/artwork/68df2eaeaa63ff7cbacbe007",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ed086681b689302a39dd16"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Random'",
+    "art": {
+      "$oid": "68df2eaeaa63ff7cbacbe007"
+    },
+    "created_at": {
+      "$date": "2025-10-13T22:10:46.433Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Random",
+    "icon": "report",
+    "link": "/artwork/68df2eaeaa63ff7cbacbe007",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68edd2508600bdab7f6f091a"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafraa ordered your artwork: 'In magna at quis bla'",
+    "created_at": {
+      "$date": "2025-10-14T12:32:16.514Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "purchased your artwork",
+    "target": "In magna at quis bla",
+    "icon": "purchase",
+    "link": "/artwork/68b43880d18b678642011ce5/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68edd2508600bdab7f6f091b"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You successfully ordered: 'In magna at quis bla'",
+    "created_at": {
+      "$date": "2025-10-14T12:32:16.568Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "purchased an artwork",
+    "target": "In magna at quis bla",
+    "icon": "purchase",
+    "link": "/viewproduct/68edd2508600bdab7f6f0919/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ede1c0320f6e3cb2e44018"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Art'",
+    "art": {
+      "$oid": "68e3b661a7b0a2b15abf5d33"
+    },
+    "created_at": {
+      "$date": "2025-10-14T13:38:08.900Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Art",
+    "icon": "like",
+    "link": "/artwork/68e3b661a7b0a2b15abf5d33",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ede1cb320f6e3cb2e4401a"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Freedom'",
+    "art": {
+      "$oid": "68ede1a3038d36d785671c21"
+    },
+    "created_at": {
+      "$date": "2025-10-14T13:38:19.147Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Freedom",
+    "icon": "like",
+    "link": "/artwork/68ede1a3038d36d785671c21",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ede1d1320f6e3cb2e4401c"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Freedom'",
+    "art": {
+      "$oid": "68ede1a3038d36d785671c21"
+    },
+    "created_at": {
+      "$date": "2025-10-14T13:38:25.873Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Freedom",
+    "icon": "like",
+    "link": "/artwork/68ede1a3038d36d785671c21",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ede1d9320f6e3cb2e4401e"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'F Designs'",
+    "art": {
+      "$oid": "68df2fa5aa63ff7cbacbe00c"
+    },
+    "created_at": {
+      "$date": "2025-10-14T13:38:33.889Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "F Designs",
+    "icon": "report",
+    "link": "/artwork/68df2fa5aa63ff7cbacbe00c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68edef12a6ed3f60ba29f489"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Eunwo'",
+    "art": {
+      "$oid": "682cc6b6f6ce8d9c55cf2e29"
+    },
+    "created_at": {
+      "$date": "2025-10-14T14:34:58.307Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Eunwo",
+    "icon": "like",
+    "link": "/artwork/682cc6b6f6ce8d9c55cf2e29",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee1fc2671dec794de4a1a5"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafraa ordered your artwork: 'Testing'",
+    "created_at": {
+      "$date": "2025-10-14T18:02:42.961Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "purchased your artwork",
+    "target": "Testing",
+    "icon": "purchase",
+    "link": "/artwork/68ee1d88f39ca3c140cff29d/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee1fc3671dec794de4a1a6"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You successfully ordered: 'Testing'",
+    "created_at": {
+      "$date": "2025-10-14T18:02:43.005Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "purchased an artwork",
+    "target": "Testing",
+    "icon": "purchase",
+    "link": "/viewproduct/68ee1fc2671dec794de4a1a4/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee2428e450d5072ebdee91"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafraa ordered your artwork: 'Testing'",
+    "created_at": {
+      "$date": "2025-10-14T18:21:28.304Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "purchased your artwork",
+    "target": "Testing",
+    "icon": "purchase",
+    "link": "/artwork/68ee1d88f39ca3c140cff29d/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee2428e450d5072ebdee92"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You successfully ordered: 'Testing'",
+    "created_at": {
+      "$date": "2025-10-14T18:21:28.350Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "purchased an artwork",
+    "target": "Testing",
+    "icon": "purchase",
+    "link": "/viewproduct/68ee2428e450d5072ebdee90/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee28dd965a54762c43c03f"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "Jai Anoba ordered your artwork: 'Et tempora ad modi s'",
+    "created_at": {
+      "$date": "2025-10-14T18:41:33.593Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased your artwork",
+    "target": "Et tempora ad modi s",
+    "icon": "purchase",
+    "link": "/artwork/688e28140c4b8af2fb42f717/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee28dd965a54762c43c040"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You successfully ordered: 'Et tempora ad modi s'",
+    "created_at": {
+      "$date": "2025-10-14T18:41:33.639Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "purchased an artwork",
+    "target": "Et tempora ad modi s",
+    "icon": "purchase",
+    "link": "/viewproduct/68ee28dd965a54762c43c03e/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee3cd770629c7f69310d64"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "message": "Thera Arensvelt ordered your artwork: 'Testing'",
+    "created_at": {
+      "$date": "2025-10-14T20:06:47.176Z"
+    },
+    "is_read": true,
+    "name": "Thera Arensvelt",
+    "action": "purchased your artwork",
+    "target": "Testing",
+    "icon": "purchase",
+    "link": "/artwork/68ee1d88f39ca3c140cff29d/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee3cd770629c7f69310d65"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "message": "You successfully ordered: 'Testing'",
+    "created_at": {
+      "$date": "2025-10-14T20:06:47.223Z"
+    },
+    "is_read": true,
+    "name": "Thera Arensvelt",
+    "action": "purchased an artwork",
+    "target": "Testing",
+    "icon": "purchase",
+    "link": "/viewproduct/68ee3cd770629c7f69310d63/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee45641c213ff09add849b"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You have manually closed the auction for 'Dolorem velit eum qu'.",
+    "art": {
+      "$oid": "6824ccfc6fb4597c28417515"
+    },
+    "created_at": {
+      "$date": "2025-10-14T20:43:16.506Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "closed the auction",
+    "target": "Dolorem velit eum qu",
+    "icon": "🔒",
+    "link": "/bid/68ee44ee89f9d72c280a610b/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee45641c213ff09add849c"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "The auction for 'Dolorem velit eum qu' has been manually closed by the artist.",
+    "art": {
+      "$oid": "6824ccfc6fb4597c28417515"
+    },
+    "created_at": {
+      "$date": "2025-10-14T20:43:16.722Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "closed the auction",
+    "target": "Dolorem velit eum qu",
+    "icon": "🔔",
+    "link": "/bid/68ee44ee89f9d72c280a610b/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee471b100ba77bde92098d"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You have manually closed the auction for 'Dolorem velit eum qu'.",
+    "art": {
+      "$oid": "6824ccfc6fb4597c28417515"
+    },
+    "created_at": {
+      "$date": "2025-10-14T20:50:35.621Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "closed the auction",
+    "target": "Dolorem velit eum qu",
+    "icon": "🔒",
+    "link": "/bid/68ee44ee89f9d72c280a610b/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee471b100ba77bde92098e"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "The auction for 'Dolorem velit eum qu' has been manually closed by the artist.",
+    "art": {
+      "$oid": "6824ccfc6fb4597c28417515"
+    },
+    "created_at": {
+      "$date": "2025-10-14T20:50:35.805Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "closed the auction",
+    "target": "Dolorem velit eum qu",
+    "icon": "🔔",
+    "link": "/bid/68ee44ee89f9d72c280a610b/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ee6274b77457a346499ef0"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You have manually closed the auction for 'Opposite'.",
+    "art": {
+      "$oid": "6888426f363ea16ad5cc41bb"
+    },
+    "created_at": {
+      "$date": "2025-10-14T22:47:16.555Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "closed the auction",
+    "target": "Opposite",
+    "icon": "🔒",
+    "link": "/bid/68ee61d6d2b2031356714ac7/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ef62f236bbfba54ba1ff94"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your artwork 'Dark'",
+    "art": {
+      "$oid": "68de701fe6afb8a0053471fb"
+    },
+    "created_at": {
+      "$date": "2025-10-15T17:01:38.980Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "reported your artwork",
+    "target": "Dark",
+    "icon": "report",
+    "link": "/artwork/68de701fe6afb8a0053471fb",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ef8cc48391d1519427b234"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": "Your artwork 'Christinas World' has been successfully listed for sale at ₱8,500.00",
+    "art": {
+      "$oid": "68ef8cc48391d1519427b233"
+    },
+    "created_at": {
+      "$date": "2025-10-15T12:00:04.141Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "listed artwork for sale",
+    "target": "Christinas World",
+    "icon": "sale",
+    "amount": "₱8,500.00",
+    "link": "/artwork/68ef8cc48391d1519427b233/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68ef8d128391d1519427b235"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": "'Sunset Paintings' has been shipped and is on its way to you!",
+    "art": {
+      "$oid": "68668a741ba312fc5e941154"
+    },
+    "created_at": {
+      "$date": "2025-10-15T12:01:22.637Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "shipped your order",
+    "target": "Sunset Paintings",
+    "icon": "shipping",
+    "link": "/viewproduct/68b50e7aa617ad1ea6ed7916/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb2b9d401570b295a715b"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": "Jil Ibalarrosa ordered your artwork: 'Testing'",
+    "created_at": {
+      "$date": "2025-10-15T22:42:01.682Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "purchased your artwork",
+    "target": "Testing",
+    "icon": "purchase",
+    "link": "/artwork/68ee1d88f39ca3c140cff29d/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb2b9d401570b295a715c"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": "You successfully ordered: 'Testing'",
+    "created_at": {
+      "$date": "2025-10-15T22:42:01.764Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "purchased an artwork",
+    "target": "Testing",
+    "icon": "purchase",
+    "link": "/viewproduct/68efb2b9d401570b295a715a/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb58ad401570b295a7163"
+    },
+    "user": {
+      "$oid": "68200dd570db54e30025a74e"
+    },
+    "actor": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "message": " liked your artwork 'Sea Now'",
+    "art": {
+      "$oid": "682fda86b45628c76a89294e"
+    },
+    "created_at": {
+      "$date": "2025-10-15T22:54:02.118Z"
+    },
+    "is_read": true,
+    "name": "Kylie Canete",
+    "action": "liked your artwork",
+    "target": "Sea Now",
+    "icon": "like",
+    "link": "/artwork/682fda86b45628c76a89294e",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb591d401570b295a7165"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "message": " liked your artwork 'Et velit eos mollit'",
+    "art": {
+      "$oid": "68b6311caf786d05fdb72664"
+    },
+    "created_at": {
+      "$date": "2025-10-15T22:54:09.149Z"
+    },
+    "is_read": true,
+    "name": "Kylie Canete",
+    "action": "liked your artwork",
+    "target": "Et velit eos mollit",
+    "icon": "like",
+    "link": "/artwork/68b6311caf786d05fdb72664",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb593d401570b295a7167"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "message": " liked your artwork 'Jennie'",
+    "art": {
+      "$oid": "68df2f47aa63ff7cbacbe00b"
+    },
+    "created_at": {
+      "$date": "2025-10-15T22:54:11.827Z"
+    },
+    "is_read": true,
+    "name": "Kylie Canete",
+    "action": "liked your artwork",
+    "target": "Jennie",
+    "icon": "like",
+    "link": "/artwork/68df2f47aa63ff7cbacbe00b",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb598d401570b295a7169"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "message": " liked your artwork 'F Designs'",
+    "art": {
+      "$oid": "68df2fa5aa63ff7cbacbe00c"
+    },
+    "created_at": {
+      "$date": "2025-10-15T22:54:16.109Z"
+    },
+    "is_read": true,
+    "name": "Kylie Canete",
+    "action": "liked your artwork",
+    "target": "F Designs",
+    "icon": "like",
+    "link": "/artwork/68df2fa5aa63ff7cbacbe00c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb599d401570b295a716b"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "message": " liked your artwork 'Triptych'",
+    "art": {
+      "$oid": "68ef8a3a3a5025fc3ef714f6"
+    },
+    "created_at": {
+      "$date": "2025-10-15T22:54:17.483Z"
+    },
+    "is_read": true,
+    "name": "Kylie Canete",
+    "action": "liked your artwork",
+    "target": "Triptych",
+    "icon": "like",
+    "link": "/artwork/68ef8a3a3a5025fc3ef714f6",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb59ad401570b295a716d"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "message": " liked your artwork 'Les Demoiselles dAvignon'",
+    "art": {
+      "$oid": "68ef8a773a5025fc3ef714f7"
+    },
+    "created_at": {
+      "$date": "2025-10-15T22:54:18.417Z"
+    },
+    "is_read": true,
+    "name": "Kylie Canete",
+    "action": "liked your artwork",
+    "target": "Les Demoiselles dAvignon",
+    "icon": "like",
+    "link": "/artwork/68ef8a773a5025fc3ef714f7",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb59bd401570b295a716f"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "message": " liked your artwork 'Freedom'",
+    "art": {
+      "$oid": "68ede1a3038d36d785671c21"
+    },
+    "created_at": {
+      "$date": "2025-10-15T22:54:19.804Z"
+    },
+    "is_read": true,
+    "name": "Kylie Canete",
+    "action": "liked your artwork",
+    "target": "Freedom",
+    "icon": "like",
+    "link": "/artwork/68ede1a3038d36d785671c21",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb59dd401570b295a7171"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "message": " liked your artwork 'Art'",
+    "art": {
+      "$oid": "68e3b661a7b0a2b15abf5d33"
+    },
+    "created_at": {
+      "$date": "2025-10-15T22:54:21.517Z"
+    },
+    "is_read": true,
+    "name": "Kylie Canete",
+    "action": "liked your artwork",
+    "target": "Art",
+    "icon": "like",
+    "link": "/artwork/68e3b661a7b0a2b15abf5d33",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb5a5d401570b295a7173"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "message": " liked your artwork 'Spring  Summer'",
+    "art": {
+      "$oid": "682cc613f6ce8d9c55cf2e28"
+    },
+    "created_at": {
+      "$date": "2025-10-15T22:54:29.562Z"
+    },
+    "is_read": true,
+    "name": "Kylie Canete",
+    "action": "liked your artwork",
+    "target": "Spring  Summer",
+    "icon": "like",
+    "link": "/artwork/682cc613f6ce8d9c55cf2e28",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb5a6d401570b295a7175"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "message": " liked your artwork 'Eunwo'",
+    "art": {
+      "$oid": "682cc6b6f6ce8d9c55cf2e29"
+    },
+    "created_at": {
+      "$date": "2025-10-15T22:54:30.307Z"
+    },
+    "is_read": true,
+    "name": "Kylie Canete",
+    "action": "liked your artwork",
+    "target": "Eunwo",
+    "icon": "like",
+    "link": "/artwork/682cc6b6f6ce8d9c55cf2e29",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb5b0d401570b295a7177"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "message": " liked your artwork 'Child of Despair'",
+    "art": {
+      "$oid": "681742b43b30f440f729870b"
+    },
+    "created_at": {
+      "$date": "2025-10-15T22:54:40.649Z"
+    },
+    "is_read": true,
+    "name": "Kylie Canete",
+    "action": "liked your artwork",
+    "target": "Child of Despair",
+    "icon": "like",
+    "link": "/artwork/681742b43b30f440f729870b",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb5bfd401570b295a7179"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "message": " liked your exhibit 'Emotions'",
+    "exhibit": {
+      "$oid": "6848f273c6724e2c3a543d6b"
+    },
+    "created_at": {
+      "$date": "2025-10-15T22:54:55.327Z"
+    },
+    "is_read": true,
+    "name": "Kylie Canete",
+    "action": "liked your exhibit",
+    "target": "Emotions",
+    "icon": "like",
+    "link": "/exhibit/6848f273c6724e2c3a543d6b/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb941d401570b295a717f"
+    },
+    "user": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": " liked your artwork 'Evelyn'",
+    "art": {
+      "$oid": "68efb8e8d401570b295a717d"
+    },
+    "created_at": {
+      "$date": "2025-10-15T23:09:53.621Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "liked your artwork",
+    "target": "Evelyn",
+    "icon": "like",
+    "link": "/artwork/68efb8e8d401570b295a717d",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb94cd401570b295a7181"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": " liked your artwork 'Child of Despair'",
+    "art": {
+      "$oid": "681742b43b30f440f729870b"
+    },
+    "created_at": {
+      "$date": "2025-10-15T23:10:04.196Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "liked your artwork",
+    "target": "Child of Despair",
+    "icon": "like",
+    "link": "/artwork/681742b43b30f440f729870b",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb951d401570b295a7183"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": " liked your artwork 'Nature Scenery'",
+    "art": {
+      "$oid": "682cc737f6ce8d9c55cf2e2a"
+    },
+    "created_at": {
+      "$date": "2025-10-15T23:10:09.911Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "liked your artwork",
+    "target": "Nature Scenery",
+    "icon": "like",
+    "link": "/artwork/682cc737f6ce8d9c55cf2e2a",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb95fd401570b295a7185"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": " liked your artwork 'Perferendis pariatur'",
+    "art": {
+      "$oid": "68e3a19fa7b0a2b15abf5d28"
+    },
+    "created_at": {
+      "$date": "2025-10-15T23:10:23.169Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "liked your artwork",
+    "target": "Perferendis pariatur",
+    "icon": "like",
+    "link": "/artwork/68e3a19fa7b0a2b15abf5d28",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb967d401570b295a7187"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": " liked your artwork 'Les Demoiselles dAvignon'",
+    "art": {
+      "$oid": "68ef8a773a5025fc3ef714f7"
+    },
+    "created_at": {
+      "$date": "2025-10-15T23:10:31.342Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "liked your artwork",
+    "target": "Les Demoiselles dAvignon",
+    "icon": "like",
+    "link": "/artwork/68ef8a773a5025fc3ef714f7",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb99dd401570b295a7189"
+    },
+    "user": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Evelyn'",
+    "art": {
+      "$oid": "68efb8e8d401570b295a717d"
+    },
+    "created_at": {
+      "$date": "2025-10-15T23:11:25.232Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Evelyn",
+    "icon": "like",
+    "link": "/artwork/68efb8e8d401570b295a717d",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efb99ed401570b295a718b"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Les Demoiselles dAvignon'",
+    "art": {
+      "$oid": "68ef8a773a5025fc3ef714f7"
+    },
+    "created_at": {
+      "$date": "2025-10-15T23:11:26.678Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Les Demoiselles dAvignon",
+    "icon": "like",
+    "link": "/artwork/68ef8a773a5025fc3ef714f7",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efba3cd401570b295a718d"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "message": " liked your artwork 'Perferendis pariatur'",
+    "art": {
+      "$oid": "68e3a19fa7b0a2b15abf5d28"
+    },
+    "created_at": {
+      "$date": "2025-10-15T23:14:04.171Z"
+    },
+    "is_read": true,
+    "name": "Janah Ubas",
+    "action": "liked your artwork",
+    "target": "Perferendis pariatur",
+    "icon": "like",
+    "link": "/artwork/68e3a19fa7b0a2b15abf5d28",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68efba41d401570b295a718f"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "message": " liked your artwork 'Eunwo'",
+    "art": {
+      "$oid": "682cc6b6f6ce8d9c55cf2e29"
+    },
+    "created_at": {
+      "$date": "2025-10-15T23:14:09.324Z"
+    },
+    "is_read": true,
+    "name": "Janah Ubas",
+    "action": "liked your artwork",
+    "target": "Eunwo",
+    "icon": "like",
+    "link": "/artwork/682cc6b6f6ce8d9c55cf2e29",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f067e4cd8f6cf56615a810"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": "Your artwork 'Paintings' has been successfully listed for sale at ₱3,500.00",
+    "art": {
+      "$oid": "68f067e4cd8f6cf56615a80f"
+    },
+    "created_at": {
+      "$date": "2025-10-16T03:35:00.796Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "listed artwork for sale",
+    "target": "Paintings",
+    "icon": "sale",
+    "amount": "₱3,500.00",
+    "link": "/artwork/68f067e4cd8f6cf56615a80f/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f06a867946153df7ec750a"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": "Your artwork 'Something Pink' has been successfully listed for sale at ₱800.00",
+    "art": {
+      "$oid": "68f06a867946153df7ec7509"
+    },
+    "created_at": {
+      "$date": "2025-10-16T03:46:14.841Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "listed artwork for sale",
+    "target": "Something Pink",
+    "icon": "sale",
+    "amount": "₱800.00",
+    "link": "/artwork/68f06a867946153df7ec7509/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f07a3e0b5ad49a890ee016"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": "Your artwork 'Distinctio Distinct' has been successfully listed for sale at ₱10,500.00",
+    "art": {
+      "$oid": "68f07a3e0b5ad49a890ee015"
+    },
+    "created_at": {
+      "$date": "2025-10-16T04:53:18.556Z"
+    },
+    "is_read": true,
+    "name": "Jil Ibalarrosa",
+    "action": "listed artwork for sale",
+    "target": "Distinctio Distinct",
+    "icon": "sale",
+    "amount": "₱10,500.00",
+    "link": "/artwork/68f07a3e0b5ad49a890ee015/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f07c960b5ad49a890ee018"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "message": "Your artwork 'Smoke' has been successfully listed for sale at ₱6,500.00",
+    "art": {
+      "$oid": "68f07c960b5ad49a890ee017"
+    },
+    "created_at": {
+      "$date": "2025-10-16T05:03:18.345Z"
+    },
+    "is_read": true,
+    "name": "Janah Ubas",
+    "action": "listed artwork for sale",
+    "target": "Smoke",
+    "icon": "sale",
+    "amount": "₱6,500.00",
+    "link": "/artwork/68f07c960b5ad49a890ee017/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f0e00317db69637d682915"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": " liked your artwork 'Marcus'",
+    "art": {
+      "$oid": "68f05e5cc57f98245cebcc8d"
+    },
+    "created_at": {
+      "$date": "2025-10-16T20:07:31.528Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "liked your artwork",
+    "target": "Marcus",
+    "icon": "like",
+    "link": "/artwork/68f05e5cc57f98245cebcc8d",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f0e31017db69637d682917"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": " liked your artwork 'Random Sketches'",
+    "art": {
+      "$oid": "68f05b7095e6517e0bea8127"
+    },
+    "created_at": {
+      "$date": "2025-10-16T20:20:32.462Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "liked your artwork",
+    "target": "Random Sketches",
+    "icon": "like",
+    "link": "/artwork/68f05b7095e6517e0bea8127",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f0f57a17db69637d682919"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": " liked your artwork 'Smoke'",
+    "art": {
+      "$oid": "68f06241cd8f6cf56615a80c"
+    },
+    "created_at": {
+      "$date": "2025-10-16T21:39:06.694Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "liked your artwork",
+    "target": "Smoke",
+    "icon": "like",
+    "link": "/artwork/68f06241cd8f6cf56615a80c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f0f99417db69637d68291e"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "A report was submitted on your artwork 'Dolorem velit eum qu'",
+    "art": {
+      "$oid": "6824ccfc6fb4597c28417515"
+    },
+    "created_at": {
+      "$date": "2025-10-16T21:56:36.495Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "reported your artwork",
+    "target": "Dolorem velit eum qu",
+    "icon": "report",
+    "link": "/artwork/6824ccfc6fb4597c28417515",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f24b9feb708dd4b8506630"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Alladin'",
+    "art": {
+      "$oid": "6816ff4e694d124bbdcbff6b"
+    },
+    "created_at": {
+      "$date": "2025-10-17T21:58:55.335Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Alladin",
+    "icon": "like",
+    "link": "/artwork/6816ff4e694d124bbdcbff6b",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f24de7ed965c4212f7fb1e"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": " liked your artwork 'Silver'",
+    "art": {
+      "$oid": "68f0632ecd8f6cf56615a80d"
+    },
+    "created_at": {
+      "$date": "2025-10-17T22:08:39.241Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "liked your artwork",
+    "target": "Silver",
+    "icon": "like",
+    "link": "/artwork/68f0632ecd8f6cf56615a80d",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f309cfadc33b713eafa941"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "invited you to collaborate on the exhibit 'Test'",
+    "exhibit": {
+      "$oid": "68f309cfadc33b713eafa940"
+    },
+    "created_at": {
+      "$date": "2025-10-18T11:30:23.295Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "invited you to collaborate",
+    "target": "Test",
+    "icon": "invite",
+    "link": "/collaborator/exhibit/68f309cfadc33b713eafa940",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f30f05e26ddd9f02841034"
+    },
+    "user": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "invited you to collaborate on the exhibit 'Sunsets'",
+    "exhibit": {
+      "$oid": "68f30f05e26ddd9f02841033"
+    },
+    "created_at": {
+      "$date": "2025-10-18T11:52:37.355Z"
+    },
+    "is_read": false,
+    "name": "Jai Anoba",
+    "action": "invited you to collaborate",
+    "target": "Sunsets",
+    "icon": "invite",
+    "link": "/collaborator/exhibit/68f30f05e26ddd9f02841033",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f4592a2cc600e0552667d8"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafraa contributed 2 artworks to 'Sample'. You can check the exhibit now!",
+    "exhibit": {
+      "$oid": "68eb41bd4f20872ef2e3c28c"
+    },
+    "created_at": {
+      "$date": "2025-10-19T03:21:14.643Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "contributed to your exhibit",
+    "target": "Sample",
+    "icon": "collaborate",
+    "link": "/exhibits/68eb41bd4f20872ef2e3c28c/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f4693ec08fbe1febfcde4c"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": " liked your auction 'City Lights'",
+    "auction": {
+      "$oid": "68f329f6e26ddd9f02841035"
+    },
+    "created_at": {
+      "$date": "2025-10-19T12:29:50.099Z"
+    },
+    "is_read": true,
+    "name": "Jai Anoba",
+    "action": "liked your auction",
+    "target": "City Lights",
+    "icon": "like",
+    "link": "/bid/68f329f6e26ddd9f02841035/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f4843fc08fbe1febfcde51"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "Your artwork 'Sunset lilies' has been successfully listed for sale at ₱1,600.00",
+    "art": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "created_at": {
+      "$date": "2025-10-19T06:25:03.795Z"
+    },
+    "is_read": false,
+    "name": "Jai Anoba",
+    "action": "listed artwork for sale",
+    "target": "Sunset lilies",
+    "icon": "sale",
+    "amount": "₱1,600.00",
+    "link": "/artwork/68f4843ec08fbe1febfcde50/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f48622c08fbe1febfcde53"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "Your artwork 'Suunt Llilie' has been successfully listed for sale at ₱3,000.00",
+    "art": {
+      "$oid": "68f48622c08fbe1febfcde52"
+    },
+    "created_at": {
+      "$date": "2025-10-19T06:33:06.856Z"
+    },
+    "is_read": false,
+    "name": "Jai Anoba",
+    "action": "listed artwork for sale",
+    "target": "Suunt Llilie",
+    "icon": "sale",
+    "amount": "₱3,000.00",
+    "link": "/artwork/68f48622c08fbe1febfcde52/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f4bae0263df9db1a8c97ba"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "You reported the artist 'Gil Zafraa'.",
+    "created_at": {
+      "$date": "2025-10-19T18:18:08.556Z"
+    },
+    "is_read": false,
+    "name": "Jai Anoba",
+    "action": "reported user",
+    "target": "Gil Zafraa",
+    "icon": "report",
+    "link": "/userprofile/681242fb256a592811e35ca5",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f4cd1a97b3c54234a08e11"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafraa ordered your artwork: 'Sunny Lilies'",
+    "created_at": {
+      "$date": "2025-10-19T19:35:54.980Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "purchased your artwork",
+    "target": "Sunny Lilies",
+    "icon": "purchase",
+    "link": "/artwork/68f48622c08fbe1febfcde52/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f4cd1b97b3c54234a08e12"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You successfully ordered: 'Sunny Lilies'",
+    "created_at": {
+      "$date": "2025-10-19T19:35:55.026Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "purchased an artwork",
+    "target": "Sunny Lilies",
+    "icon": "purchase",
+    "link": "/viewproduct/68f4cd1a97b3c54234a08e10/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f4d3d0dfead81e37d93d90"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "Your artwork 'Chromatic Embrace' has been successfully listed for sale at ₱6,800.00",
+    "art": {
+      "$oid": "68f4d3cfdfead81e37d93d8f"
+    },
+    "created_at": {
+      "$date": "2025-10-19T12:04:32.029Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "listed artwork for sale",
+    "target": "Chromatic Embrace",
+    "icon": "sale",
+    "amount": "₱6,800.00",
+    "link": "/artwork/68f4d3cfdfead81e37d93d8f/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f5063a1038e75305e6ff95"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Sunset lilies'",
+    "art": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "created_at": {
+      "$date": "2025-10-19T23:39:38.463Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Sunset lilies",
+    "icon": "like",
+    "link": "/artwork/68f4843ec08fbe1febfcde50",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f5063a1038e75305e6ff96"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Sunset lilies'",
+    "art": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "created_at": {
+      "$date": "2025-10-19T23:39:38.547Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Sunset lilies",
+    "icon": "like",
+    "link": "/artwork/68f4843ec08fbe1febfcde50",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f5063a1038e75305e6ff98"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Sunset lilies'",
+    "art": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "created_at": {
+      "$date": "2025-10-19T23:39:38.888Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Sunset lilies",
+    "icon": "like",
+    "link": "/artwork/68f4843ec08fbe1febfcde50",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f5063b1038e75305e6ff9b"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Sunset lilies'",
+    "art": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "created_at": {
+      "$date": "2025-10-19T23:39:39.228Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Sunset lilies",
+    "icon": "like",
+    "link": "/artwork/68f4843ec08fbe1febfcde50",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f5063b1038e75305e6ff9c"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Sunset lilies'",
+    "art": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "created_at": {
+      "$date": "2025-10-19T23:39:39.261Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Sunset lilies",
+    "icon": "like",
+    "link": "/artwork/68f4843ec08fbe1febfcde50",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f5063b1038e75305e6ff9e"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Sunset lilies'",
+    "art": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "created_at": {
+      "$date": "2025-10-19T23:39:39.763Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Sunset lilies",
+    "icon": "like",
+    "link": "/artwork/68f4843ec08fbe1febfcde50",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f506401038e75305e6ffa0"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Sunset lilies'",
+    "art": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "created_at": {
+      "$date": "2025-10-19T23:39:44.137Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Sunset lilies",
+    "icon": "like",
+    "link": "/artwork/68f4843ec08fbe1febfcde50",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f506401038e75305e6ffa2"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Sunset lilies'",
+    "art": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "created_at": {
+      "$date": "2025-10-19T23:39:44.744Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Sunset lilies",
+    "icon": "like",
+    "link": "/artwork/68f4843ec08fbe1febfcde50",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f506401038e75305e6ffa4"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Sunset lilies'",
+    "art": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "created_at": {
+      "$date": "2025-10-19T23:39:44.917Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Sunset lilies",
+    "icon": "like",
+    "link": "/artwork/68f4843ec08fbe1febfcde50",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f506541038e75305e6ffa6"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Sunset lilies'",
+    "art": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "created_at": {
+      "$date": "2025-10-19T23:40:04.868Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Sunset lilies",
+    "icon": "like",
+    "link": "/artwork/68f4843ec08fbe1febfcde50",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f5065b1038e75305e6ffa8"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Sunset lilies'",
+    "art": {
+      "$oid": "68f4843ec08fbe1febfcde50"
+    },
+    "created_at": {
+      "$date": "2025-10-19T23:40:11.217Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Sunset lilies",
+    "icon": "like",
+    "link": "/artwork/68f4843ec08fbe1febfcde50",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f506621038e75305e6ffaa"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Sip'",
+    "art": {
+      "$oid": "68f457a841667cb1c641eae3"
+    },
+    "created_at": {
+      "$date": "2025-10-19T23:40:18.465Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Sip",
+    "icon": "like",
+    "link": "/artwork/68f457a841667cb1c641eae3",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f5df9c78c5be5ee3fd87f0"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": " liked your artwork 'Gods'",
+    "art": {
+      "$oid": "68f05f82522032b9a438af20"
+    },
+    "created_at": {
+      "$date": "2025-10-20T15:07:08.730Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "liked your artwork",
+    "target": "Gods",
+    "icon": "like",
+    "link": "/artwork/68f05f82522032b9a438af20",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f5dfc978c5be5ee3fd87f2"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Gods'",
+    "art": {
+      "$oid": "68f05f82522032b9a438af20"
+    },
+    "created_at": {
+      "$date": "2025-10-20T15:07:53.781Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Gods",
+    "icon": "like",
+    "link": "/artwork/68f05f82522032b9a438af20",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f5e1cc78c5be5ee3fd87f4"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Random Sketches'",
+    "art": {
+      "$oid": "68f05b7095e6517e0bea8127"
+    },
+    "created_at": {
+      "$date": "2025-10-20T15:16:28.620Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Random Sketches",
+    "icon": "like",
+    "link": "/artwork/68f05b7095e6517e0bea8127",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f5e2ab78c5be5ee3fd87f6"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": " liked your artwork 'Non fugiat reprehend'",
+    "art": {
+      "$oid": "68ba967b6a1950f6d9fa57ef"
+    },
+    "created_at": {
+      "$date": "2025-10-20T15:20:11.821Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "liked your artwork",
+    "target": "Non fugiat reprehend",
+    "icon": "like",
+    "link": "/artwork/68ba967b6a1950f6d9fa57ef",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f63e0f97e5ea7179ae991f"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Marcus'",
+    "art": {
+      "$oid": "68f05e5cc57f98245cebcc8d"
+    },
+    "created_at": {
+      "$date": "2025-10-20T21:50:07.016Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Marcus",
+    "icon": "like",
+    "link": "/artwork/68f05e5cc57f98245cebcc8d",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f63e2797e5ea7179ae9921"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": " liked your artwork 'Art'",
+    "art": {
+      "$oid": "68e3b661a7b0a2b15abf5d33"
+    },
+    "created_at": {
+      "$date": "2025-10-20T21:50:31.065Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "liked your artwork",
+    "target": "Art",
+    "icon": "like",
+    "link": "/artwork/68e3b661a7b0a2b15abf5d33",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f63e2897e5ea7179ae9923"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": " liked your artwork 'Freedom'",
+    "art": {
+      "$oid": "68ede1a3038d36d785671c21"
+    },
+    "created_at": {
+      "$date": "2025-10-20T21:50:32.213Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "liked your artwork",
+    "target": "Freedom",
+    "icon": "like",
+    "link": "/artwork/68ede1a3038d36d785671c21",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f647f097e5ea7179ae9927"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "message": " liked your artwork 'Observer'",
+    "art": {
+      "$oid": "68f647cd97e5ea7179ae9925"
+    },
+    "created_at": {
+      "$date": "2025-10-20T22:32:16.224Z"
+    },
+    "is_read": false,
+    "name": "Janah Ubas",
+    "action": "liked your artwork",
+    "target": "Observer",
+    "icon": "like",
+    "link": "/artwork/68f647cd97e5ea7179ae9925",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f647f597e5ea7179ae9929"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "message": " liked your artwork 'Melt'",
+    "art": {
+      "$oid": "68f6461a97e5ea7179ae9924"
+    },
+    "created_at": {
+      "$date": "2025-10-20T22:32:21.339Z"
+    },
+    "is_read": false,
+    "name": "Janah Ubas",
+    "action": "liked your artwork",
+    "target": "Melt",
+    "icon": "like",
+    "link": "/artwork/68f6461a97e5ea7179ae9924",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f6480597e5ea7179ae992b"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": " liked your artwork 'Observer'",
+    "art": {
+      "$oid": "68f647cd97e5ea7179ae9925"
+    },
+    "created_at": {
+      "$date": "2025-10-20T22:32:37.522Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "liked your artwork",
+    "target": "Observer",
+    "icon": "like",
+    "link": "/artwork/68f647cd97e5ea7179ae9925",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f6569797e5ea7179ae9935"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "message": "Your artwork 'Drowned in the Sea' has been successfully listed for sale at ₱2,500.00",
+    "art": {
+      "$oid": "68f6569797e5ea7179ae9934"
+    },
+    "created_at": {
+      "$date": "2025-10-20T15:34:47.484Z"
+    },
+    "is_read": false,
+    "name": "Thera Arensvelt",
+    "action": "listed artwork for sale",
+    "target": "Drowned in the Sea",
+    "icon": "sale",
+    "amount": "₱2,500.00",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f65b5718e02c3ef4392e0d"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "Jerald Aliviano ordered your artwork: 'Drowned in the Sea'",
+    "created_at": {
+      "$date": "2025-10-20T23:55:03.393Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "purchased your artwork",
+    "target": "Drowned in the Sea",
+    "icon": "purchase",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f65b5718e02c3ef4392e0e"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "You successfully ordered: 'Drowned in the Sea'",
+    "created_at": {
+      "$date": "2025-10-20T23:55:03.436Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "purchased an artwork",
+    "target": "Drowned in the Sea",
+    "icon": "purchase",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f65b8718e02c3ef4392e11"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "message": "'Drowned in the Sea' has been shipped and is on its way to you!",
+    "art": {
+      "$oid": "68f6569797e5ea7179ae9934"
+    },
+    "created_at": {
+      "$date": "2025-10-20T15:55:51.373Z"
+    },
+    "is_read": false,
+    "name": "Thera Arensvelt",
+    "action": "shipped your order",
+    "target": "Drowned in the Sea",
+    "icon": "shipping",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f65bb618e02c3ef4392e12"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "'Drowned in the Sea' order has been completed by Jerald Aliviano",
+    "art": {
+      "$oid": "68f6569797e5ea7179ae9934"
+    },
+    "created_at": {
+      "$date": "2025-10-20T15:56:38.436Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "completed your order",
+    "target": "Drowned in the Sea",
+    "icon": "completed",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f65d5e45ee2c9a31c3f29e"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafraa ordered your artwork: 'Chromatic Embrace'",
+    "created_at": {
+      "$date": "2025-10-21T00:03:42.350Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "purchased your artwork",
+    "target": "Chromatic Embrace",
+    "icon": "purchase",
+    "link": "/viewproduct/68f4d3cfdfead81e37d93d8f",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f65d5e45ee2c9a31c3f29f"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You successfully ordered: 'Chromatic Embrace'",
+    "created_at": {
+      "$date": "2025-10-21T00:03:42.392Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "purchased an artwork",
+    "target": "Chromatic Embrace",
+    "icon": "purchase",
+    "link": "/viewproduct/68f4d3cfdfead81e37d93d8f",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f65d6945ee2c9a31c3f2a4"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafraa completed payment for: 'Chromatic Embrace'",
+    "created_at": {
+      "$date": "2025-10-21T00:03:53.399Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "completed payment for your artwork",
+    "target": "Chromatic Embrace",
+    "icon": "purchase",
+    "link": "/viewproduct/68f4d3cfdfead81e37d93d8f",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f65d6945ee2c9a31c3f2a5"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Payment completed for: 'Chromatic Embrace'",
+    "created_at": {
+      "$date": "2025-10-21T00:03:53.446Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "completed payment",
+    "target": "Chromatic Embrace",
+    "icon": "purchase",
+    "link": "/viewproduct/68f4d3cfdfead81e37d93d8f",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f65ff80cbc5742411b4202"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafraa left a 5-star review for 'Rerum elit exercita'",
+    "art": {
+      "$oid": "688e26e60c4b8af2fb42f715"
+    },
+    "created_at": {
+      "$date": "2025-10-20T16:14:48.747Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "reviewed your artwork",
+    "target": "Rerum elit exercita",
+    "icon": "review",
+    "amount": "5 stars",
+    "link": "/viewproduct/688e26e60c4b8af2fb42f715",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f6646a0cbc5742411b4203"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "'Chromatic Embrace' has been shipped and is on its way to you!",
+    "art": {
+      "$oid": "68f4d3cfdfead81e37d93d8f"
+    },
+    "created_at": {
+      "$date": "2025-10-20T16:33:46.886Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "shipped your order",
+    "target": "Chromatic Embrace",
+    "icon": "shipping",
+    "link": "/viewproduct/68f4d3cfdfead81e37d93d8f",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f664770cbc5742411b4204"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "'Chromatic Embrace' order has been completed by Gil Zafraa",
+    "art": {
+      "$oid": "68f4d3cfdfead81e37d93d8f"
+    },
+    "created_at": {
+      "$date": "2025-10-20T16:33:59.593Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "completed your order",
+    "target": "Chromatic Embrace",
+    "icon": "completed",
+    "link": "/viewproduct/68f4d3cfdfead81e37d93d8f",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f664ab0cbc5742411b4206"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Gil Zafraa left a 5-star review for 'Chromatic Embrace'",
+    "art": {
+      "$oid": "68f4d3cfdfead81e37d93d8f"
+    },
+    "created_at": {
+      "$date": "2025-10-20T16:34:51.663Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "reviewed your artwork",
+    "target": "Chromatic Embrace",
+    "icon": "review",
+    "amount": "5 stars",
+    "link": "/viewproduct/68f4d3cfdfead81e37d93d8f",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f71ab043e2ad8edb754013"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "message": "A report was submitted on your artwork 'Silver'",
+    "art": {
+      "$oid": "68f0632ecd8f6cf56615a80d"
+    },
+    "created_at": {
+      "$date": "2025-10-21T13:31:28.257Z"
+    },
+    "is_read": true,
+    "name": "John Laparan",
+    "action": "reported your artwork",
+    "target": "Silver",
+    "icon": "report",
+    "link": "/artwork/68f0632ecd8f6cf56615a80d",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f71ae543e2ad8edb754015"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "message": " liked your artwork 'Melt'",
+    "art": {
+      "$oid": "68f6461a97e5ea7179ae9924"
+    },
+    "created_at": {
+      "$date": "2025-10-21T13:32:21.833Z"
+    },
+    "is_read": true,
+    "name": "John Laparan",
+    "action": "liked your artwork",
+    "target": "Melt",
+    "icon": "like",
+    "link": "/artwork/68f6461a97e5ea7179ae9924",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f71cd543e2ad8edb754019"
+    },
+    "user": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "actor": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "message": " liked your artwork 'Schedule'",
+    "art": {
+      "$oid": "68f71bd643e2ad8edb754017"
+    },
+    "created_at": {
+      "$date": "2025-10-21T13:40:37.836Z"
+    },
+    "is_read": false,
+    "name": "John Laparan",
+    "action": "liked your artwork",
+    "target": "Schedule",
+    "icon": "like",
+    "link": "/artwork/68f71bd643e2ad8edb754017",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f72c9443e2ad8edb75401b"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "message": "John Laparan ordered your artwork: 'Smoke'",
+    "created_at": {
+      "$date": "2025-10-21T14:47:48.630Z"
+    },
+    "is_read": false,
+    "name": "John Laparan",
+    "action": "purchased your artwork",
+    "target": "Smoke",
+    "icon": "purchase",
+    "link": "/viewproduct/68f07c960b5ad49a890ee017",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f72c9443e2ad8edb75401c"
+    },
+    "user": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "actor": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "message": "You successfully ordered: 'Smoke'",
+    "created_at": {
+      "$date": "2025-10-21T14:47:48.667Z"
+    },
+    "is_read": false,
+    "name": "John Laparan",
+    "action": "purchased an artwork",
+    "target": "Smoke",
+    "icon": "purchase",
+    "link": "/viewproduct/68f07c960b5ad49a890ee017",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f72e2343e2ad8edb754020"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "message": "John Laparan ordered your artwork: 'Something Pink'",
+    "created_at": {
+      "$date": "2025-10-21T14:54:27.578Z"
+    },
+    "is_read": false,
+    "name": "John Laparan",
+    "action": "purchased your artwork",
+    "target": "Something Pink",
+    "icon": "purchase",
+    "link": "/viewproduct/68f06a4487ec8088d1c0b68b",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f72e2343e2ad8edb754021"
+    },
+    "user": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "actor": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "message": "You successfully ordered: 'Something Pink'",
+    "created_at": {
+      "$date": "2025-10-21T14:54:27.625Z"
+    },
+    "is_read": false,
+    "name": "John Laparan",
+    "action": "purchased an artwork",
+    "target": "Something Pink",
+    "icon": "purchase",
+    "link": "/viewproduct/68f06a4487ec8088d1c0b68b",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7310e43e2ad8edb754025"
+    },
+    "user": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "actor": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "message": "John is now following you.",
+    "created_at": {
+      "$date": "2025-10-21T15:06:54.961Z"
+    },
+    "is_read": true,
+    "name": "John Laparan",
+    "action": "followed you",
+    "icon": "👥",
+    "link": "/userprofile/68f7179443e2ad8edb75400c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f78e6abadb5c386e8099aa"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": " liked your artwork 'Testing Update'",
+    "art": {
+      "$oid": "68da43e010482fb716dd9804"
+    },
+    "created_at": {
+      "$date": "2025-10-21T21:45:14.731Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "liked your artwork",
+    "target": "Testing Update",
+    "icon": "like",
+    "link": "/artwork/68da43e010482fb716dd9804",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7a9bfaa89392d266e71ff"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "A report was submitted on your comment and it's under review.",
+    "created_at": {
+      "$date": "2025-10-21T23:41:51.896Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "reported your comment",
+    "target": "wow",
+    "icon": "alert",
+    "link": "/artwork/68f6461a97e5ea7179ae9924",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7bbd22a4f81cd674161c2"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "Jerald Aliviano ordered your artwork: 'Drowned in the Sea'",
+    "created_at": {
+      "$date": "2025-10-22T00:58:58.185Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "purchased your artwork",
+    "target": "Drowned in the Sea",
+    "icon": "purchase",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7bbd22a4f81cd674161c3"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "You successfully ordered: 'Drowned in the Sea'",
+    "created_at": {
+      "$date": "2025-10-22T00:58:58.228Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "purchased an artwork",
+    "target": "Drowned in the Sea",
+    "icon": "purchase",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7bcfc3f9f8bfb71f8c423"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "Jerald Aliviano ordered your artwork: 'Drowned in the Sea'",
+    "created_at": {
+      "$date": "2025-10-22T01:03:56.309Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "purchased your artwork",
+    "target": "Drowned in the Sea",
+    "icon": "purchase",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7bcfc3f9f8bfb71f8c424"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "You successfully ordered: 'Drowned in the Sea'",
+    "created_at": {
+      "$date": "2025-10-22T01:03:56.355Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "purchased an artwork",
+    "target": "Drowned in the Sea",
+    "icon": "purchase",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7bdb4a85d268ff7e6a77b"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "Jerald Aliviano ordered your artwork: 'Drowned in the Sea'",
+    "created_at": {
+      "$date": "2025-10-22T01:07:00.270Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "purchased your artwork",
+    "target": "Drowned in the Sea",
+    "icon": "purchase",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7bdb4a85d268ff7e6a77c"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "You successfully ordered: 'Drowned in the Sea'",
+    "created_at": {
+      "$date": "2025-10-22T01:07:00.311Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "purchased an artwork",
+    "target": "Drowned in the Sea",
+    "icon": "purchase",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7be668c142e82ec7acbae"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "message": "Thera Arensvelt ordered your artwork: 'Chromatic Embrace'",
+    "created_at": {
+      "$date": "2025-10-22T01:09:58.381Z"
+    },
+    "is_read": true,
+    "name": "Thera Arensvelt",
+    "action": "purchased your artwork",
+    "target": "Chromatic Embrace",
+    "icon": "purchase",
+    "link": "/viewproduct/68f4d3cfdfead81e37d93d8f",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7be668c142e82ec7acbaf"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "message": "You successfully ordered: 'Chromatic Embrace'",
+    "created_at": {
+      "$date": "2025-10-22T01:09:58.428Z"
+    },
+    "is_read": true,
+    "name": "Thera Arensvelt",
+    "action": "purchased an artwork",
+    "target": "Chromatic Embrace",
+    "icon": "purchase",
+    "link": "/viewproduct/68f4d3cfdfead81e37d93d8f",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7c0ad227a4f17112a9352"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "Jerald Aliviano ordered your artwork: 'Drowned in the Seaa'",
+    "created_at": {
+      "$date": "2025-10-22T01:19:41.895Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "purchased your artwork",
+    "target": "Drowned in the Seaa",
+    "icon": "purchase",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7c0ad227a4f17112a9353"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "You successfully ordered: 'Drowned in the Seaa'",
+    "created_at": {
+      "$date": "2025-10-22T01:19:41.939Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "purchased an artwork",
+    "target": "Drowned in the Seaa",
+    "icon": "purchase",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7c36b1ef94616986c2404"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "Jerald Aliviano completed payment for: 'Drowned in the Seaa'. Please contact them to coordinate the purchase.",
+    "created_at": {
+      "$date": "2025-10-22T01:31:23.810Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "completed payment for your artwork",
+    "target": "Drowned in the Seaa",
+    "icon": "purchase",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7c36b1ef94616986c2405"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "Payment completed for: 'Drowned in the Seaa'. The seller will be notified and will contact you soon.",
+    "created_at": {
+      "$date": "2025-10-22T01:31:23.870Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "completed payment",
+    "target": "Drowned in the Seaa",
+    "icon": "purchase",
+    "link": "/viewproduct/68f6569797e5ea7179ae9934",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f7c7087a79b4cf96be45d8"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "'Architecto iusto qui' order has been completed by Jai Anoba",
+    "art": {
+      "$oid": "6865d5ab5e7aaebae8865576"
+    },
+    "created_at": {
+      "$date": "2025-10-21T17:46:48.578Z"
+    },
+    "is_read": false,
+    "name": "Jai Anoba",
+    "action": "completed your order",
+    "target": "Architecto iusto qui",
+    "icon": "completed",
+    "link": "/viewproduct/6865d5ab5e7aaebae8865576",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f83bd1f7acf3f3186e1c31"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "message": "Your artwork 'Hidden Glance' has been successfully listed for sale at ₱2,500.00",
+    "art": {
+      "$oid": "68f83bd1f7acf3f3186e1c30"
+    },
+    "created_at": {
+      "$date": "2025-10-22T02:05:05.621Z"
+    },
+    "is_read": false,
+    "name": "Jil Ibalarrosa",
+    "action": "listed artwork for sale",
+    "target": "Hidden Glance",
+    "icon": "sale",
+    "amount": "₱2,500.00",
+    "link": "/viewproduct/68f83bd1f7acf3f3186e1c30",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f83da4d28e6ac898dd3771"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "Your artwork 'Under Watchful Eyes' has been successfully listed for sale at ₱1,200.00",
+    "art": {
+      "$oid": "68f83da4d28e6ac898dd3770"
+    },
+    "created_at": {
+      "$date": "2025-10-22T02:12:52.866Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "listed artwork for sale",
+    "target": "Under Watchful Eyes",
+    "icon": "sale",
+    "amount": "₱1,200.00",
+    "link": "/viewproduct/68f83da4d28e6ac898dd3770",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f85c7fe260f41394524b29"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "message": " tipped you ₱250.0",
+    "created_at": {
+      "$date": "2025-10-22T12:24:31.150Z"
+    },
+    "is_read": false,
+    "name": "Sis LR",
+    "action": "tipped you",
+    "target": "",
+    "icon": "💰",
+    "amount": "250.0",
+    "link": "",
+    "donation": "Tip",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f85c9ce260f41394524b2c"
+    },
+    "user": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "actor": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "message": " tipped you ₱500.0",
+    "created_at": {
+      "$date": "2025-10-22T12:25:00.005Z"
+    },
+    "is_read": false,
+    "name": "Sis LR",
+    "action": "tipped you",
+    "target": "",
+    "icon": "💰",
+    "amount": "500.0",
+    "link": "",
+    "donation": "Tip",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f85ca3e260f41394524b2e"
+    },
+    "user": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "actor": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "message": " liked your artwork 'ggg'",
+    "art": {
+      "$oid": "68f85b69e260f41394524b25"
+    },
+    "created_at": {
+      "$date": "2025-10-22T12:25:07.272Z"
+    },
+    "is_read": false,
+    "name": "Sis LR",
+    "action": "liked your artwork",
+    "target": "ggg",
+    "icon": "like",
+    "link": "/artwork/68f85b69e260f41394524b25",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f85ecde260f41394524b30"
+    },
+    "user": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "actor": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "message": "A report was submitted on your artwork 'Schedule'",
+    "art": {
+      "$oid": "68f71bd643e2ad8edb754017"
+    },
+    "created_at": {
+      "$date": "2025-10-22T12:34:21.544Z"
+    },
+    "is_read": false,
+    "name": "Sis LR",
+    "action": "reported your artwork",
+    "target": "Schedule",
+    "icon": "report",
+    "link": "/artwork/68f71bd643e2ad8edb754017",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8632ee260f41394524b34"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "message": " liked your auction 'Observer'",
+    "auction": {
+      "$oid": "68f6482897e5ea7179ae992c"
+    },
+    "created_at": {
+      "$date": "2025-10-22T12:53:02.332Z"
+    },
+    "is_read": false,
+    "name": "Sis LR",
+    "action": "liked your auction",
+    "target": "Observer",
+    "icon": "like",
+    "link": "/bid/68f6482897e5ea7179ae992c/",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f884a85ba1ff7dd1c7c158"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "message": "You received ₱1200.0 from Janah because 'Code and Canvas' was claimed",
+    "art": {
+      "$oid": "6816c0faf05c307f8fdd7cfc"
+    },
+    "created_at": {
+      "$date": "2025-10-22T15:15:52.167Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "auction payment received",
+    "target": "Code and Canvas",
+    "icon": "🏆",
+    "amount": "1200.0",
+    "link": "/artwork/6816c0faf05c307f8fdd7cfc",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f884a85ba1ff7dd1c7c159"
+    },
+    "user": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "You successfully claimed 'Code and Canvas' and paid ₱1200.0",
+    "art": {
+      "$oid": "6816c0faf05c307f8fdd7cfc"
+    },
+    "created_at": {
+      "$date": "2025-10-22T15:15:52.207Z"
+    },
+    "is_read": false,
+    "name": "Janah Ubas",
+    "action": "auction claimed",
+    "target": "Code and Canvas",
+    "icon": "🎉",
+    "amount": "1200.0",
+    "link": "/artwork/6816c0faf05c307f8fdd7cfc",
+    "money": true,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8b7c81045be7db335e105"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": "'Sunny Lilies' has been shipped and is on its way to you!",
+    "art": {
+      "$oid": "68f48622c08fbe1febfcde52"
+    },
+    "created_at": {
+      "$date": "2025-10-22T10:54:00.736Z"
+    },
+    "is_read": false,
+    "name": "Jai Anoba",
+    "action": "shipped your order",
+    "target": "Sunny Lilies",
+    "icon": "shipping",
+    "link": "/viewproduct/68f48622c08fbe1febfcde52",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8dc80a3c8e6e255e2f15d"
+    },
+    "user": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": "invited you to collaborate on the exhibit 'Sceneries'",
+    "exhibit": {
+      "$oid": "68f8dc80a3c8e6e255e2f15c"
+    },
+    "created_at": {
+      "$date": "2025-10-22T21:30:40.201Z"
+    },
+    "is_read": true,
+    "name": "Gil Zafraa",
+    "action": "invited you to collaborate",
+    "target": "Sceneries",
+    "icon": "invite",
+    "link": "/collaborator/exhibit/68f8dc80a3c8e6e255e2f15c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8dd60a3c8e6e255e2f15f"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "contributed 2 artworks to 'Sceneries'. You can check the exhibit now!",
+    "exhibit": {
+      "$oid": "68f8dc80a3c8e6e255e2f15c"
+    },
+    "created_at": {
+      "$date": "2025-10-22T21:34:24.161Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "contributed to your exhibit",
+    "target": "Sceneries",
+    "icon": "collaborate",
+    "link": "/exhibitreview?id=68f8dc80a3c8e6e255e2f15c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8e72536f8a934a9f3e8fe"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "updated their contribution with 2 artworks in 'Sceneries'. You can check the exhibit now!",
+    "exhibit": {
+      "$oid": "68f8dc80a3c8e6e255e2f15c"
+    },
+    "created_at": {
+      "$date": "2025-10-22T22:16:05.896Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "updated their contribution",
+    "target": "Sceneries",
+    "icon": "collaborate",
+    "link": "/exhibitreview?id=68f8dc80a3c8e6e255e2f15c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8e76136f8a934a9f3e8ff"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "updated their contribution with 3 artworks in 'Test'. You can check the exhibit now!",
+    "exhibit": {
+      "$oid": "68eb3dd204e443a5ad958919"
+    },
+    "created_at": {
+      "$date": "2025-10-22T22:17:05.100Z"
+    },
+    "is_read": true,
+    "name": "Jerald Aliviano",
+    "action": "updated their contribution",
+    "target": "Test",
+    "icon": "collaborate",
+    "link": "/exhibitreview?id=68eb3dd204e443a5ad958919",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8e76136f8a934a9f3e900"
+    },
+    "user": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "actor": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "message": "updated their contribution with 3 artworks in 'Test'. You can check the exhibit now!",
+    "exhibit": {
+      "$oid": "68eb3dd204e443a5ad958919"
+    },
+    "created_at": {
+      "$date": "2025-10-22T14:17:05.196Z"
+    },
+    "is_read": false,
+    "name": "Jerald Aliviano",
+    "action": "updated their contribution",
+    "target": "Test",
+    "icon": "collaborate",
+    "link": "/exhibitreview?id=68eb3dd204e443a5ad958919",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8efd536f8a934a9f3e904"
+    },
+    "user": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "actor": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "message": " liked your artwork 'Gen Post'",
+    "art": {
+      "$oid": "68f856320458d546690ed4ba"
+    },
+    "created_at": {
+      "$date": "2025-10-22T22:53:09.465Z"
+    },
+    "is_read": false,
+    "name": "Gil Zafraa",
+    "action": "liked your artwork",
+    "target": "Gen Post",
+    "icon": "like",
+    "link": "/artwork/68f856320458d546690ed4ba",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8f18836f8a934a9f3e906"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "message": "Your account has been banned permanently. Reason: Violation",
+    "created_at": {
+      "$date": "2025-10-22T15:00:24.165Z"
+    },
+    "is_read": false,
+    "name": "Jil Ibalarrosa",
+    "action": "banned your account",
+    "target": "Ban: Violation",
+    "icon": "ban",
+    "link": "/userprofile/681242fb256a592811e35ca5",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8f19336f8a934a9f3e907"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "message": "Your account has been unbanned and reinstated.",
+    "created_at": {
+      "$date": "2025-10-22T15:00:35.016Z"
+    },
+    "is_read": false,
+    "name": "Jil Ibalarrosa",
+    "action": "unbanned your account",
+    "target": "Unban issued",
+    "icon": "check_circle",
+    "link": "/userprofile/681242fb256a592811e35ca5",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8f27b36f8a934a9f3e909"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "message": "Your account has been banned permanently. Reason: Violation",
+    "created_at": {
+      "$date": "2025-10-22T15:04:27.333Z"
+    },
+    "is_read": false,
+    "name": "Jil Ibalarrosa",
+    "action": "banned your account",
+    "target": "Ban: Violation",
+    "icon": "ban",
+    "link": "/userprofile/681242fb256a592811e35ca5",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8f38936f8a934a9f3e90a"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "message": "Your account has been unbanned and reinstated.",
+    "created_at": {
+      "$date": "2025-10-22T15:08:57.071Z"
+    },
+    "is_read": false,
+    "name": "Jil Ibalarrosa",
+    "action": "unbanned your account",
+    "target": "Unban issued",
+    "icon": "check_circle",
+    "link": "/userprofile/681242fb256a592811e35ca5",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8f46b36f8a934a9f3e90c"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "message": "Your account has been banned permanently. Reason: Violation",
+    "created_at": {
+      "$date": "2025-10-22T15:12:43.302Z"
+    },
+    "is_read": false,
+    "name": "Jil Ibalarrosa",
+    "action": "banned your account",
+    "target": "Ban: Violation",
+    "icon": "ban",
+    "link": "/userprofile/681242fb256a592811e35ca5",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f8f4fb36f8a934a9f3e90d"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "message": "Your account has been unbanned and reinstated.",
+    "created_at": {
+      "$date": "2025-10-22T15:15:07.607Z"
+    },
+    "is_read": false,
+    "name": "Jil Ibalarrosa",
+    "action": "unbanned your account",
+    "target": "Unban issued",
+    "icon": "check_circle",
+    "link": "/userprofile/681242fb256a592811e35ca5",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f9aae909304ddc64eb3224"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "message": "Your account has been banned permanently. Reason: Violation",
+    "created_at": {
+      "$date": "2025-10-23T04:11:21.975Z"
+    },
+    "is_read": false,
+    "name": "Jil Ibalarrosa",
+    "action": "banned your account",
+    "target": "Ban: Violation",
+    "icon": "ban",
+    "link": "/userprofile/6856d22011c2b781cc24256e",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f9ab4609304ddc64eb3225"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "message": "Your account has been unbanned and reinstated.",
+    "created_at": {
+      "$date": "2025-10-23T04:12:54.777Z"
+    },
+    "is_read": false,
+    "name": "Jil Ibalarrosa",
+    "action": "unbanned your account",
+    "target": "Unban issued",
+    "icon": "check_circle",
+    "link": "/userprofile/6856d22011c2b781cc24256e",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f9adde72168c3978575e07"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "message": "Your account has been banned permanently. Reason: Violation",
+    "created_at": {
+      "$date": "2025-10-23T12:23:58.196Z"
+    },
+    "is_read": false,
+    "name": "Jil Ibalarrosa",
+    "action": "banned your account",
+    "target": "Ban: Violation",
+    "icon": "ban",
+    "link": "/userprofile/6856d22011c2b781cc24256e",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f9adf172168c3978575e08"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "message": "Your account has been unbanned and reinstated.",
+    "created_at": {
+      "$date": "2025-10-23T04:24:17.013Z"
+    },
+    "is_read": false,
+    "name": "Jil Ibalarrosa",
+    "action": "unbanned your account",
+    "target": "Unban issued",
+    "icon": "check_circle",
+    "link": "/userprofile/6856d22011c2b781cc24256e",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f9fda3cad32aba579fe01b"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": " liked your artwork 'Red Thoughts'",
+    "art": {
+      "$oid": "68f83b4bf7acf3f3186e1c2f"
+    },
+    "created_at": {
+      "$date": "2025-10-23T18:04:19.717Z"
+    },
+    "is_read": false,
+    "name": "Jai Anoba",
+    "action": "liked your artwork",
+    "target": "Red Thoughts",
+    "icon": "like",
+    "link": "/artwork/68f83b4bf7acf3f3186e1c2f",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f9fdc0cad32aba579fe01d"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": " liked your artwork 'Drift'",
+    "art": {
+      "$oid": "6816c047f05c307f8fdd7cf0"
+    },
+    "created_at": {
+      "$date": "2025-10-23T18:04:48.143Z"
+    },
+    "is_read": false,
+    "name": "Jai Anoba",
+    "action": "liked your artwork",
+    "target": "Drift",
+    "icon": "like",
+    "link": "/artwork/6816c047f05c307f8fdd7cf0",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f9fdcacad32aba579fe01f"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": " liked your artwork 'Neon Drift'",
+    "art": {
+      "$oid": "6816c0caf05c307f8fdd7cf9"
+    },
+    "created_at": {
+      "$date": "2025-10-23T18:04:58.416Z"
+    },
+    "is_read": false,
+    "name": "Jai Anoba",
+    "action": "liked your artwork",
+    "target": "Neon Drift",
+    "icon": "like",
+    "link": "/artwork/6816c0caf05c307f8fdd7cf9",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68f9fdd1cad32aba579fe021"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "message": " liked your artwork 'Red Thoughts'",
+    "art": {
+      "$oid": "68f83b4bf7acf3f3186e1c2f"
+    },
+    "created_at": {
+      "$date": "2025-10-23T18:05:05.366Z"
+    },
+    "is_read": false,
+    "name": "Jai Anoba",
+    "action": "liked your artwork",
+    "target": "Red Thoughts",
+    "icon": "like",
+    "link": "/artwork/68f83b4bf7acf3f3186e1c2f",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68fa25c09acbb6d54858ccb1"
+    },
+    "user": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "actor": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "message": " liked your artwork 'Test'",
+    "art": {
+      "$oid": "68f9caa9042759364d40965c"
+    },
+    "created_at": {
+      "$date": "2025-10-23T20:55:28.213Z"
+    },
+    "is_read": false,
+    "name": "Christopher Rentucan",
+    "action": "liked your artwork",
+    "target": "Test",
+    "icon": "like",
+    "link": "/artwork/68f9caa9042759364d40965c",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68fa25c59acbb6d54858ccb3"
+    },
+    "user": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "actor": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "message": " liked your artwork 'Red Thoughts'",
+    "art": {
+      "$oid": "68f83b4bf7acf3f3186e1c2f"
+    },
+    "created_at": {
+      "$date": "2025-10-23T20:55:33.898Z"
+    },
+    "is_read": false,
+    "name": "Christopher Rentucan",
+    "action": "liked your artwork",
+    "target": "Red Thoughts",
+    "icon": "like",
+    "link": "/artwork/68f83b4bf7acf3f3186e1c2f",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68fa2a4a9acbb6d54858ccba"
+    },
+    "user": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "actor": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "message": "Your artwork 'Rosalind's Reverie' has been successfully listed for sale at ₱3,500.00",
+    "art": {
+      "$oid": "68fa2a4a9acbb6d54858ccb9"
+    },
+    "created_at": {
+      "$date": "2025-10-23T13:14:50.849Z"
+    },
+    "is_read": false,
+    "name": "Christopher Rentucan",
+    "action": "listed artwork for sale",
+    "target": "Rosalind's Reverie",
+    "icon": "sale",
+    "amount": "₱3,500.00",
+    "link": "/viewproduct/68fa2a4a9acbb6d54858ccb9",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68fa2caa0127973089325508"
+    },
+    "user": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "actor": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "message": "Your artwork 'Goodbyes' has been successfully listed for sale at ₱3,500.00",
+    "art": {
+      "$oid": "68fa2caa0127973089325507"
+    },
+    "created_at": {
+      "$date": "2025-10-23T13:24:58.476Z"
+    },
+    "is_read": false,
+    "name": "Christopher Rentucan",
+    "action": "listed artwork for sale",
+    "target": "Goodbyes",
+    "icon": "sale",
+    "amount": "₱3,500.00",
+    "link": "/viewproduct/68fa2caa0127973089325507",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68fa2e88012797308932550a"
+    },
+    "user": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "actor": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "message": "Your artwork 'Madness' has been successfully listed for sale at ₱1,500.00",
+    "art": {
+      "$oid": "68fa2e880127973089325509"
+    },
+    "created_at": {
+      "$date": "2025-10-23T13:32:56.908Z"
+    },
+    "is_read": false,
+    "name": "Christopher Rentucan",
+    "action": "listed artwork for sale",
+    "target": "Madness",
+    "icon": "sale",
+    "amount": "₱1,500.00",
+    "link": "/viewproduct/68fa2e880127973089325509",
+    "money": false,
+    "check": false
+  },
+  {
+    "_id": {
+      "$oid": "68fa3250b00d62e515da5772"
+    },
+    "user": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "actor": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "message": "Your artwork 'Confused' has been successfully listed for sale at ₱2,500.00",
+    "art": {
+      "$oid": "68fa3250b00d62e515da5771"
+    },
+    "created_at": {
+      "$date": "2025-10-23T13:49:04.440Z"
+    },
+    "is_read": false,
+    "name": "Christopher Rentucan",
+    "action": "listed artwork for sale",
+    "target": "Confused",
+    "icon": "sale",
+    "amount": "₱2,500.00",
+    "link": "/viewproduct/68fa3250b00d62e515da5771",
+    "money": false,
+    "check": false
+  }
+]

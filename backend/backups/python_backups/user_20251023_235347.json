@@ -1,0 +1,1052 @@
+[
+  {
+    "_id": {
+      "$oid": "681242fb256a592811e35ca5"
+    },
+    "username": "hsjaodak",
+    "password": "$2b$12$59yw4u9/yuvlAz3K3.EB4uCB44XRrbw1jRH9vvsOVK/h33ux95enu",
+    "email": "caneteangel187@gmail.com",
+    "first_name": "Gil",
+    "last_name": "Zafraa",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-04-30T15:34:19.092Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T02:59:51.126Z"
+    },
+    "is_oauth_user": false,
+    "registered_via": "google",
+    "gender": "Female",
+    "date_of_birth": {
+      "$date": "2025-04-21T00:00:00Z"
+    },
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1758884599/a5fddx5wt2gq0m0nwzhy.jpg",
+    "cover_photo": "https://res.cloudinary.com/du5bwye4h/image/upload/v1758884087/wajs7qqt3fzzk16tnsb5.jpg",
+    "failed_login_attempts": 0
+  },
+  {
+    "_id": {
+      "$oid": "681329e86a6e11e292cf0cd1"
+    },
+    "username": "potatoengk",
+    "password": "$2b$12$wMZ21qvVlLKLVajFidVj2uxXVWNDc3RaOihVQmzWaNJGsasJw9TD2",
+    "email": "jeralynperitos@gmail.com",
+    "first_name": "Jerald",
+    "last_name": "Aliviano",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-01T07:59:36.493Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T16:52:23.480Z"
+    },
+    "is_oauth_user": false,
+    "registered_via": "google",
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747024606/qmfebtn3micp6d8fpdbm.jpg",
+    "date_of_birth": {
+      "$date": "2025-05-29T00:00:00Z"
+    },
+    "gender": "Female",
+    "cover_photo": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747359991/ku1wzblkiskl8py4oksp.jpg",
+    "failed_login_attempts": 0
+  },
+  {
+    "_id": {
+      "$oid": "68134f86bd731ceac6a3eef6"
+    },
+    "username": "jaiiii",
+    "password": null,
+    "email": "jamaicaanuba3@gmail.com",
+    "first_name": "Jai",
+    "last_name": "Anoba",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-01T10:40:06.267Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-19T10:20:53.311Z"
+    },
+    "is_oauth_user": false,
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747493995/qns4rbofdsnqwqmqc0h8.jpg",
+    "cover_photo": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760869255/dfs0gw23zj8pckamjt5x.jpg",
+    "otp": 7262
+  },
+  {
+    "_id": {
+      "$oid": "6816fdc1694d124bbdcbff1b"
+    },
+    "username": "christopher",
+    "password": "$2b$12$59yw4u9/yuvlAz3K3.EB4uCB44XRrbw1jRH9vvsOVK/h33ux95enu",
+    "email": "christopher@gmail.com",
+    "first_name": "Christopher",
+    "last_name": "Rentucan",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-04T05:40:17.040Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-23T12:50:37.658Z"
+    },
+    "is_oauth_user": false,
+    "otp": 881908,
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1761223838/vynfcpzhsx7f9enelv4n.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "6817955cadec126cfbb0d5a1"
+    },
+    "username": "kobeanuba",
+    "password": null,
+    "email": "anubakobe@gmail.com",
+    "first_name": "Kobe",
+    "last_name": "Anuba",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-04T16:27:08.409Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-29T11:04:03.615Z"
+    },
+    "is_oauth_user": false,
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747971734/w8j10lzxvpjmsf2ucj6x.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "681dd76ee5d67ac254562d68"
+    },
+    "username": "genesislarosa",
+    "password": "$2b$12$65t4H7k1vAZ2OhNzDEnHPO7BQzVXW8PcdpiywntEcsJRVKQDyhXSC",
+    "email": "genesislarosa@gmail.com",
+    "first_name": "Genesis",
+    "last_name": "LaRosa",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-09T10:22:38.407Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-09T10:22:38.407Z"
+    },
+    "is_oauth_user": false,
+    "otp": 386303
+  },
+  {
+    "_id": {
+      "$oid": "681dd77ce5d67ac254562d69"
+    },
+    "username": "genlar",
+    "password": "$2b$12$kWZR6JVUvNRloy3uKdBhYuI1ZaZBWROQBldQ/dIwsC3dgsTamPtlW",
+    "email": "genlar@gmail.com",
+    "first_name": "Gen",
+    "last_name": "Lar",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-09T10:22:52.281Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-09T10:22:52.281Z"
+    },
+    "is_oauth_user": false,
+    "otp": 76471
+  },
+  {
+    "_id": {
+      "$oid": "681e287397a57a4ec3a89ed3"
+    },
+    "username": "susananuba7338",
+    "password": null,
+    "email": "susananuba70@gmail.com",
+    "first_name": "Susan",
+    "last_name": "Anuba",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-09T16:08:19.891Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-09T16:08:19.891Z"
+    },
+    "is_oauth_user": false
+  },
+  {
+    "_id": {
+      "$oid": "68200dd570db54e30025a74e"
+    },
+    "username": "kalixx",
+    "password": "$2b$12$59yw4u9/yuvlAz3K3.EB4uCB44XRrbw1jRH9vvsOVK/h33ux95enu",
+    "email": "kylecanete@gmail.com",
+    "first_name": "Kyle",
+    "last_name": "Canete",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-11T02:39:16.603Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-11T16:21:28.012Z"
+    },
+    "is_oauth_user": false,
+    "otp": 906620,
+    "date_of_birth": {
+      "$date": "2025-05-22T00:00:00Z"
+    },
+    "gender": "Male",
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1746978163/t8iogpqvactgaufuqznv.jpg",
+    "failed_login_attempts": 4
+  },
+  {
+    "_id": {
+      "$oid": "682016c525d06e84a44191bd"
+    },
+    "username": "kalix",
+    "password": null,
+    "email": "kailixx17@gmail.com",
+    "first_name": "Kyle",
+    "last_name": "Cañete",
+    "role": "User",
+    "user_status": "Banned",
+    "created_at": {
+      "$date": "2025-05-11T03:17:25.035Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-22T17:00:40.698Z"
+    },
+    "is_oauth_user": false
+  },
+  {
+    "_id": {
+      "$oid": "6820172025d06e84a44191c0"
+    },
+    "username": "JaypPhet",
+    "password": "$2b$12$zXCw4OM03a/OQS23FYvWjeXfn74LtE4ZgjIrx37nEtb/Q8VrjuNye",
+    "email": "JaypPhet@gmail.com",
+    "first_name": "Jayp",
+    "last_name": "Phet",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-11T03:18:56.082Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-11T03:18:56.082Z"
+    },
+    "is_oauth_user": false,
+    "otp": 76291
+  },
+  {
+    "_id": {
+      "$oid": "6825e93dc5a09fc23f10ccab"
+    },
+    "username": "buricat",
+    "password": "$2b$12$NHAktlymHQ3meikzpeCcgeEmUnsCYD7OgsG6s9.f3rbhfVqZM7w/W",
+    "email": "janahubas@gmail.com",
+    "first_name": "Janah",
+    "last_name": "Ubas",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-15T13:16:45.273Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-29T07:19:56.507Z"
+    },
+    "is_oauth_user": false,
+    "otp": 980423,
+    "cover_photo": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747315572/oqyigij4qj8cuhqhh70z.jpg",
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1747315550/waszusp2ekgrry6mehcm.jpg",
+    "date_of_birth": {
+      "$date": "2025-05-01T00:00:00Z"
+    },
+    "gender": "Female",
+    "failed_login_attempts": 0
+  },
+  {
+    "_id": {
+      "$oid": "682fc6966da7bf8f9dbe473a"
+    },
+    "username": "admin",
+    "password": "$2b$12$VIQn5XnFfWq/pkxuLB2iLOuWB.Pohlth.FA/pbNEHkw3/VB2fyZOq",
+    "email": "admin@gmail.com",
+    "first_name": "Jil",
+    "last_name": "Ibalarrosa",
+    "role": "Admin",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-23T00:51:34.122Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-23T00:51:34.122Z"
+    },
+    "is_oauth_user": false,
+    "otp": 662437,
+    "failed_login_attempts": 0
+  },
+  {
+    "_id": {
+      "$oid": "682fc7566da7bf8f9dbe473b"
+    },
+    "username": "moderator",
+    "password": "$2b$12$6xbjaiqtFnq0LsO.P0v89.bryS/yI9MvdUZQ4quER1eGmlteGpgrO",
+    "email": "moderator@gmail.com",
+    "first_name": "Jyra",
+    "last_name": "Anuba",
+    "role": "Moderator",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-23T00:54:45.834Z"
+    },
+    "updated_at": {
+      "$date": "2025-05-23T00:54:45.834Z"
+    },
+    "is_oauth_user": false,
+    "otp": 534211
+  },
+  {
+    "_id": {
+      "$oid": "6831b546797ef121740fdfb0"
+    },
+    "username": "GEn_404",
+    "password": null,
+    "email": "genzlarosa@gmail.com",
+    "first_name": "Genesis",
+    "last_name": "La Rosa",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-05-24T12:02:14.889Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-10T10:27:57.843Z"
+    },
+    "is_oauth_user": false,
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1757500079/m6a3lzcnxclv1yzof4ds.png"
+  },
+  {
+    "_id": {
+      "$oid": "684fcfd04a48482b71336f4d"
+    },
+    "username": "glendondave",
+    "password": "$2b$12$DoIxfw5AAAKsWi7EBYHpEuwMSuYzyFKthmOGR5YjXPk8DwAmMZCZS",
+    "email": "glendondave@gmail.com",
+    "first_name": "Glendon",
+    "last_name": "Dave",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-06-16T08:03:26.459Z"
+    },
+    "updated_at": {
+      "$date": "2025-06-16T08:03:26.459Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "otp": 590114
+  },
+  {
+    "_id": {
+      "$oid": "6854d1402d6b39ae866956a3"
+    },
+    "username": "kaeanver6171",
+    "password": null,
+    "email": "kaeanver@gmail.com",
+    "first_name": "Kae",
+    "last_name": "Anver",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-06-20T03:10:56.178Z"
+    },
+    "updated_at": {
+      "$date": "2025-06-20T03:10:56.178Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "otp": 5704
+  },
+  {
+    "_id": {
+      "$oid": "6856d22011c2b781cc24256e"
+    },
+    "username": "angelcanete2634",
+    "password": "$2b$12$59yw4u9/yuvlAz3K3.EB4uCB44XRrbw1jRH9vvsOVK/h33ux95enu",
+    "email": "caneteangel327@gmail.com",
+    "first_name": "Jil",
+    "last_name": "Ibalarrosa",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-06-21T15:39:12.669Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-28T09:33:37.160Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "date_of_birth": {
+      "$date": "2025-07-03T00:00:00Z"
+    },
+    "gender": "Female",
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1759052016/wp1nh19efddiemgvfkso.jpg",
+    "cover_photo": "https://res.cloudinary.com/du5bwye4h/image/upload/v1751550272/whuch60sflxiwgvht0vi.jpg",
+    "failed_login_attempts": 0
+  },
+  {
+    "_id": {
+      "$oid": "6864c627ba036839520bb239"
+    },
+    "username": "theraaa",
+    "password": "$2b$12$M9oLL3f490JvipskUWHR0e9cJqx6c9RhtdugKR8ZNAObg42LjDwjy",
+    "email": "cythera@gmail.com",
+    "first_name": "Thera",
+    "last_name": "Arensvelt",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-07-02T05:39:51.636Z"
+    },
+    "updated_at": {
+      "$date": "2025-07-02T06:06:20.152Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "otp": 843436,
+    "date_of_birth": {
+      "$date": "2025-07-03T00:00:00Z"
+    },
+    "gender": "Female",
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1751436323/mou7mezs0olan3aufvea.jpg",
+    "cover_photo": "https://res.cloudinary.com/du5bwye4h/image/upload/v1751436380/oft34nmwmpybrv6gqzcp.jpg",
+    "failed_login_attempts": 0
+  },
+  {
+    "_id": {
+      "$oid": "687f2353fd7b10e499432c4e"
+    },
+    "username": "jairakade4795",
+    "password": null,
+    "email": "jairakade@gmail.com",
+    "first_name": "jaira",
+    "last_name": "kade",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-07-22T05:36:19.549Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-18T07:54:08.080Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": []
+  },
+  {
+    "_id": {
+      "$oid": "688c2f09e8e75f52310f6bd1"
+    },
+    "username": "Step",
+    "password": "$2b$12$8PTG9Uz9WuPUxkqOy5U8lumMTt74aj6b2KbHEIrz2S0/O7YOTvL.e",
+    "email": "Step@gmail.com",
+    "first_name": "Step",
+    "last_name": "Step",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-08-01T03:05:44.055Z"
+    },
+    "updated_at": {
+      "$date": "2025-08-01T03:05:44.055Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "otp": 593622
+  },
+  {
+    "_id": {
+      "$oid": "688ee70836d34390a74c532d"
+    },
+    "username": "worxist",
+    "password": "$2b$12$5AnW0eqeqG.5gc2v2BMkQuGudC3kRHkzqUM0oFPXfvRDiawvuGYcC",
+    "email": "worxist@gmail.com",
+    "first_name": "Worxist",
+    "last_name": "App",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-08-03T04:35:19.790Z"
+    },
+    "updated_at": {
+      "$date": "2025-08-03T04:35:19.790Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "otp": 353768
+  },
+  {
+    "_id": {
+      "$oid": "688f5291c03e5ff54db6d860"
+    },
+    "username": "rolyncrisostomo1725",
+    "password": null,
+    "email": "crisostomorolyn03@gmail.com",
+    "first_name": "Rolyn",
+    "last_name": "Crisostomo",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-08-03T12:14:09.115Z"
+    },
+    "updated_at": {
+      "$date": "2025-08-03T12:14:09.115Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": []
+  },
+  {
+    "_id": {
+      "$oid": "68c51b04fd39b8008b098bda"
+    },
+    "username": "teoduloanuba",
+    "password": "$2b$12$2PJkbcnioKdqC5WyLwvVTe0.ylv.FtNT1aY/uzuJa8C86Z6.vmlVa",
+    "email": "teoduloanuba@gmail.com",
+    "first_name": "Teodulo",
+    "last_name": "Anuba",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-09-13T07:19:31.950Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-13T07:19:31.950Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "otp": 188952
+  },
+  {
+    "_id": {
+      "$oid": "68c51b6afd39b8008b098bdb"
+    },
+    "username": "jasselanoba",
+    "password": "$2b$12$Bz/Eb2MNW4R25hWYBE/1I..PvjxZc/6392OR3cUmr3oj/EuyWLlje",
+    "email": "jasselanoba@gmail.com",
+    "first_name": "Jassel",
+    "last_name": "Anoba",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-09-13T07:21:13.656Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-13T07:21:13.656Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "otp": 165614
+  },
+  {
+    "_id": {
+      "$oid": "68d732b67dee6d2562e1143e"
+    },
+    "username": "test",
+    "password": "$2b$12$7FlRimvKWmtNSKJ84mcY3OHJUW.G4/quOkB.gZI6J2PzRxT4KUz7W",
+    "email": "test@gmail.com",
+    "first_name": "test",
+    "last_name": "test",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-09-27T00:41:25.731Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-27T00:41:25.731Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "otp": 849487
+  },
+  {
+    "_id": {
+      "$oid": "68d9fd9e9d75d9a1a64a50ca"
+    },
+    "username": "lorencanete",
+    "password": "$2b$12$flOCoN3na/fYMiOpXX7g6uzA3J6lVuXuWyAb2En/0DM8zqrwWHCkC",
+    "email": "lorencanete@gmail.com",
+    "first_name": "Loren",
+    "last_name": "Canete",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-09-29T03:31:41.901Z"
+    },
+    "updated_at": {
+      "$date": "2025-09-29T08:49:10.766Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "otp": 827552,
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1759116838/yspvtlmiqowwqie7zkgw.jpg",
+    "gender": "Female",
+    "cover_photo": "https://res.cloudinary.com/du5bwye4h/image/upload/v1759118289/zfu7xfg8uxamsfditaqm.jpg"
+  },
+  {
+    "_id": {
+      "$oid": "68e391f1a7b0a2b15abf5d01"
+    },
+    "username": "jamesarpilang04",
+    "password": "$2b$12$hvQt9ALrdi8zFUT2MfuRN.bsExk1rnU1ORF9pFXptK6FkNoX8bR1G",
+    "email": "jamesarpilang04@gmail.com",
+    "first_name": "James",
+    "last_name": "Arpilang",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-06T09:54:57.380Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-06T10:46:43.897Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "otp": 1495,
+    "gender": "Male",
+    "cover_photo": "https://res.cloudinary.com/du5bwye4h/image/upload/v1759747601/qivm6qakjtcbuawmms1r.jpg",
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1759747600/sj6oct8jwxk5odjqgyms.png",
+    "failed_login_attempts": 2
+  },
+  {
+    "_id": {
+      "$oid": "68efb4b0d401570b295a715f"
+    },
+    "username": "kylecanete",
+    "password": "$2b$12$373cO5Ac7ka9F5aONflINekGv1OZFo6IrABe2VKRl5cQMdXo3g1.e",
+    "email": "kylecanete@gmail.om",
+    "first_name": "Kylie",
+    "last_name": "Canete",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-15T14:50:23.856Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-15T14:53:06.093Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null,
+    "otp": 194747,
+    "cover_photo": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760539954/pialbfinl1dezhkmuka7.jpg",
+    "profile_picture": "https://res.cloudinary.com/du5bwye4h/image/upload/v1760539953/z0z11xtcfopcoxpzw3mv.jpg",
+    "date_of_birth": {
+      "$date": "2003-03-06T00:00:00Z"
+    },
+    "gender": "Female"
+  },
+  {
+    "_id": {
+      "$oid": "68f5d83a4e15b375d844b17b"
+    },
+    "username": "kisha231",
+    "password": "$2b$12$Qd./DulTZIC3LCRnYtPsyORQE2M61f0D6f3DEeqHYDqCSwEd1lu.m",
+    "email": "kisha231@gmail.com",
+    "first_name": "Kisha",
+    "last_name": "Flores",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-20T06:35:37.892Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T06:35:37.892Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null,
+    "otp": 238166
+  },
+  {
+    "_id": {
+      "$oid": "68f5e30cc0ad518fdc76cbad"
+    },
+    "username": "kaylaruiz23",
+    "password": "$2b$12$.OYDjSva0NKYDo/Zf9TAYuvTY9l6SFutvYLjMIbNWDTBfv8o3v7N6",
+    "email": "kaylaruiz23@gmail.com",
+    "first_name": "Kayla",
+    "last_name": "Ruiz",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-20T07:21:47.862Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T07:21:47.862Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 2,
+    "locked_until": null,
+    "otp": 642607
+  },
+  {
+    "_id": {
+      "$oid": "68f5e368c0ad518fdc76cbae"
+    },
+    "username": "kimruiz23",
+    "password": "$2b$12$ve95z1juO1As.YMwABosjO9.wjWqMVB5fQXPxiyRYkeTp7sDkCuX.",
+    "email": "kimruiz23@gmail.com",
+    "first_name": "Kim",
+    "last_name": "Ruiz",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-20T07:23:20.271Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T07:23:20.271Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null,
+    "otp": 985942
+  },
+  {
+    "_id": {
+      "$oid": "68f5e3d1c0ad518fdc76cbb0"
+    },
+    "username": "shangshang",
+    "password": "$2b$12$TPAKJT6XUeEYU8PE3rpFlupnddVB.uOg7EVq5Sm03DhKjHu6ZtceC",
+    "email": "shangshang@gmail.com",
+    "first_name": "Shang",
+    "last_name": "Flor",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-20T07:25:04.890Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-20T07:25:04.890Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null,
+    "otp": 533403
+  },
+  {
+    "_id": {
+      "$oid": "68f7171143e2ad8edb75400b"
+    },
+    "username": "clamontejimuel",
+    "password": "$2b$12$9rsFj.tpwPkgEzDV2TACXuU/XWCTEJDZQibvZZ4C5mfsvSdA.dw9q",
+    "email": "clamontejimuel@gmail.co",
+    "first_name": "Jimuel",
+    "last_name": "Clamonte",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-21T05:16:00.804Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T05:16:00.804Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null,
+    "otp": 583428
+  },
+  {
+    "_id": {
+      "$oid": "68f7179443e2ad8edb75400c"
+    },
+    "username": "laparanjohn",
+    "password": "$2b$12$HZeCky6fO/0l6.1QN8gCh.qCEzyGsp5vozdUooWIYCO1HAnHaTFJS",
+    "email": "laparanjohn@gmail.com",
+    "first_name": "John",
+    "last_name": "Laparan",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-21T05:18:11.920Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T05:18:11.920Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 3,
+    "locked_until": null,
+    "otp": 175790
+  },
+  {
+    "_id": {
+      "$oid": "68f788fbbadb5c386e8099a6"
+    },
+    "username": "jimuelclamonte",
+    "password": "$2b$12$M36ncmJCPu.DFuGPFtRF7ujguGWRUYBUUUSTGuKGEt4LMsE79QUh6",
+    "email": "jimuelclamonte@gmaill.com",
+    "first_name": "Jimuel",
+    "last_name": "Clamonte",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-21T13:22:03.031Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-21T13:22:03.031Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null,
+    "otp": 489714
+  },
+  {
+    "_id": {
+      "$oid": "68f853c70458d546690ed4b8"
+    },
+    "username": "genlarosa707",
+    "password": "$2b$12$viTOxVquYr2IxitwOlTrTOkNAVuLCrw9cKMQVOtjD1tKeRNTtk/w6",
+    "email": "genlarosa707@gmzil.com",
+    "first_name": "Sis",
+    "last_name": "LR",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-22T03:47:18.514Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T03:47:18.514Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null,
+    "otp": 451844
+  },
+  {
+    "_id": {
+      "$oid": "68f8a23b38ec71f2de1b7d47"
+    },
+    "username": "jamsarp",
+    "password": "$2b$12$hLQnDpzim2dSJIBOzoXdFeRqvErXvvIWO/AJMDoxNqgTaDiMgngme",
+    "email": "jamsarp@gmail.com",
+    "first_name": "Jams",
+    "last_name": "Arp",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-22T09:22:02.893Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T09:22:02.893Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null,
+    "otp": 164364
+  },
+  {
+    "_id": {
+      "$oid": "68f8a25c38ec71f2de1b7d48"
+    },
+    "username": "jamsarp1",
+    "password": "$2b$12$Jt/vTgLxbOaKYDgA.psAXePJDz3FJfVZ5h/A9ww6Jhlu48o.tt9Ue",
+    "email": "jamsarp1@gmail.com",
+    "first_name": "Jams",
+    "last_name": "Arp",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-22T09:22:35.744Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T09:22:35.744Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null,
+    "otp": 207578
+  },
+  {
+    "_id": {
+      "$oid": "68f8a27438ec71f2de1b7d49"
+    },
+    "username": "jamesarpilang",
+    "password": "$2b$12$nfjjYWkLcorZIm5KAopVfe2U6KsPUkT4hP.RNgLNZOGC10Z.RZRDG",
+    "email": "jamesarpilang@gmail.com",
+    "first_name": "Jams",
+    "last_name": "Arp",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-22T09:23:00.133Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T09:23:00.133Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null,
+    "otp": 782089
+  },
+  {
+    "_id": {
+      "$oid": "68f8a37738ec71f2de1b7d4a"
+    },
+    "username": "angelcanete",
+    "password": "$2b$12$c9rkzexPfmGOolHUpMa5yOXezxABZu0Feyrkp3dEul9LOxqbaiG5C",
+    "email": "angelcanete@gmail.com",
+    "first_name": "Jam",
+    "last_name": "Es",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-22T09:27:19.594Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T09:27:19.594Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 4,
+    "locked_until": null,
+    "otp": 358190
+  },
+  {
+    "_id": {
+      "$oid": "68f8a45c38ec71f2de1b7d4b"
+    },
+    "username": "donlemon",
+    "password": "$2b$12$K8741wxvhjm2G6aZ75WQvelV9ZU6QOHAuR84/Lshwh9diIwD8budK",
+    "email": "donlemon@gmail.com",
+    "first_name": "Don",
+    "last_name": "Lemon",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-22T09:31:07.769Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T09:31:07.769Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null,
+    "otp": 1021
+  },
+  {
+    "_id": {
+      "$oid": "68f8a84c38ec71f2de1b7d4c"
+    },
+    "username": "glendon davetaraya",
+    "password": null,
+    "email": "glendondave96@gmail.com",
+    "first_name": "Glendon Dave",
+    "last_name": "Taraya",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-22T09:47:56.801Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T09:47:56.801Z"
+    },
+    "is_oauth_user": true,
+    "registered_via": "google",
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null
+  },
+  {
+    "_id": {
+      "$oid": "68f8aeb838ec71f2de1b7d4e"
+    },
+    "username": "donde",
+    "password": "$2b$12$6ngUuiauqPt/v..MAcGwoObko9thfXF2EnRnu1UlYFmTTPO0/m3.G",
+    "email": "donde@gmail.com",
+    "first_name": "Don",
+    "last_name": "De",
+    "role": "User",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-22T10:15:19.816Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T10:15:19.816Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null,
+    "otp": 900414
+  },
+  {
+    "_id": {
+      "$oid": "68f8f7bc90098b4f8106ae06"
+    },
+    "username": "james",
+    "password": "$2b$12$hTa0vVfUNHTg/JxOWhJcG.U9aM1vydj0206CstrRmZ.b5Q4B2SY8.",
+    "email": "james@gmail.com",
+    "first_name": "James",
+    "last_name": "Arpilang",
+    "role": "admin",
+    "user_status": "Active",
+    "created_at": {
+      "$date": "2025-10-22T15:26:52.590Z"
+    },
+    "updated_at": {
+      "$date": "2025-10-22T15:26:52.590Z"
+    },
+    "is_oauth_user": false,
+    "blocked_users": [],
+    "deactivated_at": null,
+    "scheduled_for_deletion": null,
+    "failed_login_attempts": 0,
+    "locked_until": null
+  }
+]
