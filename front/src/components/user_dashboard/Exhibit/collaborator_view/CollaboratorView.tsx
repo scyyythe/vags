@@ -267,7 +267,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   }
 
   if (!exhibit) {
-    return <div className="min-h-screen text-xs flex items-center justify-center">{exhibitNotFoundText}</div>;
+    return <div className="min-h-screen text-xs flex items-center justify-center bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">{exhibitNotFoundText}</div>;
   }
 
   const currentEnvironment = environments.find((env) => env.id === exhibit.environment);
@@ -454,34 +454,34 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
   const slotStats = getUserSlotStats();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background dark:bg-gray-900">
       <Header />
       <div className="container mx-auto pt-20 pb-4">
         <div className="mb-3">
-          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
             <i className="bx bx-chevron-left text-xl mr-2"></i>{goBackText}
           </button>
         </div>
 
         {/* Collaborator View Notice */}
         <div className="mb-6">
-          <h2 className="text-[13px] font-medium mb-1">{exhibitCollaborationText}</h2>
+          <h2 className="text-[13px] font-medium mb-1 text-gray-900 dark:text-gray-100">{exhibitCollaborationText}</h2>
           {hasUserSubmitted && !isEditing ? (
             <div className="space-y-2">
-              <p className="text-[11px] text-green-600 font-medium">✓ {alreadySubmittedText}</p>
-              <p className="text-[11px]">
+              <p className="text-[11px] text-green-600 dark:text-green-400 font-medium">✓ {alreadySubmittedText}</p>
+              <p className="text-[11px] text-gray-700 dark:text-gray-300">
                 {canEditContributionsText} "{translatedTitle}". {viewOthersContributionsText}
               </p>
             </div>
           ) : isEditing ? (
             <div className="space-y-2">
-              <p className="text-[11px] text-amber-600 font-medium">✏️ {editContributionsText}</p>
-              <p className="text-[11px]">
+              <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">✏️ {editContributionsText}</p>
+              <p className="text-[11px] text-gray-700 dark:text-gray-300">
                 You can now modify your artwork selections for "{translatedTitle}".
               </p>
             </div>
           ) : (
-            <p className="text-[11px]">
+            <p className="text-[11px] text-gray-700 dark:text-gray-300">
               {invitedToContributeText} "{translatedTitle}". {selectArtworkText}
             </p>
           )}
@@ -505,7 +505,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
             {/* Left Column - Slots */}
             <div className="space-y-6">
               <div>
-                <h3 className="text-xs font-medium mb-4">{availableSlotsText}</h3>
+                <h3 className="text-xs font-medium mb-4 text-gray-900 dark:text-gray-100">{availableSlotsText}</h3>
 
                 {/* Color coding legend */}
                 <div className="mb-3 flex flex-wrap gap-3">
@@ -515,7 +515,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                         .replace("border-", "bg-")
                         .replace("/10", "")}`}
                     ></div>
-                    <span className="text-[10px]"><TranslatedText text={exhibit.owner.name} />'s {slotsText}</span>
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300"><TranslatedText text={exhibit.owner.name} />'s {slotsText}</span>
                   </div>
 
                   {exhibit.collaborators.map((collab, index) => (
@@ -525,7 +525,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                           .replace("border-", "bg-")
                           .replace("/10", "")}`}
                       ></div>
-                      <span className="text-[10px]"><TranslatedText text={collab.name} />'s {slotsText}</span>
+                      <span className="text-[10px] text-gray-700 dark:text-gray-300"><TranslatedText text={collab.name} />'s {slotsText}</span>
                     </div>
                   ))}
                 </div>
@@ -670,16 +670,16 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                               <PopoverTrigger asChild>
                                 <div className="flex flex-col items-center justify-center w-full h-full">
                                   <span className="text-xs font-semibold">{slotId}</span>
-                                  <span className="text-[10px] text-gray-500"><UserSlotName userId={slotOwner} /></span>
+                                  <span className="text-[10px] text-gray-500 dark:text-gray-400"><UserSlotName userId={slotOwner} /></span>
                                   {selectedSlot === slotId && (
                                     <span className="text-[8px] text-blue-600 font-medium mt-1">Selected</span>
                                   )}
                                 </div>
                               </PopoverTrigger>
-                              <PopoverContent className="w-auto p-2">
-                                <p className="text-[10px]"><UserSlotName userId={slotOwner} /></p>
+                              <PopoverContent className="w-auto p-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
+                                <p className="text-[10px] text-gray-900 dark:text-gray-100"><UserSlotName userId={slotOwner} /></p>
                                 {userCanInteract && (
-                                  <p className="text-[9px] text-blue-600 mt-1">
+                                  <p className="text-[9px] text-blue-600 dark:text-blue-400 mt-1">
                                     {selectedSlot === slotId ? "Click on an artwork to assign it to this slot" : "Click to select this slot, then click an artwork"}
                                   </p>
                                 )}
@@ -694,13 +694,13 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
               </div>
 
               {/* Collaborator progress status */}
-              <div className="border rounded-md p-4 bg-gray-50">
-                <h3 className="text-[11px] font-medium mb-2">{yourArtworkSelectionText}</h3>
+              <div className="border border-gray-200 dark:border-gray-600 rounded-md p-4 bg-gray-50 dark:bg-gray-800">
+                <h3 className="text-[11px] font-medium mb-2 text-gray-900 dark:text-gray-100">{yourArtworkSelectionText}</h3>
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px]">
+                  <span className="text-[10px] text-gray-700 dark:text-gray-300">
                     {slotStats.filled} {ofText} {slotStats.total} {slotsFilledText}
                   </span>
-                  <div className="w-24 h-1 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="w-24 h-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-[#9b87f5]"
                       style={{
@@ -714,14 +714,14 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
               <div className="mt-7">
                 <button
                   type="button"
-                  className="bg-gray-900 text-white text-[10px] px-5 py-2 rounded-full hover:bg-gray-800"
+                  className="bg-gray-900 dark:bg-gray-700 text-white text-[10px] px-5 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-600"
                   onClick={() => {
                     navigate("/gallery3d-preview");
                   }}
                 >
                   {preview3DText}
                 </button>
-                <p className="text-[10px] text-muted-foreground mt-2">
+                <p className="text-[10px] text-muted-foreground dark:text-gray-400 mt-2">
                   {previewDescriptionText}
                 </p>
               </div>
@@ -729,7 +729,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
 
             {/* Right Column - Artworks */}
             <div>
-              <h3 className="text-xs font-medium mb-4">{yourArtworksText}</h3>
+              <h3 className="text-xs font-medium mb-4 text-gray-900 dark:text-gray-100">{yourArtworksText}</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-96 overflow-y-auto pr-1">
                 {artworks.map((artwork) => {
                   const isSelected = selectedArtworks.includes(String(artwork.id));
@@ -737,7 +737,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                     <Card
                       key={artwork.id}
                       onClick={() => !isSelected && (!hasUserSubmitted || isEditing) && handleArtworkSelect(String(artwork.id))}
-                      className={`overflow-hidden ${
+                      className={`overflow-hidden bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 ${
                         hasUserSubmitted && !isEditing
                           ? "cursor-not-allowed opacity-60"
                           : isSelected
@@ -771,24 +771,24 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
           <div className="flex justify-end mt-8">
             {hasUserSubmitted && !isEditing ? (
               <div className="flex items-center gap-2">
-              <button
-                onClick={() => {
-                  setIsEditing(true);
-                  setClearedSlots(new Set()); // Reset cleared slots when starting edit
-                  setSelectedSlot(null); // Reset selected slot
-                }}
-                className="text-gray-600 hover:text-gray-800 text-[10px] px-4 py-1.5 rounded-full border border-gray-300 hover:bg-gray-50"
-              >
-                {editContributionsText}
-              </button>
+                <button
+                  onClick={() => {
+                    setIsEditing(true);
+                    setClearedSlots(new Set()); // Reset cleared slots when starting edit
+                    setSelectedSlot(null); // Reset selected slot
+                  }}
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-[10px] px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  {editContributionsText}
+                </button>
                 <div className="flex flex-col items-end">
                   <button
                     disabled
-                    className="bg-gray-400 text-white text-[10px] px-8 py-1.5 rounded-full cursor-not-allowed"
+                    className="bg-gray-400 dark:bg-gray-600 text-white text-[10px] px-8 py-1.5 rounded-full cursor-not-allowed"
                   >
                     {alreadySubmittedButtonText}
                   </button>
-                  <p className="text-[9px] text-gray-500 mt-1">
+                  <p className="text-[9px] text-gray-500 dark:text-gray-400 mt-1">
                     {cannotEditSubmittedText}
                   </p>
                 </div>
@@ -801,13 +801,13 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
                     setClearedSlots(new Set()); // Reset cleared slots when canceling edit
                     setSelectedSlot(null); // Reset selected slot
                   }}
-                  className="text-gray-600 hover:text-gray-800 text-[10px] px-4 py-1.5 rounded-full border border-gray-300 hover:bg-gray-50"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-[10px] px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   {cancelEditText}
                 </button>
                 <button
                   onClick={handleSaveSelections}
-                  className="bg-amber-600 hover:bg-amber-700 text-white text-[10px] px-8 py-1.5 rounded-full"
+                  className="bg-amber-600 dark:bg-amber-700 hover:bg-amber-700 dark:hover:bg-amber-600 text-white text-[10px] px-8 py-1.5 rounded-full"
                 >
                   {updateSelectionsText}
                 </button>
@@ -815,7 +815,7 @@ const CollaboratorView = ({ exhibitData }: CollaboratorViewProps) => {
             ) : (
               <button
                 onClick={handleSaveSelections}
-                className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full"
+                className="bg-red-700 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-500 text-white text-[10px] px-8 py-1.5 rounded-full"
               >
                 {saveSelectionsText}
               </button>

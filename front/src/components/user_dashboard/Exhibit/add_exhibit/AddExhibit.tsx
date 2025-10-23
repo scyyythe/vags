@@ -543,11 +543,11 @@ const AddExhibit = () => {
   const isUploading = createExhibitMutation.status === "pending";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background dark:bg-gray-900">
       <Header />
       <div className="container mx-auto px-1 pt-20 max-w-6xl pb-4">
         <div className="mb-3">
-          <button onClick={() => navigate(-1)} className="flex items-center text-xs font-semibold">
+          <button onClick={() => navigate(-1)} className="flex items-center text-xs font-semibold text-gray-900 dark:text-gray-100">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
             {goBackText}
           </button>
@@ -696,7 +696,7 @@ const AddExhibit = () => {
             <button
               type="submit"
               disabled={isUploading}
-              className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
+              className="bg-red-700 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500 text-white text-[10px] px-8 py-1.5 rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isUploading
                 ? submittingText

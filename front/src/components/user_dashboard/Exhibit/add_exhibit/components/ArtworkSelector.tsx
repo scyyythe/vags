@@ -28,7 +28,7 @@ const ArtworkSelector: React.FC<ArtworkSelectorProps> = ({
 
   return (
     <div>
-      <h3 className="text-xs font-medium mb-4">
+      <h3 className="text-xs font-medium mb-4 text-gray-900 dark:text-gray-100">
         {viewMode === "collaborator" ? `${currentCollaborator?.first_name}'s ${artworksText}` : yourArtworksText}
       </h3>
 
