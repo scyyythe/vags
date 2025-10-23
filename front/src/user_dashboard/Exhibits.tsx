@@ -156,7 +156,7 @@ const Exhibits = () => {
                     onClick={() => setBaseType("solo")}
                     className={`py-[5px] px-4 rounded-full text-[10px] font-small transition-colors ${
                       baseType === "solo"
-                        ? "border border-gray-300 dark:border-gray-600 font-medium shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                        ? "border border-gray-300 dark:border-gray-600 font-medium shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 dark:shadow-white/20"
                         : "bg-white border hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700"
                     }`}
                   >
@@ -166,7 +166,7 @@ const Exhibits = () => {
                     onClick={() => setBaseType("collab")}
                     className={`py-[5px] px-4 rounded-full text-[10px] font-small transition-colors ${
                       baseType === "collab"
-                        ? "border border-gray-300 dark:border-gray-600 font-medium shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                        ? "border border-gray-300 dark:border-gray-600 font-medium shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 dark:shadow-white/20"
                         : "bg-white border hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700"
                     }`}
                   >
