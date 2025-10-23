@@ -628,7 +628,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
       </div>
 
       {/* Fixed input at bottom */}
-      <form onSubmit={handleCommentSubmit} className="absolute left-0 right-0 bg-white">
+      <form onSubmit={handleCommentSubmit} className="absolute left-0 right-0 bg-white dark:bg-transparent">
         {/* Reply Context Display */}
         {replyContext && (
           <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
@@ -654,15 +654,15 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
           </div>
         )}
 
-        <div className="relative p-0.5">
+        <div className="relative p-0.5 dark:p-0">
           <input
             type="text"
             placeholder={tAddComment}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className={`w-full border border-gray-200 dark:border-gray-700 rounded-full px-4 py-2 ${
+            className={`w-full border rounded-full px-4 py-2 ${
               isMobile ? "text-[10px]" : "text-[10px]"
-            } focus:outline-none focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-600 pr-16 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+            } focus:outline-none focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-600 pr-16 bg-white text-gray-900 border-gray-200 dark:border-0 dark:bg-gray-800 dark:text-gray-100`}
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
             <div className="relative">
@@ -745,7 +745,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
             </div>
 
             {/* Modal Input Field */}
-            <div className="px-4 pb-4">
+            <div className="px-4 pb-4 dark:px-0 dark:pb-0">
               {/* Reply Context Display */}
               {modalReplyContext && (
                 <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 mb-3 rounded-lg">
@@ -778,9 +778,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({ artworkId }) => {
                   placeholder={tAddComment}
                   value={modalComment}
                   onChange={(e) => setModalComment(e.target.value)}
-                  className={`w-full border border-gray-200 dark:border-gray-700 rounded-full px-4 py-2 ${
+                  className={`w-full border rounded-full px-4 py-2 ${
                     isMobile ? "text-[10px]" : "text-[10px]"
-                  } focus:outline-none focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-600 pr-16 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+                  } focus:outline-none focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-600 pr-16 bg-white text-gray-900 border-gray-200 dark:border-0 dark:bg-gray-800 dark:text-gray-100`}
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
                   <div className="relative">
