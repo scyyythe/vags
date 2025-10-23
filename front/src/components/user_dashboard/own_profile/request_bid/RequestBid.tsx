@@ -12,6 +12,7 @@ import { useCreateAuction } from "@/hooks/auction/useCreateAuction";
 import { usePaymentAccounts } from "@/hooks/accounts/usePaymentAccounts";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useQueryClient } from "@tanstack/react-query";
 interface AuctionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -24,6 +25,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
   const createAuction = useCreateAuction();
   const navigate = useNavigate();
   const { accounts: paymentAccounts } = usePaymentAccounts();
+  const queryClient = useQueryClient();
   // Start date/time
   const [startDate, setStartDate] = useState<Date | undefined>(today);
   const now = new Date();
@@ -143,6 +145,24 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
       },
       {
         onSuccess: () => {
+          // Dispatch custom event to immediately hide artwork from Explore
+          const auctionCreatedEvent = new CustomEvent('auction-created', {
+            detail: { artworkId }
+          });
+          window.dispatchEvent(auctionCreatedEvent);
+          
+          // Immediately remove artwork from Explore by invalidating and refetching
+          queryClient.invalidateQueries({ queryKey: ["artworks"] });
+          queryClient.refetchQueries({ 
+            queryKey: ["artworks"],
+            type: "active"
+          });
+          
+          // Also invalidate other relevant queries
+          queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+          queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+          queryClient.invalidateQueries({ queryKey: ["auctions"] });
+          
           toast.success(auctionCreatedSuccessText, {
             closeButton: true,
           });

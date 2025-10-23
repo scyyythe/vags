@@ -48,6 +48,7 @@ const Explore = () => {
   const [selectedCategory, setSelectedCategory] = useState(translatedAll);
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [selectedStyle, setSelectedStyle] = useState("All");
+  const [artworksOnAuction, setArtworksOnAuction] = useState<Set<string>>(new Set());
 
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
@@ -222,6 +223,24 @@ const Explore = () => {
     });
   };
 
+  // Function to mark artwork as on auction (called from RequestBid)
+  const markArtworkOnAuction = (artworkId: string) => {
+    setArtworksOnAuction(prev => new Set([...prev, artworkId]));
+  };
+
+  // Listen for auction creation events (you can call this from RequestBid)
+  useEffect(() => {
+    const handleAuctionCreated = (event: CustomEvent) => {
+      const { artworkId } = event.detail;
+      markArtworkOnAuction(artworkId);
+    };
+
+    window.addEventListener('auction-created', handleAuctionCreated as EventListener);
+    return () => {
+      window.removeEventListener('auction-created', handleAuctionCreated as EventListener);
+    };
+  }, []);
+
   // Reset to "All" when the user first enters Explore
   useEffect(() => {
     setSelectedFilterCategory(translatedAll);
@@ -315,6 +334,7 @@ const Explore = () => {
                           report={report}
                           onButtonClick={() => handleTipJar(transformedArtwork)}
                           isExplore={true}
+                          isOnAuction={artworksOnAuction.has(card.id)}
                         />
                       );
                     })
