@@ -38,6 +38,12 @@ const CreatePost = () => {
   // Use optimized upload hook
   const { submitPost: submitPostOptimized, isUploading: isUploadingOptimized } = useOptimizedPostSubmission();
 
+  // Function to capitalize the first letter of a string
+  const capitalizeFirstLetter = (str: string): string => {
+    if (!str) return str;
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
+
   // Translations for UI texts
   const createPostText = useAutoTranslation("Create Post", language);
   const provideArtworkDetailsText = useAutoTranslation("Provide artwork details.", language);
@@ -109,10 +115,13 @@ const CreatePost = () => {
     e.preventDefault();
 
     const size = `${artworkHeight} x ${artworkWidth}`;
+    
+    // Capitalize the artwork title
+    const capitalizedTitle = capitalizeFirstLetter(artworkTitle.trim());
 
     // Validate form data using the separated validation logic
     const validation = validatePostData({
-      title: artworkTitle,
+      title: capitalizedTitle,
       medium,
       artworkHeight,
       artworkWidth,
@@ -128,7 +137,7 @@ const CreatePost = () => {
 
     // Prepare submission data for optimized upload
     const submissionData = {
-      title: artworkTitle,
+      title: capitalizedTitle,
       category: artworkStyle,
       medium,
       artStatus,
@@ -222,7 +231,15 @@ const CreatePost = () => {
                     id="title"
                     placeholder={enterArtworkTitleText}
                     value={artworkTitle}
-                    onChange={(e) => setArtworkTitle(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Only capitalize if the user is typing at the beginning or if it's a new word after a space
+                      if (value.length === 1 || (value.length > 1 && value[value.length - 2] === ' ')) {
+                        setArtworkTitle(capitalizeFirstLetter(value));
+                      } else {
+                        setArtworkTitle(value);
+                      }
+                    }}
                     className="w-full"
                     style={{ fontSize: "12px", height: "35px" }}
                   />
