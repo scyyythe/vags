@@ -271,11 +271,11 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
     formData.fullName && formData.address && formData.city && formData.postalCode && formData.phoneNumber;
 
   return (
-    <div className="min-h-screen bg-white relative">
+    <div className="min-h-screen bg-white dark:bg-gray-900 relative">
       <Header />
       <div className="container mx-auto px-4 pt-20 max-w-6xl">
         <div className="mb-4">
-          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold dark:text-gray-100">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
             {shippingDetailsText}
           </button>
@@ -283,12 +283,12 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
 
         <div className="px-6 py-3 mx-auto">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xs font-medium text-gray-900">{isEditing ? editAddressText : addAddressText}</h2>
+            <h2 className="text-xs font-medium text-gray-900 dark:text-gray-100">{isEditing ? editAddressText : addAddressText}</h2>
             {isEditing && (
               <button
                 type="button"
                 onClick={() => setShowDeletePopup(true)}
-                className="text-xs text-red-600 font-medium hover:text-red-800"
+                className="text-xs text-red-600 dark:text-red-400 font-medium hover:text-red-800 dark:hover:text-red-300"
               >
                 {deleteText}
               </button>
@@ -299,30 +299,30 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
             {/* Full Name and Country Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">{fullNameText}</label>
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">{fullNameText}</label>
                 <input
                   type="text"
                   value={formData.fullName}
                   onChange={(e) => handleInputChange("fullName", e.target.value)}
                   placeholder={enterFullNameText}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">{countryText}</label>
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">{countryText}</label>
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors text-left flex items-center justify-between"
+                    className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg outline-none transition-colors text-left flex items-center justify-between"
                     style={{ fontSize: "10px" }}
                   >
                     <span><TranslatedCountry countryName={formData.country} /></span>
-                    <ChevronDown className="w-3 h-3 text-gray-500" />
+                    <ChevronDown className="w-3 h-3 text-gray-500 dark:text-gray-400" />
                   </button>
                   {isCountryDropdownOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto">
                       {countries.map((country) => (
                         <button
                           key={country}
@@ -331,7 +331,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
                             handleInputChange("country", country);
                             setIsCountryDropdownOpen(false);
                           }}
-                          className="w-full px-3 py-2 text-left text-[10px] hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg"
+                          className="w-full px-3 py-2 text-left text-[10px] hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-100 first:rounded-t-lg last:rounded-b-lg"
                         >
                           <TranslatedCountry countryName={country} />
                         </button>
@@ -345,24 +345,24 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
             {/* Address and State Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">{addressText}</label>
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">{addressText}</label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => handleInputChange("address", e.target.value)}
                   placeholder={addressLine1Text}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">{stateRegionProvinceText}</label>
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">{stateRegionProvinceText}</label>
                 <input
                   type="text"
                   value={formData.state}
                   onChange={(e) => handleInputChange("state", e.target.value)}
                   placeholder={stateRegionPlaceholderText}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
@@ -371,24 +371,24 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
             {/* Apartment and Postal Code Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">{aptFloorSuiteText}</label>
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">{aptFloorSuiteText}</label>
                 <input
                   type="text"
                   value={formData.apartment}
                   onChange={(e) => handleInputChange("apartment", e.target.value)}
                   placeholder={aptFloorPlaceholderText}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">{zipPostalCodeText}</label>
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">{zipPostalCodeText}</label>
                 <input
                   type="text"
                   value={formData.postalCode}
                   onChange={(e) => handleInputChange("postalCode", e.target.value)}
                   placeholder={zipPostalPlaceholderText}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
@@ -397,24 +397,24 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
             {/* City and Phone Number Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">{cityText}</label>
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">{cityText}</label>
                 <input
                   type="text"
                   value={formData.city}
                   onChange={(e) => handleInputChange("city", e.target.value)}
                   placeholder={enterCityText}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2">{phoneNumberText}</label>
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">{phoneNumberText}</label>
                 <input
                   type="tel"
                   value={formData.phoneNumber}
                   onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
                   placeholder={enterPhoneText}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg outline-none transition-colors"
+                  className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg outline-none transition-colors"
                   style={{ fontSize: "10px" }}
                 />
               </div>
@@ -427,18 +427,18 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
                 id="setAsDefault"
                 checked={formData.setAsDefault}
                 onChange={(e) => handleInputChange("setAsDefault", e.target.checked)}
-                className="w-3 h-3 text-red-800 border-gray-300 rounded focus:ring-red-800"
+                className="w-3 h-3 text-red-800 dark:text-red-400 border-gray-300 dark:border-gray-600 rounded focus:ring-red-800 dark:focus:ring-red-400"
               />
-              <label htmlFor="setAsDefault" className="text-[11px] text-gray-700">
+              <label htmlFor="setAsDefault" className="text-[11px] text-gray-700 dark:text-gray-300">
                 {setAsDefaultText}
               </label>
             </div>
 
             {/* Buyer Protection */}
-            <div className="flex items-center space-x-2 text-[10px] text-gray-600">
-              <i className="bx bxs-check-circle text-black text-sm"></i>
+            <div className="flex items-center space-x-2 text-[10px] text-gray-600 dark:text-gray-400">
+              <i className="bx bxs-check-circle text-black dark:text-green-400 text-sm"></i>
               <span>{purchaseProtectedText}</span>
-              <button type="button" className="text-blue-600 underline hover:text-blue-700">
+              <button type="button" className="text-blue-600 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300">
                 {learnMoreText}
               </button>
             </div>
@@ -448,7 +448,7 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
               <button
                 type="submit"
                 disabled={!isFormValid || loading}
-                className="bg-red-800 text-white text-[11px] px-10 py-1.5 rounded-full font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                className="bg-red-800 dark:bg-red-700 text-white text-[11px] px-10 py-1.5 rounded-full font-medium hover:bg-red-700 dark:hover:bg-red-600 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? savingText : saveText}
               </button>
@@ -460,18 +460,18 @@ const AddAddressForm: React.FC<AddAddressFormProps> = ({
       {/* Delete Popup - Fixed overlay that prevents scrolling */}
       {showDeletePopup && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-80">
-            <p className="text-center text-sm font-semibold text-gray-800 mb-2">{deleteAddressQuestionText}</p>
-            <p className="text-center text-xs text-gray-600 mb-5">{deletedAddressCantRecoverText}</p>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-80">
+            <p className="text-center text-sm font-semibold text-gray-800 dark:text-gray-100 mb-2">{deleteAddressQuestionText}</p>
+            <p className="text-center text-xs text-gray-600 dark:text-gray-400 mb-5">{deletedAddressCantRecoverText}</p>
             <div className="flex justify-between space-x-3">
               <button
-                className="w-full px-4 py-1.5 text-[11px] rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100"
+                className="w-full px-4 py-1.5 text-[11px] rounded-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => setShowDeletePopup(false)}
               >
                 {keepText}
               </button>
               <button
-                className="w-full px-4 py-1.5 text-[11px] rounded-full bg-red-800 text-white hover:bg-red-700"
+                className="w-full px-4 py-1.5 text-[11px] rounded-full bg-red-800 dark:bg-red-700 text-white hover:bg-red-700 dark:hover:bg-red-600"
                 onClick={() => addressId && handleDelete(addressId)}
               >
                 {deleteText}

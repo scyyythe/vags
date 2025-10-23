@@ -39,12 +39,14 @@ const PreviewPage = () => {
   }
 
   return (
-    <PreviewModal
-      isOpen={true}
-      onClose={() => navigate("/")}
-      onProceedToCheckout={handleProceed}
-      artwork={sampleArtwork}
-    />
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      <PreviewModal
+        isOpen={true}
+        onClose={() => navigate("/")}
+        onProceedToCheckout={handleProceed}
+        artwork={sampleArtwork}
+      />
+    </div>
   )
 }
 

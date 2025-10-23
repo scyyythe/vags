@@ -40,7 +40,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
               alt={method.name}
               className="w-8 h-8 object-contain"
             />
-            <span className="text-xs font-medium text-gray-800">
+            <span className="text-xs font-medium text-gray-800 dark:text-gray-100">
               <TranslatedPaymentMethod methodName={method.name} />
             </span>
           </div>

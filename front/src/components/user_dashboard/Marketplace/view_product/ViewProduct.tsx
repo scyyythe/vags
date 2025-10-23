@@ -254,12 +254,12 @@ const ProductViewingContent = () => {
 
   if (!id) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900">
         <Header />
         <div className="container mx-auto pt-24 px-4 text-center">
-          <h2 className="text-lg font-bold mb-4">{artworkNotFoundText}</h2>
-          <p className="mb-8 text-xs">{artworkNotExistText}</p>
-          <Link to="/" className="text-red-600 text-xs hover:underline">
+          <h2 className="text-lg font-bold mb-4 text-gray-900 dark:text-gray-100">{artworkNotFoundText}</h2>
+          <p className="mb-8 text-xs text-gray-600 dark:text-gray-300">{artworkNotExistText}</p>
+          <Link to="/" className="text-red-600 dark:text-red-400 text-xs hover:underline">
             {returnToHomeText}
           </Link>
         </div>
@@ -268,12 +268,12 @@ const ProductViewingContent = () => {
   }
   if (error) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900">
         <Header />
         <div className="container mx-auto pt-24 px-4 text-center">
-          <h2 className="text-lg font-bold mb-4">{artworkNotFoundText}</h2>
-          <p className="mb-8 text-xs text-red-500">{error}</p>
-          <Link to="/" className="text-red-600 text-xs hover:underline">
+          <h2 className="text-lg font-bold mb-4 text-gray-900 dark:text-gray-100">{artworkNotFoundText}</h2>
+          <p className="mb-8 text-xs text-red-500 dark:text-red-400">{error}</p>
+          <Link to="/" className="text-red-600 dark:text-red-400 text-xs hover:underline">
             {returnToHomeText}
           </Link>
         </div>
@@ -283,21 +283,21 @@ const ProductViewingContent = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen flex justify-center items-center">
+      <div className="min-h-screen flex justify-center items-center bg-white dark:bg-gray-900">
         <Header />
-        <p className="text-gray-500 text-sm">{loadingExhibitText}</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">{loadingExhibitText}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
 
       <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
         {/* Back button */}
         <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
-          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
             {productDetailsText}
           </button>
@@ -361,8 +361,8 @@ const ProductViewingContent = () => {
                       className="group/expand flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
                       onClick={() => setIsExpanded(true)}
                     >
-                      <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
-                      <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover/expand:translate-x-0 group-hover/expand:opacity-100 transition-all ease-in-out duration-700">
+                      <i className="bx bx-expand-alt text-[12px] mr-[6px] dark:text-black"></i>
+                      <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover/expand:translate-x-0 group-hover/expand:opacity-100 transition-all ease-in-out duration-700 dark:text-black">
                         {expandText}
                       </span>
                     </div>
@@ -379,20 +379,20 @@ const ProductViewingContent = () => {
             {/* Title and Actions */}
             <div className="flex justify-between items-start">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">{translatedTitle}</h1>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{translatedTitle}</h1>
                 <div
                   className="flex items-center space-x-2 cursor-pointer"
                   onClick={() => navigate(`/userprofile/${product.artist.id}`)}
                 >
-                  <Avatar className="w-4 h-4 border">
+                  <Avatar className="w-4 h-4 border dark:border-gray-600">
                     <AvatarImage
                       src={product?.artist?.profile_picture || undefined}
                       alt={translatedArtistName || "Artist"}
                     />
-                    <AvatarFallback>{translatedArtistName?.charAt(0) || "?"}</AvatarFallback>
-                    <span>{translatedArtistName || "Unknown Artist"}</span>
+                    <AvatarFallback className="dark:bg-gray-600 dark:text-gray-300">{translatedArtistName?.charAt(0) || "?"}</AvatarFallback>
+                    <span className="dark:text-gray-100">{translatedArtistName || "Unknown Artist"}</span>
                   </Avatar>
-                  <span className="text-black text-[10px]">{translatedArtistName}</span>
+                  <span className="text-black dark:text-gray-100 text-[10px]">{translatedArtistName}</span>
                 </div>
               </div>
               <div className="relative">
@@ -407,8 +407,8 @@ const ProductViewingContent = () => {
                   <MoreHorizontal
                     size={15}
                     className={`${
-                      localIsReported ? "text-red-600" : menuOpen ? "text-black" : "text-gray-500"
-                    } hover:text-black`}
+                      localIsReported ? "text-red-600 dark:text-red-400" : menuOpen ? "text-black dark:text-white" : "text-gray-500 dark:text-gray-400"
+                    } hover:text-black dark:hover:text-white`}
                   />
                 </button>
                 {isOwner ? (
@@ -487,35 +487,35 @@ const ProductViewingContent = () => {
             {/* Price */}
             <div className="flex items-center space-x-4">
               {product.price > 0 && (
-                <div className="text-2xl font-bold text-gray-900">{formatPrice(product.price)}</div>
+                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{formatPrice(product.price)}</div>
               )}
               {product.discounted_price > 0 && product.discounted_price !== product.price && (
-                <div className="text-lg text-gray-400 line-through">{formatPrice(product.discounted_price)}</div>
+                <div className="text-lg text-gray-400 dark:text-gray-500 line-through">{formatPrice(product.discounted_price)}</div>
               )}
             </div>
 
             {/* Product Details Grid */}
-            <div className="grid grid-cols-4 gap-4 text-center border py-[18px] rounded-md">
+            <div className="grid grid-cols-4 gap-4 text-center border dark:border-gray-600 py-[18px] rounded-md">
               <div>
-                <h3 className="text-[10px] font-medium text-gray-500 mb-1">{artworkStyleText}</h3>
-                <p className="text-[10px] text-gray-900">{capitalizeWords(translatedArtworkStyle)}</p>
+                <h3 className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">{artworkStyleText}</h3>
+                <p className="text-[10px] text-gray-900 dark:text-gray-100">{capitalizeWords(translatedArtworkStyle)}</p>
               </div>
 
-              <div className="border-l border-gray-300 pl-4">
-                <h3 className="text-[10px] font-medium text-gray-500 mb-1">{dimensionsText}</h3>
-                <p className="text-[10px] text-gray-900">
+              <div className="border-l border-gray-300 dark:border-gray-600 pl-4">
+                <h3 className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">{dimensionsText}</h3>
+                <p className="text-[10px] text-gray-900 dark:text-gray-100">
                   {product.size} {cmText}
                 </p>
               </div>
 
-              <div className="border-l border-gray-300 mr-2">
-                <h3 className="text-[10px] font-medium text-gray-500 mb-1">{editionText}</h3>
-                <p className="text-[10px] text-gray-900">{translatedEdition}</p>
+              <div className="border-l border-gray-300 dark:border-gray-600 mr-2">
+                <h3 className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">{editionText}</h3>
+                <p className="text-[10px] text-gray-900 dark:text-gray-100">{translatedEdition}</p>
               </div>
 
-              <div className="border-l border-gray-300 mr-2">
-                <h3 className="text-[10px] font-medium text-gray-500 mb-1">{yearCreatedText}</h3>
-                <p className="text-[10px] text-gray-900">{product.year_created}</p>
+              <div className="border-l border-gray-300 dark:border-gray-600 mr-2">
+                <h3 className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">{yearCreatedText}</h3>
+                <p className="text-[10px] text-gray-900 dark:text-gray-100">{product.year_created}</p>
               </div>
             </div>
 
@@ -524,7 +524,7 @@ const ProductViewingContent = () => {
               <div className="flex text-[10px] font-medium">
                 <button
                   className={`px-4 py-2 ${
-                    activeTab === "description" ? "border-b-2 border-black text-black" : "text-gray-400"
+                    activeTab === "description" ? "border-b-2 border-black dark:border-white text-black dark:text-white" : "text-gray-400 dark:text-gray-500"
                   }`}
                   onClick={() => setActiveTab("description")}
                 >
@@ -534,7 +534,7 @@ const ProductViewingContent = () => {
                 {product.edition !== "Original (1 of 1)" && (
                   <button
                     className={`px-4 py-2 ml-4 ${
-                      activeTab === "review" ? "border-b-2 border-black text-black" : "text-gray-400"
+                      activeTab === "review" ? "border-b-2 border-black dark:border-white text-black dark:text-white" : "text-gray-400 dark:text-gray-500"
                     }`}
                     onClick={() => setActiveTab("review")}
                   >
@@ -544,18 +544,18 @@ const ProductViewingContent = () => {
               </div>
 
               {/* Tab Content Container */}
-              <div className="mt-5 -mb-4 bg-white px-2 h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-hide">
+              <div className="mt-5 -mb-4 bg-white dark:bg-gray-900 px-2 h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-700 scrollbar-hide">
                 {/* Description Content */}
                 {activeTab === "description" && (
                   <div className="pt-2 space-y-2">
                     {/* Medium Info Block */}
                     <div className=" flex gap-2">
-                      <h3 className="text-[10px] font-medium text-gray-500 mb-1">{mediumText}</h3>
-                      <p className="text-[10px] text-gray-900">{translatedMedium}</p>
+                      <h3 className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">{mediumText}</h3>
+                      <p className="text-[10px] text-gray-900 dark:text-gray-100">{translatedMedium}</p>
                     </div>
 
                     {/* Description Text */}
-                    <p className="text-[10px] text-gray-700 leading-relaxed">{translatedDescription}</p>
+                    <p className="text-[10px] text-gray-700 dark:text-gray-300 leading-relaxed">{translatedDescription}</p>
                   </div>
                 )}
 
@@ -566,7 +566,7 @@ const ProductViewingContent = () => {
                     <div className="absolute right-0 top-0">
                       <button
                         onClick={() => setIsReviewModalOpen(true)}
-                        className="text-[9px] text-gray-600 hover:underline flex items-center"
+                        className="text-[9px] text-gray-600 dark:text-gray-400 hover:underline flex items-center"
                       >
                         {viewAllReviewsText}
                         <ChevronRight size={10} className="ml-1" />
@@ -576,13 +576,13 @@ const ProductViewingContent = () => {
                     {/* Rating Summary */}
                     <div className="min-w-[120px] mt-6 sm:mt-6">
                       <div className="flex items-end space-x-1 mb-1">
-                        <span className="text-[24px] font-semibold">{averageRating}</span>
-                        <span className="text-[10px] text-gray-500 mb-1">{outOf5Text}</span>
+                        <span className="text-[24px] font-semibold dark:text-gray-100">{averageRating}</span>
+                        <span className="text-[10px] text-gray-500 dark:text-gray-400 mb-1">{outOf5Text}</span>
                       </div>
                       <div className="flex items-center space-x-0.5 mb-1">
                         {renderStars(Math.round(Number(averageRating)))}
                       </div>
-                      <p className="text-[10px] text-gray-500">
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400">
                         ({reviews?.length || 0} {reviewsText})
                       </p>
                     </div>
@@ -595,11 +595,11 @@ const ProductViewingContent = () => {
                           const percent = reviews && reviews.length ? (count / reviews.length) * 100 : 0;
                           return (
                             <div key={star} className="flex items-center space-x-2">
-                              <span className="w-2">{star}</span>
-                              <div className="flex-1 h-[6px] bg-gray-200 rounded-full overflow-hidden">
+                              <span className="w-2 dark:text-gray-300">{star}</span>
+                              <div className="flex-1 h-[6px] bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
                                 <div className="bg-yellow-400 h-full" style={{ width: `${percent}%` }} />
                               </div>
-                              <span className="w-6 text-right">{count}</span>
+                              <span className="w-6 text-right dark:text-gray-300">{count}</span>
                             </div>
                           );
                         })}
@@ -617,33 +617,33 @@ const ProductViewingContent = () => {
                 {(product.edition === "Open Edition" || product.edition === "Limited Edition") && (
                   <div className="flex flex-col gap-1">
                     <div
-                      className={`flex items-center gap-1.5 border border-gray-300 rounded-full overflow-hidden text-xs ${
+                      className={`flex items-center gap-1.5 border border-gray-300 dark:border-gray-600 rounded-full overflow-hidden text-xs ${
                         productStatus === "Sold" ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                     >
                       <button
                         onClick={() => handleQuantityChange(-1)}
-                        className="w-8 h-8 pl-1.5 flex items-center justify-center text-black hover:bg-gray-100"
+                        className="w-8 h-8 pl-1.5 flex items-center justify-center text-black dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700"
                         disabled={productStatus === "Sold"}
                       >
                         −
                       </button>
 
-                      <div className="w-px h-3 bg-gray-300" />
+                      <div className="w-px h-3 bg-gray-300 dark:bg-gray-600" />
 
-                      <span className="w-8 text-center font-medium text-black">{quantity}</span>
+                      <span className="w-8 text-center font-medium text-black dark:text-gray-100">{quantity}</span>
 
-                      <div className="w-px h-3 bg-gray-300" />
+                      <div className="w-px h-3 bg-gray-300 dark:bg-gray-600" />
 
                       <button
                         onClick={() => handleQuantityChange(1)}
-                        className="w-8 h-8 pr-1.5 flex items-center justify-center text-black hover:bg-gray-100"
+                        className="w-8 h-8 pr-1.5 flex items-center justify-center text-black dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700"
                         disabled={productStatus === "Sold"}
                       >
                         +
                       </button>
                     </div>
-                    <p className="text-[10px] text-red-600 text-center">
+                    <p className="text-[10px] text-red-600 dark:text-red-400 text-center">
                       {product.quantity ? `${product.quantity} ${remainingStocksText}` : ""}
                     </p>
                   </div>
@@ -653,8 +653,8 @@ const ProductViewingContent = () => {
                 <button
                   className={`w-full py-2 text-xs font-medium rounded-full transition-colors duration-200 ${
                     productStatus === "Sold"
-                      ? "bg-gray-400 text-white cursor-not-allowed"
-                      : "bg-red-800 hover:bg-red-700 text-white"
+                      ? "bg-gray-400 dark:bg-gray-600 text-white cursor-not-allowed"
+                      : "bg-red-800 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-600 text-white"
                   }`}
                   onClick={() => {
                     if (productStatus !== "Sold") setIsModalOpen(true);
@@ -667,7 +667,7 @@ const ProductViewingContent = () => {
 
                 <button
                   onClick={handleWishlistToggle}
-                  className="py-1.5 px-2.5 border border-gray-300 rounded-full"
+                  className="py-1.5 px-2.5 border border-gray-300 dark:border-gray-600 rounded-full"
                   disabled={productStatus === "Sold"}
                 >
                   <img
@@ -676,7 +676,7 @@ const ProductViewingContent = () => {
                         ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
                         : "https://img.icons8.com/puffy/32/like.png"
                     }
-                    className="w-5 h-5 object-contain"
+                    className="w-5 h-5 object-contain dark:brightness-0 dark:invert"
                   />
                 </button>
               </div>
@@ -687,11 +687,11 @@ const ProductViewingContent = () => {
 
       {/* Related Artworks Section */}
       <div className="container md:px-6 mb-4">
-        <h2 className={`font-medium ${isMobile ? "text-sm -ml-6 mb-4 mt-4" : "text-xs mb-4 -mt-2"}`}>
+        <h2 className={`font-medium dark:text-gray-100 ${isMobile ? "text-sm -ml-6 mb-4 mt-4" : "text-xs mb-4 -mt-2"}`}>
           {relatedArtworksText}
         </h2>
         {isLoading ? (
-          <p className="text-sm text-gray-400">{loadingText}</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">{loadingText}</p>
         ) : relatedArtworks.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {relatedArtworks.slice(0, 8).map((art) => (
@@ -716,7 +716,7 @@ const ProductViewingContent = () => {
             ))}
           </div>
         ) : (
-          <p className="text-xs text-gray-400 text-center">{noOtherArtworksText}</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center">{noOtherArtworksText}</p>
         )}
       </div>
 
@@ -725,9 +725,9 @@ const ProductViewingContent = () => {
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center overflow-hidden">
           <button
             onClick={closeExpandedView}
-            className="absolute top-4 right-6 z-[60] bg-white rounded-full px-1 shadow-md transition-colors duration-200"
+            className="absolute top-4 right-6 z-[60] bg-white dark:bg-gray-800 rounded-full px-1 shadow-md transition-colors duration-200"
           >
-            <i className="bx bx-x text-xl text-black"></i>
+            <i className="bx bx-x text-xl text-black dark:text-white"></i>
           </button>
 
           <div className="relative w-full h-full px-4 py-16 flex justify-center items-center">
@@ -742,15 +742,15 @@ const ProductViewingContent = () => {
               <>
                 <button
                   onClick={goToPrevious}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 z-50"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 rounded-full p-2 z-50"
                 >
-                  <ChevronLeft size={15} className="text-black" />
+                  <ChevronLeft size={15} className="text-black dark:text-white" />
                 </button>
                 <button
                   onClick={goToNext}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 z-50"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 rounded-full p-2 z-50"
                 >
-                  <ChevronRight size={15} className="text-black" />
+                  <ChevronRight size={15} className="text-black dark:text-white" />
                 </button>
               </>
             )}

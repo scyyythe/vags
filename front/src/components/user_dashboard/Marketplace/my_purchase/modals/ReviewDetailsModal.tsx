@@ -88,11 +88,11 @@ const ReviewDetailsModal: React.FC<ReviewDetailsModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="max-w-2xl max-h-[90vh] text-xs review-details-scroll-hidden"
+        className="max-w-2xl max-h-[90vh] text-xs review-details-scroll-hidden bg-white dark:bg-gray-800"
         onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between text-sm mt-2">
+          <DialogTitle className="flex items-center justify-between text-sm mt-2 text-gray-900 dark:text-gray-100">
             <div className="flex items-center gap-2">
               <span>{viewType === "seller" ? customerReviewsText : yourReviewText}</span>
               {allReviews.length > 1 && (

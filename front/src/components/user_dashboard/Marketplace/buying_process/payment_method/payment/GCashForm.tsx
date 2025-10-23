@@ -65,7 +65,7 @@ const GCashForm: React.FC<GCashFormProps> = ({
       <>
         <div className="space-y-4">
           {accounts.map((account) => (
-            <div key={account.id} className="bg-card px-10 pb-6 space-y-4">
+            <div key={account.id} className="bg-card dark:bg-gray-800 px-10 pb-6 space-y-4">
               {/* Header with Default Badge and Update Account */}
               <div className="flex items-center justify-end gap-2 pb-3">
                 {account.isDefault && (
@@ -87,13 +87,13 @@ const GCashForm: React.FC<GCashFormProps> = ({
               {/* QR Code Section */}
               <div className="flex justify-center mb-2.5">
                 <div className="relative inline-block group">
-                  <p className="text-gray-700 text-[11px] text-center mb-2">{scanToPayText}</p>
+                  <p className="text-gray-700 dark:text-gray-300 text-[11px] text-center mb-2">{scanToPayText}</p>
 
                   {/* QR Image (Click to Expand) */}
                   <img
                     src={account.qrCodeUrl || "/pics/qr.jpg"}
                     alt={gcashQrCodeText}
-                    className="w-60 h-60 object-cover rounded-md border border-gray-200 cursor-pointer"
+                    className="w-60 h-60 object-cover rounded-md border border-gray-200 dark:border-gray-600 cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -121,8 +121,8 @@ const GCashForm: React.FC<GCashFormProps> = ({
 
               {/* GCash Number */}
               <div className="text-center space-y-2">
-                <p className="text-gray-700 text-[10px]">{gcashMobileNumberText}</p>
-                <p className="text-[13px] font-semibold text-black">{account.accountInfo}</p>
+                <p className="text-gray-700 dark:text-gray-300 text-[10px]">{gcashMobileNumberText}</p>
+                <p className="text-[13px] font-semibold text-black dark:text-gray-100">{account.accountInfo}</p>
               </div>
             </div>
           ))}
@@ -159,15 +159,15 @@ const GCashForm: React.FC<GCashFormProps> = ({
     console.log("GCashForm: Rendering empty state");
     return (
       <div className="space-y-4">
-        <div className="bg-card border border-border rounded-lg p-8 text-center space-y-4">
+        <div className="bg-card dark:bg-gray-800 border border-border dark:border-gray-600 rounded-lg p-8 text-center space-y-4">
           <div className="flex justify-center">
-            <svg className="w-16 h-16 text-muted-foreground/40" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-16 h-16 text-muted-foreground/40 dark:text-gray-500/40" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 2C6.485 2 2 6.485 2 12s4.485 10 10 10 10-4.485 10-10S17.515 2 12 2zm.75 5v4.25H17v1.5h-4.25V17h-1.5v-4.25H7v-1.5h4.25V7h1.5z" />
             </svg>
           </div>
           <div>
-            <h3 className="text-[15px] font-semibold text-foreground mb-2">{noGcashAccountText}</h3>
-            <p className="text-xs text-muted-foreground">
+            <h3 className="text-[15px] font-semibold text-foreground dark:text-gray-100 mb-2">{noGcashAccountText}</h3>
+            <p className="text-xs text-muted-foreground dark:text-gray-300">
               {addGcashDescText}
             </p>
           </div>

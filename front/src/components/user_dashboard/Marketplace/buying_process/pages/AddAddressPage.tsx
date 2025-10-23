@@ -66,15 +66,17 @@ const AddAddressPage = ({ isEditing }: { isEditing: boolean }) => {
   };
 
   return (
-    <AddAddressForm
-      onBack={() => navigate("/shipping")}
-      onSave={handleSave}
-      initialData={parseInitialData()}
-      isEditing={isEditing}
-      loading={loading}
-      error={error}
-      addressId={id}
-    />
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      <AddAddressForm
+        onBack={() => navigate("/shipping")}
+        onSave={handleSave}
+        initialData={parseInitialData()}
+        isEditing={isEditing}
+        loading={loading}
+        error={error}
+        addressId={id}
+      />
+    </div>
   );
 };
 

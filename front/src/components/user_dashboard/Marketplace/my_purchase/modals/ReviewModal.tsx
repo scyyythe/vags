@@ -82,11 +82,11 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, onSubmit, ar
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="max-w-lg text-xs review-modal-scroll-hidden"
+        className="max-w-lg text-xs review-modal-scroll-hidden bg-white dark:bg-gray-800"
         onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle className="text-sm">{leaveReviewText}</DialogTitle>
+          <DialogTitle className="text-sm text-gray-900 dark:text-gray-100">{leaveReviewText}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">

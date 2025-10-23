@@ -198,12 +198,12 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
   };
 
   return (
-    <div className="min-h-screen overflow-y-auto bg-white">
+    <div className="min-h-screen overflow-y-auto bg-white dark:bg-gray-900">
       <Header />
       <div className="container mx-auto px-4 pt-20 max-w-6xl">
         {/* Back Button */}
         <div className="mb-8">
-          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
             {paymentMethodText}
           </button>
@@ -218,13 +218,13 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ accounts = [], loading = 
 
           {/* Payment Details */}
           <div className="mb-8">
-            <h3 className="text-xs font-medium text-gray-900 mb-6">{paymentDetailsText}</h3>
+            <h3 className="text-xs font-medium text-gray-900 dark:text-gray-100 mb-6">{paymentDetailsText}</h3>
             {renderPaymentForm()}
           </div>
 
           {/* Note and Continue Button */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 mb-4">
-            <p className="text-[11px] text-gray-600 italic">
+            <p className="text-[11px] text-gray-600 dark:text-gray-300 italic">
               <strong>{noteText}</strong> {shippingAddressSharedText}
             </p>
             <button

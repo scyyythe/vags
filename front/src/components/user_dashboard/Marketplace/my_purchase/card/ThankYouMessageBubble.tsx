@@ -111,11 +111,11 @@ const ThankYouMessageBubble: React.FC<ThankYouMessageBubbleProps> = ({
   };
 
   // Dynamic color setup - matching AutomaticMessageBubble
-  const textMain = isSender ? "text-white" : "text-gray-900";
-  const textSecondary = isSender ? "text-white/80" : "text-gray-600";
-  const textHighlight = isSender ? "text-yellow-400" : "text-blue-700";
-  const borderColor = isSender ? "border-white/20" : "border-gray-300/50";
-  const iconColor = isSender ? "text-yellow-300" : "text-blue-600";
+  const textMain = isSender ? "text-white" : "text-gray-900 dark:text-gray-100";
+  const textSecondary = isSender ? "text-white/80" : "text-gray-600 dark:text-gray-400";
+  const textHighlight = isSender ? "text-yellow-400" : "text-blue-700 dark:text-blue-400";
+  const borderColor = isSender ? "border-white/20" : "border-gray-300/50 dark:border-gray-600/50";
+  const iconColor = isSender ? "text-yellow-300" : "text-blue-600 dark:text-blue-400";
 
   return (
     <div className="space-y-3 max-w-[200px] mx-auto">

@@ -9,15 +9,15 @@ const ThirdPartyButton: React.FC<ThirdPartyButtonProps> = ({ method }) => {
   const buttonConfig = {
     paypal: {
       text: "Continue with PayPal",
-      className: "text-red-800 underline",
+      className: "text-red-800 dark:text-red-400 underline",
     },
     gcash: {
       text: "Continue with GCash",
-      className: "text-red-800 underline",
+      className: "text-red-800 dark:text-red-400 underline",
     },
     stripe: {
       text: "Continue with Stripe",
-      className: "text-red-800 underline",
+      className: "text-red-800 dark:text-red-400 underline",
     },
   };
 

@@ -58,25 +58,25 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
   };
 
   return (
-    <div className="min-h-screen overflow-y-auto bg-white">
+    <div className="min-h-screen overflow-y-auto bg-white dark:bg-gray-900">
       <Header />
       <div className="container mx-auto px-4 pt-20 max-w-6xl">
         <div className="mb-2">
-          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+          <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold dark:text-gray-100">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
             {shippingDetailsText}
           </button>
         </div>
 
         <div className="px-6 py-4 mx-auto">
-          <h2 className="text-xs font-medium text-gray-900 mb-6">{deliveryAddressText}</h2>
+          <h2 className="text-xs font-medium text-gray-900 dark:text-gray-100 mb-6">{deliveryAddressText}</h2>
 
           {/* Address List */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             {addresses.map((address) => (
               <div
                 key={address.id}
-                className="border border-gray-200 rounded-lg py-4 px-8 cursor-pointer hover:border-gray-300 transition-colors"
+                className="border border-gray-200 dark:border-gray-600 rounded-lg py-4 px-8 cursor-pointer hover:border-gray-300 dark:hover:border-gray-500 transition-colors"
                 onClick={() => onSelectAddress(address.id)}
               >
                 <div className="flex items-start justify-between">
@@ -86,20 +86,20 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
                         type="radio"
                         checked={selectedAddressId === address.id}
                         onChange={() => onSelectAddress(address.id)}
-                        className="w-3 h-3 accent-red-800"
+                        className="w-3 h-3 accent-red-800 dark:accent-red-400"
                       />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-1 text-[13px] mt-1.5">
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1 text-[13px] mt-1.5">
                         <TranslatedAddressField text={address.name} />
                       </h3>
-                      <p className="text-[11px] text-gray-600 mb-1">
+                      <p className="text-[11px] text-gray-600 dark:text-gray-400 mb-1">
                         <TranslatedAddressField text={address.address} />
                       </p>
-                      <p className="text-[11px] text-gray-600 mb-1">
+                      <p className="text-[11px] text-gray-600 dark:text-gray-400 mb-1">
                         <TranslatedAddressField text={address.city} />
                       </p>
-                      <p className="text-[11px] text-gray-600">{address.phone}</p>
+                      <p className="text-[11px] text-gray-600 dark:text-gray-400">{address.phone}</p>
                     </div>
                   </div>
                   <button
@@ -107,7 +107,7 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
                       e.stopPropagation();
                       onEditAddress(address.id);
                     }}
-                    className="text-blue-700 text-xs font-semibold hover:text-blue-800 underline mt-1.5"
+                    className="text-blue-700 dark:text-blue-400 text-xs font-semibold hover:text-blue-800 dark:hover:text-blue-300 underline mt-1.5"
                   >
                     {editText}
                   </button>
@@ -119,7 +119,7 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
           {/* Add New Address */}
           <button
             onClick={onAddNewAddress}
-            className="text-gray-900 text-xs font-medium underline hover:text-gray-700 mb-8"
+            className="text-gray-900 dark:text-gray-100 text-xs font-medium underline hover:text-gray-700 dark:hover:text-gray-300 mb-8"
           >
             {addNewAddressText}
           </button>
@@ -129,7 +129,7 @@ const ShippingDetails: React.FC<ShippingDetailsProps> = ({
             <button
               onClick={handleContinue}
               disabled={!selectedAddressId}
-              className="bg-red-800 text-white text-[11px] px-10 py-2.5 rounded-full font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              className="bg-red-800 dark:bg-red-700 text-white text-[11px] px-10 py-2.5 rounded-full font-medium hover:bg-red-700 dark:hover:bg-red-600 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
             >
               {saveAndContinueText}
             </button>
