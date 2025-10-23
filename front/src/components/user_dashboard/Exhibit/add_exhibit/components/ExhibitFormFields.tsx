@@ -122,7 +122,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
   return (
     <div className="space-y-6">
       <div>
-        <label htmlFor="title" className="block text-[11px] font-medium mb-2">
+        <label htmlFor="title" className="block text-[11px] font-medium mb-2 text-gray-900 dark:text-gray-100">
           {exhibitTitleText}
         </label>
         <Input
@@ -140,7 +140,7 @@ const ExhibitFormFields: React.FC<ExhibitFormFieldsProps> = ({
 
       {viewMode === "owner" && !isReadOnly && (
         <div>
-          <span className="text-[11px] font-medium mb-2">{exhibitTypeText}</span>
+          <span className="text-[11px] font-medium mb-2 text-gray-900 dark:text-gray-100">{exhibitTypeText}</span>
           <ToggleGroup
             type="single"
             value={exhibitType}

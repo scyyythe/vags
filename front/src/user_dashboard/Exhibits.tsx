@@ -112,7 +112,7 @@ const Exhibits = () => {
 
         <div className="container mx-auto px-6">
           <ActiveAccountOnly>
-            <div className="mb-8 mt-20">
+            <div className="mb-8 pt-24">
               <span className="font-bold text-gray-900 dark:text-white">{exhibitsText}</span>
 
               <div className="flex flex-wrap items-center justify-between gap-4 my-4">
