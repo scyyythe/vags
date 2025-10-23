@@ -75,7 +75,7 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
 
   return (
     <div
-      className="w-full bg-gray-100 rounded-lg flex flex-col items-center justify-center h-64 mb-8 relative overflow-hidden"
+      className="w-full bg-gray-100 dark:bg-gray-800 rounded-lg flex flex-col items-center justify-center h-64 mb-8 relative overflow-hidden"
       style={{
         backgroundImage: bannerImage ? `url(${bannerImage})` : "none",
         backgroundSize: "cover",
@@ -84,17 +84,17 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
     >
       {!bannerImage ? (
         <>
-          <div className="bg-white p-2 rounded-full inline-block mb-2">
+          <div className="bg-white dark:bg-gray-700 p-2 rounded-full inline-block mb-2">
             <img width="20" height="20" src="./pics/icons8-cloud-upload.gif" alt="Upload" />
           </div>
-          <p className="text-xs text-gray-600">{addBannerText}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-300">{addBannerText}</p>
         </>
       ) : (
         <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
           <Button
             variant="outline"
             size="sm"
-            className="bg-white text-black border-white hover:bg-gray-100"
+            className="bg-white dark:bg-gray-700 text-black dark:text-white border-white dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600"
             onClick={handleClearBanner}
             disabled={isReadOnly}
           >

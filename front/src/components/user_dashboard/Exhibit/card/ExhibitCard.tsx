@@ -140,7 +140,7 @@ const ExhibitCard: React.FC<ExhibitProps> = ({ exhibit, onClick, isOwnProfile = 
   return (
     <div
       className={`relative w-full rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 transition-all duration-300 ${
-        isNotStartedYet() ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:shadow-lg"
+        isNotStartedYet() ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:shadow-lg dark:hover:shadow-gray-900/20"
       }`}
       onClick={() => {
         if (!isNotStartedYet() && onClick) onClick();

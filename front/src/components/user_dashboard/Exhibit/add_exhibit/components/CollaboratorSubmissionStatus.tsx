@@ -104,13 +104,13 @@ const CollaboratorSubmissionStatus = ({
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-sm font-medium">{collaboratorSubmissionsText}</h3>
+        <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">{collaboratorSubmissionsText}</h3>
         
         <div className="flex items-center gap-3">
-          <span className="text-xs text-gray-600">
+          <span className="text-xs text-gray-600 dark:text-gray-300">
             {overallText} {completionPercentage}% {completeText}
           </span>
-          <div className="w-28 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+          <div className="w-28 h-1.5 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
             <div 
               className={`h-full ${allSlotsCompleted ? "bg-green-500" : "bg-amber-500"}`}
               style={{ width: `${completionPercentage}%` }}
@@ -122,26 +122,26 @@ const CollaboratorSubmissionStatus = ({
       {/* Collaborators list with status */}
       <div className="grid gap-2">
         {collaborators.map((collab) => (
-          <Card key={collab.artist.id} className="p-3">
+          <Card key={collab.artist.id} className="p-3 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3">
                 <Avatar className="h-8 w-8">
                   <img src={collab.artist.avatar} alt={collab.artist.name} className="rounded-full" />
                 </Avatar>
                 <div>
-                  <p className="text-xs font-medium">{collab.artist.name}</p>
+                  <p className="text-xs font-medium text-gray-900 dark:text-gray-100">{collab.artist.name}</p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[10px] text-gray-500">
+                    <span className="text-[10px] text-gray-500 dark:text-gray-400">
                       {collab.slotsFilled}/{collab.slotsAssigned} {slotsFilledText}
                     </span>
-                    <div className="w-16 h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="w-16 h-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
                       <div 
                         className={`h-full ${
                           collab.status === "completed" 
                             ? "bg-green-500" 
                             : collab.status === "partial" 
                               ? "bg-amber-500" 
-                              : "bg-gray-300"
+                              : "bg-gray-300 dark:bg-gray-500"
                         }`}
                         style={{ 
                           width: `${collab.slotsAssigned > 0 ? (collab.slotsFilled / collab.slotsAssigned) * 100 : 0}%` 
@@ -162,7 +162,7 @@ const CollaboratorSubmissionStatus = ({
         <Button 
           variant="outline" 
           size="sm" 
-          className="text-xs"
+          className="text-xs border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
           onClick={handleReviewRequest}
         >
           {requestReviewText}
@@ -170,7 +170,7 @@ const CollaboratorSubmissionStatus = ({
         
         <Button
           size="sm"
-          className={`text-xs ${allSlotsCompleted ? "bg-green-600 hover:bg-green-700" : "bg-gray-400"}`}
+          className={`text-xs ${allSlotsCompleted ? "bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700" : "bg-gray-400 dark:bg-gray-600"}`}
           onClick={handlePublishRequest}
           disabled={!allSlotsCompleted}
         >
@@ -180,17 +180,17 @@ const CollaboratorSubmissionStatus = ({
 
       {/* Publish confirmation dialog */}
       <AlertDialog open={showPublishDialog} onOpenChange={setShowPublishDialog}>
-        <AlertDialogContent className="max-w-md">
+        <AlertDialogContent className="max-w-md bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
           <AlertDialogHeader>
-            <AlertDialogTitle>{readyToPublishText}</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-gray-900 dark:text-gray-100">{readyToPublishText}</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
               {allSlotsFilledText} "{translatedExhibitTitle}" {haveBeenFilledText}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="text-xs">{cancelText}</AlertDialogCancel>
+            <AlertDialogCancel className="text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">{cancelText}</AlertDialogCancel>
             <AlertDialogAction 
-              className="bg-green-600 hover:bg-green-700 text-xs"
+              className="bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-xs"
               onClick={() => {
                 setShowPublishDialog(false);
                 onPublish();

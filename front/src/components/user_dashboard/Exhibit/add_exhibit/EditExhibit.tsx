@@ -685,12 +685,12 @@ const EditExhibit = () => {
 
   // --- The rest of your component stays 100% intact ---
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background dark:bg-gray-900">
       <Header />
       <div className="container mx-auto px-1 pt-20 max-w-6xl pb-4">
         {/* Back button */}
         <div className="mb-3">
-          <button onClick={() => navigate(-1)} className="flex items-center text-xs font-semibold">
+          <button onClick={() => navigate(-1)} className="flex items-center text-xs font-semibold text-gray-900 dark:text-gray-100">
             <i className="bx bx-chevron-left text-lg mr-2"></i>
             {goBackText}
           </button>
@@ -821,7 +821,7 @@ const EditExhibit = () => {
                   <div className="mt-4">
                     <Button
                       type="button"
-                      className="bg-gray-900 text-white text-xs px-4 py-1.5 rounded-full hover:bg-gray-800"
+                      className="bg-gray-900 dark:bg-gray-700 text-white text-xs px-4 py-1.5 rounded-full hover:bg-gray-800 dark:hover:bg-gray-600"
                       onClick={() => {
                         const encodedSlotMap = encodeURIComponent(JSON.stringify(slotArtworkMap));
                         const encodedArtworks = encodeURIComponent(
@@ -842,7 +842,7 @@ const EditExhibit = () => {
                     >
                       {preview3DText}
                     </Button>
-                    <p className="text-[10px] text-muted-foreground mt-2">{previewDescriptionText}</p>
+                    <p className="text-[10px] text-muted-foreground dark:text-gray-400 mt-2">{previewDescriptionText}</p>
                   </div>
                 )}
               </div>
@@ -951,7 +951,7 @@ const EditExhibit = () => {
             <button
               type="submit"
               disabled={isUploading}
-              className="bg-red-700 hover:bg-red-600 text-white text-[10px] px-8 py-1.5 rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
+              className="bg-red-700 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500 text-white text-[10px] px-8 py-1.5 rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isUploading
                 ? submittingText

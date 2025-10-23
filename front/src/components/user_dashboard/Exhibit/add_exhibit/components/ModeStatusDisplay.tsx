@@ -59,21 +59,21 @@ const ModeStatusDisplay: React.FC<ModeStatusDisplayProps> = ({
     <div
       className={`rounded-md p-4 mb-6 ${
         viewMode === "review"
-          ? "bg-amber-50 border border-amber-200"
+          ? "bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-600"
           : viewMode === "monitoring"
-          ? "bg-blue-50 border border-blue-200"
-          : "bg-green-50 border border-green-200"
+          ? "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-600"
+          : "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-600"
       }`}
     >
-      <h2 className="text-sm font-medium mb-1">
+      <h2 className="text-sm font-medium mb-1 text-gray-900 dark:text-gray-100">
         {viewMode === "review" ? reviewModeText : viewMode === "monitoring" ? monitoringModeText : previewModeText}
       </h2>
-      <p className="text-xs">{getModeStatusMessage()}</p>
+      <p className="text-xs text-gray-700 dark:text-gray-300">{getModeStatusMessage()}</p>
 
       {/* Show collaborator status in monitoring mode */}
       {viewMode === "monitoring" && collaborators.length > 0 && (
         <div className="mt-3 space-y-2">
-          <h3 className="text-xs font-medium">{collaboratorSubmissionsText}</h3>
+          <h3 className="text-xs font-medium text-gray-900 dark:text-gray-100">{collaboratorSubmissionsText}</h3>
           {collaborators.map((collaborator) => {
             const status = getCollaboratorSubmissionStatus(collaborator.id);
             return (
@@ -82,14 +82,14 @@ const ModeStatusDisplay: React.FC<ModeStatusDisplayProps> = ({
                   <Avatar className="h-6 w-6">
                     <img src={collaborator.profile_picture} alt={collaborator.first_name} />
                   </Avatar>
-                  <span className="text-xs">{collaborator.first_name}</span>
+                  <span className="text-xs text-gray-900 dark:text-gray-100">{collaborator.first_name}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1 text-[10px]">
                     <span>
                       {status.filled}/{status.total}
                     </span>
-                    <div className="w-16 h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="w-16 h-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
                       <div
                         className={`h-full ${status.percentage === 100 ? "bg-green-500" : "bg-amber-500"}`}
                         style={{ width: `${status.percentage}%` }}

@@ -81,35 +81,35 @@ const EnvironmentChangeDialog: React.FC<EnvironmentChangeDialogProps> = ({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent className="w-full max-w-md rounded-lg">
+      <AlertDialogContent className="w-full max-w-md rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-sm text-center">
+          <AlertDialogTitle className="text-sm text-center text-gray-900 dark:text-gray-100">
             {isDowngrade ? environmentDowngradeText : environmentChangeText}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-[11px] text-center space-y-2">
+          <AlertDialogDescription className="text-[11px] text-center space-y-2 text-gray-600 dark:text-gray-300">
             <div>
               <strong>{currentEnvironmentText}</strong> {currentSlots} {slotsText}
               <br />
-              <span className="text-gray-600">{getSlotDistribution(currentSlots, collaborators.length)}</span>
+              <span className="text-gray-600 dark:text-gray-400">{getSlotDistribution(currentSlots, collaborators.length)}</span>
             </div>
 
             <div>
               <strong>{newEnvironmentText}</strong> {newSlots} {slotsText}
               <br />
-              <span className="text-gray-600">{getSlotDistribution(newSlots, collaborators.length)}</span>
+              <span className="text-gray-600 dark:text-gray-400">{getSlotDistribution(newSlots, collaborators.length)}</span>
             </div>
 
             {hasSubmittedArtworks && (
-              <div className="p-2 bg-amber-50 rounded-md border border-amber-200">
-                <p className="text-[10px] text-amber-700 font-medium">
+              <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded-md border border-amber-200 dark:border-amber-600">
+                <p className="text-[10px] text-amber-700 dark:text-amber-300 font-medium">
                   {hasSubmittedArtworksText}
                 </p>
               </div>
             )}
 
             {!canChangeEnvironment && (
-              <div className="p-2 bg-red-50 rounded-md border border-red-200">
-                <p className="text-[10px] text-red-700 font-medium">
+              <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-md border border-red-200 dark:border-red-600">
+                <p className="text-[10px] text-red-700 dark:text-red-300 font-medium">
                   {cannotSwitchText} {newSlots} {slotsEnvironmentText}
                   <br />
                   {currentCollaboratorsText} ({collaborators.length}) {exceedCapacityText}
@@ -118,8 +118,8 @@ const EnvironmentChangeDialog: React.FC<EnvironmentChangeDialogProps> = ({
             )}
 
             {isDowngrade && hasSubmittedArtworks && !canChangeEnvironment && (
-              <div className="p-2 bg-red-50 rounded-md border border-red-200">
-                <p className="text-[10px] text-red-700 font-medium">
+              <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-md border border-red-200 dark:border-red-600">
+                <p className="text-[10px] text-red-700 dark:text-red-300 font-medium">
                   {cannotDowngradeText}
                   <br />
                   {pleaseRemoveCollaboratorsText}
@@ -128,8 +128,8 @@ const EnvironmentChangeDialog: React.FC<EnvironmentChangeDialogProps> = ({
             )}
 
             {isDowngrade && hasSubmittedArtworks && canChangeEnvironment && (
-              <div className="p-2 bg-amber-50 rounded-md border border-amber-200">
-                <p className="text-[10px] text-amber-700 font-medium">
+              <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded-md border border-amber-200 dark:border-amber-600">
+                <p className="text-[10px] text-amber-700 dark:text-amber-300 font-medium">
                   {downgradingEnvironmentText}
                   <br />
                   {existingArtworksPreservedText}
@@ -140,11 +140,11 @@ const EnvironmentChangeDialog: React.FC<EnvironmentChangeDialogProps> = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <div className="w-full flex justify-between px-4">
-            <AlertDialogCancel className="text-[10px] h-7">{cancelText}</AlertDialogCancel>
+            <AlertDialogCancel className="text-[10px] h-7 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">{cancelText}</AlertDialogCancel>
             <AlertDialogAction
               onClick={onConfirm}
               disabled={!canChangeEnvironment}
-              className="text-[10px] h-7 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-[10px] h-7 bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {!canChangeEnvironment ? cannotChangeText : confirmChangeText}
             </AlertDialogAction>
