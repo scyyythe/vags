@@ -143,8 +143,8 @@ export const useOptimizedPostSubmission = () => {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
-        // Reduced timeout for faster feedback
-        timeout: 30000, // 30 seconds
+        // Optimized timeout for faster feedback
+        timeout: 45000, // 45 seconds - give more time for large images
         // Add upload progress tracking
         onUploadProgress: (progressEvent) => {
           if (progressEvent.total) {
@@ -154,33 +154,27 @@ export const useOptimizedPostSubmission = () => {
         },
       });
 
-      // Invalidate queries
+      // Optimized cache invalidation with immediate refetch for Explore
       if (queryClient) {
-        await queryClient.invalidateQueries({
-          predicate: (query) => {
-            const queryKey = query.queryKey;
-            return (
-              Array.isArray(queryKey) &&
-              (queryKey.includes("artworks") ||
-                queryKey.includes("explore") ||
-                queryKey.includes("feed") ||
-                queryKey.includes("profile") ||
-                queryKey.includes("user-artworks") ||
-                queryKey.includes("popularArtworks") ||
-                queryKey.includes("popular-artworks") ||
-                queryKey.includes("popular-artworks-light") ||
-                queryKey.includes("followedArtworks") ||
-                queryKey.includes("followed-artworks") ||
-                queryKey.includes("trending-artworks") ||
-                queryKey.includes("top-artworks"))
-            );
-          },
+        // Invalidate critical queries
+        queryClient.invalidateQueries({ queryKey: ["artworks"] });
+        queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
+        queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+        
+        // Force immediate refetch for Explore page to show new artwork instantly
+        // This will refetch all artworks queries including the one used in Explore.tsx
+        await queryClient.refetchQueries({ 
+          queryKey: ["artworks"],
+          type: "active" // Only refetch active queries
         });
         
-        // Force refetch of critical queries
-        await queryClient.refetchQueries({ queryKey: ["artworks"] });
-        await queryClient.refetchQueries({ queryKey: ["popularArtworks"] });
-        await queryClient.refetchQueries({ queryKey: ["followedArtworks"] });
+        // Specifically refetch the Explore page query: useArtworks(1, undefined, true, "all", "public")
+        await queryClient.refetchQueries({ 
+          queryKey: ["artworks", 1, undefined, true, "all", "public"]
+        });
+        
+        // Also refetch popular artworks for the showcase
+        queryClient.refetchQueries({ queryKey: ["popularArtworks"] });
       }
 
       // Show success toast
