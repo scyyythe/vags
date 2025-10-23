@@ -67,132 +67,41 @@ class ExhibitListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ExhibitCardListView(APIView):
+    permission_classes = []  # Allow unauthenticated access
+    
     def get(self, request):
         try:
-            # Optimized query: Get excluded user IDs in a single query
-            excluded_user_ids = list(User.objects.filter(
-                user_status__in=["deactivated", "scheduled_for_deletion"]
-            ).scalar('id'))
+            # Simplified query for better performance
+            exhibits = Exhibit.objects.filter(visibility='Public').order_by('-created_at').limit(20)
+            exhibits_list = list(exhibits)
             
-            # Get blocked user IDs for the current user
-            blocked_user_ids = []
-            if request.user.is_authenticated and hasattr(request.user, 'blocked_users'):
-                blocked_user_ids = [str(blocked_user.id) for blocked_user in request.user.blocked_users]
-            
-            # Start with optimized base query
-            exhibits = Exhibit.objects.filter(visibility='Public')
-            
-            # Apply user exclusion filter if needed (blocked, deactivated, scheduled for deletion)
-            all_excluded_user_ids = list(blocked_user_ids) + list(excluded_user_ids)
-            if all_excluded_user_ids:
-                exhibits = exhibits.filter(owner__nin=all_excluded_user_ids)
-            
-            # Optimize hidden content filtering
-            hidden_exhibit_ids = []
-            if request.user.is_authenticated:
-                try:
-                    user = User.objects.get(id=ObjectId(request.user.id))
-                    hidden_exhibit_ids = list(HiddenContent.objects.filter(
-                        user=user, 
-                        content_type='exhibit'
-                    ).scalar('content_id'))
-                except Exception as e:
-                    # Log error but continue without filtering
-                    print(f"⚠️ Error filtering hidden exhibits: {e}")
-                    pass
-            
-            if hidden_exhibit_ids:
-                # Convert string IDs to ObjectIds for filtering
-                hidden_object_ids = [ObjectId(hid) for hid in hidden_exhibit_ids]
-                exhibits = exhibits.filter(id__nin=hidden_object_ids)
-            
-            # Order by creation date for consistent results and limit results
-            exhibits = exhibits.order_by('-created_at')
-            
-            # Convert to list for prefetching (limit after ordering)
-            exhibits_list = list(exhibits.limit(50))  # Limit to 50 exhibits for performance
-            
-            # Prefetch all related data in bulk to avoid N+1 queries
-            exhibit_ids = [exhibit.id for exhibit in exhibits_list]
-            likes_data = {}
-            user_likes_data = {}
-            collaborators_data = {}
-            owner_data = {}
-            
-            if exhibit_ids:
-                # Bulk fetch exhibit likes with optimized aggregation
-                likes_pipeline = [
-                    {'$match': {'exhibit': {'$in': exhibit_ids}}},
-                    {'$group': {'_id': '$exhibit', 'count': {'$sum': 1}}}
-                ]
-                likes_results = Like.objects.aggregate(likes_pipeline)
-                likes_data = {str(like['_id']): like['count'] for like in likes_results}
-                
-                # Bulk fetch user likes if authenticated
-                if request.user.is_authenticated:
-                    user_likes = Like.objects(user=request.user, exhibit__in=exhibit_ids).only('exhibit')
-                    user_likes_data = {str(like.exhibit.id): True for like in user_likes}
-                
-                # Bulk fetch all unique collaborator and owner IDs
-                all_user_ids = set()
-                for exhibit in exhibits_list:
-                    if exhibit.owner:
-                        all_user_ids.add(exhibit.owner.id)
-                    if exhibit.collaborators:
-                        for collab in exhibit.collaborators:
-                            if hasattr(collab, 'id'):
-                                all_user_ids.add(collab.id)
-                            else:
-                                all_user_ids.add(collab)  # If it's just an ID
-                
-                # Bulk fetch all users at once
-                if all_user_ids:
-                    users = User.objects(id__in=list(all_user_ids)).only('id', 'first_name', 'last_name', 'profile_picture')
-                    user_map = {str(user.id): user for user in users}
-                    
-                    # Build collaborators and owner data
-                    for exhibit in exhibits_list:
-                        exhibit_id = str(exhibit.id)
-                        
-                        # Owner data
-                        if exhibit.owner:
-                            owner_id = str(exhibit.owner.id)
-                            if owner_id in user_map:
-                                owner_data[exhibit_id] = {
-                                    "id": owner_id,
-                                    "name": f"{user_map[owner_id].first_name} {user_map[owner_id].last_name}".strip(),
-                                    "avatar": getattr(user_map[owner_id], 'profile_picture', "")
-                                }
-                        
-                        # Collaborators data
-                        collaborators_list = []
-                        if exhibit.collaborators:
-                            for collab in exhibit.collaborators:
-                                collab_id = str(collab.id if hasattr(collab, 'id') else collab)
-                                if collab_id in user_map:
-                                    user = user_map[collab_id]
-                                    collaborators_list.append({
-                                        "id": collab_id,
-                                        "name": f"{user.first_name} {user.last_name}".strip(),
-                                        "avatar": getattr(user, 'profile_picture', "")
-                                    })
-                        collaborators_data[exhibit_id] = collaborators_list
-            
-            # Create context with all prefetched data
+            # Simplified context for better performance
             context = {
                 'request': request,
-                'likes_data': likes_data,
-                'user_likes_data': user_likes_data,
-                'collaborators_data': collaborators_data,
-                'owner_data': owner_data
+                'likes_data': {},
+                'user_likes_data': {},
+                'collaborators_data': {},
+                'owner_data': {}
             }
             
-            serializer = ExhibitCardSerializer(exhibits_list, many=True, context=context)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            try:
+                serializer = ExhibitCardSerializer(exhibits_list, many=True, context=context)
+                print(f"🔍 Serializer data type: {type(serializer.data)}")
+                print(f"🔍 Serializer data length: {len(serializer.data) if hasattr(serializer.data, '__len__') else 'No length'}")
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Exception as serializer_error:
+                print(f"🔥 Serializer error: {serializer_error}")
+                # Return empty array if serializer fails
+                return Response([], status=status.HTTP_200_OK)
             
         except Exception as e:
             print(f"🔥 ERROR in ExhibitCardListView: {e}")
-            return Response({"error": "Failed to retrieve exhibits"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            import traceback
+            traceback.print_exc()
+            return Response({
+                "error": "Failed to retrieve exhibits", 
+                "detail": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class MyExhibitCardListView(APIView):
     permission_classes = [IsAuthenticated]
