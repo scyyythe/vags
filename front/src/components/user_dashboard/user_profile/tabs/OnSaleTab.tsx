@@ -52,6 +52,7 @@ import { useRelistArtwork } from "@/hooks/artworks/relist/useRelistArtwork";
 import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";
 import useBulkReportStatus from "@/hooks/mutate/report/useReportStatus";
 import { useTransactionByArtwork } from "@/hooks/transaction/useTransactionByArtwork";
+import PreviewModal from "@/components/user_dashboard/Marketplace/buying_process/preview/PreviewModal";
 type SellTabProps = {
   selectedPriceRange?: string;
   selectedStatus?: string;
@@ -237,6 +238,8 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
   const [showSalesSummary, setShowSalesSummary] = useState(false);
   const [selectedReview, setSelectedReview] = useState<ReviewResponse | null>(null);
   const [showReviewDetailsModal, setShowReviewDetailsModal] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [selectedArtworkForReorder, setSelectedArtworkForReorder] = useState<any>(null);
   // const [selectedArtworkId, setSelectedArtworkId] = useState<string | null>(null); // Not needed since we fetch on demand
 
   const { mutate: fetchReviewByPurchase, isPending } = useReviewByPurchase();
@@ -377,11 +380,28 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
       closeButton: true,
     });
 
-  const handleReorder = () =>
-    toast.success(artworkReorderedText, {
-      closeButton: true,
-      description: viewInPendingOrdersText,
+  const handleReorder = (order: any) => {
+    // Set the artwork data for the preview modal
+    setSelectedArtworkForReorder({
+      id: order.artwork?._id || order.artwork?.id,
+      artworkImage: order.artwork?.image_url?.[0] || order.artworkImage,
+      title: order.artwork?.title || order.title || untitledText,
+      artist: order.artwork?.artist_name || order.artist || unknownText,
+      artistId: order.artwork?.artist_id,
+      medium: order.artwork?.medium || unknownText,
+      style: order.artwork?.style || order.artwork?.category || unknownText,
+      edition: order.artwork?.edition || "Original (1 of 1)",
+      size: order.artwork?.size || unknownText,
+      yearCreated: order.artwork?.year_created || unknownText,
+      price: order.artwork?.price || order.price || 0,
+      default_paypal_email: order.artwork?.default_paypal_email,
+      quantity: 1,
+      availableQuantity: order.artwork?.quantity || 1,
     });
+    
+    // Show the preview modal
+    setShowPreviewModal(true);
+  };
 
   const handleCancelOrder = () =>
     toast.warning(orderCancelledText, {
@@ -1304,6 +1324,7 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
                 onTrackOrder={() => handleTrackOrder(order)}
                 onRequestRefund={handleRequestRefund}
                 onCancelOrder={handleCancelOrder}
+                onReorder={() => handleReorder(order)}
                 onMarkCompleted={() => markAsCompleted(order.id)}
               />
             ))
@@ -1547,6 +1568,22 @@ const SellTab = ({ selectedPriceRange, selectedStatus, navigationState }) => {
           onSubmit={handleUpdateReview}
           artwork={selectedReview.artwork}
           existingReview={selectedReview}
+        />
+      )}
+
+      {/* Preview Modal for Reorder */}
+      {selectedArtworkForReorder && (
+        <PreviewModal
+          isOpen={showPreviewModal}
+          onClose={() => {
+            setShowPreviewModal(false);
+            setSelectedArtworkForReorder(null);
+          }}
+          onProceedToCheckout={() => {
+            setShowPreviewModal(false);
+            setSelectedArtworkForReorder(null);
+          }}
+          artwork={selectedArtworkForReorder}
         />
       )}
     </div>
