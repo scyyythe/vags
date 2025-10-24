@@ -29,6 +29,8 @@ class UserSerializer(serializers.Serializer):
     bio = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     contact_number = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     address = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    admin_terms_accepted = serializers.BooleanField(required=False, default=False)
+    admin_terms_accepted_at = serializers.DateTimeField(required=False, allow_null=True)
 
 
     blocked_users = serializers.ListField(
@@ -135,7 +137,8 @@ class UserSerializer(serializers.Serializer):
       
         for field in [
             "username", "email", "first_name", "last_name", "role", "user_status",
-            "gender", "date_of_birth", "bio", "contact_number", "address", "deactivated_at", "scheduled_for_deletion"
+            "gender", "date_of_birth", "bio", "contact_number", "address", "deactivated_at", "scheduled_for_deletion",
+            "admin_terms_accepted", "admin_terms_accepted_at"
         ]:
             if field in validated_data:
                 setattr(instance, field, validated_data[field])
@@ -166,7 +169,9 @@ class UserSerializer(serializers.Serializer):
             "bio": instance.bio,
             "contact_number": instance.contact_number,
             "address": instance.address,
-            "blocked_users": [str(user_id) for user_id in getattr(instance, 'blocked_users', [])]
+            "blocked_users": [str(user_id) for user_id in getattr(instance, 'blocked_users', [])],
+            "admin_terms_accepted": getattr(instance, 'admin_terms_accepted', False),
+            "admin_terms_accepted_at": getattr(instance, 'admin_terms_accepted_at', None)
         }
 
 class ChangePasswordSerializer(serializers.Serializer):
