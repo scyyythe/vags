@@ -39,10 +39,10 @@ const CreatePost = () => {
   // Use optimized upload hook
   const { submitPost: submitPostOptimized, isUploading: isUploadingOptimized } = useOptimizedPostSubmission();
 
-  // Function to capitalize the first letter of a string
+  // Function to capitalize the first letter of a string while preserving special characters
   const capitalizeFirstLetter = (str: string): string => {
     if (!str) return str;
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
   // Translations for UI texts
@@ -164,9 +164,11 @@ const CreatePost = () => {
     try {
       await submitPostOptimized(submissionData, queryClient);
 
-      // Reset form on success
+      // Reset form immediately after successful upload
       setSelectedFile(null);
       setPreviewUrl(null);
+      
+      // Navigate immediately - cache will update in background
       navigate("/explore");
     } catch (error: unknown) {
       // Error handling is done in the hook
@@ -241,8 +243,8 @@ const CreatePost = () => {
                     value={artworkTitle}
                     onChange={(e) => {
                       const value = e.target.value;
-                      // Only capitalize if the user is typing at the beginning or if it's a new word after a space
-                      if (value.length === 1 || (value.length > 1 && value[value.length - 2] === ' ')) {
+                      // Only capitalize the very first character, preserve the rest
+                      if (value.length === 1) {
                         setArtworkTitle(capitalizeFirstLetter(value));
                       } else {
                         setArtworkTitle(value);

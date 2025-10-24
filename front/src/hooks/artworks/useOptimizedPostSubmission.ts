@@ -38,14 +38,14 @@ export const validatePostData = (data: ValidationData): ValidationResult => {
   const { title, medium, artworkHeight, artworkWidth, category, selectedFile } = data;
 
   // Artwork title validation: more flexible - allows apostrophes and common punctuation
-  const titleRegex = /^[A-Za-z0-9\s'.,!?-]+$/;
+  const titleRegex = /^[A-Za-z0-9\s''''''.,!?\-()&]+$/;
   if (!title?.trim()) {
     return { isValid: false, errorMessage: "Please enter an artwork title" };
   }
   if (!titleRegex.test(title)) {
     return {
       isValid: false,
-      errorMessage: "Artwork title invalid - please use letters, numbers, spaces, and common punctuation",
+      errorMessage: "Artwork title invalid - please use letters, numbers, spaces, apostrophes, and common punctuation",
     };
   }
 
@@ -154,27 +154,15 @@ export const useOptimizedPostSubmission = () => {
         },
       });
 
-      // Optimized cache invalidation with immediate refetch for Explore
+      // Optimized cache invalidation - just invalidate, let React Query refetch on demand
       if (queryClient) {
-        // Invalidate critical queries
+        // Invalidate critical queries - this will trigger refetch when components need the data
         queryClient.invalidateQueries({ queryKey: ["artworks"] });
         queryClient.invalidateQueries({ queryKey: ["popularArtworks"] });
         queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
         
-        // Force immediate refetch for Explore page to show new artwork instantly
-        // This will refetch all artworks queries including the one used in Explore.tsx
-        await queryClient.refetchQueries({ 
-          queryKey: ["artworks"],
-          type: "active" // Only refetch active queries
-        });
-        
-        // Specifically refetch the Explore page query: useArtworks(1, undefined, true, "all", "public")
-        await queryClient.refetchQueries({ 
-          queryKey: ["artworks", 1, undefined, true, "all", "public"]
-        });
-        
-        // Also refetch popular artworks for the showcase
-        queryClient.refetchQueries({ queryKey: ["popularArtworks"] });
+        // No need to await refetches - let them happen in background
+        // The UI will update automatically when the data is refetched
       }
 
       // Show success toast
