@@ -314,25 +314,25 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
         className="fixed inset-0 bg-black/50 flex items-center justify-center"
         style={{ zIndex }}
       >
-        <div className="bg-white rounded-lg w-full max-w-xs mx-4 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-xs mx-4 overflow-hidden">
           <div className="flex items-center justify-between p-4 -mb-4">
             <div className="flex items-center gap-2">
               {(selectedCategory || showDetails) && (
                 <button
                   onClick={handleBack}
-                  className="px-1 rounded-full hover:bg-gray-100 transition-colors"
+                  className="px-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                   aria-label={backText}
                 >
-                  <i className="bx bx-chevron-left text-sm text-black"></i>
+                  <i className="bx bx-chevron-left text-sm text-black dark:text-white"></i>
                 </button>
               )}
-              <h2 className="text-xs text-black font-semibold">
+              <h2 className="text-xs text-black dark:text-white font-semibold">
                 {showDetails ? additionalInfoText : selectedCategory ? getCategoryTranslation(selectedCategory).title : reportContentText}
               </h2>
             </div>
             <button
               onClick={onClose}
-              className="p-1 rounded-full hover:bg-gray-200 transition-colors"
+              className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               aria-label={closeText}
             >
               <X size={15} />
@@ -342,7 +342,7 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
           <div className="p-4 max-h-[60vh] overflow-y-auto">
             {showDetails && selectedOption ? (
               <div>
-                <p className="text-black text-[10px] mb-4">{getOptionTranslation(selectedOption).additionalInfo}</p>
+                <p className="text-black dark:text-white text-[10px] mb-4">{getOptionTranslation(selectedOption).additionalInfo}</p>
                 <button
                   onClick={openConfirmation}
                   className="w-full bg-red-800 hover:bg-red-700 text-white text-[10px] py-2 px-4 rounded-full transition-colors"
@@ -352,15 +352,15 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
               </div>
             ) : selectedCategory ? (
               <>
-                <p className="text-black text-[10px] mb-4">{getCategoryTranslation(selectedCategory).description}</p>
+                <p className="text-black dark:text-white text-[10px] mb-4">{getCategoryTranslation(selectedCategory).description}</p>
                 {selectedCategory.options?.map((option) => (
                   <button
                     key={option.id}
                     onClick={() => handleOptionSelect(option)}
-                    className="w-full text-left text-[10px] text-black p-3 mb-2 bg-gray-50 hover:bg-gray-100 rounded flex items-center justify-between"
+                    className="w-full text-left text-[10px] text-black dark:text-white p-3 mb-2 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded flex items-center justify-between"
                   >
                     <span>{getOptionTranslation(option).text}</span>
-                    <span className="text-black text-sm">›</span>
+                    <span className="text-black dark:text-white text-sm">›</span>
                   </button>
                 ))}
                 {!selectedCategory.options && (
@@ -369,7 +369,7 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
                       value={customReason}
                       onChange={(e) => setCustomReason(e.target.value)}
                       placeholder={describeIssueText}
-                      className="w-full p-2 text-[10px] border rounded bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-300"
+                      className="w-full p-2 text-[10px] border border-gray-300 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-500"
                       rows={3}
                     />
                     <button
@@ -387,10 +387,10 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
                 <button
                   key={category.id}
                   onClick={() => handleCategorySelect(category)}
-                  className="w-full text-left text-[10px] text-black p-3 mb-2 bg-gray-50 hover:bg-gray-100 rounded flex items-center justify-between"
+                  className="w-full text-left text-[10px] text-black dark:text-white p-3 mb-2 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded flex items-center justify-between"
                 >
                   <span>{getCategoryTranslation(category).title}</span>
-                  <span className="text-black text-sm">›</span>
+                  <span className="text-black dark:text-white text-sm">›</span>
                 </button>
               ))
             )}
@@ -399,10 +399,10 @@ const ReportOptionsPopup: React.FC<ReportOptionsPopupProps> = ({ isOpen, onClose
       </div>
 
       <Dialog open={showConfirmation} onOpenChange={closeConfirmation}>
-        <DialogContent className="w-full max-w-xs rounded-lg">
+        <DialogContent className="w-full max-w-xs rounded-lg bg-white dark:bg-gray-800">
           <DialogHeader>
-            <DialogTitle className="text-center mb-1 text-xs">{confirmReportText}</DialogTitle>
-            <DialogDescription className="w-full max-w-[270px] text-[10px] text-center text-black">
+            <DialogTitle className="text-center mb-1 text-xs text-black dark:text-white">{confirmReportText}</DialogTitle>
+            <DialogDescription className="w-full max-w-[270px] text-[10px] text-center text-black dark:text-white">
               {confirmDescText}
             </DialogDescription>
           </DialogHeader>

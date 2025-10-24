@@ -476,7 +476,7 @@ const ArtworkDetails = () => {
 
   return (
     <>
-      <div className="min-h-screen">
+      <div className="min-h-screen dark:bg-gray-900">
         <Header />
 
         <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">

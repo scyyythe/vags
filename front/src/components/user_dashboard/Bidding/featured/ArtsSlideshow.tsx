@@ -101,11 +101,11 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
   }, [autoPlay, interval, auctions.length]);
 
   if (isLoading) return <FeaturedAuctionSkeleton />;
-  if (isError) return <p>{failedToLoadText}</p>;
+  if (isError) return <p className="text-gray-900 dark:text-gray-100">{failedToLoadText}</p>;
   if (!data || data.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="text-muted-foreground">{noAuctionsText}</p>
+        <p className="text-muted-foreground text-gray-900 dark:text-gray-100">{noAuctionsText}</p>
       </div>
     );
   }
@@ -152,7 +152,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
             </h2>
 
             <div className="flex items-center gap-2 mb-3">
-              <span className={cn("text-gray-600", isMobile ? "text-[11px]" : "text-xs")}>{ownedByText}</span>
+              <span className={cn("text-gray-600 dark:text-gray-400", isMobile ? "text-[11px]" : "text-xs")}>{ownedByText}</span>
               <div className="flex items-center gap-2 whitespace-nowrap">
                 <Link to={`/userprofile/${artwork.artwork.artist_id}`} className="flex items-center gap-2">
                   {artwork.artwork.profile_picture ? (
@@ -178,7 +178,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
                   >
                     {(translatedArtworks[artwork.id]?.artist || artwork.artwork.artist || 'U').charAt(0).toUpperCase()}
                   </div>
-                  <span className={cn("text-black font-medium", isMobile ? "text-[11px]" : "text-xs")}>
+                  <span className={cn("text-black dark:text-white font-medium", isMobile ? "text-[11px]" : "text-xs")}>
                     {translatedArtworks[artwork.id]?.artist || artwork.artwork.artist}
                   </span>
                 </Link>
@@ -186,17 +186,17 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
             </div>
 
             <div
-              className={cn("bg-white rounded-md flex ", isMobile ? "w-[350px] px-6 py-4" : "max-w-[475px] px-16 py-7")}
+              className={cn("bg-white dark:bg-gray-800 rounded-md flex ", isMobile ? "w-[350px] px-6 py-4" : "max-w-[475px] px-16 py-7")}
             >
               <div className="flex w-full">
                 <div className="flex-1 text-center pl-1">
-                  <p className="text-[11px] text-black mb-3 whitespace-nowrap">{currentBidText}</p>
-                  <p className={cn("text-black font-semibold whitespace-nowrap", isMobile ? "text-lg" : "text-2xl")}>
+                  <p className="text-[11px] text-black dark:text-white mb-3 whitespace-nowrap">{currentBidText}</p>
+                  <p className={cn("text-black dark:text-white font-semibold whitespace-nowrap", isMobile ? "text-lg" : "text-2xl")}>
                     {formatCurrency(artwork.highest_bid?.amount)}
                   </p>
                 </div>
 
-                <div className="border-l border-gray-300 h-19 mx-12"></div>
+                <div className="border-l border-gray-300 dark:border-gray-600 h-19 mx-12"></div>
 
                 <div className="flex flex-col text-center">
                   <CountdownDisplay startTime={artwork.start_time} endTime={artwork.end_time} isMobile={isMobile} />
@@ -220,7 +220,7 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
               <button
                 onClick={() => navigate(`/bid/${artwork.id}/`)}
                 className={cn(
-                  "border border-gray-400 text-gray-500 rounded-full font-medium transition ",
+                  "border border-gray-400 dark:border-gray-600 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full font-medium transition ",
                   isMobile ? "w-60 px-3 py-2 text-[11px]" : "w-full px-8 py-2 text-sm"
                 )}
               >
@@ -255,7 +255,9 @@ const ArtSlideshow = memo(({ artworks, user, autoPlay = true, interval = 4000 }:
             className={cn(
               "rounded-full transition-all duration-300",
               isMobile ? "w-1 h-1" : "w-1 h-1",
-              index === currentIndex ? "bg-gray-300 w-3" : "bg-black/50 hover:bg-white/70"
+              index === currentIndex 
+                ? "bg-gray-300 dark:bg-red-400 w-3" 
+                : "bg-black/50 dark:bg-white/30 hover:bg-white/70 dark:hover:bg-red-300/50"
             )}
             aria-label={`${goToSlideText} ${index + 1}`}
           />

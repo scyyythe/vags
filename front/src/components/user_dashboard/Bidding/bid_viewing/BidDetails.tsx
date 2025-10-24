@@ -94,22 +94,22 @@ const BidItem = ({
         <img
           src={profilePicture}
           alt={translatedBidderName || "Bidder"}
-          className={`${sizeClass} rounded-full object-cover border`}
+          className={`${sizeClass} rounded-full object-cover border border-gray-200 dark:border-gray-600`}
         />
       ) : (
         <div
-          className={`${sizeClass} rounded-full bg-gray-300 flex items-center justify-center ${textSizeClass} font-semibold text-gray-700 border`}
+          className={`${sizeClass} rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center ${textSizeClass} font-semibold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600`}
         >
           {avatarLetter}
         </div>
       )}
       <div>
-        <span className="font-semibold text-[11px] mr-1">
-          <i className="bx bx-money text-[8px] text-gray-400"></i> {formatAmount(bid.amount)}
+        <span className="font-semibold text-[11px] mr-1 text-gray-900 dark:text-gray-100">
+          <i className="bx bx-money text-[8px] text-gray-400 dark:text-gray-500"></i> {formatAmount(bid.amount)}
         </span>
-        <span className="flex gap-1 text-[9px] text-gray-500 -mt-1">
-          {byText} <p className="font-medium text-gray-700">{translatedBidderName}</p>
-          {isOwner && isMobile && <span className="ml-1 text-[9px] text-gray-400">{formatBidDate(bid.timestamp)}</span>}
+        <span className="flex gap-1 text-[9px] text-gray-500 dark:text-gray-400 -mt-1">
+          {byText} <p className="font-medium text-gray-700 dark:text-gray-300">{translatedBidderName}</p>
+          {isOwner && isMobile && <span className="ml-1 text-[9px] text-gray-400 dark:text-gray-500">{formatBidDate(bid.timestamp)}</span>}
         </span>
       </div>
     </div>
@@ -425,15 +425,15 @@ const BidDetails = () => {
 
     return (
       <>
-        <div className="min-h-screen">
+        <div className="min-h-screen dark:bg-gray-900">
           <Header />
           {/* Back button */}
           <div
             className={` w-[200px] ${
-              isMobile ? "ml-3 mt-20 px-4 whitespace-nowrap" : "md:ml-16 whitespace-nowrap mt-20"
+              isMobile ? "ml-3 pt-20 px-4 whitespace-nowrap" : "md:ml-16 whitespace-nowrap pt-20"
             }`}
           >
-            <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold">
+            <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
               <i className="bx bx-chevron-left text-lg mr-2"></i>
               {bidDetailsText}
             </button>
@@ -448,11 +448,11 @@ const BidDetails = () => {
                   {!isMobile && (
                     <div className="absolute top-3 z-20 left-[-250px] hidden lg:block" style={{ width: "150px" }}>
                       {/* Left Side - Bids Sidebar */}
-                      <div className="p-3 text-left rounded-sm">
+                        <div className="p-3 text-left rounded-sm bg-white dark:bg-gray-800">
                         <div className="flex items-center gap-2 mb-2">
-                          <h2 className="font-semibold text-xs">{bidsText}</h2>
+                          <h2 className="font-semibold text-xs text-gray-900 dark:text-gray-100">{bidsText}</h2>
                           {hasNewBids && (
-                            <div className="flex items-center gap-1 text-xs text-green-600">
+                            <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
                               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                               <span>New</span>
                             </div>
@@ -471,7 +471,7 @@ const BidDetails = () => {
                               />
                             ))
                           ) : (
-                            <div className="text-[11px] text-gray-400">{noBidsYetText}</div>
+                            <div className="text-[11px] text-gray-400 dark:text-gray-500">{noBidsYetText}</div>
                           )}
                         </div>
                       </div>
@@ -502,8 +502,8 @@ const BidDetails = () => {
                           className="group flex flex-row-reverse items-center bg-white/70 backdrop-blur-md rounded-full px-1 py-1 shadow-md overflow-hidden w-[32px] h-[32px] hover:w-[90px] hover:pl-4 transition-[width,padding] ease-in-out duration-700 cursor-pointer"
                           onClick={() => setIsExpanded(true)}
                         >
-                          <i className="bx bx-expand-alt text-[12px] mr-[6px]"></i>
-                          <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700">
+                          <i className="bx bx-expand-alt text-[12px] mr-[6px] text-gray-900 dark:text-black"></i>
+                          <span className="mr-3 text-[10px] font-medium whitespace-nowrap transform translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all ease-in-out duration-700 text-gray-900 dark:text-black">
                             {expandText}
                           </span>
                         </div>
@@ -517,33 +517,33 @@ const BidDetails = () => {
               <div
                 className={` ${
                   isMobile ? "w-full mt-10 px-4 h-[540px]" : "w-[730px] -ml-[250px] mt-3 h-[450px]"
-                }border`}
+                }border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900`}
               >
                 <div>
                   <div className="flex justify-between items-start">
                     <div className="flex items-center space-x-4">
                       <button
                         onClick={() => toggleLike()}
-                        className="flex items-center space-x-1 text-gray-800 rounded-3xl py-1.5 px-2 border border-gray-200"
+                        className="flex items-center space-x-1 text-gray-800 dark:text-gray-200 rounded-3xl py-1.5 px-2 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
                       >
                         <Heart
                           size={isMobile ? 13 : 13}
-                          className={item.user_has_liked_auction ? "text-red-600 fill-red-600" : "text-gray-800"}
+                          className={item.user_has_liked_auction ? "text-red-600 fill-red-600" : "text-gray-800 dark:text-gray-200"}
                           fill={item.user_has_liked_auction ? "currentColor" : "none"}
                         />
                         {item.auction_likes_count > 0 && (
-                          <span className={`${isMobile ? "text-xs" : "text-[9px]"}`}>{item.auction_likes_count}</span>
+                          <span className={`${isMobile ? "text-xs" : "text-[9px]"} text-gray-800 dark:text-gray-200`}>{item.auction_likes_count}</span>
                         )}
                       </button>
 
-                      <div className="flex items-center space-x-2 text-xs">
+                      <div className="flex items-center space-x-2 text-xs text-gray-800 dark:text-gray-200">
                         <i className="bx bx-show text-[15px]"></i>
                         <span>{item?.viewers.length || 0}</span>
                       </div>
                     </div>
 
                     <div className="relative">
-                      <button className="py-3 pr-[11px] mr-2 text-gray-500" onClick={() => setMenuOpen(!menuOpen)}>
+                      <button className="py-3 pr-[11px] mr-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" onClick={() => setMenuOpen(!menuOpen)}>
                         <MoreHorizontal size={isMobile ? 14 : 14} />
                       </button>
 
@@ -594,14 +594,15 @@ const BidDetails = () => {
                     </div>
                   </div>
 
-                  <h1 className={`${isMobile ? "text-lg" : "text-xl"} font-bold mb-2`}>
+                  <h1 className={`${isMobile ? "text-lg" : "text-xl"} font-bold mb-2 text-gray-900 dark:text-gray-100`}>
                     {translatedArtworkTitle || noArtworkNameText}
                   </h1>
 
-                  <p className={`${isMobile ? "text-[10px]" : "text-[10px]"} text-gray-600 mb-1`}>
+                  <p className={`${isMobile ? "text-[10px]" : "text-[10px]"} text-gray-600 dark:text-gray-400 mb-1`}>
                     <span
                       style={{ cursor: "pointer" }}
                       onClick={() => navigate(`/userprofile/${item.artwork.artist_id}`)}
+                      className="hover:text-gray-800 dark:hover:text-gray-200"
                     >
                       {byText} {translatedArtistName || unknownText}
                     </span>
@@ -612,7 +613,7 @@ const BidDetails = () => {
                     <div
                       ref={descriptionRef}
                       className={`
-                      text-[10px] text-gray-700 transition-all duration-300 ease-in-out mb-2 h-[100px]
+                      text-[10px] text-gray-700 dark:text-gray-300 transition-all duration-300 ease-in-out mb-2 h-[100px]
                       ${
                         showFullDescription
                           ? "max-h-[100px] overflow-y-auto pr-1"
@@ -627,7 +628,7 @@ const BidDetails = () => {
                     {isOverflowing && (
                       <button
                         onClick={() => setShowFullDescription((prev) => !prev)}
-                        className="text-[9px] text-blue-500 hover:underline mt-1 block"
+                        className="text-[9px] text-blue-500 dark:text-blue-400 hover:underline mt-1 block"
                       >
                         {showFullDescription ? hideText : showMoreText}
                       </button>
@@ -635,41 +636,41 @@ const BidDetails = () => {
                   </div>
 
                   {/* Horizontal Sidebar Info */}
-                  <div className="w-full py-3 mb-4 grid grid-cols-4 gap-4 text-center">
-                    <div>
-                      <h3 className="text-[10px] font-medium">{artworkStyleText}</h3>
-                      <p className="text-[10px] text-gray-700">
-                        {translatedCategory
-                          ? translatedCategory.charAt(0).toUpperCase() + translatedCategory.slice(1)
-                          : paintingText}
-                      </p>
+                    <div className="w-full py-3 mb-4 grid grid-cols-4 gap-4 text-center">
+                      <div>
+                        <h3 className="text-[10px] font-medium text-gray-900 dark:text-gray-100">{artworkStyleText}</h3>
+                        <p className="text-[10px] text-gray-700 dark:text-gray-300">
+                          {translatedCategory
+                            ? translatedCategory.charAt(0).toUpperCase() + translatedCategory.slice(1)
+                            : paintingText}
+                        </p>
+                      </div>
+
+                      <div>
+                        <h3 className="text-[9px] font-medium text-gray-900 dark:text-gray-100">{mediumText}</h3>
+                        <p className="text-[9px] text-gray-700 dark:text-gray-300">{translatedMedium || acrylicPaintText}</p>
+                      </div>
+
+                      <div>
+                        <h3 className="text-[9px] font-medium text-gray-900 dark:text-gray-100">{dimensionsText}</h3>
+                        <p className="text-[9px] text-gray-700 dark:text-gray-300">
+                          {item.artwork.size || noSizeText} {cmText}
+                        </p>
+                      </div>
+
+                      <div>
+                        <h3 className="text-[9px] font-medium text-gray-900 dark:text-gray-100">{datePostedText}</h3>
+                        <p className="text-[9px] text-gray-700 dark:text-gray-300">
+                          {item.artwork.created_at ? formatDate(item.artwork.created_at) : "March 25, 2023"}
+                        </p>
+                      </div>
                     </div>
 
-                    <div>
-                      <h3 className="text-[9px] font-medium">{mediumText}</h3>
-                      <p className="text-[9px] text-gray-700">{translatedMedium || acrylicPaintText}</p>
-                    </div>
-
-                    <div>
-                      <h3 className="text-[9px] font-medium">{dimensionsText}</h3>
-                      <p className="text-[9px] text-gray-700">
-                        {item.artwork.size || noSizeText} {cmText}
-                      </p>
-                    </div>
-
-                    <div>
-                      <h3 className="text-[9px] font-medium">{datePostedText}</h3>
-                      <p className="text-[9px] text-gray-700">
-                        {item.artwork.created_at ? formatDate(item.artwork.created_at) : "March 25, 2023"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="w-full border px-10 py-4 rounded-xl flex justify-between items-center text-center mt-4 mb-2">
+                  <div className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-10 py-4 rounded-xl flex justify-between items-center text-center mt-4 mb-2">
                     {/* Highest Bid */}
                     <div className="flex-1">
-                      <p className="text-[10px] text-gray-500 mb-2 -mt-2">{highestBidText}</p>
-                      <p className="text-lg font-semibold">
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400 mb-2 -mt-2">{highestBidText}</p>
+                      <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                         {item.highest_bid && item.highest_bid.amount != null
                           ? `₱${formatAmount(item.highest_bid.amount)}`
                           : noBidsText}
@@ -677,7 +678,7 @@ const BidDetails = () => {
                     </div>
 
                     {/* Separator */}
-                    <div className="w-[1px] h-12 bg-gray-200 mx-7" />
+                    <div className="w-[1px] h-12 bg-gray-200 dark:bg-gray-600 mx-7" />
 
                     {/* Auction Timer */}
                     <div>
@@ -714,9 +715,9 @@ const BidDetails = () => {
                 {/* Mobile Sidebar - Bids Section */}
                 {isMobile && (
                   <div className="mt-6 w-full px-1">
-                    <div className="border rounded-lg p-3 text-left">
+                    <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg p-3 text-left">
                       <div className="flex items-center gap-2 mb-2">
-                        <h2 className="font-semibold text-xs">{bidsText}</h2>
+                        <h2 className="font-semibold text-xs text-gray-900 dark:text-gray-100">{bidsText}</h2>
                       </div>
                       <div className="max-h-[300px] overflow-y-auto pr-1 flex flex-col gap-2">
                         {bids.length > 0 ? (
@@ -731,7 +732,7 @@ const BidDetails = () => {
                             />
                           ))
                         ) : (
-                          <div className="text-[11px] text-gray-400">{noBidsYetText}</div>
+                            <div className="text-[11px] text-gray-400 dark:text-gray-500">{noBidsYetText}</div>
                         )}
                       </div>
                     </div>
@@ -744,7 +745,7 @@ const BidDetails = () => {
           {/* Related Bids Section */}
           {relatedBids.length > 0 ? (
             <div className="container md:px-6 mt-2 mb-2">
-              <h2 className={`font-medium border ${isMobile ? "text-xs mt-12 mb-4 -ml-3" : "text-xs mt-10 mb-6"}`}>
+              <h2 className={`font-medium  bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 ${isMobile ? "text-xs mt-12 mb-4 -ml-3" : "text-xs mt-10 mb-6"}`}>
                 {relatedBidsText}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -764,10 +765,10 @@ const BidDetails = () => {
             </div>
           ) : (
             <div className="container md:px-6 mt-2 mb-2">
-              <h2 className={`font-medium ${isMobile ? "text-xs mt-12 mb-4" : "text-xs mt-10 mb-4"}`}>
+              <h2 className={`font-medium text-gray-900 dark:text-gray-100 ${isMobile ? "text-xs mt-12 mb-4" : "text-xs mt-10 mb-4"}`}>
                 {relatedBidsText}
               </h2>
-              <p className={`text-gray-500 text-xs text-center ${isMobile ? "mb-6" : "mb-2 mt-2"}`}>
+              <p className={`text-gray-500 dark:text-gray-400 text-xs text-center ${isMobile ? "mb-6" : "mb-2 mt-2"}`}>
                 {noRelatedBidsText}
               </p>
             </div>

@@ -38,15 +38,15 @@ const RelatedBids = ({ currentCategory, currentBidId }: RelatedBidsProps) => {
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
       {related.map((bid) => (
         <Link to={`/bid/${bid.id}`} key={bid.id}>
-          <div className="overflow-hidden rounded-lg shadow-md group">
+          <div className="overflow-hidden rounded-lg shadow-md group bg-white dark:bg-gray-800">
             <img
               src={bid.image}
               alt={bid.title}
               className="w-full aspect-square object-cover group-hover:scale-105 transition-transform"
             />
             <div className="p-2">
-              <h3 className="text-sm font-semibold truncate">{bid.title}</h3>
-              <p className="text-xs text-gray-500 truncate">{bid.artist}</p>
+              <h3 className="text-sm font-semibold truncate text-gray-900 dark:text-gray-100">{bid.title}</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{bid.artist}</p>
             </div>
           </div>
         </Link>

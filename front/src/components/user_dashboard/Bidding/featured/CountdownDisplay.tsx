@@ -58,9 +58,9 @@ const CountdownDisplay = ({
 
   if (hasNotStarted) {
     return (
-      <div className="text-gray-600">
+      <div className="text-gray-600 dark:text-gray-400">
         <p className={cn(isMobile ? "text-[10px]" : "text-xs", "relative bottom-2")}>{auctionWillStartText}</p>
-        <p className="text-xs font-semibold text-black mt-1">
+        <p className="text-xs font-semibold text-black dark:text-white mt-1">
           {new Date(startTime).toLocaleString("en-PH", {
             year: "numeric",
             month: "long",
@@ -75,7 +75,7 @@ const CountdownDisplay = ({
   }
 
   if (hasEnded) {
-    return <p className="text-sm text-gray-500">{auctionEndedText}</p>;
+    return <p className="text-sm text-gray-500 dark:text-gray-400">{auctionEndedText}</p>;
   }
 
   const getUnitTranslation = (unit: string) => {
@@ -93,12 +93,12 @@ const CountdownDisplay = ({
 
   return (
     <div className="flex flex-col items-center">
-      <span className={cn(isMobile ? "text-[10px]" : "text-xs mb-2", "text-black")}>{auctionEndsInText}</span>
+      <span className={cn(isMobile ? "text-[10px]" : "text-xs mb-2", "text-black dark:text-white")}>{auctionEndsInText}</span>
       <div className="flex justify-center items-center gap-8">
         {["hrs", "mins", "secs"].map((unit, idx) => (
           <div key={unit} className="flex flex-col items-center">
-            <span className="text-md font-bold text-[#990000]">{timeRemaining[unit]}</span>
-            <span className="text-gray-500 text-[10px] mt-1">{getUnitTranslation(unit)}</span>
+            <span className="text-md font-bold text-[#990000] dark:text-red-400">{timeRemaining[unit]}</span>
+            <span className="text-gray-500 dark:text-gray-400 text-[10px] mt-1">{getUnitTranslation(unit)}</span>
           </div>
         ))}
       </div>

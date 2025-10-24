@@ -44,13 +44,13 @@ const CountdownTimer = ({ startTime, targetTime }: { startTime: string | Date; t
 
   return (
     <div className="relative group">
-      <div className="absolute top-4 right-4 font-semibold bg-white bg-opacity-60 text-black text-[9px] px-3 py-1 rounded-[5px] flex flex-col items-end space-y-1">
-        {now < start && <div>{auctionWillStartText}</div>}
-        <div>{now < start ? formatDateTime(start) : finished ? timesUpText : `${hrs}${hText} ${mins}${mText} ${secs}${sText}`}</div>
+      <div className="absolute top-4 right-4 font-semibold bg-white dark:bg-gray-800 bg-opacity-60 dark:bg-opacity-80 text-gray-900 dark:text-gray-100 text-[9px] px-3 py-1 rounded-[5px] flex flex-col items-end space-y-1">
+        {now < start && <div className="text-gray-600 dark:text-gray-300">{auctionWillStartText}</div>}
+        <div className="text-gray-900 dark:text-gray-100">{now < start ? formatDateTime(start) : finished ? timesUpText : `${hrs}${hText} ${mins}${mText} ${secs}${sText}`}</div>
       </div>
 
       {!finished && now >= start && (
-        <div className="absolute top-full mt-1 right-4 hidden group-hover:block text-[8px] text-gray-600 bg-white border border-gray-200 rounded px-2 py-1 shadow-md z-10">
+        <div className="absolute top-full mt-1 right-4 hidden group-hover:block text-[8px] text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded px-2 py-1 shadow-md dark:shadow-gray-700/50 z-10">
           {daysDecimal} {parseFloat(daysDecimal) !== 1 ? daysText : dayText}
         </div>
       )}
