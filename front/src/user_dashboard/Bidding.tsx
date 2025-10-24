@@ -172,8 +172,11 @@ const Bidding = () => {
                 {/* Incoming Auctions */}
                 <button
                   onClick={() => setShowIncoming((prev) => !prev)}
-                  className={`px-3 rounded-full border border-gray-300 dark:border-gray-600 transition-all text-[10px] 
-                    ${showIncoming ? "shadow-md font-medium bg-gray-100 dark:bg-gray-700" : "bg-white dark:bg-gray-800"}`}
+                  className={`px-3 py-1 rounded-full text-[10px] font-small transition-colors ${
+                    showIncoming
+                      ? "border border-gray-300 dark:border-gray-600 font-medium shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 dark:shadow-white/20"
+                      : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  }`}
                 >
                   {upcomingText}
                 </button>

@@ -134,34 +134,34 @@ const BidPopup: React.FC<BidPopupProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl w-full max-w-xs mx-4 relative" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-xs mx-4 relative" onClick={(e) => e.stopPropagation()}>
         <div className="py-6 px-8">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="relative text-lg font-bold top-5">{placeYourBidText}</h2>
+            <h2 className="relative text-lg font-bold top-5 text-gray-900 dark:text-gray-100">{placeYourBidText}</h2>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onClose();
               }}
-              className="text-gray-600 hover:text-black"
+              className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
             >
               <X size={17} />
             </button>
           </div>
 
-          <p className="text-gray-600 text-[10px] mb-8">
-            {youArePlacingBidText} <span className="text-red-900 font-semibold">{translatedTitle || artworkTitle}</span>
+          <p className="text-gray-600 dark:text-gray-400 text-[10px] mb-8">
+            {youArePlacingBidText} <span className="text-red-900 dark:text-red-400 font-semibold">{translatedTitle || artworkTitle}</span>
           </p>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-8 text-[10px]">
-              <label className="block text-xs font-medium mb-2">{enterBidAmountText}</label>
+              <label className="block text-xs font-medium mb-2 text-gray-900 dark:text-gray-100">{enterBidAmountText}</label>
               <input
                 type="number"
                 placeholder={`${minimumBidText} ₱${start_bid_amount}`}
                 value={bidAmount}
                 onChange={(e) => setBidAmount(e.target.value)}
-                className="w-full py-2 px-3 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-red-800"
+                className="w-full py-2 px-3 border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-1 focus:ring-red-800 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                 required
               />
             </div>

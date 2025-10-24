@@ -149,27 +149,27 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
     return (
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
         <div>
-          <label className="block text-[10px] font-medium text-gray-700 mb-2">{usernameText}</label>
+          <label className="block text-[10px] font-medium text-gray-700 dark:text-gray-300 mb-2">{usernameText}</label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-[10px]">@</span>
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 text-[10px]">@</span>
             <input
               type="text"
               value={usernameInput}
               onChange={(e) => setUsernameInput(e.target.value)}
               placeholder={enterUsernameText}
-              className="w-full pl-8 pr-4 py-2 border border-gray-200 rounded-full text-[10px] focus:outline-none focus:border-red-800 focus:ring-1 focus:ring-red-800"
+              className="w-full pl-8 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-full text-[10px] focus:outline-none focus:border-red-800 focus:ring-1 focus:ring-red-800 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               maxLength={20}
               disabled={isLoading}
             />
           </div>
-          <p className="text-[9px] text-gray-500 mt-1">{usernameRequirementsText}</p>
+          <p className="text-[9px] text-gray-500 dark:text-gray-400 mt-1">{usernameRequirementsText}</p>
         </div>
         <div className="flex gap-3 pt-4">
           <button
             type="button"
             onClick={() => setShowUsernameSetup(false)}
             disabled={isLoading}
-            className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-[10px] py-2 rounded-full font-medium transition-colors disabled:opacity-50"
+            className="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-[10px] py-2 rounded-full font-medium transition-colors disabled:opacity-50"
           >
             {cancelText}
           </button>
@@ -223,20 +223,20 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
     return (
       <form onSubmit={handleSubmit} className="space-y-7 mt-4">
         <div>
-          <label className="block text-[10px] font-medium text-gray-700 mb-1">{usernameText}</label>
+          <label className="block text-[10px] font-medium text-gray-700 dark:text-gray-300 mb-1">{usernameText}</label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-[10px]">@</span>
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 text-[10px]">@</span>
             <input
               type="text"
               value={usernameInput}
               onChange={(e) => setUsernameInput(e.target.value)}
-              className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-full text-[10px] focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-transparent"
+              className="w-full pl-8 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full text-[10px] focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               placeholder={enterUsernameText}
               maxLength={20}
               disabled={isLoading}
             />
           </div>
-          <p className="text-[9px] text-gray-500 mt-1">{usernameRequirementsText}</p>
+          <p className="text-[9px] text-gray-500 dark:text-gray-400 mt-1">{usernameRequirementsText}</p>
         </div>
         <div className="flex gap-3 pt-4">
           <button
@@ -259,16 +259,16 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={onClose}>
-        <div className="bg-white rounded-2xl w-full max-w-xs mx-4 relative" onClick={(e) => e.stopPropagation()}>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-xs mx-4 relative" onClick={(e) => e.stopPropagation()}>
           <div className="py-6 px-8">
             <div className="flex justify-between items-center mb-2">
-              <h2 className="text-sm font-bold">{placeYourBidText}</h2>
-              <button onClick={onClose} className="text-gray-600 hover:text-black">
+              <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">{placeYourBidText}</h2>
+              <button onClick={onClose} className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
                 <X size={17} />
               </button>
             </div>
 
-            <p className="text-gray-500 text-[10px]">{chooseNameText}</p>
+            <p className="text-gray-500 dark:text-gray-400 text-[10px]">{chooseNameText}</p>
 
             {/* Username / Anonymous Options */}
             {!showUsernameSetup && !showUsernameEdit && (
@@ -277,8 +277,8 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                 <div
                   className={`px-4 py-2 border rounded-full cursor-pointer transition-all ${
                     selectedIdentity === "username"
-                      ? "border-red-800 bg-red-50"
-                      : "border-gray-200 hover:border-red-800"
+                      ? "border-red-800 bg-red-50 dark:bg-red-900/20"
+                      : "border-gray-200 dark:border-gray-600 hover:border-red-800 dark:hover:border-red-400"
                   }`}
                   onClick={() => (hasUsername ? setSelectedIdentity("username") : setShowUsernameSetup(true))}
                 >
@@ -286,18 +286,18 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                     <i className="bx bx-user"></i>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-medium text-[10px]">{useMyUsernameText}</h3>
+                        <h3 className="font-medium text-[10px] text-gray-900 dark:text-gray-100">{useMyUsernameText}</h3>
                         {hasUsername && (
                           <button
                             onClick={handleEditUsername}
-                            className="text-red-800 text-[10px] flex items-center gap-1 hover:underline"
+                            className="text-red-800 dark:text-red-400 text-[10px] flex items-center gap-1 hover:underline"
                           >
                             <Pencil size={10} /> {editText}
                           </button>
                         )}
                       </div>
                       {!hasUsername && (
-                        <span className="text-black mt-1 block">
+                        <span className="text-black dark:text-white mt-1 block">
                           <button onClick={() => setShowUsernameSetup(true)} className="font-medium text-[10px] hover:underline">
                             {setUpUsernameText}
                           </button>
@@ -311,15 +311,15 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                 <div
                   className={`px-4 py-2 border rounded-full cursor-pointer transition-all ${
                     selectedIdentity === "anonymous"
-                      ? "border-red-800 bg-red-50"
-                      : "border-gray-200 hover:border-red-800"
+                      ? "border-red-800 bg-red-50 dark:bg-red-900/20"
+                      : "border-gray-200 dark:border-gray-600 hover:border-red-800 dark:hover:border-red-400"
                   }`}
                   onClick={() => setSelectedIdentity("anonymous")}
                 >
                   <div className="flex items-start gap-3">
                     <i className="bx bx-hide"></i>
                     <div className="flex-1">
-                      <h3 className="font-medium text-[10px]">{bidAnonymouslyText}</h3>
+                      <h3 className="font-medium text-[10px] text-gray-900 dark:text-gray-100">{bidAnonymouslyText}</h3>
                     </div>
                   </div>
                 </div>
@@ -350,7 +350,7 @@ const IdentitySelectionPopup: React.FC<IdentitySelectionPopupProps> = ({
                 <div className="flex gap-3 mt-8">
                   <button
                     onClick={onClose}
-                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-[10px] py-2 rounded-full font-medium transition-colors"
+                    className="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-[10px] py-2 rounded-full font-medium transition-colors"
                   >
                     {cancelText}
                   </button>

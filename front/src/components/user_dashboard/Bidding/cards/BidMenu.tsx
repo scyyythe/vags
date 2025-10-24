@@ -82,7 +82,7 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
     <>
       <div
         ref={menuRef}
-        className={`absolute z-10 bg-gray-100 rounded-full py-1 px-1 shadow-md ${className}`}
+        className={`absolute z-10 bg-gray-100 dark:bg-gray-700 rounded-full py-1 px-1 shadow-md ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start">
@@ -90,7 +90,7 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={() => setShowShareModal(true)}
-              className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-2 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               aria-label="Share"
               onMouseEnter={() => setHoveredItem("share")}
               onMouseLeave={() => setHoveredItem(null)}
@@ -111,7 +111,7 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={onHide}
-              className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-2 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               aria-label="Hide"
               onMouseEnter={() => setHoveredItem("hide")}
               onMouseLeave={() => setHoveredItem(null)}
@@ -129,7 +129,7 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={handleReportClick}
-              className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-2 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               aria-label="Report"
               onMouseEnter={() => setHoveredItem("report")}
               onMouseLeave={() => setHoveredItem(null)}
@@ -148,7 +148,7 @@ const BidMenu: React.FC<ArtCardMenuProps> = ({
             <div className="flex items-center relative">
               <button
                 onClick={(e) => handleUndoReport(e, auctionId)}
-                className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 aria-label="Undo Report"
                 onMouseEnter={() => setHoveredItem("undoReport")}
                 onMouseLeave={() => setHoveredItem(null)}
