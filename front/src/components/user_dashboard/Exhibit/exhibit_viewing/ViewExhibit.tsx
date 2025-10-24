@@ -76,7 +76,10 @@ const ExhibitViewing = () => {
 
   // Translation hooks
   const artworkNotFoundText = useAutoTranslation("Artwork Not Found", language);
-  const artworkNotFoundDescText = useAutoTranslation("The artwork you're looking for doesn't exist or has been removed.", language);
+  const artworkNotFoundDescText = useAutoTranslation(
+    "The artwork you're looking for doesn't exist or has been removed.",
+    language
+  );
   const returnToHomeText = useAutoTranslation("Return to Home", language);
   const exhibitDetailsText = useAutoTranslation("Exhibit Details", language);
   const exploreGalleryText = useAutoTranslation("Explore Gallery", language);
@@ -102,7 +105,7 @@ const ExhibitViewing = () => {
   const contentReportedText = useAutoTranslation("Content reported", language);
   const deleteConfirmText = useAutoTranslation("Are you sure you want to delete this exhibit?", language);
   const exhibitDeletedText = useAutoTranslation("Exhibit deleted successfully", language);
-  
+
   // Dynamic content translations
   const translatedTitle = useAutoTranslation(exhibit?.title || "", language);
   const translatedDescription = useAutoTranslation(exhibit?.description || "", language);
@@ -210,7 +213,10 @@ const ExhibitViewing = () => {
   }
 
   const renderComment = (commentItem: any, isReply = false) => (
-    <div key={commentItem.id} className={`mb-6 relative ${isReply ? "ml-8 pl-4 border-l border-gray-200 dark:border-gray-600" : ""}`}>
+    <div
+      key={commentItem.id}
+      className={`mb-6 relative ${isReply ? "ml-8 pl-4 border-l border-gray-200 dark:border-gray-600" : ""}`}
+    >
       <div className="flex items-start justify-between">
         <div className="flex items-start">
           <Avatar className={`${isMobile ? "h-6 w-6" : "h-3 w-3"} mr-2`}>
@@ -219,10 +225,18 @@ const ExhibitViewing = () => {
           </Avatar>
 
           <div>
-            <p className={`${isMobile ? "text-xs" : "text-[9px]"} font-semibold text-gray-900 dark:text-gray-100`}>{commentItem.user}</p>
-            <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-700 dark:text-gray-300 mt-1`}>{commentItem.text}</p>
+            <p className={`${isMobile ? "text-xs" : "text-[9px]"} font-semibold text-gray-900 dark:text-gray-100`}>
+              {commentItem.user}
+            </p>
+            <p className={`${isMobile ? "text-xs" : "text-[10px]"} text-gray-700 dark:text-gray-300 mt-1`}>
+              {commentItem.text}
+            </p>
 
-            <div className={`flex items-center gap-2 ${isMobile ? "text-xs" : "text-[9px]"} text-gray-500 dark:text-gray-400 mt-1`}>
+            <div
+              className={`flex items-center gap-2 ${
+                isMobile ? "text-xs" : "text-[9px]"
+              } text-gray-500 dark:text-gray-400 mt-1`}
+            >
               <span>{formatDistanceToNow(new Date(commentItem.timestamp), { addSuffix: true })}</span>
               <span>·</span>
               <button
@@ -236,7 +250,9 @@ const ExhibitViewing = () => {
               <button onClick={() => handleCommentLike(commentItem.id)} className="flex items-center gap-1">
                 <Heart
                   size={isMobile ? 12 : 10}
-                  className={likedComments[commentItem.id] ? "text-red-500 fill-red-500" : "text-gray-500 dark:text-gray-400"}
+                  className={
+                    likedComments[commentItem.id] ? "text-red-500 fill-red-500" : "text-gray-500 dark:text-gray-400"
+                  }
                   fill={likedComments[commentItem.id] ? "currentColor" : "none"}
                 />
                 {commentLikes[commentItem.id] || commentItem.likes || 0}
@@ -253,7 +269,9 @@ const ExhibitViewing = () => {
                 {commentMenus[commentItem.id] && (
                   <div className="absolute right-0 mt-1 w-32 bg-white dark:bg-gray-700 rounded-md shadow-lg z-10">
                     <button
-                      className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[8px]"} hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100`}
+                      className={`w-full text-left px-3 py-2 ${
+                        isMobile ? "text-xs" : "text-[8px]"
+                      } hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100`}
                       onClick={() => {
                         toast.success(`${blockedUserText} ${commentItem.user}`, { closeButton: true });
                         toggleCommentMenu(commentItem.id);
@@ -262,7 +280,9 @@ const ExhibitViewing = () => {
                       {blockUserText}
                     </button>
                     <button
-                      className={`w-full text-left px-3 py-2 ${isMobile ? "text-xs" : "text-[9px]"} hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100`}
+                      className={`w-full text-left px-3 py-2 ${
+                        isMobile ? "text-xs" : "text-[9px]"
+                      } hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100`}
                       onClick={() => {
                         toast.success(contentReportedText, { closeButton: true });
                         toggleCommentMenu(commentItem.id);
@@ -309,10 +329,13 @@ const ExhibitViewing = () => {
       <div className="min-h-screen dark:bg-gray-900 pb-1">
         <Header />
 
-          <div className="container mx-auto px-4 md:px-6 py-4 md:py-8 pb-0">
-            {/* Back button */}
+        <div className="container mx-auto px-4 md:px-6 py-4 md:py-8 pb-0">
+          {/* Back button */}
           <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
-            <button onClick={() => navigate(`/exhibit-dashboard/${id}`)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
+            <button
+              onClick={() => navigate(`/exhibits`)}
+              className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100"
+            >
               <i className="bx bx-chevron-left text-lg mr-2"></i>
               {exhibitDetailsText}
             </button>
@@ -355,7 +378,7 @@ const ExhibitViewing = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* External Navigation Icons */}
                 <div className={`flex justify-center gap-4 mt-4 ${isMobile ? "px-4" : ""}`}>
                   {/* Carousel Icon */}
@@ -364,20 +387,16 @@ const ExhibitViewing = () => {
                     onClick={() => navigate(`/exhibit-carousel/${id}`)}
                   >
                     <LayoutGrid size={12} className="mr-1.5 text-gray-700 dark:text-gray-300" />
-                    <span className="text-[10px] font-medium text-gray-700 dark:text-gray-300">
-                      Carousel
-                    </span>
+                    <span className="text-[10px] font-medium text-gray-700 dark:text-gray-300">Carousel</span>
                   </div>
-                  
+
                   {/* Dashboard Icon */}
                   <div
                     className="group flex items-center bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-full px-3 py-1.5 shadow-lg hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 cursor-pointer"
                     onClick={() => navigate(`/exhibit-dashboard/${id}`)}
                   >
                     <Grid3X3 size={12} className="mr-1.5 text-gray-700 dark:text-gray-300" />
-                    <span className="text-[10px] font-medium text-gray-700 dark:text-gray-300">
-                      Dashboard
-                    </span>
+                    <span className="text-[10px] font-medium text-gray-700 dark:text-gray-300">Dashboard</span>
                   </div>
                 </div>
               </div>
@@ -393,7 +412,9 @@ const ExhibitViewing = () => {
                         }}
                         disabled={isExhibitEnded}
                         className={`flex items-center space-x-1 rounded-3xl py-1.5 px-3 border ${
-                          isExhibitEnded ? "cursor-not-allowed opacity-60 bg-gray-100 dark:bg-gray-700" : "text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-600"
+                          isExhibitEnded
+                            ? "cursor-not-allowed opacity-60 bg-gray-100 dark:bg-gray-700"
+                            : "text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-600"
                         }`}
                       >
                         <Heart
@@ -401,7 +422,9 @@ const ExhibitViewing = () => {
                           className={isLiked ? "text-red-600 fill-red-600" : "text-gray-800 dark:text-gray-200"}
                           fill={isLiked ? "currentColor" : "none"}
                         />
-                        {likeCount > 0 && <span className="text-[10px] text-gray-800 dark:text-gray-200">{likeCount}</span>}
+                        {likeCount > 0 && (
+                          <span className="text-[10px] text-gray-800 dark:text-gray-200">{likeCount}</span>
+                        )}
                       </button>
 
                       {/* Views */}
@@ -412,7 +435,10 @@ const ExhibitViewing = () => {
                     </div>
 
                     <div className="relative">
-                      <button className="py-3 mr-3 text-gray-500 dark:text-gray-400" onClick={() => setMenuOpen(!menuOpen)}>
+                      <button
+                        className="py-3 mr-3 text-gray-500 dark:text-gray-400"
+                        onClick={() => setMenuOpen(!menuOpen)}
+                      >
                         <MoreHorizontal size={isMobile ? 14 : 14} />
                       </button>
 
@@ -495,9 +521,7 @@ const ExhibitViewing = () => {
 
                   {/* Comment Section */}
                   {isExhibitEnded ? (
-                    <div className="text-[10px] text-gray-500 dark:text-gray-400 italic">
-                      {exhibitEndedText}
-                    </div>
+                    <div className="text-[10px] text-gray-500 dark:text-gray-400 italic">{exhibitEndedText}</div>
                   ) : (
                     <CommentSection artworkId={id} />
                   )}
@@ -510,7 +534,13 @@ const ExhibitViewing = () => {
         {/* Related Artworks Section */}
         {exhibit && exhibit.category && exhibits && exhibits.length > 0 && (
           <div className="container md:px-6 mt-4 mb-6">
-            <h2 className={`font-medium text-gray-900 dark:text-gray-100 ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"}`}>{relatedExhibitsText}</h2>
+            <h2
+              className={`font-medium text-gray-900 dark:text-gray-100 ${
+                isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"
+              }`}
+            >
+              {relatedExhibitsText}
+            </h2>
 
             {(() => {
               const normalizedCategory = exhibit.category.trim().toLowerCase();
