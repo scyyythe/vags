@@ -93,6 +93,44 @@ const Marketplace = () => {
   // Ensure artCards is always an array
   const safeArtCards = Array.isArray(artCards) ? artCards : [];
 
+  // Background refetching using useQueryClient
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    const startRefetching = () => {
+      interval = setInterval(() => {
+        queryClient.refetchQueries({
+          queryKey: ["marketplace-art-cards"],
+        });
+      }, 30000); // Refetch every 30 seconds
+    };
+
+    const stopRefetching = () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+
+    // Start refetching when component mounts
+    startRefetching();
+
+    // Stop refetching when tab becomes inactive, resume when active
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopRefetching();
+      } else {
+        startRefetching();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      stopRefetching();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [queryClient]);
+
   // Get artwork IDs for bulk report status lookup
   const artworkIds = safeArtCards.map((art) => art.id);
   const { data: bulkReportStatus } = useBulkReportStatus(artworkIds);
@@ -249,6 +287,31 @@ const Marketplace = () => {
       refetchFollowed();
     }
   }, [selectedCategoryFilter, refetchFollowed]);
+
+  // Real-time updates: Listen for new artwork uploads
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'new-artwork-uploaded') {
+        // Refetch marketplace data when new artwork is uploaded
+        refetch();
+        // Clear the storage event
+        localStorage.removeItem('new-artwork-uploaded');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [refetch]);
+
+  // Also listen for custom events (for same-tab updates)
+  useEffect(() => {
+    const handleNewArtwork = () => {
+      refetch();
+    };
+
+    window.addEventListener('new-artwork-uploaded', handleNewArtwork);
+    return () => window.removeEventListener('new-artwork-uploaded', handleNewArtwork);
+  }, [refetch]);
 
   return (
     <div className="flex flex-col min-h-screen bg-background dark:bg-gray-900">
