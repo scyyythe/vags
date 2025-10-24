@@ -425,7 +425,7 @@ const BidDetails = () => {
 
     return (
       <>
-        <div className="min-h-screen dark:bg-gray-900">
+        <div className="min-h-screen dark:bg-gray-900 pb-2">
           <Header />
           {/* Back button */}
           <div
