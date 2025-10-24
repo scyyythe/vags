@@ -15,6 +15,8 @@ import { getLoggedInUserId } from "@/auth/decode";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useCheckPaymentAccounts } from "@/hooks/accounts/useCheckPaymentAccounts";
+import PaymentSetupPopup from "./PaymentSetupPopup";
 export interface SellCardProps {
   id: string;
   artworkImage: string;
@@ -88,6 +90,7 @@ const SellCard = ({
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPaymentSetupPopupOpen, setIsPaymentSetupPopupOpen] = useState(false);
   const navigate = useNavigate();
 
   // Translation hooks
@@ -114,6 +117,7 @@ const SellCard = ({
   const { mutate: submitReport } = useSubmitReport();
   const markAsSoldMutation = useToggleArtworkStatus();
   const markAsUnlistedMutation = useMarkArtworkAsUnlisted();
+  const { hasPaymentAccounts, loading: paymentAccountsLoading } = useCheckPaymentAccounts();
   const [heightValue, widthValue] = size ? size.split("x") : ["", ""];
 
   const [localIsReported, setLocalIsReported] = useState(false);
@@ -163,6 +167,19 @@ const SellCard = ({
 
   const handleBuyNow = (e: React.MouseEvent) => {
     e.stopPropagation();
+    
+    // Check if user has payment accounts set up
+    if (hasPaymentAccounts === false) {
+      setIsPaymentSetupPopupOpen(true);
+      return;
+    }
+    
+    // If still loading payment accounts, show loading message
+    if (paymentAccountsLoading) {
+      toast.loading("Checking payment accounts...", { closeButton: true });
+      return;
+    }
+    
     setIsModalOpen(true);
   };
 
@@ -417,6 +434,11 @@ const SellCard = ({
           />,
           document.body
         )}
+
+      <PaymentSetupPopup
+        isOpen={isPaymentSetupPopupOpen}
+        onClose={() => setIsPaymentSetupPopupOpen(false)}
+      />
     </div>
   );
 };
