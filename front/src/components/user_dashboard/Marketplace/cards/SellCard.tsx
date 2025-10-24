@@ -119,6 +119,7 @@ const SellCard = ({
   const [heightValue, widthValue] = size ? size.split("x") : ["", ""];
 
   const [localIsReported, setLocalIsReported] = useState(false);
+  const [localIsLiked, setLocalIsLiked] = useState(isLiked);
 
   // Use isReported prop if provided, otherwise default to false
   const isReportedFromProps = isReported ?? false;
@@ -128,6 +129,11 @@ const SellCard = ({
     setLocalIsReported(isReportedFromProps);
   }, [isReportedFromProps]);
 
+  // Sync local liked state with prop
+  useEffect(() => {
+    setLocalIsLiked(isLiked);
+  }, [isLiked]);
+
   const formatPrice = (amount: number) => {
     if (amount >= 1_000_000) return `₱${(amount / 1_000_000).toFixed(1)}M`;
     if (amount >= 10_000) return `₱${(amount / 1_000).toFixed(1)}k`;
@@ -136,12 +142,31 @@ const SellCard = ({
 
   const { isChatOpen, openChat, closeChat, participantId, participantName } = useChat();
 
-  const toggleLike = (e: React.MouseEvent) => {
+  const toggleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    toast(!isLiked ? addedToWishlistText : removedFromWishlistText, {
+    
+    // Store original state for potential rollback
+    const originalLikedState = localIsLiked;
+    const newLikedState = !localIsLiked;
+    
+    // Optimistic update - immediately update UI
+    setLocalIsLiked(newLikedState);
+    
+    // Show toast with optimistic state
+    toast(newLikedState ? addedToWishlistText : removedFromWishlistText, {
       closeButton: true,
     });
-    onLike?.();
+    
+    try {
+      // Call the actual API
+      await onLike?.();
+    } catch (error) {
+      // Revert optimistic update on error
+      setLocalIsLiked(originalLikedState);
+      toast.error("Failed to update wishlist. Please try again.", {
+        closeButton: true,
+      });
+    }
   };
 
   const participantAvatar = profile_picture ?? undefined;
@@ -253,7 +278,7 @@ const SellCard = ({
             >
               <img
                 src={
-                  isLiked
+                  localIsLiked
                     ? "https://img.icons8.com/puffy-filled/32/B10303/like.png"
                     : "https://img.icons8.com/puffy/32/like.png"
                 }
