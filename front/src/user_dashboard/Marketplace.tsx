@@ -32,6 +32,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { useRelistArtwork } from "@/hooks/artworks/relist/useRelistArtwork";
 import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";
+import { useCheckPaymentAccounts } from "@/hooks/accounts/useCheckPaymentAccounts";
+import PaymentSetupPopup from "@/components/user_dashboard/Marketplace/cards/PaymentSetupPopup";
 
 const Marketplace = () => {
   const queryClient = useQueryClient();
@@ -42,7 +44,9 @@ const Marketplace = () => {
   const [selectedEdition, setSelectedEdition] = useState("All");
   const [reportedArtworks, setReportedArtworks] = useState<Set<string>>(new Set());
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [isPaymentSetupPopupOpen, setIsPaymentSetupPopupOpen] = useState(false);
   const { data: trendingArtworks = [] } = useTrendingArtworks();
+  const { hasPaymentAccounts, loading: paymentAccountsLoading } = useCheckPaymentAccounts();
 
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
@@ -285,6 +289,24 @@ const Marketplace = () => {
   };
 
   const handleWishlistClick = () => setShowWishlist(true);
+
+  // Payment validation handler
+  const handleBuyNowClick = () => {
+    // Check if user has payment accounts set up
+    if (hasPaymentAccounts === false) {
+      setIsPaymentSetupPopupOpen(true);
+      return;
+    }
+    
+    // If still loading payment accounts, show loading message
+    if (paymentAccountsLoading) {
+      toast.loading("Checking payment accounts...", { closeButton: true });
+      return;
+    }
+    
+    // If payment accounts exist, proceed with normal buy flow
+    // This will be handled by the individual SellCard components
+  };
 
   // Handler functions for unlisting and relisting
   const handleRelist = (id: string) => {
@@ -574,6 +596,7 @@ const Marketplace = () => {
                         isOwner={isOwner}
                         onRelist={isOwner ? () => handleRelist(artwork.id) : undefined}
                         onUnlist={isOwner ? () => handleUnlist(artwork.id) : undefined}
+                        onBuyNowClick={handleBuyNowClick}
                       />
                     );
                   })}
@@ -597,6 +620,11 @@ const Marketplace = () => {
           removeLocalItem={() => {}}
         />
       )}
+
+      <PaymentSetupPopup
+        isOpen={isPaymentSetupPopupOpen}
+        onClose={() => setIsPaymentSetupPopupOpen(false)}
+      />
     </div>
   );
 };
