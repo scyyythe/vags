@@ -476,10 +476,10 @@ const ArtworkDetails = () => {
 
   return (
     <>
-      <div className="min-h-screen dark:bg-gray-900">
+      <div className="min-h-screen dark:bg-gray-900 pb-3">
         <Header />
 
-        <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
+        <div className="container mx-auto px-4 md:px-6 py-4 md:py-8 pb-0">
           {/* Back button */}
           <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
             <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
@@ -717,7 +717,7 @@ const ArtworkDetails = () => {
           return (
             related &&
             related.length > 0 && (
-              <div className="container md:px-6 mb-4">
+              <div className="container md:px-6 mb-0">
                 <h2 className={`font-medium ${isMobile ? "text-xs ml-1 mb-4" : "text-xs mb-4 -mt-4"} text-gray-900 dark:text-gray-100`}>
                   {tRelatedArtworks}
                 </h2>

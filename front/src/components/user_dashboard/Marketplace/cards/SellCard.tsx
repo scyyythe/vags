@@ -301,7 +301,7 @@ const SellCard = ({
             <SellMenu
               isOpen={menuOpen}
               artworkId={id}
-              isPublic={status === "onsale"}
+              isPublic={status === "onsale" || status === "active"}
               onEdit={() => {
                 navigate(`/sell-update/${id}`, {
                   state: {

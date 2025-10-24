@@ -30,6 +30,8 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
+import { useRelistArtwork } from "@/hooks/artworks/relist/useRelistArtwork";
+import useMarkArtworkAsUnlisted from "@/hooks/purchase/useMarkArtworkAsUnlisted";
 
 const Marketplace = () => {
   const queryClient = useQueryClient();
@@ -142,6 +144,10 @@ const Marketplace = () => {
   }, [bulkReportStatus]);
 
   const { wishlist, likedItems, removeFromWishlist, toggleWishlist, isLoading: wishlistApiLoading } = useWishlist();
+
+  // Hooks for unlisting and relisting
+  const { mutate: relistArtwork, isPending: isRelisting } = useRelistArtwork();
+  const markAsUnlistedMutation = useMarkArtworkAsUnlisted();
 
   const handleCategorySelect = (category: string) => setSelectedCategoryFilter(category);
   const handleArtCategoryChange = (category: string) => setSelectedArtCategory(category);
@@ -280,6 +286,84 @@ const Marketplace = () => {
   };
 
   const handleWishlistClick = () => setShowWishlist(true);
+
+  // Handler functions for unlisting and relisting
+  const handleRelist = (id: string) => {
+    // Optimistic update: immediately add the artwork back to the UI
+    // We need to get the artwork data from the user's own artworks first
+    queryClient.setQueryData(["my-sell-art-cards"], (oldData: any) => {
+      if (!oldData) return oldData;
+      return oldData.map((artwork: any) => {
+        if (artwork.id === id) {
+          return { ...artwork, art_status: "onsale", visibility: "Public" };
+        }
+        return artwork;
+      });
+    });
+
+    relistArtwork(id, {
+      onSuccess: () => {
+        // Show success message
+        toast.success("Artwork relisted successfully!", {
+          closeButton: true,
+        });
+
+        // Refetch all relevant queries to ensure data is up to date
+        queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
+        queryClient.refetchQueries({ queryKey: ["trending-artworks"] });
+        queryClient.refetchQueries({ queryKey: ["followedArtworks"] });
+        queryClient.refetchQueries({ queryKey: ["my-sell-art-cards"] });
+        queryClient.refetchQueries({ queryKey: ["user-sell-art-cards"] });
+      },
+      onError: (error) => {
+        console.error("Failed to relist artwork:", error);
+        const errorMessage = error?.response?.data?.detail || "Failed to relist artwork. Please try again.";
+        toast.error(errorMessage);
+        // If the mutation fails, refetch to restore the correct data
+        queryClient.refetchQueries({ queryKey: ["my-sell-art-cards"] });
+      },
+    });
+  };
+
+  const handleUnlist = (id: string) => {
+    // Optimistic update: immediately remove the artwork from the UI
+    queryClient.setQueryData(["marketplace-art-cards"], (oldData: any) => {
+      if (!oldData) return oldData;
+      return oldData.filter((artwork: any) => artwork.id !== id);
+    });
+
+    // Also update trending artworks if it exists there
+    queryClient.setQueryData(["trending-artworks"], (oldData: any) => {
+      if (!oldData) return oldData;
+      return oldData.filter((artwork: any) => artwork.id !== id);
+    });
+
+    // Also update followed artworks if it exists there
+    queryClient.setQueryData(["followedArtworks"], (oldData: any) => {
+      if (!oldData) return oldData;
+      return {
+        ...oldData,
+        artworks: oldData.artworks?.filter((artwork: any) => artwork.id !== id) || []
+      };
+    });
+
+    markAsUnlistedMutation.mutate(id, {
+      onSuccess: () => {
+        // Refetch all relevant queries to ensure data is up to date
+        queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
+        queryClient.refetchQueries({ queryKey: ["trending-artworks"] });
+        queryClient.refetchQueries({ queryKey: ["followedArtworks"] });
+        queryClient.refetchQueries({ queryKey: ["my-sell-art-cards"] });
+        queryClient.refetchQueries({ queryKey: ["user-sell-art-cards"] });
+      },
+      onError: () => {
+        // If the mutation fails, refetch to restore the correct data
+        queryClient.refetchQueries({ queryKey: ["marketplace-art-cards"] });
+        queryClient.refetchQueries({ queryKey: ["trending-artworks"] });
+        queryClient.refetchQueries({ queryKey: ["followedArtworks"] });
+      },
+    });
+  };
 
   // Refetch followed artworks when switching to Following tab
   useEffect(() => {
@@ -490,6 +574,8 @@ const Marketplace = () => {
                         onCardClick={() => handleCardClick(artwork)}
                         isReported={reportStatusMap[artwork.id]?.reported || false}
                         isOwner={isOwner}
+                        onRelist={isOwner ? () => handleRelist(artwork.id) : undefined}
+                        onUnlist={isOwner ? () => handleUnlist(artwork.id) : undefined}
                       />
                     );
                   })}

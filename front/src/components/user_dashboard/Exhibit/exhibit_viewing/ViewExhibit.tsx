@@ -306,11 +306,11 @@ const ExhibitViewing = () => {
 
   return (
     <>
-      <div className="min-h-screen dark:bg-gray-900">
+      <div className="min-h-screen dark:bg-gray-900 pb-1">
         <Header />
 
-        <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
-          {/* Back button */}
+          <div className="container mx-auto px-4 md:px-6 py-4 md:py-8 pb-0">
+            {/* Back button */}
           <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
             <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
               <i className="bx bx-chevron-left text-lg mr-2"></i>
