@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Heart, MoreHorizontal, Reply } from "lucide-react";
+import { Heart, MoreHorizontal, Reply, Grid3X3, LayoutGrid } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
@@ -312,7 +312,7 @@ const ExhibitViewing = () => {
           <div className="container mx-auto px-4 md:px-6 py-4 md:py-8 pb-0">
             {/* Back button */}
           <div className={`mt-8 md:mt-12 ${isMobile ? "px-4 pt-8" : "md:ml-12"}`}>
-            <button onClick={() => navigate(-1)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
+            <button onClick={() => navigate(`/exhibit-dashboard/${id}`)} className="flex items-center text-sm font-semibold text-gray-900 dark:text-gray-100">
               <i className="bx bx-chevron-left text-lg mr-2"></i>
               {exhibitDetailsText}
             </button>
@@ -353,6 +353,31 @@ const ExhibitViewing = () => {
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+                
+                {/* External Navigation Icons */}
+                <div className={`flex justify-center gap-4 mt-4 ${isMobile ? "px-4" : ""}`}>
+                  {/* Carousel Icon */}
+                  <div
+                    className="group flex items-center bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-full px-3 py-1.5 shadow-lg hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 cursor-pointer"
+                    onClick={() => navigate(`/exhibit-carousel/${id}`)}
+                  >
+                    <LayoutGrid size={12} className="mr-1.5 text-gray-700 dark:text-gray-300" />
+                    <span className="text-[10px] font-medium text-gray-700 dark:text-gray-300">
+                      Carousel
+                    </span>
+                  </div>
+                  
+                  {/* Dashboard Icon */}
+                  <div
+                    className="group flex items-center bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-full px-3 py-1.5 shadow-lg hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 cursor-pointer"
+                    onClick={() => navigate(`/exhibit-dashboard/${id}`)}
+                  >
+                    <Grid3X3 size={12} className="mr-1.5 text-gray-700 dark:text-gray-300" />
+                    <span className="text-[10px] font-medium text-gray-700 dark:text-gray-300">
+                      Dashboard
+                    </span>
                   </div>
                 </div>
               </div>

@@ -48,6 +48,8 @@ import PaymentPage from "@/components/user_dashboard/Bidding/highest_bid/pages/P
 //EXHIBITS
 import AddExhibit from "./components/user_dashboard/Exhibit/add_exhibit/AddExhibit";
 import ExhibitViewing from "./components/user_dashboard/Exhibit/exhibit_viewing/ViewExhibit";
+import ExhibitDashboard from "./components/user_dashboard/Exhibit/exhibit_dashboard/ExhibitDashboard";
+import ExhibitCarousel from "./components/user_dashboard/Exhibit/exhibit_dashboard/ExhibitCarousel";
 import CollaboratorView from "./components/user_dashboard/Exhibit/collaborator_view/CollaboratorView";
 import ExhibitReview from "./components/user_dashboard/Exhibit/exhibit_review/ExhibitReview";
 
@@ -214,6 +216,8 @@ const App = () => {
                                 <Route path="/add-exhibit" element={<AddExhibit />} />
                                 <Route path="/edit-exhibit/:id" element={<EditExhibit />} />
                                 <Route path="/view-exhibit/:id" element={<ExhibitViewing />} />
+                                <Route path="/exhibit-dashboard/:id" element={<ExhibitDashboard />} />
+                                <Route path="/exhibit-carousel/:id" element={<ExhibitCarousel />} />
                                 <Route path="/collaborator/exhibit/:exhibitId" element={<CollaboratorView />} />
                                 <Route path="/exhibitreview" element={<ExhibitReview />} />
                                 <Route path="/follow-demo" element={<FollowDemo />} />
