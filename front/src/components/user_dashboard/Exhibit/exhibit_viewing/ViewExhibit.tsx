@@ -391,13 +391,13 @@ const ExhibitViewing = () => {
                   </div>
 
                   {/* Dashboard Icon */}
-                  <div
+                  {/* <div
                     className="group flex items-center bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-full px-3 py-1.5 shadow-lg hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 cursor-pointer"
                     onClick={() => navigate(`/exhibit-dashboard/${id}`)}
                   >
                     <Grid3X3 size={12} className="mr-1.5 text-gray-700 dark:text-gray-300" />
                     <span className="text-[10px] font-medium text-gray-700 dark:text-gray-300">Dashboard</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
