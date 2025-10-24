@@ -398,8 +398,8 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
               onClick={() => setActiveTab(tab.id)}
               className={`whitespace-nowrap py-1.5 px-4 rounded-full text-[10px] font-small ${
                 activeTab === tab.id
-                  ? "border border-gray-300 font-medium shadow-md"
-                  : "bg-white border border-gray-200 hover:bg-gray-100"
+                  ? "border border-gray-300 dark:border-gray-600 font-medium shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 dark:shadow-white/20"
+                  : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
               }`}
             >
               {tab.label}
@@ -415,7 +415,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
           <div className="relative">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-1 px-3 py-1 rounded-full border border-gray-300"
+              className="flex items-center space-x-1 px-3 py-1 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <i className="bx bx-filter"></i>
               <span className="text-[10px]">{applyFilterText}</span>
@@ -423,28 +423,28 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
             {showFilters && (
               <div
-                className="absolute right-0 top-full mt-2 text-[10px] bg-white shadow-lg whitespace-nowrap rounded-md p-2 mb-8 z-10 w-30 animate-fade-in overflow-y-auto"
+                className="absolute right-0 top-full mt-2 text-[10px] bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/50 whitespace-nowrap rounded-md p-2 mb-8 z-10 w-30 animate-fade-in overflow-y-auto border border-gray-200 dark:border-gray-700"
                 style={{ maxHeight: "50vh" }}
               >
                 {/* Medium Filter */}
                 <div className="mb-2">
                   <div
-                    className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded"
+                    className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-900 dark:text-gray-100"
                     onClick={() => setShowMediumOptions(!showMediumOptions)}
                   >
                     <span>{mediumOptions.find(opt => opt.value === selectedMedium)?.label || mediumDefaultText}</span>
-                    <ChevronDown className="h-4 w-4" />
+                    <ChevronDown className="h-4 w-4 text-gray-900 dark:text-gray-100" />
                   </div>
 
                   {showMediumOptions && (
                     <div
-                      className="bg-white shadow-md rounded-md mt-1 animate-fade-in overflow-y-auto"
+                      className="bg-white dark:bg-gray-700 shadow-md dark:shadow-gray-900/50 rounded-md mt-1 animate-fade-in overflow-y-auto border border-gray-200 dark:border-gray-600"
                       style={{ maxHeight: "110px" }}
                     >
                       {mediumOptions.map((option, idx) => (
                         <div
                           key={idx}
-                          className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                          className="px-3 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
                           onClick={() => handleMediumSelect(option.value)}
                         >
                           {option.label}
@@ -457,19 +457,19 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
                 {/* Price Range Filter */}
                 <div className="mb-2">
                   <div
-                    className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded"
+                    className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-900 dark:text-gray-100"
                     onClick={() => setShowPriceOptions(!showPriceOptions)}
                   >
                     <span>{priceRangeOptions.find(opt => opt.value === selectedPriceRange)?.label || priceRangeDefaultText}</span>
-                    <ChevronDown className="h-4 w-4" />
+                    <ChevronDown className="h-4 w-4 text-gray-900 dark:text-gray-100" />
                   </div>
 
                   {showPriceOptions && (
-                    <div className="bg-white shadow-md rounded-md mt-1 animate-fade-in">
+                    <div className="bg-white dark:bg-gray-700 shadow-md dark:shadow-gray-900/50 rounded-md mt-1 animate-fade-in border border-gray-200 dark:border-gray-600">
                       {priceRangeOptions.map((option, idx) => (
                         <div
                           key={idx}
-                          className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                          className="px-3 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
                           onClick={() => handlePriceRangeSelect(option.value)}
                         >
                           {option.label}
@@ -483,19 +483,19 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
                 {isOwnProfile && (
                   <div className="mb-2">
                     <div
-                      className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded"
+                      className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-900 dark:text-gray-100"
                       onClick={() => setShowStatusOptions(!showStatusOptions)}
                     >
                       <span>{statusOptions.find(opt => opt.value === selectedStatus)?.label || activeText}</span>
-                      <ChevronDown className="h-4 w-4" />
+                      <ChevronDown className="h-4 w-4 text-gray-900 dark:text-gray-100" />
                     </div>
 
                     {showStatusOptions && (
-                      <div className="bg-white shadow-md rounded-md mt-1 animate-fade-in">
+                      <div className="bg-white dark:bg-gray-700 shadow-md dark:shadow-gray-900/50 rounded-md mt-1 animate-fade-in border border-gray-200 dark:border-gray-600">
                         {statusOptions.map((option, idx) => (
                           <div
                             key={idx}
-                            className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                            className="px-3 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
                             onClick={() => {
                               setSelectedStatus(option.value);
                               setShowStatusOptions(false);
@@ -512,19 +512,19 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
                 {/* Sort By Filter */}
                 <div>
                   <div
-                    className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded"
+                    className="px-3 py-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-900 dark:text-gray-100"
                     onClick={() => setShowSortOptions(!showSortOptions)}
                   >
                     <span>{sortByOptions.find(opt => opt.value === selectedSortBy)?.label || sortByDefaultText}</span>
-                    <ChevronDown className="h-4 w-4" />
+                    <ChevronDown className="h-4 w-4 text-gray-900 dark:text-gray-100" />
                   </div>
 
                   {showSortOptions && (
-                    <div className="bg-white shadow-md rounded-md mt-1 animate-fade-in">
+                    <div className="bg-white dark:bg-gray-700 shadow-md dark:shadow-gray-900/50 rounded-md mt-1 animate-fade-in border border-gray-200 dark:border-gray-600">
                       {sortByOptions.map((option, idx) => (
                         <div
                           key={idx}
-                          className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                          className="px-3 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
                           onClick={() => handleSortBySelect(option.value)}
                         >
                           {option.label}
@@ -544,7 +544,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
           {/* ARCHIVED PAGE */}
           {selectedStatus === "Archived" && (
             <div className="flex justify-between items-center my-4">
-              <h2 className="text-sm font-semibold">{archivedArtworksText}</h2>
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{archivedArtworksText}</h2>
               <button
                 onClick={() => setShowUnarchivePopup(true)}
                 className="text-[10px] py-2 pr-2 text-yellow-700 hover:text-yellow-600 font-medium"
@@ -557,7 +557,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
           {/* DELETED PAGE */}
           {selectedStatus === "Deleted" && (
             <div className="flex justify-between items-center my-4">
-              <h2 className="text-sm font-semibold">{deletedArtworksText}</h2>
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{deletedArtworksText}</h2>
               <button
                 onClick={handleEmptyTrash}
                 className="text-[10px] py-2 pr-2 text-red-700 hover:text-red-600 font-medium"
@@ -570,7 +570,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
           {/* HIDDEN PAGE */}
           {selectedStatus === "Hidden" && (
             <div className="flex justify-between items-center my-4">
-              <h2 className="text-sm font-semibold">{hiddenArtworksText}</h2>
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{hiddenArtworksText}</h2>
               <button
                 onClick={() => setShowUnhidePopup(true)}
                 className="text-[10px] py-2 pr-2 text-blue-700 hover:text-blue-600 font-medium"
@@ -582,7 +582,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
           {selectedStatus === "Private" && (
             <div className="flex justify-between items-center my-4">
-              <h2 className="text-sm font-semibold">{privateArtworksText}</h2>
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{privateArtworksText}</h2>
               <button
                 onClick={() => setShowMakePublicPopup(true)}
                 className="text-[10px] py-2 pr-2 text-green-700 hover:text-green-600 font-medium"
@@ -608,7 +608,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
         <>
           {selectedStatus === "Archived" && (
             <div className="flex justify-between items-center my-4">
-              <h2 className="text-sm font-semibold">{archivedExhibitsText}</h2>
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{archivedExhibitsText}</h2>
               <button
                 onClick={() => setShowUnarchivePopup(true)}
                 className="text-[10px] py-2 pr-2 text-yellow-700 hover:text-yellow-600 font-medium"
@@ -620,7 +620,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
           {selectedStatus === "Deleted" && isOwnProfile && (
             <div className="flex justify-between items-center my-4">
-              <h2 className="text-sm font-semibold">{deletedExhibitsText}</h2>
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{deletedExhibitsText}</h2>
               <div className="flex gap-2">
                 <button
                   onClick={handleRestoreAll}
@@ -640,7 +640,7 @@ const ProfileTabs = ({ activeTab, setActiveTab }: ProfileTabsProps) => {
 
           {selectedStatus === "Hidden" && (
             <div className="flex justify-between items-center my-4">
-              <h2 className="text-sm font-semibold">{hiddenExhibitsText}</h2>
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{hiddenExhibitsText}</h2>
               <button
                 onClick={() => setShowUnhidePopup(true)}
                 className="text-[10px] py-2 pr-2 text-blue-700 hover:text-blue-600 font-medium"

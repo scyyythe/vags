@@ -92,6 +92,8 @@ const WishlistModal = ({
                   onCardClick={() => onCardClick(item.id)}
                   isOwner={isOwner}
                   isReported={reportStatusMap[item.id]?.reported || false}
+                  onRelist={undefined}
+                  onUnlist={undefined}
                 />
               );
             })}

@@ -59,14 +59,14 @@ const ViewBidsModal: React.FC<ViewBidsModalProps> = ({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
     >
       <div
-        className="bg-white rounded-lg shadow-xl w-full max-w-xs max-h-md flex flex-col overflow-hidden"
+        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-xs max-h-md flex flex-col overflow-hidden"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 flex-shrink-0">
-          <h2 className="font-semibold text-sm">{bidsText}</h2>
+          <h2 className="font-semibold text-sm text-gray-900 dark:text-gray-100">{bidsText}</h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             aria-label={closeText}
           >
             <X size={18} />
@@ -96,27 +96,27 @@ const ViewBidsModal: React.FC<ViewBidsModalProps> = ({
                       <img
                         src={profilePicture}
                         alt={bid.bidderFullName || bidderText}
-                        className="w-8 h-8 rounded-full object-cover border border-gray-200"
+                        className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-700 border border-gray-300">
+                      <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-xs font-semibold text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600">
                         {avatarLetter}
                       </div>
                     )}
                     <div className="flex-1">
                       <div className="flex items-center gap-1">
-                        <i className="bx bx-money text-sm text-gray-400"></i>
-                        <span className="font-semibold text-sm">
+                        <i className="bx bx-money text-sm text-gray-400 dark:text-gray-500"></i>
+                        <span className="font-semibold text-sm text-gray-900 dark:text-gray-100">
                           {bid.amount.toLocaleString()}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
+                      <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                         <span>{byText}</span>
-                        <span className="font-medium text-gray-700">
+                        <span className="font-medium text-gray-700 dark:text-gray-300">
                           {bid.bidderFullName}
                         </span>
                         {isOwner && formatBidDate && (
-                          <span className="ml-1 text-xs text-gray-400">
+                          <span className="ml-1 text-xs text-gray-400 dark:text-gray-500">
                             {formatBidDate(bid.timestamp)}
                           </span>
                         )}
@@ -126,7 +126,7 @@ const ViewBidsModal: React.FC<ViewBidsModalProps> = ({
                 );
               })
             ) : (
-              <div className="text-center py-8 text-xs text-gray-400">
+              <div className="text-center py-8 text-xs text-gray-400 dark:text-gray-500">
                 {noBidsYetText}
               </div>
             )}

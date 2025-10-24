@@ -97,7 +97,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
     <>
       <div
         ref={menuRef}
-        className={`absolute z-10 bg-gray-100 rounded-full py-1 px-1.5 shadow-md ${className}`}
+        className={`absolute z-10 bg-gray-100 dark:bg-gray-700 rounded-full py-1 px-1.5 shadow-md ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start">
@@ -105,14 +105,14 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={() => setShowShareModal(true)}
-              className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-1 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               onMouseEnter={() => setHoveredItem("share")}
               onMouseLeave={() => setHoveredItem(null)}
             >
               <Share2 size={11} />
             </button>
             {hoveredItem === "share" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">{shareText}</span>
+              <span className="absolute left-10 text-[9px] bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded">{shareText}</span>
             )}
           </div>
 
@@ -123,14 +123,14 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={handleToggleVisibility}
-              className="px-[4px] py-[-10px] rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="px-[4px] py-[-10px] rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               onMouseEnter={() => setHoveredItem("visibility")}
               onMouseLeave={() => setHoveredItem(null)}
             >
               {isPublic ? <i className="bx bx-show-alt text-[11px]" /> : <i className="bx bxs-hide text-[11px]" />}
             </button>
             {hoveredItem === "visibility" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">
+              <span className="absolute left-10 text-[9px] bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded">
                 {isPublic ? unpublishText : publishText}
               </span>
             )}
@@ -140,14 +140,14 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={() => navigate(`/view-insights/${artworkId}`)}
-              className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-1 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               onMouseEnter={() => setHoveredItem("insights")}
               onMouseLeave={() => setHoveredItem(null)}
             >
               <BarChart2 size={12} />
             </button>
             {hoveredItem === "insights" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-10 text-[9px] bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded whitespace-nowrap">
                 {viewInsightsText}
               </span>
             )}
@@ -157,7 +157,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={() => setIsMoreOptionsOpen((prev) => !prev)}
-              className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-1 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               onMouseEnter={() => setHoveredItem("more")}
               onMouseLeave={() => setHoveredItem(null)}
             >
@@ -165,14 +165,14 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
             </button>
 
             {isMoreOptionsOpen && (
-              <div className="absolute left-8 -top-3 bg-black rounded text-[9px] flex flex-col z-20 w-18">
+              <div className="absolute left-8 -top-3 bg-black dark:bg-gray-800 rounded text-[9px] flex flex-col z-20 w-18">
                 {visibility?.toLowerCase() !== "deleted" && (
                   <button
                     onClick={() => {
                       handleEditClick();
                       setIsMoreOptionsOpen(false);
                     }}
-                    className="px-3 py-1 text-left text-white"
+                    className="px-3 py-1 text-left text-white dark:text-gray-100"
                   >
                     {editText}
                   </button>
@@ -183,7 +183,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
                       setShowDeletePopup(true);
                       setIsMoreOptionsOpen(false);
                     }}
-                    className="px-3 py-1 text-left text-red-500 hover:text-red-400"
+                    className="px-3 py-1 text-left text-red-500 dark:text-red-400 hover:text-red-400 dark:hover:text-red-300"
                   >
                     {deleteText}
                   </button>
@@ -194,7 +194,7 @@ const ExhibitCardMenu: React.FC<ExhibitCardMenuProps> = ({
                       setShowRestorePopup(true);
                       setIsMoreOptionsOpen(false);
                     }}
-                    className="px-3 py-1 text-left text-green-400 hover:text-green-300 flex items-center gap-1"
+                    className="px-3 py-1 text-left text-green-400 dark:text-green-300 hover:text-green-300 dark:hover:text-green-200 flex items-center gap-1"
                   >
                     <RotateCcw size={8} />
                     {restoreText}

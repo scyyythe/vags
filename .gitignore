@@ -1,1 +1,11 @@
 backend/secrets/vags-messaging-app.json
+<<<<<<< HEAD
+=======
+front/public/gallery_scenes/test1.glb
+front/public/gallery_scenes/test1.glb
+
+# Ignore dependencies
+node_modules/
+front/node_modules/
+backend/node_modules/
+>>>>>>> 14df248f873820831656712267eefa581a71268f

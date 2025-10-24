@@ -84,7 +84,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
     <>
       <div
         ref={menuRef}
-        className={`absolute z-10 bg-gray-100 rounded-full py-1 px-1 shadow-md ${className}`}
+        className={`absolute z-10 bg-gray-100 dark:bg-gray-700 rounded-full py-1 px-1 shadow-md ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start">
@@ -92,7 +92,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={() => setShowViewBidsModal(true)}
-              className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-2 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               aria-label="View Bids"
               onMouseEnter={() => setHoveredItem("view")}
               onMouseLeave={() => setHoveredItem(null)}
@@ -100,7 +100,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
               <BarChart3 size={10} stroke="currentColor" />
             </button>
             {hoveredItem === "view" && (
-              <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-10 text-[9px] text-center bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded whitespace-nowrap">
                 {viewBidsText}
               </span>
             )}
@@ -115,7 +115,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
                     onReopen(auctionId);
                   }
                 }}
-                className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 aria-label="Reopen Auction"
                 onMouseEnter={() => setHoveredItem("reopen")}
                 onMouseLeave={() => setHoveredItem(null)}
@@ -123,7 +123,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
                 <Unlock size={10} stroke="currentColor" />
               </button>
               {hoveredItem === "reopen" && (
-                <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+                <span className="absolute left-10 text-[9px] text-center bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded whitespace-nowrap">
                   {reopenAuctionText}
                 </span>
               )}
@@ -135,7 +135,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
             <div className="flex items-center relative">
               <button
                 onClick={() => setShowClosePopup(true)}
-                className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 aria-label="Close Bidding"
                 onMouseEnter={() => setHoveredItem("close")}
                 onMouseLeave={() => setHoveredItem(null)}
@@ -143,7 +143,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
                 <Hammer size={10} stroke="currentColor" />
               </button>
               {hoveredItem === "close" && (
-                <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+                <span className="absolute left-10 text-[9px] text-center bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded whitespace-nowrap">
                   {closeBiddingText}
                 </span>
               )}
@@ -155,7 +155,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
             <div className="flex items-center relative">
               <button
                 onClick={handleDeleteClick}
-                className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 aria-label="Delete Bid"
                 onMouseEnter={() => setHoveredItem("delete")}
                 onMouseLeave={() => setHoveredItem(null)}
@@ -163,7 +163,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
                 <Trash2 size={10} fill="none" stroke="#ea384c" />
               </button>
               {hoveredItem === "delete" && (
-                <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+                <span className="absolute left-10 text-[9px] text-center bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded whitespace-nowrap">
                   {deleteBidText}
                 </span>
               )}
@@ -175,7 +175,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
             <div className="flex items-center relative">
               <button
                 onClick={() => setShowRestorePopup(true)}
-                className="p-2 rounded-full text-black hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 aria-label="Restore Auction"
                 onMouseEnter={() => setHoveredItem("restore")}
                 onMouseLeave={() => setHoveredItem(null)}
@@ -183,7 +183,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
                 <RotateCcw size={10} stroke="#10b981" />
               </button>
               {hoveredItem === "restore" && (
-                <span className="absolute left-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+                <span className="absolute left-10 text-[9px] text-center bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded whitespace-nowrap">
                   {restoreAuctionText}
                 </span>
               )}

@@ -199,27 +199,27 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg px-10 py-6 w-ful max-w-sm relative">
+      <div className="bg-white dark:bg-gray-800 rounded-lg px-10 py-6 w-ful max-w-sm relative">
         {/* Close Button */}
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
           <X size={15} />
         </button>
 
         {/* Header */}
         <div className="text-left mb-6">
-          <p className="text-lg text-black font-bold text-left">{translatedArtworkTitle}</p>
-          <p className="text-[10px] text-black mt-1">{setArtworkDetailsText}</p>
+          <p className="text-lg text-black dark:text-gray-100 font-bold text-left">{translatedArtworkTitle}</p>
+          <p className="text-[10px] text-black dark:text-gray-300 mt-1">{setArtworkDetailsText}</p>
         </div>
 
         {/* Add more pictures */}
         <div className="mb-6">
-          <h3 className="text-[11px] font-medium text-gray-900 mb-3">{addMorePicturesText}</h3>
+          <h3 className="text-[11px] font-medium text-gray-900 dark:text-gray-100 mb-3">{addMorePicturesText}</h3>
 
           <div className="grid grid-cols-4 gap-3">
             {imageSlots.map((slot, index) => (
               <div
                 key={index}
-                className="relative w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer overflow-hidden group"
+                className="relative w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center cursor-pointer overflow-hidden group"
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
                   e.preventDefault();
@@ -248,7 +248,7 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
                     </div>
                   </>
                 ) : (
-                  <i className="bx bx-images text-gray-300 text-2xl"></i>
+                  <i className="bx bx-images text-gray-300 dark:text-gray-500 text-2xl"></i>
                 )}
 
                 <input
@@ -268,7 +268,7 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
 
         {/* Set price */}
         <div className="mb-4">
-          <label className="block text-[11px] font-medium text-gray-900 mb-2">{setPriceText}</label>
+          <label className="block text-[11px] font-medium text-gray-900 dark:text-gray-100 mb-2">{setPriceText}</label>
           <Input
             type="text"
             placeholder={enterAmountText}
@@ -282,7 +282,7 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
 
         {/* Year Created */}
         <div className="mb-4">
-          <label className="block text-[11px] font-medium text-gray-900 mb-2">{yearCreatedText}</label>
+          <label className="block text-[11px] font-medium text-gray-900 dark:text-gray-100 mb-2">{yearCreatedText}</label>
           <Input
             type="text"
             placeholder={enterYearText}
@@ -297,7 +297,7 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
         {/* Edition and Quantity */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div>
-            <label className="block text-[11px] font-medium text-gray-900 mb-2">{selectEditionText}</label>
+            <label className="block text-[11px] font-medium text-gray-900 dark:text-gray-100 mb-2">{selectEditionText}</label>
             <Select value={formData.edition} onValueChange={handleEditionChange}>
               <SelectTrigger className="w-full text-[10px] h-8">
                 <SelectValue />
@@ -317,7 +317,7 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
           </div>
           {isQuantityVisible && (
             <div>
-              <label className="block text-[11px] font-medium text-gray-900 mb-2">{setQuantityText}</label>
+              <label className="block text-[11px] font-medium text-gray-900 dark:text-gray-100 mb-2">{setQuantityText}</label>
               <Input
                 type="number"
                 value={formData.quantity}
@@ -345,8 +345,8 @@ const SellArtworkModal: React.FC<SellArtworkModalProps> = ({
         {/* Payment account warning and setup button */}
         {paymentAccounts.length === 0 && (
           <div className="mt-2 text-center">
-            <p className="text-[9px] text-red-500 mb-2">{needPaymentAccountText}</p>
-            <button onClick={handleSetupAccount} className="text-[9px] text-blue-600 hover:text-blue-800 underline">
+            <p className="text-[9px] text-red-500 dark:text-red-400 mb-2">{needPaymentAccountText}</p>
+            <button onClick={handleSetupAccount} className="text-[9px] text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">
               {setupPaymentAccountLinkText}
             </button>
           </div>

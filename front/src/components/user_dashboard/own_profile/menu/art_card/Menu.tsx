@@ -168,7 +168,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
     <>
       <div
         ref={menuRef}
-        className={`absolute z-10 bg-gray-100 rounded-full py-1 px-1.5 shadow-md ${className}`}
+        className={`absolute z-10 bg-gray-100 dark:bg-gray-700 rounded-full py-1 px-1.5 shadow-md ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-start gap-[3px]">
@@ -176,14 +176,14 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={handleAuctionClick}
-              className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-1 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               onMouseEnter={() => setHoveredItem("bid")}
               onMouseLeave={() => setHoveredItem(null)}
             >
               <DollarSign size={10} />
             </button>
             {hoveredItem === "bid" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-10 text-[9px] bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded whitespace-nowrap">
                 {requestToAuctionText}
               </span>
             )}
@@ -193,14 +193,14 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={handleSellClick}
-              className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-1 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               onMouseEnter={() => setHoveredItem("sell")}
               onMouseLeave={() => setHoveredItem(null)}
             >
               <ShoppingCart size={10} />
             </button>
             {hoveredItem === "sell" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-10 text-[9px] bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded whitespace-nowrap">
                 {sellArtworkText}
               </span>
             )}
@@ -210,7 +210,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
           <div className="flex items-center relative">
             <button
               onClick={handleToggleVisibility}
-              className="p-[3px] rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-[3px] rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               onMouseEnter={() => setHoveredItem("visibility")}
               onMouseLeave={() => setHoveredItem(null)}
             >
@@ -235,23 +235,23 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
               onClick={() => setIsEditOpen((prev) => !prev)}
               onMouseEnter={() => setHoveredItem("edit")}
               onMouseLeave={() => setHoveredItem(null)}
-              className="p-1 rounded-full text-black hover:bg-gray-200 transition-colors"
+              className="p-1 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
               <MoreHorizontal size={10} />
             </button>
 
             {hoveredItem === "edit" && (
-              <span className="absolute left-10 text-[9px] bg-black text-white px-2 py-1 rounded">{moreText}</span>
+              <span className="absolute left-10 text-[9px] bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded">{moreText}</span>
             )}
 
             {isEditOpen && (
-              <div className="absolute left-8 -top-7 bg-black rounded text-[9px] flex flex-col z-20 w-18">
+              <div className="absolute left-8 -top-7 bg-black dark:bg-gray-800 rounded text-[9px] flex flex-col z-20 w-18">
                 <button
                   onClick={() => {
                     handleUpdateClick();
                     setIsEditOpen(false);
                   }}
-                  className="px-3 py-1 text-left text-white"
+                  className="px-3 py-1 text-left text-white dark:text-gray-100"
                 >
                   {editText}
                 </button>
@@ -260,7 +260,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
                     handleArchiveClick();
                     setIsEditOpen(false);
                   }}
-                  className="px-3 py-1 text-left text-white"
+                  className="px-3 py-1 text-left text-white dark:text-gray-100"
                 >
                   {archiveText}
                 </button>
@@ -270,7 +270,7 @@ const ArtCardMenu: React.FC<ArtCardMenuProps> = ({
                     setShowDeletePopup(true);
                     setIsEditOpen(false);
                   }}
-                  className="px-3 py-1 text-left text-red-500 hover:text-red-400"
+                  className="px-3 py-1 text-left text-red-500 dark:text-red-400 hover:text-red-400 dark:hover:text-red-300"
                 >
                   {deleteText}
                 </button>

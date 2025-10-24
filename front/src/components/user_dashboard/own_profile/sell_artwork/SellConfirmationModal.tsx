@@ -38,11 +38,11 @@ const SellConfirmationModal: React.FC<SellConfirmationModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-8 w-96 max-w-md mx-4 text-center">
-        <h2 className="text-sm font-semibold text-gray-900 mb-2">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-8 w-96 max-w-md mx-4 text-center">
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
           {confirmArtworkListingText}
         </h2>
-        <p className="text-[10px] text-gray-600 mb-8">
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 mb-8">
           {confirmListingDescText}
         </p>
         
@@ -56,7 +56,7 @@ const SellConfirmationModal: React.FC<SellConfirmationModalProps> = ({
           <Button
             onClick={onCancel}
             variant="outline"
-            className="flex-1 h-8 border-gray-300 text-gray-700 text-[11px] hover:bg-gray-50 py-3 rounded-full font-medium"
+            className="flex-1 h-8 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-[11px] hover:bg-gray-50 dark:hover:bg-gray-700 py-3 rounded-full font-medium"
           >
             {cancelText}
           </Button>

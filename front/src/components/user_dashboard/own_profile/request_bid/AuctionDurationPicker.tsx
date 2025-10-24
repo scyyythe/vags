@@ -69,7 +69,7 @@ const AuctionDurationPicker = ({
           min={0}
           max={maxDays}
         />
-        <span className="text-[10px] mt-1">Days</span>
+        <span className="text-[10px] mt-1 text-gray-900 dark:text-gray-100">Days</span>
       </div>
 
       <span className="mx-2 text-xl">:</span>
@@ -84,7 +84,7 @@ const AuctionDurationPicker = ({
           min={0}
           max={23}
         />
-        <span className="text-[9px] mt-1">Hrs</span>
+        <span className="text-[9px] mt-1 text-gray-900 dark:text-gray-100">Hrs</span>
       </div>
 
       <span className="mx-2 text-xl">:</span>
@@ -99,7 +99,7 @@ const AuctionDurationPicker = ({
           min={0}
           max={59}
         />
-        <span className="text-[9px] mt-1">Mins</span>
+        <span className="text-[9px] mt-1 text-gray-900 dark:text-gray-100">Mins</span>
       </div>
     </div>
   );
