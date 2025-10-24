@@ -92,6 +92,13 @@ const ProductViewingContent = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
+
+  // Switch to description tab if review tab is active but no reviews exist
+  useEffect(() => {
+    if (activeTab === "review" && (!reviews || reviews.length === 0)) {
+      setActiveTab("description");
+    }
+  }, [activeTab, reviews]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isReported, setIsReported] = useState(false);
   const [localIsReported, setLocalIsReported] = useState(false);
@@ -531,7 +538,7 @@ const ProductViewingContent = () => {
                   {aboutThisArtworkText}
                 </button>
 
-                {product.edition !== "Original (1 of 1)" && (
+                {product.edition !== "Original (1 of 1)" && reviews && reviews.length > 0 && (
                   <button
                     className={`px-4 py-2 ml-4 ${
                       activeTab === "review" ? "border-b-2 border-black dark:border-white text-black dark:text-white" : "text-gray-400 dark:text-gray-500"
@@ -560,7 +567,7 @@ const ProductViewingContent = () => {
                 )}
 
                 {/* Reviews Content */}
-                {activeTab === "review" && product.edition !== "Original (1 of 1)" && (
+                {activeTab === "review" && product.edition !== "Original (1 of 1)" && reviews && reviews.length > 0 && (
                   <div className="relative flex flex-col md:h-[110px] sm:flex-row gap-4 pr-4">
                     {/* View All Reviews Button - Top Right Corner */}
                     <div className="absolute right-0 top-0">

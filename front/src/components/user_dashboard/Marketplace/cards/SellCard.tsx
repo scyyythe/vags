@@ -273,7 +273,7 @@ const SellCard = ({
           </div>
         )}
 
-        {edition !== "Original (1 of 1)" && rating !== undefined && (
+        {edition !== "Original (1 of 1)" && rating !== undefined && rating > 0 && (
           <div className="absolute bottom-2 right-2 bg-white dark:bg-gray-800 font-medium px-2 py-0.5 rounded-full flex items-center gap-1 shadow">
             <i className="bx bxs-star text-[10px] text-yellow-500"></i>
             <span className="text-red-800 dark:text-red-400 text-[9px]">{rating.toFixed(1)}</span>
