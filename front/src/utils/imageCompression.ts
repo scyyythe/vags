@@ -3,6 +3,9 @@
  * Reduces file sizes before upload to improve performance
  */
 
+// Cache for compression results to avoid re-compressing same files
+const compressionCache = new Map<string, CompressionResult>();
+
 export interface CompressionOptions {
   maxWidth?: number;
   maxHeight?: number;
@@ -24,9 +27,17 @@ export const compressImage = async (file: File, options: CompressionOptions = {}
   const {
     maxWidth = 1920,
     maxHeight = 1920,
-    quality = 0.8,
-    maxSizeKB = 2048, // 2MB
+    quality = 0.85, // Slightly higher quality for better results
+    maxSizeKB = 1024, // 1MB - more aggressive compression
   } = options;
+
+  // Create cache key based on file properties and options
+  const cacheKey = `${file.name}-${file.size}-${file.lastModified}-${maxWidth}-${maxHeight}-${quality}-${maxSizeKB}`;
+  
+  // Check cache first
+  if (compressionCache.has(cacheKey)) {
+    return compressionCache.get(cacheKey)!;
+  }
 
   return new Promise((resolve, reject) => {
     const canvas = document.createElement("canvas");
@@ -76,12 +87,16 @@ export const compressImage = async (file: File, options: CompressionOptions = {}
                   lastModified: Date.now(),
                 });
 
-                resolve({
+                const result = {
                   file: compressedFile,
                   originalSize: file.size,
                   compressedSize: finalBlob.size,
                   compressionRatio: finalBlob.size / file.size,
-                });
+                };
+                
+                // Cache the result
+                compressionCache.set(cacheKey, result);
+                resolve(result);
               },
               file.type,
               newQuality
@@ -92,12 +107,16 @@ export const compressImage = async (file: File, options: CompressionOptions = {}
               lastModified: Date.now(),
             });
 
-            resolve({
+            const result = {
               file: compressedFile,
               originalSize: file.size,
               compressedSize: blob.size,
               compressionRatio: blob.size / file.size,
-            });
+            };
+            
+            // Cache the result
+            compressionCache.set(cacheKey, result);
+            resolve(result);
           }
         },
         file.type,
