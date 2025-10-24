@@ -49,16 +49,28 @@ const fetchArtCards = async () => {
   }
 };
 
-const useFetchArtCards = () => {
+interface UseFetchArtCardsOptions {
+  refetchInterval?: number | false;
+  refetchIntervalInBackground?: boolean;
+  staleTime?: number;
+}
+
+const useFetchArtCards = (options?: UseFetchArtCardsOptions) => {
+  const {
+    refetchInterval = false,
+    refetchIntervalInBackground = false,
+    staleTime = 1000 * 60 * 5, // 5 minutes default
+  } = options || {};
+
   return useQuery<ArtCard[], Error>({
     queryKey: ["marketplace-art-cards"],
     queryFn: fetchArtCards,
-    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+    staleTime,
     refetchOnWindowFocus: true, // Refetch when window gains focus
     refetchOnMount: true, // Refetch on component mount
     refetchOnReconnect: true, // Refetch on network reconnect
-    refetchInterval: false, // Disable automatic polling
-    refetchIntervalInBackground: false, // Don't poll when tab is not active
+    refetchInterval, // Configurable polling
+    refetchIntervalInBackground, // Configurable background polling
     retry: 3, // Retry up to 3 times on failure
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });

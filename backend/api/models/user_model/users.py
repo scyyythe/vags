@@ -35,6 +35,10 @@ class User(Document):
     failed_login_attempts = IntField(default=0)
     locked_until = DateTimeField(required=False, null=True)
     
+    # Admin terms and conditions acceptance
+    admin_terms_accepted = BooleanField(default=False)
+    admin_terms_accepted_at = DateTimeField(required=False, null=True)
+    
     def set_password(self, password):
          self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
