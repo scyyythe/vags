@@ -33,23 +33,23 @@ export const validatePostData = (data: ValidationData): ValidationResult => {
   const { title, medium, artworkHeight, artworkWidth, category, description, selectedFile } = data;
 
   // Artwork title validation: more flexible - allows apostrophes and common punctuation
-  const titleRegex = /^[A-Za-z0-9\s'.,!?-]+$/;
+  const titleRegex = /^[A-Za-z0-9\s''''''.,!?\-()&]+$/;
   if (!title?.trim()) {
     return { isValid: false, errorMessage: "Please enter an artwork title" };
   }
   if (!titleRegex.test(title)) {
     // Check for specific invalid characters
-    const invalidChars = title.match(/[^A-Za-z0-9\s'.,!?-]/g);
+    const invalidChars = title.match(/[^A-Za-z0-9\s''''''.,!?\-()&]/g);
     if (invalidChars) {
       const uniqueInvalidChars = [...new Set(invalidChars)];
       return {
         isValid: false,
-        errorMessage: `Artwork title contains invalid characters: ${uniqueInvalidChars.join(', ')}. Only letters, numbers, spaces, and common punctuation (.,!?-') are allowed`,
+        errorMessage: `Artwork title contains invalid characters: ${uniqueInvalidChars.join(', ')}. Only letters, numbers, spaces, and common punctuation (.,!?-'()&) are allowed`,
       };
     }
     return {
       isValid: false,
-      errorMessage: "Artwork title contains invalid characters. Only letters, numbers, spaces, and common punctuation (.,!?-') are allowed",
+      errorMessage: "Artwork title contains invalid characters. Only letters, numbers, spaces, and common punctuation (.,!?-'()&) are allowed",
     };
   }
 
