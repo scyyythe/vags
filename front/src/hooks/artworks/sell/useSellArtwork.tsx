@@ -77,71 +77,107 @@ const useSellArtwork = () => {
       toast.loading("Listing artwork...", { id: "upload" });
 
       try {
-        // Compress main image if needed
-        let compressedMainImage = mainImage;
-        if (mainImage && needsCompression(mainImage)) {
-          toast.loading("Compressing main image...", { id: "compress-main" });
-          const compressionResult = await compressImage(mainImage, {
-            maxWidth: 1920,
-            maxHeight: 1920,
-            quality: 0.8,
-            maxSizeKB: 1024,
+        // Prepare all images for parallel compression
+        const imagesToCompress = [];
+        const imageIndexMap = new Map();
+        
+        // Add main image
+        if (mainImage) {
+          imagesToCompress.push({
+            file: mainImage,
+            type: 'main',
+            index: 0
           });
-          compressedMainImage = compressionResult.file;
+          imageIndexMap.set(0, 'main');
+        }
+        
+        // Add additional images
+        additionalImages.forEach((img, index) => {
+          if (img) {
+            imagesToCompress.push({
+              file: img,
+              type: 'additional',
+              index: index + 1
+            });
+            imageIndexMap.set(index + 1, 'additional');
+          }
+        });
+
+        // Show compression progress
+        if (imagesToCompress.some(img => needsCompression(img.file))) {
+          toast.loading("Compressing images...", { id: "compress-all" });
+        }
+
+        // Compress all images in parallel
+        const compressionPromises = imagesToCompress.map(async (imgData) => {
+          if (needsCompression(imgData.file)) {
+            const result = await compressImage(imgData.file, {
+              maxWidth: 1920,
+              maxHeight: 1920,
+              quality: 0.8,
+              maxSizeKB: 1024,
+            });
+            return { ...imgData, compressedFile: result.file, result };
+          }
+          return { ...imgData, compressedFile: imgData.file };
+        });
+
+        const compressionResults = await Promise.all(compressionPromises);
+        
+        // Separate main and additional images
+        let compressedMainImage = mainImage;
+        const compressedAdditionalImages = [];
+        
+        compressionResults.forEach((result) => {
+          if (result.type === 'main') {
+            compressedMainImage = result.compressedFile;
+          } else {
+            compressedAdditionalImages.push(result.compressedFile);
+          }
+        });
+
+        // Show compression success
+        const compressedCount = compressionResults.filter(r => r.result).length;
+        if (compressedCount > 0) {
           toast.success(
-            `Main image compressed: ${formatFileSize(compressionResult.originalSize)} → ${formatFileSize(
-              compressionResult.compressedSize
-            )}`,
-            { id: "compress-main", duration: 2000 }
+            `Compressed ${compressedCount} image${compressedCount > 1 ? 's' : ''}`,
+            { id: "compress-all", duration: 2000 }
           );
         }
 
-        // Compress additional images if needed
-        const compressedAdditionalImages = [];
-        for (const img of additionalImages) {
-          if (img) {
-            if (needsCompression(img)) {
-              const compressionResult = await compressImage(img, {
-                maxWidth: 1920,
-                maxHeight: 1920,
-                quality: 0.8,
-                maxSizeKB: 1024,
-              });
-              compressedAdditionalImages.push(compressionResult.file);
-            } else {
-              compressedAdditionalImages.push(img);
-            }
-          }
+        // Pre-calculate values to avoid repeated operations
+        const currentYear = new Date().getFullYear().toString();
+        const trimmedTitle = title.trim();
+        const trimmedMedium = medium?.trim() || "Mixed Media";
+        const trimmedDescription = description?.trim() || "Beautiful artwork";
+        const roundedPrice = Math.round(priceNum).toString();
+        const sizeString = `${height || "Unknown"}x${width || "Unknown"}`;
+        
+        // Calculate quantity based on edition type
+        let quantityValue = "1";
+        if (edition === "Open Edition" || edition === "Limited Edition") {
+          const qty = quantity && !isNaN(parseInt(quantity)) ? parseInt(quantity) : 1;
+          quantityValue = qty.toString();
         }
 
+        // Create FormData more efficiently
         const formData = new FormData();
-        formData.append("title", title.trim());
-
-        // Provide defaults for optional fields
-        formData.append("year_created", year_created?.slice(0, 10) || new Date().getFullYear().toString());
+        formData.append("title", trimmedTitle);
+        formData.append("year_created", year_created?.slice(0, 10) || currentYear);
         formData.append("category", style || "General");
-        formData.append("medium", medium?.trim() || "Mixed Media");
-        formData.append("size", `${height || "Unknown"}x${width || "Unknown"}`);
-        formData.append("description", description?.trim() || "Beautiful artwork");
-        formData.append("price", Math.round(priceNum).toString()); // Use validated price number
+        formData.append("medium", trimmedMedium);
+        formData.append("size", sizeString);
+        formData.append("description", trimmedDescription);
+        formData.append("price", roundedPrice);
         formData.append("edition", edition || "Original (1 of 1)");
-
-        // Handle quantity based on edition type
-        if (edition === "Open Edition") {
-          const qty = quantity && !isNaN(parseInt(quantity)) ? parseInt(quantity) : 1;
-          formData.append("quantity", qty.toString());
-        } else if (edition === "Limited Edition") {
-          const qty = quantity && !isNaN(parseInt(quantity)) ? parseInt(quantity) : 1;
-          formData.append("quantity", qty.toString());
-        } else {
-          // Original (1 of 1) - always quantity 1
-          formData.append("quantity", "1");
-        }
-
-        formData.append("images", compressedMainImage);
-        formData.append("visibility", "Public"); // Capitalized to match backend model
+        formData.append("quantity", quantityValue);
+        formData.append("visibility", "Public");
         formData.append("art_status", "onSale");
 
+        // Add main image
+        formData.append("images", compressedMainImage);
+
+        // Add additional images in batch
         compressedAdditionalImages.forEach((img) => {
           if (img) formData.append("images", img);
         });
@@ -151,19 +187,20 @@ const useSellArtwork = () => {
           throw new Error("You must be logged in to list artwork.");
         }
 
-        // Upload with optimized timeout
+        // Update toast to show upload progress
+        toast.loading("Uploading artwork...", { id: "upload" });
+
+        // Upload with optimized timeout and progress tracking
         const response = await apiClient.post("/art/sell/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
-          // Reduced timeout for faster feedback
           timeout: 30000, // 30 seconds
-          // Add upload progress tracking
           onUploadProgress: (progressEvent) => {
             if (progressEvent.total) {
               const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-              console.log(`Upload progress: ${percentCompleted}%`);
+              toast.loading(`Uploading artwork... ${percentCompleted}%`, { id: "upload" });
             }
           },
         });
@@ -200,20 +237,33 @@ const useSellArtwork = () => {
           },
         });
 
-        // Force refetch of marketplace data to ensure immediate visibility
-        await queryClient.refetchQueries({
+        // Trigger immediate background refetch for real-time updates
+        // This will refetch in background without blocking the UI
+        queryClient.refetchQueries({
           queryKey: ["marketplace-art-cards"],
         });
 
-        // Also invalidate and refetch all artwork-related queries
-        await queryClient.invalidateQueries({
+        queryClient.refetchQueries({
+          queryKey: ["trending-artworks"],
+        });
+
+        queryClient.refetchQueries({
           queryKey: ["artworks"],
         });
 
-        // Force refetch trending artworks as well
-        await queryClient.refetchQueries({
-          queryKey: ["trending-artworks"],
-        });
+        // Also trigger cross-tab updates
+        localStorage.setItem('new-artwork-uploaded', Date.now().toString());
+        window.dispatchEvent(new CustomEvent('new-artwork-uploaded'));
+
+        // Additional aggressive refetch after a short delay to catch any backend processing
+        setTimeout(() => {
+          queryClient.refetchQueries({
+            queryKey: ["marketplace-art-cards"],
+          });
+          queryClient.refetchQueries({
+            queryKey: ["trending-artworks"],
+          });
+        }, 2000); // Refetch after 2 seconds to catch backend processing
 
         // Reset uploading state before showing success message
         setIsUploading(false);
