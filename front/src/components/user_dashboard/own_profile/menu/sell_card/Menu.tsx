@@ -119,7 +119,7 @@ const SellMenu: React.FC<SellMenuProps> = ({
         ReactDOM.createPortal(
           <div
             ref={menuRef}
-            className="absolute bg-gray-100 rounded-full py-1 px-1.5 shadow-md z-[60]"
+            className="absolute bg-gray-100 dark:bg-gray-700 rounded-full py-1 px-1.5 shadow-md z-[60]"
             style={{
               top: position.top,
               left: position.left,
@@ -187,8 +187,8 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, label, onClick, onHover, hove
   <div className="flex items-center relative">
     <button
       onClick={onClick}
-      className={`p-2 rounded-full transition-colors ${
-        isDelete ? "text-red-600 hover:bg-red-100" : "text-black hover:bg-gray-200"
+              className={`p-2 rounded-full transition-colors ${
+        isDelete ? "text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20" : "text-black dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
       }`}
       aria-label={label}
       onMouseEnter={() => onHover(itemId)}
@@ -197,7 +197,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, label, onClick, onHover, hove
       {icon}
     </button>
     {hoveredItem === itemId && (
-      <span className="absolute left-10 z-10 text-[9px] text-center bg-black text-white px-2 py-1 rounded whitespace-nowrap">
+      <span className="absolute left-10 z-10 text-[9px] text-center bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded whitespace-nowrap">
         {label}
       </span>
     )}

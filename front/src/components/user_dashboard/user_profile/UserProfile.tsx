@@ -58,7 +58,7 @@ const Index = () => {
 
   return (
     <>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col dark:bg-gray-900">
         <Header />
         <div className="container mx-auto px-4 pt-20">
           <ProfileHeader

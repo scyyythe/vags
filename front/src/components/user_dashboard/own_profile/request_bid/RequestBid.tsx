@@ -198,13 +198,13 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
             <DialogTitle className="text-lg font-bold text-left">{translatedArtworkTitle}</DialogTitle>
           </DialogHeader>
 
-          <p className="text-left text-[10px] -mt-3">{setTermsScheduleText}</p>
+          <p className="text-left text-[10px] -mt-3 text-gray-600 dark:text-gray-400">{setTermsScheduleText}</p>
 
           <div className="mt-3">
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <h3 className="font-medium mb-2 text-[11px]">{setStartingBidText}</h3>
+                  <h3 className="font-medium mb-2 text-[11px] text-gray-900 dark:text-gray-100">{setStartingBidText}</h3>
                   <div className="space-y-2">
                     <div>
                       <Input
@@ -220,9 +220,9 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
               </div>
 
               <div>
-                <h3 className="font-medium mb-3 text-[11px]">{setAuctionScheduleText}</h3>
+                <h3 className="font-medium mb-3 text-[11px] text-gray-900 dark:text-gray-100">{setAuctionScheduleText}</h3>
                 <div className="mb-2">
-                  <p className="text-[10px]">{auctionStartsOnText}</p>
+                  <p className="text-[10px] text-gray-600 dark:text-gray-400">{auctionStartsOnText}</p>
                   <DateTimePicker
                     date={startDate}
                     hours={startHours}
@@ -235,7 +235,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
                 </div>
 
                 <div className="mb-6">
-                  <p className="text-[10px]">{auctionEndsAfterText}</p>
+                  <p className="text-[10px] text-gray-600 dark:text-gray-400">{auctionEndsAfterText}</p>
                   <DateTimePicker
                     date={endDate}
                     hours={endHours}
@@ -247,7 +247,7 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
                     maxDate={maxEndDate}
                   />
                 </div>
-                <p className="text-[10px] text-muted-foreground mb-3">{durationNoteText}</p>
+                <p className="text-[10px] text-muted-foreground dark:text-gray-400 mb-3">{durationNoteText}</p>
               </div>
             </div>
 
@@ -266,8 +266,8 @@ const RequestBid = ({ open, artworkId, onOpenChange, artworkTitle }: AuctionDial
             {/* Payment account warning and setup button */}
             {paymentAccounts.length === 0 && (
               <div className="mt-2 text-center">
-                <p className="text-[9px] text-red-500">{needPaymentAccountText}</p>
-                <button onClick={handleSetupAccount} className="text-[9px] text-blue-600 hover:text-blue-800 underline">
+                <p className="text-[9px] text-red-500 dark:text-red-400">{needPaymentAccountText}</p>
+                <button onClick={handleSetupAccount} className="text-[9px] text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">
                   {setupPaymentAccountLinkText}
                 </button>
               </div>

@@ -143,14 +143,14 @@ const UserListModal: React.FC<UserListModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="w-full max-w-sm h-[70%] rounded-lg flex flex-col p-0 gap-0 overflow-hidden">
-        <DialogTitle className="text-center text-md font-bold p-4">{title}</DialogTitle>
+      <DialogContent className="w-full max-w-sm h-[70%] rounded-lg flex flex-col p-0 gap-0 overflow-hidden bg-white dark:bg-gray-800">
+        <DialogTitle className="text-center text-md font-bold p-4 text-gray-900 dark:text-gray-100">{title}</DialogTitle>
         {/* Search Bar */}
         <div className="relative px-8">
-          <Search className="absolute left-12 top-3.5 transform -translate-y-1/2 text-gray-400 h-3 w-3" />
+          <Search className="absolute left-12 top-3.5 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-3 w-3" />
           <Input
             placeholder={searchUsersText}
-            className="pl-10 pr-4 w-full h-7 rounded-full border border-gray-300 focus:outline-none focus:ring-0 focus:border-transparent"
+            className="pl-10 pr-4 w-full h-7 rounded-full border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             style={{ fontSize: "10px" }}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -173,25 +173,25 @@ const UserListModal: React.FC<UserListModalProps> = ({
                     <div className="flex items-center">
                       <Avatar className="h-7 w-7 mr-3">
                         <AvatarImage src={user.profile_picture} alt={user.name} />
-                        <AvatarFallback className="bg-gray-200 text-gray-700 ">{user.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback className="bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300">{user.name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col">
                         <div className="flex items-center">
-                          <span className="font-medium text-[11px]">
+                          <span className="font-medium text-[11px] text-gray-900 dark:text-gray-100">
                             <TranslatedUserName firstName={user.first_name ?? ""} lastName={user.last_name ?? ""} />
                           </span>
                           {/* For non-owner, show '• Follow' for followers list if not following */}
                           {!isOwner && title === "Followers" && isFollowing === false && (
                             <button
                               onClick={() => onFollow && onFollow(user.id)}
-                              className="text-[10px] text-red-600 ml-2 hover:underline cursor-pointer"
+                              className="text-[10px] text-red-600 dark:text-red-400 ml-2 hover:underline cursor-pointer"
                             >
                               • {followButtonText}
                             </button>
                           )}
                         </div>
                         {title === "Following" && (
-                          <span className="text-[10px] text-gray-500">{artworksCounts[user.id] ?? 0} {itemsText}</span>
+                          <span className="text-[10px] text-gray-500 dark:text-gray-400">{artworksCounts[user.id] ?? 0} {itemsText}</span>
                         )}
                       </div>
                     </div>
@@ -201,14 +201,14 @@ const UserListModal: React.FC<UserListModalProps> = ({
                         // OWNER POV: Show Remove (Followers) or Unfollow (Following)
                         title === "Followers" ? (
                           <button
-                            className="text-[9px] px-4 h-5 rounded-full border hover:bg-gray-100 flex items-center gap-1"
+                            className="text-[9px] px-4 h-5 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-1 text-gray-700 dark:text-gray-300"
                             onClick={() => onRemove && onRemove(user.id)}
                           >
                             <span>{removeButtonText}</span>
                           </button>
                         ) : (
                           <button
-                            className="text-[9px] border px-4 py-1 h-5 rounded-full text-red-800 border-red-800 hover:bg-red-50 flex items-center gap-1"
+                            className="text-[9px] border px-4 py-1 h-5 rounded-full text-red-800 dark:text-red-400 border-red-800 dark:border-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-1"
                             onClick={() => onUnfollow && onUnfollow(user.id)}
                           >
                             <span>{unfollowButtonText}</span>
@@ -222,7 +222,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="text-[10px] px-4 h-5 rounded-full border border-gray-300 text-gray-700 bg-white hover:bg-gray-100"
+                                className="text-[10px] px-4 h-5 rounded-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
                                 disabled
                               >
                                 {followingButtonText}
@@ -231,7 +231,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="text-[10px] px-4 h-5 rounded-full border border-red-600 text-red-600 bg-white hover:bg-red-50"
+                                className="text-[10px] px-4 h-5 rounded-full border border-red-600 dark:border-red-400 text-red-600 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20"
                                 onClick={() => onFollow && onFollow(user.id)}
                               >
                                 {followButtonText}
@@ -262,9 +262,9 @@ const UserListModal: React.FC<UserListModalProps> = ({
                             </svg>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-10">
+                        <DropdownMenuContent align="end" className="w-10 bg-white dark:bg-gray-800">
                           <DropdownMenuItem
-                            className="text-[9px] cursor-pointer"
+                            className="text-[9px] cursor-pointer text-gray-900 dark:text-gray-100"
                             onClick={() => {
                               onClose();
                               navigate(`/userprofile/${user.id}`);
@@ -272,11 +272,11 @@ const UserListModal: React.FC<UserListModalProps> = ({
                           >
                             {viewProfileText}
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-[9px] cursor-pointer" onClick={handleBlockUser}>
+                          <DropdownMenuItem className="text-[9px] cursor-pointer text-gray-900 dark:text-gray-100" onClick={handleBlockUser}>
                             {blockUserText}
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            className="text-[9px] cursor-pointer text-red-600"
+                            className="text-[9px] cursor-pointer text-red-600 dark:text-red-400"
                             onClick={() => handleReportUser(user.id)}
                           >
                             {reportText}
@@ -288,7 +288,7 @@ const UserListModal: React.FC<UserListModalProps> = ({
                 );
               })
             ) : (
-              <div className="text-center py-8 text-gray-500">{noUsersFoundText}</div>
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">{noUsersFoundText}</div>
             )}
           </div>
         </ScrollArea>

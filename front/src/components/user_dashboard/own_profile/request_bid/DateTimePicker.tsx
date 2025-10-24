@@ -129,7 +129,7 @@ const DateTimePicker = ({
               min={0}
               max={23}
             />
-            <span className="text-[9px] mt-1">{hrsText}</span>
+            <span className="text-[9px] mt-1 text-gray-900 dark:text-gray-100">{hrsText}</span>
           </div>
 
           <span className="mx-2 text-xl">:</span>
@@ -144,7 +144,7 @@ const DateTimePicker = ({
               min={0}
               max={59}
             />
-            <span className="text-[9px] mt-1">{minsText}</span>
+            <span className="text-[9px] mt-1 text-gray-900 dark:text-gray-100">{minsText}</span>
           </div>
         </div>
       </div>

@@ -38,17 +38,17 @@ const DeleteConfirmationPopup: React.FC<DeleteConfirmationPopupProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-hidden">
-      <div className="bg-white rounded-lg py-7 px-10 shadow-xl max-w-sm w-full text-center relative">
-        <h2 className="text-xs font-semibold text-gray-900 mb-2">
+      <div className="bg-white dark:bg-gray-800 rounded-lg py-7 px-10 shadow-xl max-w-sm w-full text-center relative">
+        <h2 className="text-xs font-semibold text-gray-900 dark:text-gray-100 mb-2">
           {titleText}
         </h2>
-        <p className="text-[10px] text-gray-500 mb-6">
+        <p className="text-[10px] text-gray-500 dark:text-gray-400 mb-6">
           {descriptionText}
         </p>
         <div className="flex justify-between gap-6">
           <button
             onClick={onCancel}
-            className="w-full text-[10px] px-8 py-1 text-gray-600 hover:text-black border border-gray-500 hover:border-black rounded-full transition-colors duration-200"
+            className="w-full text-[10px] px-8 py-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-gray-200 border border-gray-500 dark:border-gray-400 hover:border-black dark:hover:border-gray-300 rounded-full transition-colors duration-200"
           >
             {cancelText}
           </button>

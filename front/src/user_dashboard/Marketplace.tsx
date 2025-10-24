@@ -148,7 +148,6 @@ const Marketplace = () => {
   // Hooks for unlisting and relisting
   const { mutate: relistArtwork, isPending: isRelisting } = useRelistArtwork();
   const markAsUnlistedMutation = useMarkArtworkAsUnlisted();
-
   const handleCategorySelect = (category: string) => setSelectedCategoryFilter(category);
   const handleArtCategoryChange = (category: string) => setSelectedArtCategory(category);
   const handleSortChange = (option: string) => setSelectedSort(option);
@@ -364,7 +363,6 @@ const Marketplace = () => {
       },
     });
   };
-
   // Refetch followed artworks when switching to Following tab
   useEffect(() => {
     if (selectedCategoryFilter === "Following") {

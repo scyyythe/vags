@@ -43,17 +43,17 @@ const FollowModals: React.FC<FollowModalsProps> = ({ followersCount, followingCo
 
   return (
     <>
-      <div className="flex items-center space-x-2 mt-2 text-[10px] md:text-[11px]">
+      <div className="flex items-center space-x-2 mt-2 text-[10px] md:text-[11px] text-gray-900 dark:text-gray-100">
         <button
           onClick={() => setFollowersModalOpen(true)}
-          className="hover:underline cursor-pointer flex items-center space-x-1"
+          className="hover:underline cursor-pointer flex items-center space-x-1 text-gray-900 dark:text-gray-100"
         >
           <strong>{followersCount}</strong> <span>{followersText}</span>
         </button>
-        <span>•</span>
+        <span className="text-gray-900 dark:text-gray-100">•</span>
         <button
           onClick={() => setFollowingModalOpen(true)}
-          className="hover:underline cursor-pointer flex items-center space-x-1"
+          className="hover:underline cursor-pointer flex items-center space-x-1 text-gray-900 dark:text-gray-100"
         >
           <strong>{followingCount}</strong> <span>{followingText}</span>
         </button>
