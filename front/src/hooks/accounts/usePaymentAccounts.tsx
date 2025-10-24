@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import apiClient from "@/utils/apiClient";
 import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   NewAccountState,
   PaymentAccount,
 } from "@/components/user_dashboard/Settings/components/tab/accounts_setup/types/payment";
 
 export const usePaymentAccounts = () => {
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [accounts, setAccounts] = useState<PaymentAccount[]>([]);
 
@@ -89,6 +91,13 @@ export const usePaymentAccounts = () => {
 
       await fetchAccounts();
 
+      // Invalidate marketplace queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
+
       toast({
         title: editing ? "Updated" : "Added",
         description: editing
@@ -112,6 +121,14 @@ export const usePaymentAccounts = () => {
     try {
       await apiClient.delete(`/accounts/${accountId}/delete/`);
       await fetchAccounts();
+      
+      // Invalidate marketplace queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ["marketplace-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["trending-artworks"] });
+      queryClient.invalidateQueries({ queryKey: ["followedArtworks"] });
+      queryClient.invalidateQueries({ queryKey: ["my-sell-art-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["user-sell-art-cards"] });
+      
       toast({ title: "Deleted", description: "Payment account has been removed", variant: "default" });
     } catch (err) {
       console.error("Failed to delete account:", err);

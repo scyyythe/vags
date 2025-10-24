@@ -15,6 +15,7 @@ import { getLoggedInUserId } from "@/auth/decode";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import { useCheckPaymentAccounts } from "@/hooks/accounts/useCheckPaymentAccounts";
 export interface SellCardProps {
   id: string;
   artworkImage: string;
@@ -49,6 +50,7 @@ export interface SellCardProps {
   isWishlistView?: boolean;
   isFading?: boolean;
   onBuyNowClick?: () => void;
+  onPaymentSetupClick?: () => void;
 }
 
 const SellCard = ({
@@ -84,6 +86,7 @@ const SellCard = ({
   isWishlistView = false,
   isReported = false,
   onBuyNowClick,
+  onPaymentSetupClick,
 }: SellCardProps) => {
   const loggedInUserId = getLoggedInUserId();
   const isOwner = String(artistId) === String(loggedInUserId);
@@ -141,6 +144,7 @@ const SellCard = ({
   };
 
   const { isChatOpen, openChat, closeChat, participantId, participantName } = useChat();
+  const { hasPaymentAccounts, loading: paymentAccountsLoading } = useCheckPaymentAccounts();
 
   const toggleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -191,11 +195,20 @@ const SellCard = ({
   const handleBuyNow = (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    if (onBuyNowClick) {
-      onBuyNowClick();
-    } else {
-      setIsModalOpen(true);
+    // Check if user has payment accounts set up
+    if (hasPaymentAccounts === false) {
+      onPaymentSetupClick?.();
+      return;
     }
+    
+    // If still loading payment accounts, show loading message
+    if (paymentAccountsLoading) {
+      toast.loading("Checking payment accounts...", { closeButton: true });
+      return;
+    }
+    
+    // If payment accounts exist, open the preview modal
+    setIsModalOpen(true);
   };
 
   const handleReport = (data: { category: string; option?: string; description: string; additionalInfo: string }) => {

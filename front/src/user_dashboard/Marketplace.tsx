@@ -290,23 +290,6 @@ const Marketplace = () => {
 
   const handleWishlistClick = () => setShowWishlist(true);
 
-  // Payment validation handler
-  const handleBuyNowClick = () => {
-    // Check if user has payment accounts set up
-    if (hasPaymentAccounts === false) {
-      setIsPaymentSetupPopupOpen(true);
-      return;
-    }
-    
-    // If still loading payment accounts, show loading message
-    if (paymentAccountsLoading) {
-      toast.loading("Checking payment accounts...", { closeButton: true });
-      return;
-    }
-    
-    // If payment accounts exist, proceed with normal buy flow
-    // This will be handled by the individual SellCard components
-  };
 
   // Handler functions for unlisting and relisting
   const handleRelist = (id: string) => {
@@ -588,7 +571,7 @@ const Marketplace = () => {
                         onLike={() => handleLike(artwork.id)}
                         isMarketplace={true}
                         isProfileView={false}
-                        status="active"
+                        status={artwork.art_status || "active"}
                         quantity={artwork.quantity}
                         isWishlistView={true}
                         onCardClick={() => handleCardClick(artwork)}
@@ -596,7 +579,7 @@ const Marketplace = () => {
                         isOwner={isOwner}
                         onRelist={isOwner ? () => handleRelist(artwork.id) : undefined}
                         onUnlist={isOwner ? () => handleUnlist(artwork.id) : undefined}
-                        onBuyNowClick={handleBuyNowClick}
+                        onPaymentSetupClick={() => setIsPaymentSetupPopupOpen(true)}
                       />
                     );
                   })}
