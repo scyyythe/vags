@@ -8,6 +8,7 @@ import { useMyAuctions } from "@/hooks/auction/useMyAuctions";
 import { useRestoreAllAuctions } from "@/hooks/auction/useRestoreAllAuctions";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
+import ReopenAuctionModal from "../../own_profile/request_bid/ReopenAuctionModal";
 
 type ExtendedAuction = ArtworkAuction & {
   isPaid?: boolean;
@@ -29,6 +30,8 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
   const [activeTab, setActiveTab] = useState<"on_going" | "sold" | "closed" | "my_bids">("on_going");
   const [myBidFilter, setMyBidFilter] = useState<MyBidFilter>("all");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showReopenModal, setShowReopenModal] = useState(false);
+  const [selectedAuction, setSelectedAuction] = useState<ExtendedAuction | null>(null);
 
   const navigate = useNavigate();
   const { id: visitedUserId } = useParams();
@@ -174,6 +177,11 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
     },
     [navigate]
   );
+
+  const handleReopenWithTimes = useCallback((auction: ExtendedAuction) => {
+    setSelectedAuction(auction);
+    setShowReopenModal(true);
+  }, []);
 
   // Helper function to get translated tab label
   const getTabLabel = (tab: string): string => {
@@ -329,9 +337,23 @@ const OnBidTab = ({ selectedStatus, onShowUnhidePopup, onShowRestoreAllPopup }: 
               data={auction}
               onClick={() => handleBidClick(auction)}
               isHidden={selectedStatus === "Hidden"}
+              onReopenWithTimes={handleReopenWithTimes}
             />
           ))}
         </div>
+      )}
+
+      {/* Reopen Modal - Outside grid to prevent CSS interference */}
+      {selectedAuction && (
+        <ReopenAuctionModal
+          open={showReopenModal}
+          onOpenChange={setShowReopenModal}
+          auctionId={selectedAuction.id}
+          artworkTitle={selectedAuction.artwork.title}
+          currentStartTime={selectedAuction.start_time}
+          currentEndTime={selectedAuction.end_time}
+          currentStartBid={selectedAuction.start_bid_amount}
+        />
       )}
     </div>
   );

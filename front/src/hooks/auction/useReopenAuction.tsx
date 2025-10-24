@@ -2,8 +2,20 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/utils/apiClient";
 import { toast } from "sonner";
 
-const reopenAuction = async (auctionId: string) => {
-  const response = await apiClient.patch(`auction/${auctionId}/reopen/`);
+interface ReopenAuctionParams {
+  auctionId: string;
+  start_time?: string;
+  end_time?: string;
+  start_bid_amount?: number;
+}
+
+const reopenAuction = async (params: ReopenAuctionParams) => {
+  const { auctionId, start_time, end_time, start_bid_amount } = params;
+  const response = await apiClient.patch(`auction/${auctionId}/reopen/`, {
+    start_time,
+    end_time,
+    start_bid_amount,
+  });
   return response.data;
 };
 

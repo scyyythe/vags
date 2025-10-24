@@ -25,12 +25,14 @@ interface OwnerBidMenuProps {
   onCloseBid: () => void;
   onRestore?: (id: string) => void;
   onReopen?: (id: string) => void;
+  onReopenWithTimes?: (id: string) => void;
   className?: string;
   bids?: Bid[];
   auctionId?: string;
   auctionTitle?: string;
   visibility?: string;
   canReopen?: boolean;
+  auctionStatus?: string;
 }
 
 const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
@@ -39,12 +41,14 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
   onCloseBid,
   onRestore,
   onReopen,
+  onReopenWithTimes,
   bids = [],
   className,
   auctionId,
   auctionTitle,
   visibility,
   canReopen = false,
+  auctionStatus,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const { language } = useLanguage();
@@ -57,6 +61,7 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
   // Translation hooks
   const viewBidsText = useAutoTranslation("View Bids", language);
   const reopenAuctionText = useAutoTranslation("Reopen Auction", language);
+  const reopenWithNewTimesText = useAutoTranslation("Reopen with New Times", language);
   const closeBiddingText = useAutoTranslation("Close Bidding", language);
   const deleteBidText = useAutoTranslation("Delete Bid", language);
   const restoreAuctionText = useAutoTranslation("Restore Auction", language);
@@ -125,6 +130,30 @@ const OwnerBidMenu: React.FC<OwnerBidMenuProps> = ({
               {hoveredItem === "reopen" && (
                 <span className="absolute left-10 text-[9px] text-center bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded whitespace-nowrap">
                   {reopenAuctionText}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Reopen with New Times - Only show for closed auctions */}
+          {auctionStatus === "closed" && onReopenWithTimes && (
+            <div className="flex items-center relative">
+              <button
+                onClick={() => {
+                  if (onReopenWithTimes && auctionId) {
+                    onReopenWithTimes(auctionId);
+                  }
+                }}
+                className="p-2 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                aria-label="Reopen with New Times"
+                onMouseEnter={() => setHoveredItem("reopenWithTimes")}
+                onMouseLeave={() => setHoveredItem(null)}
+              >
+                <RotateCcw size={10} stroke="#f59e0b" />
+              </button>
+              {hoveredItem === "reopenWithTimes" && (
+                <span className="absolute left-10 text-[9px] text-center bg-black dark:bg-gray-800 text-white dark:text-gray-100 px-2 py-1 rounded whitespace-nowrap">
+                  {reopenWithNewTimesText}
                 </span>
               )}
             </div>

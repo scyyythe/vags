@@ -18,6 +18,7 @@ import { getArtworkImageUrl } from "@/utils/image/imageUtils";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAutoTranslation } from "@/hooks/autoTranslate/useAutoTranslation";
 import useRealTimeBids from "@/hooks/bid/useRealTimeBids";
+import ReopenAuctionModal from "../../own_profile/request_bid/ReopenAuctionModal";
 interface ExtendedArtworkAuction extends ArtworkAuction {
   isPaid?: boolean;
   isHighestBidder?: boolean;
@@ -40,6 +41,7 @@ interface BidCardProps {
     last_name: string;
   };
   isHidden?: boolean;
+  onReopenWithTimes?: (auction: ExtendedArtworkAuction) => void;
 }
 
 const BidCard: React.FC<BidCardProps> = ({
@@ -50,15 +52,17 @@ const BidCard: React.FC<BidCardProps> = ({
   onClick,
   user,
   isHidden: isHiddenProp = false,
+  onReopenWithTimes,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showBidPopup, setShowBidPopup] = useState(false);
+  const [showReopenModal, setShowReopenModal] = useState(false);
   const { language } = useLanguage();
   const loggedInUserId = getLoggedInUserId();
   const isOwner = data?.artwork?.artist_id === loggedInUserId;
   const { closeAuction, deleteAuction } = useAuctionActions();
   const navigate = useNavigate();
-  
+
   // Check if auction has started
   const now = new Date();
   const auctionStartTime = new Date(data.start_time);
@@ -260,7 +264,13 @@ const BidCard: React.FC<BidCardProps> = ({
                   setMenuOpen(false);
                 }}
                 onReopen={(id) => {
-                  reopenAuction(id);
+                  reopenAuction({ auctionId: id });
+                  setMenuOpen(false);
+                }}
+                onReopenWithTimes={(id) => {
+                  if (onReopenWithTimes) {
+                    onReopenWithTimes(data);
+                  }
                   setMenuOpen(false);
                 }}
                 onViewBids={() => {
@@ -271,6 +281,7 @@ const BidCard: React.FC<BidCardProps> = ({
                 auctionTitle={data.artwork.title}
                 visibility={data.visibility}
                 canReopen={canReopen}
+                auctionStatus={data.status}
                 className="top-8 -left-[12px]"
               />
             ) : (
@@ -350,15 +361,15 @@ const BidCard: React.FC<BidCardProps> = ({
                     : "bg-red-800 hover:bg-red-800"
                 }`}
               >
-                {hasWon 
-                  ? claimText 
-                  : data.status === "on_going" && hasAuctionStarted 
-                    ? placeABidText 
-                    : data.status === "on_going" && !hasAuctionStarted
-                    ? upcomingText
-                    : canReopen 
-                    ? reopenText 
-                    : closedText}
+                {hasWon
+                  ? claimText
+                  : data.status === "on_going" && hasAuctionStarted
+                  ? placeABidText
+                  : data.status === "on_going" && !hasAuctionStarted
+                  ? upcomingText
+                  : canReopen
+                  ? reopenText
+                  : closedText}
               </button>
             </div>
           </div>

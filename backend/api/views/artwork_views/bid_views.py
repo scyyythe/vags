@@ -658,18 +658,44 @@ class ReopenAuctionView(APIView):
         if auction.artwork.artist != user:
             return Response({"detail": "You can only reopen your own auctions."}, status=status.HTTP_403_FORBIDDEN)
 
-        # Check if auction is closed and still has time remaining
-        now = datetime.now(timezone.utc)
+        # Check if auction is closed
         if auction.status != AuctionStatus.CLOSED.value:
             return Response({"detail": "Only closed auctions can be reopened."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Ensure end_time is timezone-aware for comparison
-        end_time = auction.end_time
-        if end_time.tzinfo is None:
-            end_time = end_time.replace(tzinfo=timezone.utc)
+        # Get new times from request if provided
+        new_start_time = request.data.get('start_time')
+        new_end_time = request.data.get('end_time')
+        new_start_bid_amount = request.data.get('start_bid_amount')
+
+        # If new times are provided, validate them
+        if new_start_time and new_end_time:
+            try:
+                start_time = datetime.fromisoformat(new_start_time.replace('Z', '+00:00'))
+                end_time = datetime.fromisoformat(new_end_time.replace('Z', '+00:00'))
+                
+                # Validate times
+                if end_time <= start_time:
+                    return Response({"detail": "End time must be after start time."}, status=status.HTTP_400_BAD_REQUEST)
+                
+                if (end_time - start_time).days > 3:
+                    return Response({"detail": "Auction duration cannot exceed 3 days."}, status=status.HTTP_400_BAD_REQUEST)
+                
+                # Update auction times
+                auction.start_time = start_time
+                auction.end_time = end_time
+                
+            except ValueError:
+                return Response({"detail": "Invalid date format."}, status=status.HTTP_400_BAD_REQUEST)
         
-        if now >= end_time:
-            return Response({"detail": "Cannot reopen expired auctions."}, status=status.HTTP_400_BAD_REQUEST)
+        # If new start bid amount is provided, validate and update it
+        if new_start_bid_amount is not None:
+            try:
+                start_bid_amount = float(new_start_bid_amount)
+                if start_bid_amount <= 0:
+                    return Response({"detail": "Start bid amount must be greater than 0."}, status=status.HTTP_400_BAD_REQUEST)
+                auction.start_bid_amount = start_bid_amount
+            except (ValueError, TypeError):
+                return Response({"detail": "Invalid start bid amount."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Reopen the auction
         auction.status = AuctionStatus.ON_GOING.value
