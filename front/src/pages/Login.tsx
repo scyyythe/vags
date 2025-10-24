@@ -660,6 +660,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
     setFormData({ email: "", password: "" });
   };
 
+
   // Render 2FA verification screen
   if (show2FA) {
     return (
@@ -807,6 +808,7 @@ const Login = ({ closeLoginModal }: { closeLoginModal: () => void }) => {
         onClose={handleBanPopupClose}
         banData={banData}
       />
+
     </div>
   );
 };
